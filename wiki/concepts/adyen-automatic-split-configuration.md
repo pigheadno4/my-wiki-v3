@@ -19,6 +19,9 @@ These are provider configuration and booking rules in a 2026-09-15 snapshot. The
 
 ## Sources
 
+- [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations-api]] — 2026-09-15 Management API guide to profile/rule retrieval, condition and split-logic edits, description updates, and deletions; records overwrite and capture-time effects.
+
+
 - [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations]] — 2026-09-15 management hub for Customer Area/API profile-rule edits, API-only description/card-region changes and capture-time reevaluation with request override.
 
 

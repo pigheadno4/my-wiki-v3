@@ -21,6 +21,9 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api]] — 2025-modified, 2026-09-15-captured Classic-to-Checkout API migration guide targeting v72+ with scoped endpoint, client/server, security, and tokenization updates; source flags internal base-URL, redirect-auth, and webhook wording tensions.
+
+
 - [[source-adyen-docs-payment-methods-gift-cards-web]] — 2019-modified, 2026-09-15-captured gift-cards Web chooser for Drop-in/Components method guides and generic Web references.
 
 

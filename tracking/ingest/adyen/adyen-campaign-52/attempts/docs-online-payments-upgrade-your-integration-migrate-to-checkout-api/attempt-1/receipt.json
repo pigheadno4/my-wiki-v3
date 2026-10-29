@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-upgrade-your-integration-migrate-to-checkout-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Migrate to Checkout API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/upgrade-your-integration/migrate-to-checkout-api\"\nraw_files:\n  - \"adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/2026-09-15.md\"\ntags: [adyen, online-payments, checkout-api, classic-api, migration]\n---\n\n## Overview\n\nThis Adyen guide, last modified 2025-07-02 and captured 2026-09-15, explains migration from Classic API to Checkout API for online payments. Adyen says Classic API is no longer developed or updated and recommends Checkout API. The guide's main path targets Checkout API **v72 or later**. It also describes a narrower Classic v68 \u2192 Checkout v68 interim route that may require another upgrade if deprecated. This is historical documentation, not proof of current API availability or a successful merchant migration. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Migration changes authentication, authorization, and modification requests. The task list depends on the existing integration: server-only needs credential, endpoint, and request-object changes; CSE/JWE, 3D Secure, tokenization, local methods, SOAP, and partner integrations add their own work. The existing Classic integration may continue processing live payments during migration. See raw lines 28\u201339, 58\u201373, and 75\u201383.\n- The Checkout credential needs the **Checkout webservice role**; configure desired additional response data in Customer Area. API keys or basic authentication still authorize server API requests. Drop-in/Components additionally require a client key and allowed origins. Checkout requests require JSON; XML request objects must be converted. See raw lines 85\u2013100, 148\u2013156, and 3221\u20133229.\n- The endpoint table maps Classic `/authorise` to Checkout `/payments`, post-3DS/redirect details to `/payments/details`, and refund, cancellation, capture, reversal, and amount adjustment to payment-reference routes. It gives separate `/cancels` for cancellation without a PSP reference, plus session and stored-method routes. **Voiding a pending refund has no Checkout API counterpart in this table.** Base URLs, environment, live prefix and region matter. See raw lines 102\u2013146 and operation examples at 2349\u20132614.\n- Card request shape changes from Classic encrypted-card `additionalData` to Checkout `paymentMethod`; unencrypted card handling requires PCI compliance. Checkout token requests specify `shopperInteraction` and `recurringProcessingModel` rather than relying on Customer Area's Recurring toggle, and token lifecycle setup includes a tokenization webhook. See raw lines 160\u2013307, 307\u2013914, and 3143\u20133169.\n- `/payments` can return an `action` requiring voucher, QR, redirect, await, SDK, or 3DS handling. Voucher/QR/await/SDK examples wait for a webhook result; redirect return data can be submitted server-side to `/payments/details`, while a shopper who does not return is resolved via webhook. The `/payments/details` sample reports a **current status**, not a general guarantee that every action completed. See raw lines 2747\u20132763 and 2764\u20133123.\n- Classic CSE does not work with Checkout API; the guide offers Card Component, Custom Card Component, and JWE replacements. Standard v1 webhooks are described as unchanged, but SOAP webhook format, tokenization webhooks, or differently structured AUTHORISATION notifications can still need migration checks. PCI scope depends on integration type; the guide says API-only to API-only with a custom interface has no PCI impact and Components can lower scope. See raw lines 3199\u20133239.\n\n## Important qualifications and source tensions\n\n- The base-URL table gives Checkout test as `https://checkout-test.adyen.com/checkout/{VERSION}` (raw 108\u2013111), whereas the guide's Checkout curl examples use `https://checkout-test.adyen.com/v72/...` (for example raw 1773\u20131776 and 2383\u20132387). Verify an actual endpoint path for the chosen API version and environment; do not combine those patterns as if internally consistent.\n- The redirect walkthrough says to send `redirectResult` to `/payments/details` (raw 2906\u20132919), while the later v67+ authentication note says authorization occurs before redirect back and `/payments/details` is no longer needed **to authorize** (raw 3129\u20133133). Keep the distinction between retrieving/confirming a result and performing authorization; the guide does not fully reconcile the wording.\n- The guide's opening says webhooks do not change (raw 34\u201339), narrowed later to standard v1 webhooks with exceptions for SOAP, tokenization, and differing AUTHORISATION structure (raw 3211\u20133219). Its examples are historical illustrations, not validated runnable code: the Classic redirect 3DS JSON lacks a comma after `browserInfo` (raw 1752\u20131764), the Classic reversal sample URL says `captureOrRefund` while prose links `cancelOrRefund` (raw 2511\u20132516), and some library samples omit request-object construction (raw 2938\u20133107).\n\n## Detail locators\n\n- Feature matrix, scoped task matrix, interim version and Sessions trade-off: raw lines 41\u201383.\n- Credential, URL, endpoint, request-format and card-field mappings: raw lines 85\u2013307.\n- Stored-card creation and one-off/subscription examples: raw lines 307\u2013914.\n- Native and redirect 3DS examples, including language-specific SDK snippets: raw lines 915\u20132347.\n- Modification examples and third-party 3DS data: raw lines 2349\u20132741.\n- Additional actions, redirect return, webhook and status examples: raw lines 2747\u20133123.\n- Auth, tokenization, wallets/local methods, CSE, webhooks, security, PCI and enhanced-scheme migration: raw lines 3125\u20133250. Google Pay requires v67+ in this guide; v71+ moves enhanced scheme data to root `enhancedSchemeData` (raw 3174\u20133182, 3240\u20133250).\n- Performance recommendations, errors, libraries, testing and live coexistence/go-live: raw lines 3252\u20133295.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Adyen online payment architecture and source routes.\n- [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api-upgrade-api-library]] \u2014 separate, version-qualified Java API library migration guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/2026-09-15|Migrate to Checkout API, 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "Follow this guide to migrate to [Checkout API v72](/online-payments/release-notes/?title%5B0%5D=Checkout%20API\\&version%5B0%5D=72) or later.",
+      "location": "raw lines 56\u201358, How to migrate"
+    },
+    {
+      "text": "During your migration process, you can continue to use your existing Classic API integration to process live payments.",
+      "location": "raw line 73, Classic API integration type"
+    },
+    {
+      "text": "Void a pending refund.",
+      "location": "raw line 136, endpoint matrix; Checkout column says Not available in Checkout API"
+    },
+    {
+      "text": "If the response includes the `action` object, you must handle an additional action before the shopper can finish the payment.",
+      "location": "raw line 2749, Handle additional actions"
+    },
+    {
+      "text": "[Standard webhooks](/development-resources/webhooks/webhook-types) have not changed because they use v1. Migration is minimal for standard webhooks.",
+      "location": "raw line 3213, Migrate webhooks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c52-checkout-api-migration-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api]] \u2014 2025-modified, 2026-09-15-captured Classic-to-Checkout API migration guide targeting v72+ with scoped endpoint, client/server, security, and tokenization updates; source flags internal base-URL, redirect-auth, and webhook wording tensions.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Source distinguishes v72+ main path from optional v68 interim path.",
+          "Source flags internal base-URL, redirect-auth/details, and opening-versus-later webhook wording tensions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/2026-09-15.md",
+  "raw_sha256": "4a6bf14e3c0cafc57f9d12b1478d3769072b98ec586139610df9ab94ff1f5218",
+  "status": "candidate_ready"
+}

@@ -15,6 +15,9 @@ The 2026-09-15 snapshot is an overview with a 2021 last-modified date. It does n
 
 ## Sources
 
+- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links-api]] — 2026-09-15-captured Pay by Link API guide for creating/sending links, webhook and link-status checks, reuse, tokenization, method data, forced expiry and customization; source preserves expiry and BNPL cross-page qualifications.
+
+
 - [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle]] — 2026-09-15 endless-aisle landing page defining in-store ecommerce orders and routing to ship-home and later store-pickup guides; scenario mechanics remain in child sources.
 
 

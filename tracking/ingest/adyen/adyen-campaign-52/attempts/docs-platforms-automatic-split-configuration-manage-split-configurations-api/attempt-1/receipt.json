@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-platforms-automatic-split-configuration-manage-split-configurations-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage split configuration profiles through the Management API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/automatic-split-configuration/manage-split-configurations/api\"\nraw_files:\n  - \"adyen/docs/platforms/automatic-split-configuration/manage-split-configurations/api/2026-09-15.md\"\ntags: [adyen, platforms, automatic-splits, management-api]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes Management API operations for viewing, editing, and deleting merchant-account split configuration profiles. A profile has a `splitConfigurationId`, contains rules identified by `ruleId`, and each rule's instructions can be addressed by `splitLogicId`. The page covers list/get, adding and removing rules, editing rule conditions or split logic, changing a profile description, and deleting a profile. [[adyen]] [[adyen-automatic-split-configuration]]\n\n## Key takeaways\n\n- The guide requires an Adyen for Platforms platform-model integration, a Management API credential with **Management API\u2014SplitConfiguration read and write**, and the relevant profile, rule, or split-logic IDs for updates. Its card-region condition is a pilot, not available to every platform. See raw lines 26\u201335.\n- Profile list and detail retrieval use `GET /merchants/{merchantId}/splitConfigurations` and `GET /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}`. Adding a rule uses `POST` on the profile path; the response returns the updated profile and the new `ruleId`. See raw lines 37\u201339, 292\u2013294, 509\u2013540, 2642\u20132710.\n- A rule selects by currency, payment method, card usage type, card region, funding source, and shopper interaction; its split logic addresses commission and, where configured, fee booking, refund/chargeback allocation, remainder, in-person DCC markup, tips, and surcharges. The fee types have mutually exclusive groupings; `refundCostAllocation` requires `refund`, and `chargebackCostAllocation` requires `chargeback`. A store with multiple partial captures must not use `deductAccordingToSplitRatio` for refund logic. DCC allocation is an in-person pilot; surcharges are limited to Australia/New Zealand, with pilots elsewhere. See raw lines 515\u2013575, 966\u2013977, 1776\u20131788, 1853\u20131862.\n- Condition updates use `PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId}`. Send all conditions: omitted conditions reset to defaults. Split-logic updates use `PATCH` on that rule's `/splitLogic/{splitLogicId}`; send all existing instructions because undefined split types book to the platform liable balance account. These changes and added rules affect transactions authorized before the update but captured afterward because the profile is re-evaluated at capture. See raw lines 2712\u20132722, 2749, 2980\u20133013.\n- The profile description has its own `PATCH` operation. A profile must retain at least one rule, so the only rule cannot be deleted; deleting the whole profile is a separate `DELETE` operation. See raw lines 3275\u20133279, 3515\u20133519, 3665\u20133669.\n\n> [!warning] Source example inconsistencies\n> The fee table names the API field `acquiringFees` but spells it `aquiringFees` in prose/list entries (raw lines 563\u2013575). The add-rule curl request includes `cardUsageType: commercial`, `cardRegion: domestic`, `dcc`, and `remainder: addToLiableAccount`; several SDK examples omit these and the response's first rule says `cardUsageType: consumer` (raw lines 2257\u20132287, 2313\u20132639, 2646\u20132709). The condition-update curl request uses USD/card fields while several SDK examples use EUR and omit card fields (raw lines 2755\u20132769, 2842\u20132893). The split-logic update prose says all existing instructions must be sent, yet the curl includes `dcc` and the JavaScript/Python examples omit it; its response also retains a `variablePercentage` omitted from the request (raw lines 3011\u20133040, 3113\u20133183, 3230\u20133273). Treat these examples as illustrative, not equivalent payloads or proof of exact update behavior.\n\n## Detail locators\n\n- List and profile-detail endpoints, with test-environment examples and responses: raw lines 37\u2013507.\n- Add-rule required-field table, optional split instructions, fee groupings, and create-profile illustrations: raw lines 509\u20132250. The DCC illustration omits `commission` although the add-rule field table marks `splitLogic.commission` required; compare raw lines 539\u2013540 with 1795\u20131849.\n- Add-rule request and returned IDs/profile: raw lines 2251\u20132714.\n- Condition, split-logic, and description PATCH requests/responses: raw lines 2716\u20133513.\n- Rule and profile deletion endpoints/examples: raw lines 3515\u20133854.\n\n## Related\n\n- [[adyen-automatic-split-configuration]] \u2014 automatic split selection and capture-time behavior.\n- [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations]] \u2014 management overview.\n- [[source-adyen-docs-platforms-automatic-split-configuration-create-split-configuration]] \u2014 creation and store association.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/automatic-split-configuration/manage-split-configurations/api/2026-09-15|Full pinned Management API guide]]\n",
+  "quotes": [
+    {
+      "text": "Management API\u2014SplitConfiguration read and write",
+      "location": "raw line 33, Requirements table"
+    },
+    {
+      "text": "You must send **all conditions** in the request, not only the ones you want to update. Not sending a condition in your PATCH request updates it to its default value.",
+      "location": "raw line 2749, Change the conditions"
+    },
+    {
+      "text": "You must send **all existing split instructions** in the request you already set, not only the ones you want to update. All undefined split types are booked to your platform's liable balance account.",
+      "location": "raw line 3011, Change the split logic"
+    },
+    {
+      "text": "All split configuration profiles must contain at least one rule. Therefore, you cannot delete the only rule in the profile.",
+      "location": "raw line 3517, Remove a rule"
+    },
+    {
+      "text": "Split configuration profiles are always re-evaluated at the time of capture. This means that the new rule also applies to transactions that were authorized before you added the rule, but captured after the update.",
+      "location": "raw line 2714, Add a rule"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c52-api-manage-reciprocal",
+        "target_path": "wiki/concepts/adyen-automatic-split-configuration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations-api]] \u2014 2026-09-15 Management API guide to profile/rule retrieval, condition and split-logic edits, description updates, and deletions; records overwrite and capture-time effects.",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/automatic-split-configuration/manage-split-configurations/api/2026-09-15.md",
+  "raw_sha256": "15affc0b62f448099b128fbed2850f3c3f9ba518f749f1e6729e1b61593ef63a",
+  "status": "candidate_ready"
+}

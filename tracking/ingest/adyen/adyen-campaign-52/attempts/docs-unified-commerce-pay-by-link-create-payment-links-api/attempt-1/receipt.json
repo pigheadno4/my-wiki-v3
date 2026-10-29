@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-unified-commerce-pay-by-link-create-payment-links-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Pay by Link through the API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/unified-commerce/pay-by-link/create-payment-links/api\"\nraw_files:\n  - \"adyen/docs/unified-commerce/pay-by-link/create-payment-links/api/2026-09-15.md\"\ntags: [adyen, unified-commerce, pay-by-link, payment-links, checkout-api]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide explains how a merchant creates a Pay by Link URL with Checkout API, sends or redirects a shopper to the Adyen-hosted page, and learns the payment result. It also covers reusable links, card tokenization, method-specific data, forced link expiry and page customization. It is a historical API guide with TEST examples, not evidence of a created link, enabled account, successful payment or current method eligibility. See [[adyen]], [[adyen-unified-commerce]], and [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links]] for the creation-channel overview and cross-channel expiry rules.\n\n## Key takeaways\n\n- **Prerequisites and creation:** after a test account, the guide calls for terms and conditions on the payment page, an API key, webhooks able to accept/process payment updates, and methods added to the merchant account (raw lines 42\u201384). A POST /paymentLinks request supplies merchantAccount, a transaction reference, and amount currency/value in minor units; shopperLocale, expiresAt and description are examples of optional additions. Without them, the page says browser-locale language, no description and **24-hour link expiry** (raw lines 93\u2013103). The examples are TEST requests across named SDK/library versions, not a universal runtime/version requirement (raw lines 105\u2013384).\n- The creation response carries link ID, URL and expiresAt; send the **URL** to the shopper, who lands on Adyen's hosted payment page with methods available for the requested amount and countryCode (raw lines 386\u2013418). The page says that **from 2025-11-01, payment links cannot be embedded in an iframe** (raw line 416). Creating or opening a link is not an AUTHORISATION result.\n- **Outcome and status:** wait for the AUTHORISATION webhook, whose additionalData.paymentLinkId associates a payment with the link, pspReference identifies the payment, and success distinguishes completed from failed attempts. Manual capture remains a separate action **if enabled** (raw lines 420\u2013447). GET /paymentLinks/{linkId} then returns link details/status: active if unexpired and unpaid, completed or expired otherwise, and paymentPending during an unfinished asynchronous shopper flow (raw lines 476\u2013505). A link's paymentPending status is not a final successful payment. The page says Customer Area's Payment Links list currently shows only EU-created links, gives an ID-based details route for other regions, and retains link details for **three months** (raw lines 424\u2013432); this is a retrieval limit, not the payment-link expiry period.\n- A reusable link is requested by setting reusable=true on POST /paymentLinks, illustrated for fixed-amount donations (raw lines 509\u2013535). The guide does not make ordinary links reusable by default; the related creation overview specifies the ordinary one-success and 70-day/five-failure limits. Treat reusable as a link property, not a promise that every shopper/payment attempt succeeds.\n- **Tokenization is conditional:** the guide distinguishes CardOnFile for a future shopper-present one-off payment, Subscription for regular merchant-initiated payments, and UnscheduledCardOnFile for non-fixed merchant-initiated payments (raw lines 798\u2013806). It says to seek shopper consent; use a unique non-PII shopperReference of at least three characters, storePaymentMethodMode askForConsent (or enabled when consent already exists), and the matching recurringProcessingModel (raw lines 808\u2013824, 1426\u20131442, 1751\u20131767). It describes zero-value authorization for subscription/unscheduled token setup without a charge, and separate later /paymentMethods token retrieval and /payments charges after the shopper completes payment/preauthorization (raw lines 1426\u20131449, 1747\u20131749, 1751\u20131771, 2072\u20132074). This page is a recipe, not evidence of actual consent or token creation.\n- Some BNPL methods need product lineItems and/or countryCode, shopper fields and addresses; the page gives a method-specific table rather than making all such fields globally required (raw lines 2076\u20132092). For shopper data, API v67+ can use requiredShopperFields to ask on the hosted page, or the merchant can include collected values in POST /paymentLinks (raw lines 2556\u20132565, 3048\u20133050). The table/examples are dated method guidance, not proof of a method being enabled; the related Pay by Link pages retain a BNPL channel-availability conflict.\n- **Forced expiry and customization:** PATCH /paymentLinks/{linkId} with status=expired forces expiry and changes expiresAt to the current date/time; the returned details reflect both (raw lines 3644\u20133648, 3839\u20133858). This changes the link lifecycle and must not be confused with a refund or payment reversal. Customer Area country-based method ordering needs the Change payment methods user role, while API allowedPaymentMethods or blockedPaymentMethods use paymentMethodVariant identifiers for a particular link (raw lines 3868\u20133895). Themes require Merchant admin or Pay by Link Settings to create, then themeId can select one; shopperLocale controls language, otherwise browser locale applies (raw lines 4173\u20134200, 4476\u20134510).\n- Testing uses test cards/methods and test Customer Area Payment list. Live preparation calls for a live account/configuration, live method request, live Checkout endpoint and live terms and conditions (raw lines 4511\u20134523). None of these instructions document a live operation in this snapshot.\n\n> [!warning] Scope and linked-page qualifications\n> The API page states a 24-hour default and optional expiresAt, but does not itself restate the related creation overview's 70-day maximum or five-failed-attempt expiry (raw line 101 versus [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links]]). The same related overview and method directory have a BNPL channel conflict; apply method/account-specific eligibility rather than assuming the API example permits a particular method. Link status, AUTHORISATION success, manual capture and three-month detail retention are distinct events/limits.\n\n## Detail locators\n\n- Requirements and POST /paymentLinks baseline, defaults, language examples: raw lines 42\u2013103; multilingual TEST examples 105\u2013384.\n- Response URL/ID/expiry, send, iframe restriction and asynchronous webhook/status: raw lines 386\u2013505.\n- Reusable link prose and multilingual examples: raw lines 509\u2013797.\n- Tokenization models, consent, CardOnFile/subscription/unscheduled examples and subsequent-payment routes: raw lines 798\u20132074.\n- BNPL method-specific data matrix, product examples and shopper collection alternatives: raw lines 2076\u20133642.\n- Force-expiry PATCH and multilingual examples: raw lines 3644\u20133858.\n- Method selection, roles, theme and localization examples: raw lines 3860\u20134510.\n- Test and live checklist: raw lines 4511\u20134523.\n\n## Related\n\n- [[adyen]]\n- [[adyen-unified-commerce]]\n- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links]]\n- [[source-adyen-docs-unified-commerce-pay-by-link-supported-payment-methods]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/unified-commerce/pay-by-link/create-payment-links/api/2026-09-15|Pay by Link API guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "with a 24-hour expiry.",
+      "location": "raw line 101, ## Step 1: Create a payment link"
+    },
+    {
+      "text": "Starting November 1, 2025, you cannot embed payment links in an iframe.",
+      "location": "raw line 416, ## Step 2: Send the payment link to your shopper"
+    },
+    {
+      "text": "First, wait for the [AUTHORISATION](#notification) webhook to receive the result of the payment",
+      "location": "raw line 422, ## Step 3: Get updates about the payment"
+    },
+    {
+      "text": "The status can also be **paymentPending** if the payment has an asynchronous flow and the shopper hasn't yet completed the payment.",
+      "location": "raw line 488, ### Get details about a payment link"
+    },
+    {
+      "text": "Changing the status to **expired** also changes the payment link's expiry date to the current date and time.",
+      "location": "raw line 3646, ## Force the expiry of a payment link"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pay-by-link-api-source-link",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links-api]] \u2014 2026-09-15-captured Pay by Link API guide for creating/sending links, webhook and link-status checks, reuse, tokenization, method data, forced expiry and customization; source preserves expiry and BNPL cross-page qualifications.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "POST link creation and GET link status are not payment authorization; await AUTHORISATION webhook and apply conditional manual capture separately.",
+          "PATCH status=expired changes link lifecycle and expiresAt; three-month detail retention is not link validity.",
+          "The related creation overview adds 70-day/five-failure limits not stated in this API page; related Pay by Link sources conflict on BNPL channel support.",
+          "Tokenization requires consent and model-specific fields; examples do not prove stored credentials or later payments."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/unified-commerce/pay-by-link/create-payment-links/api/2026-09-15.md",
+  "raw_sha256": "213cb86aa6cf13a38d140e1d70d27b6f98b2b61d994af996fbd17178c00a52df",
+  "status": "candidate_ready"
+}
