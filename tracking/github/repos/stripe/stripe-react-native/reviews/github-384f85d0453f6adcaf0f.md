@@ -1,0 +1,8 @@
+# Stripe React Native 0.83.0 ingest receipt
+
+- User approved serial full additive 0.83.0 then 0.84.0 with focused reading and all history retained. This receipt covers only `github-384f85d0453f6adcaf0f`, SHA `0f2889564760efd8f0bff13f2666814053f06dfc`.
+- Semantic reads: complete cumulative wiki source/changelog; all 27 added/modified retained files, except unchanged raw changelog history mechanically checked; retained comparison hunks include affected prior code. Packet/manifests/unchanged source/duplicated inventories checked mechanically, not a whole-upstream reading claim.
+- Grounding: five located exact strings in the cumulative source, covering shipping presentation/configuration, Connect double-stringification, address prop deprecation and updating status.
+- Concept audit: existing React Native and Checkout pages updated before source; no new concept/cross-company comparison. Native delegation, address-launcher exclusion, old-version limitations and payment/preview boundaries preserved.
+- Mechanical audit: both snapshots (252/251 files) verified size/SHA-256/Git blob IDs; one added,26 modified,225 unchanged. Full list261; upstream41=27 retained+14 excluded. Packet Markdown/comparison hashes pass. Old raw changelog1295 lines preserved,12 inserted. All earlier wiki version sections/raw links/source_count retained.
+- Validation: six schema-bearing touched wiki pages pass validate_wiki; diff whitespace clean; five quotes match exact raw lines. Older source version blocks/changelog tail and evidence links preserved. Provider catalogs updated without adding a source; no SDK/device/payment test, extra collection, commit or push. Completion precedes approval/claim of 0.84.0.

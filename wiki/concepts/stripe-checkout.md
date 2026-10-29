@@ -177,6 +177,14 @@ PHP `stripe-php@21.3.0` exposes `payment_method_options.card.restrictions.fundin
 
 `stripe@22.6.0` adds `payment_method_options.card.restrictions.funding_types_blocked` to Checkout Session create parameters and response typing, with documented values `credit`, `debit` and `prepaid`. Its generated `permissions.update_shipping_details` comments now limit that setting to `ui_mode=elements`, reinforcing the version boundary on the historical Embedded Checkout guidance above. SDK declaration availability does not establish merchant eligibility or hosted runtime rollout. Source: [[source-github-stripe-node]].
 
+## React Native 0.84.0 Public-Export Boundary
+
+At `0.84.0`, the React Native package root removes `useCheckout`, `createCheckout` and both Checkout element-view exports, while its types barrel removes Checkout exports. Implementations remain internal/private preview; this is not removal of ordinary Intent-based PaymentSheet. Preserve the following earlier-version integration history, but do not treat its root imports as a supported 0.84.0 API or prescribe deep internal imports. Internal code adds shipping appearance and an iOS Apple Pay hide option, not general-availability access. See [[source-github-stripe-react-native]] and [[stripe-react-native-sdk]].
+
+## React Native 0.83.0 Private Preview
+
+The later `0.83.0` additive baseline adds an opt-in native Shipping Address Element: configure `shippingAddressElement: {}` and use its nullable controller/hook handle. Presentation resolves after request, not dismissal or selection; observe session changes separately. It also reorganizes preview configuration type namespaces and removes Checkout-only billing collection configuration/Apple Pay merchant-country input. Ordinary Intent-based PaymentSheet is separate; preview access and backend fulfillment remain required. This newer record does not replace the version-specific 0.82.0 findings below. See [[source-github-stripe-react-native]] and [[stripe-react-native-sdk]].
+
 ## React Native 0.82.0 Private Preview
 
 `@stripe/stripe-react-native@0.82.0` adds an SDK-owned inline Currency Selector, enabled by creation configuration when Adaptive Pricing is available and exposed as a nullable controller/hook element. Render `CheckoutCurrencySelectorElementView` only for a non-null element; configure appearance through Checkout rather than generic view props. Availability is not universal, and the earlier removed CurrencySelectorElement placeholder is not the same implementation.

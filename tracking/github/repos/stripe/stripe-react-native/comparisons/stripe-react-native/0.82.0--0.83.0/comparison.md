@@ -1,0 +1,95 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-react-native`
+- Package: `@stripe/stripe-react-native`
+- From: `0.82.0` (`6c2020d4b4c9c2f75c01690df5b084a6c046c585`)
+- To: `0.83.0` (`0f2889564760efd8f0bff13f2666814053f06dfc`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `README.md`
+- `android/gradle.properties`
+- `android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`
+- `android/src/main/java/com/reactnativestripesdk/customersheet/CustomerSheetManager.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java`
+- `etc/stripe-react-native.api.md`
+- `example/ios/Podfile.lock`
+- `example/src/screens/Checkout/CheckoutCartScreen.tsx`
+- `example/src/screens/Checkout/__tests__/playgroundConfig.test.ts`
+- `example/src/screens/Checkout/playgroundConfig.ts`
+- `example/src/screens/PaymentsUICompleteScreen.tsx`
+- `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `ios/Checkout/CheckoutSessionSerializer.swift`
+- `ios/Checkout/NativeCheckoutControllerInstance.swift`
+- `ios/StripeSdk.mm`
+- `ios/StripeSdkImpl+Checkout.swift`
+- `ios/StripeSdkImpl+Embedded.swift`
+- `ios/StripeSdkImpl+PaymentSheet.swift`
+- `ios/Tests/CheckoutConfigurationMapperTests.swift`
+- `ios/Tests/CheckoutSessionSerializerTests.swift`
+- `package.json`
+- `src/checkout/createCheckout.ts`
+- `src/components/AddressSheet.tsx`
+- `src/components/PlatformPayButton.tsx`
+- `src/connect/EmbeddedComponent.tsx`
+- `src/connect/__tests__/EmbeddedComponent.test.tsx`
+- `src/connect/__tests__/injectedObjectScript.test.ts`
+- `src/connect/injectedObjectScript.ts`
+- `src/hooks/useCheckout.ts`
+- `src/specs/NativeStripeSdkModule.ts`
+- `src/types/Checkout.ts`
+- `stripe-react-native.podspec`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `README.md`
+- `modified`: `android/gradle.properties`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/customersheet/CustomerSheetManager.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java`
+- `modified`: `etc/stripe-react-native.api.md`
+- `modified`: `example/ios/Podfile.lock`
+- `modified`: `example/src/screens/Checkout/CheckoutCartScreen.tsx`
+- `modified`: `example/src/screens/Checkout/__tests__/playgroundConfig.test.ts`
+- `modified`: `example/src/screens/Checkout/playgroundConfig.ts`
+- `modified`: `example/src/screens/PaymentsUICompleteScreen.tsx`
+- `modified`: `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `modified`: `ios/Checkout/CheckoutSessionSerializer.swift`
+- `modified`: `ios/Checkout/NativeCheckoutControllerInstance.swift`
+- `modified`: `ios/StripeSdk.mm`
+- `modified`: `ios/StripeSdkImpl+Checkout.swift`
+- `modified`: `ios/StripeSdkImpl+Embedded.swift`
+- `modified`: `ios/StripeSdkImpl+PaymentSheet.swift`
+- `modified`: `ios/Tests/CheckoutConfigurationMapperTests.swift`
+- `modified`: `ios/Tests/CheckoutSessionSerializerTests.swift`
+- `modified`: `package.json`
+- `modified`: `src/checkout/createCheckout.ts`
+- `modified`: `src/components/AddressSheet.tsx`
+- `modified`: `src/components/PlatformPayButton.tsx`
+- `modified`: `src/connect/EmbeddedComponent.tsx`
+- `modified`: `src/connect/__tests__/EmbeddedComponent.test.tsx`
+- `added`: `src/connect/__tests__/injectedObjectScript.test.ts`
+- `added`: `src/connect/injectedObjectScript.ts`
+- `modified`: `src/hooks/useCheckout.ts`
+- `modified`: `src/specs/NativeStripeSdkModule.ts`
+- `modified`: `src/types/Checkout.ts`
+- `modified`: `stripe-react-native.podspec`

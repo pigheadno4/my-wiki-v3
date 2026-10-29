@@ -9,9 +9,11 @@ tags: [stripe, react-native, mobile, sdk, payments, apple-pay, google-pay, payme
 
 `@stripe/stripe-react-native` is Stripe's official React Native SDK for building native payment UIs on iOS and Android. It wraps Stripe's native iOS/Android SDKs, provides PCI-compliant card collection (data goes directly to Stripe, not your server), automatic 3DS/SCA handling, and prebuilt UI components including PaymentSheet.
 
-Latest ingested version: **0.82.0**. The cumulative history preserves the legacy `0.65.1` manual capsule and the approved `0.72.0` full baseline.
+Latest ingested version: **0.84.0**. The cumulative history preserves the legacy `0.65.1` manual capsule and the approved `0.72.0` full baseline.
 
 ## Platform requirements
+
+At `0.84.0`, React Native >=0.75 and the new architecture are required. Native Stripe iOS dependency resolution must use SPM with dynamic frameworks; remove the old `disableSPM: true` / `$StripeDisableSPM = true` opt-outs, which now error. The React Native wrapper remains a development pod, so `pod install` and `react_native_post_install` are still needed. Expo precompiled-module users additionally need Expo >=58.0.19 according to this release's migration guide; this is not a blanket minimum for every Expo app. Native pins: Android 23.25.1 / iOS 26.15.1. Historical fallback guidance below applies only to older versions.
 
 | Platform | Minimum |
 |---|---|
@@ -117,6 +119,24 @@ The `0.74.0` snapshot contains an experimental `ConnectNotificationBanner` imple
 - `canAddCardToWallet(params)` — check Apple/Google wallet eligibility
 
 ## Migration notes
+
+### 0.84.0 Mandatory SPM and Internal Checkout Boundary
+
+The package root stops exporting `useCheckout`, `createCheckout`, `CheckoutPaymentElementView` and `CheckoutCurrencySelectorElementView`; the types barrel also stops exporting Checkout types. Their files remain marked `@internal` private preview. Do not apply the older root-import examples unchanged or recommend deep internal imports as a supported migration. Ordinary Intent-based PaymentSheet is not removed.
+
+Internal preview changes include shipping-form/button appearance mapping and iOS `applePay.display: 'never'`, which returns no Apple Pay configuration before checking merchant ID. Omitted/automatic display still requires that ID when Apple Pay configuration is supplied. The mandate-text default comment changes to true, but both wrappers still set it only when supplied; the comment alone does not date a native behavior change.
+
+Android PaymentSheet and custom FlowController rebuild when the registered callback kind changes between direct secret, deferred PaymentMethod and ConfirmationToken modes. This fixes stale registration in the inspected code, not proven concurrency safety. Connect Android external navigation now follows configured browser presentation regardless of navigation type, and CSV detection recognizes Stripe's S3 export host. The broader pathname heuristic remains, so this is not a strict host-allowlist change. See [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]] for exact-SHA evidence and the separately collected SPM helper. All previous release knowledge remains below.
+
+### 0.83.0 Shipping Element and Checkout Type Migration
+
+Private-preview Checkout adds optional `shippingAddressElement: {}` configuration, with title/button-title overrides, and a nullable controller/hook handle. Its `present()` requests native presentation and resolves immediately, not after dismissal or address selection. Observe the session's shipping address separately. Android requires a resumed Activity and registers shipping results when recreating its shared presenter; iOS retains the configured element and requires a visible presenter. These bridge paths do not prove backend acceptance, preview access or payment success.
+
+Checkout types move under `Checkout.PaymentElementConfiguration` and `Checkout.CurrencySelectorElementConfiguration` namespaces. Checkout-only billing collection configuration and Apple Pay `merchantCountryCode` are removed; ordinary PaymentSheet/Platform Pay configuration remains separate. Payment-option serializers now forward optional `sublabel`; Android selector colors honor explicit light/dark style and reports updating before potentially slow icon serialization. None proves automatic theme refresh or universal lifecycle recovery.
+
+AddressSheet deprecates Android `googlePlacesApiKey` but retains/forwards the prop; keyless autocomplete is announced, with native address-launcher internals outside this capsule. Connect initialization double-stringifies configuration and installs a read-only injected JSON accessor to handle quotes, backslashes and backticks; this is not a general security-hardening guarantee. PlatformPayButton now documents an explicit height; its rendering implementation is unchanged. README adds iOS host-localization guidance.
+
+Native pins advance to Android `23.24.0`/iOS `26.15.0`, not iOS 26.15.1. Android preferred networks are set only when supplied across PaymentSheet, Embedded and CustomerSheet, preserving native defaults rather than synthesizing them. Older history remains in [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]]. No SDK/device/payment testing.
 
 ### 0.82.0 Currency Selector and Preview Compatibility
 

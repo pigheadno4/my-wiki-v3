@@ -91,6 +91,10 @@ The `26.15.0` iOS additive baseline records the plural alpha KYC method/result r
 
 The `26.15.1` iOS additive baseline removes CocoaPods support after its final 26.15.0 release; future updates require SPM or manually linked XCFrameworks. Existing apps do not automatically stop working. It also announces a React Native initialization fix for slow Apple Pay checks and records internal Checkout request/SEPA/challenge and SPI lifecycle changes. Those implementation findings are not public Checkout integration guarantees; all earlier history and evidence limits remain in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
 
+React Native `0.83.0` adds opt-in private-preview Checkout shipping-address UI and incompatible preview type changes, plus Connect initialization serialization repair and Android keyless-autocomplete deprecation guidance. Presentation resolves before selection/dismissal; native pins are Android 23.24.0/iOS 26.15.0. Ordinary PaymentSheet remains separate and earlier history is preserved in [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
+React Native `0.84.0` requires RN >=0.75 and native iOS SPM/dynamic frameworks; legacy SPM opt-outs now error, while the wrapper still needs pod install. It removes public root/type-barrel Checkout preview exports but retains internal implementation, adds internal shipping appearance/Apple Pay hide configuration, repairs Android PaymentSheet callback-kind switching and Connect navigation/CSV export routing. Native pins: Android 23.25.1/iOS 26.15.1. The exact-SHA SPM helper is separately retained; this is not a new public Checkout integration or runtime verification. Earlier versions remain in [[source-github-stripe-react-native]].
+
 ### AI Developer and Token-Billing Tooling
 
 The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].
@@ -224,8 +228,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[changelog-github-stripe-terminal-ios]] — package-qualified v5/v6 Terminal iOS history, previews and divergent-branch/runtime evidence limits
 - [[source-github-stripe-terminal-android]] — `stripeterminal@6.0.0` additive major: capture/consent/models/listeners/build migration; 5.8.0/5.8.1/5.8.2 retained
 - [[changelog-github-stripe-terminal-android]] — package-qualified v5/v6 Android Terminal history, UnionPay deltas, migration and runtime/evidence limits
-- [[source-github-stripe-react-native]] — cumulative SDK through v0.82.0, private-preview currency selector, compatibility/mutation changes and Onramp contacts; older knowledge preserved
-- [[changelog-github-stripe-react-native]] — package-qualified release history through v0.82.0, including platform migrations, retrospective-note attribution and implementation boundaries
+- [[source-github-stripe-react-native]] — cumulative SDK through v0.84.0, mandatory SPM/RN floor, internal Checkout boundary, callback/Connect fixes and native pins; all older knowledge preserved
+- [[changelog-github-stripe-react-native]] — package-qualified release history through v0.84.0, including migrations, release attribution and implementation boundaries
 - [[source-github-ai]] — exact-SHA Stripe AI implementation baseline: LLM token billing, MCP bridge, agent toolkits, skills/plugins, and benchmarks
 - [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future comparison rules
 - [[source-github-stripe-cli]] — additive Stripe CLI history from `1.50.0` through `1.53.0`, including authentication, webhooks, request headers and tooling evidence boundaries

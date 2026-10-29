@@ -1188,6 +1188,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.25.1/2026-10-27/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.25.0--23.25.1/comparison.json)
 
+## `github-384f85d0453f6adcaf0f`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `0f2889564760efd8f0bff13f2666814053f06dfc`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-384f85d0453f6adcaf0f/packet.md)
+- Review priority: `normal`
+- Required reading: `36` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.83.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.83.0/2026-10-29/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.82.0--0.83.0/comparison.json)
+
 ## `github-39a4005f41fbb0234224`
 
 - Repository: `paypal/paypal-messages-android`
@@ -5709,6 +5734,32 @@
 - `stripe-android@23.17.0` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.17.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.16.0--23.17.0/comparison.json)
+
+## `github-e889941d7b5280b9c509`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `33ef1ee27ad7b7dc6be86e80b9830ab7daa696ed`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-e889941d7b5280b9c509/packet.md)
+- Evidence attachment: [manifest](repos/stripe/stripe-react-native/evidence-attachments/github-e889941d7b5280b9c509/attachment.json)
+- Review priority: `normal`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.84.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.84.0/2026-10-29/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.83.0--0.84.0/comparison.json)
 
 ## `github-e8fa1374203d45d156e6`
 

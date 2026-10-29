@@ -1,0 +1,103 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-react-native`
+- Package: `@stripe/stripe-react-native`
+- From: `0.83.0` (`0f2889564760efd8f0bff13f2666814053f06dfc`)
+- To: `0.84.0` (`33ef1ee27ad7b7dc6be86e80b9830ab7daa696ed`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `CONTRIBUTING.md`
+- `MIGRATING.md`
+- `README.md`
+- `android/gradle.properties`
+- `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `android/src/test/java/com/reactnativestripesdk/PaymentSheetCallbackTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/PaymentSheetManagerHostTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/ShippingAddressAppearanceMapperTest.kt`
+- `bitrise.yml`
+- `e2e-tests/android-only/paymentsheet-customFlow-canceled.yml`
+- `e2e-tests/checkout-confirmation.yml`
+- `e2e-tests/checkout-mutations.yml`
+- `e2e-tests/checkout-shipping-address.yml`
+- `e2e-tests/checkout.yml`
+- `e2e-tests/helpers/checkout-card.yml`
+- `e2e-tests/helpers/checkout-open-card.yml`
+- `e2e-tests/helpers/checkout-shipping.yml`
+- `etc/stripe-react-native.api.md`
+- `example/ios/Podfile.lock`
+- `example/package.json`
+- `example/src/screens/Checkout/CheckoutCartScreen.tsx`
+- `example/src/screens/Checkout/playgroundConfig.ts`
+- `example/yarn.lock`
+- `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `ios/Tests/CheckoutConfigurationMapperTests.swift`
+- `ios/Tests/ShippingAddressAppearanceMapperTests.swift`
+- `package.json`
+- `scripts/test-expo-project`
+- `scripts/update-expo-plugins.js`
+- `src/checkout/createCheckout.ts`
+- `src/components/CheckoutCurrencySelectorElementView.tsx`
+- `src/components/CheckoutPaymentElementView.tsx`
+- `src/connect/EmbeddedComponent.tsx`
+- `src/connect/__tests__/EmbeddedComponent.test.tsx`
+- `src/connect/analytics/__tests__/ComponentAnalyticsClient.test.ts`
+- `src/hooks/useCheckout.ts`
+- `src/index.tsx`
+- `src/plugin/__tests__/withStripe-test.ts`
+- `src/plugin/withStripe.ts`
+- `src/types/Checkout.ts`
+- `src/types/index.ts`
+- `stripe-react-native.podspec`
+- `stripe_spm.rb`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `CONTRIBUTING.md`
+- `modified`: `MIGRATING.md`
+- `modified`: `README.md`
+- `modified`: `android/gradle.properties`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/PaymentSheetCallbackTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/PaymentSheetManagerHostTest.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/checkout/ShippingAddressAppearanceMapperTest.kt`
+- `modified`: `bitrise.yml`
+- `modified`: `e2e-tests/android-only/paymentsheet-customFlow-canceled.yml`
+- `modified`: `e2e-tests/checkout-confirmation.yml`
+- `modified`: `e2e-tests/checkout-mutations.yml`
+- `added`: `e2e-tests/checkout-shipping-address.yml`
+- `modified`: `e2e-tests/checkout.yml`
+- `modified`: `e2e-tests/helpers/checkout-card.yml`
+- `added`: `e2e-tests/helpers/checkout-open-card.yml`
+- `modified`: `e2e-tests/helpers/checkout-shipping.yml`
+- `modified`: `etc/stripe-react-native.api.md`
+- `modified`: `example/ios/Podfile.lock`
+- `modified`: `example/package.json`
+- `modified`: `example/src/screens/Checkout/CheckoutCartScreen.tsx`
+- `modified`: `example/src/screens/Checkout/playgroundConfig.ts`
+- `modified`: `example/yarn.lock`
+- `modified`: `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `modified`: `ios/Tests/CheckoutConfigurationMapperTests.swift`
+- `added`: `ios/Tests/ShippingAddressAppearanceMapperTests.swift`
+- `modified`: `package.json`
+- `modified`: `scripts/test-expo-project`
+- `modified`: `scripts/update-expo-plugins.js`
+- `modified`: `src/checkout/createCheckout.ts`
+- `modified`: `src/components/CheckoutCurrencySelectorElementView.tsx`
+- `modified`: `src/components/CheckoutPaymentElementView.tsx`
+- `modified`: `src/connect/EmbeddedComponent.tsx`
+- `modified`: `src/connect/__tests__/EmbeddedComponent.test.tsx`
+- `modified`: `src/connect/analytics/__tests__/ComponentAnalyticsClient.test.ts`
+- `modified`: `src/hooks/useCheckout.ts`
+- `modified`: `src/index.tsx`
+- `modified`: `src/plugin/__tests__/withStripe-test.ts`
+- `modified`: `src/plugin/withStripe.ts`
+- `modified`: `src/types/Checkout.ts`
+- `modified`: `src/types/index.ts`
+- `modified`: `stripe-react-native.podspec`
+- `modified`: `stripe_spm.rb`

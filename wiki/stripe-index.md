@@ -644,9 +644,9 @@ Operations history: [[stripe-log]]
 - [[changelog-github-stripe-terminal-ios]] — package-qualified v5/v6 history, previews, capture contradiction and divergent-branch/runtime limits (github-repo, updated 2026-10-25)
 - [[source-github-stripe-terminal-android]] — `stripeterminal@6.0.0` additive full: capture/consent/models/listeners and Android build migration; all v5 history retained (github-repo, updated 2026-10-26)
 - [[changelog-github-stripe-terminal-android]] — package-qualified v5/v6 Android Terminal history, UnionPay deltas and qualified migration findings (github-repo, updated 2026-10-26)
-- [[source-github-stripe-react-native]] — cumulative `@stripe/stripe-react-native` through v0.82.0: private-preview currency selector, compatibility/mutation changes and Onramp contacts; older history retained (github-repo, updated 2026-10-21)
-- [[changelog-github-stripe-react-native]] — package-qualified release ledger through v0.82.0; migration, retrospective-note attribution and implementation findings (github-repo, updated 2026-10-21)
-- [[stripe-react-native-sdk]] — Stripe React Native SDK through v0.82.0: migration, private-preview Checkout and version-qualified lifecycle boundaries
+- [[source-github-stripe-react-native]] — cumulative SDK through v0.84.0: mandatory SPM/RN floor, internal Checkout boundary, callback/Connect fixes and native pins; all earlier history retained (github-repo, updated 2026-10-29)
+- [[changelog-github-stripe-react-native]] — package-qualified ledger through v0.84.0; migration, attribution and implementation boundaries (github-repo, updated 2026-10-29)
+- [[stripe-react-native-sdk]] — SDK through v0.84.0: mandatory SPM, internal Checkout exports and version-qualified lifecycle boundaries
 - [[source-stripe-subscriptions-cancel]] — Cancel subscriptions: 4 methods, custom cancel date caveats, invoice item handling, dispute config, anchor behavior (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-pause]] — True pause (flexible billing only): bill_for, 6 blocking conditions, resume 23h window, 4 webhooks (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-invoices]] — Subscription invoices: lifecycle, 4-level payment priority, draft window, void rules, metadata propagation (webpage, 2026-05-13)

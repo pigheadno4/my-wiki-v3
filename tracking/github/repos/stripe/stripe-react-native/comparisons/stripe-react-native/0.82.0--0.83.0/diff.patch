@@ -1,0 +1,2258 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index add8e0d..4f53e1a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,17 @@
+ # CHANGELOG
+ 
++## 0.83.0 - 2026-10-20
++
++**Changes**
++
++* Updated Stripe iOS SDK from 26.14.0 to 26.15.0.
++* Updated Stripe Android SDK from 23.23.0 to 23.24.0.
++* [Deprecated] `AddressSheet`'s Android-only `googlePlacesApiKey` prop. Autocomplete now does not require a Google Places API key.
++
++**Fixes**
++
++* [Fixed] Connect embedded components no longer hang without calling `onLoadError` when an init param contains a double quote, backslash, or backtick, such as a double-quoted family name in `appearance.variables.fontFamily`.
++
+ ## 0.82.0 - 2026-10-13
+ 
+ **Changes**
+diff --git a/README.md b/README.md
+index 6c9009b..9886331 100644
+--- a/README.md
++++ b/README.md
+@@ -170,6 +170,28 @@ For Expo, set the equivalent option on this SDK's config plugin in your app conf
+ 
+ - **`pod install` aborts with an integrity-check error or Xcode reports "The project 'Pods' is damaged and cannot be opened"** - delete your app's `ios/Pods` directory and run `pod install` again. If the error persists, [file an issue](https://github.com/stripe/stripe-react-native/issues).
+ 
++### Localization
++
++The Stripe SDK automatically localizes the UI (PaymentSheet, CustomerSheet, etc.) based on the user's device and app configuration:
++
++- **Android:** The PaymentSheet automatically uses the device's system language, or the per-app language preference configured on Android 13+.
++- **iOS:** iOS only displays localized resources for languages that your host application explicitly declares support for. If your iOS app bundle does not declare the user's preferred language, iOS falls back to the app's base development language (usually English). To enable localizations in your iOS app:
++  - In Xcode, select your project in the Project Navigator, select the **Info** tab, and add the desired localizations under the **Localizations** section.
++  - Or in your app's `Info.plist`, ensure `CFBundleAllowMixedLocalizations` is set to `<true/>` and declare your supported language codes in `CFBundleLocalizations`:
++
++    ```xml
++    <key>CFBundleAllowMixedLocalizations</key>
++    <true/>
++    <key>CFBundleLocalizations</key>
++    <array>
++      <string>en</string>
++      <string>es</string>
++      <string>fr</string>
++    </array>
++    ```
++
++  - **Expo:** For Expo projects, you can add `locales` to your `app.json` or configure `CFBundleLocalizations` in `ios.infoPlist` to ensure iOS loads the corresponding Stripe localized strings.
++
+ ## Usage example
+ 
+ For a complete example, [visit our docs](https://docs.stripe.com/payments/accept-a-payment?platform=react-native).
+diff --git a/android/gradle.properties b/android/gradle.properties
+index 90ce389..6db7660 100644
+--- a/android/gradle.properties
++++ b/android/gradle.properties
+@@ -3,4 +3,6 @@ StripeSdk_compileSdkVersion=36
+ StripeSdk_targetSdkVersion=36
+ StripeSdk_minSdkVersion=23
+ # Keep StripeSdk_stripeVersion in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/android/gradle.properties
+-StripeSdk_stripeVersion=23.23.0
++StripeSdk_stripeVersion=23.24.0
++
++org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+diff --git a/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt b/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt
+index 8d1c43f..26b245b 100644
+--- a/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt
++++ b/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt
+@@ -159,13 +159,7 @@ class EmbeddedPaymentElementViewManager :
+         .appearance(appearance)
+         .shippingDetails(shippingDetails)
+         .billingDetailsCollectionConfiguration(billingDetailsConfig)
+-        .preferredNetworks(
+-          mapToPreferredNetworks(
+-            map
+-              .getIntegerList("preferredNetworks")
+-              ?.let { ArrayList(it) },
+-          ),
+-        ).allowsRemovalOfLastSavedPaymentMethod(allowsRemovalOfLastSavedPaymentMethod)
++        .allowsRemovalOfLastSavedPaymentMethod(allowsRemovalOfLastSavedPaymentMethod)
+         .opensCardScannerAutomatically(opensCardScannerAutomatically)
+         .cardBrandAcceptance(mapToCardBrandAcceptance(map))
+         .apply {
+@@ -178,6 +172,10 @@ class EmbeddedPaymentElementViewManager :
+           ),
+         )
+ 
++    map.getIntegerList("preferredNetworks")?.let {
++      configurationBuilder.preferredNetworks(mapToPreferredNetworks(it))
++    }
++
+     primaryButtonLabel?.let { configurationBuilder.primaryButtonLabel(it) }
+     paymentMethodOrder?.let { configurationBuilder.paymentMethodOrder(it) }
+ 
+diff --git a/android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt b/android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt
+index a77a727..efda30a 100644
+--- a/android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt
++++ b/android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt
+@@ -166,15 +166,16 @@ class PaymentSheetManager(
+         .shippingDetails(shippingDetails)
+         .link(linkConfig)
+         .billingDetailsCollectionConfiguration(billingDetailsConfig)
+-        .preferredNetworks(
+-          mapToPreferredNetworks(args.getIntegerList("preferredNetworks")),
+-        ).allowsRemovalOfLastSavedPaymentMethod(allowsRemovalOfLastSavedPaymentMethod)
++        .allowsRemovalOfLastSavedPaymentMethod(allowsRemovalOfLastSavedPaymentMethod)
+         .opensCardScannerAutomatically(opensCardScannerAutomatically)
+         .cardBrandAcceptance(mapToCardBrandAcceptance(args))
+         .apply {
+           mapToAllowedCardFundingTypes(args)?.let { allowedCardFundingTypes(it) }
+         }.customPaymentMethods(parseCustomPaymentMethods(args.getMap("customPaymentMethodConfiguration")))
+ 
++    args.getIntegerList("preferredNetworks")?.let {
++      configurationBuilder.preferredNetworks(mapToPreferredNetworks(it))
++    }
+     primaryButtonLabel?.let { configurationBuilder.primaryButtonLabel(it) }
+     paymentMethodOrder?.let { configurationBuilder.paymentMethodOrder(it) }
+ 
+diff --git a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+index 703202d..9ebbfaa 100644
+--- a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
++++ b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+@@ -1430,7 +1430,7 @@ class StripeSdkModule(
+   }
+ 
+   @ReactMethod
+-  @Suppress("TooGenericExceptionCaught")
++  @Suppress("TooGenericExceptionCaught", "LongMethod")
+   override fun createCheckout(
+     params: ReadableMap,
+     controllerId: String,
+@@ -1472,6 +1472,7 @@ class StripeSdkModule(
+             scope = scope,
+             initialSession = serializedSession,
+             context = reactApplicationContext,
++            isShippingAddressElementConfigured = params.getMap("shippingAddressElement") != null,
+           )
+           check(!checkoutControllersInvalidated) { "Stripe SDK was invalidated." }
+           scope.coroutineContext.ensureActive()
+@@ -1638,6 +1639,32 @@ class StripeSdkModule(
+     }
+   }
+ 
++  @ReactMethod
++  @Suppress("TooGenericExceptionCaught")
++  override fun presentCheckoutShippingAddressElement(controllerId: String, promise: Promise) {
++    UiThreadUtil.runOnUiThread {
++      val instance = checkoutControllers[controllerId]
++      if (instance == null) {
++        promise.reject("Failed", "Checkout controller `$controllerId` does not exist.")
++        return@runOnUiThread
++      }
++      val activity = reactApplicationContext.currentActivity as? ComponentActivity
++      if (activity == null || activity.isFinishing ||
++        !activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
++      ) {
++        promise.reject("Failed", "Checkout requires a resumed activity to present Shipping Address Element.")
++        return@runOnUiThread
++      }
++      try {
++        // Native Checkout saves the address and publishes the updated session.
++        instance.shippingAddressElement(activity).present()
++        promise.resolve(null)
++      } catch (error: Exception) {
++        promise.reject("Failed", error.message, error)
++      }
++    }
++  }
++
+   @ReactMethod
+   override fun runCheckoutServerUpdate(controllerId: String, operationId: String, promise: Promise) {
+     performCheckoutMutation(controllerId, promise) { controller ->
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
+index ece9abc..ff01599 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
+@@ -20,6 +20,7 @@ import com.stripe.android.checkout.CheckoutController
+ import com.stripe.android.elements.CurrencySelectorElement
+ import com.stripe.android.elements.PaymentElement
+ import com.stripe.android.elements.PaymentElement.Configuration.Appearance.Embedded.RowStyle
++import com.stripe.android.elements.ShippingAddressElement
+ import com.stripe.android.model.PaymentMethod
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+ import com.stripe.android.uicore.StripeThemeDefaults
+@@ -53,7 +54,10 @@ internal object CheckoutConfigurationMapper {
+       ),
+     )
+     params.getMap("currencySelectorElement")?.let {
+-      configuration.currencySelectorElement(mapCurrencySelectorElement(it, context))
++      configuration.currencySelectorElement(mapCurrencySelectorElement(it, context, params.getString("style")))
++    }
++    params.getMap("shippingAddressElement")?.let {
++      configuration.shippingAddressElement(mapShippingAddressElement(it))
+     }
+ 
+     return MappedCheckoutConfiguration(
+@@ -63,9 +67,19 @@ internal object CheckoutConfigurationMapper {
+     )
+   }
+ 
++  private fun mapShippingAddressElement(
++    params: ReadableMap,
++  ): ShippingAddressElement.Configuration {
++    val configuration = ShippingAddressElement.Configuration()
++    params.getString("title")?.let(configuration::title)
++    params.getString("buttonTitle")?.let(configuration::buttonTitle)
++    return configuration
++  }
++
+   private fun mapCurrencySelectorElement(
+     params: ReadableMap,
+     context: Context,
++    style: String?,
+   ): CurrencySelectorElement.Configuration {
+     val configuration = CurrencySelectorElement.Configuration()
+     val appearanceParams = params.getMap("appearance") ?: return configuration
+@@ -74,7 +88,7 @@ internal object CheckoutConfigurationMapper {
+     mapCurrencySelectorShapes(appearanceParams, appearance)
+     mapCurrencySelectorFont(appearanceParams, appearance, context)
+     mapCurrencySelectorLabel(appearanceParams, appearance)
+-    mapCurrencySelectorColors(appearanceParams, appearance, context)
++    mapCurrencySelectorColors(appearanceParams, appearance, context, style)
+     return configuration.appearance(appearance)
+   }
+ 
+@@ -119,9 +133,14 @@ internal object CheckoutConfigurationMapper {
+     params: ReadableMap,
+     appearance: CurrencySelectorElement.Configuration.Appearance,
+     context: Context,
++    style: String?,
+   ) {
+     params.getMap("colors")?.let { colors ->
+-      val isLight = !context.resources.configuration.isDarkTheme()
++      val isLight = when (style) {
++        "alwaysLight" -> true
++        "alwaysDark" -> false
++        else -> !context.resources.configuration.isDarkTheme()
++      }
+       val palette = colors.getMap(if (isLight) "light" else "dark") ?: colors
+       palette.color("border", isLight)?.let { appearance.borderColor(Color(it)) }
+       palette.color("background", isLight)?.let { appearance.background(Color(it)) }
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt
+index 70fb55a..1dcfcc9 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt
+@@ -181,6 +181,7 @@ internal object CheckoutSessionSerializer {
+     context: Context,
+   ): WritableMap = Arguments.createMap().apply {
+     putString("label", paymentOption.label)
++    paymentOption.sublabel?.let { putString("sublabel", it) }
+     putString("paymentMethodType", paymentOption.paymentMethodType)
+     paymentOption.mandateText?.let { putString("mandateHTML", it.toHtmlString()) }
+     paymentOption.billingDetails?.let { putMap("billingDetails", serializeBillingDetails(it)) }
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt b/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
+index 2bfa338..b34fc44 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
+@@ -13,6 +13,7 @@ import com.stripe.android.checkout.CheckoutController
+ import com.stripe.android.checkout.CheckoutPresenter
+ import com.stripe.android.elements.CurrencySelectorElement
+ import com.stripe.android.elements.PaymentElement
++import com.stripe.android.elements.ShippingAddressElement
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+ import kotlinx.coroutines.CompletableDeferred
+ import kotlinx.coroutines.CoroutineScope
+@@ -27,13 +28,16 @@ import kotlinx.coroutines.launch
+ 
+ /** Owns a native Checkout controller and its session observation for the bridge. */
+ @OptIn(CheckoutSessionPreview::class, ExperimentalCoroutinesApi::class)
++@Suppress("TooManyFunctions")
+ internal class NativeCheckoutControllerInstance(
+   val controller: CheckoutController,
+   private val eventEmitter: EventEmitterCompat,
+   private val scope: CoroutineScope,
+   initialSession: WritableMap,
+   private val context: ReactApplicationContext,
++  private val isShippingAddressElementConfigured: Boolean = false,
+ ) {
++
+   private val serverUpdateCompletions = mutableMapOf<String, CompletableDeferred<Result<Unit>>>()
+   private var controllerId: String? = null
+   private var latestSession = initialSession
+@@ -55,11 +59,24 @@ internal class NativeCheckoutControllerInstance(
+   fun currencySelectorElement(activity: ComponentActivity): CurrencySelectorElement =
+     getPresenter(activity).currencySelectorElement()
+ 
++  /** Uses the same activity-bound presenter as Payment Element. */
++  fun shippingAddressElement(activity: ComponentActivity): ShippingAddressElement {
++    check(isShippingAddressElementConfigured) {
++      "Shipping Address Element was not configured for this Checkout controller."
++    }
++    return getPresenter(activity).shippingAddressElement()
++  }
++
+   private fun getPresenter(activity: ComponentActivity): CheckoutPresenter {
+     check(!destroyed) { "Checkout controller was destroyed." }
+     if (this.activity !== activity) {
+       releasePresenter()
+-      presenter = controller.createPresenter(activity)
++      presenter = controller.createPresenter(activity).also { newPresenter ->
++        if (isShippingAddressElementConfigured) {
++          // Register shipping results even when another element recreates the presenter.
++          newPresenter.shippingAddressElement()
++        }
++      }
+       this.activity = activity
+       activity.lifecycle.addObserver(activityObserver)
+     }
+@@ -114,6 +131,13 @@ internal class NativeCheckoutControllerInstance(
+     check(this.controllerId == null && !destroyed)
+     this.controllerId = controllerId
+ 
++    scope.launch {
++      controller.isUpdating.collect { isUpdating ->
++        // Session serialization can suspend while loading a payment icon. Report busy transitions
++        // immediately, even if a later state cancels the serialized snapshot.
++        if (isUpdating && confirmation == null && !destroyed) emit("updating")
++      }
++    }
+     scope.launch {
+       sessionStates().collect { session -> publish(session) }
+     }
+diff --git a/android/src/main/java/com/reactnativestripesdk/customersheet/CustomerSheetManager.kt b/android/src/main/java/com/reactnativestripesdk/customersheet/CustomerSheetManager.kt
+index 559d323..071cfc9 100644
+--- a/android/src/main/java/com/reactnativestripesdk/customersheet/CustomerSheetManager.kt
++++ b/android/src/main/java/com/reactnativestripesdk/customersheet/CustomerSheetManager.kt
+@@ -82,12 +82,13 @@ class CustomerSheetManager(
+         .appearance(appearance)
+         .googlePayEnabled(googlePayEnabled)
+         .headerTextForSelectionScreen(headerTextForSelectionScreen)
+-        .preferredNetworks(
+-          mapToPreferredNetworks(arguments.getIntegerList("preferredNetworks")),
+-        ).allowsRemovalOfLastSavedPaymentMethod(allowsRemovalOfLastSavedPaymentMethod)
++        .allowsRemovalOfLastSavedPaymentMethod(allowsRemovalOfLastSavedPaymentMethod)
+         .opensCardScannerAutomatically(opensCardScannerAutomatically)
+         .cardBrandAcceptance(mapToCardBrandAcceptance(arguments))
+ 
++    arguments.getIntegerList("preferredNetworks")?.let {
++      configuration.preferredNetworks(mapToPreferredNetworks(it))
++    }
+     paymentMethodOrder?.let { configuration.paymentMethodOrder(it) }
+     billingDetailsMap?.let {
+       configuration.defaultBillingDetails(createDefaultBillingDetails(billingDetailsMap))
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt
+index e9bf9e6..20d23ec 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt
+@@ -21,6 +21,7 @@ import org.junit.Assert.assertTrue
+ import org.junit.Test
+ import org.junit.runner.RunWith
+ import org.robolectric.RobolectricTestRunner
++import org.robolectric.annotation.Config
+ 
+ @OptIn(CheckoutSessionPreview::class)
+ @RunWith(RobolectricTestRunner::class)
+@@ -36,7 +37,15 @@ class CheckoutConfigurationMapperTest {
+           "appearance" to readableMapOf(
+             "contentVerticalPadding" to 8,
+             "shapes" to readableMapOf("cornerRadius" to 12, "borderWidth" to 2),
+-            "colors" to readableMapOf("background" to "#112233"),
++            "colors" to readableMapOf(
++              "border" to "#112233",
++              "background" to "#223344",
++              "selectedBackground" to "#334455",
++              "text" to "#445566",
++              "selectedText" to "#556677",
++              "textSecondary" to "#667788",
++              "danger" to "#778899",
++            ),
+             "font" to readableMapOf("scale" to 1.2),
+             "labelContent" to "amount",
+           ),
+@@ -53,13 +62,74 @@ class CheckoutConfigurationMapperTest {
+     assertEquals(12f, appearance.readField<Float>("cornerRadiusDp"))
+     assertEquals(2f, appearance.readField<Float>("borderWidthDp"))
+     assertEquals(1.2f, appearance.readField<Float>("sizeScaleFactor"))
+-    assertEquals(Color("#112233".toColorInt()), appearance.readField<Color>("background"))
++    val colors = mapOf(
++      "borderColor" to "#112233",
++      "background" to "#223344",
++      "selectedBackground" to "#334455",
++      "textColor" to "#445566",
++      "selectedTextColor" to "#556677",
++      "textSecondaryColor" to "#667788",
++      "dangerColor" to "#778899",
++    )
++    for ((field, value) in colors) {
++      assertEquals(Color(value.toColorInt()), appearance.readField<Color>(field))
++    }
+     assertEquals(
+       CurrencySelectorElement.Configuration.Appearance.LabelContent.AMOUNT,
+       appearance.readField<CurrencySelectorElement.Configuration.Appearance.LabelContent>("labelContent"),
+     )
+   }
+ 
++  @Test
++  @Config(qualifiers = "night")
++  fun `map selects dark currency selector colors in dark mode`() {
++    val configuration = CheckoutConfigurationMapper.map(
++      readableMapOf(
++        "clientSecret" to "cs_test_secret_123",
++        "currencySelectorElement" to readableMapOf(
++          "appearance" to readableMapOf(
++            "colors" to readableMapOf(
++              "light" to readableMapOf("background" to "#112233"),
++              "dark" to readableMapOf("background" to "#445566"),
++            ),
++          ),
++        ),
++      ),
++      context,
++    ) {}.configuration.readField<CurrencySelectorElement.Configuration>("currencySelectorElementConfiguration")
++
++    assertEquals(
++      Color("#445566".toColorInt()),
++      configuration.readField<CurrencySelectorElement.Configuration.Appearance>("appearance")
++        .readField<Color>("background"),
++    )
++  }
++
++  @Test
++  fun `map uses checkout style for currency selector colors`() {
++    val configuration = CheckoutConfigurationMapper.map(
++      readableMapOf(
++        "clientSecret" to "cs_test_secret_123",
++        "style" to "alwaysDark",
++        "currencySelectorElement" to readableMapOf(
++          "appearance" to readableMapOf(
++            "colors" to readableMapOf(
++              "light" to readableMapOf("background" to "#112233"),
++              "dark" to readableMapOf("background" to "#445566"),
++            ),
++          ),
++        ),
++      ),
++      context,
++    ) {}.configuration.readField<CurrencySelectorElement.Configuration>("currencySelectorElementConfiguration")
++
++    assertEquals(
++      Color("#445566".toColorInt()),
++      configuration.readField<CurrencySelectorElement.Configuration.Appearance>("appearance")
++        .readField<Color>("background"),
++    )
++  }
++
+   @Test
+   @Suppress("LongMethod")
+   fun `map maps supported configuration fields`() {
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt
+index dc5147e..e71e244 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt
+@@ -99,7 +99,8 @@ class CheckoutSessionSerializerTest {
+     assertEquals("94103", address.getString("postalCode"))
+     assertFalse(address.hasKey("country"))
+     assertEquals("", paymentOption.getString("image"))
+-    assertEquals("Visa 4242", paymentOption.getString("label"))
++    assertEquals("Visa", paymentOption.getString("label"))
++    assertEquals("•••• 4242", paymentOption.getString("sublabel"))
+     assertTrue(paymentOption.getString("mandateHTML")!!.contains("&amp;"))
+   }
+ 
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
+index fb30c39..c0c9e8e 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
+@@ -129,6 +129,29 @@ class NativeCheckoutControllerInstanceTest {
+     assertEquals("updating", fixture.events.last().getString("status"))
+   }
+ 
++  @Test
++  fun `emits a brief updating state while payment option image loads`() = withFixture { fixture ->
++    fixture.start()
++    advanceUntilIdle()
++    val initialEventCount = fixture.events.size
++    val imageStarted = CompletableDeferred<Unit>()
++    fixture.sessions.value = checkoutSession(
++      paymentOption = checkoutPaymentOption(imageLoader = {
++        imageStarted.complete(Unit)
++        awaitCancellation()
++      }),
++    )
++    runCurrent()
++    imageStarted.await()
++
++    fixture.updating.value = true
++    runCurrent()
++    fixture.updating.value = false
++    runCurrent()
++
++    assertTrue(fixture.events.drop(initialEventCount).any { it.getString("status") == "updating" })
++  }
++
+   @Test
+   fun `observes sessions when the native flow creates a new value on every read`() = withFixture { fixture ->
+     `when`(fixture.controller.session).thenReturn(
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java
+index d1ad1de..9dbdc20 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java
+@@ -63,7 +63,7 @@ final class NativeCheckoutFixtures {
+         throw new UnsupportedOperationException("This fixture only loads the icon");
+       }
+     };
+-    return new Session.PaymentOptionDisplayData(resource, "Visa 4242", null, billingDetails, "card", mandateText);
++    return new Session.PaymentOptionDisplayData(resource, "Visa", "•••• 4242", billingDetails, "card", mandateText);
+   }
+ 
+   static Session.PaymentOptionDisplayData.BillingDetails postalBillingDetails(String postalCode) {
+diff --git a/etc/stripe-react-native.api.md b/etc/stripe-react-native.api.md
+index 4118c14..f21b5aa 100644
+--- a/etc/stripe-react-native.api.md
++++ b/etc/stripe-react-native.api.md
+@@ -87,6 +87,7 @@ export interface AddressSheetProps extends AccessibilityProps {
+     appearance?: PaymentSheet.AppearanceParams;
+     autocompleteCountries?: Array<string>;
+     defaultValues?: AddressDetails;
++    // @deprecated
+     googlePlacesApiKey?: string;
+     onError: (error: StripeError<AddressSheetError>) => void;
+     // Warning: (ae-forgotten-export) The symbol "CollectAddressResult" needs to be exported by the entry point index.d.ts
+@@ -964,23 +965,12 @@ export namespace Checkout {
+         taxInclusive: Amount;
+         total: Amount;
+     }
+-    export type ApplePayButtonType = 'plain' | 'buy' | 'setUp' | 'inStore' | 'donate' | 'checkout' | 'book' | 'subscribe' | 'reload' | 'addMoney' | 'topUp' | 'order' | 'rent' | 'support' | 'contribute' | 'tip' | 'continue';
+-    export interface ApplePayConfiguration {
+-        buttonType?: ApplePayButtonType;
+-        merchantCountryCode: string;
+-    }
+     export interface BillingDetails {
+         address?: Partial<Address>;
+         email?: string;
+         name?: string;
+         phone?: string;
+     }
+-    export interface BillingDetailsCollectionConfiguration {
+-        address?: 'automatic' | 'full';
+-        attachDefaultsToPaymentMethod?: boolean;
+-        name?: 'automatic' | 'always';
+-        phone?: 'automatic' | 'always';
+-    }
+     export interface ContactDetails {
+         address?: Address;
+         name?: string;
+@@ -992,34 +982,37 @@ export namespace Checkout {
+         merchantDisplayName?: string;
+         paymentElement?: PaymentElementConfiguration;
+         returnURL: string;
++        shippingAddressElement?: ShippingAddressElementConfiguration;
+         style?: UserInterfaceStyle;
+     }
+-    export interface CurrencySelectorElementAppearance {
+-        colors?: CurrencySelectorElementColorConfiguration | {
+-            light: CurrencySelectorElementColorConfiguration;
+-            dark: CurrencySelectorElementColorConfiguration;
+-        };
+-        contentVerticalPadding?: number;
+-        font?: Partial<FontConfig>;
+-        labelContent?: CurrencySelectorElementLabelContent;
+-        shapes?: CurrencySelectorElementShapeConfiguration;
+-    }
+-    export interface CurrencySelectorElementColorConfiguration {
+-        background?: ThemedColor;
+-        border?: ThemedColor;
+-        danger?: ThemedColor;
+-        selectedBackground?: ThemedColor;
+-        selectedText?: ThemedColor;
+-        text?: ThemedColor;
+-        textSecondary?: ThemedColor;
+-    }
+     export interface CurrencySelectorElementConfiguration {
+-        appearance?: CurrencySelectorElementAppearance;
++        appearance?: CurrencySelectorElementConfiguration.Appearance;
+     }
+-    export type CurrencySelectorElementLabelContent = 'automatic' | 'currencyCode' | 'amount';
+-    export interface CurrencySelectorElementShapeConfiguration {
+-        borderWidth?: number;
+-        cornerRadius?: number;
++    export namespace CurrencySelectorElementConfiguration {
++        export interface Appearance {
++            colors?: ColorConfiguration | {
++                light: ColorConfiguration;
++                dark: ColorConfiguration;
++            };
++            contentVerticalPadding?: number;
++            font?: Partial<FontConfig>;
++            labelContent?: LabelContent;
++            shapes?: ShapeConfiguration;
++        }
++        export interface ColorConfiguration {
++            background?: ThemedColor;
++            border?: ThemedColor;
++            danger?: ThemedColor;
++            selectedBackground?: ThemedColor;
++            selectedText?: ThemedColor;
++            text?: ThemedColor;
++            textSecondary?: ThemedColor;
++        }
++        export type LabelContent = 'automatic' | 'currencyCode' | 'amount';
++        export interface ShapeConfiguration {
++            borderWidth?: number;
++            cornerRadius?: number;
++        }
+     }
+     export interface Defaults {
+         billingDetails?: ContactDetails;
+@@ -1033,15 +1026,6 @@ export namespace Checkout {
+         promotionCode?: string;
+     }
+     export type ErrorCode = 'Failed' | 'InvalidClientSecret' | 'SessionNotOpen' | 'SheetCurrentlyPresented' | 'Timeout' | 'Canceled';
+-    export type GooglePayButtonType = 'buy' | 'book' | 'checkout' | 'donate' | 'order' | 'pay' | 'subscribe' | 'plain';
+-    export interface GooglePayConfiguration {
+-        additionalEnabledNetworks?: string[];
+-        buttonType?: GooglePayButtonType;
+-        label?: string;
+-    }
+-    export interface LinkConfiguration {
+-        display?: 'automatic' | 'never';
+-    }
+     export interface OneTimePriceItem {
+         adjustableQuantity?: AdjustableQuantity;
+         amountDetails: AmountDetails;
+@@ -1060,28 +1044,44 @@ export namespace Checkout {
+         type: 'one_time_price';
+     }
+     export type OrderSummaryItem = OneTimePriceOrderSummaryItem;
+-    export type PaymentElementAppearance = AppearanceParams;
+     export interface PaymentElementConfiguration {
+-        appearance?: PaymentElementAppearance;
+-        applePay?: ApplePayConfiguration;
+-        billingDetailsCollectionConfiguration?: BillingDetailsCollectionConfiguration;
++        appearance?: PaymentElementConfiguration.Appearance;
++        applePay?: PaymentElementConfiguration.ApplePayConfiguration;
+         displaysMandateText?: boolean;
+-        googlePay?: GooglePayConfiguration;
+-        link?: LinkConfiguration;
++        googlePay?: PaymentElementConfiguration.GooglePayConfiguration;
++        link?: PaymentElementConfiguration.LinkConfiguration;
+         opensCardScannerAutomatically?: boolean;
+         paymentMethodLayout?: PaymentMethodLayout;
+         paymentMethodOrder?: string[];
+         preferredNetworks?: CardBrand[];
+         removeSavedPaymentMethodMessage?: string;
+-        rowSelectionBehavior?: RowSelectionBehavior;
++        rowSelectionBehavior?: PaymentElementConfiguration.RowSelectionBehavior;
+         termsDisplay?: Record<string, TermsDisplay>;
+     }
++    export namespace PaymentElementConfiguration {
++        export type Appearance = AppearanceParams;
++        export type ApplePayButtonType = 'plain' | 'buy' | 'setUp' | 'inStore' | 'donate' | 'checkout' | 'book' | 'subscribe' | 'reload' | 'addMoney' | 'topUp' | 'order' | 'rent' | 'support' | 'contribute' | 'tip' | 'continue';
++        export interface ApplePayConfiguration {
++            buttonType?: ApplePayButtonType;
++        }
++        export type GooglePayButtonType = 'buy' | 'book' | 'checkout' | 'donate' | 'order' | 'pay' | 'subscribe' | 'plain';
++        export interface GooglePayConfiguration {
++            additionalEnabledNetworks?: string[];
++            buttonType?: GooglePayButtonType;
++            label?: string;
++        }
++        export interface LinkConfiguration {
++            display?: 'automatic' | 'never';
++        }
++        export type RowSelectionBehavior = EmbeddedRowSelectionBehavior;
++    }
+     export interface PaymentOptionDisplayData {
+         billingDetails?: BillingDetails;
+         image: string;
+         label: string;
+         mandateHTML?: string;
+         paymentMethodType: string;
++        sublabel?: string;
+     }
+     export type PaymentStatus = 'paid' | 'unpaid' | 'noPaymentRequired';
+     export interface PresentmentDetails {
+@@ -1096,7 +1096,6 @@ export namespace Checkout {
+         status: 'failed';
+         error: StripeError<ErrorCode>;
+     };
+-    export type RowSelectionBehavior = EmbeddedRowSelectionBehavior;
+     export interface Session {
+         businessName?: string;
+         currency: string;
+@@ -1126,6 +1125,10 @@ export namespace Checkout {
+         address: Address;
+         name?: string;
+     }
++    export interface ShippingAddressElementConfiguration {
++        buttonTitle?: string;
++        title?: string;
++    }
+     export interface Tax {
+         status: 'ready' | 'requiresShippingAddress' | 'requiresBillingAddress';
+     }
+@@ -1160,6 +1163,7 @@ export namespace Checkout {
+         removePromotionCode(): Promise<void>;
+         runServerUpdate(serverUpdate: () => Promise<void>): Promise<void>;
+         readonly session: Session | null;
++        readonly shippingAddressElement: CheckoutShippingAddressElement | null;
+         readonly status: 'idle' | 'loading' | 'ready' | 'updating' | 'confirming' | 'error';
+         updateEmail(email: string | null): Promise<void>;
+         updateShippingAddress(params: UpdateShippingAddressParams): Promise<void>;
+@@ -1178,6 +1182,7 @@ export interface CheckoutController {
+     removePromotionCode(): Promise<void>;
+     runServerUpdate(serverUpdate: () => Promise<void>): Promise<void>;
+     readonly session: Checkout.Session;
++    readonly shippingAddressElement: CheckoutShippingAddressElement | null;
+     readonly status: 'ready' | 'updating' | 'confirming' | 'destroyed';
+     updateEmail(email: string | null): Promise<void>;
+     updateShippingAddress(params: Checkout.UpdateShippingAddressParams): Promise<void>;
+@@ -1208,6 +1213,11 @@ export interface CheckoutPaymentElementViewProps {
+     element: CheckoutPaymentElement;
+ }
+ 
++// @public
++export interface CheckoutShippingAddressElement {
++    present(): Promise<void>;
++}
++
+ // @public (undocumented)
+ export interface ClientSecretProvider {
+     provideCustomerSessionClientSecret(): Promise<CustomerSessionClientSecret>;
+@@ -3556,7 +3566,6 @@ export interface PlatformPayButtonProps extends AccessibilityProps {
+         shippingMethod: ShippingMethod;
+     }) => void;
+     setOrderTracking?: (completion: (orderIdentifier: string, orderTypeIdentifier: string, authenticationToken: string, webServiceUrl: string) => void) => void;
+-    // (undocumented)
+     style?: StyleProp<ViewStyle>;
+     // (undocumented)
+     testID?: string;
+diff --git a/example/ios/Podfile.lock b/example/ios/Podfile.lock
+index e66a754..6c4ab93 100644
+--- a/example/ios/Podfile.lock
++++ b/example/ios/Podfile.lock
+@@ -1726,9 +1726,7 @@ PODS:
+     - ReactNativeDependencies
+     - Yoga
+   - ReactTestApp-DevSupport (4.4.12):
+-    - hermes-engine
+     - React-Core
+-    - React-Core-prebuilt
+     - React-jsi
+   - ReactTestApp-Resources (1.0.0-dev)
+   - RNCAsyncStorage (2.2.0):
+@@ -1822,7 +1820,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native (0.81.0):
++  - stripe-react-native (0.83.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1843,10 +1841,10 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - stripe-react-native/Core (= 0.81.0)
+-    - stripe-react-native/NewArch (= 0.81.0)
++    - stripe-react-native/Core (= 0.83.0)
++    - stripe-react-native/NewArch (= 0.83.0)
+     - Yoga
+-  - stripe-react-native/Core (0.81.0):
++  - stripe-react-native/Core (0.83.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1868,7 +1866,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/NewArch (0.81.0):
++  - stripe-react-native/NewArch (0.83.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1890,7 +1888,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/Onramp (0.81.0):
++  - stripe-react-native/Onramp (0.83.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -2155,75 +2153,75 @@ SPEC CHECKSUMS:
+   RCTTypeSafety: 16a4144ca3f959583ab019b57d5633df10b5e97c
+   React: 914f8695f9bf38e6418228c2ffb70021e559f92f
+   React-callinvoker: 1c0808402aee0c6d4a0d8e7220ce6547af9fba71
+-  React-Core: c61410ef0ca6055e204a963992e363227e0fd1c5
++  React-Core: 4ae98f9e8135b8ddbd7c98730afb6fdae883db90
+   React-Core-prebuilt: 02f0ad625ddd47463c009c2d0c5dd35c0d982599
+-  React-CoreModules: 1f6d1744b5f9f2ec684a4bb5ced25370f87e5382
+-  React-cxxreact: 3af79478e8187b63ffc22b794cd42d3fc1f1f2da
++  React-CoreModules: e878a90bb19b8f3851818af997dbae3b3b0a27ac
++  React-cxxreact: 28af9844f6dc87be1385ab521fbfb3746f19563c
+   React-debug: dfe7f2f01b36058f2a9b94872e071eb40e063a3c
+-  React-defaultsnativemodule: 414bc0a2e02166cd7fa0a41e104434935ae01708
+-  React-domnativemodule: 9ec14a7fed0d3e4e76fd48e07d911f8934ab282d
+-  React-Fabric: a2c0c50b9f0ea1f67e6b4bbde55589cacb8c3213
+-  React-FabricComponents: 796f19e3beb5e44bcdd72bd4d8a5954d6a61d225
+-  React-FabricImage: f75d4b23f449364c3aeae684cd2995c2be68149a
+-  React-featureflags: 3285df1e581749640b797db0ab2120e9c6974da5
+-  React-featureflagsnativemodule: 181e9aa5afcdbc27ca560a6872d9510e0f7d9179
+-  React-graphics: 22b2dce86291d73fe7e37c7492d44865d9077a67
+-  React-hermes: e875778b496c86d07ab2ccaa36a9505d248a254b
+-  React-idlecallbacksnativemodule: db0dae0874018750aedb4f6f574d68c05c6478cd
+-  React-ImageManager: c659ddac4e196a28cefd036f5881b2c355363882
+-  React-jserrorhandler: 23a4e4e66c95a68300a4d01f359f9b8a5500aaa3
+-  React-jsi: 89d43d1e7d4d0663f8ba67e0b39eb4e4672c27de
+-  React-jsiexecutor: abe4874aaab90dfee5dec480680220b2f8af07e3
+-  React-jsinspector: 91f19a57032075d0f820fdee080080a21c4afabe
+-  React-jsinspectorcdp: 20537446838cf73f826cb1f78ec1180c58da6eb5
+-  React-jsinspectornetwork: fc9a317f3a57c33da6252c9cc160d321b85a3a48
+-  React-jsinspectortracing: 9dcf5dd0b7a4373704c4804cac75790b7d7977b4
+-  React-jsitooling: 65c430d41f8df1e5014863dbc569068d0458359b
+-  React-jsitracing: 12d9474cefa6ce0ac4d0affde93dddabb17ea343
+-  React-logger: 50fdb9a8236da90c0b1072da5c32ee03aeb5bf28
+-  React-Mapbuffer: 0164bc6ba0866e6314d86851620e6f1f95a1b4fb
+-  React-microtasksnativemodule: f5972fb404f7c363ff34b2292e72a716956c590c
+-  react-native-safe-area-context: c5d42c4294aa175415947e23c2ac956253abfc7d
+-  React-NativeModulesApple: 8969913947d5b576de4ed371a939455a8daf28aa
++  React-defaultsnativemodule: 97a21185f62a12ee43066962e4786ef784de609c
++  React-domnativemodule: 7e6146dd8f6ea1b2ef0ae445d6c074291dde9e55
++  React-Fabric: 5e75e04864d4112ec1a97aa5367a9f68c91abb99
++  React-FabricComponents: 1d6b2f485acff0b79a10b9b637c70fea8359bed7
++  React-FabricImage: 19d5e71d52febd292a560369482c7d19958494f5
++  React-featureflags: 2ac1f10be17bd846f58746796697e8611a1d9f5b
++  React-featureflagsnativemodule: 02fa160389138c7142b88c946dc3c1917a90197e
++  React-graphics: b3688efb708952b76f9b282fefe1c54938724ae1
++  React-hermes: fcfad3b917400f49026f3232561e039c9d1c34bf
++  React-idlecallbacksnativemodule: 10b74cbc6b2f8bb249696ed2fb352d12d384ecee
++  React-ImageManager: c02958d614171f56612393b35c355206780bf3a5
++  React-jserrorhandler: 8e063c4be9723e87445dbcb22ac46e849c50e2e1
++  React-jsi: d2c3f8555175371c02da6dfe7ed1b64b55a9d6c0
++  React-jsiexecutor: ba537434eb45ee018b590ed7d29ee233fddb8669
++  React-jsinspector: b9b6058146d39b1b8989b0d8b60f95746b5c9b66
++  React-jsinspectorcdp: 603914629da96f3916e527a213913ac285466867
++  React-jsinspectornetwork: 8c280e193c0b163905532ef6b6925c1a9b53d668
++  React-jsinspectortracing: 76168f616aa2c0bcf0de4a999efab5f68f8d6f5c
++  React-jsitooling: c788e7fad8459826c6c692dc94d802bca85669b6
++  React-jsitracing: bf304b323bc5f7cd6dfcc10e90298a02cb60ba0b
++  React-logger: c3e2f8a2e284341205f61eef3d4677ab5a309dfd
++  React-Mapbuffer: abad17e497845ba728b779e2fac123ee961d4545
++  React-microtasksnativemodule: 90dfab2adb37c8c90da7afffcec427d7c90acb29
++  react-native-safe-area-context: 3f031fa5a6c36a3731f6fa2202bfa8f411850c6b
++  React-NativeModulesApple: 1664340b8750d64e0ef3907c5e53d9481f74bcbd
+   React-oscompat: ce47230ed20185e91de62d8c6d139ae61763d09c
+-  React-perflogger: 02b010e665772c7dcb859d85d44c1bfc5ac7c0e4
+-  React-performancetimeline: bdad83ed66209c5cd252a38ed2c7b16c535c2286
++  React-perflogger: b1af3cfb3f095f819b2814910000392a8e17ba9f
++  React-performancetimeline: 856a78d5841c3abee88376291315ac8a0c48a13e
+   React-RCTActionSheet: 0b14875b3963e9124a5a29a45bd1b22df8803916
+-  React-RCTAnimation: a7b90fd2af7bb9c084428867445a1481a8cb112e
+-  React-RCTAppDelegate: 3262bedd01263f140ec62b7989f4355f57cec016
+-  React-RCTBlob: c17531368702f1ebed5d0ada75a7cf5915072a53
+-  React-RCTFabric: 14cd088b95d6c00c9dadad25cf946fb1770cc898
+-  React-RCTFBReactNativeSpec: 8948374e74e37e65923abfffeb12bf78e0aa7318
+-  React-RCTImage: c68078a120d0123f4f07a5ac77bea3bb10242f32
+-  React-RCTLinking: cf8f9391fe7fe471f96da3a5f0435235eca18c5b
+-  React-RCTNetwork: ca31f7c879355760c2d9832a06ee35f517938a20
+-  React-RCTRuntime: 9669e40cc60ac65f09e75730e925c4a6a66debd4
+-  React-RCTSettings: e0e140b2ff4bf86d34e9637f6316848fc00be035
+-  React-RCTText: 75915bace6f7877c03a840cc7b6c622fb62bfa6b
+-  React-RCTVibration: 25f26b85e5e432bb3c256f8b384f9269e9529f25
++  React-RCTAnimation: 60f6eca214a62b9673f64db6df3830cee902b5af
++  React-RCTAppDelegate: 37734b39bac108af30a0fd9d3e1149ec68b82c28
++  React-RCTBlob: 83fbcbd57755caf021787324aac2fe9b028cc264
++  React-RCTFabric: 31bf00d2759294baecbcb75643eeddd23163b9e4
++  React-RCTFBReactNativeSpec: f8cd2d6381702b2039f3b9b3de025dbf36dbbc54
++  React-RCTImage: 47aba3be7c6c64f956b7918ab933769602406aac
++  React-RCTLinking: 2dbaa4df2e4523f68baa07936bd8efdfa34d5f31
++  React-RCTNetwork: 1fca7455f9dedf7de2b95bec438da06680f3b000
++  React-RCTRuntime: 69ff58e90dbdb17160734f0df16527c18ff61f0c
++  React-RCTSettings: 01bf91c856862354d3d2f642ccb82f3697a4284a
++  React-RCTText: cb576a3797dcb64933613c522296a07eaafc0461
++  React-RCTVibration: 560af8c086741f3525b8456a482cdbe27f9d098e
+   React-rendererconsistency: 51d190444383ec3b4c87321c700d1f6513c751c9
+-  React-renderercss: 876db927db3e30259c47be13bfa36d2c646b6c13
+-  React-rendererdebug: c1056f8c458501ef6022a076d47bcc9fd1a84b01
+-  React-RuntimeApple: 0766031d217ff53b8c5bb3a90a114c698890ccbb
+-  React-RuntimeCore: b3c96e5eaa457d8f5680e7986d8694a8329bcfea
+-  React-runtimeexecutor: d1f52523b0b66051e22be1aabd8dd5de1dbf5eef
+-  React-RuntimeHermes: 2396631900bdb9fb05667de66345365d0d394e2b
+-  React-runtimescheduler: 2032e7fa094a7494809b478ef4434588b5ab992a
+-  React-timing: 32f695c27e3896d6f1bef77de042781b1bc999b3
+-  React-utils: 9f498dae9ce2da37772ab680a37ba516a4ea0a7e
+-  ReactAppDependencyProvider: 1bcd3527ac0390a1c898c114f81ff954be35ed79
+-  ReactCodegen: 9a5f0d4c80fe9bb1ff29309a76392825aabe68c7
+-  ReactCommon: 08810150b1206cc44aecf5f6ae19af32f29151a8
++  React-renderercss: 71b1849846dd0c1765bafd2392e56e19d197bd48
++  React-rendererdebug: 4cb736002d8dcaf2abcab40c71b2a5ec75c54b72
++  React-RuntimeApple: 3db10ad73c93b61f5544d92dea7e47585850d3c8
++  React-RuntimeCore: 5352d1df7bcca57c82b2b8d5f9e43e1206e0b3c3
++  React-runtimeexecutor: 99c6e2de25a17554fd096d9150459a5b0a6e66b4
++  React-RuntimeHermes: cbd16cf2df1f2c681fbbd7b88d5ee99c88cab8e3
++  React-runtimescheduler: 390a9e98b919d165d6f9f9d08535ff65bcc75631
++  React-timing: b4d33249d3105a9f890f271383bf02e07dbbe524
++  React-utils: 0beba7df8da743c0703bbb24f0cbda1b1d03aaba
++  ReactAppDependencyProvider: c277c5b231881ad4f00cd59e3aa0671b99d7ebee
++  ReactCodegen: 8cdd5dde550463bc215652a888a61c8ca8f1e787
++  ReactCommon: e6e232202a447d353e5531f2be82f50f47cbaa9a
+   ReactNativeDependencies: 71ce9c28beb282aa720ea7b46980fff9669f428a
+-  ReactNativeHost: c8e2848a9d0d07b42bb915760f07e747937ed491
+-  ReactTestApp-DevSupport: 4d6eaeeb6c023b757ba42010104c1b0228b82e32
++  ReactNativeHost: b1fac5896238a0956833aa1b3c60277663deb271
++  ReactTestApp-DevSupport: 467513802464ac48223177b7aa5e0b1b58d3ac20
+   ReactTestApp-Resources: 49fb7249af8203b9c74fd85de8c6f5bbb77a41df
+-  RNCAsyncStorage: c8407cc394627a3a4cf56b457d594bfa822b6ab8
+-  RNCPicker: 0a2e0c924f89d88878cbda326b0fe1655e35967f
+-  RNScreens: 30e3e86744e6dd0c46ebee546f7f79d70b382c69
+-  stripe-react-native: 780192c829b7fefffc9d1d92f8e55923c5dc8844
++  RNCAsyncStorage: 0574155b95b96b89a51717c4dd42fb6057926bbc
++  RNCPicker: 8857af4403867e2d81b8e8149e3e5c66282f1ee9
++  RNScreens: e3ad77a0b586f4910e4f4c30ec05d91a2c506075
++  stripe-react-native: 747a6bd6acdb3856021d7aa259d737bd2d118b85
+   Yoga: 65431d43277b661ebc7289c6c5d82f64ce42cfe0
+ 
+ PODFILE CHECKSUM: 865bd37bc8f1b842d6d516040eb0f9e7504c60bb
+ 
+-COCOAPODS: 1.15.2
++COCOAPODS: 1.17.0
+diff --git a/example/src/screens/Checkout/CheckoutCartScreen.tsx b/example/src/screens/Checkout/CheckoutCartScreen.tsx
+index 5b33df8..d936a5a 100644
+--- a/example/src/screens/Checkout/CheckoutCartScreen.tsx
++++ b/example/src/screens/Checkout/CheckoutCartScreen.tsx
+@@ -412,7 +412,11 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+             accessibilityRole="button"
+             accessibilityLabel={
+               session.paymentOption
+-                ? `Select payment method, ${session.paymentOption.label}`
++                ? `Select payment method, ${session.paymentOption.label}${
++                    session.paymentOption.sublabel
++                      ? ` ${session.paymentOption.sublabel}`
++                      : ''
++                  }`
+                 : 'Select payment method'
+             }
+             testID="checkout-select-payment-method"
+@@ -439,6 +443,12 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+             )}
+             <Text style={styles.paymentLabel}>
+               {session.paymentOption?.label ?? 'Select payment method'}
++              {session.paymentOption?.sublabel ? (
++                <Text style={styles.paymentSublabel}>
++                  {' '}
++                  {session.paymentOption.sublabel}
++                </Text>
++              ) : null}
+             </Text>
+             <Text style={styles.chevron}>›</Text>
+           </Pressable>
+@@ -761,6 +771,7 @@ const styles = StyleSheet.create({
+   },
+   paymentImage: { width: 28, height: 20 },
+   paymentLabel: { flex: 1, color: colors.slate, fontSize: 16 },
++  paymentSublabel: { color: colors.dark_gray },
+   summaryCard: { padding: 16, gap: 12 },
+   summaryRow: {
+     flexDirection: 'row',
+diff --git a/example/src/screens/Checkout/__tests__/playgroundConfig.test.ts b/example/src/screens/Checkout/__tests__/playgroundConfig.test.ts
+index 1fe2007..cad09a1 100644
+--- a/example/src/screens/Checkout/__tests__/playgroundConfig.test.ts
++++ b/example/src/screens/Checkout/__tests__/playgroundConfig.test.ts
+@@ -89,6 +89,27 @@ describe('Checkout playground configuration', () => {
+     ).toContain('requires Guest');
+   });
+ 
++  it.each([
++    ['automatic', undefined],
++    ['required', 'required'],
++  ] as const)(
++    'configures %s billing address collection on the session',
++    (billingAddressCollection, expected) => {
++      const settings = {
++        ...defaultPlaygroundSettings,
++        billingAddressCollection,
++      };
++
++      expect(buildSessionParameters(settings).billing_address_collection).toBe(
++        expected
++      );
++      expect(
++        checkoutConfiguration({ clientSecret: 'cs_test_secret', settings })
++          .paymentElement
++      ).not.toHaveProperty('billingDetailsCollectionConfiguration');
++    }
++  );
++
+   it('maps local defaults into Checkout configuration', () => {
+     const configuration = checkoutConfiguration({
+       clientSecret: 'cs_test_secret',
+diff --git a/example/src/screens/Checkout/playgroundConfig.ts b/example/src/screens/Checkout/playgroundConfig.ts
+index b05be11..92e7130 100644
+--- a/example/src/screens/Checkout/playgroundConfig.ts
++++ b/example/src/screens/Checkout/playgroundConfig.ts
+@@ -164,7 +164,7 @@ const lineItems = (settings: PlaygroundSettings) =>
+ export function buildSessionParameters(
+   settings: PlaygroundSettings,
+   customerID?: string
+-): object {
++): Record<string, unknown> {
+   const params: Record<string, unknown> = {
+     ui_mode: 'mobile_elements',
+     currency: settings.currency,
+@@ -268,12 +268,6 @@ export function checkoutConfiguration(
+     merchantDisplayName: 'Stripe Shop',
+     defaults,
+     paymentElement: {
+-      billingDetailsCollectionConfiguration: {
+-        address:
+-          settings.billingAddressCollection === 'required'
+-            ? 'full'
+-            : 'automatic',
+-      },
+       link: { display: settings.linkMode },
+     },
+     ...(settings.adaptivePricingCountry !== 'none'
+diff --git a/example/src/screens/PaymentsUICompleteScreen.tsx b/example/src/screens/PaymentsUICompleteScreen.tsx
+index c45854d..662bd58 100644
+--- a/example/src/screens/PaymentsUICompleteScreen.tsx
++++ b/example/src/screens/PaymentsUICompleteScreen.tsx
+@@ -413,7 +413,6 @@ export default function PaymentsUICompleteScreen() {
+         // autocompleteCountries={['CA']}
+         primaryButtonTitle={'use this address'}
+         sheetTitle={'🧙‍♀️ custom title'}
+-        googlePlacesApiKey={'this-api-key-wont-work'}
+       />
+       <Button
+         title="Reset customer"
+diff --git a/ios/Checkout/CheckoutConfigurationMapper.swift b/ios/Checkout/CheckoutConfigurationMapper.swift
+index c0aeb96..5b9b410 100644
+--- a/ios/Checkout/CheckoutConfigurationMapper.swift
++++ b/ios/Checkout/CheckoutConfigurationMapper.swift
+@@ -43,6 +43,16 @@ enum CheckoutConfigurationMapper {
+             merchantIdentifier: merchantIdentifier,
+             didSelectPaymentOption: didSelectPaymentOption
+         )
++        if let shippingParams = params["shippingAddressElement"] as? NSDictionary {
++            var shippingConfiguration = ShippingAddressElement.Configuration()
++            if let title = shippingParams["title"] as? String {
++                shippingConfiguration.title = title
++            }
++            if let buttonTitle = shippingParams["buttonTitle"] as? String {
++                shippingConfiguration.buttonTitle = buttonTitle
++            }
++            configuration.shippingAddressElement = shippingConfiguration
++        }
+         if let currencySelectorParams = params["currencySelectorElement"] as? NSDictionary {
+             var currencySelectorConfiguration = CurrencySelectorElement.Configuration()
+             currencySelectorConfiguration.appearance = try mapCurrencySelectorAppearance(
+@@ -211,12 +221,6 @@ enum CheckoutConfigurationMapper {
+             configuration.preferredNetworks = try mapPreferredNetworks(preferredNetworks)
+         }
+ 
+-        if let billingDetails = params["billingDetailsCollectionConfiguration"] as? NSDictionary {
+-            configuration.billingDetailsCollectionConfiguration = try mapBillingDetailsCollection(
+-                billingDetails,
+-                default: configuration.billingDetailsCollectionConfiguration
+-            )
+-        }
+         configuration.removeSavedPaymentMethodMessage = params["removeSavedPaymentMethodMessage"] as? String
+         configuration.paymentMethodOrder = params["paymentMethodOrder"] as? [String]
+         if let opensCardScannerAutomatically = params["opensCardScannerAutomatically"] as? Bool {
+@@ -243,27 +247,6 @@ enum CheckoutConfigurationMapper {
+         return configuration
+     }
+ 
+-    private static func mapBillingDetailsCollection(
+-        _ params: NSDictionary,
+-        default defaultConfiguration: PaymentElement.BillingDetailsCollectionConfiguration
+-    ) throws -> PaymentElement.BillingDetailsCollectionConfiguration {
+-        var configuration = defaultConfiguration
+-        if let address = params["address"] as? String {
+-            configuration.address = try mapAddressCollectionMode(address)
+-        }
+-        return configuration
+-    }
+-
+-    private static func mapAddressCollectionMode(
+-        _ value: String
+-    ) throws -> PaymentElement.BillingDetailsCollectionConfiguration.AddressCollectionMode {
+-        switch value {
+-        case "automatic": return .automatic
+-        case "full": return .full
+-        default: throw unsupported(value, at: "paymentElement.billingDetailsCollectionConfiguration.address")
+-        }
+-    }
+-
+     private static func mapPaymentMethodLayout(
+         _ value: String
+     ) throws -> PaymentElement.PaymentMethodLayout {
+diff --git a/ios/Checkout/CheckoutSessionSerializer.swift b/ios/Checkout/CheckoutSessionSerializer.swift
+index 8f22e46..52f56dd 100644
+--- a/ios/Checkout/CheckoutSessionSerializer.swift
++++ b/ios/Checkout/CheckoutSessionSerializer.swift
+@@ -169,6 +169,7 @@ enum CheckoutSessionSerializer {
+             "label": paymentOption.label,
+             "paymentMethodType": paymentOption.paymentMethodType,
+         ]
++        result.setIfPresent("sublabel", paymentOption.sublabel)
+         result.setIfPresent("billingDetails", paymentOption.billingDetails.map(serialize))
+         result.setIfPresent("mandateHTML", paymentOption.mandateText.map(html))
+         return result
+diff --git a/ios/Checkout/NativeCheckoutControllerInstance.swift b/ios/Checkout/NativeCheckoutControllerInstance.swift
+index e2937a4..41a1338 100644
+--- a/ios/Checkout/NativeCheckoutControllerInstance.swift
++++ b/ios/Checkout/NativeCheckoutControllerInstance.swift
+@@ -6,6 +6,7 @@ import UIKit
+ /// Owns a native Checkout controller and its session observation for the bridge.
+ @MainActor
+ final class NativeCheckoutControllerInstance {
++
+     private enum Status: String {
+         case ready
+         case updating
+@@ -14,6 +15,7 @@ final class NativeCheckoutControllerInstance {
+ 
+     let checkout: CheckoutController
+     let currencySelectorElement: CurrencySelectorElement?
++    let shippingAddressElement: ShippingAddressElement?
+     private(set) lazy var session = CheckoutSessionSerializer.serialize(checkout.session)
+ 
+     private let emitEvent: ([String: Any]) -> Void
+@@ -30,10 +32,12 @@ final class NativeCheckoutControllerInstance {
+     init(
+         checkout: CheckoutController,
+         currencySelectorElement: CurrencySelectorElement? = nil,
++        shippingAddressElement: ShippingAddressElement? = nil,
+         emitEvent: @escaping ([String: Any]) -> Void
+     ) {
+         self.checkout = checkout
+         self.currencySelectorElement = currencySelectorElement
++        self.shippingAddressElement = shippingAddressElement
+         self.emitEvent = emitEvent
+     }
+ 
+diff --git a/ios/StripeSdk.mm b/ios/StripeSdk.mm
+index 305d7f9..19b8397 100644
+--- a/ios/StripeSdk.mm
++++ b/ios/StripeSdk.mm
+@@ -282,6 +282,13 @@ RCT_EXPORT_METHOD(presentCheckoutPaymentElement:(nonnull NSString *)controllerId
+   [StripeSdkImpl.shared presentCheckoutPaymentElement:controllerId resolver:resolve rejecter:reject];
+ }
+ 
++RCT_EXPORT_METHOD(presentCheckoutShippingAddressElement:(nonnull NSString *)controllerId
++                                              resolve:(nonnull RCTPromiseResolveBlock)resolve
++                                               reject:(nonnull RCTPromiseRejectBlock)reject)
++{
++  [StripeSdkImpl.shared presentCheckoutShippingAddressElement:controllerId resolver:resolve rejecter:reject];
++}
++
+ RCT_EXPORT_METHOD(runCheckoutServerUpdate:(nonnull NSString *)controllerId
+                               operationId:(nonnull NSString *)operationId
+                                   resolve:(nonnull RCTPromiseResolveBlock)resolve
+diff --git a/ios/StripeSdkImpl+Checkout.swift b/ios/StripeSdkImpl+Checkout.swift
+index 3d939a2..964ea91 100644
+--- a/ios/StripeSdkImpl+Checkout.swift
++++ b/ios/StripeSdkImpl+Checkout.swift
+@@ -3,6 +3,7 @@ import React
+ @_spi(ReactNativeSDK) @_spi(STP) import StripePaymentSheet
+ 
+ extension StripeSdkImpl {
++
+     @objc(createCheckout:controllerId:resolver:rejecter:)
+     public func createCheckout(
+         params: NSDictionary,
+@@ -45,6 +46,9 @@ extension StripeSdkImpl {
+                     let instance = NativeCheckoutControllerInstance(
+                         checkout: checkout,
+                         currencySelectorElement: currencySelectorElement,
++                        shippingAddressElement: configuration.shippingAddressElement == nil
++                            ? nil
++                            : checkout.getShippingAddressElement(),
+                         emitEvent: { [weak self] update in
+                             self?.emitter?.emitCheckoutControllerDidUpdate(update)
+                         }
+@@ -196,6 +200,32 @@ extension StripeSdkImpl {
+         }
+     }
+ 
++    @objc(presentCheckoutShippingAddressElement:resolver:rejecter:)
++    public func presentCheckoutShippingAddressElement(
++        controllerId: String,
++        resolver resolve: @escaping RCTPromiseResolveBlock,
++        rejecter reject: @escaping RCTPromiseRejectBlock
++    ) {
++        Task { @MainActor [weak self] in
++            guard let self, let instance = checkoutControllers[controllerId] else {
++                reject("Failed", "Checkout controller `\(controllerId)` does not exist.", nil)
++                return
++            }
++            guard let element = instance.shippingAddressElement else {
++                reject("Failed", "Shipping Address Element was not configured for this Checkout controller.", nil)
++                return
++            }
++            guard let presenter = checkoutPresentingViewControllerProvider(),
++                  presenter.viewIfLoaded?.window != nil, !presenter.isBeingDismissed else {
++                reject("Failed", "Checkout requires a visible presenting view controller.", nil)
++                return
++            }
++            // Resolve on presentation, matching Payment Element's sheet API.
++            element.present(from: presenter, completion: nil)
++            resolve(nil)
++        }
++    }
++
+     @objc(runCheckoutServerUpdate:operationId:resolver:rejecter:)
+     public func runCheckoutServerUpdate(
+         controllerId: String,
+diff --git a/ios/StripeSdkImpl+Embedded.swift b/ios/StripeSdkImpl+Embedded.swift
+index a770d99..03d771a 100644
+--- a/ios/StripeSdkImpl+Embedded.swift
++++ b/ios/StripeSdkImpl+Embedded.swift
+@@ -311,7 +311,7 @@ extension StripeSdkImpl {
+       let customerEphemeralKeySecret = params["customerEphemeralKeySecret"] as? String
+       let customerClientSecret = params["customerSessionClientSecret"] as? String
+       if customerEphemeralKeySecret != nil && customerClientSecret != nil {
+-        return(error: Errors.createError(ErrorType.Failed, "`customerEphemeralKeySecret` and `customerSessionClientSecret cannot both be set"), configuration: nil)
++        return(error: Errors.createError(ErrorType.Failed, "`customerEphemeralKeySecret` and `customerSessionClientSecret` cannot both be set"), configuration: nil)
+       } else if let customerEphemeralKeySecret {
+         if !Errors.isEKClientSecretValid(clientSecret: customerEphemeralKeySecret) {
+           return(error: Errors.createError(ErrorType.Failed, "`customerEphemeralKeySecret` format does not match expected client secret formatting."), configuration: nil)
+diff --git a/ios/StripeSdkImpl+PaymentSheet.swift b/ios/StripeSdkImpl+PaymentSheet.swift
+index 90d72f3..1bee7d3 100644
+--- a/ios/StripeSdkImpl+PaymentSheet.swift
++++ b/ios/StripeSdkImpl+PaymentSheet.swift
+@@ -104,7 +104,7 @@ extension StripeSdkImpl {
+             var customerEphemeralKeySecret = params["customerEphemeralKeySecret"] as? String
+             var customerClientSecret = params["customerSessionClientSecret"] as? String
+             if let customerEphemeralKeySecret, let customerClientSecret {
+-                return(error: Errors.createError(ErrorType.Failed, "`customerEphemeralKeySecret` and `customerSessionClientSecret cannot both be set"), configuration: nil)
++                return(error: Errors.createError(ErrorType.Failed, "`customerEphemeralKeySecret` and `customerSessionClientSecret` cannot both be set"), configuration: nil)
+             } else if let customerEphemeralKeySecret {
+                 if !Errors.isEKClientSecretValid(clientSecret: customerEphemeralKeySecret) {
+                     return(error: Errors.createError(ErrorType.Failed, "`customerEphemeralKeySecret` format does not match expected client secret formatting."), configuration: nil)
+diff --git a/ios/Tests/CheckoutConfigurationMapperTests.swift b/ios/Tests/CheckoutConfigurationMapperTests.swift
+index 41c3857..40e425b 100644
+--- a/ios/Tests/CheckoutConfigurationMapperTests.swift
++++ b/ios/Tests/CheckoutConfigurationMapperTests.swift
+@@ -69,9 +69,6 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
+                 "paymentElement": [
+                     "appearance": ["shapes": ["borderRadius": 12.0]],
+                     "preferredNetworks": [7, 5],
+-                    "billingDetailsCollectionConfiguration": [
+-                        "address": "full",
+-                    ],
+                     "removeSavedPaymentMethodMessage": "Remove this payment method?",
+                     "paymentMethodOrder": ["card", "link"],
+                     "opensCardScannerAutomatically": true,
+@@ -104,7 +101,6 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
+         let paymentElement = try XCTUnwrap(configuration.paymentElement)
+         XCTAssertEqual(paymentElement.appearance.cornerRadius, 12.0)
+         XCTAssertEqual(paymentElement.preferredNetworks, [.visa, .mastercard])
+-        XCTAssertEqual(paymentElement.billingDetailsCollectionConfiguration.address, .full)
+         XCTAssertEqual(
+             paymentElement.removeSavedPaymentMethodMessage,
+             "Remove this payment method?"
+@@ -148,9 +144,8 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
+         XCTAssertNil(configuration.defaults.phone)
+         XCTAssertEqual(configuration.userInterfaceStyle, .automatic)
+         let paymentElement = try XCTUnwrap(configuration.paymentElement)
+-        XCTAssertEqual(paymentElement.billingDetailsCollectionConfiguration.address, .automatic)
+         XCTAssertFalse(paymentElement.opensCardScannerAutomatically)
+-        XCTAssertFalse(paymentElement.displaysMandateText)
++        XCTAssertTrue(paymentElement.displaysMandateText)
+         XCTAssertNil(paymentElement.applePayConfiguration)
+         XCTAssertNil(paymentElement.linkConfiguration)
+     }
+@@ -190,20 +185,6 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
+     }
+ 
+     func test_map_rejectsUnsupportedEnumValues() {
+-        XCTAssertThrowsError(try CheckoutConfigurationMapper.map(
+-            params: [
+-                "clientSecret": "cs_test_secret_123",
+-                "returnURL": "example://checkout",
+-                "paymentElement": [
+-                    "billingDetailsCollectionConfiguration": [
+-                        "address": "never",
+-                    ],
+-                ],
+-            ],
+-            merchantIdentifier: nil,
+-            didSelectPaymentOption: {}
+-        ))
+-
+         XCTAssertThrowsError(try CheckoutConfigurationMapper.map(
+             params: [
+                 "clientSecret": "cs_test_secret_123",
+diff --git a/ios/Tests/CheckoutSessionSerializerTests.swift b/ios/Tests/CheckoutSessionSerializerTests.swift
+index 5bedbad..e16eb4d 100644
+--- a/ios/Tests/CheckoutSessionSerializerTests.swift
++++ b/ios/Tests/CheckoutSessionSerializerTests.swift
+@@ -51,8 +51,8 @@ final class CheckoutSessionSerializerTests: XCTestCase {
+         }
+         let option = CheckoutController.Session.PaymentOptionDisplayData(
+             image: image,
+-            label: "Visa 4242",
+-            sublabel: nil,
++            label: "Visa",
++            sublabel: "•••• 4242",
+             billingDetails: billingDetails,
+             paymentMethodType: "card",
+             mandateText: NSAttributedString(string: "Terms & conditions", attributes: [
+@@ -68,6 +68,8 @@ final class CheckoutSessionSerializerTests: XCTestCase {
+ 
+         XCTAssertEqual(address["postalCode"] as? String, "94103")
+         XCTAssertNil(address["country"])
++        XCTAssertEqual(paymentOption["label"] as? String, "Visa")
++        XCTAssertEqual(paymentOption["sublabel"] as? String, "•••• 4242")
+         XCTAssertEqual(paymentOption["image"] as? String, image.pngData()?.base64EncodedString())
+         let html = try XCTUnwrap(paymentOption["mandateHTML"] as? String)
+         XCTAssertTrue(html.contains("https://example.com/terms"))
+diff --git a/package.json b/package.json
+index d8f38f6..2070ef6 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-react-native",
+-  "version": "0.82.0",
++  "version": "0.83.0",
+   "author": "Stripe",
+   "description": "Stripe SDK for React Native",
+   "main": "lib/commonjs/index",
+diff --git a/src/checkout/createCheckout.ts b/src/checkout/createCheckout.ts
+index 81d35ef..745488d 100644
+--- a/src/checkout/createCheckout.ts
++++ b/src/checkout/createCheckout.ts
+@@ -134,6 +134,10 @@ export async function createCheckoutController(
+       : undefined
+   );
+   try {
++    // Keep handle availability consistent if options change during native creation.
++    const isShippingAddressElementConfigured = Boolean(
++      options.shippingAddressElement
++    );
+     const result = await NativeStripeSdk.createCheckout(
+       nativeCreateOptions(options),
+       controllerId
+@@ -164,6 +168,17 @@ export async function createCheckoutController(
+           NativeStripeSdk.presentCheckoutPaymentElement(controllerId)
+         ),
+     };
++    // Shipping collection is opt-in, matching the native Checkout configuration.
++    const shippingAddressElement = isShippingAddressElementConfigured
++      ? {
++          present: () =>
++            performOperation(() =>
++              NativeStripeSdk.presentCheckoutShippingAddressElement(
++                controllerId
++              )
++            ),
++        }
++      : null;
+     const currencySelectorElement = result.isCurrencySelectorAvailable
+       ? {}
+       : null;
+@@ -176,6 +191,7 @@ export async function createCheckoutController(
+         return session!;
+       },
+       paymentElement,
++      shippingAddressElement,
+       currencySelectorElement,
+       updateEmail: (email) =>
+         performOperation(() =>
+diff --git a/src/components/AddressSheet.tsx b/src/components/AddressSheet.tsx
+index 89e6e94..49bcb50 100644
+--- a/src/components/AddressSheet.tsx
++++ b/src/components/AddressSheet.tsx
+@@ -43,7 +43,10 @@ export interface Props extends AccessibilityProps {
+   primaryButtonTitle?: string;
+   /** Title displayed at the top of the sheet. Defaults to "Address". */
+   sheetTitle?: string;
+-  /** Android only. Google Places api key used to provide autocomplete suggestions. When null, autocomplete is disabled on Android. */
++  /**
++   * Android only.
++   * @deprecated Omit this prop. Autocomplete now does not require a Google Places API key.
++   */
+   googlePlacesApiKey?: string;
+   /** Called when the user submits their information */
+   onSubmit: (result: CollectAddressResult) => void;
+diff --git a/src/components/PlatformPayButton.tsx b/src/components/PlatformPayButton.tsx
+index 66320c2..d728e6d 100644
+--- a/src/components/PlatformPayButton.tsx
++++ b/src/components/PlatformPayButton.tsx
+@@ -71,12 +71,22 @@ export interface Props extends AccessibilityProps {
+     ) => void
+   ) => void;
+   testID?: string;
++  /**
++   * Style applied to the button container.
++   *
++   * **Important:** The native Apple Pay and Google Pay button views do not have an intrinsic height in React Native.
++   * You must explicitly specify a `height` in the `style` prop (e.g. `height: 48` or `height: 50`),
++   * otherwise the container will collapse to a height of 0 and the button will not be visible.
++   */
+   style?: StyleProp<ViewStyle>;
+ }
+ 
+ /**
+  *  PlatformPayButton Component. Display the platform-specific native wallet pay button: Apple Pay on iOS, and Google Pay on Android.
+  *
++ *  **Note:** The native pay buttons require an explicit `height` specified in the `style` prop
++ *  (e.g., `{ height: 48 }` or `{ height: 50 }`). Without an explicit height, the component collapses to 0 height.
++ *
+  * @example
+  * ```ts
+  *  <PlatformPayButton
+@@ -85,7 +95,7 @@ export interface Props extends AccessibilityProps {
+  *    appearance={PlatformPay.ButtonStyle.WhiteOutline}
+  *    borderRadius={4}
+  *    disabled={!isApplePaySupported}
+- *    style={styles.payButton}
++ *    style={{ height: 48 }}
+  *  />
+  * ```
+  * @param __namedParameters Props
+diff --git a/src/connect/EmbeddedComponent.tsx b/src/connect/EmbeddedComponent.tsx
+index 1e24a8b..186d5a7 100644
+--- a/src/connect/EmbeddedComponent.tsx
++++ b/src/connect/EmbeddedComponent.tsx
+@@ -34,6 +34,7 @@ import type {
+ import type { FinancialConnections, StripeError } from '../types';
+ import { FinancialConnectionsSheetError } from '../types/FinancialConnections';
+ import { ComponentAnalyticsClient } from './analytics/ComponentAnalyticsClient';
++import { buildInjectedObjectScript } from './injectedObjectScript';
+ 
+ const DEVELOPMENT_MODE = false;
+ const DEVELOPMENT_URL =
+@@ -859,6 +860,24 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+     [backgroundColor, style]
+   );
+ 
++  const injectedObject = useMemo(
++    () => ({
++      initParams: {
++        appearance: withDefaultFontFamily(appearance),
++        locale,
++        fonts,
++      },
++      initComponentProps: componentProps,
++      appInfo: { applicationId: overrides?.applicationId },
++    }),
++    [appearance, locale, fonts, componentProps, overrides?.applicationId]
++  );
++
++  const injectedObjectScript = useMemo(
++    () => buildInjectedObjectScript(injectedObject),
++    [injectedObject]
++  );
++
+   if (!WebViewComponent) return null;
+ 
+   return (
+@@ -875,17 +894,14 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+       webviewDebuggingEnabled={DEVELOPMENT_MODE}
+       source={source}
+       userAgent={userAgent}
+-      injectedJavaScriptObject={{
+-        initParams: {
+-          appearance: withDefaultFontFamily(appearance),
+-          locale,
+-          fonts,
+-        },
+-        initComponentProps: componentProps,
+-        appInfo: { applicationId: overrides?.applicationId },
+-      }}
++      // injectedObjectScript defines injectedObjectJson() read-only, so it takes
++      // precedence over injectedJavaScriptObject, which corrupts values
++      // containing double quotes or backslashes. Keep the prop: on Android,
++      // react-native-webview 13.6.0-13.13.0 serves it from a Java method that
++      // page scripts can't override.
++      injectedJavaScriptObject={injectedObject}
+       // Fixes injectedJavaScriptObject in Android https://github.com/react-native-webview/react-native-webview/issues/3326#issuecomment-3048111789
+-      injectedJavaScriptBeforeContentLoaded={'(function() {})();'}
++      injectedJavaScriptBeforeContentLoaded={injectedObjectScript}
+       injectedJavaScript={
+         sizeToContent ? CONTENT_HEIGHT_OBSERVER_SCRIPT : undefined
+       }
+diff --git a/src/connect/__tests__/EmbeddedComponent.test.tsx b/src/connect/__tests__/EmbeddedComponent.test.tsx
+index cbb877a..9cc6c7a 100644
+--- a/src/connect/__tests__/EmbeddedComponent.test.tsx
++++ b/src/connect/__tests__/EmbeddedComponent.test.tsx
+@@ -56,6 +56,7 @@ import {
+   StyleSheet,
+ } from 'react-native';
+ import 'react-native-webview';
++import vm from 'vm';
+ import NativeStripeSdk from '../../specs/NativeStripeSdkModule';
+ import {
+   EmbeddedComponent,
+@@ -87,6 +88,7 @@ describe('EmbeddedComponent', () => {
+   beforeEach(() => {
+     jest.clearAllMocks();
+     webViewOnMessage = undefined;
++    mockWebViewProps = undefined;
+     mockLoadWebView = false;
+     mockWebViewProps = undefined;
+     connectInstance = loadConnectAndInitialize(mockInitParams);
+@@ -430,6 +432,59 @@ describe('EmbeddedComponent', () => {
+     });
+   });
+ 
++  describe('Init params injection', () => {
++    // Runs the injected script the way the page would see it.
++    const readInjectedObject = (script: string) => {
++      const page: any = {};
++      page.window = page;
++      vm.createContext(page);
++      vm.runInContext(script, page);
++      return JSON.parse(page.ReactNativeWebView.injectedObjectJson());
++    };
++
++    it('defines injectedObjectJson in a script as well as injectedJavaScriptObject', async () => {
++      // A value that react-native-webview's injectedJavaScriptObject corrupts.
++      const appearance = {
++        variables: { fontFamily: '"Courier New", Courier, monospace' },
++      };
++      connectInstance = loadConnectAndInitialize({
++        ...mockInitParams,
++        appearance,
++      });
++      mockLoadWebView = true;
++      renderComponent();
++
++      await waitFor(() => expect(mockWebViewProps).toBeDefined());
++
++      const expected = {
++        initParams: { appearance, locale: 'en' },
++        appInfo: {},
++      };
++      expect(mockWebViewProps.injectedJavaScriptObject).toEqual(expected);
++      expect(
++        readInjectedObject(
++          mockWebViewProps.injectedJavaScriptBeforeContentLoaded
++        )
++      ).toEqual(expected);
++    });
++
++    it('passes the default font family in the script too', async () => {
++      mockLoadWebView = true;
++      renderComponent();
++
++      await waitFor(() => expect(mockWebViewProps).toBeDefined());
++
++      const injected = readInjectedObject(
++        mockWebViewProps.injectedJavaScriptBeforeContentLoaded
++      );
++      expect(injected.initParams.appearance.variables.fontFamily).toEqual(
++        mockWebViewProps.injectedJavaScriptObject.initParams.appearance
++          .variables.fontFamily
++      );
++      expect(injected.initParams.appearance.variables.fontFamily).toBeTruthy();
++    });
++  });
++
+   describe('Financial Connections bridge', () => {
+     const mockSession = {
+       id: 'session',
+diff --git a/src/connect/__tests__/injectedObjectScript.test.ts b/src/connect/__tests__/injectedObjectScript.test.ts
+new file mode 100644
+index 0000000..ca5bb9c
+--- /dev/null
++++ b/src/connect/__tests__/injectedObjectScript.test.ts
+@@ -0,0 +1,150 @@
++import vm from 'vm';
++import { buildInjectedObjectScript } from '../injectedObjectScript';
++
++const BRIDGE = 'ReactNativeWebView';
++
++// react-native-webview's iOS definition from `injectedJavaScriptObject`
++// (apple/RNCWebViewImpl.m, setInjectedJavaScriptObject), added after
++// `injectedJavaScriptBeforeContentLoaded`.
++const rnwIOSObjectScript = (json: string) =>
++  `window.${BRIDGE} = window.${BRIDGE} || {};` +
++  `window.${BRIDGE}.injectedObjectJson = function () {` +
++  `  return \`${json}\`;` +
++  `};`;
++
++// The same on Android from 13.13.1 (RNCWebView.java, injectJavascriptObject).
++// It runs after `injectedJavaScriptBeforeContentLoaded` on page start, and
++// again when the prop changes or after `injectedJavaScript`.
++const rnwAndroidObjectScript = (json: string) =>
++  `(function(){\n` +
++  `    window.${BRIDGE} = window.${BRIDGE} || {};\n` +
++  `    window.${BRIDGE}.injectedObjectJson = function () { return \`${json}\`; };\n` +
++  `})();`;
++
++// Android wraps `injectedJavaScriptBeforeContentLoaded` like this.
++const androidBeforeContentLoaded = (script: string) =>
++  `(function() {\n${script};\n})();`;
++
++type Page = { [key: string]: any };
++
++// Runs scripts in a fresh page-like context. A script that throws is recorded,
++// not rethrown.
++function runInPage(scripts: string[]): { page: Page; errors: string[] } {
++  const page: Page = { [BRIDGE]: { postMessage: () => {} } };
++  page.window = page;
++  vm.createContext(page);
++  const errors: string[] = [];
++  for (const script of scripts) {
++    try {
++      vm.runInContext(script, page);
++    } catch (error) {
++      errors.push(String(error));
++    }
++  }
++  return { page, errors };
++}
++
++// What the Connect page does on startup.
++const readInjectedObject = (page: Page) =>
++  JSON.parse(page[BRIDGE].injectedObjectJson() ?? '{}');
++
++const initObject = (variables: Record<string, unknown>) => ({
++  initParams: {
++    appearance: { variables: { colorPrimary: '#635BFF', ...variables } },
++    locale: 'en',
++  },
++  initComponentProps: {},
++  appInfo: { applicationId: undefined },
++});
++
++describe('buildInjectedObjectScript', () => {
++  const difficultValues: [string, string][] = [
++    ['double-quoted font family', '"Courier New", Courier, monospace'],
++    ['apostrophe inside double quotes', `"O'Reilly Sans", "Segoe UI", serif`],
++    ['backslash', 'C:\\fonts\\custom'],
++    ['newline and tab', 'line one\nline two\tend'],
++    ['backtick', 'a `quoted` word'],
++    ['template substitution', '${globalThis.executed = true}'],
++    ['line and paragraph separators', 'a\u2028b\u2029c'],
++    ['non-ASCII', 'Noto Sans JP, ヒラギノ角ゴ, 😀'],
++  ];
++
++  it.each(difficultValues)('round-trips a %s', (_label, value) => {
++    const injected = initObject({ fontFamily: value });
++    const { page, errors } = runInPage([buildInjectedObjectScript(injected)]);
++
++    expect(errors).toEqual([]);
++    expect(readInjectedObject(page)).toEqual(injected);
++    expect(page.executed).toBeUndefined();
++  });
++
++  it("keeps its value when react-native-webview's iOS definition runs after it", () => {
++    const injected = initObject({ fontFamily: '"Courier New", monospace' });
++    const { page } = runInPage([
++      buildInjectedObjectScript(injected),
++      rnwIOSObjectScript(JSON.stringify(injected)),
++    ]);
++
++    expect(readInjectedObject(page)).toEqual(injected);
++  });
++
++  it("keeps its value when react-native-webview's Android definition runs after it", () => {
++    const injected = initObject({ fontFamily: '"Courier New", monospace' });
++    const json = JSON.stringify(injected);
++    const { page } = runInPage([
++      androidBeforeContentLoaded(buildInjectedObjectScript(injected)),
++      rnwAndroidObjectScript(json),
++      rnwAndroidObjectScript(json),
++    ]);
++
++    expect(readInjectedObject(page)).toEqual(injected);
++  });
++
++  it('replaces an earlier react-native-webview definition with a read-only one', () => {
++    const injected = initObject({ fontFamily: '"Courier New", monospace' });
++    const { page, errors } = runInPage([
++      rnwAndroidObjectScript(JSON.stringify(injected)),
++      androidBeforeContentLoaded(buildInjectedObjectScript(injected)),
++    ]);
++
++    expect(errors).toEqual([]);
++    expect(readInjectedObject(page)).toEqual(injected);
++    expect(
++      Object.getOwnPropertyDescriptor(page[BRIDGE], 'injectedObjectJson')
++    ).toMatchObject({ writable: false, configurable: false });
++  });
++
++  it('keeps the first definition when it runs twice in one page', () => {
++    const first = initObject({ fontFamily: '"First", serif' });
++    const second = initObject({ fontFamily: '"Second", serif' });
++    const { page, errors } = runInPage([
++      buildInjectedObjectScript(first),
++      buildInjectedObjectScript(second),
++    ]);
++
++    expect(errors).toEqual([]);
++    expect(readInjectedObject(page)).toEqual(first);
++  });
++
++  it("without it, react-native-webview's iOS definition corrupts a double-quoted value", () => {
++    const json = JSON.stringify(initObject({ fontFamily: '"Segoe UI"' }));
++    const { page } = runInPage([rnwIOSObjectScript(json)]);
++
++    expect(() => readInjectedObject(page)).toThrow(SyntaxError);
++  });
++
++  it('keeps the existing postMessage bridge', () => {
++    const { page } = runInPage([buildInjectedObjectScript(initObject({}))]);
++
++    expect(typeof page[BRIDGE].postMessage).toBe('function');
++  });
++
++  it('creates the bridge object when none exists yet', () => {
++    const page: Page = {};
++    page.window = page;
++    vm.createContext(page);
++    vm.runInContext(buildInjectedObjectScript(initObject({})), page);
++
++    expect(readInjectedObject(page)).toEqual(initObject({}));
++  });
++});
+diff --git a/src/connect/injectedObjectScript.ts b/src/connect/injectedObjectScript.ts
+new file mode 100644
+index 0000000..a59c67f
+--- /dev/null
++++ b/src/connect/injectedObjectScript.ts
+@@ -0,0 +1,34 @@
++// Builds the script passed as `injectedJavaScriptBeforeContentLoaded`. It
++// defines `window.ReactNativeWebView.injectedObjectJson()`, which the Connect
++// page JSON.parses on startup. react-native-webview's own definition, from
++// `injectedJavaScriptObject`, embeds the JSON in a template literal on iOS and
++// on Android from 13.13.1, so a double quote, backslash, or backtick in any
++// value corrupts it and the component never loads. Here the JSON is a string
++// literal, and the property is read-only: it replaces an earlier assignment by
++// react-native-webview and ignores later ones.
++// https://github.com/react-native-webview/react-native-webview/issues/3957
++// https://github.com/react-native-webview/react-native-webview/issues/3942
++export function buildInjectedObjectScript(injectedObject: object): string {
++  // The inner stringify produces the JSON text injectedObjectJson() returns.
++  // The outer one turns that text into a JS string literal, escaping quotes,
++  // backslashes, and control characters, so the script can embed it verbatim.
++  const jsonLiteral = JSON.stringify(JSON.stringify(injectedObject));
++
++  return `
++    (function() {
++      var json = ${jsonLiteral};
++      var bridge = (window.ReactNativeWebView = window.ReactNativeWebView || {});
++      try {
++        Object.defineProperty(bridge, 'injectedObjectJson', {
++          value: function() { return json; },
++          writable: false,
++          configurable: false,
++          enumerable: true,
++        });
++      } catch (e) {
++        /* Already defined, e.g. by an earlier run in this document: keep it. */
++      }
++    })();
++    true;
++  `;
++}
+diff --git a/src/hooks/useCheckout.ts b/src/hooks/useCheckout.ts
+index 41d41ef..ae6778f 100644
+--- a/src/hooks/useCheckout.ts
++++ b/src/hooks/useCheckout.ts
+@@ -7,12 +7,18 @@ import type { Checkout, CheckoutController } from '../types/Checkout';
+ 
+ type State = Pick<
+   Checkout.UseResult,
+-  'status' | 'session' | 'paymentElement' | 'currencySelectorElement' | 'error'
++  | 'status'
++  | 'session'
++  | 'paymentElement'
++  | 'shippingAddressElement'
++  | 'currencySelectorElement'
++  | 'error'
+ >;
+ const idle: State = {
+   status: 'idle',
+   session: null,
+   paymentElement: null,
++  shippingAddressElement: null,
+   currencySelectorElement: null,
+   error: null,
+ };
+@@ -32,6 +38,7 @@ function stateForController(controller: CheckoutController): State {
+     status: controller.status,
+     session: controller.session,
+     paymentElement: controller.paymentElement,
++    shippingAddressElement: controller.shippingAddressElement,
+     currencySelectorElement: controller.currencySelectorElement,
+     error: null,
+   };
+diff --git a/src/specs/NativeStripeSdkModule.ts b/src/specs/NativeStripeSdkModule.ts
+index 5214849..a11c90b 100644
+--- a/src/specs/NativeStripeSdkModule.ts
++++ b/src/specs/NativeStripeSdkModule.ts
+@@ -289,6 +289,9 @@ export interface Spec extends TurboModule {
+   /** @CheckoutSessionPrivatePreview */
+   presentCheckoutPaymentElement(controllerId: string): Promise<void>;
+ 
++  /** @CheckoutSessionPrivatePreview */
++  presentCheckoutShippingAddressElement(controllerId: string): Promise<void>;
++
+   /** @CheckoutSessionPrivatePreview */
+   destroyCheckout(controllerId: string): Promise<void>;
+ 
+diff --git a/src/types/Checkout.ts b/src/types/Checkout.ts
+index a0c19fc..99c7688 100644
+--- a/src/types/Checkout.ts
++++ b/src/types/Checkout.ts
+@@ -28,6 +28,8 @@ export interface CheckoutController {
+   readonly session: Checkout.Session;
+   /** The Payment Element owned by this controller. */
+   readonly paymentElement: CheckoutPaymentElement;
++  /** The Shipping Address Element, or `null` when it is not configured. */
++  readonly shippingAddressElement: CheckoutShippingAddressElement | null;
+   /** The Currency Selector Element, or `null` when unavailable. */
+   readonly currencySelectorElement: CheckoutCurrencySelectorElement | null;
+   /** Updates the customer's email address. Pass `null` to clear it. */
+@@ -67,6 +69,23 @@ export interface CheckoutPaymentElement {
+   present(): Promise<void>;
+ }
+ 
++/**
++ * The Checkout-owned Shipping Address Element. It collects and saves a customer's
++ * shipping address in a native sheet, updating the controller's session.
++ *
++ * @remarks
++ * This API is in private preview and can change without notice.
++ *
++ * @CheckoutSessionPrivatePreview
++ */
++export interface CheckoutShippingAddressElement {
++  /**
++   * Requests native shipping address sheet presentation and resolves immediately.
++   * The promise does not wait for dismissal or report the customer's selection.
++   */
++  present(): Promise<void>;
++}
++
+ /**
+  * Props for the inline Checkout Payment Element view.
+  *
+@@ -128,6 +147,11 @@ export namespace Checkout {
+     style?: UserInterfaceStyle;
+     /** Configuration for the Checkout-owned Payment Element. */
+     paymentElement?: PaymentElementConfiguration;
++    /**
++     * Configuration for the Checkout-owned Shipping Address Element. Provide
++     * `{}` to enable the element with its defaults.
++     */
++    shippingAddressElement?: ShippingAddressElementConfiguration;
+     /**
+      * Configuration for Currency Selector Element. Provide this configuration
+      * to enable the element when Adaptive Pricing is available.
+@@ -166,6 +190,11 @@ export namespace Checkout {
+     readonly session: Session | null;
+     /** The Checkout-owned Payment Element, or `null` before Checkout is ready. */
+     readonly paymentElement: CheckoutPaymentElement | null;
++    /**
++     * The Shipping Address Element, or `null` before Checkout is ready or
++     * when `shippingAddressElement` was not configured.
++     */
++    readonly shippingAddressElement: CheckoutShippingAddressElement | null;
+     /**
+      * The Currency Selector Element, or `null` before Checkout is ready or
+      * when it is unavailable for the Checkout Session.
+@@ -236,62 +265,91 @@ export namespace Checkout {
+     | 'Timeout'
+     | 'Canceled';
+ 
+-  /** Configuration for Currency Selector Element. */
++  /**
++   * Configuration for Currency Selector Element.
++   * @CheckoutSessionPrivatePreview
++   */
+   export interface CurrencySelectorElementConfiguration {
+     /** Customizes the appearance of Currency Selector Element. */
+-    appearance?: CurrencySelectorElementAppearance;
++    appearance?: CurrencySelectorElementConfiguration.Appearance;
+   }
+ 
+-  /** Appearance configuration for Currency Selector Element. */
+-  export interface CurrencySelectorElementAppearance {
+-    /** Vertical padding inside each currency option, in density-independent pixels. */
+-    contentVerticalPadding?: number;
+-    /** Font family and scale used throughout the selector. */
+-    font?: Partial<FontConfig>;
+-    /** Colors used by the selector. */
+-    colors?:
+-      | CurrencySelectorElementColorConfiguration
+-      | {
+-          light: CurrencySelectorElementColorConfiguration;
+-          dark: CurrencySelectorElementColorConfiguration;
+-        };
+-    /** Shape configuration for the selector track and selected pill. */
+-    shapes?: CurrencySelectorElementShapeConfiguration;
+-    /** Content displayed in each currency option. Defaults to `automatic`. */
+-    labelContent?: CurrencySelectorElementLabelContent;
++  /**
++   * Configuration for the Checkout-owned Shipping Address Element.
++   * @CheckoutSessionPrivatePreview
++   */
++  export interface ShippingAddressElementConfiguration {
++    /** The form title. Defaults to the localized "Shipping address". */
++    title?: string;
++    /** The primary button label. Defaults to the localized "Save address". */
++    buttonTitle?: string;
+   }
+ 
+-  /** Colors used by Currency Selector Element. */
+-  export interface CurrencySelectorElementColorConfiguration {
+-    /** Border color for the selector track and selected pill. */
+-    border?: ThemedColor;
+-    /** Background color of the selector track. */
+-    background?: ThemedColor;
+-    /** Background color of the selected currency pill. */
+-    selectedBackground?: ThemedColor;
+-    /** Text color used for unselected currency options. */
+-    text?: ThemedColor;
+-    /** Text color used for the selected currency option. */
+-    selectedText?: ThemedColor;
+-    /** Text color used for exchange-rate disclosure. */
+-    textSecondary?: ThemedColor;
+-    /** Color used for errors shown below the selector. */
+-    danger?: ThemedColor;
+-  }
++  /**
++   * Appearance types used by Currency Selector Element.
++   * @CheckoutSessionPrivatePreview
++   */
++  export namespace CurrencySelectorElementConfiguration {
++    /**
++     * Appearance configuration for Currency Selector Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface Appearance {
++      /** Vertical padding inside each currency option, in density-independent pixels. */
++      contentVerticalPadding?: number;
++      /** Font family and scale used throughout the selector. */
++      font?: Partial<FontConfig>;
++      /** Colors used by the selector. */
++      colors?:
++        | ColorConfiguration
++        | {
++            light: ColorConfiguration;
++            dark: ColorConfiguration;
++          };
++      /** Shape configuration for the selector track and selected pill. */
++      shapes?: ShapeConfiguration;
++      /** Content displayed in each currency option. Defaults to `automatic`. */
++      labelContent?: LabelContent;
++    }
+ 
+-  /** Shape configuration for Currency Selector Element. */
+-  export interface CurrencySelectorElementShapeConfiguration {
+-    /** Corner radius in density-independent pixels. Omit for a capsule shape. */
+-    cornerRadius?: number;
+-    /** Border width in density-independent pixels. */
+-    borderWidth?: number;
+-  }
++    /**
++     * Colors used by Currency Selector Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface ColorConfiguration {
++      /** Border color for the selector track and selected pill. */
++      border?: ThemedColor;
++      /** Background color of the selector track. */
++      background?: ThemedColor;
++      /** Background color of the selected currency pill. */
++      selectedBackground?: ThemedColor;
++      /** Text color used for unselected currency options. */
++      text?: ThemedColor;
++      /** Text color used for the selected currency option. */
++      selectedText?: ThemedColor;
++      /** Text color used for exchange-rate disclosure. */
++      textSecondary?: ThemedColor;
++      /** Color used for errors shown below the selector. */
++      danger?: ThemedColor;
++    }
+ 
+-  /** Content displayed in each currency option label. */
+-  export type CurrencySelectorElementLabelContent =
+-    | 'automatic'
+-    | 'currencyCode'
+-    | 'amount';
++    /**
++     * Shape configuration for Currency Selector Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface ShapeConfiguration {
++      /** Corner radius in density-independent pixels. Omit for a capsule shape. */
++      cornerRadius?: number;
++      /** Border width in density-independent pixels. */
++      borderWidth?: number;
++    }
++
++    /**
++     * Content displayed in each currency option label.
++     * @CheckoutSessionPrivatePreview
++     */
++    export type LabelContent = 'automatic' | 'currencyCode' | 'amount';
++  }
+ 
+   /**
+    * Known customer details used to prefill Checkout and its elements.
+@@ -319,117 +377,15 @@ export namespace Checkout {
+     address?: Address;
+   }
+ 
+-  /**
+-   * Configuration for Apple Pay in Checkout.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export interface ApplePayConfiguration {
+-    /** ISO 3166-1 alpha-2 country code where the transaction is processed. */
+-    merchantCountryCode: string;
+-    /** The type of Apple Pay button to display. */
+-    buttonType?: ApplePayButtonType;
+-  }
+-
+-  /**
+-   * Apple Pay button type options.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export type ApplePayButtonType =
+-    | 'plain'
+-    | 'buy'
+-    | 'setUp'
+-    | 'inStore'
+-    | 'donate'
+-    | 'checkout'
+-    | 'book'
+-    | 'subscribe'
+-    | 'reload'
+-    | 'addMoney'
+-    | 'topUp'
+-    | 'order'
+-    | 'rent'
+-    | 'support'
+-    | 'contribute'
+-    | 'tip'
+-    | 'continue';
+-
+-  /**
+-   * Configuration for Google Pay in Checkout.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export interface GooglePayConfiguration {
+-    /** An optional label to display with the amount. */
+-    label?: string;
+-    /** The Google Pay button type. Defaults to `pay`. */
+-    buttonType?: GooglePayButtonType;
+-    /** Additional card networks to enable, for example `INTERAC`. */
+-    additionalEnabledNetworks?: string[];
+-  }
+-
+-  /**
+-   * Google Pay button type options.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export type GooglePayButtonType =
+-    | 'buy'
+-    | 'book'
+-    | 'checkout'
+-    | 'donate'
+-    | 'order'
+-    | 'pay'
+-    | 'subscribe'
+-    | 'plain';
+-
+-  /**
+-   * Configuration for Link in Checkout.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export interface LinkConfiguration {
+-    /** Controls when Link is displayed. Defaults to `automatic`. */
+-    display?: 'automatic' | 'never';
+-  }
+-
+-  /**
+-   * Appearance configuration for Checkout Payment Element.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export type PaymentElementAppearance = AppearanceParams;
+-
+-  /**
+-   * Controls how the inline Payment Element handles row selection.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export type RowSelectionBehavior = EmbeddedRowSelectionBehavior;
+-
+-  /**
+-   * Controls how billing details are collected during checkout.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export interface BillingDetailsCollectionConfiguration {
+-    /** How to collect the name field. Defaults to `automatic`. */
+-    name?: 'automatic' | 'always';
+-    /** How to collect the phone field. Defaults to `automatic`. */
+-    phone?: 'automatic' | 'always';
+-    /** How to collect the billing address. Defaults to `automatic`. */
+-    address?: 'automatic' | 'full';
+-    /** Whether default billing details are attached to the payment method. */
+-    attachDefaultsToPaymentMethod?: boolean;
+-  }
+-
+   /**
+    * Configuration for the Checkout-owned Payment Element.
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface PaymentElementConfiguration {
+     /** Customizes the appearance of Payment Element. */
+-    appearance?: PaymentElementAppearance;
++    appearance?: PaymentElementConfiguration.Appearance;
+     /** Preferred networks for co-branded cards. */
+     preferredNetworks?: CardBrand[];
+-    /**
+-     * Controls how billing details are collected during checkout. iOS only.
+-     * On Android, configure billing collection on the Checkout Session.
+-     */
+-    billingDetailsCollectionConfiguration?: BillingDetailsCollectionConfiguration;
+     /** A custom message shown when a saved payment method is removed. iOS only. */
+     removeSavedPaymentMethodMessage?: string;
+     /** Overrides the default order of payment method types. */
+@@ -443,13 +399,99 @@ export namespace Checkout {
+     /** Whether the embedded view displays mandate text. Defaults to `false`. */
+     displaysMandateText?: boolean;
+     /** Controls selection in the embedded view. */
+-    rowSelectionBehavior?: RowSelectionBehavior;
+-    /** Apple Pay configuration. iOS only. */
+-    applePay?: ApplePayConfiguration;
+-    /** Google Pay configuration. Android only. */
+-    googlePay?: GooglePayConfiguration;
+-    /** Link display configuration. */
+-    link?: LinkConfiguration;
++    rowSelectionBehavior?: PaymentElementConfiguration.RowSelectionBehavior;
++    /** Apple Pay configuration for Payment Element. iOS only. */
++    applePay?: PaymentElementConfiguration.ApplePayConfiguration;
++    /** Google Pay configuration for Payment Element. Android only. */
++    googlePay?: PaymentElementConfiguration.GooglePayConfiguration;
++    /** Link display configuration for Payment Element. */
++    link?: PaymentElementConfiguration.LinkConfiguration;
++  }
++
++  /**
++   * Configuration types used by Checkout Payment Element.
++   * @CheckoutSessionPrivatePreview
++   */
++  export namespace PaymentElementConfiguration {
++    /**
++     * Appearance configuration for Checkout Payment Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export type Appearance = AppearanceParams;
++
++    /**
++     * Controls how the inline Payment Element handles row selection.
++     * @CheckoutSessionPrivatePreview
++     */
++    export type RowSelectionBehavior = EmbeddedRowSelectionBehavior;
++
++    /**
++     * Apple Pay configuration for Payment Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface ApplePayConfiguration {
++      /** The type of Apple Pay button to display. */
++      buttonType?: ApplePayButtonType;
++    }
++
++    /**
++     * Apple Pay button type options for Payment Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export type ApplePayButtonType =
++      | 'plain'
++      | 'buy'
++      | 'setUp'
++      | 'inStore'
++      | 'donate'
++      | 'checkout'
++      | 'book'
++      | 'subscribe'
++      | 'reload'
++      | 'addMoney'
++      | 'topUp'
++      | 'order'
++      | 'rent'
++      | 'support'
++      | 'contribute'
++      | 'tip'
++      | 'continue';
++
++    /**
++     * Google Pay configuration for Payment Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface GooglePayConfiguration {
++      /** An optional label to display with the amount. */
++      label?: string;
++      /** The Google Pay button type. Defaults to `pay`. */
++      buttonType?: GooglePayButtonType;
++      /** Additional card networks to enable, for example `INTERAC`. */
++      additionalEnabledNetworks?: string[];
++    }
++
++    /**
++     * Google Pay button type options for Payment Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export type GooglePayButtonType =
++      | 'buy'
++      | 'book'
++      | 'checkout'
++      | 'donate'
++      | 'order'
++      | 'pay'
++      | 'subscribe'
++      | 'plain';
++
++    /**
++     * Link configuration for Payment Element.
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface LinkConfiguration {
++      /** Controls when Link is displayed. Defaults to `automatic`. */
++      display?: 'automatic' | 'never';
++    }
+   }
+ 
+   /**
+@@ -505,8 +547,10 @@ export namespace Checkout {
+   export interface PaymentOptionDisplayData {
+     /** A Base64-encoded image representing the payment method. */
+     image: string;
+-    /** Customer-facing label, for example `•••• 4242`. */
++    /** Customer-facing label, for example `Visa`. */
+     label: string;
++    /** Optional secondary details, for example `•••• 4242` for a card. */
++    sublabel?: string;
+     /** Billing details collected for the selected payment method. */
+     billingDetails?: BillingDetails;
+     /** The payment method, external payment method, or wallet type. */
+diff --git a/stripe-react-native.podspec b/stripe-react-native.podspec
+index 1c0cb78..849138f 100644
+--- a/stripe-react-native.podspec
++++ b/stripe-react-native.podspec
+@@ -3,7 +3,7 @@ require_relative 'stripe_spm'
+ 
+ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+ # Keep stripe_version in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/stripe-identity-react-native.podspec
+-stripe_version = '26.14.0'
++stripe_version = '26.15.0'
+ 
+ if ENV['RCT_NEW_ARCH_ENABLED'] == '0'
+   raise 'stripe-react-native requires the React Native new architecture. Use RCT_NEW_ARCH_ENABLED=1 in your Podfile.'

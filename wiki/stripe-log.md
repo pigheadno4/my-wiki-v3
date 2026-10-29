@@ -6,6 +6,16 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-29] ingest | Stripe React Native `0.84.0`
+
+- Approved full additive `github-e889941d7b5280b9c509`, SHA `33ef1ee27ad7b7dc6be86e80b9830ab7daa696ed`, after 0.83.0 completion. Focused reading covers changed retained source, affected prior code, release/comparison/cumulative history and the approved exact-SHA SPM helper. Unchanged source/history/generated inventories and duplicated diff checked mechanically. All 505 file identities pass (252 current/252 prior plus supplement); 18 modified/234 unchanged, 45 upstream dispositions, full assignment 264 paths.
+- Records required RN >=0.75/SPM/dynamic-framework migration, removed Checkout root/type exports with retained internal preview code, shipping appearance/Apple Pay hide behavior, Android callback registration repair and Connect navigation/CSV routing. Native pins 23.25.1/26.15.1; comment-only mandate default change qualified. Two concepts first, then cumulative source/changelog/company/catalog/logs; every earlier history block/source_count preserved. All 1,307 old raw changelog lines unchanged, 12 added. No SDK/device/payment test, future policy expansion, commit or push. Details [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
+## [2026-10-29] ingest | Stripe React Native `0.83.0`
+
+- Approved full additive `github-384f85d0453f6adcaf0f`, SHA `0f2889564760efd8f0bff13f2666814053f06dfc`, with focused reading of changed retained files/affected prior code and cumulative history; unchanged source/history/generated evidence checked mechanically. All 503 prior/current file identities pass; 27 changed/new, 225 unchanged, 41 upstream dispositions and 261-path full assignment. No SDK/device/payment execution.
+- Records opt-in shipping UI/presentation boundary, preview type/configuration removals, sublabels/updating/theme/network-default plumbing, Connect accessor fix, keyless-address deprecation and native pins. Two existing concepts first; source/changelog/company/index/logs updated. All older knowledge/raw links and source_count retained; 1295 old raw changelog lines unchanged. No commit or push.
+
 ## [2026-10-29] ingest | Stripe iOS `26.15.1`
 
 - Approved full additive `github-a76e7c3cf274013dd755`, SHA `2f4547639a5aed18d39e4ba44c0ba684dab3161b`, with approved focused reading: changed content, affected prior code, exact-SHA migration supplement, release/comparison and cumulative history; unchanged source/history/inventories and duplicated diff checked mechanically. Both 300-file snapshots pass size/SHA-256/blob verification: 23 modified, 277 unchanged. Full assignment 312 paths; all 6,759 upstream dispositions classified without automated gaps, not semantic review of exclusions.

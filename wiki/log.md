@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Stripe React Native `0.84.0`
+
+- Approved additive full with focused reading and exact-SHA SPM supplement: mandatory SPM/RN floor, removed public Checkout preview exports, internal appearance/Apple Pay options, Android callback and Connect repairs. All earlier history retained; details [[stripe-log]] and [[source-github-stripe-react-native]]. No SDK/device/payment test, commit or push.
+
+## [2026-10-29] ingest | Stripe React Native `0.83.0`
+
+- Approved full additive with focused reading: shipping-address preview/type migration, Connect configuration fix, address deprecation and native pins. All earlier history retained; details [[stripe-log]] and [[source-github-stripe-react-native]]. No SDK/device/payment test, commit or push.
+
 ## [2026-10-29] ingest | Adyen website C45
 
 - Fifty independently approved Afterpay, Clearpay, Alma and Oney documentation sources; first full-review approvals 38/50 and 12 targeted correction reviews. 1 concepts touched (0 new); source_count 2264 = 2250 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-45/`; details [[adyen-log]]. No commit/push.

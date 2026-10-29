@@ -2,9 +2,12 @@
 title: "GitHub: stripe/stripe-react-native"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-10-21
+date_updated: 2026-10-29
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/manifest.json"
+  - "github/stripe/stripe-react-native/supplements/2026-10-29-33ef1ee-3282c040/manifest.json"
+  - "github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-14-1b792fb/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-04-ce9c1bf/manifest.json"
@@ -22,18 +25,20 @@ tags: [stripe, react-native, mobile, sdk, payments, payment-sheet, embedded-paym
 
 ## Overview
 
-`stripe/stripe-react-native` publishes `@stripe/stripe-react-native`, Stripe's official React Native bridge to its native iOS and Android payment SDKs. This cumulative page preserves the legacy `0.65.1` manual capsule, the approved `0.72.0` baseline and subsequent history through the additive full `0.82.0` ingest at `6c2020d4b4c9c2f75c01690df5b084a6c046c585`.
+`stripe/stripe-react-native` publishes `@stripe/stripe-react-native`, Stripe's official React Native bridge to its native iOS and Android payment SDKs. This cumulative page preserves the legacy `0.65.1` manual capsule, the approved `0.72.0` baseline and subsequent history through the additive full `0.84.0` ingest at `33ef1ee27ad7b7dc6be86e80b9830ab7daa696ed`.
 
 Repository: <https://github.com/stripe/stripe-react-native>
 
 ## Evidence Boundary
 
+- `0.84.0` is an approved full additive override with focused reading. All 18 changed retained files were read (new raw changelog block; unchanged history mechanically checked), alongside affected prior code, cumulative wiki context and the approved exact-SHA `stripe_spm.rb` supplement. Current/prior snapshots each retain 252 files, with 18 modified/234 unchanged; all 504 snapshot identities plus the supplement's size/SHA-256/Git blob match. Effective full assignment remains 264 paths. All 45 upstream changes have dispositions (18 retained, 27 policy exclusions); the helper exclusion is separately covered by the attachment. Unchanged source/generated inventories/duplicated diff are mechanically verified, not a semantic whole-repository read. No native build, device or payment execution. Native delegation, excluded tests/examples and historical limitations remain explicit.
+- `0.83.0` is an approved full additive override for preview API incompatibilities and broader shipping/lifecycle plumbing. The user approved focused reading: all 27 added/changed retained files (new raw changelog block, unchanged history checked mechanically), affected prior code, release/comparison and cumulative wiki history. Both snapshots pass size/SHA-256/Git blob checks: 252 current/251 prior, one added, 26 modified, 225 unchanged. Full assignment remains 261 paths. All 41 upstream changes have dispositions (27 retained, 14 excluded); empty machine API/gap arrays are not semantic Swift/TypeScript review. Native address-launcher/autocomplete, delegated payment/Checkout internals and excluded examples/tests are not full-file evidence. No fresh read of unchanged source, SDK/device/payment execution or full-repository claim.
 - `0.82.0` is a user-approved additive full override for incompatible Checkout preview contracts and broad implementation changes, with a one-release focused-reading exception. All 37 added/changed retained files were read fully, except unchanged cumulative changelog history mechanically verified as authorized; affected prior code, release notes and cumulative wiki history were read. Current/prior capsules retain 251/244 files: seven added, 30 modified, 214 unchanged. All 495 file sizes/SHA-256/Git blob IDs and inventories match; all retained comparison hunks match their old/new files. The expanded full list is 260 paths/2,273,704 bytes. All 81 upstream changes are dispositioned (37 retained, 44 intentional exclusions), with no packet gaps/unclassified changes. Manifests, unchanged source and duplicated diff were checked mechanically, not claimed as a semantic full-repository read. No SDK build/device/payment test.
 - `0.81.0` uses explicitly approved additive full mode with focused reading for Checkout payment-behavior and host/credential lifecycle changes. Current/prior capsules retain 244/240 files: four added, 33 modified, 207 unchanged; all 484 hashes/sizes match. Changed implementation/affected prior code, new files and release/comparison evidence reviewed; unchanged expanded inventory/history mechanically checked. All 72 upstream paths have dispositions, not full semantic repository coverage. Native Stripe internals, unretained changed examples and tests are excluded from full-file evidence; no SDK build/device/payment tests. Older knowledge remains intact.
 - The `0.75.0` capsule retains 252 public, production, configuration, example, and story files. Tests and fixtures are excluded by policy; stories are retained as useful integration evidence. Complete Android Onramp implementation files are outside the capsule; their changed hunks are available in the comparison, which does not replace full-file evidence for a deep runtime query.
 - The TypeScript API delegates payment behavior to native Stripe iOS and Android SDKs through React Native bridges. An exported type or component does not independently prove merchant eligibility, payment-method availability, preview access, or native-runtime behavior.
 - The collector first retained `0.72.0`. The older `0.65.1` evidence is a 14-file manual capsule, so this page preserves its findings without claiming an automated, exhaustive `0.65.1--0.72.0` diff.
-- The package's current peer ranges are broad (`expo >=46.0.9`; React, React Native, and React Native WebView `*`). Applications still need to follow the platform and Expo compatibility requirements documented for their selected release.
+- Through `0.83.0`, peer ranges were broad (`expo >=46.0.9`; React, React Native, and React Native WebView `*`). At `0.84.0`, React Native becomes `>=0.75.0`; the other ranges remain broad. Applications still need the platform/Expo requirements for their selected release, not merely a satisfiable peer range.
 - `useLinkController` is explicitly private preview. Its public source surface is evidence of an available SDK contract, not general production access.
 
 ## Grounding Excerpts
@@ -90,7 +95,7 @@ Repository: <https://github.com/stripe/stripe-react-native>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/stripe-react-native` | `0.82.0` | `6c2020d4b4c9c2f75c01690df5b084a6c046c585` | Approved additive full with focused reading; older history retained |
+| `@stripe/stripe-react-native` | `0.84.0` | `33ef1ee27ad7b7dc6be86e80b9830ab7daa696ed` | Approved additive full with focused reading and SPM supplement; all older history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -103,6 +108,8 @@ The package exposes CommonJS, ES module, and TypeScript declaration outputs from
 3. `ios/` implements the Swift and Objective-C bridge over Stripe iOS SDK `26.14.0` at `0.82.0`; the prior `0.81.0` pin was `26.13.0`, `0.80.0` used `26.12.1`. New architecture is required from 0.77.0; older old-architecture component evidence is historical.
 
 The Android and iOS modules map native result objects and errors back into stable React Native return shapes. Native implementation remains authoritative when TypeScript declarations and platform behavior diverge.
+
+The newer `0.84.0` pins are Android `23.25.1` and iOS `26.15.1`; the numbered architecture baseline above remains historical, not the current dependency pin.
 
 ## Core Payment Surfaces
 
@@ -129,6 +136,8 @@ The imperative and hook surfaces include:
 These client APIs consume client secrets and ephemeral configuration created by a merchant backend. They do not replace server-side Intent, CustomerSession, Checkout Session, or Connect-session creation.
 
 ### Checkout Private Preview
+
+**Current 0.84.0 boundary:** the package root no longer exports the Checkout hook, creator or element views, and the types barrel no longer exports Checkout types. Internal implementations remain, marked private preview and `@internal`. The following older-version implementation history is preserved, not a supported current root-import recipe. Ordinary Intent-based PaymentSheet is separate and remains exported.
 
 The Checkout private preview is separate from ordinary Intent-based PaymentSheet. At 0.78.0 imperative creation/session/mutations become partially bridged; 0.79.0 adds the reactive hook and server-update handshake. Payment presentation, confirmation and the embedded view remain unimplemented through 0.79.0. Platform-specific mutation gaps and earlier stubs remain version-qualified below; this is not a complete merchant-ready Checkout integration.
 
@@ -206,7 +215,9 @@ From 0.77.0, enable TurboModules/Fabric on Android, iOS and Expo. The older plat
 
 If an Android app cannot move to SDK 36, the migration guide directs it to pin a package release based on Stripe Android SDK 22.x or earlier. `CardForm` additionally requires a Material Components theme.
 
-From 0.78.0, React Native >=0.75 defaults to SPM for the native Stripe iOS SDK and requires dynamic frameworks. The wrapper remains a development pod: still run `pod install`. Configure `use_frameworks! :linkage => :dynamic`, or Expo `expo-build-properties` with `ios.useFrameworks: 'dynamic'`. RN <0.75 is deprecated and currently falls back to CocoaPods. Temporary opt-out uses `$StripeDisableSPM = true` or the SDK Expo plugin's `disableSPM: true`; the fallback is deprecated. Preserve `react_native_post_install`; check the app embed phase if dynamic frameworks cannot load. The README directs Identity SDK co-users to opt out until Identity supports SPM.
+Historically, 0.78.0 through 0.83.0 default native iOS dependency resolution to SPM on RN >=0.75 and require dynamic frameworks. The wrapper remains a development pod: still run `pod install`. Configure `use_frameworks! :linkage => :dynamic`, or Expo `expo-build-properties` with `ios.useFrameworks: 'dynamic'`. In those older releases RN <0.75 falls back to CocoaPods, and temporary opt-out uses `$StripeDisableSPM = true` or `disableSPM: true`; both fallback paths are deprecated. Their README directs Identity SDK co-users to opt out until Identity supports SPM. This is historical guidance, not a valid 0.84.0 workaround.
+
+At 0.84.0, RN >=0.75 is mandatory and SPM/dynamic frameworks are required for native Stripe iOS dependencies. Remove both legacy opt-outs: the Expo plugin rejects truthy `disableSPM` before registering project modifications, and the helper rejects `$StripeDisableSPM == true`. Keep `pod install` and `react_native_post_install`; the wrapper still uses a local development pod. Expo precompiled-module users require Expo >=58.0.19 per the migration guide. The removed Identity workaround does not establish that Identity coexistence is fixed. Native iOS deployment requirements must be checked independently of the wrapper's retained iOS 13 declaration.
 
 ## Initialization
 
@@ -223,6 +234,54 @@ await initStripe({ publishableKey: 'pk_...', merchantIdentifier: 'merchant.com.a
 For digital goods and services sold inside the app, including subscriptions, in-game currency, premium content, and app unlocking, the repository directs developers to Apple or Google in-app purchase APIs. This Stripe SDK is for scenarios allowed under the applicable app-store rules.
 
 ## Version History
+
+### `@stripe/stripe-react-native@0.84.0` - Additive Full Ingest
+
+**Identity:** SHA `33ef1ee27ad7b7dc6be86e80b9830ab7daa696ed`, tag `v0.84.0`; published October 27 23:55:38 UTC / October 28 Asia/Shanghai, notes heading October 27. Native pins advance Android `23.24.0 -> 23.25.1`, iOS `26.15.0 -> 26.15.1`. This does not imply a React Native binding for every native feature.
+
+**Breaking build requirements:** RN peer range becomes `>=0.75.0`; the new-architecture requirement predates this release. Native Stripe iOS CocoaPods resolution is no longer supported: remove the Podfile/Expo SPM opt-outs and enable dynamic frameworks. Expo's top-level plugin throws before registering native modifications when disableSPM is truthy; absent/false removes an older generated flag block. The internal helper that can write the old flag still exists, but is not a supported opt-out through this plugin. Legacy podspec dependency branches remain for ad hoc releases, not a working current fallback.
+
+**Exact-SHA SPM helper supplement:** the separately retained `stripe_spm.rb` rejects the true Ruby opt-out and otherwise enables SPM. It checks dynamic-framework linkage, uses exact native-version packages from the Stripe SPM mirror unless an advanced branch override is configured, validates integration of the Pods package reference, and embeds/signs dynamic Stripe frameworks for normal/archive builds. Conditional Onramp products and idempotent hooks are implementation details, not newly introduced 0.84.0 features merely because this is the first full-file supplement. Preserve `react_native_post_install`; troubleshooting covers missing package references, embed phases and integrity errors. A parseable CocoaPods version below 1.10 is rejected; an unavailable/unparseable version skips that check, not a blanket toolchain compatibility guarantee. Expo precompiled modules require >=58.0.19 per the migration guide. Do not reinstate the removed Identity opt-out or infer resolved Identity compatibility.
+
+**Public Checkout exports removed:** `src/index.tsx` removes useCheckout, createCheckout, CheckoutPaymentElementView and CheckoutCurrencySelectorElementView, while `src/types/index.ts` removes the Checkout type re-export. Their implementation/type files remain and gain `@internal`. This is an incompatible preview public-surface change missed by the empty machine API-change array. Do not recommend deep imports as supported merchant integration; ordinary Intent-based PaymentSheet is not removed. All earlier Checkout implementation findings remain valid for their recorded versions.
+
+**Internal preview behavior:** shipping-address appearance now maps colors, primary-button font/colors/shapes and form insets on Android; iOS maps the shared appearance parser's font/colors/shapes/shadow/insets/button fields. Form font and input shapes are documented iOS-only. Android omitted inset edges use 20dp horizontal, 0 top and 40dp bottom when an inset map is provided; native constructors own other omitted defaults. Type comments describe platform-specific button text/border/height defaults, not independent proof of every native default. iOS applePay.display='never' returns nil before merchant-ID validation; omitted/automatic display still validates the ID when an applePay configuration is supplied, and unsupported display strings throw. The mandate-text default comment changes false to true, but wrappers still set it only when provided; this alone does not date a native default change.
+
+**Android PaymentSheet:** PaymentSheet and custom FlowController now track None / IntentCreation / ConfirmationToken callback kinds and rebuild when kind changes. Builders register callbacks, so reconfiguration alone previously could retain the wrong kind; PaymentSheet unregisters its signal before rebuild. This is source evidence for the registration repair, not device verification or a general exactly-once/concurrent-call guarantee.
+
+**Connect:** only iOS non-click navigation takes the early allow path now; Android external links proceed through allowed-host checks and configured native browser/Linking presentation regardless of navigation type. CSV detection additionally recognizes stripe-data-exports.s3.amazonaws.com and routes matches to native download/share. The older export-domain/subdomain/pathname checks remain, so this is not strict host allowlisting or generic WebView security hardening. No runtime share/browser test was performed.
+
+**Grounding excerpts, all from the 0.84.0 snapshot's files directory:**
+- `MIGRATING.md:5`: "React Native 0.75 or later is required."
+- `src/plugin/withStripe.ts:52`: `if (props.disableSPM) {`
+- `android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt:247`: `if (paymentSheet == null || paymentSheetCallbackKind != callbackKind) {`
+- `src/connect/EmbeddedComponent.tsx:841`: `if (Platform.OS === 'ios' && navigationType !== 'click') return true;`
+- `ios/Checkout/CheckoutConfigurationMapper.swift:331`: `case "never": return nil`
+
+**Scope:** current/prior 252/252 retained files, 18 modified/234 unchanged, plus one immutable supplement; all 505 identities checked. Full assignment 264 paths; all 45 upstream paths dispositioned, no packet gaps/unclassified changes. User-approved focused reading covers changed retained source, affected prior code, supplement and cumulative history, with generated inventories/unchanged content/duplicated diff checked mechanically. Raw changelog retains all 1,307 prior lines with 12 inserted lines. Existing concepts updated before source; source_count and every earlier version block retained. No SDK/device/payment test, automatic collection-policy expansion, commit or push.
+
+### `@stripe/stripe-react-native@0.83.0` - Additive Full Ingest
+
+**Identity:** SHA `0f2889564760efd8f0bff13f2666814053f06dfc`, tag `v0.83.0`; publication 2026-10-21 17:13:22 UTC (October 22 Asia/Shanghai), notes heading October 20. Native pins advance Android `23.23.0 -> 23.24.0`, iOS `26.14.0 -> 26.15.0`. This does not include native iOS 26.15.1 or imply bindings for every native feature.
+
+**Shipping Address Element, private preview:** opt in with `shippingAddressElement: {}` when creating Checkout; optional title/buttonTitle customize its labels. Controller and hook expose a nullable handle, captured from creation configuration. Its `present()` resolves after requesting presentation, not after dismissal, selection or server acceptance. Observe `session.shippingAddress` separately. Android requires a non-finishing resumed ComponentActivity, checks configuration and registers shipping results on its shared Activity-scoped presenter, including recreation via another element. iOS retains `getShippingAddressElement()` only when configured and requires a visible, non-dismissing presenter. Disabled/destroyed lifecycle and bridge error handling remain. This is neither general availability nor a device-tested merchant integration.
+
+**Incompatible Checkout preview types:** payment appearance/row-selection/wallet/Link types move under `Checkout.PaymentElementConfiguration`; selector appearance/colors/shapes/labels move under `Checkout.CurrencySelectorElementConfiguration`. For example, `Checkout.CurrencySelectorElementAppearance` becomes `Checkout.CurrencySelectorElementConfiguration.Appearance`. Checkout's `BillingDetailsCollectionConfiguration` and `paymentElement.billingDetailsCollectionConfiguration` disappear, with the prior iOS address-setting mapper removed. Checkout Apple Pay configuration drops merchantCountryCode and retains optional buttonType; merchant ID still comes from initialization. Do not remove ordinary Intent-based PaymentSheet billing or Platform Pay country settings because these preview-only types changed.
+
+**State/display plumbing:** both session serializers now forward optional `paymentOption.sublabel`, separate from the primary label. Existing mandate HTML is not newly introduced here. Android immediately emits updating when native work starts, without waiting for potentially slow icon serialization; this can carry the last serialized session rather than a newly refreshed one. Android selector color mapping now respects root alwaysLight/alwaysDark before system mode; automatic live theme refresh is not proven. PaymentSheet, Embedded and CustomerSheet only call preferredNetworks when the input list exists, leaving omitted defaults to native; no native default order is inferred.
+
+**Connect fix:** a new `buildInjectedObjectScript` double-stringifies initialization/component data, embeds it as a JS string literal and installs a non-writable/non-configurable `injectedObjectJson` accessor before content load. The original injected-object prop is retained for older Android WebView paths. This supports the announced quote/backslash/backtick startup-hang fix; neither universal WebView-version coverage nor general injection/XSS security is established. No hosted or device execution was performed.
+
+**Other changes:** AddressSheet deprecates the Android googlePlacesApiKey prop without removing it or its forwarding; keyless autocomplete is release/documentation evidence because native address-launcher changes are outside the capsule. PlatformPayButton adds explicit-height documentation/example but no rendering logic change. README adds host-localization setup: iOS app language declarations/CFBundleLocalizations and mixed-localization guidance, versus Android device/per-app language. Gradle adds JVM memory/encoding settings without changing SDK floors. iOS PaymentSheet/Embedded only correct a credential-conflict error string; confirmation-token and mandate behavior already existed and must not be labeled new.
+
+**History/limits:** all 1,295 earlier raw changelog lines are unchanged, with twelve release-block insertions. Earlier wiki sections, preview stubs/limitations and native baselines remain version-qualified. No new cross-company comparison or source-count increase.
+
+**Grounding excerpts** (paths under `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/`):
+- `src/types/Checkout.ts:84`: `The promise does not wait for dismissal or report the customer's selection.`
+- `src/types/Checkout.ts:154`: `shippingAddressElement?: ShippingAddressElementConfiguration;`
+- `src/connect/injectedObjectScript.ts:15`: `const jsonLiteral = JSON.stringify(JSON.stringify(injectedObject));`
+- `src/components/AddressSheet.tsx:48`: `@deprecated Omit this prop. Autocomplete now does not require a Google Places API key.`
+- `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt:138`: `if (isUpdating && confirmation == null && !destroyed) emit("updating")`
 
 ### `@stripe/stripe-react-native@0.82.0` - Additive Full Ingest
 
@@ -438,6 +497,26 @@ The May 2026 manual capsule established PaymentSheet, Platform Pay, CardField/Ca
 
 ## Raw Sources
 
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/manifest.json` - 252-file exact-SHA 0.84.0 capsule
+- `raw/github/stripe/stripe-react-native/supplements/2026-10-29-33ef1ee-3282c040/manifest.json` - immutable one-file SPM helper supplement
+- `raw/github/stripe/stripe-react-native/supplements/2026-10-29-33ef1ee-3282c040/files/stripe_spm.rb` - exact-SHA helper implementation
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.84.0/2026-10-29/manifest.json` - release identity/publication
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.84.0/2026-10-29/release-notes.md` - announced migration/fixes
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.83.0--0.84.0/comparison.json` - adjacent comparison.md/diff.patch; retained old/new source hunks read
+- `tracking/github/repos/stripe/stripe-react-native/evidence-attachments/github-e889941d7b5280b9c509/attachment.json` - canonical supplement linkage
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/manifest.json` - 252-file exact-SHA 0.83.0 capsule; unchanged source mechanically checked under approval
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.83.0/2026-10-29/manifest.json` - release identity/publication
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.83.0/2026-10-29/release-notes.md` - announcements
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.82.0--0.83.0/comparison.json` - adjacent comparison.md/diff.patch; retained prior/current hunks read
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/src/types/Checkout.ts` - full preview contract/type migration
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/src/checkout/createCheckout.ts` - full controller/shipping handle; adjacent hook/spec fully read
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/ios/StripeSdkImpl+Checkout.swift` - full shipping/mutation/presentation bridge
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt` - full native bridge; adjacent Checkout instance/mapper/serializer fully read
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/ios/Checkout/CheckoutConfigurationMapper.swift` - full shipping/configuration mapping; adjacent instance/serializer fully read
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/src/connect/injectedObjectScript.ts` - full new accessor helper
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/src/connect/EmbeddedComponent.tsx` - full injected-data consumer
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/src/components/AddressSheet.tsx` - full deprecated prop/forwarding; PlatformPayButton.tsx fully read for height docs
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/files/README.md` - full requirements/localization; package.json, podspec and gradle.properties fully read
 - `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/manifest.json` - immutable 251-file 0.82.0 capsule; unchanged files/inventory mechanically verified under explicit authorization
 - `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.82.0/2026-10-21/manifest.json` - package-qualified identity and publication timestamp
 - `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.82.0/2026-10-21/release-notes.md` - native upgrades and announced Android fixes

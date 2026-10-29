@@ -2,9 +2,12 @@
 title: "GitHub changelog: stripe/stripe-react-native"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-10-21
+date_updated: 2026-10-29
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/manifest.json"
+  - "github/stripe/stripe-react-native/supplements/2026-10-29-33ef1ee-3282c040/manifest.json"
+  - "github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-14-1b792fb/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-04-ce9c1bf/manifest.json"
@@ -23,6 +26,40 @@ tags: [stripe, react-native, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-react-native`. Cumulative implementation knowledge belongs in [[source-github-stripe-react-native]] and the linked immutable evidence.
+
+## `@stripe/stripe-react-native@0.84.0` - Change Set `33ef1ee`
+
+- From 0.83.0; exact SHA `33ef1ee27ad7b7dc6be86e80b9830ab7daa696ed`. Published October 27 UTC/October 28 Asia/Shanghai; notes heading October 27. Approved additive full override with focused reading; all earlier history preserved.
+- Breaking: RN >=0.75 required; remove old SPM opt-outs and use dynamic frameworks for native iOS dependencies. The wrapper still requires pod install/react_native_post_install. Expo precompiled-module users need >=58.0.19. New architecture was already mandatory. Native pins: Android 23.25.1 / iOS 26.15.1.
+- Additional incompatible preview change: package-root Checkout hook/creator/views and type-barrel exports removed. Internal files remain marked @internal/private preview; not a supported deep-import migration or removal of ordinary PaymentSheet.
+- Internal Checkout adds shipping appearance mappings and iOS Apple Pay display=never, which bypasses merchant-ID validation only when hiding Apple Pay. Mandate default comment now says true; wrappers still defer omitted values to native defaults, so no first-runtime-change claim.
+- Android PaymentSheet/custom FlowController rebuild when callback kind switches between direct secret, deferred PaymentMethod and ConfirmationToken modes. Connect Android external links respect configured browser presentation for all navigation types; CSV detection adds the S3 export host. Existing broad pathname heuristic remains.
+- Exact-SHA SPM helper supplement records dynamic-linkage/package-reference/embed handling, not a claim those mechanisms were all newly added in this release. No changed future collection policy, native build/device/payment test, commit or push.
+- Evidence: 252 current/252 prior files, 18 modified/234 unchanged plus one supplement; all 505 sizes/SHA-256/Git blob identities verified. Full assignment 264 paths. Upstream 45=18 retained+27 policy exclusions, helper separately attached; no gaps/unclassified changes. Raw changelog preserves 1,307 older lines plus 12 new lines. Concepts updated first; source_count unchanged.
+
+Evidence:
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/manifest.json`
+- `raw/github/stripe/stripe-react-native/supplements/2026-10-29-33ef1ee-3282c040/manifest.json` - adjacent files/stripe_spm.rb
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.84.0/2026-10-29/manifest.json` - adjacent release-notes.md
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.83.0--0.84.0/comparison.json` - adjacent comparison.md/diff.patch
+- `tracking/github/repos/stripe/stripe-react-native/evidence-attachments/github-e889941d7b5280b9c509/attachment.json`
+- [[source-github-stripe-react-native]] - implementation detail and five located grounding excerpts
+
+## `@stripe/stripe-react-native@0.83.0` - Change Set `0f28895`
+
+- From `@stripe/stripe-react-native@0.82.0`; SHA `0f2889564760efd8f0bff13f2666814053f06dfc`. Published October 21 UTC/October 22 Asia/Shanghai; notes heading October 20. Approved full additive override with focused reading; all older knowledge preserved.
+- Native pins: iOS 26.15.0, Android 23.24.0. AddressSheet deprecates Android googlePlacesApiKey, not the prop's existence; native autocomplete implementation remains excluded. Connect safely string-encodes init data and installs a read-only accessor to address the announced quote/backslash/backtick hang, not every injection or WebView scenario.
+- Additional preview implementation: opt-in Shipping Address Element with nullable controller/hook handle, native host/configuration guards and presentation-request-only promise. Observe session shipping changes, not promise resolution, for address state. Checkout configuration types move into element-specific namespaces; Checkout billing collection configuration and Apple Pay merchantCountryCode disappear. Ordinary PaymentSheet/Platform Pay settings remain separate.
+- Both serializers add sublabel; Android emits updating before icon serialization and selector colors honor explicit root style. Omitted preferredNetworks no longer invokes setters on three Android surfaces. PlatformPayButton's explicit-height guidance and host-localization guidance are documentation changes. iOS credential-conflict messages receive punctuation correction, not new confirmation-token behavior.
+- Both capsules verified: 252 current/251 prior files; one added, 26 modified, 225 unchanged; 503 size/SHA-256/Git identities match. Full list 261 paths. All 41 upstream changes classified (27 retained/14 excluded). Changed retained files/affected prior code read; unchanged files/history/generated inventories and duplicated diff mechanically verified under approval. Raw changelog preserves 1295 old lines with 12 new lines. No SDK/device/payment tests.
+- Existing React Native/Checkout concepts updated first, then cumulative source/changelog, company, provider index and logs; source_count unchanged. No cross-company comparison, extra collection, commit or push.
+
+Evidence:
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-29-0f28895/manifest.json`
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.83.0/2026-10-29/manifest.json`
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.83.0/2026-10-29/release-notes.md`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.82.0--0.83.0/comparison.json` - adjacent comparison.md/diff.patch
+- [[source-github-stripe-react-native]] - exact implementation paths and five located grounding excerpts
 
 ## `@stripe/stripe-react-native@0.82.0` - Change Set `6c2020d` (2026-10-14)
 

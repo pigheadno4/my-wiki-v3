@@ -1,0 +1,3478 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4f53e1a..3acff67 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,17 @@
+ # CHANGELOG
+ 
++## 0.84.0 - 2026-10-27
++
++**Breaking changes**
++
++* [Removed] iOS: The `disableSPM` Expo option and `$StripeDisableSPM = true` Podfile flag are no longer supported because the Stripe iOS SDK no longer supports CocoaPods resolution. Remove these options and use dynamic frameworks with Swift Package Manager. See the [migration guide](MIGRATING.md#ios-swift-package-manager-dependency-resolution-and-dynamic-linking).
++* [Removed] Support for React Native versions below 0.75. React Native 0.75 or later is now required.
++
++**Fixes**
++
++* [Fixed] Android: Connect external links now use the configured browser presentation regardless of navigation type.
++* [Fixed] Connect CSV exports now open the native share sheet again for exports served from Stripe's export storage.
++
+ ## 0.83.0 - 2026-10-20
+ 
+ **Changes**
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index f9d2bd0..5998205 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -172,19 +172,18 @@ We follow the [conventional commits specification](https://www.conventionalcommi
+ 
+ The React Native SDK depends on underlying native [iOS](https://github.com/stripe/stripe-ios) and [Android](https://github.com/stripe/stripe-android) SDKs. To update:
+ 
+-**iOS:** Update `stripe_version` in `stripe-react-native.podspec`, then run `yarn pods`. The single `stripe_version` value pins both resolution paths: the Swift Package Manager pin (the default; see the section below) and the CocoaPods fallback dependencies. `yarn update-pods` is only relevant when working in the CocoaPods fallback mode.
++**iOS:** Update `stripe_version` in `stripe-react-native.podspec`, then run `yarn pods`. The single `stripe_version` value pins the Swift Package Manager dependency and the retained legacy CocoaPods dependencies. `yarn update-pods` applies only to the legacy CocoaPods infrastructure.
+ 
+ **Android:** Update `StripeSdk_stripeVersion` in `android/gradle.properties`.
+ 
+ ## iOS dependency resolution
+ 
+-The Stripe iOS SDK is deprecating CocoaPods support, and accordingly the Stripe React Native SDK is in a transition phase where it resolves the iOS dependency through Swift Package Manager (SPM) by default while still supporting and exposing an opt-out option.
++The Stripe iOS SDK no longer supports CocoaPods resolution. The Stripe React Native SDK resolves it through Swift Package Manager (SPM) and rejects the `disableSPM` and `$StripeDisableSPM` opt-outs. The legacy CocoaPods infrastructure is retained for possible ad hoc releases.
+ 
+ For a full explanation of the SPM resolution mechanism, see the documentation in `stripe_spm.rb`.
+ 
+ | Toggle | Effect |
+ |--------|--------|
+-| `STRIPE_DISABLE_SPM=1 yarn pods` | Builds the example app using the CocoaPods fallback (static libraries), for verifying the opt-out path. |
+ | `OVERRIDE_STRIPE_IOS_VERSION_GIT_BRANCH=<branch>` | Resolves the Swift package from that branch instead of the pinned release. Used by CI and developers to test against unreleased stripe-ios changes. |
+ 
+ ## Changing the public APIs
+@@ -204,7 +203,7 @@ The public API is everything exported from `src/index.tsx`.
+ 
+ ## React Native architecture compatibility
+ 
+-The SDK requires the new architecture.
++The SDK requires React Native 0.75 or later and the new architecture.
+ 
+ React Native versions before 0.80 still require the event-emitter compatibility layers in `src/events.ts`, Android's `EventEmitterCompat.kt`, and `ios/StripeSdkEventEmitterCompat.{h,m}`.
+ 
+diff --git a/MIGRATING.md b/MIGRATING.md
+index f250c91..8ecf6e7 100644
+--- a/MIGRATING.md
++++ b/MIGRATING.md
+@@ -1,18 +1,23 @@
+ # Migration Guide
+ 
++## React Native 0.75 minimum
++
++React Native 0.75 or later is required. Upgrade your app's React Native version before updating this SDK, or continue using an older SDK release if you cannot upgrade yet.
++
+ ## iOS Swift Package Manager dependency resolution and dynamic linking
+ 
+-By default, the Stripe React Native SDK now resolves its [Stripe iOS SDK](https://github.com/stripe/stripe-ios) dependency through Swift Package Manager instead of CocoaPods. This requires building your app with dynamic linking. For non-Expo apps, add to your Podfile:
++The Stripe React Native SDK resolves its [Stripe iOS SDK](https://github.com/stripe/stripe-ios) dependency through Swift Package Manager. The Stripe iOS SDK no longer supports CocoaPods resolution. This requires building your app with dynamic linking. For non-Expo apps, add to your Podfile:
+ 
+ ```ruby
+ use_frameworks! :linkage => :dynamic
+ ```
+ 
+ For Expo apps, set `"useFrameworks": "dynamic"` via the [expo-build-properties](https://docs.expo.dev/versions/latest/sdk/build-properties/) plugin.
++If you are using precompiled modules with Expo, you must use Expo 58.0.19 or later, otherwise Expo will revert your build to static linking.
+ 
+-See [Stripe iOS SDK resolution](https://github.com/stripe/stripe-react-native#ios-dependency-resolution) in the README for details, troubleshooting, and temporary workarounds.
++Remove `$StripeDisableSPM = true` from your Podfile or `disableSPM` from your Expo app config if you previously opted out of SPM resolution. These options now cause an error.
+ 
+-React Native versions < 0.75 will continue using CocoaPods. However, these React Native versions are deprecated and will not be supported in future Stripe React Native SDK versions.
++See [Stripe iOS SDK resolution](https://github.com/stripe/stripe-react-native#ios-dependency-resolution) in the README for details and troubleshooting.
+ 
+ ## Android SDK 36 requirement (stripe-android 23.x)
+ 
+diff --git a/README.md b/README.md
+index 9886331..a280434 100644
+--- a/README.md
++++ b/README.md
+@@ -61,8 +61,7 @@ Next, add:
+         "@stripe/stripe-react-native",
+         {
+           "merchantIdentifier": string | string [],
+-          "enableGooglePay": boolean,
+-          "disableSPM": boolean
++          "enableGooglePay": boolean
+         }
+       ]
+     ],
+@@ -70,13 +69,13 @@ Next, add:
+ }
+ ```
+ 
+-to your `app.json` file, where `merchantIdentifier` is the Apple merchant ID obtained [here](https://stripe.com/docs/apple-pay?platform=react-native). Otherwise, Apple Pay will not work as expected. If you have multiple `merchantIdentifier`s, you can set them in an array. `disableSPM` (optional, iOS) resolves the Stripe iOS SDK through CocoaPods instead of Swift Package Manager — see [Stripe iOS SDK resolution](#ios-dependency-resolution).
++to your `app.json` file, where `merchantIdentifier` is the Apple merchant ID obtained [here](https://stripe.com/docs/apple-pay?platform=react-native). Otherwise, Apple Pay will not work as expected. If you have multiple `merchantIdentifier`s, you can set them in an array. See [Stripe iOS SDK resolution](#ios-dependency-resolution) for the required iOS linking configuration.
+ 
+ ### Requirements
+ 
+ #### React Native
+ 
+-React Native verions < 0.75 are deprecated.
++React Native 0.75 or later is required.
+ The React Native **new architecture** (TurboModules and Fabric) is required.
+ 
+ - **Android:** Set `newArchEnabled=true` in `android/gradle.properties`.
+@@ -121,53 +120,27 @@ You'll need to run `pod install` in your `ios` directory to install the native d
+ 
+ ### iOS Dependency Resolution
+ 
+-By default, the Stripe React Native SDK resolves its Stripe iOS SDK dependency through Swift Package Manager (SPM) instead of CocoaPods due to the deprecation of CocoaPods. This requires building your app with dynamic linking. Add the following to your Podfile if it isn't there already:
++The Stripe React Native SDK resolves its Stripe iOS SDK dependency through Swift Package Manager (SPM). The Stripe iOS SDK no longer supports CocoaPods resolution. This requires building your app with dynamic linking. Add the following to your Podfile if it isn't there already:
+ 
+ ```ruby
+ use_frameworks! :linkage => :dynamic
+ ```
+ 
+ For Expo, set `"useFrameworks": "dynamic"` via the [expo-build-properties](https://docs.expo.dev/versions/latest/sdk/build-properties/) plugin.
++If you are using precompiled modules with Expo, you must use Expo 58.0.19 or later, otherwise Expo will revert your build to static linking.
+ 
+ If you encounter problems with SPM dependency resolution, please immediately [file an issue](https://github.com/stripe/stripe-react-native/issues).
+ 
+-#### Opt-Out
+-
+-**WARNING:** CocoaPods support is deprecated and future versions of the Strpe React Native SDK will require resolving the iOS SDK dependency through Swift Package Manager.
+-
+-If you need to temporarily continue resolving the Stripe iOS SDK dependency through CocoaPods (for example if your app currently can't build with dynamic linking), add this at the top of your Podfile:
+-
+-```ruby
+-$StripeDisableSPM = true
+-```
+-
+-For Expo, set the equivalent option on this SDK's config plugin in your app config instead:
+-
+-```json
+-{
+-  "expo": {
+-    "plugins": [
+-      [
+-        "@stripe/stripe-react-native",
+-        {
+-          "disableSPM": true
+-        }
+-      ]
+-    ]
+-  }
+-}
+-```
++If you previously opted out of SPM resolution, remove `$StripeDisableSPM = true` from your Podfile or `disableSPM` from your Expo app config. These options are no longer supported.
+ 
+ #### Troubleshooting
+ 
+-- **`pod install` fails with "Resolving the Stripe iOS SDK through Swift Package Manager requires dynamic frameworks"** — your app is building with static libraries (React Native's default). Add `use_frameworks! :linkage => :dynamic` to your Podfile (for Expo, set `"useFrameworks": "dynamic"` via [expo-build-properties](https://docs.expo.dev/versions/latest/sdk/build-properties/)).
++- **`pod install` fails with "Resolving the Stripe iOS SDK through Swift Package Manager requires dynamic frameworks"** — your app is building with static libraries (React Native's default). If you are not using Expo, add `use_frameworks! :linkage => :dynamic` to your Podfile. If you are using Expo, set `"useFrameworks": dynamic"` via [expo-build-properties](https://docs.expo.dev/versions/latest/sdk/build-properties/)). If you are using precompiled modules in Expo, additionally ensure you are using Expo 58.0.19 or later.
+ 
+ - **`pod install` fails with "The Stripe iOS Swift package was not added to the Pods project"** - the integration relies on `react_native_post_install` being called from your Podfile. If your Podfile is customized and no longer calls it, restore that call (see the [React Native template Podfile](https://github.com/react-native-community/template/blob/main/template/ios/Podfile)).
+ 
+ - **The app crashes at launch with `dyld: Library not loaded: @rpath/Stripe….framework`** - there was an error embedding the Stripe frameworks into your app bundle. Re-run `pod install` and confirm that the `[stripe-react-native] Embed SPM Frameworks` build phase exists on the app target. If the crash persists with the phase present, [file an issue](https://github.com/stripe/stripe-react-native/issues).
+ 
+-- **Your app also uses `@stripe/stripe-identity-react-native`** - Set `$StripeDisableSPM = true` until the Stripe Identity SDK supports SPM resolution.
+-
+ - **`pod install` aborts with an integrity-check error or Xcode reports "The project 'Pods' is damaged and cannot be opened"** - delete your app's `ios/Pods` directory and run `pod install` again. If the error persists, [file an issue](https://github.com/stripe/stripe-react-native/issues).
+ 
+ ### Localization
+diff --git a/android/gradle.properties b/android/gradle.properties
+index 6db7660..7a07b48 100644
+--- a/android/gradle.properties
++++ b/android/gradle.properties
+@@ -3,6 +3,6 @@ StripeSdk_compileSdkVersion=36
+ StripeSdk_targetSdkVersion=36
+ StripeSdk_minSdkVersion=23
+ # Keep StripeSdk_stripeVersion in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/android/gradle.properties
+-StripeSdk_stripeVersion=23.24.0
++StripeSdk_stripeVersion=23.25.1
+ 
+ org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+diff --git a/android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt b/android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt
+index efda30a..25e2da5 100644
+--- a/android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt
++++ b/android/src/main/java/com/reactnativestripesdk/PaymentSheetManager.kt
+@@ -94,6 +94,10 @@ class PaymentSheetManager(
+   internal var paymentSheetConfirmationTokenCreationCallback = CompletableDeferred<ReadableMap>()
+   private var keepJsAwake: KeepJsAwakeTask? = null
+   private var lastConfigureWasCustomFlow: Boolean? = null
++  private var paymentSheetCallbackKind: CallbackKind? = null
++  private var flowControllerCallbackKind: CallbackKind? = null
++
++  private enum class CallbackKind { None, IntentCreation, ConfirmationToken }
+ 
+   @SuppressLint("RestrictedApi")
+   override fun onCreate() {
+@@ -221,24 +225,34 @@ class PaymentSheetManager(
+     args: ReadableMap,
+     promise: Promise,
+   ) {
++    val callbackKind =
++      when {
++        intentConfiguration == null -> CallbackKind.None
++        args.getMap("intentConfiguration")?.hasKey("confirmationTokenConfirmHandler") == true ->
++          CallbackKind.ConfirmationToken
++        else -> CallbackKind.IntentCreation
++      }
++
++    // Native intent-creation callbacks are registered by the builder, not by configure/present.
+     if (args.getBooleanOr("customFlow", false)) {
+       lastConfigureWasCustomFlow = true
+-      if (flowController == null) {
+-        initFlowController(args, promise)
++      if (flowController == null || flowControllerCallbackKind != callbackKind) {
++        initFlowController(callbackKind, promise)
+       }
+       configureFlowController(promise)
+       return
+     }
+ 
+     lastConfigureWasCustomFlow = false
+-    if (paymentSheet == null) {
+-      initPaymentSheet(args, promise)
++    if (paymentSheet == null || paymentSheetCallbackKind != callbackKind) {
++      signal.unregister()
++      initPaymentSheet(callbackKind, promise)
+     }
+     promise.resolve(Arguments.createMap())
+   }
+ 
+   private fun initPaymentSheet(
+-    args: ReadableMap,
++    callbackKind: CallbackKind,
+     promise: Promise,
+   ) {
+     val activity = getCurrentActivityOrResolveWithError(promise) ?: return
+@@ -248,31 +262,19 @@ class PaymentSheetManager(
+         factory = PromiseViewModel.Factory,
+       )[PromiseViewModel::class]
+     promiseViewModel.setPromise(promise)
+-    val intentConfigMap = args.getMap("intentConfiguration")
+-    val useConfirmationTokenCallback = intentConfigMap?.hasKey("confirmationTokenConfirmHandler") == true
+-    paymentSheet =
+-      if (intentConfiguration != null) {
+-        val builder = PaymentSheet.Builder(buildPaymentSheetResultCallback(promiseViewModel))
+-        if (useConfirmationTokenCallback) {
+-          builder.createIntentCallback(buildCreateConfirmationTokenCallback())
+-        } else {
+-          builder.createIntentCallback(buildIntentCreationCallback())
+-        }
+-        @SuppressLint("RestrictedApi")
+-        builder
+-          .confirmCustomPaymentMethodCallback(this)
+-          .build(activity, signal)
+-      } else {
+-        @SuppressLint("RestrictedApi")
+-        PaymentSheet
+-          .Builder(buildPaymentSheetResultCallback(promiseViewModel))
+-          .confirmCustomPaymentMethodCallback(this)
+-          .build(activity, signal)
+-      }
++    val builder = PaymentSheet.Builder(buildPaymentSheetResultCallback(promiseViewModel))
++    when (callbackKind) {
++      CallbackKind.ConfirmationToken -> builder.createIntentCallback(buildCreateConfirmationTokenCallback())
++      CallbackKind.IntentCreation -> builder.createIntentCallback(buildIntentCreationCallback())
++      CallbackKind.None -> Unit
++    }
++    @SuppressLint("RestrictedApi")
++    paymentSheet = builder.confirmCustomPaymentMethodCallback(this).build(activity, signal)
++    paymentSheetCallbackKind = callbackKind
+   }
+ 
+   private fun initFlowController(
+-    args: ReadableMap,
++    callbackKind: CallbackKind,
+     promise: Promise,
+   ) {
+     val activity = getCurrentActivityOrResolveWithError(promise) ?: return
+@@ -282,32 +284,18 @@ class PaymentSheetManager(
+         factory = PromiseViewModel.Factory,
+       )[PromiseViewModel::class]
+     promiseViewModel.setPromise(promise)
+-    val intentConfigMap = args.getMap("intentConfiguration")
+-    val useConfirmationTokenCallback =
+-      intentConfigMap?.hasKey("confirmationTokenConfirmHandler") == true
+-    flowController =
+-      if (intentConfiguration != null) {
+-        val builder =
+-          PaymentSheet.FlowController
+-            .Builder(
+-              resultCallback = buildPaymentSheetResultCallback(promiseViewModel),
+-              paymentOptionResultCallback = buildPaymentOptionCallback(promiseViewModel),
+-            )
+-        if (useConfirmationTokenCallback) {
+-          builder.createIntentCallback(buildCreateConfirmationTokenCallback())
+-        } else {
+-          builder.createIntentCallback(buildIntentCreationCallback())
+-        }
+-        builder.confirmCustomPaymentMethodCallback(this)
+-        builder.build(activity)
+-      } else {
+-        PaymentSheet.FlowController
+-          .Builder(
+-            resultCallback = buildPaymentSheetResultCallback(promiseViewModel),
+-            paymentOptionResultCallback = buildPaymentOptionCallback(promiseViewModel),
+-          ).confirmCustomPaymentMethodCallback(this)
+-          .build(activity)
+-      }
++    val builder =
++      PaymentSheet.FlowController.Builder(
++        resultCallback = buildPaymentSheetResultCallback(promiseViewModel),
++        paymentOptionResultCallback = buildPaymentOptionCallback(promiseViewModel),
++      )
++    when (callbackKind) {
++      CallbackKind.ConfirmationToken -> builder.createIntentCallback(buildCreateConfirmationTokenCallback())
++      CallbackKind.IntentCreation -> builder.createIntentCallback(buildIntentCreationCallback())
++      CallbackKind.None -> Unit
++    }
++    flowController = builder.confirmCustomPaymentMethodCallback(this).build(activity)
++    flowControllerCallbackKind = callbackKind
+   }
+ 
+   private fun buildCreateConfirmationTokenCallback(): CreateIntentWithConfirmationTokenCallback {
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
+index ff01599..78d621b 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
+@@ -24,6 +24,7 @@ import com.stripe.android.elements.ShippingAddressElement
+ import com.stripe.android.model.PaymentMethod
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+ import com.stripe.android.uicore.StripeThemeDefaults
++import com.stripe.android.elements.ShippingAddressElement.Configuration.Appearance as ShippingAddressAppearance
+ 
+ @OptIn(CheckoutSessionPreview::class)
+ internal data class MappedCheckoutConfiguration(
+@@ -57,7 +58,7 @@ internal object CheckoutConfigurationMapper {
+       configuration.currencySelectorElement(mapCurrencySelectorElement(it, context, params.getString("style")))
+     }
+     params.getMap("shippingAddressElement")?.let {
+-      configuration.shippingAddressElement(mapShippingAddressElement(it))
++      configuration.shippingAddressElement(mapShippingAddressElement(it, params.getString("style"), context))
+     }
+ 
+     return MappedCheckoutConfiguration(
+@@ -69,11 +70,105 @@ internal object CheckoutConfigurationMapper {
+ 
+   private fun mapShippingAddressElement(
+     params: ReadableMap,
++    style: String?,
++    context: Context,
+   ): ShippingAddressElement.Configuration {
+     val configuration = ShippingAddressElement.Configuration()
+     params.getString("title")?.let(configuration::title)
+     params.getString("buttonTitle")?.let(configuration::buttonTitle)
+-    return configuration
++    val appearanceParams = params.getMap("appearance")
++    if (appearanceParams == null && style == null) return configuration
++
++    val appearance = ShippingAddressAppearance()
++    style?.let {
++      appearance.themeMode(
++        when (it) {
++          "alwaysLight" -> ShippingAddressAppearance.ThemeMode.AlwaysLight
++          "alwaysDark" -> ShippingAddressAppearance.ThemeMode.AlwaysDark
++          "automatic" -> ShippingAddressAppearance.ThemeMode.Automatic
++          else -> unsupportedValue("style", it)
++        },
++      )
++    }
++    appearanceParams?.getMap("colors")?.let { colors ->
++      appearance.colorsLight(mapShippingAddressColors(colors.getMap("light") ?: colors, true))
++      appearance.colorsDark(mapShippingAddressColors(colors.getMap("dark") ?: colors, false))
++    }
++    appearanceParams?.getMap("primaryButton")?.let { buttonParams ->
++      appearance.primaryButton(mapShippingAddressPrimaryButton(buttonParams, context))
++    }
++    appearanceParams?.getMap("formInsetValues")?.let { insets ->
++      // Preserve the shipping sheet's native defaults for omitted edges.
++      appearance.formInsetValues(
++        ShippingAddressAppearance.Insets(
++          startDp = insets.getFloatOr("left", SHIPPING_FORM_HORIZONTAL_INSET),
++          topDp = insets.getFloatOr("top", 0f),
++          endDp = insets.getFloatOr("right", SHIPPING_FORM_HORIZONTAL_INSET),
++          bottomDp = insets.getFloatOr("bottom", SHIPPING_FORM_BOTTOM_INSET),
++        ),
++      )
++    }
++    return configuration.appearance(appearance)
++  }
++
++  private fun mapShippingAddressPrimaryButton(
++    params: ReadableMap,
++    context: Context,
++  ): ShippingAddressAppearance.PrimaryButton {
++    val button = ShippingAddressAppearance.PrimaryButton()
++    params.getMap("colors")?.let { colors ->
++      button.colorsLight(mapShippingAddressButtonColors(colors.getMap("light") ?: colors, true))
++      button.colorsDark(mapShippingAddressButtonColors(colors.getMap("dark") ?: colors, false))
++    }
++    params.getMap("shapes")?.let { shapes ->
++      button.shape(
++        ShippingAddressAppearance.PrimaryButton.Shape()
++          .cornerRadiusDp(shapes.getFloatOrNull("borderRadius"))
++          .borderStrokeWidthDp(shapes.getFloatOrNull("borderWidth"))
++          .heightDp(shapes.getFloatOrNull("height")),
++      )
++    }
++    params.getMap("font")?.let { font ->
++      button.typography(
++        ShippingAddressAppearance.PrimaryButton.Typography()
++          .fontResId(getFontResId(font, "family", context)),
++      )
++    }
++    return button
++  }
++
++  private fun mapShippingAddressColors(
++    params: ReadableMap,
++    isLight: Boolean,
++  ): ShippingAddressAppearance.Colors {
++    val colors = if (isLight) ShippingAddressAppearance.Colors.light() else ShippingAddressAppearance.Colors.dark()
++    params.color("primary", isLight)?.let(colors::primary)
++    params.color("background", isLight)?.let(colors::surface)
++    params.color("componentBackground", isLight)?.let(colors::component)
++    params.color("componentBorder", isLight)?.let(colors::componentBorder)
++    params.color("componentDivider", isLight)?.let(colors::componentDivider)
++    params.color("componentText", isLight)?.let(colors::onComponent)
++    params.color("secondaryText", isLight)?.let(colors::subtitle)
++    params.color("placeholderText", isLight)?.let(colors::placeholderText)
++    params.color("primaryText", isLight)?.let(colors::onSurface)
++    params.color("icon", isLight)?.let(colors::appBarIcon)
++    params.color("error", isLight)?.let(colors::error)
++    return colors
++  }
++
++  private fun mapShippingAddressButtonColors(
++    params: ReadableMap,
++    isLight: Boolean,
++  ): ShippingAddressAppearance.PrimaryButton.Colors {
++    val colors = if (isLight) {
++      ShippingAddressAppearance.PrimaryButton.Colors.light()
++    } else {
++      ShippingAddressAppearance.PrimaryButton.Colors.dark()
++    }
++    params.color("background", isLight)?.let(colors::background)
++    params.color("text", isLight)?.let(colors::onBackground)
++    params.color("border", isLight)?.let(colors::border)
++    return colors
+   }
+ 
+   private fun mapCurrencySelectorElement(
+@@ -558,3 +653,5 @@ private fun unsupportedValue(path: String, value: Any?): Nothing =
+ 
+ private const val HEX_COLOR_LENGTH_RGB = 6
+ private const val HEX_COLOR_LENGTH_ARGB = 8
++private const val SHIPPING_FORM_HORIZONTAL_INSET = 20f
++private const val SHIPPING_FORM_BOTTOM_INSET = 40f
+diff --git a/android/src/test/java/com/reactnativestripesdk/PaymentSheetCallbackTest.kt b/android/src/test/java/com/reactnativestripesdk/PaymentSheetCallbackTest.kt
+new file mode 100644
+index 0000000..27cce61
+--- /dev/null
++++ b/android/src/test/java/com/reactnativestripesdk/PaymentSheetCallbackTest.kt
+@@ -0,0 +1,113 @@
++package com.reactnativestripesdk
++
++import android.os.Looper
++import androidx.fragment.app.FragmentActivity
++import com.facebook.react.bridge.BridgeReactContext
++import com.facebook.react.bridge.JavaOnlyMap
++import com.google.common.truth.Truth.assertThat
++import com.stripe.android.core.reactnative.ReactNativeSdkInternal
++import com.stripe.android.paymentelement.CreateIntentWithConfirmationTokenCallback
++import com.stripe.android.paymentsheet.CreateIntentCallback
++import com.stripe.android.paymentsheet.PaymentSheet
++import org.junit.Test
++import org.junit.runner.RunWith
++import org.mockito.Mockito
++import org.mockito.Mockito.RETURNS_SELF
++import org.mockito.Mockito.mock
++import org.mockito.Mockito.mockConstruction
++import org.mockito.Mockito.verify
++import org.mockito.Mockito.withSettings
++import org.robolectric.Robolectric
++import org.robolectric.RobolectricTestRunner
++import org.robolectric.RuntimeEnvironment
++import org.robolectric.Shadows.shadowOf
++import org.robolectric.annotation.LooperMode
++
++@RunWith(RobolectricTestRunner::class)
++@LooperMode(LooperMode.Mode.PAUSED)
++@OptIn(ReactNativeSdkInternal::class)
++class PaymentSheetCallbackTest {
++  @Test
++  fun flowControllerRebuildsWhenCallbackChanges() {
++    val settings = withSettings().defaultAnswer(RETURNS_SELF)
++    mockConstruction(PaymentSheet.FlowController.Builder::class.java, settings) { builder, _ ->
++      Mockito.`when`(builder.build(any(FragmentActivity::class.java)))
++        .thenReturn(mock(PaymentSheet.FlowController::class.java))
++    }.use { builders ->
++      runScenario { manager, promise ->
++        callbackSequence.forEachIndexed { index, kind ->
++          manager.configure(arguments(kind), promise)
++          assertThat(builders.constructed()).hasSize(index + 1)
++          assertCallback(builders.constructed().last(), kind)
++
++          // Reusing the same callback type must preserve the existing controller.
++          manager.configure(arguments(kind), promise)
++          assertThat(builders.constructed()).hasSize(index + 1)
++        }
++      }
++    }
++  }
++
++  private fun assertCallback(builder: PaymentSheet.FlowController.Builder, kind: CallbackKind) {
++    verify(builder, Mockito.times(if (kind == CallbackKind.IntentCreation) 1 else 0))
++      .createIntentCallback(any(CreateIntentCallback::class.java))
++    verify(builder, Mockito.times(if (kind == CallbackKind.ConfirmationToken) 1 else 0))
++      .createIntentCallback(any(CreateIntentWithConfirmationTokenCallback::class.java))
++  }
++
++  private fun runScenario(block: (PaymentSheetManager, FakePromise) -> Unit) {
++    val activityController = Robolectric.buildActivity(FragmentActivity::class.java).setup()
++    val context = BridgeReactContext(RuntimeEnvironment.getApplication())
++    context.onHostResume(activityController.get())
++    val promise = FakePromise()
++    val manager = PaymentSheetManager(context, JavaOnlyMap(), promise)
++    try {
++      block(manager, promise)
++    } finally {
++      manager.destroy()
++      shadowOf(Looper.getMainLooper()).idle()
++      context.onHostPause()
++      context.onHostDestroy()
++      context.destroy()
++      activityController.pause().stop().destroy()
++    }
++    promise.ensureAllEventsConsumed()
++  }
++
++  private fun arguments(kind: CallbackKind): JavaOnlyMap =
++    JavaOnlyMap.of(
++      "merchantDisplayName", "Callback switching test",
++      "customFlow", true,
++    ).apply {
++      if (kind == CallbackKind.None) {
++        putString("paymentIntentClientSecret", "pi_test_secret_test")
++      } else {
++        putMap(
++          "intentConfiguration",
++          JavaOnlyMap.of("mode", JavaOnlyMap.of("amount", 1000, "currencyCode", "usd")).apply {
++            val handler =
++              if (kind == CallbackKind.ConfirmationToken) {
++                "confirmationTokenConfirmHandler"
++              } else {
++                "confirmHandler"
++              }
++            putBoolean(handler, true)
++          },
++        )
++      }
++    }
++
++  private fun <T> any(type: Class<T>): T = Mockito.any(type)
++
++  private enum class CallbackKind { None, IntentCreation, ConfirmationToken }
++
++  private val callbackSequence = listOf(
++    CallbackKind.ConfirmationToken,
++    CallbackKind.None,
++    CallbackKind.IntentCreation,
++    CallbackKind.ConfirmationToken,
++    CallbackKind.IntentCreation,
++    CallbackKind.None,
++    CallbackKind.ConfirmationToken,
++  )
++}
+diff --git a/android/src/test/java/com/reactnativestripesdk/PaymentSheetManagerHostTest.kt b/android/src/test/java/com/reactnativestripesdk/PaymentSheetManagerHostTest.kt
+index cc20c6c..b446c21 100644
+--- a/android/src/test/java/com/reactnativestripesdk/PaymentSheetManagerHostTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/PaymentSheetManagerHostTest.kt
+@@ -116,16 +116,63 @@ class PaymentSheetManagerHostTest {
+     assertThat(shadowOf(firstHost).nextStartedActivityForResult).isNull()
+   }
+ 
+-  private fun runScenario(block: suspend Scenario.() -> Unit) = runTest {
++  @Test
++  fun confirmationTokenThenEphemeralKeySheetCanBePresented() = runScenario(
++    arguments = JavaOnlyMap.of(
++      "merchantDisplayName", "Callback switching test",
++      "customerId", "cus_test",
++      "customerSessionClientSecret", "cuss_test_secret_test",
++      "intentConfiguration",
++          JavaOnlyMap.of(
++        "mode", JavaOnlyMap.of("amount", 1000, "currencyCode", "usd"),
++        "confirmationTokenConfirmHandler", true,
++      ),
++    ),
++  ) {
++    manager.present(presentPromise)
++    shadowOf(Looper.getMainLooper()).idle()
++    val firstLaunch = requireNotNull(shadowOf(firstHost).nextStartedActivityForResult)
++    firstHost.activityResultRegistry.dispatchResult(firstLaunch.requestCode, Activity.RESULT_CANCELED, null)
++    assertPresentationResultReceived()
++
++    val ephemeralKeyArguments = JavaOnlyMap.of(
++      "merchantDisplayName", "Callback switching test",
++      "paymentIntentClientSecret", "pi_test_secret_test",
++      "customerId", "cus_test",
++      "customerEphemeralKeySecret", "ek_test",
++    )
++    manager.configure(ephemeralKeyArguments, initPromise)
++    assertInitializationSucceeded()
++    manager.present(presentPromise)
++    shadowOf(Looper.getMainLooper()).idle()
++
++    val secondLaunch = requireNotNull(shadowOf(firstHost).nextStartedActivityForResult)
++    val sheetActivityClass = Class.forName(requireNotNull(secondLaunch.intent.component).className)
++      .asSubclass(Activity::class.java)
++    val sheetController = Robolectric.buildActivity(sheetActivityClass, secondLaunch.intent).create()
++    try {
++      // Configuration errors finish the launched activity synchronously during onCreate.
++      assertThat(sheetController.get().isFinishing).isFalse()
++    } finally {
++      sheetController.destroy()
++    }
++    assertThat(secondLaunch.intent.component?.className).isEqualTo(PAYMENT_SHEET_ACTIVITY)
++    firstHost.activityResultRegistry.dispatchResult(secondLaunch.requestCode, Activity.RESULT_CANCELED, null)
++    assertPresentationResultReceived()
++  }
++
++  private fun runScenario(
++    arguments: ReadableMap = JavaOnlyMap.of(
++      "merchantDisplayName", "Host replacement test",
++      "paymentIntentClientSecret", "pi_test_secret_test",
++    ),
++    block: suspend Scenario.() -> Unit,
++  ) = runTest {
+     val firstHostController = Robolectric.buildActivity(FragmentActivity::class.java).setup()
+     val secondHostController = Robolectric.buildActivity(FragmentActivity::class.java).setup()
+     val context = BridgeReactContext(RuntimeEnvironment.getApplication())
+     val initPromise = FakePromise()
+     val presentPromise = FakePromise()
+-    val arguments = JavaOnlyMap.of(
+-      "merchantDisplayName", "Host replacement test",
+-      "paymentIntentClientSecret", "pi_test_secret_test",
+-    )
+     val manager = PaymentSheetManager(context, arguments, initPromise)
+     val advancedFraudSignalsEnabled = Stripe.advancedFraudSignalsEnabled
+ 
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/ShippingAddressAppearanceMapperTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/ShippingAddressAppearanceMapperTest.kt
+new file mode 100644
+index 0000000..87a2b71
+--- /dev/null
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/ShippingAddressAppearanceMapperTest.kt
+@@ -0,0 +1,169 @@
++//
++//  ShippingAddressAppearanceMapperTest.kt
++//  stripe-react-native
++//
++//  Created by George Birch on 10/21/26.
++//
++
++package com.reactnativestripesdk.checkout
++
++import android.content.Context
++import androidx.core.graphics.toColorInt
++import androidx.test.core.app.ApplicationProvider
++import com.facebook.react.bridge.ReadableMap
++import com.reactnativestripesdk.utils.readableMapOf
++import com.stripe.android.elements.ShippingAddressElement
++import com.stripe.android.paymentelement.CheckoutSessionPreview
++import org.junit.Assert.assertEquals
++import org.junit.Assert.assertTrue
++import org.junit.Test
++import org.junit.runner.RunWith
++import org.robolectric.RobolectricTestRunner
++import com.stripe.android.elements.ShippingAddressElement.Configuration.Appearance as ShippingAddressAppearance
++
++@OptIn(CheckoutSessionPreview::class)
++@RunWith(RobolectricTestRunner::class)
++class ShippingAddressAppearanceMapperTest {
++
++  private val context = ApplicationProvider.getApplicationContext<Context>()
++
++  @Test
++  fun `map maps shipping colors in both theme palettes`() {
++    // Distinct values catch colors being dropped or assigned to a different field.
++    val colors = mapOf(
++      "primary" to Triple("primary", "#112233", "#102030"),
++      "background" to Triple("surface", "#223344", "#203040"),
++      "componentBackground" to Triple("component", "#334455", "#304050"),
++      "componentBorder" to Triple("componentBorder", "#445566", "#405060"),
++      "componentDivider" to Triple("componentDivider", "#556677", "#506070"),
++      "primaryText" to Triple("onSurface", "#667788", "#607080"),
++      "secondaryText" to Triple("subtitle", "#778899", "#708090"),
++      "componentText" to Triple("onComponent", "#8899AA", "#8090A0"),
++      "placeholderText" to Triple("placeholderText", "#99AABB", "#90A0B0"),
++      "icon" to Triple("appBarIcon", "#AABBCC", "#A0B0C0"),
++      "error" to Triple("error", "#BBCCDD", "#B0C0D0"),
++    )
++    val light = readableMapOf(*colors.map { (key, value) -> key to value.second }.toTypedArray())
++    val dark = readableMapOf(*colors.map { (key, value) -> key to value.third }.toTypedArray())
++    val palettes = listOf(
++      light to false,
++      readableMapOf("light" to light, "dark" to dark) to true,
++    )
++
++    for ((params, usesThemePalettes) in palettes) {
++      val appearance = mapAppearance(readableMapOf("colors" to params))
++      val mappedLight = appearance.readField<ShippingAddressAppearance.Colors>("colorsLight")
++      val mappedDark = appearance.readField<ShippingAddressAppearance.Colors>("colorsDark")
++      for ((key, expected) in colors) {
++        val (field, lightHex, darkHex) = expected
++        assertEquals("light $key", lightHex.toColorInt(), mappedLight.readField<Int>(field))
++        assertEquals(
++          "dark $key",
++          (if (usesThemePalettes) darkHex else lightHex).toColorInt(),
++          mappedDark.readField<Int>(field),
++        )
++      }
++    }
++  }
++
++  @Test
++  fun `map maps shipping insets and preserves omitted edges`() {
++    val defaults = ShippingAddressAppearance().readField<ShippingAddressAppearance.Insets>("formInsetValues")
++    val cases = listOf(
++      readableMapOf() to listOf(
++        defaults.readField<Float>("startDp"),
++        defaults.readField<Float>("topDp"),
++        defaults.readField<Float>("endDp"),
++        defaults.readField<Float>("bottomDp"),
++      ),
++      readableMapOf("left" to 3.5, "top" to 7.5, "right" to 11.5, "bottom" to 15.5) to
++        listOf(3.5f, 7.5f, 11.5f, 15.5f),
++      readableMapOf("left" to 0, "bottom" to 9.5) to listOf(
++        0f,
++        defaults.readField<Float>("topDp"),
++        defaults.readField<Float>("endDp"),
++        9.5f,
++      ),
++    )
++
++    // Asymmetric edges also catch left/right or top/bottom being swapped.
++    for ((params, expected) in cases) {
++      val insets = mapAppearance(readableMapOf("formInsetValues" to params))
++        .readField<ShippingAddressAppearance.Insets>("formInsetValues")
++      assertEquals(expected[0], insets.readField<Float>("startDp"))
++      assertEquals(expected[1], insets.readField<Float>("topDp"))
++      assertEquals(expected[2], insets.readField<Float>("endDp"))
++      assertEquals(expected[3], insets.readField<Float>("bottomDp"))
++    }
++  }
++
++  @Test
++  fun `map maps shipping primary button appearance`() {
++    val fontResId = context.resources.getIdentifier("nunito_400regular", "font", context.packageName)
++    assertTrue("The bundled test font must be available", fontResId != 0)
++    val light = readableMapOf("background" to "#112233", "text" to "#445566", "border" to "#778899")
++    val dark = readableMapOf("background" to "#AABBCC", "text" to "#DDEEFF", "border" to "#102030")
++    val palettes = listOf(
++      light to false,
++      readableMapOf("light" to light, "dark" to dark) to true,
++    )
++
++    for ((params, usesThemePalettes) in palettes) {
++      val button = mapAppearance(
++        readableMapOf(
++          "primaryButton" to readableMapOf(
++            "colors" to params,
++            "shapes" to readableMapOf("borderRadius" to 14.5, "borderWidth" to 2.5, "height" to 52.5),
++            "font" to readableMapOf("family" to "nunito_400regular"),
++          ),
++        ),
++      ).readField<ShippingAddressAppearance.PrimaryButton>("primaryButton")
++
++      val shape = button.readField<ShippingAddressAppearance.PrimaryButton.Shape>("shape")
++      assertEquals(14.5f, shape.readField<Float>("cornerRadiusDp"))
++      assertEquals(2.5f, shape.readField<Float>("borderStrokeWidthDp"))
++      assertEquals(52.5f, shape.readField<Float>("heightDp"))
++      assertEquals(
++        fontResId,
++        button.readField<ShippingAddressAppearance.PrimaryButton.Typography>("typography")
++          .readField<Int>("fontResId"),
++      )
++
++      val colors = mapOf(
++        "background" to ("#112233" to "#AABBCC"),
++        "onBackground" to ("#445566" to "#DDEEFF"),
++        "border" to ("#778899" to "#102030"),
++      )
++      val mappedLight = button.readField<ShippingAddressAppearance.PrimaryButton.Colors>("colorsLight")
++      val mappedDark = button.readField<ShippingAddressAppearance.PrimaryButton.Colors>("colorsDark")
++      for ((field, expected) in colors) {
++        assertEquals("light $field", expected.first.toColorInt(), mappedLight.readField<Int>(field))
++        assertEquals(
++          "dark $field",
++          (if (usesThemePalettes) expected.second else expected.first).toColorInt(),
++          mappedDark.readField<Int>(field),
++        )
++      }
++    }
++  }
++
++  private fun mapAppearance(params: ReadableMap): ShippingAddressAppearance =
++    // Exercise the public configuration path, including the shipping-specific mapper.
++    CheckoutConfigurationMapper.map(
++      readableMapOf(
++        "clientSecret" to "cs_test_secret_123",
++        "returnURL" to "example://checkout",
++        "shippingAddressElement" to readableMapOf("appearance" to params),
++      ),
++      context,
++    ) {}.configuration
++      .readField<ShippingAddressElement.Configuration>("shippingAddressElementConfiguration")
++      .readField("appearance")
++
++  @Suppress("UNCHECKED_CAST")
++  private inline fun <reified T> Any.readField(name: String): T =
++    javaClass.getDeclaredField(name).let { field ->
++      field.isAccessible = true
++      field.get(this) as T
++    }
++}
+diff --git a/bitrise.yml b/bitrise.yml
+index 3b61c86..d875b9f 100644
+--- a/bitrise.yml
++++ b/bitrise.yml
+@@ -28,7 +28,8 @@ pipelines:
+       e2e-tests-ios:
+         depends_on: [e2e-build-ios]
+         parallel: 3
+-      build-ios-fallback: {}
++      # Retained workflow is disabled while Stripe iOS requires SPM resolution.
++      # build-ios-fallback: {}
+       expo-prebuild-ios: {}
+       e2e-build-android: {}
+       e2e-tests-android:
+@@ -163,13 +164,9 @@ workflows:
+     before_run:
+       - _e2e_build_ios
+ 
+-  # Build-only coverage for the CocoaPods fallback path (STRIPE_DISABLE_SPM /
+-  # $StripeDisableSPM): Stripe resolved from the pod registry with React
+-  # Native's default static libraries. All other iOS jobs run SPM mode, so
+-  # without this job the fallback — what RN < 0.75 apps and opted-out apps use
+-  # while Stripe still publishes pods — would have no CI coverage. This is the
+-  # closest match to today's real-world default app configuration. Build-only:
+-  # no e2e-tests consumer pulls its artifact.
++  # Legacy CocoaPods fallback coverage, retained for possible ad hoc releases
++  # that use older Stripe iOS versions. Disabled in main-trigger-pipeline
++  # because current releases reject $StripeDisableSPM.
+   build-ios-fallback:
+     envs:
+       - STRIPE_DISABLE_SPM: '1'
+@@ -183,12 +180,9 @@ workflows:
+   # all build the committed react-native-test-app project, which never
+   # exercises a from-scratch app project or the Expo config plugin.
+   #
+-  # Two passes: SPM mode (expo-build-properties dynamic frameworks, asserts
+-  # the SPM integration, then a full Release simulator build to catch
+-  # compile/link regressions under Expo), and the CocoaPods fallback via the
+-  # plugin's disableSPM option (prebuild + assertions only — fallback
+-  # *builds* are covered by build-ios-fallback, and Expo's static default
+-  # matches that configuration).
++  # SPM mode uses expo-build-properties dynamic frameworks, asserts the SPM
++  # integration, then runs a full Release simulator build. The legacy
++  # CocoaPods fallback step is retained but disabled for current releases.
+   expo-prebuild-ios:
+     envs:
+       - EXPO_SDK_VERSION: '54'
+@@ -202,6 +196,7 @@ workflows:
+             - content: ./scripts/test-expo-project --sdk-version "$EXPO_SDK_VERSION" --platforms ios
+       - script@1:
+           title: Expo prebuild, CocoaPods fallback (plugin disableSPM)
++          run_if: 'false'
+           timeout: 1200
+           inputs:
+             - content: ./scripts/test-expo-project --sdk-version "$EXPO_SDK_VERSION" --platforms ios --disable-spm --skip-build
+diff --git a/e2e-tests/android-only/paymentsheet-customFlow-canceled.yml b/e2e-tests/android-only/paymentsheet-customFlow-canceled.yml
+index 154c1e4..d86369f 100644
+--- a/e2e-tests/android-only/paymentsheet-customFlow-canceled.yml
++++ b/e2e-tests/android-only/paymentsheet-customFlow-canceled.yml
+@@ -2,17 +2,32 @@ appId: ${APP_ID}
+ ---
+ - launchApp:
+     clearState: true
+-- tapOn: "Accept a payment"
+-- tapOn: "Prebuilt UI (multi-step)"
++- tapOn: 'Accept a payment'
++- tapOn: 'Prebuilt UI (multi-step)'
+ - extendedWaitUntil:
+-    visible: "Choose payment method"
++    visible: 'Choose payment method'
+     timeout: 150000
++# Google Pay is available in test mode and is selected during initialization.
++- extendedWaitUntil:
++    visible: 'Google Pay'
++    timeout: 150000
++- assertVisible:
++    text: 'Buy with Google Pay'
++    enabled: true
+ - tapOn:
+-    text: "Choose payment method"
++    text: 'Choose payment method'
+ - extendedWaitUntil:
+-    visible: "Close"
++    visible: 'Close'
+     timeout: 150000
+-- tapOn: "Close"
++- tapOn: 'Close'
++# Dismissing the sheet preserves the existing selection without an error.
++- extendedWaitUntil:
++    notVisible: 'Close'
++    timeout: 30000
++- assertVisible:
++    text: 'Google Pay'
+ - assertVisible:
++    text: 'Buy with Google Pay'
++    enabled: true
++- assertNotVisible:
+     text: .*anceled.*
+-- tapOn: "OK"
+diff --git a/e2e-tests/checkout-confirmation.yml b/e2e-tests/checkout-confirmation.yml
+index 1f9c872..f3eb1ab 100644
+--- a/e2e-tests/checkout-confirmation.yml
++++ b/e2e-tests/checkout-confirmation.yml
+@@ -12,6 +12,12 @@ appId: ${APP_ID}
+     visible: 'Create Checkout Session'
+     timeout: 60000
+ - tapOn: 'Reset'
++- scrollUntilVisible:
++    element:
++      text: 'Default Shipping Address'
++    centerElement: true
++- tapOn: 'Default Shipping Address'
++- tapOn: 'US test address'
+ - tapOn:
+     id: 'checkout-create-session'
+ - extendedWaitUntil:
+diff --git a/e2e-tests/checkout-mutations.yml b/e2e-tests/checkout-mutations.yml
+index f7da81a..0da3c15 100644
+--- a/e2e-tests/checkout-mutations.yml
++++ b/e2e-tests/checkout-mutations.yml
+@@ -16,6 +16,12 @@ appId: ${APP_ID}
+ - tapOn: 'view'
+ - tapOn: 'Email source'
+ - tapOn: 'Local'
++- scrollUntilVisible:
++    element:
++      text: 'Default Shipping Address'
++    centerElement: true
++- tapOn: 'Default Shipping Address'
++- tapOn: 'US test address'
+ - tapOn:
+     id: 'checkout-create-session'
+ - extendedWaitUntil:
+@@ -48,39 +54,23 @@ appId: ${APP_ID}
+     direction: UP
+     centerElement: true
+     timeout: 30000
+-- scrollUntilVisible:
+-    element:
+-      text: 'Add shipping address'
+-    centerElement: true
+-- tapOn: 'Add shipping address'
+-- extendedWaitUntil:
+-    visible: 'Shipping address'
+-    timeout: 30000
+-- scrollUntilVisible:
+-    element:
+-      text: 'Save Address'
+-- tapOn: 'Save Address'
+-- extendedWaitUntil:
+-    notVisible: 'Save Address'
+-    timeout: 30000
+-- scrollUntilVisible:
+-    element:
+-      text: '(?s).*510 Townsend St.*'
+-    centerElement: true
+-    timeout: 30000
+-- tapOn: '(?s)Edit shipping address.*'
++- runFlow:
++    file: helpers/checkout-shipping.yml
+ - scrollUntilVisible:
+     element:
+       text: 'Clear address'
++    direction: UP
++    centerElement: true
+ - tapOn: 'Clear address'
+ - extendedWaitUntil:
+     visible: 'Add shipping address'
+     timeout: 30000
+ - scrollUntilVisible:
+     element:
+-      text: 'Select payment method'
++      id: 'checkout-select-payment-method'
+     centerElement: true
+-- tapOn: 'Select payment method'
++- tapOn:
++    id: 'checkout-select-payment-method'
+ - scrollUntilVisible:
+     element:
+       text: 'Card'
+diff --git a/e2e-tests/checkout-shipping-address.yml b/e2e-tests/checkout-shipping-address.yml
+new file mode 100644
+index 0000000..0d6f6c8
+--- /dev/null
++++ b/e2e-tests/checkout-shipping-address.yml
+@@ -0,0 +1,99 @@
++appId: ${APP_ID}
++---
++- launchApp:
++    clearState: true
++- waitForAnimationToEnd
++- tapOn: 'Accept a payment'
++- scrollUntilVisible:
++    element:
++      text: 'Checkout Sessions.*'
++- tapOn: 'Checkout Sessions.*'
++- extendedWaitUntil:
++    visible: 'Create Checkout Session'
++    timeout: 60000
++- tapOn: 'Reset'
++- scrollUntilVisible:
++    element:
++      text: 'Default Shipping Address'
++    centerElement: true
++- tapOn: 'Default Shipping Address'
++- tapOn: 'US test address'
++- tapOn:
++    id: 'checkout-create-session'
++- extendedWaitUntil:
++    visible: 'Status: ready'
++    timeout: 150000
++
++# Save the defaults through the native sheet and verify the session updates.
++- runFlow:
++    file: helpers/checkout-shipping.yml
++
++# Edit the recipient and an optional address field on an existing address.
++- tapOn: '(?s)Edit shipping address.*'
++- extendedWaitUntil:
++    visible: 'Full name'
++    timeout: 30000
++# Tap the value to place the cursor at the end of the name.
++- tapOn: 'Jenny Rosen'
++# Extra backspaces on an empty Android field move focus to previous address fields.
++- eraseText: 11
++- inputText: 'Alex Example'
++- assertVisible: 'Alex Example'
++- scrollUntilVisible:
++    element:
++      text: 'Address line 2.*'
++    centerElement: true
++- tapOn: 'Address line 2.*'
++- inputText: 'Suite 200'
++- runFlow:
++    when:
++      platform: Android
++    commands:
++      - hideKeyboard
++- scrollUntilVisible:
++    element:
++      text: 'Save address'
++    centerElement: true
++- tapOn: 'Save address'
++- extendedWaitUntil:
++    notVisible: 'Save address'
++    timeout: 30000
++- scrollUntilVisible:
++    element:
++      text: '(?s)Edit shipping address, Alex Example\s+510 Townsend St.*Suite 200.*San Francisco.*CA.*94103.*US'
++    centerElement: true
++    timeout: 30000
++
++# Reopening uses the saved session values. Canceling leaves them unchanged.
++- tapOn: '(?s)Edit shipping address.*'
++- extendedWaitUntil:
++    visible: 'Full name'
++    timeout: 30000
++- assertVisible: 'Alex Example'
++- assertVisible: '510 Townsend St'
++- assertVisible: 'Suite 200'
++- tapOn: 'Close'
++- extendedWaitUntil:
++    notVisible: 'Full name'
++    timeout: 30000
++- assertVisible: '(?s)Edit shipping address, Alex Example\s+510 Townsend St.*Suite 200.*San Francisco.*CA.*94103.*US'
++
++# Clearing the saved address restores the add action; canceling does not save it.
++- scrollUntilVisible:
++    element:
++      text: 'Clear address'
++    direction: UP
++    centerElement: true
++- tapOn: 'Clear address'
++- extendedWaitUntil:
++    visible: 'Add shipping address'
++    timeout: 30000
++- tapOn: 'Add shipping address'
++- extendedWaitUntil:
++    visible: 'Full name'
++    timeout: 30000
++- tapOn: 'Close'
++- extendedWaitUntil:
++    notVisible: 'Full name'
++    timeout: 30000
++- assertVisible: 'Add shipping address'
+diff --git a/e2e-tests/checkout.yml b/e2e-tests/checkout.yml
+index e4d4b80..2126e71 100644
+--- a/e2e-tests/checkout.yml
++++ b/e2e-tests/checkout.yml
+@@ -43,13 +43,6 @@ appId: ${APP_ID}
+ - assertVisible:
+     id: 'checkout-status'
+ - assertVisible: 'Status: ready'
+-- scrollUntilVisible:
+-    element:
+-      text: 'Select payment method'
+-    centerElement: true
+-- tapOn: 'Select payment method'
+-- extendedWaitUntil:
+-    visible: 'Card'
+-    timeout: 60000
+-- tapOn: 'Card'
++- runFlow:
++    file: helpers/checkout-open-card.yml
+ - assertVisible: 'Card number. Supported cards include.*'
+diff --git a/e2e-tests/helpers/checkout-card.yml b/e2e-tests/helpers/checkout-card.yml
+index 0b50853..42db73b 100644
+--- a/e2e-tests/helpers/checkout-card.yml
++++ b/e2e-tests/helpers/checkout-card.yml
+@@ -1,14 +1,7 @@
+ appId: ${APP_ID}
+ ---
+-- scrollUntilVisible:
+-    element:
+-      text: 'Select payment method'
+-    centerElement: true
+-- tapOn: 'Select payment method'
+-- extendedWaitUntil:
+-    visible: 'Card'
+-    timeout: 60000
+-- tapOn: 'Card'
++- runFlow:
++    file: checkout-open-card.yml
+ - tapOn: 'Card number. Supported cards include.*'
+ - inputText: ${CARD_NUMBER}
+ - inputText: '0145'
+diff --git a/e2e-tests/helpers/checkout-open-card.yml b/e2e-tests/helpers/checkout-open-card.yml
+new file mode 100644
+index 0000000..9567fad
+--- /dev/null
++++ b/e2e-tests/helpers/checkout-open-card.yml
+@@ -0,0 +1,29 @@
++appId: ${APP_ID}
++---
++- scrollUntilVisible:
++    element:
++      id: 'checkout-select-payment-method'
++    centerElement: true
++- tapOn:
++    id: 'checkout-select-payment-method'
++- extendedWaitUntil:
++    visible: 'Card|Add a new payment method|Card number. Supported cards include.*'
++    timeout: 60000
++# A preselected wallet opens the saved payment method list first.
++- runFlow:
++    when:
++      visible: 'Add a new payment method'
++    commands:
++      - tapOn: 'Add a new payment method'
++- extendedWaitUntil:
++    visible: 'Card|Card number. Supported cards include.*'
++    timeout: 60000
++# Some presentations open the card form directly.
++- runFlow:
++    when:
++      visible: 'Card'
++    commands:
++      - tapOn: 'Card'
++- extendedWaitUntil:
++    visible: 'Card number. Supported cards include.*'
++    timeout: 60000
+diff --git a/e2e-tests/helpers/checkout-shipping.yml b/e2e-tests/helpers/checkout-shipping.yml
+index eedf030..0a58ef8 100644
+--- a/e2e-tests/helpers/checkout-shipping.yml
++++ b/e2e-tests/helpers/checkout-shipping.yml
+@@ -1,23 +1,27 @@
+ appId: ${APP_ID}
+ ---
++# Callers select the US test address so saving does not depend on autocomplete.
+ - scrollUntilVisible:
+     element:
+-      text: 'Add shipping address'
++      text: '(?s)(Add|Edit) shipping address.*'
+     centerElement: true
+-- tapOn: 'Add shipping address'
++- tapOn: '(?s)(Add|Edit) shipping address.*'
+ - extendedWaitUntil:
+-    visible: 'Shipping address'
++    visible: '(?i)Shipping address'
+     timeout: 30000
++- assertVisible: 'Full name'
++- assertVisible: 'Jenny Rosen'
++- assertVisible: '510 Townsend St'
+ - scrollUntilVisible:
+     element:
+-      text: 'Save Address'
++      text: 'Save address'
+     centerElement: true
+-- tapOn: 'Save Address'
++- tapOn: 'Save address'
+ - extendedWaitUntil:
+-    notVisible: 'Save Address'
++    notVisible: 'Save address'
+     timeout: 30000
+ - scrollUntilVisible:
+     element:
+-      text: '(?s).*510 Townsend St.*'
++      text: '(?s)Edit shipping address, Jenny Rosen.*510 Townsend St.*'
+     centerElement: true
+     timeout: 30000
+diff --git a/etc/stripe-react-native.api.md b/etc/stripe-react-native.api.md
+index f21b5aa..ac8ffac 100644
+--- a/etc/stripe-react-native.api.md
++++ b/etc/stripe-react-native.api.md
+@@ -939,285 +939,6 @@ export interface CheckmarkConfig {
+     color?: ThemedColor;
+ }
+ 
+-// @public
+-export namespace Checkout {
+-    export interface Address {
+-        city?: string;
+-        country: string;
+-        line1?: string;
+-        line2?: string;
+-        postalCode?: string;
+-        state?: string;
+-    }
+-    export interface AdjustableQuantity {
+-        enabled: boolean;
+-        maximum: number;
+-        minimum: number;
+-    }
+-    export interface Amount {
+-        amount: string;
+-        minorUnitsAmount: number;
+-    }
+-    export interface AmountDetails {
+-        subtotal: Amount;
+-        taxAmounts?: TaxAmount[];
+-        taxExclusive: Amount;
+-        taxInclusive: Amount;
+-        total: Amount;
+-    }
+-    export interface BillingDetails {
+-        address?: Partial<Address>;
+-        email?: string;
+-        name?: string;
+-        phone?: string;
+-    }
+-    export interface ContactDetails {
+-        address?: Address;
+-        name?: string;
+-    }
+-    export interface CreateOptions {
+-        clientSecret: string;
+-        currencySelectorElement?: CurrencySelectorElementConfiguration;
+-        defaults?: Defaults;
+-        merchantDisplayName?: string;
+-        paymentElement?: PaymentElementConfiguration;
+-        returnURL: string;
+-        shippingAddressElement?: ShippingAddressElementConfiguration;
+-        style?: UserInterfaceStyle;
+-    }
+-    export interface CurrencySelectorElementConfiguration {
+-        appearance?: CurrencySelectorElementConfiguration.Appearance;
+-    }
+-    export namespace CurrencySelectorElementConfiguration {
+-        export interface Appearance {
+-            colors?: ColorConfiguration | {
+-                light: ColorConfiguration;
+-                dark: ColorConfiguration;
+-            };
+-            contentVerticalPadding?: number;
+-            font?: Partial<FontConfig>;
+-            labelContent?: LabelContent;
+-            shapes?: ShapeConfiguration;
+-        }
+-        export interface ColorConfiguration {
+-            background?: ThemedColor;
+-            border?: ThemedColor;
+-            danger?: ThemedColor;
+-            selectedBackground?: ThemedColor;
+-            selectedText?: ThemedColor;
+-            text?: ThemedColor;
+-            textSecondary?: ThemedColor;
+-        }
+-        export type LabelContent = 'automatic' | 'currencyCode' | 'amount';
+-        export interface ShapeConfiguration {
+-            borderWidth?: number;
+-            cornerRadius?: number;
+-        }
+-    }
+-    export interface Defaults {
+-        billingDetails?: ContactDetails;
+-        email?: string;
+-        phone?: string;
+-        shippingDetails?: ContactDetails;
+-    }
+-    export interface DiscountAmount extends Amount {
+-        displayName: string;
+-        percentOff?: number;
+-        promotionCode?: string;
+-    }
+-    export type ErrorCode = 'Failed' | 'InvalidClientSecret' | 'SessionNotOpen' | 'SheetCurrentlyPresented' | 'Timeout' | 'Canceled';
+-    export interface OneTimePriceItem {
+-        adjustableQuantity?: AdjustableQuantity;
+-        amountDetails: AmountDetails;
+-        displayName: string;
+-        images: string[];
+-        key: string;
+-        quantity: number;
+-        unitAmount: Amount;
+-        unitAmountDecimal?: Amount;
+-        unitLabel?: string;
+-    }
+-    export interface OneTimePriceOrderSummaryItem {
+-        description?: string;
+-        items: OneTimePriceItem[];
+-        key: string;
+-        type: 'one_time_price';
+-    }
+-    export type OrderSummaryItem = OneTimePriceOrderSummaryItem;
+-    export interface PaymentElementConfiguration {
+-        appearance?: PaymentElementConfiguration.Appearance;
+-        applePay?: PaymentElementConfiguration.ApplePayConfiguration;
+-        displaysMandateText?: boolean;
+-        googlePay?: PaymentElementConfiguration.GooglePayConfiguration;
+-        link?: PaymentElementConfiguration.LinkConfiguration;
+-        opensCardScannerAutomatically?: boolean;
+-        paymentMethodLayout?: PaymentMethodLayout;
+-        paymentMethodOrder?: string[];
+-        preferredNetworks?: CardBrand[];
+-        removeSavedPaymentMethodMessage?: string;
+-        rowSelectionBehavior?: PaymentElementConfiguration.RowSelectionBehavior;
+-        termsDisplay?: Record<string, TermsDisplay>;
+-    }
+-    export namespace PaymentElementConfiguration {
+-        export type Appearance = AppearanceParams;
+-        export type ApplePayButtonType = 'plain' | 'buy' | 'setUp' | 'inStore' | 'donate' | 'checkout' | 'book' | 'subscribe' | 'reload' | 'addMoney' | 'topUp' | 'order' | 'rent' | 'support' | 'contribute' | 'tip' | 'continue';
+-        export interface ApplePayConfiguration {
+-            buttonType?: ApplePayButtonType;
+-        }
+-        export type GooglePayButtonType = 'buy' | 'book' | 'checkout' | 'donate' | 'order' | 'pay' | 'subscribe' | 'plain';
+-        export interface GooglePayConfiguration {
+-            additionalEnabledNetworks?: string[];
+-            buttonType?: GooglePayButtonType;
+-            label?: string;
+-        }
+-        export interface LinkConfiguration {
+-            display?: 'automatic' | 'never';
+-        }
+-        export type RowSelectionBehavior = EmbeddedRowSelectionBehavior;
+-    }
+-    export interface PaymentOptionDisplayData {
+-        billingDetails?: BillingDetails;
+-        image: string;
+-        label: string;
+-        mandateHTML?: string;
+-        paymentMethodType: string;
+-        sublabel?: string;
+-    }
+-    export type PaymentStatus = 'paid' | 'unpaid' | 'noPaymentRequired';
+-    export interface PresentmentDetails {
+-        presentmentCurrency: string;
+-    }
+-    export type Result = {
+-        status: 'completed';
+-        paymentStatus: PaymentStatus;
+-    } | {
+-        status: 'canceled';
+-    } | {
+-        status: 'failed';
+-        error: StripeError<ErrorCode>;
+-    };
+-    export interface Session {
+-        businessName?: string;
+-        currency: string;
+-        discountAmounts: DiscountAmount[];
+-        email?: string;
+-        id: string;
+-        livemode: boolean;
+-        minorUnitsAmountDivisor?: number;
+-        orderSummaryItems: OrderSummaryItem[];
+-        paymentOption?: PaymentOptionDisplayData;
+-        presentmentDetails?: PresentmentDetails;
+-        shippingAddress?: ShippingAddress;
+-        status: SessionStatus;
+-        tax?: Tax;
+-        taxAmounts?: TaxAmount[];
+-        totals: Totals;
+-    }
+-    export type SessionStatus = {
+-        type: 'open';
+-    } | {
+-        type: 'expired';
+-    } | {
+-        type: 'complete';
+-        paymentStatus: PaymentStatus;
+-    };
+-    export interface ShippingAddress {
+-        address: Address;
+-        name?: string;
+-    }
+-    export interface ShippingAddressElementConfiguration {
+-        buttonTitle?: string;
+-        title?: string;
+-    }
+-    export interface Tax {
+-        status: 'ready' | 'requiresShippingAddress' | 'requiresBillingAddress';
+-    }
+-    export interface TaxAmount extends Amount {
+-        displayName: string;
+-        inclusive: boolean;
+-        percentage?: number;
+-    }
+-    export interface Totals {
+-        discount: Amount;
+-        subtotal: Amount;
+-        taxExclusive: Amount;
+-        taxInclusive: Amount;
+-        total: Amount;
+-    }
+-    export interface UpdateShippingAddressParams {
+-        address: Address | null;
+-        name?: string | null;
+-    }
+-    export interface UseOptions {
+-        enabled?: boolean;
+-        getConfiguration: () => Promise<CreateOptions>;
+-    }
+-    export interface UseResult {
+-        applyPromotionCode(promotionCode: string): Promise<void>;
+-        clearPaymentOption(): Promise<void>;
+-        confirm(): Promise<Result>;
+-        readonly currencySelectorElement: CheckoutCurrencySelectorElement | null;
+-        readonly error: StripeError<ErrorCode> | null;
+-        readonly paymentElement: CheckoutPaymentElement | null;
+-        reload(): Promise<void>;
+-        removePromotionCode(): Promise<void>;
+-        runServerUpdate(serverUpdate: () => Promise<void>): Promise<void>;
+-        readonly session: Session | null;
+-        readonly shippingAddressElement: CheckoutShippingAddressElement | null;
+-        readonly status: 'idle' | 'loading' | 'ready' | 'updating' | 'confirming' | 'error';
+-        updateEmail(email: string | null): Promise<void>;
+-        updateShippingAddress(params: UpdateShippingAddressParams): Promise<void>;
+-    }
+-    export type UserInterfaceStyle = 'alwaysLight' | 'alwaysDark' | 'automatic';
+-}
+-
+-// @public
+-export interface CheckoutController {
+-    applyPromotionCode(promotionCode: string): Promise<void>;
+-    clearPaymentOption(): Promise<void>;
+-    confirm(): Promise<Checkout.Result>;
+-    readonly currencySelectorElement: CheckoutCurrencySelectorElement | null;
+-    destroy(): Promise<void>;
+-    readonly paymentElement: CheckoutPaymentElement;
+-    removePromotionCode(): Promise<void>;
+-    runServerUpdate(serverUpdate: () => Promise<void>): Promise<void>;
+-    readonly session: Checkout.Session;
+-    readonly shippingAddressElement: CheckoutShippingAddressElement | null;
+-    readonly status: 'ready' | 'updating' | 'confirming' | 'destroyed';
+-    updateEmail(email: string | null): Promise<void>;
+-    updateShippingAddress(params: Checkout.UpdateShippingAddressParams): Promise<void>;
+-}
+-
+-// @public
+-export interface CheckoutCurrencySelectorElement {
+-}
+-
+-// @public
+-export function CheckoutCurrencySelectorElementView(input: CheckoutCurrencySelectorElementViewProps): React_2.JSX.Element;
+-
+-// @public
+-export interface CheckoutCurrencySelectorElementViewProps {
+-    element: CheckoutCurrencySelectorElement;
+-}
+-
+-// @public
+-export interface CheckoutPaymentElement {
+-    present(): Promise<void>;
+-}
+-
+-// @public
+-export function CheckoutPaymentElementView(input: CheckoutPaymentElementViewProps): React_2.JSX.Element;
+-
+-// @public
+-export interface CheckoutPaymentElementViewProps {
+-    element: CheckoutPaymentElement;
+-}
+-
+-// @public
+-export interface CheckoutShippingAddressElement {
+-    present(): Promise<void>;
+-}
+-
+ // @public (undocumented)
+ export interface ClientSecretProvider {
+     provideCustomerSessionClientSecret(): Promise<CustomerSessionClientSecret>;
+@@ -1606,9 +1327,6 @@ type CreateCardTokenParams = {
+     currency?: string;
+ };
+ 
+-// @public
+-export function createCheckout(options: Checkout.CreateOptions): Promise<CheckoutController>;
+-
+ // @public
+ type CreateCryptoPaymentTokenResult = {
+     cryptoPaymentToken: string;
+@@ -4455,9 +4173,6 @@ type USBankAccountResult = {
+     supportedNetworks?: string[];
+ };
+ 
+-// @public
+-export function useCheckout(options: Checkout.UseOptions): Checkout.UseResult;
+-
+ // @public
+ export function useConfirmPayment(): {
+     confirmPayment: (paymentIntentClientSecret: string, data?: PaymentIntent.ConfirmParams, options?: PaymentIntent.ConfirmOptions) => Promise<ConfirmPaymentResult>;
+diff --git a/example/ios/Podfile.lock b/example/ios/Podfile.lock
+index 6c4ab93..dcefcc1 100644
+--- a/example/ios/Podfile.lock
++++ b/example/ios/Podfile.lock
+@@ -1351,6 +1351,28 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
++  - react-native-webview (13.16.0):
++    - hermes-engine
++    - RCTRequired
++    - RCTTypeSafety
++    - React-Core
++    - React-Core-prebuilt
++    - React-debug
++    - React-Fabric
++    - React-featureflags
++    - React-graphics
++    - React-ImageManager
++    - React-jsi
++    - React-NativeModulesApple
++    - React-RCTFabric
++    - React-renderercss
++    - React-rendererdebug
++    - React-utils
++    - ReactCodegen
++    - ReactCommon/turbomodule/bridging
++    - ReactCommon/turbomodule/core
++    - ReactNativeDependencies
++    - Yoga
+   - React-NativeModulesApple (0.81.5):
+     - hermes-engine
+     - React-callinvoker
+@@ -1820,7 +1842,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native (0.83.0):
++  - stripe-react-native (0.84.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1841,10 +1863,10 @@ PODS:
+     - ReactCommon/turbomodule/bridging
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+-    - stripe-react-native/Core (= 0.83.0)
+-    - stripe-react-native/NewArch (= 0.83.0)
++    - stripe-react-native/Core (= 0.84.0)
++    - stripe-react-native/NewArch (= 0.84.0)
+     - Yoga
+-  - stripe-react-native/Core (0.83.0):
++  - stripe-react-native/Core (0.84.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1866,7 +1888,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/NewArch (0.83.0):
++  - stripe-react-native/NewArch (0.84.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1888,7 +1910,7 @@ PODS:
+     - ReactCommon/turbomodule/core
+     - ReactNativeDependencies
+     - Yoga
+-  - stripe-react-native/Onramp (0.83.0):
++  - stripe-react-native/Onramp (0.84.0):
+     - hermes-engine
+     - RCTRequired
+     - RCTTypeSafety
+@@ -1951,6 +1973,7 @@ DEPENDENCIES:
+   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
+   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
++  - react-native-webview (from `../../node_modules/react-native-webview`)
+   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
+   - React-oscompat (from `../node_modules/react-native/ReactCommon/oscompat`)
+   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
+@@ -2066,6 +2089,8 @@ EXTERNAL SOURCES:
+     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+   react-native-safe-area-context:
+     :path: "../node_modules/react-native-safe-area-context"
++  react-native-webview:
++    :path: "../../node_modules/react-native-webview"
+   React-NativeModulesApple:
+     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
+   React-oscompat:
+@@ -2154,7 +2179,7 @@ SPEC CHECKSUMS:
+   React: 914f8695f9bf38e6418228c2ffb70021e559f92f
+   React-callinvoker: 1c0808402aee0c6d4a0d8e7220ce6547af9fba71
+   React-Core: 4ae98f9e8135b8ddbd7c98730afb6fdae883db90
+-  React-Core-prebuilt: 02f0ad625ddd47463c009c2d0c5dd35c0d982599
++  React-Core-prebuilt: 8f4cca589c14e8cf8fc6db4587ef1c2056b5c151
+   React-CoreModules: e878a90bb19b8f3851818af997dbae3b3b0a27ac
+   React-cxxreact: 28af9844f6dc87be1385ab521fbfb3746f19563c
+   React-debug: dfe7f2f01b36058f2a9b94872e071eb40e063a3c
+@@ -2182,6 +2207,7 @@ SPEC CHECKSUMS:
+   React-Mapbuffer: abad17e497845ba728b779e2fac123ee961d4545
+   React-microtasksnativemodule: 90dfab2adb37c8c90da7afffcec427d7c90acb29
+   react-native-safe-area-context: 3f031fa5a6c36a3731f6fa2202bfa8f411850c6b
++  react-native-webview: e90afced564d2c18c2d814f9e8d3d922fe11cfd7
+   React-NativeModulesApple: 1664340b8750d64e0ef3907c5e53d9481f74bcbd
+   React-oscompat: ce47230ed20185e91de62d8c6d139ae61763d09c
+   React-perflogger: b1af3cfb3f095f819b2814910000392a8e17ba9f
+@@ -2219,7 +2245,7 @@ SPEC CHECKSUMS:
+   RNCAsyncStorage: 0574155b95b96b89a51717c4dd42fb6057926bbc
+   RNCPicker: 8857af4403867e2d81b8e8149e3e5c66282f1ee9
+   RNScreens: e3ad77a0b586f4910e4f4c30ec05d91a2c506075
+-  stripe-react-native: 747a6bd6acdb3856021d7aa259d737bd2d118b85
++  stripe-react-native: b23aba15b830bda7ef2e9dc87e96cbab4e39fb28
+   Yoga: 65431d43277b661ebc7289c6c5d82f64ce42cfe0
+ 
+ PODFILE CHECKSUM: 865bd37bc8f1b842d6d516040eb0f9e7504c60bb
+diff --git a/example/package.json b/example/package.json
+index 54d8f04..cf16475 100644
+--- a/example/package.json
++++ b/example/package.json
+@@ -23,7 +23,8 @@
+     "react": "19.1.0",
+     "react-native": "^0.81.0",
+     "react-native-safe-area-context": "^5.6.2",
+-    "react-native-screens": "^4.18.0"
++    "react-native-screens": "^4.18.0",
++    "react-native-webview": "^14.0.1"
+   },
+   "devDependencies": {
+     "@babel/cli": "^7.26.4",
+diff --git a/example/src/screens/Checkout/CheckoutCartScreen.tsx b/example/src/screens/Checkout/CheckoutCartScreen.tsx
+index d936a5a..5e0dcb8 100644
+--- a/example/src/screens/Checkout/CheckoutCartScreen.tsx
++++ b/example/src/screens/Checkout/CheckoutCartScreen.tsx
+@@ -1,9 +1,7 @@
+-import {
+-  CheckoutCurrencySelectorElementView,
+-  CheckoutPaymentElementView,
+-  useCheckout,
+-} from '@stripe/stripe-react-native';
+-import type { Checkout } from '@stripe/stripe-react-native';
++import { CheckoutCurrencySelectorElementView } from '@stripe/stripe-react-native/src/components/CheckoutCurrencySelectorElementView';
++import { CheckoutPaymentElementView } from '@stripe/stripe-react-native/src/components/CheckoutPaymentElementView';
++import { useCheckout } from '@stripe/stripe-react-native/src/hooks/useCheckout';
++import type { Checkout } from '@stripe/stripe-react-native/src/types/Checkout';
+ import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+ import {
+   ActivityIndicator,
+@@ -133,22 +131,8 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+   const checkout = useCheckout({ getConfiguration });
+   const [paymentElementVisible, setPaymentElementVisible] = useState(false);
+   const [emailEditorVisible, setEmailEditorVisible] = useState(false);
+-  const [shippingEditorVisible, setShippingEditorVisible] = useState(false);
+   const [diagnosticsVisible, setDiagnosticsVisible] = useState(false);
+   const [emailDraft, setEmailDraft] = useState('');
+-  const [shippingDraft, setShippingDraft] = useState(
+-    settings.defaultShippingAddressOption === 'custom'
+-      ? settings.customShippingAddress
+-      : {
+-          name: 'Jenny Rosen',
+-          line1: '510 Townsend St',
+-          line2: '',
+-          city: 'San Francisco',
+-          state: 'CA',
+-          postalCode: '94103',
+-          country: 'US',
+-        }
+-  );
+   const [actionError, setActionError] = useState<string | null>(null);
+ 
+   useLayoutEffect(() => {
+@@ -223,23 +207,6 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+     setEmailEditorVisible(false);
+   };
+ 
+-  const saveShipping = async () => {
+-    await run(() =>
+-      checkout.updateShippingAddress({
+-        name: shippingDraft.name,
+-        address: {
+-          country: shippingDraft.country,
+-          line1: shippingDraft.line1,
+-          line2: shippingDraft.line2 || undefined,
+-          city: shippingDraft.city,
+-          state: shippingDraft.state,
+-          postalCode: shippingDraft.postalCode,
+-        },
+-      })
+-    );
+-    setShippingEditorVisible(false);
+-  };
+-
+   if (checkout.status === 'loading' && !session) {
+     return (
+       <View style={styles.loadingScreen}>
+@@ -365,7 +332,20 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+         </CartSection>
+ 
+         {settings.collectShippingAddress && (
+-          <CartSection title="Shipping Address">
++          <CartSection
++            title="Shipping Address"
++            action={
++              session.shippingAddress ? (
++                <TextButton
++                  title="Clear address"
++                  disabled={isBusy}
++                  onPress={() =>
++                    run(() => checkout.updateShippingAddress({ address: null }))
++                  }
++                />
++              ) : null
++            }
++          >
+             <Pressable
+               accessibilityRole="button"
+               accessibilityLabel={
+@@ -373,8 +353,12 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+                   ? `Edit shipping address, ${formatAddress(session.shippingAddress)}`
+                   : 'Add shipping address'
+               }
+-              disabled={isBusy}
+-              onPress={() => setShippingEditorVisible(true)}
++              disabled={isBusy || !checkout.shippingAddressElement}
++              onPress={() => {
++                if (checkout.shippingAddressElement) {
++                  run(checkout.shippingAddressElement.present);
++                }
++              }}
+               style={({ pressed }) => [
+                 styles.card,
+                 styles.addressCard,
+@@ -571,52 +555,6 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+         </View>
+       </EditorModal>
+ 
+-      <EditorModal
+-        title="Shipping Address"
+-        visible={shippingEditorVisible}
+-        onClose={() => setShippingEditorVisible(false)}
+-      >
+-        <ScrollView contentContainerStyle={styles.editorContent}>
+-          {(
+-            [
+-              ['name', 'Name'],
+-              ['line1', 'Address line 1'],
+-              ['line2', 'Address line 2'],
+-              ['city', 'City'],
+-              ['state', 'State'],
+-              ['postalCode', 'ZIP / postal code'],
+-              ['country', 'Country'],
+-            ] as const
+-          ).map(([key, label]) => (
+-            <View key={key} style={styles.editorField}>
+-              <Text style={styles.inputLabel}>{label}</Text>
+-              <TextInput
+-                accessibilityLabel={label}
+-                style={styles.textInput}
+-                value={shippingDraft[key]}
+-                onChangeText={(value) =>
+-                  setShippingDraft((current) => ({ ...current, [key]: value }))
+-                }
+-              />
+-            </View>
+-          ))}
+-          <Pressable style={styles.primaryButton} onPress={saveShipping}>
+-            <Text style={styles.primaryButtonText}>Save Address</Text>
+-          </Pressable>
+-          <Pressable
+-            style={styles.dangerButton}
+-            onPress={async () => {
+-              await run(() =>
+-                checkout.updateShippingAddress({ address: null })
+-              );
+-              setShippingEditorVisible(false);
+-            }}
+-          >
+-            <Text style={styles.dangerButtonText}>Clear address</Text>
+-          </Pressable>
+-        </ScrollView>
+-      </EditorModal>
+-
+       <EditorModal
+         title="Payment Method"
+         visible={paymentElementVisible}
+diff --git a/example/src/screens/Checkout/playgroundConfig.ts b/example/src/screens/Checkout/playgroundConfig.ts
+index 92e7130..304b896 100644
+--- a/example/src/screens/Checkout/playgroundConfig.ts
++++ b/example/src/screens/Checkout/playgroundConfig.ts
+@@ -1,4 +1,4 @@
+-import type { Checkout } from '@stripe/stripe-react-native';
++import type { Checkout } from '@stripe/stripe-react-native/src/types/Checkout';
+ import { hostedBackendURL } from './backend';
+ 
+ export type PaymentElementMode = 'sheet' | 'view';
+@@ -273,5 +273,6 @@ export function checkoutConfiguration(
+     ...(settings.adaptivePricingCountry !== 'none'
+       ? { currencySelectorElement: {} }
+       : {}),
++    ...(settings.collectShippingAddress ? { shippingAddressElement: {} } : {}),
+   };
+ }
+diff --git a/example/yarn.lock b/example/yarn.lock
+index 58ec852..b81b286 100644
+--- a/example/yarn.lock
++++ b/example/yarn.lock
+@@ -2916,7 +2916,7 @@ inherits@2, inherits@2.0.4, inherits@^2.0.3, inherits@^2.0.4, inherits@~2.0.3, i
+   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
+   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
+ 
+-invariant@^2.2.4:
++invariant@2.2.4, invariant@^2.2.4:
+   version "2.2.4"
+   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
+   integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
+@@ -4012,6 +4012,14 @@ react-native-test-app@^4.4.6:
+     semver "^7.3.5"
+     uuid "^11.0.0"
+ 
++react-native-webview@^14.0.1:
++  version "14.0.1"
++  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-14.0.1.tgz#b851c9e4d185c089575ef3eb3d8e15f42845ada7"
++  integrity sha512-lBUuvFk459Mo+5vUNqwzGvn+I8rDJE6zvOulG2hWWudeEOJfWTsQwOfuYnRu+27djUIXrESFfC+EQE3PGu+FWA==
++  dependencies:
++    escape-string-regexp "^4.0.0"
++    invariant "2.2.4"
++
+ react-native@^0.81.0:
+   version "0.81.5"
+   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.81.5.tgz#6c963f137d3979b22aef2d8482067775c8fe2fed"
+diff --git a/ios/Checkout/CheckoutConfigurationMapper.swift b/ios/Checkout/CheckoutConfigurationMapper.swift
+index 5b9b410..647f424 100644
+--- a/ios/Checkout/CheckoutConfigurationMapper.swift
++++ b/ios/Checkout/CheckoutConfigurationMapper.swift
+@@ -51,6 +51,9 @@ enum CheckoutConfigurationMapper {
+             if let buttonTitle = shippingParams["buttonTitle"] as? String {
+                 shippingConfiguration.buttonTitle = buttonTitle
+             }
++            if let appearance = shippingParams["appearance"] as? NSDictionary {
++                shippingConfiguration.appearance = try mapShippingAddressAppearance(appearance)
++            }
+             configuration.shippingAddressElement = shippingConfiguration
+         }
+         if let currencySelectorParams = params["currencySelectorElement"] as? NSDictionary {
+@@ -63,6 +66,50 @@ enum CheckoutConfigurationMapper {
+         return configuration
+     }
+ 
++    private static func mapShippingAddressAppearance(
++        _ params: NSDictionary
++    ) throws -> ShippingAddressElement.Appearance {
++        // Share parsing and validation with Payment Element's appearance options.
++        let mapped = try PaymentSheetAppearance.buildAppearanceFromParams(userParams: params)
++        var appearance = ShippingAddressElement.Appearance()
++        appearance.font.base = mapped.font.base
++        appearance.font.sizeScaleFactor = mapped.font.sizeScaleFactor
++        appearance.colors.primary = mapped.colors.primary
++        appearance.colors.background = mapped.colors.background
++        appearance.colors.componentBackground = mapped.colors.componentBackground
++        appearance.colors.componentBorder = mapped.colors.componentBorder
++        appearance.colors.componentDivider = mapped.colors.componentDivider
++        appearance.colors.text = mapped.colors.text
++        appearance.colors.textSecondary = mapped.colors.textSecondary
++        appearance.colors.componentText = mapped.colors.componentText
++        appearance.colors.componentPlaceholderText = mapped.colors.componentPlaceholderText
++        appearance.colors.icon = mapped.colors.icon
++        appearance.colors.danger = mapped.colors.danger
++        appearance.cornerRadius = mapped.cornerRadius
++        appearance.borderWidth = mapped.borderWidth
++        appearance.shadow = mapShippingAddressShadow(mapped.shadow)
++        appearance.formInsets = mapped.formInsets
++        appearance.primaryButton.backgroundColor = mapped.primaryButton.backgroundColor
++        appearance.primaryButton.textColor = mapped.primaryButton.textColor
++        appearance.primaryButton.borderColor = mapped.primaryButton.borderColor
++        appearance.primaryButton.cornerRadius = mapped.primaryButton.cornerRadius
++        appearance.primaryButton.borderWidth = mapped.primaryButton.borderWidth
++        appearance.primaryButton.font = mapped.primaryButton.font
++        appearance.primaryButton.height = mapped.primaryButton.height
++        return appearance
++    }
++
++    private static func mapShippingAddressShadow(
++        _ shadow: PaymentSheet.Appearance.Shadow
++    ) -> ShippingAddressElement.Appearance.Shadow {
++        var mapped = ShippingAddressElement.Appearance.Shadow()
++        mapped.color = shadow.color
++        mapped.opacity = shadow.opacity
++        mapped.offset = shadow.offset
++        mapped.radius = shadow.radius
++        return mapped
++    }
++
+     private static func mapCurrencySelectorAppearance(
+         _ params: NSDictionary?
+     ) throws -> CurrencySelectorElement.Appearance {
+@@ -194,12 +241,9 @@ enum CheckoutConfigurationMapper {
+         }
+ 
+         if let applePayParams = params["applePay"] as? NSDictionary {
+-            guard let merchantIdentifier, !merchantIdentifier.isEmpty else {
+-                throw CheckoutConfigurationMapperError.missingMerchantIdentifier
+-            }
+-            configuration.applePayConfiguration = PaymentElement.Configuration.ApplePayConfiguration(
+-                merchantId: merchantIdentifier,
+-                buttonType: try mapApplePayButtonType(applePayParams["buttonType"] as? String)
++            configuration.applePayConfiguration = try mapApplePayConfiguration(
++                applePayParams,
++                merchantIdentifier: merchantIdentifier
+             )
+         }
+ 
+@@ -279,6 +323,25 @@ enum CheckoutConfigurationMapper {
+         }
+     }
+ 
++    private static func mapApplePayConfiguration(
++        _ params: NSDictionary,
++        merchantIdentifier: String?
++    ) throws -> PaymentElement.Configuration.ApplePayConfiguration? {
++        switch params["display"] as? String {
++        case "never": return nil
++        case nil, "automatic": break
++        case .some(let value): throw unsupported(value, at: "paymentElement.applePay.display")
++        }
++
++        guard let merchantIdentifier, !merchantIdentifier.isEmpty else {
++            throw CheckoutConfigurationMapperError.missingMerchantIdentifier
++        }
++        return .init(
++            merchantId: merchantIdentifier,
++            buttonType: try mapApplePayButtonType(params["buttonType"] as? String)
++        )
++    }
++
+     private static func mapApplePayButtonType(_ value: String?) throws -> PKPaymentButtonType? {
+         guard let value else {
+             return nil
+diff --git a/ios/Tests/CheckoutConfigurationMapperTests.swift b/ios/Tests/CheckoutConfigurationMapperTests.swift
+index 40e425b..3cf6bd0 100644
+--- a/ios/Tests/CheckoutConfigurationMapperTests.swift
++++ b/ios/Tests/CheckoutConfigurationMapperTests.swift
+@@ -173,6 +173,54 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
+         }
+     }
+ 
++    func test_map_mapsApplePayDisplay() throws {
++        let cases: [(display: String?, merchantIdentifier: String?, enabled: Bool)] = [
++            (nil, "merchant.com.example", true),
++            ("automatic", "merchant.com.example", true),
++            ("never", "merchant.com.example", false),
++            ("never", nil, false),
++        ]
++        for testCase in cases {
++            var applePay = ["buttonType": "checkout"]
++            applePay["display"] = testCase.display
++            let configuration = try CheckoutConfigurationMapper.map(
++                params: [
++                    "paymentElement": [
++                        "applePay": applePay,
++                        "link": ["display": "never"],
++                        "paymentMethodOrder": ["card"],
++                    ],
++                ],
++                merchantIdentifier: testCase.merchantIdentifier,
++                didSelectPaymentOption: {}
++            )
++
++            let paymentElement = try XCTUnwrap(configuration.paymentElement)
++            if testCase.enabled {
++                let applePay = try XCTUnwrap(paymentElement.applePayConfiguration)
++                XCTAssertEqual(applePay.merchantId, testCase.merchantIdentifier)
++                XCTAssertEqual(applePay.buttonType, .checkout)
++            } else {
++                XCTAssertNil(paymentElement.applePayConfiguration)
++            }
++            XCTAssertEqual(paymentElement.linkConfiguration?.display, .never)
++            XCTAssertEqual(paymentElement.paymentMethodOrder, ["card"])
++        }
++    }
++
++    func test_map_rejectsUnsupportedApplePayDisplay() {
++        XCTAssertThrowsError(try CheckoutConfigurationMapper.map(
++            params: ["paymentElement": ["applePay": ["display": "invalid"]]],
++            merchantIdentifier: "merchant.com.example",
++            didSelectPaymentOption: {}
++        )) { error in
++            XCTAssertEqual(
++                error as? CheckoutConfigurationMapperError,
++                .unsupportedValue(path: "paymentElement.applePay.display", value: "invalid")
++            )
++        }
++    }
++
+     func test_map_leavesConfigurationValidationToNativeCheckout() throws {
+         let configuration = try CheckoutConfigurationMapper.map(
+             params: [:],
+diff --git a/ios/Tests/ShippingAddressAppearanceMapperTests.swift b/ios/Tests/ShippingAddressAppearanceMapperTests.swift
+new file mode 100644
+index 0000000..a14ac5c
+--- /dev/null
++++ b/ios/Tests/ShippingAddressAppearanceMapperTests.swift
+@@ -0,0 +1,132 @@
++//
++//  ShippingAddressAppearanceMapperTests.swift
++//  stripe-react-native
++//
++//  Created by George Birch on 10/21/26.
++//
++
++@testable import stripe_react_native
++@_spi(ReactNativeSDK) @_spi(STP) import StripePaymentSheet
++import UIKit
++import XCTest
++
++@MainActor
++final class ShippingAddressAppearanceMapperTests: XCTestCase {
++
++    func test_map_mapsColorsInBothInterfaceStyles() throws {
++        // Distinct values catch colors being dropped or assigned to a different field.
++        let colors: [String: (field: KeyPath<ShippingAddressElement.Appearance.Colors, UIColor>, light: String, dark: String)] = [
++            "primary": (\.primary, "#112233", "#102030"),
++            "background": (\.background, "#223344", "#203040"),
++            "componentBackground": (\.componentBackground, "#334455", "#304050"),
++            "componentBorder": (\.componentBorder, "#445566", "#405060"),
++            "componentDivider": (\.componentDivider, "#556677", "#506070"),
++            "primaryText": (\.text, "#667788", "#607080"),
++            "secondaryText": (\.textSecondary, "#778899", "#708090"),
++            "componentText": (\.componentText, "#8899AA", "#8090A0"),
++            "placeholderText": (\.componentPlaceholderText, "#99AABB", "#90A0B0"),
++            "icon": (\.icon, "#AABBCC", "#A0B0C0"),
++            "error": (\.danger, "#BBCCDD", "#B0C0D0"),
++        ]
++        let light = colors.mapValues { $0.light }
++        let dark = colors.mapValues { $0.dark }
++        let palettes: [(params: NSDictionary, usesThemePalettes: Bool)] = [
++            (light as NSDictionary, false),
++            (["light": light, "dark": dark] as NSDictionary, true),
++        ]
++
++        for palette in palettes {
++            let appearance = try mapAppearance(["colors": palette.params])
++            for (key, expected) in colors {
++                let color = appearance.colors[keyPath: expected.field]
++                let styles: [(UIUserInterfaceStyle, String)] = [
++                    (.light, expected.light),
++                    (.dark, palette.usesThemePalettes ? expected.dark : expected.light),
++                ]
++                for (style, hex) in styles {
++                    XCTAssertEqual(
++                        color.resolvedColor(with: UITraitCollection(userInterfaceStyle: style)),
++                        UIColor(hexString: hex),
++                        "Incorrect \(key) color for \(style)"
++                    )
++                }
++            }
++        }
++    }
++
++    func test_map_mapsInsetsAndPreservesOmittedEdges() throws {
++        let defaults = ShippingAddressElement.Appearance().formInsets
++        let cases: [(params: NSDictionary, expected: NSDirectionalEdgeInsets)] = [
++            ([:], defaults),
++            (
++                ["left": 3.5, "top": 7.5, "right": 11.5, "bottom": 15.5],
++                NSDirectionalEdgeInsets(top: 7.5, leading: 3.5, bottom: 15.5, trailing: 11.5)
++            ),
++            (
++                ["left": 0, "bottom": 9.5],
++                NSDirectionalEdgeInsets(top: defaults.top, leading: 0, bottom: 9.5, trailing: defaults.trailing)
++            ),
++        ]
++
++        // Asymmetric edges also catch left/right or top/bottom being swapped.
++        for testCase in cases {
++            let appearance = try mapAppearance(["formInsetValues": testCase.params])
++            XCTAssertEqual(appearance.formInsets, testCase.expected)
++        }
++    }
++
++    func test_map_mapsPrimaryButtonAppearance() throws {
++        let light = ["background": "#112233", "text": "#445566", "border": "#778899"]
++        let dark = ["background": "#AABBCC", "text": "#DDEEFF", "border": "#102030"]
++        let palettes: [(params: NSDictionary, usesThemePalettes: Bool)] = [
++            (light as NSDictionary, false),
++            (["light": light, "dark": dark] as NSDictionary, true),
++        ]
++
++        for palette in palettes {
++            let button = try mapAppearance([
++                "primaryButton": [
++                    "colors": palette.params,
++                    "shapes": ["borderRadius": 14.5, "borderWidth": 2.5, "height": 52.5],
++                    "font": ["family": "Helvetica"],
++                ],
++            ]).primaryButton
++
++            XCTAssertEqual(button.cornerRadius, 14.5)
++            XCTAssertEqual(button.borderWidth, 2.5)
++            XCTAssertEqual(button.height, 52.5)
++            XCTAssertEqual(button.font?.fontName, "Helvetica")
++
++            let colors: [(color: UIColor?, light: String, dark: String)] = [
++                (button.backgroundColor, "#112233", "#AABBCC"),
++                (button.textColor, "#445566", "#DDEEFF"),
++                (button.borderColor, "#778899", "#102030"),
++            ]
++            for expected in colors {
++                let color = try XCTUnwrap(expected.color)
++                XCTAssertEqual(
++                    color.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)),
++                    UIColor(hexString: expected.light)
++                )
++                XCTAssertEqual(
++                    color.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark)),
++                    UIColor(hexString: palette.usesThemePalettes ? expected.dark : expected.light)
++                )
++            }
++        }
++    }
++
++    private func mapAppearance(_ params: NSDictionary) throws -> ShippingAddressElement.Appearance {
++        // Exercise the public configuration path, including the shipping-specific copy.
++        let configuration = try CheckoutConfigurationMapper.map(
++            params: [
++                "clientSecret": "cs_test_secret_123",
++                "returnURL": "example://checkout",
++                "shippingAddressElement": ["appearance": params],
++            ],
++            merchantIdentifier: nil,
++            didSelectPaymentOption: {}
++        )
++        return try XCTUnwrap(configuration.shippingAddressElement?.appearance)
++    }
++}
+diff --git a/package.json b/package.json
+index 2070ef6..7032e37 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-react-native",
+-  "version": "0.83.0",
++  "version": "0.84.0",
+   "author": "Stripe",
+   "description": "Stripe SDK for React Native",
+   "main": "lib/commonjs/index",
+@@ -102,7 +102,7 @@
+   "peerDependencies": {
+     "expo": ">=46.0.9",
+     "react": "*",
+-    "react-native": "*",
++    "react-native": ">=0.75.0",
+     "react-native-webview": "*"
+   },
+   "peerDependenciesMeta": {
+diff --git a/scripts/test-expo-project b/scripts/test-expo-project
+index 137749d..9bb05a1 100755
+--- a/scripts/test-expo-project
++++ b/scripts/test-expo-project
+@@ -22,11 +22,19 @@ OPTIONS:
+   --platforms       Comma separated list of platforms to build (android, ios). Default: android,ios
+   --disable-spm     Opt out of Swift Package Manager resolution via the Expo
+                     plugin's disableSPM option, exercising the CocoaPods
+-                    fallback path (iOS keeps Expo's static-frameworks default)
++                    fallback path (iOS keeps Expo's default static linkage)
+   --skip-build      Stop after `expo prebuild` and the iOS integration checks,
+                     without running the native builds
+   --keep-project    Do not delete the temporary project directory (helpful for debugging failures)
+   -h, --help        Print this help message
++
++iOS TROUBLESHOOTING:
++  If pod install reports static linkage despite useFrameworks: "dynamic",
++  rerun this script with --keep-project to preserve the generated app.
++  In that app, upgrade to Expo 58.0.19 or later (expo-modules-autolinking
++  58.0.15 or later), update its dependencies and lockfile, then run
++  npx expo prebuild --platform ios from the app directory. This fixes Expo's
++  precompiled-module linkage override; keep dynamic frameworks enabled.
+ EOF
+ }
+ 
+diff --git a/scripts/update-expo-plugins.js b/scripts/update-expo-plugins.js
+index d73c510..902ccc1 100644
+--- a/scripts/update-expo-plugins.js
++++ b/scripts/update-expo-plugins.js
+@@ -38,7 +38,9 @@ if (!disableSPM) {
+   // Stripe iOS SDK resolves through Swift Package Manager by default — which
+   // requires dynamic frameworks (Expo's default is static; `pod install`
+   // fails fast otherwise). This mirrors what real Expo apps must configure;
+-  // see stripe_spm.rb. The fallback (--disable-spm) run deliberately keeps
++  // see stripe_spm.rb. If precompiled modules override this setting, update
++  // Expo to 58.0.19 or later (expo-modules-autolinking 58.0.15 or later).
++  // The fallback (--disable-spm) run deliberately keeps
+   // Expo's static default: that is the configuration opted-out apps build
+   // with.
+   buildProperties.ios = {
+diff --git a/src/checkout/createCheckout.ts b/src/checkout/createCheckout.ts
+index 745488d..52d9d8e 100644
+--- a/src/checkout/createCheckout.ts
++++ b/src/checkout/createCheckout.ts
+@@ -99,6 +99,7 @@ function nativeCreateOptions(
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export async function createCheckout(
+diff --git a/src/components/CheckoutCurrencySelectorElementView.tsx b/src/components/CheckoutCurrencySelectorElementView.tsx
+index 8900db7..945cb52 100644
+--- a/src/components/CheckoutCurrencySelectorElementView.tsx
++++ b/src/components/CheckoutCurrencySelectorElementView.tsx
+@@ -10,6 +10,7 @@ import type { CheckoutCurrencySelectorElementViewProps } from '../types/Checkout
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export function CheckoutCurrencySelectorElementView({
+diff --git a/src/components/CheckoutPaymentElementView.tsx b/src/components/CheckoutPaymentElementView.tsx
+index 8a7d5e2..0564232 100644
+--- a/src/components/CheckoutPaymentElementView.tsx
++++ b/src/components/CheckoutPaymentElementView.tsx
+@@ -10,6 +10,7 @@ import type { CheckoutPaymentElementViewProps } from '../types/Checkout';
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export function CheckoutPaymentElementView({
+diff --git a/src/connect/EmbeddedComponent.tsx b/src/connect/EmbeddedComponent.tsx
+index 186d5a7..52177a7 100644
+--- a/src/connect/EmbeddedComponent.tsx
++++ b/src/connect/EmbeddedComponent.tsx
+@@ -838,7 +838,7 @@ export function EmbeddedComponent(props: EmbeddedComponentProps) {
+         return false; // Block WebView navigation
+       }
+ 
+-      if (navigationType !== 'click') return true;
++      if (Platform.OS === 'ios' && navigationType !== 'click') return true;
+ 
+       // Allow navigation within allowed Stripe domains (matching iOS SDK behavior)
+       if (isAllowedStripeHost(url)) {
+@@ -1014,6 +1014,7 @@ function isCsvExportUrl(url: string): boolean {
+     return (
+       parsedUrl.hostname === 'stripe-data-exports.com' ||
+       parsedUrl.hostname.endsWith('.stripe-data-exports.com') ||
++      parsedUrl.hostname === 'stripe-data-exports.s3.amazonaws.com' ||
+       parsedUrl.pathname.includes('stripe-data-exports')
+     );
+   } catch {
+diff --git a/src/connect/__tests__/EmbeddedComponent.test.tsx b/src/connect/__tests__/EmbeddedComponent.test.tsx
+index 9cc6c7a..abf6b74 100644
+--- a/src/connect/__tests__/EmbeddedComponent.test.tsx
++++ b/src/connect/__tests__/EmbeddedComponent.test.tsx
+@@ -44,6 +44,8 @@ jest.mock('../../specs/NativeStripeSdkModule', () =>
+     collectBankAccountToken: jest.fn(),
+     collectFinancialConnectionsAccounts: jest.fn(),
+     openAuthenticatedWebView: jest.fn(),
++    downloadAndShareFile: jest.fn(),
++    presentExternalWebPage: jest.fn(),
+   })
+ );
+ 
+@@ -52,6 +54,7 @@ import { render, waitFor, act } from '@testing-library/react-native';
+ import {
+   ActivityIndicator,
+   AppState,
++  Linking,
+   Platform,
+   StyleSheet,
+ } from 'react-native';
+@@ -361,6 +364,250 @@ describe('EmbeddedComponent', () => {
+     });
+   });
+ 
++  describe('Navigation handling', () => {
++    const getNavigationHandler = async (props: any = {}) => {
++      mockLoadWebView = true;
++      renderComponent(props);
++
++      await waitFor(() => {
++        expect(mockWebViewProps?.onShouldStartLoadWithRequest).toEqual(
++          expect.any(Function)
++        );
++      });
++
++      return mockWebViewProps.onShouldStartLoadWithRequest;
++    };
++
++    it('opens an Android external navigation classified as other', async () => {
++      const previousPlatform = Platform.OS;
++      Platform.OS = 'android' as any;
++      const openUrl = jest
++        .spyOn(Linking, 'openURL')
++        .mockResolvedValue('' as any);
++
++      try {
++        const onShouldStartLoad = await getNavigationHandler();
++        const shouldLoad = onShouldStartLoad({
++          url: 'https://example.com/help',
++          navigationType: 'other',
++        });
++
++        expect(shouldLoad).toBe(false);
++        expect(openUrl).toHaveBeenCalledWith('https://example.com/help');
++      } finally {
++        openUrl.mockRestore();
++        Platform.OS = previousPlatform;
++      }
++    });
++
++    it('opens an Android external navigation when classification is omitted', async () => {
++      const previousPlatform = Platform.OS;
++      Platform.OS = 'android' as any;
++      const openUrl = jest
++        .spyOn(Linking, 'openURL')
++        .mockResolvedValue('' as any);
++
++      try {
++        const onShouldStartLoad = await getNavigationHandler();
++        const shouldLoad = onShouldStartLoad({
++          url: 'https://example.com/help',
++        });
++
++        expect(shouldLoad).toBe(false);
++        expect(openUrl).toHaveBeenCalledWith('https://example.com/help');
++      } finally {
++        openUrl.mockRestore();
++        Platform.OS = previousPlatform;
++      }
++    });
++
++    it('uses the configured in-app browser for Android external navigations', async () => {
++      const previousPlatform = Platform.OS;
++      Platform.OS = 'android' as any;
++      const openInApp = NativeStripeSdk.presentExternalWebPage as jest.Mock;
++      openInApp.mockResolvedValue(undefined);
++      const openUrl = jest.spyOn(Linking, 'openURL');
++
++      try {
++        const onShouldStartLoad = await getNavigationHandler({
++          presentExternalLinksInApp: true,
++        });
++        const shouldLoad = onShouldStartLoad({
++          url: 'https://example.com/help',
++          navigationType: 'other',
++        });
++
++        expect(shouldLoad).toBe(false);
++        expect(openInApp).toHaveBeenCalledWith('https://example.com/help');
++        expect(openUrl).not.toHaveBeenCalled();
++      } finally {
++        openUrl.mockRestore();
++        Platform.OS = previousPlatform;
++      }
++    });
++
++    it('keeps Android navigation to an allowed Connect host in the component', async () => {
++      const previousPlatform = Platform.OS;
++      Platform.OS = 'android' as any;
++      const openUrl = jest.spyOn(Linking, 'openURL');
++
++      try {
++        const onShouldStartLoad = await getNavigationHandler();
++        const shouldLoad = onShouldStartLoad({
++          url: 'https://connect-js.stripe.com/embedded',
++          navigationType: 'other',
++        });
++
++        expect(shouldLoad).toBe(true);
++        expect(openUrl).not.toHaveBeenCalled();
++      } finally {
++        openUrl.mockRestore();
++        Platform.OS = previousPlatform;
++      }
++    });
++
++    it.each([
++      ['click', false],
++      ['other', true],
++    ])(
++      'preserves iOS %s navigation behavior',
++      async (navigationType, expected) => {
++        const previousPlatform = Platform.OS;
++        Platform.OS = 'ios' as any;
++        const openUrl = jest
++          .spyOn(Linking, 'openURL')
++          .mockResolvedValue('' as any);
++
++        try {
++          const onShouldStartLoad = await getNavigationHandler();
++          const shouldLoad = onShouldStartLoad({
++            url: 'https://example.com/help',
++            navigationType,
++          });
++
++          expect(shouldLoad).toBe(expected);
++          if (expected) {
++            expect(openUrl).not.toHaveBeenCalled();
++          } else {
++            expect(openUrl).toHaveBeenCalledWith('https://example.com/help');
++          }
++        } finally {
++          openUrl.mockRestore();
++          Platform.OS = previousPlatform;
++        }
++      }
++    );
++
++    it('shares CSV exports without opening them externally', async () => {
++      const previousPlatform = Platform.OS;
++      Platform.OS = 'android' as any;
++      const downloadAndShare =
++        NativeStripeSdk.downloadAndShareFile as jest.Mock;
++      downloadAndShare.mockResolvedValue({ success: true });
++      const openUrl = jest.spyOn(Linking, 'openURL');
++
++      try {
++        const onShouldStartLoad = await getNavigationHandler();
++        const shouldLoad = onShouldStartLoad({
++          url: 'https://stripe-data-exports.com/report.csv',
++          navigationType: 'other',
++        });
++
++        expect(shouldLoad).toBe(false);
++        expect(downloadAndShare).toHaveBeenCalledWith(
++          'https://stripe-data-exports.com/report.csv',
++          null
++        );
++        expect(openUrl).not.toHaveBeenCalled();
++      } finally {
++        openUrl.mockRestore();
++        Platform.OS = previousPlatform;
++      }
++    });
++
++    it.each(['android', 'ios'])(
++      'shares real S3-hosted CSV exports without opening them externally on %s',
++      async (platform) => {
++        const previousPlatform = Platform.OS;
++        Platform.OS = platform as any;
++        const downloadAndShare =
++          NativeStripeSdk.downloadAndShareFile as jest.Mock;
++        downloadAndShare.mockResolvedValue({ success: true });
++        const openUrl = jest
++          .spyOn(Linking, 'openURL')
++          .mockResolvedValue('' as any);
++        const csvExportUrl =
++          'https://stripe-data-exports.s3.amazonaws.com/acct_123/xprt_456/payouts.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Signature=abc';
++
++        try {
++          const onShouldStartLoad = await getNavigationHandler();
++          const shouldLoad = onShouldStartLoad({
++            url: csvExportUrl,
++            navigationType: 'other',
++          });
++
++          expect(shouldLoad).toBe(false);
++          expect(downloadAndShare).toHaveBeenCalledWith(csvExportUrl, null);
++          expect(openUrl).not.toHaveBeenCalled();
++        } finally {
++          openUrl.mockRestore();
++          Platform.OS = previousPlatform;
++        }
++      }
++    );
++
++    it('does not treat lookalike export hosts as CSV exports', async () => {
++      const previousPlatform = Platform.OS;
++      Platform.OS = 'android' as any;
++      const downloadAndShare =
++        NativeStripeSdk.downloadAndShareFile as jest.Mock;
++      const openUrl = jest
++        .spyOn(Linking, 'openURL')
++        .mockResolvedValue('' as any);
++
++      try {
++        const onShouldStartLoad = await getNavigationHandler();
++        const shouldLoad = onShouldStartLoad({
++          url: 'https://stripe-data-exports.s3.amazonaws.com.attacker.example/x.csv',
++          navigationType: 'other',
++        });
++
++        expect(shouldLoad).toBe(false);
++        expect(downloadAndShare).not.toHaveBeenCalled();
++      } finally {
++        openUrl.mockRestore();
++        Platform.OS = previousPlatform;
++      }
++    });
++
++    it('keeps external navigation blocked when opening the URL rejects', async () => {
++      const previousPlatform = Platform.OS;
++      Platform.OS = 'android' as any;
++      const error = new Error('Unable to open URL');
++      const openUrl = jest.spyOn(Linking, 'openURL').mockRejectedValue(error);
++      const consoleError = jest.spyOn(console, 'error').mockImplementation();
++
++      try {
++        const onShouldStartLoad = await getNavigationHandler();
++        const shouldLoad = onShouldStartLoad({
++          url: 'https://example.com/help',
++          navigationType: 'other',
++        });
++
++        expect(shouldLoad).toBe(false);
++        await waitFor(() => {
++          expect(consoleError).toHaveBeenCalledWith(
++            'Unexpected error: Unable to open URL'
++          );
++        });
++      } finally {
++        consoleError.mockRestore();
++        openUrl.mockRestore();
++        Platform.OS = previousPlatform;
++      }
++    });
++  });
++
+   describe('Font Handling', () => {
+     it('default font is applied when fontFamily not specified', () => {
+       let contextValue: any;
+diff --git a/src/connect/analytics/__tests__/ComponentAnalyticsClient.test.ts b/src/connect/analytics/__tests__/ComponentAnalyticsClient.test.ts
+index 5450946..0499e0d 100644
+--- a/src/connect/analytics/__tests__/ComponentAnalyticsClient.test.ts
++++ b/src/connect/analytics/__tests__/ComponentAnalyticsClient.test.ts
+@@ -15,6 +15,7 @@ describe('ComponentAnalyticsClient', () => {
+   let sendEventSpy: jest.SpyInstance;
+ 
+   beforeEach(() => {
++    jest.useFakeTimers();
+     jest.clearAllMocks();
+ 
+     mockAnalyticsClient = new AnalyticsClient({
+@@ -38,6 +39,10 @@ describe('ComponentAnalyticsClient', () => {
+     });
+   });
+ 
++  afterEach(() => {
++    jest.useRealTimers();
++  });
++
+   describe('constructor', () => {
+     it('should initialize with unique component instance ID', () => {
+       const client1 = new ComponentAnalyticsClient(mockAnalyticsClient, {
+@@ -60,21 +65,18 @@ describe('ComponentAnalyticsClient', () => {
+     });
+ 
+     it('should set loadStart timestamp', () => {
+-      const beforeCreate = Date.now();
++      const loadStart = Date.now();
+       const client = new ComponentAnalyticsClient(mockAnalyticsClient, {
+         component: 'payments',
+       });
+-      const afterCreate = Date.now();
+ 
++      jest.advanceTimersByTime(250);
+       client.logComponentWebPageLoaded();
+ 
+       const payload = sendEventSpy.mock.calls[0][0] as any;
+-      const timeToLoad = payload.time_to_load || 0;
+-      const estimatedLoadStart = Date.now() - timeToLoad * 1000;
++      const estimatedLoadStart = Date.now() - payload.time_to_load * 1000;
+ 
+-      expect(estimatedLoadStart).toBeGreaterThanOrEqual(beforeCreate);
+-      // Allow 10ms tolerance for CI timing variability
+-      expect(estimatedLoadStart).toBeLessThanOrEqual(afterCreate + 10);
++      expect(estimatedLoadStart).toBe(loadStart);
+     });
+   });
+ 
+@@ -150,16 +152,12 @@ describe('ComponentAnalyticsClient', () => {
+       expect(sendEventSpy).toHaveBeenCalledTimes(1);
+     });
+ 
+-    it('should calculate time_to_load in seconds', (done) => {
+-      // Wait 100ms then log
+-      setTimeout(() => {
+-        componentAnalytics.logComponentWebPageLoaded();
++    it('should calculate time_to_load in seconds', () => {
++      jest.advanceTimersByTime(100);
++      componentAnalytics.logComponentWebPageLoaded();
+ 
+-        const payload = sendEventSpy.mock.calls[0][0] as any;
+-        expect(payload.time_to_load).toBeGreaterThanOrEqual(0.1); // At least 100ms = 0.1s
+-        expect(payload.time_to_load).toBeLessThan(1); // Less than 1 second
+-        done();
+-      }, 100);
++      const payload = sendEventSpy.mock.calls[0][0] as any;
++      expect(payload.time_to_load).toBe(0.1);
+     });
+   });
+ 
+@@ -456,30 +454,24 @@ describe('ComponentAnalyticsClient', () => {
+   });
+ 
+   describe('timing calculations', () => {
+-    it('should calculate perceived_time_to_load correctly', (done) => {
++    it('should calculate perceived_time_to_load correctly', () => {
++      jest.advanceTimersByTime(100);
+       componentAnalytics.logComponentViewed();
+ 
+-      setTimeout(() => {
+-        componentAnalytics.logComponentLoaded();
++      jest.advanceTimersByTime(50);
++      componentAnalytics.logComponentLoaded();
+ 
+-        const payload = sendEventSpy.mock.calls[1][0] as any;
+-        expect(payload.perceived_time_to_load).toBeGreaterThanOrEqual(0.04); // At least 40ms
+-        // perceived_time_to_load should be less than or equal to time_to_load
+-        expect(payload.perceived_time_to_load).toBeLessThanOrEqual(
+-          (payload.time_to_load || 0) + 0.01 // Allow 10ms tolerance
+-        );
+-        done();
+-      }, 50);
++      const payload = sendEventSpy.mock.calls[1][0] as any;
++      expect(payload.perceived_time_to_load).toBe(0.05);
++      expect(payload.time_to_load).toBe(0.15);
+     });
+ 
+-    it('should measure time from construction to page load', (done) => {
+-      setTimeout(() => {
+-        componentAnalytics.logComponentWebPageLoaded();
++    it('should measure time from construction to page load', () => {
++      jest.advanceTimersByTime(50);
++      componentAnalytics.logComponentWebPageLoaded();
+ 
+-        const payload = sendEventSpy.mock.calls[0][0] as any;
+-        expect(payload.time_to_load).toBeGreaterThanOrEqual(0.04); // At least 40ms
+-        done();
+-      }, 50);
++      const payload = sendEventSpy.mock.calls[0][0] as any;
++      expect(payload.time_to_load).toBe(0.05);
+     });
+   });
+ });
+diff --git a/src/hooks/useCheckout.ts b/src/hooks/useCheckout.ts
+index ae6778f..0695d6d 100644
+--- a/src/hooks/useCheckout.ts
++++ b/src/hooks/useCheckout.ts
+@@ -52,6 +52,7 @@ function stateForController(controller: CheckoutController): State {
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export function useCheckout(options: Checkout.UseOptions): Checkout.UseResult {
+diff --git a/src/index.tsx b/src/index.tsx
+index 4bcac5f..623b05e 100644
+--- a/src/index.tsx
++++ b/src/index.tsx
+@@ -7,7 +7,6 @@ export { usePaymentSheet } from './hooks/usePaymentSheet';
+ export { useFinancialConnectionsSheet } from './hooks/useFinancialConnectionsSheet';
+ export { useOnramp } from './hooks/useOnramp';
+ export { useLinkController } from './hooks/useLinkController';
+-export { useCheckout } from './hooks/useCheckout';
+ 
+ //components
+ export { initStripe, StripeProvider } from './components/StripeProvider';
+@@ -42,11 +41,6 @@ export * from './types/components/PaymentMethodMessagingElementComponent';
+ export type { Props as PaymentMethodMessagingElementProps } from './components/PaymentMethodMessagingElement';
+ export { PaymentMethodMessagingElement } from './components/PaymentMethodMessagingElement';
+ 
+-// Checkout private preview
+-export { createCheckout } from './checkout/createCheckout';
+-export { CheckoutPaymentElementView } from './components/CheckoutPaymentElementView';
+-export { CheckoutCurrencySelectorElementView } from './components/CheckoutCurrencySelectorElementView';
+-
+ //connect components
+ export {
+   ConnectComponentsProvider,
+diff --git a/src/plugin/__tests__/withStripe-test.ts b/src/plugin/__tests__/withStripe-test.ts
+index fa9091c..0386a62 100644
+--- a/src/plugin/__tests__/withStripe-test.ts
++++ b/src/plugin/__tests__/withStripe-test.ts
+@@ -1,7 +1,7 @@
+ import { AndroidConfig } from '@expo/config-plugins';
+ import { resolve } from 'path';
+ 
+-import {
++import withStripe, {
+   setApplePayEntitlement,
+   setGooglePayMetaData,
+   setOnrampGradleProperty,
+@@ -23,6 +23,39 @@ const { getMainApplicationOrThrow, readAndroidManifestAsync } =
+ const fixturesPath = resolve(__dirname, 'fixtures');
+ const sampleManifestPath = resolve(fixturesPath, 'sample-AndroidManifest.xml');
+ 
++describe('withStripe', () => {
++  it('rejects disableSPM with migration instructions', () => {
++    expect(() =>
++      withStripe(
++        { name: 'StripeTest', slug: 'stripe-test' },
++        {
++          merchantIdentifier: 'merchant.com.example',
++          enableGooglePay: false,
++          disableSPM: true,
++        }
++      )
++    ).toThrow(
++      'Remove disableSPM from your app config and set "useFrameworks": "dynamic" via the expo-build-properties plugin.'
++    );
++  });
++
++  it.each([undefined, false])(
++    'allows SPM resolution when disableSPM is %s',
++    (disableSPM) => {
++      expect(() =>
++        withStripe(
++          { name: 'StripeTest', slug: 'stripe-test' },
++          {
++            merchantIdentifier: 'merchant.com.example',
++            enableGooglePay: false,
++            ...(disableSPM === undefined ? {} : { disableSPM }),
++          }
++        )
++      ).not.toThrow();
++    }
++  );
++});
++
+ describe('setApplePayEntitlement', () => {
+   it(`sets the apple pay entitlement when none exist`, () => {
+     expect(setApplePayEntitlement('merchant.com.example', {})).toMatchObject({
+diff --git a/src/plugin/withStripe.ts b/src/plugin/withStripe.ts
+index 949e36e..c159c93 100644
+--- a/src/plugin/withStripe.ts
++++ b/src/plugin/withStripe.ts
+@@ -37,19 +37,24 @@ type StripePluginProps = {
+    */
+   includeOnramp?: boolean;
+   /**
+-   * iOS only. When true, sets `$StripeDisableSPM = true` in the generated
+-   * Podfile, so the Stripe iOS SDK is resolved through the CocoaPods registry
+-   * instead of Swift Package Manager.
+-   * Defaults to false (SPM resolution on React Native >= 0.75, which requires
+-   * `expo-build-properties` with `"useFrameworks": "dynamic"`).
+-   * WARNING: CocoaPods support is deprecated and future Stripe SDK versions
+-   * will not provide this option. Only use it as a last resort to temporarily
+-   * support static linking, old React Native versions, or as a stopgap workaround.
++   * @deprecated The Stripe iOS SDK no longer supports CocoaPods resolution.
++   * Setting this to true throws an error. Remove this option and use
++   * `expo-build-properties` with `"useFrameworks": "dynamic"`.
++   * If Expo still reports static linkage, upgrade to Expo 58.0.19 or later.
++   * It includes the precompiled-module linkage fix
++   * in expo-modules-autolinking 58.0.15; keep dynamic frameworks enabled.
+    */
+   disableSPM?: boolean;
+ };
+ 
+ const withStripe: ConfigPlugin<StripePluginProps> = (config, props) => {
++  // Reject the legacy opt-out before registering any native project changes.
++  if (props.disableSPM) {
++    throw new Error(
++      '[stripe-react-native] disableSPM is no longer supported because the Stripe iOS SDK no longer supports CocoaPods resolution. Remove disableSPM from your app config and set "useFrameworks": "dynamic" via the expo-build-properties plugin.'
++    );
++  }
++
+   config = withStripeIos(config, props);
+   config = withNoopSwiftFile(config);
+   config = withStripeAndroid(config, props);
+diff --git a/src/types/Checkout.ts b/src/types/Checkout.ts
+index 99c7688..caea541 100644
+--- a/src/types/Checkout.ts
++++ b/src/types/Checkout.ts
+@@ -16,6 +16,7 @@ import type { EmbeddedRowSelectionBehavior } from './EmbeddedPaymentElement';
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export interface CheckoutController {
+@@ -59,6 +60,7 @@ export interface CheckoutController {
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export interface CheckoutPaymentElement {
+@@ -76,6 +78,7 @@ export interface CheckoutPaymentElement {
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export interface CheckoutShippingAddressElement {
+@@ -92,6 +95,7 @@ export interface CheckoutShippingAddressElement {
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export interface CheckoutPaymentElementViewProps {
+@@ -105,11 +109,20 @@ export interface CheckoutPaymentElementViewProps {
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export interface CheckoutCurrencySelectorElement {}
+ 
+-/** Props for the inline Checkout Currency Selector Element view. */
++/**
++ * Props for the inline Checkout Currency Selector Element view.
++ *
++ * @remarks
++ * This API is in private preview and can change without notice.
++ *
++ * @internal
++ * @CheckoutSessionPrivatePreview
++ */
+ export interface CheckoutCurrencySelectorElementViewProps {
+   /** The Currency Selector Element owned by Checkout. */
+   element: CheckoutCurrencySelectorElement;
+@@ -121,17 +134,20 @@ export interface CheckoutCurrencySelectorElementViewProps {
+  * @remarks
+  * This API is in private preview and can change without notice.
+  *
++ * @internal
+  * @CheckoutSessionPrivatePreview
+  */
+ export namespace Checkout {
+   /**
+    * The appearance to use for Checkout UI.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export type UserInterfaceStyle = 'alwaysLight' | 'alwaysDark' | 'automatic';
+ 
+   /**
+    * Configuration used to create Checkout.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface CreateOptions {
+@@ -161,6 +177,7 @@ export namespace Checkout {
+ 
+   /**
+    * Options for loading and managing Checkout with `useCheckout`.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface UseOptions {
+@@ -175,6 +192,7 @@ export namespace Checkout {
+ 
+   /**
+    * Reactive Checkout state and controller methods returned by `useCheckout`.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface UseResult {
+@@ -222,6 +240,7 @@ export namespace Checkout {
+ 
+   /**
+    * Parameters for updating or clearing the customer's shipping address.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface UpdateShippingAddressParams {
+@@ -233,6 +252,7 @@ export namespace Checkout {
+ 
+   /**
+    * The result of confirming a Checkout Session.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export type Result =
+@@ -255,6 +275,7 @@ export namespace Checkout {
+ 
+   /**
+    * Error codes returned by Checkout APIs.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export type ErrorCode =
+@@ -267,6 +288,7 @@ export namespace Checkout {
+ 
+   /**
+    * Configuration for Currency Selector Element.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface CurrencySelectorElementConfiguration {
+@@ -276,6 +298,7 @@ export namespace Checkout {
+ 
+   /**
+    * Configuration for the Checkout-owned Shipping Address Element.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface ShippingAddressElementConfiguration {
+@@ -283,15 +306,100 @@ export namespace Checkout {
+     title?: string;
+     /** The primary button label. Defaults to the localized "Save address". */
+     buttonTitle?: string;
++    /** Customizes the native shipping address form. */
++    appearance?: ShippingAddressElementConfiguration.Appearance;
++  }
++
++  /**
++   * Appearance types used by Shipping Address Element.
++   * @internal
++   * @CheckoutSessionPrivatePreview
++   */
++  export namespace ShippingAddressElementConfiguration {
++    /**
++     * Appearance configuration for Shipping Address Element.
++     * @internal
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface Appearance {
++      /** Colors used by the shipping address form, in a single or light/dark palette. */
++      colors?: AppearanceParams['colors'];
++      /** Configures the shipping address form's save button. */
++      primaryButton?: PrimaryButtonConfiguration;
++      /** Insets around the shipping address form and primary button. */
++      formInsetValues?: AppearanceParams['formInsetValues'];
++      /** Font family and scale for the address form. iOS only. */
++      font?: AppearanceParams['font'];
++      /** Shapes and shadows for the address inputs. iOS only. */
++      shapes?: AppearanceParams['shapes'];
++    }
++
++    /**
++     * Appearance of Shipping Address Element's primary button.
++     * @internal
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface PrimaryButtonConfiguration {
++      /** Font family used for the primary button. */
++      font?: Partial<Pick<FontConfig, 'family'>>;
++      /** Colors used by the primary button, in a single or light/dark palette. */
++      colors?:
++        | PrimaryButtonColorConfiguration
++        | {
++            light: PrimaryButtonColorConfiguration;
++            dark: PrimaryButtonColorConfiguration;
++          };
++      /** Configures the primary button's border and height. */
++      shapes?: PrimaryButtonShapeConfiguration;
++    }
++
++    /**
++     * Colors supported by Shipping Address Element's primary button.
++     * @internal
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface PrimaryButtonColorConfiguration {
++      /** Background color as a hex string. Defaults to the form's primary color. */
++      background?: string;
++      /**
++       * Text color as a hex string. Defaults to a contrasting color derived from
++       * the button's background on iOS and white (`#FFFFFF`) on Android.
++       */
++      text?: string;
++      /**
++       * Border color as a hex string. Defaults to `UIColor.quaternaryLabel` on
++       * iOS and transparent on Android.
++       */
++      border?: string;
++    }
++
++    /**
++     * Shape of Shipping Address Element's primary button.
++     * @internal
++     * @CheckoutSessionPrivatePreview
++     */
++    export interface PrimaryButtonShapeConfiguration {
++      /** Corner radius in density-independent pixels. */
++      borderRadius?: number;
++      /** Border width in density-independent pixels. */
++      borderWidth?: number;
++      /**
++       * Button height in density-independent pixels. Defaults to 44 points on
++       * iOS and 48 dp on Android.
++       */
++      height?: number;
++    }
+   }
+ 
+   /**
+    * Appearance types used by Currency Selector Element.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export namespace CurrencySelectorElementConfiguration {
+     /**
+      * Appearance configuration for Currency Selector Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export interface Appearance {
+@@ -314,6 +422,7 @@ export namespace Checkout {
+ 
+     /**
+      * Colors used by Currency Selector Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export interface ColorConfiguration {
+@@ -335,6 +444,7 @@ export namespace Checkout {
+ 
+     /**
+      * Shape configuration for Currency Selector Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export interface ShapeConfiguration {
+@@ -346,6 +456,7 @@ export namespace Checkout {
+ 
+     /**
+      * Content displayed in each currency option label.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export type LabelContent = 'automatic' | 'currencyCode' | 'amount';
+@@ -353,6 +464,7 @@ export namespace Checkout {
+ 
+   /**
+    * Known customer details used to prefill Checkout and its elements.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface Defaults {
+@@ -368,6 +480,7 @@ export namespace Checkout {
+ 
+   /**
+    * A customer's name and postal address.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface ContactDetails {
+@@ -379,6 +492,7 @@ export namespace Checkout {
+ 
+   /**
+    * Configuration for the Checkout-owned Payment Element.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface PaymentElementConfiguration {
+@@ -396,7 +510,7 @@ export namespace Checkout {
+     termsDisplay?: Record<string, TermsDisplay>;
+     /** The layout used when Payment Element is presented as a sheet. */
+     paymentMethodLayout?: PaymentMethodLayout;
+-    /** Whether the embedded view displays mandate text. Defaults to `false`. */
++    /** Whether the embedded view displays mandate text. Defaults to `true`. */
+     displaysMandateText?: boolean;
+     /** Controls selection in the embedded view. */
+     rowSelectionBehavior?: PaymentElementConfiguration.RowSelectionBehavior;
+@@ -410,32 +524,42 @@ export namespace Checkout {
+ 
+   /**
+    * Configuration types used by Checkout Payment Element.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export namespace PaymentElementConfiguration {
+     /**
+      * Appearance configuration for Checkout Payment Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export type Appearance = AppearanceParams;
+ 
+     /**
+      * Controls how the inline Payment Element handles row selection.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export type RowSelectionBehavior = EmbeddedRowSelectionBehavior;
+ 
+     /**
+      * Apple Pay configuration for Payment Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export interface ApplePayConfiguration {
+       /** The type of Apple Pay button to display. */
+       buttonType?: ApplePayButtonType;
++      /**
++       * Controls whether Apple Pay is displayed in Payment Element.
++       * Defaults to `automatic`.
++       */
++      display?: 'automatic' | 'never';
+     }
+ 
+     /**
+      * Apple Pay button type options for Payment Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export type ApplePayButtonType =
+@@ -459,6 +583,7 @@ export namespace Checkout {
+ 
+     /**
+      * Google Pay configuration for Payment Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export interface GooglePayConfiguration {
+@@ -472,6 +597,7 @@ export namespace Checkout {
+ 
+     /**
+      * Google Pay button type options for Payment Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export type GooglePayButtonType =
+@@ -486,6 +612,7 @@ export namespace Checkout {
+ 
+     /**
+      * Link configuration for Payment Element.
++     * @internal
+      * @CheckoutSessionPrivatePreview
+      */
+     export interface LinkConfiguration {
+@@ -496,6 +623,7 @@ export namespace Checkout {
+ 
+   /**
+    * A view of the Checkout Session that represents the customer's checkout.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface Session {
+@@ -533,6 +661,7 @@ export namespace Checkout {
+ 
+   /**
+    * Currency presentation details for the Checkout Session.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface PresentmentDetails {
+@@ -542,6 +671,7 @@ export namespace Checkout {
+ 
+   /**
+    * Display data for the customer's currently selected payment option.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface PaymentOptionDisplayData {
+@@ -561,6 +691,7 @@ export namespace Checkout {
+ 
+   /**
+    * Billing details associated with a selected payment method.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface BillingDetails {
+@@ -576,6 +707,7 @@ export namespace Checkout {
+ 
+   /**
+    * The customer's shipping contact details and postal address.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface ShippingAddress {
+@@ -587,6 +719,7 @@ export namespace Checkout {
+ 
+   /**
+    * A postal address.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface Address {
+@@ -606,12 +739,14 @@ export namespace Checkout {
+ 
+   /**
+    * An item or group of items in the Checkout order summary.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export type OrderSummaryItem = OneTimePriceOrderSummaryItem;
+ 
+   /**
+    * A group of one-time-price items in the Checkout order summary.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface OneTimePriceOrderSummaryItem {
+@@ -627,6 +762,7 @@ export namespace Checkout {
+ 
+   /**
+    * A one-time-price item the customer is purchasing.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface OneTimePriceItem {
+@@ -652,6 +788,7 @@ export namespace Checkout {
+ 
+   /**
+    * Aggregate amounts for an order summary item.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface AmountDetails {
+@@ -669,6 +806,7 @@ export namespace Checkout {
+ 
+   /**
+    * A monetary amount in display and minor-unit forms.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface Amount {
+@@ -680,6 +818,7 @@ export namespace Checkout {
+ 
+   /**
+    * A tax amount calculated for the order summary.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface TaxAmount extends Amount {
+@@ -693,6 +832,7 @@ export namespace Checkout {
+ 
+   /**
+    * Minimum and maximum values for a customer-adjustable quantity.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface AdjustableQuantity {
+@@ -706,6 +846,7 @@ export namespace Checkout {
+ 
+   /**
+    * An aggregate discount amount for the Checkout Session.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface DiscountAmount extends Amount {
+@@ -719,6 +860,7 @@ export namespace Checkout {
+ 
+   /**
+    * Tax computation status for the Checkout Session.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface Tax {
+@@ -728,6 +870,7 @@ export namespace Checkout {
+ 
+   /**
+    * Tax and discount breakdown for the computed Checkout Session total.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface Totals {
+@@ -745,6 +888,7 @@ export namespace Checkout {
+ 
+   /**
+    * The lifecycle status of a Checkout Session.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export type SessionStatus =
+@@ -765,6 +909,7 @@ export namespace Checkout {
+ 
+   /**
+    * The payment status of a completed Checkout Session.
++   * @internal
+    * @CheckoutSessionPrivatePreview
+    */
+   export type PaymentStatus = 'paid' | 'unpaid' | 'noPaymentRequired';
+diff --git a/src/types/index.ts b/src/types/index.ts
+index 079be0f..c3ba687 100644
+--- a/src/types/index.ts
++++ b/src/types/index.ts
+@@ -51,7 +51,6 @@ export {
+ export * from './PushProvisioning';
+ export * from './Errors';
+ export * from './CustomerSheet';
+-export * from './Checkout';
+ export type { Address, BillingDetails, AddressDetails } from './Common';
+ export { CardBrand } from './Common';
+ export { PaymentMethodLayout } from './PaymentSheet';
+diff --git a/stripe-react-native.podspec b/stripe-react-native.podspec
+index 849138f..0f89d5a 100644
+--- a/stripe-react-native.podspec
++++ b/stripe-react-native.podspec
+@@ -3,7 +3,7 @@ require_relative 'stripe_spm'
+ 
+ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+ # Keep stripe_version in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/stripe-identity-react-native.podspec
+-stripe_version = '26.15.0'
++stripe_version = '26.15.1'
+ 
+ if ENV['RCT_NEW_ARCH_ENABLED'] == '0'
+   raise 'stripe-react-native requires the React Native new architecture. Use RCT_NEW_ARCH_ENABLED=1 in your Podfile.'
+@@ -21,10 +21,10 @@ Pod::Spec.new do |s|
+   s.source       = { git: 'https://github.com/stripe/stripe-react-native.git', tag: s.version.to_s }
+ 
+   # On React Native >= 0.75 the Stripe iOS SDK is resolved through Swift
+-  # Package Manager (the Stripe iOS SDK is deprecating CocoaPods support);
+-  # older React Native versions and apps that set `$StripeDisableSPM = true`
+-  # fall back to the CocoaPods registry via the `unless stripe_spm_enabled?`
+-  # dependency blocks below. stripe_spm.rb documents the full mechanism.
++  # Package Manager. The legacy CocoaPods dependency blocks below are retained
++  # for possible ad hoc releases, but `$StripeDisableSPM = true` is rejected
++  # because current Stripe iOS releases no longer support CocoaPods.
++  # stripe_spm.rb documents the full mechanism.
+   # `stripe_version` pins both paths to the same stripe-ios release.
+   stripe_spm_activate!(s, version: stripe_version) if stripe_spm_enabled?
+ 
+@@ -57,7 +57,7 @@ Pod::Spec.new do |s|
+     core.private_header_files = [ 'ios/StripeSdk.h', 'ios/StripeSwiftInterop.h', 'ios/StripeSdkEventEmitterCompat.h' ]
+     core.dependency 'React-Core'
+     unless stripe_spm_enabled?
+-      # CocoaPods fallback for React Native < 0.75 and $StripeDisableSPM users.
++      # Legacy CocoaPods fallback, retained for possible ad hoc releases.
+       # Keep in sync with StripeSPM::CORE_PRODUCTS in stripe_spm.rb — these are
+       # two spellings of the same dependency set.
+       core.dependency 'Stripe', stripe_version
+diff --git a/stripe_spm.rb b/stripe_spm.rb
+index 0e5fa91..34968fa 100644
+--- a/stripe_spm.rb
++++ b/stripe_spm.rb
+@@ -3,9 +3,9 @@
+ #
+ # == Why this exists
+ #
+-# The Stripe native iOS SDK is ending support for CocoaPods. The
+-# stripe-react-native SDK depends on multiple `Stripe*` pods from stripe-ios,
+-# which will now only be published via SPM, not CocoaPods. 
++# The Stripe native iOS SDK no longer supports CocoaPods. Its releases are
++# now published via SPM. The stripe-react-native SDK resolves the Stripe
++# products through SPM instead of depending on `Stripe*` pods from stripe-ios.
+ # The stripe-react-native pod itself is unaffected since it is loaded from
+ # node_modules rather than the CocoaPods registry.
+ # This file's job is to replace the `s.dependency 'Stripe*'` commands from
+@@ -92,21 +92,15 @@
+ # phase msut be idempotent, and we must remove it again if SPM resolution
+ # is turned off.
+ #
+-# == Supported modes
++# == Dependency resolution
+ #
+-#   React Native >= 0.75 (default)        -> Stripe via Swift Package Manager
+-#   React Native >= 0.75, opt-out below   -> Stripe via CocoaPods registry
+-#   React Native <  0.75                  -> Stripe via CocoaPods registry
+-#                                            (no `spm_dependency` available)
++# React Native >= 0.75 resolves Stripe via Swift Package Manager. SPM mode
++# additionally requires CocoaPods >= MINIMUM_COCOAPODS_VERSION and fails the
++# install with instructions otherwise.
+ #
+-# SPM mode additionally requires CocoaPods >= MINIMUM_COCOAPODS_VERSION and
+-# fails the install with instructions otherwise; the CocoaPods registry modes
+-# have no version requirement of their own.
+-#
+-# To opt out and resolve Stripe through CocoaPods instead (available while
+-# Stripe continues to publish pods), add this at the top of your Podfile:
+-#
+-#   $StripeDisableSPM = true
++# The legacy CocoaPods fallback infrastructure is retained for possible ad hoc
++# releases that depend on older stripe-ios versions. The $StripeDisableSPM
++# opt-out is rejected for current releases.
+ 
+ module StripeSPM
+   # The lightweight SPM mirror of stripe-ios.
+@@ -240,13 +234,9 @@ module StripeSPM
+       raise Pod::PlainInformative, <<~MESSAGE.chomp
+         [stripe-react-native] Resolving the Stripe iOS SDK through Swift Package
+         Manager requires CocoaPods #{MINIMUM_COCOAPODS_VERSION} or newer, but this
+-        install is running CocoaPods #{Pod::VERSION}. Either:
+-          * update CocoaPods (React Native's project template requires 1.13 or
+-            newer; if your project has a Gemfile, run `bundle exec pod install`
+-            to use the version it pins), or
+-          * add `$StripeDisableSPM = true` at the top of your Podfile to resolve
+-            Stripe through CocoaPods instead (available while Stripe continues
+-            to publish pods)
++        install is running CocoaPods #{Pod::VERSION}. Update CocoaPods (React
++        Native's project template requires 1.13 or newer; if your project has a
++        Gemfile, run `bundle exec pod install` to use the version it pins)
+       MESSAGE
+     end
+ 
+@@ -422,8 +412,6 @@ module StripeSPM
+         please report it at
+         https://github.com/stripe/stripe-react-native/issues (including your
+         React Native and CocoaPods versions).
+-        To temporarily fix this, set `$StripeDisableSPM = true` at
+-        the top of your Podfile.
+       MESSAGE
+     end
+ 
+@@ -457,10 +445,12 @@ module StripeSPM
+         Manager requires dynamic frameworks, but #{POD_NAME} is building as
+         #{current}. To fix, add `use_frameworks! :linkage => :dynamic` to your Podfile
+         (for Expo, set `"useFrameworks": "dynamic"` via the expo-build-properties plugin).
+-        If you MUST continue to use static linkage, you can temporarily add
+-        `$StripeDisableSPM = true` at the top of your Podfile to resolve Stripe
+-        through CocoaPods instead. WARNING: THIS IS DEPRECATED AND FUTURE STRIPE SDK
+-        VERSIONS WILL NOT SUPPORT THIS OPTION.
++
++        If Expo still reports static linkage with dynamic frameworks enabled,
++        upgrade to Expo 58.0.19 or later (expo-modules-autolinking 58.0.15 or later).
++        Earlier Expo versions with precompiled modules enabled can override
++        the dynamic-framework setting. Update your dependencies and lockfile,
++        then rerun `npx expo prebuild --platform ios`, keeping dynamic frameworks enabled.
+       MESSAGE
+     end
+ 
+@@ -587,18 +577,20 @@ end
+ # True when the Stripe iOS SDK should be resolved through Swift Package
+ # Manager for this install. Evaluated by the podspec.
+ #
+-# `defined?(spm_dependency)` effectively checks if the React Native version is
+-# >= 0.75 since this is the version that introduces `spm_dependency`. The user's
+-# Podfile will require `react_native_pods.rb`, which defines `spm_dependency` as
+-# a top-level function, so the function is visibile here exactly when the app's
+-# React Native version supports it.
++# All supported React Native versions provide `spm_dependency`.
+ #
+-# `$StripeDisableSPM` is the user-facing opt-out. The value is compared to
+-# `true` (not just "defined") so tooling that emits `$StripeDisableSPM =
+-# false` gets SPM resolution as expected.
++# Reject the legacy opt-out explicitly so existing Podfiles fail with migration
++# instructions before attempting to resolve Stripe pods that no longer exist.
++# A value of false still gets SPM resolution as expected.
+ def stripe_spm_enabled?
+-  return false unless defined?(spm_dependency)
+-  return false if defined?($StripeDisableSPM) && $StripeDisableSPM == true
++  if defined?($StripeDisableSPM) && $StripeDisableSPM == true
++    raise Pod::PlainInformative, <<~MESSAGE.chomp
++      [stripe-react-native] $StripeDisableSPM is no longer supported because the
++      Stripe iOS SDK no longer supports CocoaPods resolution. Remove
++      `$StripeDisableSPM = true` from your Podfile and add
++      `use_frameworks! :linkage => :dynamic` to use Swift Package Manager
++    MESSAGE
++  end
+ 
+   true
+ end
