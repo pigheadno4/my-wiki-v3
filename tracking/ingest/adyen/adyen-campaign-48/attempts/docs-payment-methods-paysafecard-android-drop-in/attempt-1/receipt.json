@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PaySafeCard Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/android-drop-in/2026-09-15.md\"\ntags: [adyen, paysafecard, android, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] guide describes the PaySafeCard-specific additions to an existing Android Drop-in integration, separately for Sessions and Advanced server flows. It gives request additions, redirect handling and test/live setup; the linked base guides own the complete integration. It does not establish current merchant eligibility or a successful live payment. See [[adyen-online-payments]] and the [[source-adyen-docs-payment-methods-paysafecard|method overview]].\n\n## Key takeaways\n\n- **Sessions:** Start from an existing Android Sessions Drop-in integration using Checkout API v68 or later and add PaySafeCard in Customer Area. The `/sessions` parameter table marks `shopperReference` required as the merchant's unique shopper reference, such as a user or account ID. Its v71 example uses EUR 1000 minor units, `countryCode: NL` and an Android app-scheme `returnUrl`; those are example values rather than general eligibility or return-route rules (raw lines 25\u201367).\n- **Advanced:** Start from an existing Android Advanced Drop-in integration configured to handle `action.type: redirect`, and add PaySafeCard in Customer Area. This section states no Checkout API minimum. Its `/payments` table also marks `shopperReference` required. The sample response has `resultCode: RedirectShopper` and a redirect action, an intermediate shopper step rather than final payment success (raw lines 286\u2013310, 597\u2013611).\n- **Drop-in configuration:** Both flow sections say no additional PaySafeCard configuration parameters are needed (raw lines 268\u2013272, 296\u2013300).\n- **Testing and live setup:** The guide provides test code `0000 0000 0990 3417`, directs test status checks to the test Customer Area, and says to contact Adyen Support to add PaySafeCard in the live Customer Area before accepting live payments. The displayed Support URL points to the test Customer Area; these steps do not prove live enablement (raw lines 276\u2013284, 613\u2013621).\n\n> [!warning] Source examples and flow labels\n> The Advanced `/payments` request examples include `shopperReference` but omit a `paymentMethod` object (raw lines 316\u2013595); treat them as additions to the linked base Advanced flow, not complete executable requests. Several Sessions SDK snippets omit construction of `createCheckoutSessionRequest` (raw lines 69\u2013265), and both curl samples put `-X POST` on a line without a continuation before `-d` (raw lines 50\u201367, 316\u2013332). The Sessions sample uses an app-scheme return URL while the Advanced sample uses HTTPS; use the corresponding base Android return handling. The [[source-adyen-docs-payment-methods-paysafecard|method overview]] marks the method's payment flow \u201cDirect,\u201d whereas this child guide requires an Advanced redirect action; preserve both captured descriptions without assuming the redirect is absent.\n\n## Detail locators\n\n- Sessions prerequisites, `/sessions` field and examples: raw `## Sessions flow Drop-in` lines 25\u2013265.\n- Sessions configuration and test/live: raw lines 268\u2013284.\n- Advanced prerequisites, `/payments` field and examples: raw `## Advanced flow Drop-in` lines 286\u2013595.\n- Redirect response and repeated test/live steps: raw lines 597\u2013621.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paysafecard]] \u2014 method overview and captured country/currency and capability tables.\n- [[source-adyen-docs-payment-methods-paysafecard-android-component]] \u2014 separate Android Components route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/android-drop-in/2026-09-15|PaySafeCard Android Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add PaySafeCard to your existing integration. The following instructions show only what you must add to your integration specifically for PaySafeCard.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for PaySafeCard.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-drop-in/2026-09-15.md:272"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-drop-in/2026-09-15.md:597"
+    },
+    {
+      "text": "Before you can accept live payments, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add PaySafeCard in your live Customer Area.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-drop-in/2026-09-15.md:621"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paysafecard-android-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-android-drop-in]] \u2014 2026-09-15-captured Android Drop-in Sessions/Advanced PaySafeCard add-on for required shopperReference, redirect handling and test/live setup; source flags abbreviated request examples and the overview Direct-flow label.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/android-drop-in/2026-09-15.md",
+  "raw_sha256": "03aea3c313ff5a52748f0703e00943d569d33da170745d58d1530c1561ec3424",
+  "status": "candidate_ready"
+}

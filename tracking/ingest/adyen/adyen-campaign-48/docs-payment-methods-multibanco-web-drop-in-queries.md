@@ -1,0 +1,13 @@
+# Fixed queries — Multibanco Web Drop-in
+
+## Q1 — purpose and limits
+
+**Query:** What does the captured Multibanco Web Drop-in page add, and why is a pending offer not proof of payment?
+
+**Expected answer:** The page at `https://docs.adyen.com/payment-methods/multibanco/web-drop-in` is a 2026-09-15-captured method-specific add-on to existing Sessions and Advanced Web Drop-in integrations. It gives request/action and test/live setup steps. A generated voucher/pending offer still needs shopper redemption; a test Customer Area promotion simulates payment and does not prove a live paid transaction (full pinned `raw/adyen/docs/payment-methods/multibanco/web-drop-in/2026-09-15.md`, `# Multibanco Web Drop-in` lines 15–23, `## Test and go live` lines 55–72, 104–121). The separate Multibanco overview `wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco.md`, pinned `raw/adyen/docs/payment-methods/multibanco/2026-09-15.md` lines 23–36, gives PT/EUR voucher lifecycle and method scope. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco-web-drop-in.md`.
+
+## Q2 — flow-specific requirements, voucher and testing gates
+
+**Query:** Which Multibanco-specific request fields and action handling are stated for Web Drop-in Sessions versus Advanced, and how are test and live setup distinguished?
+
+**Expected answer:** Sessions requires existing Web Sessions Drop-in, Checkout API v68+, and Multibanco in Customer Area; no additional `/sessions` parameters, with optional individual `Multibanco` import for tree shaking (child `raw/adyen/docs/payment-methods/multibanco/web-drop-in/2026-09-15.md`, lines 25–53). Advanced requires existing Web Advanced Drop-in, `action.type: voucher` handling, and Customer Area setup; no additional `/payments` parameters, with optional import (child lines 74–102). Submit a test Customer Area request before testing, then simulate payment by promoting pending offers to sale under Payments > Offers and test reconciliation; submit a **separate live** Customer Area request before accepting live payments (child lines 55–72, 104–121). Test promotion is not a real shopper voucher redemption or live proof. **Warning:** Advanced base link has an unresolved platform template and its voucher-action handling link uses a redirect-named anchor (child lines 82–83); do not change the specified voucher action type on that basis. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco-web-drop-in.md`.

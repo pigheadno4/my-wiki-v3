@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-mb-way-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MB WAY Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mb-way/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/mb-way/android-drop-in/2026-09-15.md\"\ntags: [adyen, mb-way, android, drop-in, app2app, portugal]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide describes **MB WAY-specific additions to an existing Android Drop-in** integration. It separates Sessions and Advanced server-side flows, a standard phone-number/MB WAY app confirmation journey, and an optional mobile App2App deep-link journey. The instructions are not a complete base integration or proof of current merchant enablement or payment success. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** use an existing Android Drop-in Sessions integration with Checkout API **v68 or later**, and add MB WAY in Customer Area. The guide marks `shopperStatement` required on `/sessions`, with text shown on the shopper's bank statement. Its v71 example uses **PT/EUR** and an app-scheme `returnUrl`; those are example values, not a standalone end-to-end recipe (raw lines 25\u201365).\n- **Advanced flow:** use an existing Android Drop-in Advanced integration that handles the additional `action.type: await`, and add MB WAY in Customer Area. The `/payments` table marks `paymentMethod.type = mbway` and `paymentMethod.telephoneNumber` required for the standard phone-number flow, while `shopperStatement` is optional in that table. The sample response is **Pending** with an `await` action to display a waiting screen while the shopper completes payment in the MB WAY app; Pending does not establish final authorization (raw lines 112\u2013120, 146\u2013197).\n- Both flows document optional `setSubmitButtonVisible = false` to hide the submit button; the default is true. The Kotlin snippet contains placeholders/extra braces and is illustrative, not a complete copy-ready configuration (raw lines 69\u201387, 124\u2013142).\n- **Optional App2App path:** the guide says this path removes manual phone-number entry and deep-links the shopper to the MB WAY app. In `/payments`, send `channel` as **iOS** or **Android** and a `returnUrl`; missing `channel` or **Web** uses the standard phone-number flow. The response's `action.url` contains the `mbway://` deep link with the provided return URL appended. Redirect directly to that action URL without an intermediate page; after authorization the shopper returns through `returnUrl` (raw lines 199\u2013255). The App2App examples contain inline comments in JSON and an action-type placeholder, so they are illustrative rather than valid literal JSON or guaranteed response shape.\n- To test, the guide permits any telephone number and gives a test example; result-code suffixes on `shopperStatement` are test triggers. Live acceptance requires MB WAY to be added in the **live Customer Area** (raw lines 91\u2013110, 257\u2013276). The separate [[source-adyen-docs-payment-methods-mb-way|MB WAY overview]] records the **PT/EUR** matrix, refund/capture/recurring indicators, and a **daily cumulative user limit**; those are method-level snapshot claims, not extra child-guide request fields or merchant-specific guarantees (overview raw lines 23\u201336).\n\n## Detail locators\n\n- Scope and Sessions prerequisites/field/sample: raw lines 15\u201365.\n- Sessions configuration and test/live setup: raw lines 69\u2013110.\n- Advanced prerequisites, standard phone-number fields, Pending/await response: raw lines 112\u2013197.\n- App2App switch, channel/returnUrl, deep link and direct redirect: raw lines 199\u2013255.\n- Advanced test/live gate and result-code triggers: raw lines 257\u2013276.\n- Method-level PT/EUR, capability matrix and user daily cumulative limit: [[source-adyen-docs-payment-methods-mb-way]] and its pinned raw lines 23\u201336; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-mb-way]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mb-way/android-drop-in/2026-09-15|MB WAY Android Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add MB Way to your existing integration. The following instructions show only what you must add to your integration specifically for MB Way.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33"
+    },
+    {
+      "text": "The shopper's mobile phone number.",
+      "location": "raw line 153"
+    },
+    {
+      "text": "* `resultCode`: **Pending** (The shopper must complete the payment in their MB Way app.)",
+      "location": "raw line 182"
+    },
+    {
+      "text": "* `channel` - the shopper's platform, either **iOS** or **Android**. If the `channel` parameter is missing or set to **Web**, the standard flow (requiring a phone number) will apply.",
+      "location": "raw line 209"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mb-way-android-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mb-way-android-drop-in]] \u2014 2026-09-15-captured MB WAY Android Drop-in Sessions/Advanced add-on covering phone-number/Pending await handling, optional App2App deep link, and test/live setup.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions marks shopperStatement required, while Advanced leaves it optional; preserve flow scope.",
+          "App2App examples contain JSON comments and a response-type placeholder; they are illustrative, not literal copy-ready JSON or a guaranteed action shape."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mb-way/android-drop-in/2026-09-15.md",
+  "raw_sha256": "070087234823f7a8628b40c34828b7561bfb1f21054d92c238cfdb7c90ad9f6d",
+  "status": "candidate_ready"
+}

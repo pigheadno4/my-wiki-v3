@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-mb-way-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MB WAY Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mb-way/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/mb-way/web-drop-in/2026-09-15.md\"\ntags: [adyen, mb-way, web, drop-in, sessions, advanced-flow]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds MB WAY to an existing Web Drop-in integration. It separates Sessions and Advanced request additions, shows `Pending` with an await action, and includes an optional **mobile** App2App branch inside the Web page. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-mb-way]] for the PT/EUR payment-method overview.\n\n## Key takeaways\n\n- **Sessions:** use an existing Web Drop-in Sessions flow, Checkout API **v68 or later**, and MB WAY added in Customer Area. The `/sessions` table marks `shopperStatement` required as bank-statement text. The TEST v71 PT/EUR request is illustrative; its `adyencheckout://your.package.name` `returnUrl` is mobile styled in this Web guide, so configure the actual Web return path from the base integration. See raw lines 25\u201366.\n- `MBWay` can be imported individually with Adyen Web/Dropin for optional tree shaking and performance optimization. This is optional in both Sessions and Advanced sections, not a prerequisite to use MB WAY. See raw lines 68\u201378 and 115\u2013125.\n- **Advanced standard Web flow:** use the existing Web Drop-in Advanced flow, handle `action.type: await`, and add MB WAY in Customer Area. The `/payments` table requires `paymentMethod.type: mbway` and `paymentMethod.telephoneNumber`; `shopperStatement` is not marked required here. The TEST v72 example yields `resultCode: Pending` and an await action for a waiting screen while the shopper completes payment in MB WAY. Pending is not final authorization. The v68 minimum is stated in the Sessions requirements table only; do not extend it to Advanced from this page. See raw lines 103\u2013180.\n- **Optional mobile App2App branch:** the page says `channel: iOS` or `Android` plus `returnUrl` removes manual phone entry and links directly to the MB WAY app; omitted or Web `channel` uses the standard phone-number flow. For a successful request, `action.url` contains an `mbway://` deep link with the supplied return URL appended. Open the returned action URL; after authorization in MB WAY the shopper is redirected back to the application. This mobile branch appears within a Web Drop-in guide and does not remove the standard Web phone requirement or make app return a final payment result. See raw lines 182\u2013237.\n- Test instructions allow any telephone number (example `+351234567890`), direct status checks to test Customer Area, and give `shopperStatement` suffixes for `/payments` test responses: `-c1` Authorised/default, `-c3` Pending, `-c5` Refused. Live acceptance requires adding MB WAY in live Customer Area. The Sessions section also phrases these suffixes as `/payments` requests; do not claim `/sessions` suffix behavior from that example. See raw lines 80\u2013101 and 239\u2013260.\n\n## Detail locators\n\n- Sessions prerequisites, field and TEST request: raw lines 25\u201366. The curl sample omits a shell continuation after `-X POST`.\n- Optional Web import: raw lines 68\u201378 and 115\u2013125.\n- Advanced prerequisites, field table and Pending/await response: raw lines 103\u2013180.\n- Mobile App2App channel, deep link and return: raw lines 182\u2013237; the JSON snippets contain inline comments and are illustrative, not literal parseable JSON.\n- Test result-code suffixes and live setup: raw lines 80\u2013101 and 239\u2013260.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-mb-way]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mb-way/web-drop-in/2026-09-15|Fully read MB WAY Web Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "The text to be shown on the shopper's bank statement.",
+      "location": "line 45"
+    },
+    {
+      "text": "you can optionally import individual payment methods",
+      "location": "line 72"
+    },
+    {
+      "text": "The shopper must complete the payment in their MB Way app.",
+      "location": "line 165"
+    },
+    {
+      "text": "If the `channel` parameter is missing or set to **Web**, the standard flow (requiring a phone number) will apply.",
+      "location": "line 192"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-mb-way-web-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mb-way-web-drop-in]] \u2014 2026-09-15-captured MB WAY Web Drop-in Sessions/Advanced add-on for statement or standard phone fields, optional MBWay import, Pending/await action and a separately scoped mobile App2App section.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Web page's Sessions TEST request uses a mobile-style adyencheckout:// returnUrl; configure the actual Web return path.",
+          "The mobile App2App section does not remove the standard Web phone-number requirement, and Pending/app return is not final authorization."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mb-way/web-drop-in/2026-09-15.md",
+  "raw_sha256": "c4689d6e3cbf9ddda86f3025f1de5b981a18c0dfe1204c7752e9d66b0114be41",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# docs-payment-methods-multibanco-web-component retrieval checks
+
+## Q1 — purpose and flow scope
+Query: What does the Multibanco Web Component guide add for Sessions and Advanced?
+Expected: Existing Web Components and Customer Area setup. Sessions requires Checkout API v68+ and no extra Multibanco fields/configuration beyond base integration; import and initialize Multibanco Component. Advanced says no extra method fields for /payments but requires voucher action handling and Component import/initialization. Do not extend Sessions-only v68 minimum to Advanced from this page or omit base request fields. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco-web-component]] → [[raw/adyen/docs/payment-methods/multibanco/web-component/2026-09-15]]. Canonical stem: `/payment-methods/multibanco/web-component`. Verify raw lines 25–75 and 94–136.
+
+## Q2 — voucher and test/live finality
+Query: Does the voucher action mean Multibanco was paid, and how does the guide test reconciliation?
+Expected: Advanced action.type is voucher; method overview says voucher is redeemed later by ATM/online banking. Test Customer Area request is needed, then a pending offer can be manually promoted to sale by PSP reference under Payments > Offers; payment list shows paid/promoted offers. This is simulation, not a real shopper redemption. Live requires a separate request in live Customer Area. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco-web-component]] → [[raw/adyen/docs/payment-methods/multibanco/web-component/2026-09-15]]. Canonical stem: `/payment-methods/multibanco/web-component`. Verify raw lines 77–92 and 98–153.

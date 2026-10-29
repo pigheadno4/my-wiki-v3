@@ -1,0 +1,9 @@
+# docs-payment-methods-mb-way-ios-component retrieval checks
+
+## Q1 — purpose and scoped flows
+Query: What does the MB WAY iOS Components guide add for Sessions versus Advanced?
+Expected: Existing iOS Components and Customer Area setup. Sessions explicitly requires Checkout API v68+, `shopperStatement` in `/sessions`, and `MBWayComponent`; Advanced standard flow requires `paymentMethod.type: mbway`, telephone number and await-action handling, with statement optional. The v68 minimum is stated in the Sessions section only. Advanced base-guide link is labeled Components but selects Drop-in; preserve warning. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-ios-component]] → [[raw/adyen/docs/payment-methods/mb-way/ios-component/2026-09-15]]. Canonical stem: `/payment-methods/mb-way/ios-component`. Verify raw lines 25–97 and 120–215.
+
+## Q2 — App2App, finality and test boundaries
+Query: When can MB WAY iOS omit phone entry, how is the app switch handled, and what is the outcome boundary?
+Expected: Optional Advanced App2App uses channel iOS/Android and returnUrl; missing/Web channel uses standard phone flow. On a successful request action.url contains mbway:// deep link with returnUrl appended; open it directly without glue page. Example gives Pending/await while shopper completes in MB WAY; app return is not proof of Authorised. Test suffixes on shopperStatement for `/payments` are -c1/-c3/-c5; live requires Customer Area addition. JSON App2App snippets have inline comments; not directly parseable. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-ios-component]] → [[raw/adyen/docs/payment-methods/mb-way/ios-component/2026-09-15]]. Canonical stem: `/payment-methods/mb-way/ios-component`. Verify raw lines 198–294.

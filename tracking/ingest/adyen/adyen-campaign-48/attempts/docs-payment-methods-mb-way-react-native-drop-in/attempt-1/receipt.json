@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-mb-way-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MB WAY React Native Drop-in integration add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mb-way/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/mb-way/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, mb-way, react-native, drop-in, await]\n---\n\n## Overview\n\nThis 2026-09-15-captured MB WAY React Native Drop-in page gives method-specific additions to existing Sessions and Advanced React Native Drop-in integrations. It documents a phone-number/`await` path and does **not** give App2App implementation steps. It relies on base integration guides and does not prove current account enablement or completed live payment. See [[adyen]], [[adyen-online-payments]], and the [[source-adyen-docs-payment-methods-mb-way|MB WAY overview]] for PT/EUR method scope and distinct mobile App2App description.\n\n## Key takeaways\n\n- **Sessions:** the requirements call for an existing React Native Sessions-flow Drop-in integration, Checkout API **v68 or later**, and MB WAY added in Customer Area. Its method-specific `/sessions` table marks `shopperStatement` required as text for the shopper's bank statement. The page says no extra MB WAY Drop-in configuration is needed (raw lines 25\u201345, 68\u201372).\n- **Advanced:** requires an existing React Native Advanced-flow Drop-in integration, additional-action handling for `action.type: await`, and MB WAY added in Customer Area. Its method-specific `/payments` table marks `paymentMethod.type: mbway` and `paymentMethod.telephoneNumber` required; `shopperStatement` has no required mark. The sample response is `Pending` with an `await` action to display a waiting screen while the shopper completes payment in the MB WAY app. `Pending` is not final authorization (raw lines 95\u2013166).\n- The page says any phone number can be used in **test**, with an example, and gives `shopperStatement` suffixes `-c1`, `-c3`, and `-c5` to simulate Authorised, Pending and Refused `resultCode` values. These result-code directions refer to `/payments`, including in the Sessions section. Live acceptance requires MB WAY added in the live Customer Area (raw lines 74\u201393, 168\u2013187).\n\n> [!warning] React Native route and App2App scope\n> The Sessions requirement labels a **Sessions-flow** React Native Drop-in integration but links an `advanced-flow?platform=React%2BNative&integration=Drop-in` URL (raw line 33); the separate Sessions request link points to `sessions-flow` (line 41). Follow the correct base route for the chosen flow. The [[source-adyen-docs-payment-methods-mb-way|MB WAY overview]] describes mobile App2App without manual phone entry (overview pinned raw lines 23\u201330), while this child guide's Advanced table requires a phone number and contains no App2App branch (child raw lines 119\u2013123, 168\u2013187). Do not infer that this React Native Drop-in guide implements or excludes App2App; consult the relevant App2App integration authority.\n\n> [!warning] Example command and return routing\n> Both curl examples omit a continuation between `-X POST` and `-d` (raw lines 54\u201355, 132\u2013133). The Advanced example uses a website `https://...` return URL while the Sessions example uses `adyencheckout://...` (lines 61, 139); verify return handling with the React Native base flow. These samples are not complete paste-ready commands.\n\n## Detail locators\n\n- Scope and Sessions requirements, `shopperStatement`, no-extra-config: raw lines 15\u201372.\n- Sessions test/live and simulated results: raw lines 74\u201393.\n- Advanced requirements, method-specific fields and `Pending`/`await`: raw lines 95\u2013166.\n- Advanced test/live and simulated results: raw lines 168\u2013187.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-mb-way]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mb-way/react-native-drop-in/2026-09-15|MB WAY React Native Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [React Native Drop-in integration](/online-payments/build-your-integration/advanced-flow?platform=React%2BNative\\&integration=Drop-in).",
+      "location": "raw line 33, Sessions ## Requirements"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions ## Requirements"
+    },
+    {
+      "text": "[shopperStatement](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-shopperStatement)",
+      "location": "raw line 45, Sessions /sessions table"
+    },
+    {
+      "text": "`action.type`: **await**.",
+      "location": "raw line 104, Advanced ## Requirements"
+    },
+    {
+      "text": "The shopper's mobile phone number.",
+      "location": "raw line 122, Advanced /payments table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mb-way-react-native-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mb-way-react-native-drop-in]] \u2014 2026-09-15-captured MB WAY React Native Drop-in Sessions/Advanced add-on for shopperStatement, phone-number Pending/await path and test/live setup; source flags Sessions base-link mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions requirement links an Advanced-flow URL despite Sessions wording; source's separate Sessions request link points to sessions-flow.",
+          "This child documents a phone-number path and no App2App branch, while MB WAY overview describes a distinct mobile App2App journey; do not infer App2App behavior from this child."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mb-way/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "16ae4fad16c94e0abb34b7a7d9b8d56693c48dd40f7a21091d9fc933521a7779",
+  "status": "candidate_ready"
+}

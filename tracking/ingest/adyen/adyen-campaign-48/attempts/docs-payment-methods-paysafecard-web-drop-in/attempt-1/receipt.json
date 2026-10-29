@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PaySafeCard Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/web-drop-in/2026-09-15.md\"\ntags: [adyen, paysafecard, web, drop-in, payments]\n---\n\n## Overview\n\nThis 2026-09-15 capture explains the PaySafeCard-specific additions to an existing Adyen Web Drop-in integration. It has distinct **Sessions flow** and **Advanced flow** instructions and points back to their main integration guides for common steps. It is an add-on rather than a complete standalone Drop-in implementation. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- In the **Sessions flow**, the guide requires an existing Web Drop-in Sessions integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and adding PaySafeCard in Customer Area. Its PaySafeCard-specific `/sessions` field is required `shopperReference`, a merchant reference uniquely identifying the shopper. See raw lines 25\u201346.\n- In the **Advanced flow**, it requires an existing Web Drop-in Advanced integration, redirect handling, and Customer Area setup. Its PaySafeCard-specific `/payments` field is likewise required `shopperReference`. The Advanced requirements table does **not** itself state a Checkout API minimum version. See raw lines 294\u2013326.\n- Importing `Redirect` alongside AdyenCheckout and Dropin is optional when importing individual payment methods for tree shaking. The guide says the Advanced `/payments` response includes a redirect action; its example has `resultCode: RedirectShopper` and `action.paymentMethodType: paysafecard`. Handle the redirect through the relevant base integration. See raw lines 270\u2013279, 306\u2013315, and 613\u2013627.\n- Both flow sections give a 16-digit test code, direct readers to inspect test payments in Customer Area, and say to contact Support to add PaySafeCard in the **live Customer Area** before accepting live payments. This is a setup prerequisite, not proof of live enablement or a successful transaction. See raw lines 282\u2013292 and 629\u2013639.\n\n> [!warning] Example scope\n> The Sessions curl sample uses an app-style `adyencheckout://your.package.name` return URL even though this is a Web guide (raw lines 50\u201368); it is an example, not a universal Web return URL. The Advanced `/payments` request snippets focus on the additional shopper reference and omit an explicit payment method object (raw lines 330\u2013611), while a separate response example shows the `paysafecard` redirect action. Use the linked main flow guide and the Drop-in-provided request context; do not treat these snippets as a complete copy-ready payment implementation.\n\n## Detail locators\n\n- Sessions prerequisites and `/sessions` addition: raw lines 25\u201346; example languages and SDK versions: lines 48\u2013268.\n- Optional Sessions `Redirect` import and test/live setup: raw lines 270\u2013292.\n- Advanced prerequisites, optional import, and `/payments` addition: raw lines 294\u2013326; example languages and SDK versions: lines 328\u2013611.\n- Redirect action example and Advanced test/live setup: raw lines 613\u2013639.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/web-drop-in/2026-09-15|PaySafeCard Web Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for PaySafeCard.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "Your reference to uniquely identify this shopper, for example user ID or account ID.",
+      "location": "pinned raw line 46"
+    },
+    {
+      "text": "To do this, include `Redirect`.",
+      "location": "pinned raw line 274"
+    },
+    {
+      "text": "Before you can accept live payments, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add PaySafeCard in your live Customer Area.",
+      "location": "pinned raw line 639"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-paysafecard-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-web-drop-in]] \u2014 2026-09-15-captured PaySafeCard Web Drop-in Sessions/Advanced add-on for shopper reference, redirect handling, optional import, and test/live setup.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/web-drop-in/2026-09-15.md",
+  "raw_sha256": "8276934f0ec01099e1b9e7b0c96e9aa1c07df14293ac25b8c08f4dca5e3b13f7",
+  "status": "candidate_ready"
+}

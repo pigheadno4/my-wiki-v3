@@ -1,0 +1,9 @@
+# MB WAY Web Component retrieval checks
+
+## Q1 — What does the captured MB WAY Web Component page cover?
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-web-component.md` → `raw/adyen/docs/payment-methods/mb-way/web-component/2026-09-15.md`.
+Expected answer: method-specific additions to an existing Web Components integration, separating Sessions (`/sessions`, required `shopperStatement`, Checkout API v68+, import/mount `MBWay`) from Advanced (`/payments`, required `paymentMethod.type=mbway` and phone number, await handling). It is not an end-to-end base integration or proof of merchant enablement. Raw locators: lines 19–45, 68–99, 123–171. The approved `wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way.md` supplies PT/EUR overview and Web-versus-App2App journey context, not a substitute for this implementation source.
+
+## Q2 — How do the waiting state, optional App2App switch, and test/live boundaries work?
+Expected route: same root/provider/concept/source/raw chain.
+Expected answer: ordinary Advanced `/payments` response shows `Pending` plus `action.type: await`, used for a waiting screen while the shopper acts in MB WAY; do not equate Pending with authorization. The optional mobile variant sends iOS/Android `channel` and app `returnUrl`, with `action.url` deep link and return to the app; absent/Web `channel` uses standard phone-number flow. Test accepts any telephone number and documented shopperStatement suffixes trigger test result codes; live acceptance requires MB WAY in live Customer Area. Raw locators: lines 197–213, 216–271, 273–292. Caveats: curl samples lack continuation before `-d` (lines 50–65, 176–195); the Sessions test text names `/payments` (lines 110–121). The page does not establish final callback, settlement, or current merchant eligibility.

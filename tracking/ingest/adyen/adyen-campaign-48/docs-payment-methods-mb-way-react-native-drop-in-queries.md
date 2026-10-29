@@ -1,0 +1,13 @@
+# Fixed queries — MB WAY React Native Drop-in
+
+## Q1 — purpose and scope
+
+**Query:** What does the captured MB WAY React Native Drop-in guide cover, and does it define App2App?
+
+**Expected answer:** The page at `https://docs.adyen.com/payment-methods/mb-way/react-native-drop-in` is a 2026-09-15-captured method-specific Sessions/Advanced React Native Drop-in add-on. It documents shopperStatement and standard phone-number/Pending-await path, but gives no App2App implementation branch; it does not prove current enablement or payment success (full pinned `raw/adyen/docs/payment-methods/mb-way/react-native-drop-in/2026-09-15.md`, `# MB Way React Native Drop-in` lines 15–23, flow sections lines 25–187). The separate MB WAY overview `wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way.md`, pinned `raw/adyen/docs/payment-methods/mb-way/2026-09-15.md` lines 23–36, describes mobile App2App and PT/EUR method scope. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-react-native-drop-in.md`.
+
+## Q2 — fields, await result, and route warnings
+
+**Query:** Which MB WAY-specific fields are required in React Native Drop-in Sessions versus Advanced, and how should a Pending response and inconsistent links be treated?
+
+**Expected answer:** Sessions requires existing React Native Sessions Drop-in, Checkout API v68+, Customer Area setup and `shopperStatement` in `/sessions`; no extra method configuration (child `raw/adyen/docs/payment-methods/mb-way/react-native-drop-in/2026-09-15.md`, lines 25–45, 68–72). Advanced requires existing React Native Advanced Drop-in, `await` handling, Customer Area setup, `paymentMethod.type: mbway` and `telephoneNumber` in `/payments`; `shopperStatement` is unmarked. `Pending`/`await` means show a waiting screen while the shopper completes payment in MB WAY app, not final success (child lines 95–166). Test phone and result-code suffixes are test-only; live setup needs MB WAY in live Customer Area (child lines 74–93, 168–187). **Warnings:** Sessions requirement links Advanced-flow despite Sessions wording, while its request link points Sessions-flow (lines 33, 41). The overview's mobile App2App path is separate; this child has no App2App procedure and its Advanced phone field should not be generalized to every mobile journey (overview raw lines 23–30; child lines 119–123). Curl snippets miss a `-X POST` to `-d` continuation and Advanced returnUrl is web-style versus Sessions app-style (child lines 54–61, 132–139). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-react-native-drop-in.md`.

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-multibanco-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Multibanco iOS Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/multibanco/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/multibanco/ios-component/2026-09-15.md\"\ntags: [adyen, multibanco, ios, components, payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide gives Multibanco-specific additions to an existing Adyen iOS Components integration for Sessions or Advanced server-side flow. It initializes `InstantPaymentComponent` and describes test offer promotion. See [[adyen]], [[adyen-online-payments]], and the [[source-adyen-docs-payment-methods-multibanco|Multibanco overview]] for the voucher payment context.\n\n## Key takeaways\n\n- **Sessions flow:** requires an existing iOS Components Sessions integration, Checkout API v68 or later, and Multibanco added in Customer Area. The guide says no **additional method-specific** parameters are needed for `/sessions` and no additional Component configuration is needed; the base integration still applies. Its example selects `.other(\"multibanco\")`, initializes `InstantPaymentComponent`, sets the session as delegate, and calls `initiatePayment()`. See raw lines 25\u201369.\n- **Advanced flow:** requires an existing iOS Components Advanced integration, handling an additional `action.type: voucher`, and Customer Area setup. It likewise says no extra method configuration or `/payments` parameters. Its Component example sets the merchant's own object as delegate before `initiatePayment()`. The Advanced requirements table does not state the Sessions table's v68 minimum. See raw lines 88\u2013131.\n- Before testing, submit a Multibanco request in the **test Customer Area**. The test instructions simulate payment by promoting a pending offer to sale under **Payments \u2192 Offers**, then checking paid/promoted test offers under **Payment list** for reconciliation. This manual promotion is a test simulation, not evidence of real voucher redemption or live settlement. A separate request in the **live Customer Area** is needed before accepting live Multibanco payments. See raw lines 71\u201386 and 133\u2013148.\n\n> [!warning] Advanced base-guide link\n> At raw line 96, the requirement text says **Advanced flow iOS Components integration**, but its URL has `integration=Drop-in`. The action-handling link at line 97 uses `integration=Components` with a `#handle-the-redirect` anchor even though the stated action type is `voucher`. Follow the iOS Components base integration route with care; these link labels alone do not establish voucher handling behavior.\n\n## Detail locators\n\n- Sessions prerequisites, request scope and Component initialization: raw lines 25\u201369.\n- Advanced prerequisites, voucher action, initialization and request scope: raw lines 88\u2013131.\n- Test offer-to-sale simulation, reconciliation and live request: raw lines 71\u201386 and 133\u2013148.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-multibanco]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/multibanco/ios-component/2026-09-15|Multibanco iOS Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "pinned raw line 41"
+    },
+    {
+      "text": "use the `InstantPaymentComponent` class.",
+      "location": "pinned raw line 53"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "pinned raw line 97"
+    },
+    {
+      "text": "In the test environment, you can simulate a Multibanco payment by promoting the pending payment to a sale.",
+      "location": "pinned raw line 137"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-multibanco-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-multibanco-ios-component]] \u2014 2026-09-15-captured Multibanco iOS Components Sessions/Advanced add-on for InstantPaymentComponent, voucher action and test-offer promotion; source flags Advanced base-link mismatch.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/multibanco/ios-component/2026-09-15.md",
+  "raw_sha256": "4a7a19bd100670a7bf87c908e98bb07fdccd6d93deb6afa15d1f3bf50543f249",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-mb-way-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MB WAY API-only integration add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mb-way/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/mb-way/api-only/2026-09-15.md\"\ntags: [adyen, mb-way, api-only, await, app2app]\n---\n\n## Overview\n\nThis 2026-09-15-captured MB WAY API-only add-on describes an existing **Advanced-flow API-only** integration's MB WAY-specific Web waiting-screen path and optional mobile **App2App** switch. It links to the main integration for base handling. It is not proof of current merchant enablement, successful app switching, or a completed live payment. See [[adyen]], [[adyen-online-payments]], and the [[source-adyen-docs-payment-methods-mb-way|MB WAY overview]] for PT/EUR method scope and the user-level daily cumulative limit.\n\n## Key takeaways\n\n- Prerequisites are an existing API-only integration, additional-action handling for `action.type: await`, and MB WAY added in Customer Area. For `/paymentMethods`, the page specifies **PT**, **EUR**, and `amount.value` in minor units; its response example shows method type `mbway`, not a guarantee that every merchant will receive it (raw lines 23\u201329, 53\u201393).\n- **Standard Web path:** the method-specific `/payments` table marks `paymentMethod.type: mbway` and `paymentMethod.telephoneNumber` (shopper mobile phone) required, with `shopperStatement` unmarked. The response is `Pending` with an `await` action. Display a waiting screen while the shopper completes the payment in the MB WAY app, then use a webhook for the payment result before presenting the outcome; `Pending` is not final success (raw lines 95\u2013171).\n- **Optional mobile App2App path:** only if enabled, sending `channel: iOS` or `Android` and a `returnUrl` is described as linking directly to the MB WAY app without manual phone entry. If `channel` is missing or `Web`, the standard phone-number flow applies. A successful response supplies an `action.url` MB WAY deep link with the return URL appended; use that URL to switch apps, and the shopper returns via `returnUrl` after authorization. The sample action type is annotated \u201cawait, or the specific type returned by the API,\u201d so handle the actual returned action rather than assuming one fixed type (raw lines 173\u2013226).\n- **Test/live:** the page says any telephone number can be used in test and gives one example. The `shopperStatement` suffixes `-c1`, `-c3`, and `-c5` trigger Authorised, Pending, and Refused test result codes. Live acceptance requires adding MB WAY in live Customer Area. These are test controls and setup, not evidence of a real phone, payment authorization, or production enablement (raw lines 228\u2013247).\n\n> [!warning] Web form and item-data wording\n> The Web flow says the shopper enters details in the merchant-built form, and the `/payments` table requires `paymentMethod.telephoneNumber`, yet `## Build your payment form` says no shopper information needs to be collected (raw lines 33\u201349, 95\u2013103). Treat that sentence as conflicting with the standard Web request; the App2App path is the separate no-manual-phone path. The Web workflow also mentions additional purchased-item information (raw line 37), but its MB WAY-specific parameter table lists no item/order-line field (lines 95\u2013103); do not invent an item schema from that sentence.\n\n> [!warning] Illustrative examples\n> Both curl examples omit a continuation between `-X POST` and `-d` (raw lines 70\u201371, 112\u2013113). The App2App request/response snippets contain inline comments inside `json` fences (lines 184\u2013219) and illustrate a conditional branch rather than a complete validated payload. Do not copy them verbatim as executable JSON or assume the standard Web phone requirement applies to the enabled App2App branch.\n\n## Detail locators\n\n- API-only and await prerequisites, path split: raw lines 15\u201349.\n- PT/EUR method discovery: raw `## Get MB WAY as an available payment method` lines 53\u201393.\n- Standard Web `/payments`, Pending/await and waiting-screen/webhook handling: raw lines 95\u2013171.\n- Optional App2App channel, return URL, deep link and return: raw `## Enable App2App switch` lines 173\u2013226.\n- Test number, live setup and result-code simulation: raw lines 228\u2013247.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-mb-way]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mb-way/api-only/2026-09-15|MB WAY API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: **await**.",
+      "location": "raw line 28, ## Requirements"
+    },
+    {
+      "text": "You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw line 49, ## Build your payment form"
+    },
+    {
+      "text": "The shopper's mobile phone number.",
+      "location": "raw line 102, ## Add additional parameters to your /payments request"
+    },
+    {
+      "text": "If the `channel` parameter is missing or set to **Web**, the standard flow (requiring a phone number) will apply.",
+      "location": "raw line 181, ## Enable App2App switch"
+    },
+    {
+      "text": "The `returnUrl` you provided in the request is automatically appended to this deep link.",
+      "location": "raw line 207, ### Step 2: Handle the response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mb-way-api-only-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mb-way-api-only]] \u2014 2026-09-15-captured MB WAY API-only add-on contrasting Web phone-number/Pending-await with conditional mobile App2App deep-link flow and test controls; source flags form wording conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Web form says no information is collected, but the standard Web /payments table requires telephoneNumber; the App2App no-manual-phone path is conditional.",
+          "Web workflow mentions item information without an item field in the method-specific table; curl and App2App JSON snippets are illustrative, not copy-ready."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mb-way/api-only/2026-09-15.md",
+  "raw_sha256": "ac28d01a17f66b5d1b0df825761df98ad8a05ed57f6e63d4f5e304de50b0954b",
+  "status": "candidate_ready"
+}

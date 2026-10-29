@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Adyen website C48
+
+- Fifty independently approved Paysafecard, Multibanco, MB WAY and Pay by Bank Europe documentation sources; first full-review approvals 47/50 and 3 targeted correction reviews. 1 concepts touched (0 new); source_count 2414 = 2400 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-48/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-29] ingest | Adyen PHP `30.1.0`
 
 - Approved additive full with focused reading: classic Payments transactionLinkId, bounded region setter and release-note-only broader API updates; unchanged runtime/Checkout/security-table boundaries qualified. All 30.0.2 history preserved. Details [[adyen-log]] and [[source-github-adyen-php-api-library]]. No Composer/PHP/Terminal/payment execution, commit or push.

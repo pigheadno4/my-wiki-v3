@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-mb-way-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MB WAY iOS Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mb-way/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/mb-way/ios-component/2026-09-15.md\"\ntags: [adyen, mb-way, ios, component, sessions, advanced-flow]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds MB WAY to an existing iOS Components integration. It covers Sessions and Advanced flows, including `MBWayComponent`, an Advanced `Pending`/await action, and an optional mobile App2App switch. The latter changes the phone-number condition; do not collapse it into the standard flow. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-mb-way]] for the method overview.\n\n## Key takeaways\n\n- **Sessions:** start with an existing iOS Components Sessions flow, **Checkout API v68 or later**, and MB WAY added in Customer Area. The `/sessions` table marks `shopperStatement` required, describing the bank-statement text. No additional MB WAY configuration parameters are specified. Initialize using `MBWayComponent` after checking that `MBWayPaymentMethod` is available; the example delegates to the session. The v71 PT/EUR request and custom-scheme `returnUrl` are test examples. See raw lines 25\u201397.\n- **Advanced standard flow:** start with an existing iOS Components Advanced integration, handle the additional `action.type: await`, and add MB WAY in Customer Area. No extra method configuration is specified; initialize `MBWayComponent` and delegate to the Component handler. The `/payments` table requires `paymentMethod.type: mbway` and `paymentMethod.telephoneNumber`; `shopperStatement` is shown without a required mark. Its TEST v72 example returns `resultCode: Pending` with an await action to display a waiting screen while the shopper completes payment in MB WAY. Pending and app return are not final authorization. See raw lines 120\u2013215.\n- **Optional App2App under Advanced:** to skip manual phone entry, send `channel: iOS` (the page also names Android) and `returnUrl` with `paymentMethod.type: mbway`. If `channel` is missing or `Web`, the standard phone-number flow applies. A successful request returns an action whose `url` contains an `mbway://` deep link with the return URL appended; open that action URL directly, without an intermediate glue page. After authorization in MB WAY, the shopper returns through `returnUrl`, but the page does not equate that return with final payment status. See raw lines 217\u2013273.\n- The Advanced requirements row is labeled iOS Components but links a base URL selecting `integration=Drop-in`; nearby action and payment links select Components. Confirm the intended Components base flow. The App2App request/response snippets include inline comments in JSON, so they are illustrations rather than literal parseable JSON. See raw lines 126\u2013130 and 230\u2013265.\n- For testing, the page says any phone number can be used (example `+351234567890`), directs status checks to test Customer Area, and lists `shopperStatement` suffixes `-c1` (Authorised/default), `-c3` (Pending), `-c5` (Refused) for `/payments` test responses. Live acceptance requires adding MB WAY in live Customer Area. The Sessions subsection also points to a `/payments` request for these suffixes; do not infer they are demonstrated through `/sessions`. See raw lines 99\u2013118 and 275\u2013294.\n\n## Detail locators\n\n- Sessions prerequisites, required statement, TEST request and Component setup: raw lines 25\u201397.\n- Advanced prerequisites, component, request table and Pending action: raw lines 120\u2013215.\n- App2App channel/return/deep-link flow: raw lines 217\u2013273.\n- Test numbers, result-code suffixes and live Customer Area: raw lines 99\u2013118 and 275\u2013294.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-mb-way]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mb-way/ios-component/2026-09-15|Fully read MB WAY iOS Component raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "The text to be shown on the shopper's bank statement.",
+      "location": "line 45"
+    },
+    {
+      "text": "The shopper's mobile phone number.",
+      "location": "line 171"
+    },
+    {
+      "text": "This removes the need for the shopper to manually enter their phone number and deep links them directly to the MB WAY app.",
+      "location": "line 221"
+    },
+    {
+      "text": "If the `channel` parameter is missing or set to **Web**, the standard flow (requiring a phone number) will apply.",
+      "location": "line 227"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-mb-way-ios-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mb-way-ios-component]] \u2014 2026-09-15-captured MB WAY iOS Components Sessions/Advanced add-on with required statement or standard-flow phone fields, Pending/await action, optional App2App deep link, and test/live setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced iOS Components requirement link selects integration=Drop-in; related action/payment links select Components.",
+          "The standard Advanced phone-number requirement is qualified by the optional App2App channel flow, which omits manual phone entry; Pending/return is not final authorization."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mb-way/ios-component/2026-09-15.md",
+  "raw_sha256": "3002925c32c947418598649391765e4a3224daf66bfd01c66085e5ca457c24ba",
+  "status": "candidate_ready"
+}

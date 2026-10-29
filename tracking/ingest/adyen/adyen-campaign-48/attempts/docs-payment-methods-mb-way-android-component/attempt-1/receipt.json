@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-mb-way-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MB Way Android Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mb-way/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/mb-way/android-component/2026-09-15.md\"\ntags: [adyen, mb-way, android, components, payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide gives MB Way-specific additions to an existing Adyen Android Components integration. It separates Sessions and Advanced server-side flows, with Jetpack Compose and view-based Component examples. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** requires an existing Android Components Sessions integration, Checkout API v68 or later, and MB Way added in Customer Area. The method-specific `/sessions` table marks `shopperStatement` required. The guide imports the `mbway` module, plus `components-compose` when using Compose, and launches `MBWayComponent` using the session payment method. See raw lines 25\u2013165.\n- **Advanced flow:** requires an existing Android Components Advanced integration, MB Way setup, and handling of an additional `await` action. The method-specific `/payments` table marks `paymentMethod.type = mbway` and `paymentMethod.telephoneNumber` required, while `shopperStatement` is optional. This requirement table differs from the Sessions table; no Checkout API minimum is stated in the Advanced requirements. See raw lines 189\u2013311.\n- The standard Advanced response is described as `Pending`: the shopper must complete payment in the MB WAY app, and the returned action displays a waiting screen. The example action has `type: await`. `Pending` is not final payment success. See raw lines 337\u2013354.\n- The optional **App2App** flow deep links the shopper to the MB WAY app without manual phone entry. It says to include `channel` as **iOS or Android** and a `returnUrl` in `/payments`; missing `channel` or **Web** uses the standard phone-number flow. The response `action.url` contains an MB WAY deep link with the return URL appended. Redirect directly to that URL, without an intermediate page; after authorization in the app, the shopper is redirected to the supplied return URL. This is a distinct flow from the standard Advanced request field table, which marks the telephone number required. See raw lines 356\u2013412.\n- Both sections say any telephone number can be used for testing, show Customer Area payment-list checks, and require MB Way to be added in the **live Customer Area** before accepting live payments. Test-only `shopperStatement` suffixes trigger `Authorised` (`-c1`, described as default), `Pending` (`-c3`), or `Refused` (`-c5`) responses; the suffix guidance expressly refers to `/payments` even where it appears under Sessions. These test outcomes do not establish live payment behavior. See raw lines 168\u2013187 and 414\u2013433.\n\n## Detail locators\n\n- Sessions prerequisites, request field, import, configuration and Component mounting: raw lines 25\u2013165.\n- Advanced prerequisites, Compose/view imports and mounting, request fields: raw lines 189\u2013335.\n- Advanced Pending/await response and App2App: raw lines 337\u2013412.\n- Test, live enablement and result-code suffixes: raw lines 168\u2013187 and 414\u2013433.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mb-way/android-component/2026-09-15|MB Way Android Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "The text to be shown on the shopper's bank statement.",
+      "location": "pinned raw line 45"
+    },
+    {
+      "text": "`action.type`: **await**.",
+      "location": "pinned raw line 196"
+    },
+    {
+      "text": "The shopper must complete the payment in their MB Way app.",
+      "location": "pinned raw line 339"
+    },
+    {
+      "text": "If the `channel` parameter is missing or set to **Web**, the standard flow (requiring a phone number) will apply.",
+      "location": "pinned raw line 366"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-mb-way-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mb-way-android-component]] \u2014 2026-09-15-captured MB Way Android Components Sessions/Advanced guide for request fields, Pending/await handling, optional App2App deep link and test/live setup.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mb-way/android-component/2026-09-15.md",
+  "raw_sha256": "2e24f9764e096b098b4222e5d71abfba67698e65176c6c0201d8e9f9270d989e",
+  "status": "candidate_ready"
+}

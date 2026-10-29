@@ -1,0 +1,17 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-api-only",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The pinned 637-line raw SHA-256 and all five quotes match. The candidate preserves the Web API-only redirect/details flow, required shopperReference, incomplete payment snippets, and test/live boundary. One consequential countryCode discrepancy is missing: this API-only raw line 50 lists AE, GB, GIB and SRB among discovery values, while the captured PaySafeCard method overview's countryCode table uses UAE, UK, GI and RS for those places (overview raw lines 51, 76, 83\u201384). The candidate cautions against assuming arbitrary country/currency pairs, but does not warn that even the country-code tokens differ across the two captured pages. A reader asking which countryCode to send could select a conflicting value from the child raw with no surfaced qualification. The reciprocal concept route is appropriate.",
+  "required_changes": [
+    "Add a bounded source-page warning that the API-only /paymentMethods countryCode list at child raw line 50 differs from the captured PaySafeCard overview table for examples such as AE/UAE, GB/UK, GIB/GI and SRB/RS. Do not decide which token is valid or infer current country eligibility; direct readers to verify the active API contract/account setup. Attribute the overview comparison to its separate pinned raw lines 51, 76 and 83\u201384, and add a related overview route when it is approved.",
+    "Add the country-code token discrepancy and both raw locators to Q1 or Q2's expected answer so a discovery-country query does not return the child list as unqualified accepted values. Preserve the existing separate country/currency-list and incomplete-payment-example warnings."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "c48-paysafecard-api-only-online-payments-route"
+  ],
+  "reviewer_identity": "c48-rdocs-payment-methods-paysafecard-api-only",
+  "reviewer_model": "gpt-6-sol"
+}

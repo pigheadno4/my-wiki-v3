@@ -1,0 +1,9 @@
+# Retrieval checks: Multibanco React Native Drop-in
+
+## Q1 — Purpose and scope
+Query: What does the Multibanco React Native Drop-in guide cover, and what does it not establish?
+Expected: A 2026-09-15-captured method-specific add-on for existing React Native Drop-in Sessions and Advanced integrations. It is not a standalone base integration, current account enablement proof or real/live voucher-payment result. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-multibanco-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/multibanco/react-native-drop-in/2026-09-15|pinned raw]]. Verify canonical stem `/payment-methods/multibanco/react-native-drop-in`, raw lines 15–25 and headings **Sessions flow Drop-in** and **Advanced flow Drop-in**.
+
+## Q2 — Flow requirements, voucher and test caveats
+Query: What differs between Sessions and Advanced, and how should the test and base-guide links be interpreted?
+Expected: Sessions requires existing React Native Drop-in, Checkout API v68+ and method setup; Advanced requires existing React Native Drop-in, voucher action handling and setup. Both state no extra method-specific request fields or configuration, not an empty base request. Test requires a test Customer Area request; manually promoting pending offer to sale is a simulation for reconciliation, and live acceptance needs a separate live Customer Area request. Sessions requirement URL mistakenly points to advanced-flow (raw line 33), whereas the `/sessions` link at line 41 points to sessions-flow. The Advanced voucher-action link uses a redirect-named anchor (line 75), which does not redefine `voucher` as `redirect`. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-multibanco-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/multibanco/react-native-drop-in/2026-09-15|pinned raw]]. Verify canonical stem and raw lines 25–64, 66–105.

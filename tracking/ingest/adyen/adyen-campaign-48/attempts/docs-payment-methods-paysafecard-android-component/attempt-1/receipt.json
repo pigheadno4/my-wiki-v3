@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PaySafeCard Android Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/android-component/2026-09-15.md\"\ntags: [adyen, paysafecard, android, components, redirect]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds PaySafeCard to an existing Android Components integration. It separates Sessions and Advanced server flows, specifies the PaySafeCard `shopperReference` addition, shows an `InstantPaymentComponent` with or without Jetpack Compose, and gives test/live steps. The page is a method-specific add-on, not a complete Android integration or proof of current account eligibility or a completed live payment. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions requirements and request:** The guide requires an existing Android Components Sessions integration, Checkout API v68 or later, redirect handling, and PaySafeCard added in Customer Area. Its `/sessions` table marks `shopperReference` required: a merchant reference uniquely identifying the shopper, such as user or account ID. The curl example uses EUR 1000 minor units, `countryCode: NL` and an Android app-scheme `returnUrl`; those are sample values, not a general country/currency or return-route rule (pinned raw lines 25\u201369).\n- **Advanced requirements and request:** The Advanced section requires an existing Android Components Advanced integration, handling `action.type: redirect`, and Customer Area setup. Its requirements row does not state a Checkout API minimum. The `/payments` table again marks `shopperReference` required. The example response is `RedirectShopper` with a redirect action, which is an additional shopper step rather than final authorization (lines 364\u2013372, 460\u2013469, 755\u2013769).\n- **Android Component:** Both flows import `com.adyen.checkout:instant:YOUR_VERSION`; Compose adds `components-compose:YOUR_VERSION`. The guide says no further PaySafeCard-specific configuration parameters are needed. Both launch `InstantPaymentComponent` for the `paysafecard` method. Sessions gets the method from `checkoutSession`; Advanced finds it in the `/paymentMethods` response. Compose examples specify a unique key to create a new Component for a different screen/session or reset; the non-Compose examples attach it to a view (lines 270\u2013352, 374\u2013458).\n- **Test and live:** The page gives a 16-digit test code and routes test status checks to the test Customer Area. Before live acceptance, it says to contact Adyen Support to add PaySafeCard in the live Customer Area; the displayed Support link itself points to the test Customer Area. These instructions and test code do not establish live enablement or payment success (lines 354\u2013362, 771\u2013779).\n\n> [!warning] Source request examples\n> The Advanced `/payments` examples show `shopperReference` but omit a `paymentMethod` object, despite the Component selecting the `paysafecard` method (raw lines 416\u2013419, 475\u2013489 and 512\u2013752). Treat those examples as method-specific additions, not complete payment requests; use the linked base Advanced integration for the full request and action handling. The Sessions Java, PHP, C#, Go and TypeScript snippets also omit construction of `createCheckoutSessionRequest` (lines 71\u2013137, 171\u2013192, 250\u2013268). Both curl request examples put `-X POST` on a line without continuation before `-d` (lines 53\u201369, 475\u2013490). The Sessions sample uses an app-scheme returnUrl while the Advanced sample uses HTTPS (lines 64, 486); check base Android return handling rather than treating either as a universal recipe.\n\n## Detail locators\n\n- Sessions prerequisites, required field and server samples: pinned raw lines 25\u2013268.\n- Sessions imports, Component setup and test/live: lines 270\u2013362.\n- Advanced prerequisites, imports and Component setup: lines 364\u2013458.\n- Advanced required field, payment examples, redirect sample and test/live: lines 460\u2013779.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments architecture and method routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/android-component/2026-09-15|PaySafeCard Android Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-component/2026-09-15.md:34"
+    },
+    {
+      "text": "Your reference to uniquely identify this shopper, for example user ID or account ID.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-component/2026-09-15.md:46"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for PaySafeCard.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-component/2026-09-15.md:297"
+    },
+    {
+      "text": "Create the payment method object from the /paymentMethods response.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-component/2026-09-15.md:416"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/android-component/2026-09-15.md:755"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-paysafecard-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-android-component]] \u2014 2026-09-15-captured PaySafeCard Android Components Sessions/Advanced add-on for shopperReference, redirect, InstantPaymentComponent and test/live setup; source flags incomplete request examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced /payments examples omit paymentMethod; Sessions SDK snippets omit session-request construction; curl requests lack a line continuation before -d."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/android-component/2026-09-15.md",
+  "raw_sha256": "080f0b46aa2dc1cf257f6a24682772c111142c7b699b37465d3f07e504a7d336",
+  "status": "candidate_ready"
+}

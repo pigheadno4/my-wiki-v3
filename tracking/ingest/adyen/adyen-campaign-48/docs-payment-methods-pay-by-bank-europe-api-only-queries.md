@@ -1,0 +1,13 @@
+# Pay by Bank Europe API-only retrieval checks
+
+## Q1 — Purpose and scope
+
+Query: What does the Pay by Bank Europe API-only guide cover, and does it prove current bank availability, onboarding approval or settled funds?
+
+Expected route: `wiki/index.md` PSP Indexes line 10 → `wiki/adyen-index.md` line 2663 → `wiki/concepts/adyen-online-payments.md` Sources → `wiki/sources/adyen/source-adyen-docs-payment-methods-pay-by-bank-europe-api-only.md` Overview/Detail locators → `raw/adyen/docs/payment-methods/pay-by-bank-europe/api-only/2026-09-15.md` `# Pay by Bank (Europe) for API only` lines 15–26, `## Make a payment` lines 87–98, `## Test and go live` lines 1845–1849; method-level approval/settlement route `raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md` lines 23–60. Expected answer: 2023-modified API-only Tink redirect guide with optional issuer list, result/webhooks and SEPA Direct Debit future-payment section. Snapshot neither proves current availability/approval nor settled funds.
+
+## Q2 — Issuer, redirect, result and recurring boundary
+
+Query: How does a merchant choose issuer presentation and complete a Pay by Bank Europe API-only payment, when is its result final, and what supports future payments?
+
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-pay-by-bank-europe-api-only.md` Key takeaways/Detail locators → `raw/adyen/docs/payment-methods/pay-by-bank-europe/api-only/2026-09-15.md` `## Build your payment form` lines 28–83, `## Make a payment` lines 87–98 and 427–441, `## Handle the redirect` lines 443–482, `## Present the payment result` lines 484–503, `## Recurring payments` lines 505–520, 870–880 and 1219–1245; then `raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md` lines 23–60 for method overview qualifications. Expected answer: optional issuer preselection only in supported regions (UK example; Germany selects at Tink); /payments requires countryCode, returnUrl and paybybank type, with conditional issuer. Follow action.url and send decoded redirectResult to /payments/details. Pending/Received awaits AUTHORISATION webhook; offer closes if not authorised within 30 minutes. Successful authorization does not guarantee funds per overview despite child 2–3 day wording. Future payments use SEPA Direct Debit token and shopper-absent Subscription/UnscheduledCardOnFile, not a reusable paybybank redirect; token-creation example already has storedPaymentMethodId and does not show initial consent. Warnings: overview onboarding approval is separate, Refused row links US risk responses, and neither test IDs nor API examples prove current eligibility.

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-api-only",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen PaySafeCard API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/api-only/2026-09-15.md\"\ntags: [adyen, paysafecard, api-only, redirect, online-payments]\n---\n\n## Overview\n\nThis captured Adyen guide adds PaySafeCard to an existing Web Advanced-flow API-only integration. It covers method discovery, a required shopper reference, a redirect action and return through `/payments/details`, and test/live setup. It is an add-on to [[adyen-online-payments]], not proof that a particular merchant is enabled or has processed a payment. [[adyen]]\n\n## Key takeaways\n\n- **Prerequisites and discovery:** The existing API-only integration must handle `action.type: redirect`, and PaySafeCard must be added in Customer Area. The payment form need not collect shopper information. The `/paymentMethods` table lists country codes and currency codes separately; the NL/EUR request and `paysafecard` response are examples, not a guarantee that every listed country/currency combination or merchant is eligible. [Raw: lines 23\u201351, 57\u201372, 329\u2013340]\n- **Captured country-code token conflict:** This API-only child lists `AE`, `GB`, `GIB` and `SRB` among `/paymentMethods` `countryCode` values (child raw line 50), whereas the separately approved [[source-adyen-docs-payment-methods-paysafecard]] overview labels the corresponding places `UAE`, `UK`, `GI` and `RS` in its country-code table (overview raw lines 51, 76, 83\u201384). The two captured pages disagree on the literal tokens. Neither list alone resolves which values the active Checkout API and merchant account accept; verify the current API contract and account setup before sending a country code. This qualification is separate from the child table's independently listed currencies and the NL/EUR example.\n- **Payment request scope:** The method-specific `/payments` table marks `shopperReference` required as the merchant's unique shopper reference. The flow prose also says to include information about the intended items, but the method-specific table and payment examples do not show item fields. The examples omit a `paymentMethod` object even though discovery returns type `paysafecard`; several SDK snippets refer to an unconstructed `paymentRequest`. Treat them as incomplete illustrations and use the base integration/API contract for a complete payment request. The curl examples also put `-X POST` on a line without continuation before `-d`. [Raw: lines 31\u201336, 342\u2013370, 387\u2013390, 408\u2013413, 434\u2013468, 487\u2013491, 562\u2013565]\n- **Redirect and return:** A sample `/payments` response has `resultCode: RedirectShopper` and `action.type: redirect`, an intermediate action rather than payment success. Send the shopper to `action.url`. After the shopper returns to the website, URL-decode `redirectResult` and post it in `details` to `/payments/details`; use that response's `resultCode` for presentation and `pspReference` as the transaction identifier. The page recommends a device default browser for mobile integrations, with SFSafariViewController or Chrome Custom Tabs rather than WebView for app-hosted GET redirects. That is mobile advice on this Web API-only page, not an additional Web requirement. [Raw: lines 568\u2013623]\n- **Test versus live:** The captured test section provides a 16-digit code for testing and says to inspect test payments in Customer Area. Before live acceptance, contact Adyen Support to add PaySafeCard to the live Customer Area. The sample `Authorised` details result is documentation, not evidence of an executed transaction or guaranteed settlement. [Raw: lines 616\u2013633]\n\n> [!WARNING] Incomplete payment examples\n> The page's how-it-works step calls for intended-item information, while its additional-parameter table only marks `shopperReference` and its payment request examples omit item fields and `paymentMethod`. Several language examples do not construct `paymentRequest`. Do not copy the snippets as a complete API-only payment request. [Raw: lines 35, 342\u2013370, 387\u2013390, 408\u2013413, 434\u2013468, 487\u2013491, 562\u2013565]\n\n## Detail locators\n\n- Requirements, method form and country/currency discovery table: pinned raw lines 15\u201351; discovery examples and type: lines 53\u2013340.\n- Required shopper reference and incomplete payment request examples: pinned raw lines 342\u2013566.\n- Redirect response, mobile advice, return and details result: pinned raw lines 568\u2013623.\n- Test code, test payment check and live Support gate: pinned raw lines 625\u2013637.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-paysafecard]] \u2014 approved method overview with a separate country-code table; its captured tokens conflict with this API-only child.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/api-only/2026-09-15|PaySafeCard API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/api-only/2026-09-15.md:28"
+    },
+    {
+      "text": "include additional information about the items that the shopper intends to purchase",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/api-only/2026-09-15.md:35"
+    },
+    {
+      "text": "Your reference to uniquely identify this shopper",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/api-only/2026-09-15.md:348"
+    },
+    {
+      "text": "URL-decoded `redirectResult`",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/api-only/2026-09-15.md:596"
+    },
+    {
+      "text": "Before you can accept live payments",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/api-only/2026-09-15.md:633"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-paysafecard-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-api-only]] \u2014 2026-09-15-captured PaySafeCard Web API-only guide for discovery, shopperReference, redirect/details and test/live steps; source flags incomplete payment examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The payment examples omit paymentMethod and intended-item fields despite discovery/how-it-works text, and several SDK samples lack paymentRequest construction; they are not complete API recipes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/api-only/2026-09-15.md",
+  "raw_sha256": "5a08d1818f33573144f3ebfcab8d804ff355426f1e99ae485550140025ef1a33",
+  "status": "candidate_ready"
+}

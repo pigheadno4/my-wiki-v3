@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-recurring",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PaySafeCard recurring payments\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/recurring\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/recurring/2026-09-15.md\"\ntags: [adyen, paysafecard, recurring, tokenization, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide describes tokenization and subsequent recurring payments for PaySafeCard with a myPaysafeCard wallet. It covers the listed country scope, transaction flags, token creation and reuse, data exchange, test setup, and two refusal cases. Its statement that an existing PaySafeCard account needs no extra setup does not mean every payment funding source can yield a token. This is a method-specific supplement to [[adyen-online-payments]]. [[adyen]]\n\n## Key takeaways\n\n- **Country and account scope:** The page lists Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lichtenstein, Lithuania, Luxembourg, Malta, Netherlands, Norway, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden, and United Kingdom for PaySafeCard recurring tokenization. It says the existing PaySafeCard account works with no extra setup, and strongly recommends explicit shopper permission and schedule/amount transparency. The captured country list is not proof of current account eligibility. [Raw: lines 19\u201328]\n- **Wallet-only token condition:** PaySafeCard can be funded by myPaysafeCard wallet or Voucher/PIN card, but only wallet payments are eligible for tokenization. A Voucher/PIN payment on a tokenization request can still process with no token generated. The merchant cannot control the funding source, and the payment response does not identify it; receipt of a payment response alone therefore cannot establish token creation. The `CardOnFile` wording in the recurring model names does not extend recurring support to Voucher/PIN cards. [Raw: lines 36\u201345]\n- **Initial request and token retrieval:** For a token-creation `/payments` request, the guide calls for `recurringProcessingModel`, `shopperInteraction` (online `Ecommerce`), a case-sensitive `shopperReference` of at least three characters without PII, and `storePaymentMethod: true`. Models are `CardOnFile` for stored one-click/omnichannel use, `UnscheduledCardOnFile` for non-fixed schedule and/or variable amounts, and `Subscription` for fixed schedule with fixed or variable amount. It shows zero-value authorization through `/sessions` or `/payments`, or with-purchase tokenization using the purchase amount. Obtain the shopper reference and actual token from webhooks after the initial flow; the zero-EUR sample is illustrative, not evidence of a token. [Raw: lines 30\u201339, 47\u201384]\n- **Subsequent payment:** Send `storedPaymentMethodId` from the webhook as the Adyen reference to the token/myPaysafeCard account, plus `shopperInteraction: ContAuth` and the applicable `recurringProcessingModel` (the example uses `Subscription`). `storePaymentMethod` is not required on later payments. The EUR 20 example is a sample request, not an acceptance guarantee. [Raw: lines 39, 86\u2013114]\n- **Data exchange and testing:** After wallet confirmation, Customer Data Exchange can return customer data for positive-amount payments but not the zero-amount transaction establishing the recurring relationship. Testing calls for a myPaysafeCard test wallet requested from Paysafe technical support with country and test-user birth date, then token creation, webhook confirmation, model and error scenarios in Adyen test. The page also instructs the same scenarios live; that is a provider procedure, not evidence they were performed. [Raw: lines 116\u2013134]\n- **Refusal handling:** Error 2004 means insufficient wallet balance; the page suggests a lower-amount retry or shopper top-up then retry. Error 10033 means an invalid token, possibly after more than one year of inactivity or failed creation; ask the shopper to approve recurring again through a new zero-value authorization request. The captured table has a line-wrap break in its 2004 row, so read the adjacent lines together. [Raw: lines 136\u2013144]\n\n> [!WARNING] Payment success does not prove recurring readiness\n> Voucher/PIN payments can process but yield no token, and their funding source is absent from the payment response. Confirm token creation through the documented webhook before storing or reusing `storedPaymentMethodId`. [Raw: lines 43\u201345, 84\u201390]\n\n## Detail locators\n\n- Listed countries, no-extra-setup statement and permission recommendation: pinned raw lines 19\u201328.\n- Recurring flags and wallet-only limitation: pinned raw lines 30\u201345.\n- Zero-value or with-purchase token request and webhook token retrieval: pinned raw lines 47\u201384.\n- Subsequent token payment: pinned raw lines 86\u2013114.\n- Data exchange, test wallet and refusal handling: pinned raw lines 116\u2013144.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-paysafecard]] \u2014 approved method overview; consult its captured capability matrix separately from this wallet-only recurring guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/recurring/2026-09-15|PaySafeCard recurring guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "PaySafeCard supports [tokenization](/online-payments/tokenization) for recurring payments in the following countries:",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/recurring/2026-09-15.md:21"
+    },
+    {
+      "text": "Your existing PaySafeCard account will immediately work for recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/recurring/2026-09-15.md:26"
+    },
+    {
+      "text": "**Only Wallet payments are eligible for tokenization.**",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/recurring/2026-09-15.md:45"
+    },
+    {
+      "text": "get the shopper reference and the token by listening to webhooks",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/recurring/2026-09-15.md:84"
+    },
+    {
+      "text": "This can happen when the token expires if there is more than a year of lack of activity.",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/recurring/2026-09-15.md:144"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-paysafecard-recurring-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-recurring]] \u2014 2026-09-15-captured PaySafeCard wallet-only recurring tokenization guide, with request flags, webhook token retrieval, subsequent ContAuth payments, data exchange and refusal handling; source distinguishes Voucher/PIN payment success from token creation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Only myPaysafeCard wallet funding is token eligible; Voucher/PIN payment can process without a token, and the payment response does not identify funding source.",
+          "The country list and no-extra-setup claim are captured provider statements, not current merchant eligibility.",
+          "The 2004 error row is broken across raw lines 142\u2013143; keep lower-amount retry or shopper top-up as the two listed paths."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/recurring/2026-09-15.md",
+  "raw_sha256": "d6cc6c8c57276728fa91a39e765845a00fe8888368ed73b58116c1fad813837e",
+  "status": "candidate_ready"
+}

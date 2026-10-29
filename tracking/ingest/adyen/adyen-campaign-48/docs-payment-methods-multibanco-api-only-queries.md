@@ -1,0 +1,13 @@
+# Fixed queries — Multibanco API-only
+
+## Q1 — purpose and limits
+
+**Query:** What does the captured Multibanco API-only guide add, and does it establish payment completion?
+
+**Expected answer:** The page at `https://docs.adyen.com/payment-methods/multibanco/api-only` is a 2026-09-15-captured method add-on for an existing Advanced-flow API-only integration. It covers voucher action, PT/EUR discovery, no extra method-specific `/payments` fields and test/live setup. It is not a complete base request recipe, current merchant entitlement, or evidence of a paid voucher (full pinned `raw/adyen/docs/payment-methods/multibanco/api-only/2026-09-15.md`, `# Multibanco for API only` and `## Requirements` lines 15–29, `## Test and go live` lines 91–106). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco-api-only.md`.
+
+## Q2 — voucher prerequisites, test simulation and fulfillment warning
+
+**Query:** For Multibanco API-only, what does the child require, and why must a merchant not fulfill merely after a payment request?
+
+**Expected answer:** The child requires existing API-only integration, `voucher` additional-action handling and Customer Area setup; `/paymentMethods` discovery uses PT/EUR, and it lists no extra Multibanco `/payments` fields (child `raw/adyen/docs/payment-methods/multibanco/api-only/2026-09-15.md`, lines 23–29, 46–89). Before test, request Multibanco in test Customer Area; a pending offer can be **simulated** as paid through Payments > Offers > PSP reference > Promote offer to sale for reconciliation testing; live acceptance needs a separate live Customer Area request (child lines 91–106). **Material warning:** child workflow line 36 says fulfill after the payment request, but the Multibanco overview `wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco.md`, pinned `raw/adyen/docs/payment-methods/multibanco/2026-09-15.md` lines 23–32, says the shopper receives a voucher at checkout and pays later at ATM or online bank; the child calls unpromoted test offers pending. Do not treat request/voucher as final paid status or ship goods based on the generic step (child lines 31–36, 93–104). Child prose also mentions shopper and item information despite saying no shopper collection and no extra method fields (lines 33–42, 87–89); the curl example misses a line continuation (lines 62–63). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco-api-only.md`.

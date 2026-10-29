@@ -1,0 +1,9 @@
+# docs-payment-methods-mb-way-web-drop-in retrieval checks
+
+## Q1 — purpose and flow scope
+Query: What does MB WAY Web Drop-in add for Sessions versus Advanced?
+Expected: Existing Web Drop-in and Customer Area setup. Sessions requires Checkout API v68+ and shopperStatement in `/sessions`; Advanced standard Web flow requires mbway type plus phone number in `/payments`, while shopperStatement is unmarked optional. MBWay individual import is optional. Do not infer v68 minimum for Advanced from this page or claim the mobile-style Sessions sample returnUrl is a Web recipe. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-web-drop-in]] → [[raw/adyen/docs/payment-methods/mb-way/web-drop-in/2026-09-15]]. Canonical stem: `/payment-methods/mb-way/web-drop-in`. Verify raw lines 25–78 and 103–137.
+
+## Q2 — Pending, mobile App2App and test boundaries
+Query: What happens after the Advanced request, when can phone entry be omitted, and what proves completion?
+Expected: Standard Web example returns Pending and await action while shopper completes in MB WAY; not final authorization. Optional mobile App2App section uses channel iOS/Android and returnUrl, omits manual phone entry, and supplies an mbway:// action.url; missing/Web channel keeps standard phone flow. App return is not itself final status. Test phone example and -c1/-c3/-c5 shopperStatement suffixes are for testing; live requires Customer Area addition. Mobile App2App JSON includes inline comments. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-web-drop-in]] → [[raw/adyen/docs/payment-methods/mb-way/web-drop-in/2026-09-15]]. Canonical stem: `/payment-methods/mb-way/web-drop-in`. Verify raw lines 139–260.

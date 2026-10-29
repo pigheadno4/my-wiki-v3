@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-mb-way-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MB WAY iOS Drop-in integration add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mb-way/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/mb-way/ios-drop-in/2026-09-15.md\"\ntags: [adyen, mb-way, ios, drop-in, app2app]\n---\n\n## Overview\n\nThis 2026-09-15-captured MB WAY iOS Drop-in page gives method-specific additions to existing **Sessions** and **Advanced** iOS Drop-in integrations, including a standard phone-number/waiting-screen path and an optional mobile **App2App** switch. It relies on the main flow guides and does not prove current merchant enablement, a completed app switch or a successful live payment. See [[adyen]], [[adyen-online-payments]], and the [[source-adyen-docs-payment-methods-mb-way|MB WAY overview]] for PT/EUR scope and the user-level daily cumulative limit.\n\n## Key takeaways\n\n- **Sessions:** requires an existing iOS Sessions Drop-in integration, Checkout API **v68 or later**, and MB WAY in Customer Area. Its method-specific `/sessions` table marks `shopperStatement` required as text shown on the shopper's bank statement. The page says no extra MB WAY Drop-in configuration is needed (raw lines 25\u201344, 67\u201371).\n- **Advanced standard path:** requires an existing iOS Advanced Drop-in integration, handling for `action.type: await`, and MB WAY in Customer Area. Its method-specific `/payments` table marks `paymentMethod.type: mbway` and `paymentMethod.telephoneNumber` required; `shopperStatement` has no required mark. A `Pending` response carries an `await` action for a waiting screen while the shopper completes payment in the MB WAY app. `Pending` is not final authorization (raw lines 96\u2013167).\n- **Optional App2App:** the page says this mobile path avoids **manual** phone-number entry and deep-links to MB WAY. Send `channel: iOS` or `Android` and a `returnUrl`; a missing channel or `Web` selects the standard phone-number path. On a successful request, use the returned `action.url` containing an MB WAY deep link with the return URL appended. **Do not wrap the deep link in an intermediate \u201cglue page\u201d**; on authorization the shopper returns to the app via `returnUrl`. The sample `action.type` is annotated \u201cawait, or the specific type returned by the API,\u201d so dispatch on the actual returned action (raw lines 169\u2013225).\n- **Test/live:** any phone number is said to work in test, with an example. The `shopperStatement` suffixes `-c1`, `-c3`, and `-c5` simulate Authorised, Pending and Refused `resultCode` values; this test instruction refers to `/payments`. Live acceptance requires MB WAY added in the live Customer Area (raw lines 75\u201394, 227\u2013248).\n\n> [!warning] Flow-specific examples\n> The Advanced standard `/payments` table requires a telephone number, while the **conditional** App2App example omits it after setting `channel: iOS`; do not turn the standard field mark into an unconditional App2App requirement (raw lines 120\u2013124, 171\u2013198). The App2App request and response examples include inline comments inside `json` fences (lines 184\u2013218). The Advanced standard curl example uses a website return URL despite the iOS context, whereas Sessions and App2App examples use app-scheme return URLs (lines 60, 140, 195). Both curl snippets omit a line continuation between `-X POST` and `-d` (lines 53\u201354, 133\u2013134). These examples require validation against the base iOS flow before implementation.\n\n## Detail locators\n\n- Scope and Sessions prerequisites, `shopperStatement`, no-extra-configuration: raw lines 15\u201371.\n- Sessions test/live and result-code simulation: raw lines 73\u201394.\n- Advanced requirements, fields and `Pending`/`await` result: raw lines 96\u2013167.\n- Conditional App2App request, deep link, no glue page and app return: raw `## Enable App2App switch` lines 169\u2013225.\n- Advanced test/live and result-code simulation: raw lines 227\u2013248.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-mb-way]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mb-way/ios-drop-in/2026-09-15|MB WAY iOS Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions ## Requirements"
+    },
+    {
+      "text": "[shopperStatement](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-shopperStatement)",
+      "location": "raw line 44, Sessions /sessions table"
+    },
+    {
+      "text": "`action.type`: **await**.",
+      "location": "raw line 105, Advanced ## Requirements"
+    },
+    {
+      "text": "If the `channel` parameter is missing or set to **Web**, the standard flow (requiring a phone number) will apply.",
+      "location": "raw line 179, ## Enable App2App switch"
+    },
+    {
+      "text": "Do not wrap this link in an intermediate page (a so-called glue page).",
+      "location": "raw line 224, ### Step 3: Redirect the shopper"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mb-way-ios-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mb-way-ios-drop-in]] \u2014 2026-09-15-captured MB WAY iOS Drop-in Sessions/Advanced add-on for statement/phone fields, Pending-await, conditional App2App deep link and test/live setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced standard path marks telephoneNumber required, while conditional App2App omits manual phone entry when channel is iOS/Android; preserve path scope.",
+          "App2App JSON examples contain comments, Advanced standard curl returnUrl is website-style in an iOS guide, and curl continuations are incomplete."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mb-way/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "59e83f4f7919077843d4708856d4885810b8808cc9ad52b3fb2108a0f6f7649c",
+  "status": "candidate_ready"
+}

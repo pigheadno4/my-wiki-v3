@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PaySafeCard Web Component integration add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/web-component/2026-09-15.md\"\ntags: [adyen, paysafecard, web, components, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured PaySafeCard Web Component guide adds method-specific instructions to an **existing** Web Components integration, separately for Sessions and Advanced server-side flows. It depends on the main integration guides for the base flow. It does not establish current account enablement, a completed redirect, or a successful live payment. See [[adyen]], [[adyen-online-payments]], and the [[source-adyen-docs-payment-methods-paysafecard|PaySafeCard overview]] for method-level scope.\n\n## Key takeaways\n\n- **Sessions flow:** the guide requires an existing Sessions-flow Web Components integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and PaySafeCard added in Customer Area. It marks `shopperReference` required in the method-specific `/sessions` table to uniquely identify the shopper. It imports `Redirect`, says no extra PaySafeCard Component configuration is needed, and initializes the `Redirect` class (raw lines 25\u201347, 270\u2013298).\n- **Advanced flow:** the guide requires an existing Advanced-flow Web Components integration, redirect handling, and PaySafeCard in Customer Area. Its method-specific `/payments` table marks `shopperReference` required. The example response contains `resultCode: RedirectShopper` and `action.type: redirect`. The request examples include amount, return URL, reference, merchant account, and shopper reference but **omit a `paymentMethod` object/type**; do not treat these snippets as a complete payment request or infer a missing required field solely from the examples (raw lines 310\u2013352, 354\u2013637, 639\u2013653).\n- Both flow sections use a **test-only 16-digit code** and say to check test payments in the test Customer Area. For live acceptance, the page directs merchants to contact Support to add PaySafeCard in the live Customer Area; a test code or submitted request does not prove live enablement (raw lines 300\u2013308, 655\u2013663).\n\n> [!warning] Direct versus redirect wording across captured pages\n> The [[source-adyen-docs-payment-methods-paysafecard|PaySafeCard overview]] capability row labels the flow **Direct** (overview pinned raw lines 25\u201327), while this Web Component child requires `action.type: redirect`, uses a `Redirect` Component, and shows a redirect response (child raw lines 33\u201335, 290\u2013298, 316\u2013317, 639\u2013653). Preserve both source statements and verify the applicable method/flow behavior before implementing; do not silently use the overview row to erase this child's redirect handling.\n\n> [!warning] Illustrative snippets need verification\n> Both Component snippets show `type:paysafecard` without quoting or defining `paysafecard` (raw lines 296\u2013298, 340\u2013342). The Sessions Web example uses the app-style return URL `adyencheckout://your.package.name` (lines 53\u201368), and both curl examples lack a continuation between `-X POST` and `-d` (lines 57\u201358, 363\u2013364). The Advanced request examples omit `paymentMethod` (lines 354\u2013637). These are not copy-ready Web payment recipes; follow the base guide and confirm the method data.\n\n## Detail locators\n\n- Scope and Sessions prerequisites/`shopperReference` table: raw `# PaySafeCard Web Component` and `## Sessions flow Component` lines 15\u201347.\n- Sessions examples, import, configuration, initialization and test/live: raw lines 48\u2013308.\n- Advanced prerequisites, `shopperReference` table and request examples: raw `## Advanced flow Component` lines 310\u2013637.\n- Advanced redirect response and test/live: raw lines 639\u2013663.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paysafecard]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/web-component/2026-09-15|PaySafeCard Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "| **Redirect handling** | Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components#handle-the-redirect). `action.type`: **redirect**",
+      "location": "raw line 35, Sessions ## Requirements"
+    },
+    {
+      "text": "| [shopperReference](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-shopperReference) | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | Your reference to uniquely identify this shopper, for example user ID or account ID. |",
+      "location": "raw line 46, Sessions /sessions table"
+    },
+    {
+      "text": "const redirectComponent = new Redirect(checkout, { type:paysafecard }).mount('#redirect-container')",
+      "location": "raw line 297, Sessions ## Initialize the Component for PaySafeCard"
+    },
+    {
+      "text": "| [shopperReference](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-shopperReference) | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | Your reference to uniquely identify this shopper, for example user ID or account ID. |",
+      "location": "raw line 352, Advanced /payments table"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "raw line 639, Advanced response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paysafecard-web-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-web-component]] \u2014 2026-09-15-captured PaySafeCard Web Components Sessions/Advanced add-on for required shopperReference, redirect action and test/live setup; source flags overview Direct-flow mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The PaySafeCard overview matrix says Direct, while this Web Components child requires redirect action; preserve the cross-page conflict.",
+          "Component examples have unquoted type:paysafecard; Sessions Web returnUrl is app-style, both curl examples miss -X POST to -d continuation, and Advanced /payments examples omit paymentMethod."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/web-component/2026-09-15.md",
+  "raw_sha256": "5f78d3c9f592a24078ae1c9791c920d32dd3a0e0e866bf33999bcca832199cd2",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# docs-payment-methods-multibanco-flutter-drop-in retrieval checks
+
+## Q1 — purpose and flow scope
+Query: What does Multibanco Flutter Drop-in add for Sessions and Advanced?
+Expected: A method-specific add-on to existing Flutter Drop-in. Sessions explicitly requires Checkout API v68+, Customer Area addition, and no extra Multibanco /sessions fields or configuration; Advanced requires voucher action handling and no extra method /payments fields/configuration. Base flow requirements remain. The Sessions requirement link mistakenly selects advanced-flow, and the Advanced action link has a redirect fragment despite voucher type. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco-flutter-drop-in]] → [[raw/adyen/docs/payment-methods/multibanco/flutter-drop-in/2026-09-15]]. Canonical stem: `/payment-methods/multibanco/flutter-drop-in`. Verify raw lines 25–47 and 66–88.
+
+## Q2 — voucher and test/live status
+Query: Does a voucher or pending offer mean the Multibanco payment is complete, and how is testing described?
+Expected: No. The method overview says the shopper redeems the voucher later. Test Customer Area request precedes simulated promotion of a pending offer to sale under Payments > Offers by PSP reference; paid/promoted entries appear in Payment list. This tests reconciliation, not real voucher redemption. Live acceptance separately requires a request in live Customer Area. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-multibanco-flutter-drop-in]] → [[raw/adyen/docs/payment-methods/multibanco/flutter-drop-in/2026-09-15]]. Canonical stem: `/payment-methods/multibanco/flutter-drop-in`. Verify raw lines 49–64 and 90–105.

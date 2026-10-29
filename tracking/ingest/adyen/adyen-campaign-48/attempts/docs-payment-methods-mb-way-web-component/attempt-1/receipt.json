@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-mb-way-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MB WAY Web Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mb-way/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/mb-way/web-component/2026-09-15.md\"\ntags: [adyen, mb-way, web-component, sessions, advanced-flow, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds MB WAY to an existing Web Components integration. It separates Sessions and Advanced server-side flows, then describes an optional mobile App2App switch within the Advanced section. It is a method-specific supplement to [[adyen-online-payments]]; the captured examples do not prove current merchant enablement or payment completion. [[adyen]]\n\n## Key takeaways\n\n- **Sessions flow:** Start with an existing Sessions-flow Web Components integration, Checkout API v68 or later, and MB WAY added in Customer Area. The method-specific `/sessions` table requires `shopperStatement`, the bank-statement text. Import `MBWay` from `@adyen/adyen-web`, mount the component, and add no MB WAY-specific configuration. The PT/EUR, amount 1000, and app-scheme `returnUrl` in the sample are example values, not general eligibility or a Web return-URL rule. [Raw: lines 25\u201399]\n- **Advanced flow:** Start with an existing Advanced-flow Web Components integration that handles an additional `action.type: await`, and add MB WAY in Customer Area. Import and mount `MBWay`. The method-specific `/payments` table requires `paymentMethod.type: mbway` and `paymentMethod.telephoneNumber`; `shopperStatement` is listed without a required mark. The example's EUR amount and HTTPS `returnUrl` are illustrations. [Raw: lines 123\u2013195]\n- **Waiting state:** The ordinary Advanced response is shown with `resultCode: Pending` and an `await` action. Display the waiting screen while the shopper completes payment in the MB WAY app; `Pending` is not final authorization. The page does not provide a definitive final-status callback or capture recipe, so follow the base flow's result handling rather than treating the initial response as success. [Raw: lines 197\u2013213]\n- **Optional mobile App2App switch:** The Advanced-flow section says an iOS or Android `channel` plus an app `returnUrl` can omit manual phone-number entry and produce an MB WAY deep link in `action.url`; missing `channel` or `Web` selects the standard phone-number flow. Redirect to the returned action URL and handle the return to the supplied app URL. This mobile variant is not a blanket omission of `telephoneNumber` for the standard Web request. The sample shows `Pending` with `action.type: await` and a URL; use the returned action rather than assuming every response has exactly that shape. [Raw: lines 216\u2013271]\n- **Test/live boundary:** The guide says any telephone number can be used for testing, with test payment status checked in test Customer Area. For live acceptance, add MB WAY in the live Customer Area. Its documented `shopperStatement` suffixes `-c1`, `-c3`, and `-c5` trigger Authorised, Pending, and Refused test `resultCode` values; this is a test fixture, not a live-payment guarantee. [Raw: lines 102\u2013121, 273\u2013292]\n\n> [!WARNING] Sample request formatting\n> Both shown curl requests place `-X POST` on a line without a continuation before `-d` (raw lines 50\u201365 and 176\u2013195). They are documentation illustrations, not shell-ready copy-paste commands. The page's Sessions test section also refers to a `/payments` request for result-code triggers; preserve that endpoint wording rather than inferring a Sessions-specific trigger contract.\n\n## Detail locators\n\n- Sessions prerequisites, required `shopperStatement`, import/mount and no extra configuration: pinned raw lines 25\u201399.\n- Advanced prerequisites, method-specific fields and pending/await response: pinned raw lines 123\u2013213.\n- Optional iOS/Android App2App channel, deep link and return: pinned raw lines 216\u2013271.\n- Test/live setup and result-code suffixes: pinned raw lines 102\u2013121 and 273\u2013292.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-mb-way]] \u2014 approved overview for distinct Web/App2App shopper journeys and PT/EUR method capability context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mb-way/web-component/2026-09-15|MB WAY Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/mb-way/web-component/2026-09-15.md:34"
+    },
+    {
+      "text": "The text to be shown on the shopper's bank statement.",
+      "location": "raw/adyen/docs/payment-methods/mb-way/web-component/2026-09-15.md:45"
+    },
+    {
+      "text": "`action.type`: **await**.",
+      "location": "raw/adyen/docs/payment-methods/mb-way/web-component/2026-09-15.md:130"
+    },
+    {
+      "text": "The shopper's mobile phone number.",
+      "location": "raw/adyen/docs/payment-methods/mb-way/web-component/2026-09-15.md:170"
+    },
+    {
+      "text": "If the `channel` parameter is missing or set to **Web**, the standard flow (requiring a phone number) will apply.",
+      "location": "raw/adyen/docs/payment-methods/mb-way/web-component/2026-09-15.md:226"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-mb-way-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mb-way-web-component]] \u2014 2026-09-15-captured MB WAY Web Components guide for Sessions and Advanced flows, phone-number await action, optional mobile App2App deep link, and test/live setup; see source for flow-specific requirements and sample caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions lists Checkout API v68+; this row is not presented as an Advanced-flow version requirement.",
+          "The standard Advanced request requires telephoneNumber; only the documented iOS/Android App2App variant omits manual entry.",
+          "Both curl samples lack a continuation between -X POST and -d; the Sessions resultCode test text refers to /payments."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mb-way/web-component/2026-09-15.md",
+  "raw_sha256": "a9889fe7737704ad5cc4cc4043b2df93ff61dc7bf8c277beb5d7623dccc795de",
+  "status": "candidate_ready"
+}

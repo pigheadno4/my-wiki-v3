@@ -1,0 +1,9 @@
+# PaySafeCard Customer Data Exchange retrieval checks
+
+## Q1 — What does the captured Customer Data Exchange guide claim, and under what condition?
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-paysafecard-customer-data-exchange.md` → `raw/adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15.md`.
+Expected answer: for a merchant whose type and location legally require excluding anonymous methods, the page describes MyPaySafeCard account payments and verified first name, last name, and birth date sent to Adyen, with account ID in the returned fields. The merchant is expected to compare those details against its own record. This is the page's conditional framing, not a legal conclusion for any specific business. Raw locators: lines 19–23, 27–50. The separate recurring-tokenization source discusses zero- versus positive-amount Customer Data Exchange; route any such claim to that source only if approved.
+
+## Q2 — How are data delivered and how does the merchant decide capture or cancellation?
+Expected route: same root/provider/concept/source/raw chain.
+Expected answer: an automatically capturing account must be changed to Auth. flow; authorization reserves funds without debit for the source-stated 24-hour window. The merchant enables “payment account owner data” for either `/payments/details` after a redirectResult return or a standard webhook after authorization (including when no frontend return is seen), compares the owner data, then sends cancel to release reservation or capture as appropriate. The source says any currency account can be configured for the feature; this does not prove universal payment-currency acceptance. Raw locators: lines 25, 29–63, 67–89. The Authorised/details and AUTHORISATION/webhook examples at lines 71–126 do not prove a real merchant comparison or capture.

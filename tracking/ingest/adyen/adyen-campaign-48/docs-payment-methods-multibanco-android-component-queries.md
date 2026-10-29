@@ -1,0 +1,9 @@
+# Retrieval checks: Multibanco Android Component
+
+## Q1 — Purpose and scope
+Query: What does the Multibanco Android Component guide cover, and what does it not establish?
+Expected: This 2026-09-15-captured add-on describes Multibanco-specific changes for existing Android Components Sessions and Advanced integrations. It is not a standalone base integration, proof of current merchant eligibility, or evidence of live voucher payment. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-multibanco-android-component]] → [[raw/adyen/docs/payment-methods/multibanco/android-component/2026-09-15|pinned raw]]. Verify canonical stem `/payment-methods/multibanco/android-component`, raw lines 15–25 and headings **Sessions flow Component** and **Advanced flow Component**.
+
+## Q2 — Component, voucher and test prerequisites
+Query: What is required for each flow and what does “no additional parameters” mean in this guide?
+Expected: Sessions requires existing Android Components, Checkout API v68+, Customer Area setup; Advanced requires existing Android Components, voucher action handling and setup. Both say no extra **method-specific** `/sessions` or `/payments` parameters, not that base requests are empty. Both use `InstantPaymentComponent`, `instant` module and MULTIBANCO type, with `components-compose` when using Compose; no extra method configuration. Test requires test Customer Area request and can manually promote pending offer to sale for reconciliation; live acceptance needs a separate live Customer Area request. Manual promotion is only a test simulation. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-multibanco-android-component]] → [[raw/adyen/docs/payment-methods/multibanco/android-component/2026-09-15|pinned raw]]. Verify canonical stem and raw lines 25–76, 127–152, 154–187, 240–261.

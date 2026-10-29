@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-multibanco-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Multibanco iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/multibanco/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/multibanco/ios-drop-in/2026-09-15.md\"\ntags: [adyen, multibanco, ios, drop-in, voucher, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Multibanco to an existing iOS Drop-in integration. It gives separate Sessions and Advanced flow requirements and describes test offer promotion and live setup. It supplies only Multibanco-specific additions, not the entire base integration. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions flow:** Start with an existing iOS Sessions-flow Drop-in integration using Checkout API v68 or later, and add Multibanco in Customer Area. The page says no additional Multibanco parameters are needed for `/sessions` and no additional Drop-in configuration is needed. These are method-specific statements; the underlying session request and SDK setup still follow the base guide. [Raw: lines 25\u201346]\n- **Advanced flow:** Start with an existing iOS Advanced-flow Drop-in integration that handles `action.type: voucher`, and add Multibanco in Customer Area. The page says no extra Multibanco configuration or `/payments` parameters are needed. It does not state an Advanced-specific Checkout API minimum or reproduce the base request. [Raw: lines 67\u201389]\n- **Voucher and payment state:** The Advanced action is a voucher, consistent with the approved [[source-adyen-docs-payment-methods-multibanco]] overview's description of a shopper paying later at an ATM or through online banking. This iOS guide does not say that rendering the voucher completes payment; its test procedure begins from a **pending** Multibanco payment. Treat offer-to-sale promotion as a test simulation, not an automatic live capture or proof of shopper payment. [Child raw: lines 75\u201376, 95\u2013106; overview source: raw lines 23\u201332]\n- **Test and live gates:** Before testing, submit a request for Multibanco in test Customer Area. The documented test simulation selects the pending payment's PSP reference under **Payments > Offers** and **Promote offer to sale**; promoted test offers appear in **Payment list**, and the page recommends using this to test reconciliation. Before live acceptance, submit a separate request in live Customer Area. These steps appear in both Sessions and Advanced sections. [Raw: lines 50\u201365, 93\u2013108]\n\n## Detail locators\n\n- Sessions integration/version, setup, no-extra-parameter/configuration statements: pinned raw lines 25\u201346.\n- Sessions test simulation and live gate: pinned raw lines 48\u201365.\n- Advanced voucher action, no-extra-parameter/configuration statements: pinned raw lines 67\u201389.\n- Advanced test simulation and live gate: pinned raw lines 91\u2013108.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-multibanco]] \u2014 approved overview for voucher contents, subsequent shopper payment, and PT/EUR method context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/multibanco/ios-drop-in/2026-09-15|Multibanco iOS Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/multibanco/ios-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/multibanco/ios-drop-in/2026-09-15.md:40"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "raw/adyen/docs/payment-methods/multibanco/ios-drop-in/2026-09-15.md:76"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw/adyen/docs/payment-methods/multibanco/ios-drop-in/2026-09-15.md:89"
+    },
+    {
+      "text": "promoting the pending payment to a sale",
+      "location": "raw/adyen/docs/payment-methods/multibanco/ios-drop-in/2026-09-15.md:97"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-multibanco-ios-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-multibanco-ios-drop-in]] \u2014 2026-09-15-captured iOS Drop-in guide for Sessions v68+ and Advanced voucher action, no extra method-specific request/configuration fields, and test offer-promotion/live request gates; source distinguishes pending voucher from paid sale.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions states Checkout API v68+; do not transfer that minimum to Advanced without separate evidence.",
+          "No additional Multibanco fields does not mean no base integration request or SDK configuration.",
+          "Promote offer to sale is a test Customer Area simulation; a pending voucher is not payment completion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/multibanco/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "111cf78caa6a3af721e5107e3ae353e5f94b9a00958b4b12b691f3092cad4d0d",
+  "status": "candidate_ready"
+}

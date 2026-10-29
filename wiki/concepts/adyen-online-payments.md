@@ -21,6 +21,156 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-pay-by-bank-europe-web]] — 2026-09-15-captured Pay by Bank (Europe) Web router linking method Drop-in/Components and general Web guides; see child guides for implementation and the approved method overview for onboarding and transfer-finality caveats.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-web]] — 2026-09-15-captured PaySafeCard Web router to Drop-in/Components child guides and Sessions/Advanced base integration routes; its Components description says “Redirect.”
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-android]] — 2026-09-15-captured PaySafeCard Android chooser for Drop-in/InstantPaymentComponent and four base flow routes; source flags overview Direct versus child redirect labels.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-web]] — 2026-09-15-captured Multibanco Web chooser linking Drop-in/Components child guides and four Web Sessions/Advanced base UI routes.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-android]] — 2026-09-15-captured Multibanco Android chooser routing Drop-in/Components to Sessions/Advanced base guides; not a request or voucher recipe.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-ios]] — 2026-09-15-captured PaySafeCard iOS router to Drop-in/InstantPaymentComponent child guides and Sessions/Advanced base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-ios]] — 2026-09-15-captured Multibanco iOS chooser for method-specific Drop-in/Components and four base Sessions/Advanced iOS guides.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-web]] — 2026-09-15-captured MB WAY Web chooser linking Drop-in/Components child guides and the four Web Sessions/Advanced base UI routes.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-android]] — 2026-09-15-captured Android MB WAY integration router linking Drop-in, Components, and main Sessions/Advanced guides; read child guides for method-specific behavior.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-ios]] — 2026-09-15-captured MB WAY iOS router to Drop-in/MBWayComponent child guides and Sessions/Advanced base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-react-native-component]] — 2026-09-15-captured Multibanco React Native Components Advanced-only guide for voucher action, no extra method fields and test-offer promotion; source flags base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-api-only]] — 2026-09-15-captured Multibanco API-only add-on for voucher action, PT/EUR discovery, no-extra-field payment request and test-offer promotion; source warns against premature fulfillment wording.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-react-native-component]] — 2026-09-15-captured MB WAY React Native Components Advanced-only add-on for phone-number request fields, Pending/await handling and test/live setup; source flags Sessions unavailability and a mismatched base-guide link.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-ios-drop-in]] — 2026-09-15-captured iOS Drop-in guide for Sessions v68+ and Advanced voucher action, no extra method-specific request/configuration fields, and test offer-promotion/live request gates; source distinguishes pending voucher from paid sale.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-android-drop-in]] — 2026-09-15-captured Multibanco Android Drop-in Sessions/Advanced add-on with voucher action, no extra method fields and test-offer promotion.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-flutter-drop-in]] — 2026-09-15-captured Multibanco Flutter Drop-in Sessions/Advanced add-on for no extra method fields/configuration, voucher action, test-offer promotion and live request; source flags mismatched base/action links.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-react-native-drop-in]] — 2026-09-15-captured Multibanco React Native Drop-in Sessions/Advanced add-on for voucher action, no extra method fields and test-offer promotion; source flags base-guide link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-web-drop-in]] — 2026-09-15-captured Multibanco Web Drop-in Sessions/Advanced add-on for no-extra-parameter requests, voucher action and test-offer promotion/live setup.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-customer-data-exchange]] — 2026-09-15-captured MyPaySafeCard Customer Data Exchange guide for conditional identity-data use, Auth. flow, details/webhook owner fields, 24-hour authorization hold, and merchant cancel-or-capture decision.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-web-component]] — 2026-09-15-captured Multibanco Web Components Sessions/Advanced add-on for no extra method request fields, Component import, voucher action and test offer promotion/live requests.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-ios-component]] — 2026-09-15-captured Multibanco iOS Components Sessions/Advanced add-on for InstantPaymentComponent, voucher action and test-offer promotion; source flags Advanced base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-react-native-drop-in]] — 2026-09-15-captured MB WAY React Native Drop-in Sessions/Advanced add-on for shopperStatement, phone-number Pending/await path and test/live setup; source flags Sessions base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-flutter-drop-in]] — 2026-09-15-captured MB WAY Flutter Drop-in Sessions/Advanced add-on for shopperStatement, phone-number/Pending await handling and test/live setup; source flags a mismatched Sessions link.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-flutter-component]] — 2026-09-15-captured PaySafeCard Flutter Components Sessions/Advanced add-on for shopperReference, redirect handling and test/live setup; source flags mismatched base-guide links and abbreviated examples.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-recurring]] — 2026-09-15-captured PaySafeCard wallet-only recurring tokenization guide, with request flags, webhook token retrieval, subsequent ContAuth payments, data exchange and refusal handling; source distinguishes Voucher/PIN payment success from token creation.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-react-native-component]] — 2026-09-15-captured PaySafeCard React Native Components Advanced-only guide for required shopperReference, redirect action and test/live Support setup; source flags base-link and example limitations.
+
+
+- [[source-adyen-docs-payment-methods-multibanco-android-component]] — 2026-09-15-captured Multibanco Android Components Sessions/Advanced add-on for InstantPaymentComponent, voucher action, and test-offer promotion.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-ios-drop-in]] — 2026-09-15-captured MB WAY iOS Drop-in Sessions/Advanced add-on for statement/phone fields, Pending-await, conditional App2App deep link and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-api-only]] — 2026-09-15-captured MB WAY API-only add-on contrasting Web phone-number/Pending-await with conditional mobile App2App deep-link flow and test controls; source flags form wording conflict.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-web-drop-in]] — 2026-09-15-captured MB WAY Web Drop-in Sessions/Advanced add-on for statement or standard phone fields, optional MBWay import, Pending/await action and a separately scoped mobile App2App section.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-android-drop-in]] — 2026-09-15-captured MB WAY Android Drop-in Sessions/Advanced add-on covering phone-number/Pending await handling, optional App2App deep link, and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-web-component]] — 2026-09-15-captured MB WAY Web Components guide for Sessions and Advanced flows, phone-number await action, optional mobile App2App deep link, and test/live setup; see source for flow-specific requirements and sample caveats.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-ios-component]] — 2026-09-15-captured MB WAY iOS Components Sessions/Advanced add-on with required statement or standard-flow phone fields, Pending/await action, optional App2App deep link, and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-mb-way-android-component]] — 2026-09-15-captured MB Way Android Components Sessions/Advanced guide for request fields, Pending/await handling, optional App2App deep link and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-android-drop-in]] — 2026-09-15-captured Android Drop-in Sessions/Advanced PaySafeCard add-on for required shopperReference, redirect handling and test/live setup; source flags abbreviated request examples and the overview Direct-flow label.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-web-drop-in]] — 2026-09-15-captured PaySafeCard Web Drop-in Sessions/Advanced add-on for shopper reference, redirect handling, optional import, and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-api-only]] — 2026-09-15-captured PaySafeCard Web API-only guide for discovery, shopperReference, redirect/details and test/live steps; source flags incomplete payment examples.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-ios-drop-in]] — 2026-09-15-captured PaySafeCard iOS Drop-in Sessions/Advanced add-on for shopperReference, Advanced redirect, and test/live setup; source flags overview Direct-flow mismatch.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-react-native-drop-in]] — 2026-09-15-captured PaySafeCard React Native Drop-in Sessions/Advanced add-on for shopperReference, redirect and test/live setup; source flags mismatched Sessions link and abbreviated Advanced requests.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-flutter-drop-in]] — 2026-09-15-captured PaySafeCard Flutter Drop-in Sessions/Advanced add-on for shopperReference, redirect handling, no extra method configuration and test/live setup; source flags Sessions base-link and sample limitations.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-europe-api-only]] — 2023-modified, 2026-09-15-captured Pay by Bank Europe API-only guide for Tink issuer/redirect, async results, SEPA Direct Debit future payments and test/live setup; source preserves method-overview onboarding and settlement caveats.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-web-component]] — 2026-09-15-captured PaySafeCard Web Components Sessions/Advanced add-on for required shopperReference, redirect action and test/live setup; source flags overview Direct-flow mismatch.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-europe-web-component]] — 2026-09-15-captured Web Components v5.70.0+ Sessions/Advanced add-on for country filtering, conditional Tink bank choice and SEPA-token recurring; Received requires webhook follow-up.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-ios-component]] — 2026-09-15-captured PaySafeCard iOS Components Sessions/Advanced add-on for shopperReference, redirect Component setup, and test/live steps; source flags Advanced base-link and abbreviated request examples.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard-android-component]] — 2026-09-15-captured PaySafeCard Android Components Sessions/Advanced add-on for shopperReference, redirect, InstantPaymentComponent and test/live setup; source flags incomplete request examples.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-europe-web-drop-in]] — 2026-09-15-captured Pay by Bank (Europe) Web Drop-in Sessions/Advanced guide for countryCode, optional Tink issuer selection and separate SEPA tokenized recurring route; source preserves market and token-example caveats.
+
+
+- [[source-adyen-docs-payment-methods-paysafecard]] — 2026-09-15-captured PaySafeCard prepaid-method overview with Direct-flow capability marks, conditional EU gambling Customer Data Exchange, country/currency table and platform routes; source flags table duplicates/codes.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-europe]] — 2024-modified, 2026-09-15-captured Tink-based Pay by Bank (Europe) overview covering approval-gated onboarding, UK-only issuer selection, bank-transfer finality and chargebacks; prose/table differ on FI.
+
+
+- [[source-adyen-docs-payment-methods-mb-way]] — 2026-09-15-captured MB WAY PT/EUR overview contrasting Web phone-number and mobile App2App authorization, capability matrix, daily cumulative user limit, and platform routes.
+
+
+- [[source-adyen-docs-payment-methods-multibanco]] — 2026-09-15-captured Multibanco PT/EUR voucher overview, capability matrix and integration chooser; voucher redemption follows checkout.
+
+
 - [[source-adyen-docs-payment-methods-titres-restaurant-ios]] — 2026-09-15-captured Titres-restaurant iOS router to the Drop-in child guide and iOS Drop-in Sessions base guide.
 
 

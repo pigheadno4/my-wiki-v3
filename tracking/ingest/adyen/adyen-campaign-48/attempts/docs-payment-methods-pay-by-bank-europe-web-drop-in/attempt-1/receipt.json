@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-pay-by-bank-europe-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pay by Bank (Europe) Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pay-by-bank-europe/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/pay-by-bank-europe/web-drop-in/2026-09-15.md\"\ntags: [adyen, pay-by-bank-europe, web, drop-in, open-banking, tink, sepa-direct-debit]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] guide adds Pay by Bank (Europe) to an existing **Web Drop-in** integration for Sessions or Advanced flow. It covers a country-code request field, optional issuer presentation, Tink redirects, a separate SEPA Direct Debit route for future tokenized payments, and test/live setup. It does not prove current market or merchant eligibility, a completed bank transfer, or settled funds. See [[adyen-online-payments]] and the related Pay by Bank (Europe) method overview.\n\n## Key takeaways\n\n- **Prerequisites and request field:** Both Sessions and Advanced tabs require Web Drop-in **v5.70.0 or later** and Support assistance to add the method in Customer Area. The related method overview also says onboarding requires approval through an Adyen contact. Both /sessions and /payments tables mark **countryCode** required to filter shopper methods; **QZ** is an exception to the usual two-letter country-code format, not a claim that Pay by Bank (Europe) is available in Kosovo. Web Drop-in v6 imports **PayByBank** when importing its resources. A separate live Customer Area addition is required before accepting live payments. [Pinned raw: lines 21\u201365, 1502; related overview raw: raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md, line 23]\n- **Bank choice and Tink:** Issuer selection in the merchant form is optional only where supported. The guide says markets with too many banks, such as Germany, redirect shoppers to Tink to choose a bank; in the UK the merchant may show a bank list first or let Tink handle selection. Optional configuration includes logo visibility, a preselected issuer ID, highlighted issuers and placeholder text under **paymentMethodsConfiguration.paybybank**. The UK test and live issuer tables are examples that may change, not guaranteed current bank availability. [Pinned raw: lines 67\u2013156]\n- **Recurring is a different method:** The page says future recurring transactions are supported **through SEPA Direct Debit**, not by reusing the Pay by Bank one-time method type. It strongly recommends explicit shopper permission for future charges. It describes creating a shopper token, receiving a **recurring.token.created** webhook with **storedPaymentMethodId**, and using that ID for later off-session **Subscription** or **UnscheduledCardOnFile** payments with **paymentMethod.type=sepadirectdebit** and **shopperInteraction=ContAuth**. The normal SEPA tokenization parameters apply. [Pinned raw: lines 158\u2013173, 523\u2013531, 533\u2013555, 872\u2013899]\n- **Payment outcome:** A **Received** resultCode and pspReference mean the payment request was received; use webhooks to track whether it succeeded. The related overview warns that even a successful AUTHORISATION webhook can precede a failed bank transfer and that funds are not guaranteed; it documents SentForSettle, a possible CHARGEBACK after eight weekdays without funds, and a later CHARGEBACK_REVERSED if funds arrive. Do not treat Received or AUTHORISATION as settled funds. [Pinned raw: line 1496; related overview raw: raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md, lines 45\u201360]\n- **Test scope:** The guide recommends approved, authentication-error and shopper-cancelled test scenarios, includes UK/DE/FR/FI Tink demo credentials, and gives a UK approved-scenario account choice for amounts above or below GBP 150. These are test instructions, not current live coverage or live credentials. [Pinned raw: lines 1498\u20131556]\n\n> [!WARNING] Market scope differs between overview prose, matrix and tests\n> The related overview prose says currently available in Germany, France and the UK, while its matrix also lists Finland; this child page includes Finland test credentials. The captured sources do not resolve whether Finland was live-supported at capture time, and none of these historical statements establishes present eligibility. [Related overview raw: raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md, lines 23\u201343; pinned raw: lines 1548\u20131556]\n\n> [!WARNING] Token-creation examples already use a stored ID\n> Under \u201cCreate a token,\u201d the examples already pass **paymentMethod.type=sepadirectdebit** and **storedPaymentMethodId**, while the prose says this step creates a shopper token whose ID arrives in a recurring.token.created webhook. The examples therefore do not demonstrate obtaining a new ID from a first Pay by Bank payment; use the linked standard SEPA tokenization guidance to establish the initial token. A later legacy example under \u201cUnscheduledCardOnFile\u201d uses **Subscription** instead, so preserve the prose/model distinction rather than copying that block blindly. [Pinned raw: lines 169\u2013198, 523\u2013531, 872\u2013899, 1215\u20131235]\n\n## Detail locators\n\n- Identity, both flow prerequisites, v6 import, and countryCode tables: pinned raw lines 15\u201365.\n- Optional issuer display/configuration and UK issuer lists: pinned raw lines 67\u2013156.\n- SEPA recurring prose, token-creation examples and token webhook: pinned raw lines 158\u2013523.\n- Off-session Subscription and UnscheduledCardOnFile examples and conflicting legacy block: pinned raw lines 525\u20131494.\n- Received status, test scenarios, live addition, and regional demo credentials: pinned raw lines 1496\u20131556.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-pay-by-bank-europe]] \u2014 method overview for onboarding, market and settlement qualifications.\n- [[source-adyen-docs-payment-methods-sepa-direct-debit]] \u2014 SEPA Direct Debit tokenization context, if available.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pay-by-bank-europe/web-drop-in/2026-09-15|Pay by Bank (Europe) Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 5.70.0.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/web-drop-in/2026-09-15.md:29"
+    },
+    {
+      "text": "Shoppers are redirected to our open banking partner Tink to select their bank.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/web-drop-in/2026-09-15.md:73"
+    },
+    {
+      "text": "We support recurring transactions for Pay by Bank (Europe) through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/web-drop-in/2026-09-15.md:160"
+    },
+    {
+      "text": "When a token is created, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) webhook.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/web-drop-in/2026-09-15.md:523"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/web-drop-in/2026-09-15.md:1496"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-pay-by-bank-europe-web-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-europe-web-drop-in]] \u2014 2026-09-15-captured Pay by Bank (Europe) Web Drop-in Sessions/Advanced guide for countryCode, optional Tink issuer selection and separate SEPA tokenized recurring route; source preserves market and token-example caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Recurring examples use SEPA Direct Debit, and the 'Create a token' examples already supply storedPaymentMethodId; source warns that they do not show initial token acquisition.",
+          "Related method overview prose and matrix differ on Finland; child provides Finland test credentials but no live eligibility proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pay-by-bank-europe/web-drop-in/2026-09-15.md",
+  "raw_sha256": "7b573bac7f3316753c93e6f772dd56d6b9f3ff608c0f80bea576975d45f6b5d2",
+  "status": "candidate_ready"
+}

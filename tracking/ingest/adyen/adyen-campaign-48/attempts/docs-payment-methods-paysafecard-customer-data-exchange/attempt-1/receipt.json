@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-customer-data-exchange",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PaySafeCard Customer Data Exchange\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/customer-data-exchange\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15.md\"\ntags: [adyen, paysafecard, customer-data-exchange, auth-flow, capture, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide describes PaySafeCard Customer Data Exchange for MyPaySafeCard account payments. It frames the feature for a merchant whose business type and location legally require excluding anonymous payment methods, then describes owner-data delivery, merchant comparison, and a conditional cancel or capture decision. This is a provider procedure, not a legal determination or proof of a configured account or executed transaction. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Conditional purpose and data:** The guide says that when the merchant's business type and location legally require excluding anonymous methods, MyPaySafeCard is the checkout option. It says PaySafeCard verifies the shopper's first name, last name, and date of birth; after a completed MyPaySafeCard payment, those data are sent to Adyen. The merchant is expected to hold comparable information for verification. The returned account-owner fields also include an account ID. This statement does not decide whether a particular merchant has that legal obligation. [Raw: lines 19\u201323, 46\u201350]\n- **Authorization and capture configuration:** For an account currently set to automatic capture, the guide says it must be changed to an **Auth. flow** for this verification process. In that flow the transaction stays **Authorised**, with funds reserved but not yet debited, until the merchant sends capture. It says the authorized amount remains frozen for **24 hours** before release to the shopper's MyPaySafeCard account and recommends prompt comparison and capture. An authorization or data receipt is not a capture. [Raw: lines 25, 29\u201335]\n- **Data-return routes:** After redirect, send `redirectResult` to `/payments/details` to check authorization and receive data. Alternatively, after authorization the standard webhook can deliver the same format even if the shopper does not return to the frontend. Configure \u201cpayment account owner data\u201d in Customer Area under **Developer > Additional Data** for details responses, or under **Developer > Webhooks** for the standard webhook. The page says this feature can be configured for any currency account via Adyen; it does not establish acceptance of every currency for every payment. [Raw: lines 37\u201350, 56\u201369, 87\u201389]\n- **Merchant decision:** Compare the returned owner information with the merchant's user record. If the comparison fails the merchant's criteria, the documented flow sends `/payments/{paymentPspReference}/cancels` to remove the reservation; otherwise it sends `/payments/{paymentPspReference}/captures`. The source does not define the merchant's identity-match policy or legal standard, and neither the sample `Authorised` response nor sample `AUTHORISATION` webhook is evidence that capture occurred. [Raw: lines 52\u201354, 71\u201385, 89\u2013126]\n\n> [!WARNING] Captured example boundary\n> The examples show `additionalData.paymentAccountOwner.firstName`, `lastName`, `dateOfBirth`, and `accountId`, with `Authorised`/`AUTHORISATION` status. These are illustrative payloads. The guide requires a separate merchant comparison and cancel or capture request; do not infer verification or captured funds from the examples. [Raw: lines 69\u201385, 89\u2013126]\n\n## Detail locators\n\n- Conditional use case, verified shopper attributes, 24-hour authorization hold: pinned raw lines 19\u201325.\n- Actor sequence, delivery paths, owner fields, comparison and cancel/capture: pinned raw lines 27\u201354.\n- Customer Area configuration and currency-account statement: pinned raw lines 56\u201363.\n- Details and webhook example fields: pinned raw lines 65\u2013126.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-paysafecard-recurring]] \u2014 recurring-tokenization guide; its positive-amount versus zero-amount customer-data distinction is separate from this page's Auth.-flow use case.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15|PaySafeCard Customer Data Exchange guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When your type of business and location legally require you to exclude anonymous payment methods",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15.md:19"
+    },
+    {
+      "text": "your account must be changed to an **Auth. flow**",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15.md:25"
+    },
+    {
+      "text": "The authorized amount remains frozen for **24 hours**",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15.md:25"
+    },
+    {
+      "text": "The webhook contains the customer data in the same format as the [/payments/details]",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15.md:44"
+    },
+    {
+      "text": "Your system either cancels the payment",
+      "location": "raw/adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15.md:54"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-paysafecard-cde-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-customer-data-exchange]] \u2014 2026-09-15-captured MyPaySafeCard Customer Data Exchange guide for conditional identity-data use, Auth. flow, details/webhook owner fields, 24-hour authorization hold, and merchant cancel-or-capture decision.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The legal-obligation framing is conditional; the source does not determine a merchant's legal duty or identity-match policy.",
+          "Authorised and AUTHORISATION payloads represent authorization and data delivery, not a completed merchant comparison or capture.",
+          "The any-currency-account configuration statement is not payment-currency acceptance for every merchant."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/customer-data-exchange/2026-09-15.md",
+  "raw_sha256": "bd05350d10a1eee6fd984c274efd65dc77667edd427b3c2891daed9d186c85d2",
+  "status": "candidate_ready"
+}

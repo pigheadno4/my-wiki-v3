@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PaySafeCard Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, paysafecard, flutter, drop-in, sessions, advanced-flow]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds PaySafeCard to an existing Flutter Drop-in integration. It gives separate Sessions and Advanced flow additions: shopper reference, redirect handling, no method-specific configuration, and test/live account steps. The method page is an add-on to the main integration, not a complete executable recipe. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** use an existing Flutter Drop-in Sessions flow with **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and PaySafeCard added through Adyen Support in Customer Area. The requirements-table link is labeled Sessions but its URL selects `advanced-flow`; the nearby redirect and session-creation links select Sessions. Use the intended Sessions base guide rather than silently following the mismatched link. See raw lines 25\u201342.\n- Add required `shopperReference` to `/sessions`, described as a unique shopper identifier such as a user or account ID. No extra PaySafeCard configuration parameters are specified. The TEST `/sessions` example uses v71, EUR/NL and a custom-scheme `returnUrl`; those values are examples rather than general eligibility or callback guarantees. See raw lines 40\u201369 and 270\u2013274.\n- **Advanced:** start with an existing Flutter Drop-in Advanced flow, handle the redirect action, and add PaySafeCard in Customer Area. Add required `shopperReference` to `/payments`; no extra method configuration is specified. The example response has `resultCode: RedirectShopper` and `action.type: redirect`, an additional action rather than final payment confirmation. The v68 API minimum is stated only in the Sessions requirements table on this page; do not extend it to Advanced without separate evidence. See raw lines 286\u2013312 and 599\u2013613.\n- The TEST `/payments` examples use v72, EUR and an HTTPS `returnUrl` even though this is a Flutter guide; the sample request objects omit an explicit `paymentMethod`. The curl samples at lines 53\u201369 and 319\u2013334 also omit a continuation after `-X POST`, while several library snippets leave request variables or initializer types undefined. Treat these snippets as illustrations, verify the actual Drop-in request and app return handling against the base guide. See raw lines 48\u2013268 and 314\u2013597.\n- The page gives a 16-digit test code `0000 0000 0990 3417` and a test Customer Area payment-list check. Before accepting live PaySafeCard payments, contact Support to add it in **live** Customer Area. These instructions do not prove current enablement or successful live processing. See raw lines 276\u2013284 and 615\u2013623.\n\n## Detail locators\n\n- Sessions prerequisites, v68 requirement, redirect setup and source link mismatch: raw lines 25\u201336.\n- Sessions shopper reference and TEST examples: raw lines 38\u2013268.\n- Sessions no extra configuration and test/live steps: raw lines 270\u2013284.\n- Advanced prerequisites, shopper reference and no extra configuration: raw lines 286\u2013312.\n- Advanced TEST request examples and redirect response: raw lines 314\u2013613.\n- Repeated test/live steps: raw lines 615\u2013623.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/flutter-drop-in/2026-09-15|Fully read PaySafeCard Flutter Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "Your reference to uniquely identify this shopper, for example user ID or account ID.",
+      "location": "line 46"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for PaySafeCard.",
+      "location": "line 274"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "line 599"
+    },
+    {
+      "text": "Before you can accept live payments, contact our [Support Team]",
+      "location": "line 623"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c48-paysafecard-flutter-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-flutter-drop-in]] \u2014 2026-09-15-captured PaySafeCard Flutter Drop-in Sessions/Advanced add-on for shopperReference, redirect handling, no extra method configuration and test/live setup; source flags Sessions base-link and sample limitations.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions requirements link is labeled Sessions but selects advanced-flow; other Sessions links select sessions-flow.",
+          "TEST request snippets omit explicit paymentMethod in Advanced and include shell/example incompleteness; verify against base Flutter Drop-in integration."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "2dd55699c64d27b4346f0e6dd9132443ae09f2a291e917936f51dfe967fd3766",
+  "status": "candidate_ready"
+}

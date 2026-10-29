@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-multibanco-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Multibanco Web Drop-in integration add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/multibanco/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/multibanco/web-drop-in/2026-09-15.md\"\ntags: [adyen, multibanco, web, drop-in, voucher]\n---\n\n## Overview\n\nThis 2026-09-15-captured Multibanco Web Drop-in page gives method-specific additions for existing **Sessions** and **Advanced** Web Drop-in integrations. It relies on the base flow guides. A generated voucher/pending offer is not a completed shopper payment; see [[source-adyen-docs-payment-methods-multibanco|Multibanco overview]] for PT/EUR scope, voucher redemption and expiry context. This snapshot does not prove current account enablement or a live paid transaction. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** requires an existing Web Sessions Drop-in integration, Checkout API **v68 or later**, and Multibanco added in Customer Area. No additional Multibanco parameters are specified for `/sessions`. Importing `Multibanco` individually is **optional** for tree shaking, not mandatory setup (raw lines 25\u201353).\n- **Advanced:** requires an existing Web Advanced Drop-in integration, handling of an additional action with `action.type: voucher`, and Multibanco added in Customer Area. No additional Multibanco parameters are specified for `/payments`. Importing the `Multibanco` class individually is optional (raw lines 74\u2013102).\n- **Test and live gates:** before testing, submit a Multibanco request in the **test Customer Area**. In test, a pending payment can be simulated as paid by opening **Payments > Offers**, selecting the pending payment's PSP reference and choosing **Promote offer to sale**; the page instructs testing reconciliation this way. Paid payments, including promoted test offers, appear in **Payment list**. Before accepting live payments, submit a separate request in the **live Customer Area**. A test promotion is simulation, not evidence of shopper voucher redemption or live acceptance (raw lines 55\u201372, 104\u2013121).\n\n> [!warning] Advanced base-link wording\n> The Advanced integration requirement URL contains an unresolved encoded `{{getParameter('platform')}}` value despite the Web Drop-in label, and the `voucher` action-handling link uses a fragment named \u201chandle the redirect\u201d (raw lines 82\u201383). Preserve the specified `voucher` action type; follow the correct Web Advanced base guide and actual returned action rather than treating that link fragment as a redirect-action requirement.\n\n## Detail locators\n\n- Sessions requirements, no-extra-parameters and optional import: raw `## Sessions flow Drop-in` lines 25\u201353.\n- Sessions test-offer promotion, reconciliation and live request: raw lines 55\u201372.\n- Advanced prerequisites, `voucher` action, optional import and no-extra-parameters: raw `## Advanced flow Drop-in` lines 74\u2013102.\n- Advanced test-offer promotion and live request: raw lines 104\u2013121.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-multibanco]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/multibanco/web-drop-in/2026-09-15|Multibanco Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw line 41, Sessions /sessions request"
+    },
+    {
+      "text": "Before you can test Multibanco payments, you need to [submit a request for Multibanco](/payment-methods/add-payment-methods) in your [test Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw line 59, Sessions ## Test and go live"
+    },
+    {
+      "text": "In the test environment, you can simulate a Multibanco payment by promoting the pending payment to a sale.",
+      "location": "raw line 61, Sessions ## Test and go live"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "raw line 83, Advanced ## Requirements"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw line 102, Advanced /payments request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "multibanco-web-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-multibanco-web-drop-in]] \u2014 2026-09-15-captured Multibanco Web Drop-in Sessions/Advanced add-on for no-extra-parameter requests, voucher action and test-offer promotion/live setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced base integration URL has unresolved platform template and voucher-action handling link uses a redirect-named fragment; preserve voucher action type.",
+          "Promoting a pending offer to sale is test-environment simulation, not proof of shopper voucher redemption or live payment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/multibanco/web-drop-in/2026-09-15.md",
+  "raw_sha256": "3bdd008e5db26b87d0917f10852abb7040c2ef2c7f242ff497f1ebd8454342cc",
+  "status": "candidate_ready"
+}

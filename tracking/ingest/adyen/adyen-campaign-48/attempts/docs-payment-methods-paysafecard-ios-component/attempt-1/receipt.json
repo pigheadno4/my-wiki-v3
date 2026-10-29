@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paysafecard-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PaySafeCard iOS Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paysafecard/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paysafecard/ios-component/2026-09-15.md\"\ntags: [adyen, paysafecard, ios, components, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds PaySafeCard to an **existing iOS Components integration**, separately for Sessions and Advanced server-side flows. It gives method-specific request, Component, redirect, and test/live steps and links to main integration guides for shared steps. The TEST examples are illustrative and do not establish current market availability, account enablement, a completed payment, or live operation. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions prerequisites:** An existing iOS Components Sessions integration must use **Checkout API v68 or later**, handle a `redirect` action, and have PaySafeCard added in Customer Area. The PaySafeCard-specific `/sessions` table marks `shopperReference` required as the merchant's unique shopper reference. The NL/EUR request and app-scheme `returnUrl` are TEST examples, not a general eligibility or return-URL contract (pinned raw lines 25\u201369).\n- **Advanced prerequisites and request:** The page requires an existing iOS Components Advanced integration, redirect handling, and Customer Area setup. Its method-specific `/payments` table also marks `shopperReference` required. The Advanced requirements do **not** repeat the Sessions table's v68 minimum. The Advanced integration link is labeled Components but its URL selects `integration=Drop-in`; the action and payment links select Components. Resolve the base-guide route accordingly (lines 308\u2013355).\n- **Component behavior:** Both flows say no extra PaySafeCard configuration is needed and initialize `InstantPaymentComponent` after finding `.other(\"paysafecard\")`. In the shown Sessions Swift snippet, `component.delegate = session`; in Advanced, `component.delegate = self`. Each snippet then calls `initiatePayment()` (lines 270\u2013295, 320\u2013345).\n- **Redirect and examples:** The Advanced example response is `RedirectShopper` with `action.type=redirect`; it is a next shopper action rather than proof of authorization. The Advanced sample `/payments` bodies include `shopperReference` but do not show a `paymentMethod` object, while the method is selected by the Component. Do not treat those abbreviated server examples as a complete request contract or infer that a full payment never needs method data. The curl samples also omit a shell continuation between `-X POST` and `-d` (lines 357\u2013378, 642\u2013656; Sessions sample lines 50\u201369).\n- **Test and live:** The page gives a **test** 16-digit code, `0000 0000 0990 3417`, and routes test status checks to the test Customer Area payment list. Before live acceptance, it says to contact Adyen Support to add PaySafeCard in the live Customer Area. Its Support hyperlink itself uses a test Customer Area URL; it is not evidence that live enablement has occurred (lines 298\u2013306, 658\u2013666).\n\n## Detail locators\n\n- Sessions requirements and `shopperReference` table: pinned raw lines 25\u201346; TEST session/server examples: lines 48\u2013267.\n- Sessions no-extra-configuration, Component and test/live steps: lines 270\u2013306.\n- Advanced requirements, Component and `/payments` table: lines 308\u2013355; TEST server examples: lines 357\u2013640.\n- Advanced redirect action and test/live steps: lines 642\u2013666.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paysafecard/ios-component/2026-09-15|PaySafeCard iOS Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34, Sessions flow Component > Requirements"
+    },
+    {
+      "text": "Your reference to uniquely identify this shopper, for example user ID or account ID.",
+      "location": "pinned raw line 46, Sessions flow Component > /sessions table"
+    },
+    {
+      "text": "component.delegate = session",
+      "location": "pinned raw line 294, Sessions flow Component > Initialize the Component"
+    },
+    {
+      "text": "component.delegate = self",
+      "location": "pinned raw line 343, Advanced flow Component > Initialize the Component"
+    },
+    {
+      "text": "Before you can accept live payments, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add PaySafeCard in your live Customer Area.",
+      "location": "pinned raw line 306, Sessions flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paysafecard-ios-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paysafecard-ios-component]] \u2014 2026-09-15-captured PaySafeCard iOS Components Sessions/Advanced add-on for shopperReference, redirect Component setup, and test/live steps; source flags Advanced base-link and abbreviated request examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced requirements link is labeled Components but selects Drop-in; the /payments examples omit a paymentMethod object and are not a complete request contract."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paysafecard/ios-component/2026-09-15.md",
+  "raw_sha256": "b5e18a3c63c3d6a303391af1eaa74929fc7329cb0c42a57ea152c551cd673a63",
+  "status": "candidate_ready"
+}

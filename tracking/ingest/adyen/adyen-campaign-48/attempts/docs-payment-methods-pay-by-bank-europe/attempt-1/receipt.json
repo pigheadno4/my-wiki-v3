@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-pay-by-bank-europe",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pay by Bank (Europe) overview\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pay-by-bank-europe\"\nraw_files:\n  - \"adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md\"\ntags: [adyen, pay-by-bank-europe, open-banking, bank-transfer, chargebacks, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] overview describes **Pay by Bank (Europe)** as an open-banking, account-to-account redirect method involving Adyen's partner Tink and the shopper's bank. It states onboarding needs approval through an Adyen contact and routes readers to Web, API-only and Pay by Link integrations. Its most consequential qualification is that a successful `AUTHORISATION` webhook means a bank transfer was initiated, while funds may still fail to arrive. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Onboarding and geography:** The page requires onboarding approval via an Adyen contact. Its prose says the solution is available in **Germany, France and the United Kingdom**, but the capability table lists **FR, DE, GB and FI** with EUR and GBP. This is a captured source conflict about Finland; do not infer current FI availability or pair every listed country/currency from the table (raw lines 21\u201327, 41\u201343).\n- **Shopper route:** The shopper is redirected to Tink, then to their bank website or mobile app, and finally back to the merchant's website or app. In one path, the shopper chooses a bank at Tink; in the other, issuer selection happens in the merchant payment form before Tink, **supported in the UK only** (raw lines 29\u201339).\n- **Capability table:** The table marks recurring with \u201cSee note,\u201d refunds, partial refunds, multiple partial refunds, and chargebacks available, while separate, partial and multiple partial captures are unavailable. The captured page does not give a clear recurring note; treat the mark as high-level overview information, not a tokenization recipe or merchant entitlement (raw lines 41\u201343).\n- **Authorization versus funds:** A successful `AUTHORISATION` webhook indicates issuer/partner verification passed and bank transfer initiation succeeded; it does **not** guarantee funds. The shopper can cancel where a bank permits it, or delayed processing can allow an insufficient-funds failure. Adyen says it may not learn of that failure or whether the bank might later process it. The payment remains `SentForSettle` until funds arrive. If funds have not arrived after **8 weekdays**, the page says status becomes `Settled`, then `Chargeback`, with a `CHARGEBACK` webhook. Such chargebacks cannot be defended; if money arrives later, `CHARGEBACK_REVERSED` follows (raw lines 45\u201360). These are documented lifecycle statements, not proof of a particular transfer outcome.\n- **Integration choices:** Web links to prebuilt UI, API-only to merchant-built UI for website/iOS/Android, and Pay by Link to payment-link acceptance. The overview does not specify endpoint request fields or implement the flow (raw lines 62\u201380).\n\n## Detail locators\n\n- Identity, onboarding, availability and shopper route: pinned raw lines 15\u201339.\n- Capability table and availability tension: pinned raw lines 41\u201343.\n- Authorization, settlement uncertainty and chargeback lifecycle: pinned raw lines 45\u201360.\n- Web, API-only and Pay by Link routes: pinned raw lines 62\u201380.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online payment architecture and method routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15|Pay by Bank (Europe) overview, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Onboarding requires approval, please reach out to your Adyen contact.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md:23"
+    },
+    {
+      "text": "Adyen's Pay by Bank (Europe) solution is currently available in Germany, France and the United Kingdom.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md:27"
+    },
+    {
+      "text": "This option is supported in the UK only.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md:35"
+    },
+    {
+      "text": "In rare scenarios, it is possible that you do not receive the funds even after receiving a successful AUTHORISATION webhook.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md:47"
+    },
+    {
+      "text": "You cannot defend Pay by Bank (Europe) chargebacks.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md:58"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pay-by-bank-europe-overview-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-europe]] \u2014 2024-modified, 2026-09-15-captured Tink-based Pay by Bank (Europe) overview covering approval-gated onboarding, UK-only issuer selection, bank-transfer finality and chargebacks; prose/table differ on FI.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pay-by-bank-europe/2026-09-15.md",
+  "raw_sha256": "18cb9ecac5a7ca7e91eb9ef3315e4f62b0fcb7306ef01e15cadb06daa2903db9",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Retrieval checks: Multibanco React Native Component
+
+## Q1 — Purpose and scope
+Query: Does the Multibanco React Native Component guide support Sessions flow?
+Expected: No. This 2026-09-15 capture explicitly says React Native Components do not support Sessions flow; it supplies Advanced-flow method additions only. The raw title says “Multibanco React Component,” but URL and body identify React Native Components. It is not a complete base integration, current merchant eligibility proof, or real/live voucher-payment result. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-multibanco-react-native-component]] → [[raw/adyen/docs/payment-methods/multibanco/react-native-component/2026-09-15|pinned raw]]. Verify canonical stem `/payment-methods/multibanco/react-native-component` and raw lines 5–29.
+
+## Q2 — Advanced and test boundaries
+Query: What does the Advanced React Native Component flow require, and how should the base links and test promotion be read?
+Expected: Existing Advanced React Native Components, Multibanco Customer Area setup and voucher action handling; no additional method-specific configuration or `/payments` fields, while base request requirements remain. The requirement link text says Components but URL uses Drop-in (raw line 39); action link has a redirect-named anchor despite stated voucher action (line 40); the `/payments` step uses a Components link (line 53). Testing needs a test Customer Area request; manual pending-offer promotion to sale simulates payment for reconciliation, and live acceptance needs a separate live request. Do not treat promotion as real voucher redemption. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-multibanco-react-native-component]] → [[raw/adyen/docs/payment-methods/multibanco/react-native-component/2026-09-15|pinned raw]]. Verify canonical stem and raw lines 31–70.

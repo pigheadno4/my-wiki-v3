@@ -1,0 +1,13 @@
+# Fixed queries — MB WAY API-only
+
+## Q1 — purpose and limits
+
+**Query:** What does the captured MB WAY API-only guide cover, and what does it not prove?
+
+**Expected answer:** The page at `https://docs.adyen.com/payment-methods/mb-way/api-only` is a 2026-09-15-captured MB WAY-specific add-on to an existing Advanced-flow API-only integration. It covers standard Web waiting-screen and conditional mobile App2App paths and links the main integration. It does not prove current account availability, a real app switch, successful authorization or live acceptance (full pinned `raw/adyen/docs/payment-methods/mb-way/api-only/2026-09-15.md`, `# MB Way for API only` and `## Requirements` lines 15–29; path split lines 31–45). The separate MB WAY overview `wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way.md`, pinned `raw/adyen/docs/payment-methods/mb-way/2026-09-15.md` lines 23–36, holds PT/EUR scope and the user/day cumulative limit. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-api-only.md`.
+
+## Q2 — Web versus App2App, finality and warnings
+
+**Query:** Which MB WAY API-only request fields and result paths differ between standard Web and enabled mobile App2App?
+
+**Expected answer:** Discovery uses PT/EUR and `amount.value` minor units (child `raw/adyen/docs/payment-methods/mb-way/api-only/2026-09-15.md`, `## Get MB WAY as an available payment method` lines 53–93). Standard Web `/payments` requires `paymentMethod.type: mbway` and `paymentMethod.telephoneNumber`; `shopperStatement` is unmarked. A `Pending`/`await` response means show a waiting screen and use a webhook for final outcome, not treat Pending as success (child lines 95–171). If App2App is enabled, `channel: iOS` or `Android` plus `returnUrl` takes the shopper to an MB WAY deep link and returns them after authorization, without manual phone entry; missing/Web channel uses standard phone-number path. Handle the actual returned action type (child `## Enable App2App switch` lines 173–226). Test-only phone numbers and shopperStatement suffixes simulate result codes; live acceptance needs live Customer Area setup (lines 228–247). **Warnings:** the Web form sentence says no info collection despite Web telephoneNumber requirement (lines 33–49, 95–103); purchased-item wording has no corresponding method-specific item field (lines 37, 95–103); curl examples lack a continuation and App2App JSON fences contain comments (lines 70–71, 112–113, 184–219). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-mb-way-api-only.md`.
