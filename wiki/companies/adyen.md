@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 2612
+source_count: 2613
 ---
 
 ## Overview
@@ -138,21 +138,24 @@ The retained `adyen/module-payment@11.0.0` baseline integrates Adyen with Adobe 
 
 The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api-library ^29.0.0`. These dependencies remain independently versioned, and adapter presence does not prove payment-method or merchant eligibility. Magento cron and webhook processing are operational requirements rather than optional background detail.
 
+The independent `adyen/adyen-pos-mobile-ios-test` baseline also publishes `AdyenPOS@3.22.0`, but distributes TEST products only. Its seven retained Swift samples match the main repository, including incomplete setupToken forwarding. Its SwiftUI permission/deployment settings differ; neither sample proves SDK compatibility, provisioning or payment success. Keep repository-qualified history in [[source-github-adyen-pos-mobile-ios-test]] and [[changelog-github-adyen-pos-mobile-ios-test]], alongside [[adyen-mobile-pos]].
+
 ## Knowledge status
 
 - Latest ingested Web update: `@adyen/adyen-web@6.47.0` (2026-10-19), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
 - Ingested website documentation sources: 2597 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12 + C13 + C14 + C15 + C16 + C17 + C18 + C19 + C20 + C21 + C22 + C23 + C24 + C25 + C26 + C27 + C28 + C29 + C30 + C31 + C32 + C33 + C34 + C35 + C36 + C37 + C38 + C39 + C40 + C41 + C42 + C43 + C44 + C45 + C46 + C47 + C48 + C49 + C50 + C51 + C52 + C53 + C54 + C55 + C56).
 - Website breakdown: 2547 General Docs + 50 API Explorer sources (Checkout 20, Payment 14, Recurring 7, Disputes 6, BinLookup 3).
-- Total source summaries: 2612 (2597 website + 15 GitHub).
-- Ingested cumulative GitHub repository sources: 15
-- Ingested package releases: 26 (25 existing unique package identities plus AdyenPOS 3.22.0; reconciled from work items).
+- Total source summaries: 2613 (2597 website + 16 GitHub).
+- Ingested cumulative GitHub repository sources: 16
+- Ingested repository-qualified package releases: 27 (count distinct repository/release identities; the main and TEST repositories each retain their own AdyenPOS 3.22.0 release).
+- New retained and ingested TEST-only Mobile POS baseline: `adyen/adyen-pos-mobile-ios-test`, `AdyenPOS@3.22.0`, exact SHA `5e2234351d6164f11911d09efed4630fe82e0050` (2026-10-30 ingest), independent of the main distribution below.
 - New retained and ingested Mobile POS baseline: `AdyenPOS@3.22.0`, exact SHA `689bdbdd7197545fbf15160ea64461a53b02b432` (2026-10-30 ingest).
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
 - Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`, `@adyen/adyen-web@6.46.0`, `@adyen/adyen-web@6.47.0`.
 - Additional retained and ingested Node releases: `@adyen/api-library@32.1.0`, `@adyen/api-library@32.2.0`.
 - Additional retained and ingested iOS release: `adyen-ios@5.26.0`, exact SHA `da347498d07b843e5af3f9eb871376514ffdf38c` (2026-10-15 ingest), preserving `5.25.1`.
-- Latest GitHub ingest: `AdyenPOS@3.22.0` (2026-10-30), separate from online iOS checkout. Previous React Native ingest remains `@adyen/react-native@2.13.0` (2026-10-21); Web remains `@adyen/adyen-web@6.47.0` (2026-10-19); online iOS remains `adyen-ios@5.26.0` (2026-10-15). The preceding Postman boundary remains `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
+- Latest GitHub ingest: `adyen/adyen-pos-mobile-ios-test`, `AdyenPOS@3.22.0` (2026-10-30), independent of the main distribution's same-day baseline and separate from online iOS checkout. Previous React Native ingest remains `@adyen/react-native@2.13.0` (2026-10-21); Web remains `@adyen/adyen-web@6.47.0` (2026-10-19); online iOS remains `adyen-ios@5.26.0` (2026-10-15). The preceding Postman boundary remains `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
 
 ## Sources
 
@@ -2922,6 +2925,9 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-api-explorer-binlookup-latest-post-getcostestimate]] — Adyen BIN Lookup API POST /getCostEstimate (captured v54) (webpage, 2026-10-30)
 
 ### GitHub repository evidence
+
+- [[source-github-adyen-pos-mobile-ios-test]] - independent AdyenPOS 3.22.0 TEST-only distribution, shared samples and distinct SwiftUI configuration
+- [[changelog-github-adyen-pos-mobile-ios-test]] - repository-qualified TEST baseline and release announcements, preserving main-distribution history separately
 
 - [[source-github-adyen-pos-mobile-ios]] — AdyenPOS 3.22.0 binary distribution and complete SwiftUI/UIKit samples, with backend-registration and provisioning boundaries
 - [[changelog-github-adyen-pos-mobile-ios]] — package-qualified Mobile POS baseline, release announcements and evidence limits

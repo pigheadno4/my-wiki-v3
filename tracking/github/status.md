@@ -3709,6 +3709,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.98.0/2026-10-04/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.97.0--1.98.0/comparison.json)
 
+## `github-94b1577d10e409c59120`
+
+- Repository: `adyen/adyen-pos-mobile-ios-test`
+- SHA: `5e2234351d6164f11911d09efed4630fe82e0050`
+- Collection date: `2026-10-30`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-pos-mobile-ios-test/snapshots/2026-10-30-5e22343/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-pos-mobile-ios-test/ingest-packets/github-94b1577d10e409c59120/packet.md)
+- Review priority: `high`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `AdyenPOS@3.22.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-pos-mobile-ios-test/releases/adyenpos/3.22.0/2026-10-30/manifest.json)
+  Comparison: Not applicable
+
 ## `github-95315bcbe1395348621a`
 
 - Repository: `braintree/graphql-api`

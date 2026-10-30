@@ -6,6 +6,14 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | AdyenPOS TEST repository `3.22.0`
+
+- Approved initial full ingest of `github-94b1577d10e409c59120`, repository `adyen/adyen-pos-mobile-ios-test`, SHA `5e2234351d6164f11911d09efed4630fe82e0050`. All 30 assigned paths and both packet files read completely: 27 retained files, seven sample Swift files, 51,055 bytes; no reading exception or prior collected baseline.
+- Existing Mobile POS concept updated first with reciprocal setupToken-comment/implementation warning. Added independent cumulative source/changelog, company counts and provider catalog. TEST-only binary identity, shared transaction/presentation flow, warm-up/result limits, differing SwiftUI permissions/deployment settings, dependency resolution, stale documentation links and release-specific NYC1 PIN expiry recorded. No new concept or cross-company comparison.
+- Source_count 2613 = 2597 website + 16 GitHub summaries. Repository-qualified ingested releases 27; main and TEST AdyenPOS releases counted independently rather than collapsed by package/version. C56 and main-distribution history preserved, unrelated work untouched.
+- Validation: five typed pages and 74 targeted tests pass; all 27 raw size/SHA-256/Git-blob checks, raw links, unique catalog rows and unchanged main source/changelog verified. Full registry suite retains three unrelated failures; collection validator retains the same 13 unrelated errors, none for this repository. Work item ingested; zero pending work items, 68 repositories ingested.
+- No binary/dependency download, build, credentials, provisioning, provider/device/payment execution, commit or push. [[source-github-adyen-pos-mobile-ios-test]] [[changelog-github-adyen-pos-mobile-ios-test]] [[adyen-mobile-pos]]
+
 ## [2026-10-30] ingest | Adyen API Explorer C56
 
 - All 50 exact-manifest API Explorer sources independently approved and promoted: Checkout 20, Payment 14, Recurring 7, Disputes 6 and BinLookup 3. First full-review approvals 46/50; 4 targeted correction reviews. Full pinned raw reads, 3–5 located quotes, independent first reviews and coordinator-only concept-before-source promotion.

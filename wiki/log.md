@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-30] ingest | AdyenPOS TEST repository `3.22.0`
+
+- Approved full baseline, all 30 assigned paths read completely. Independent TEST-only distribution/source/history; shared sample registration gap and distinct SwiftUI build settings retained. Main-repository and website history preserved. Details [[adyen-log]], [[source-github-adyen-pos-mobile-ios-test]], [[changelog-github-adyen-pos-mobile-ios-test]]. No build/payment execution, commit or push.
+
 ## [2026-10-30] ingest | Adyen API Explorer C56
 
 - Fifty independently approved API Explorer sources; first full-review approvals 46/50 and 4 targeted correction reviews. 11 concepts touched (0 new); source_count 2612 = 2547 General Docs + 50 API Explorer + 15 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-56/`; details [[adyen-log]]. No commit/push.

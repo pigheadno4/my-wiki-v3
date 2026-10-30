@@ -82,7 +82,7 @@ APPENDIX_A_INVENTORY = (
     ('adyen/adyen-ios', 'https://github.com/Adyen/adyen-ios', 'mobile-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
     ('adyen/adyen-magento2', 'https://github.com/Adyen/adyen-magento2', 'commerce-plugin', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-pos-mobile-ios', 'https://github.com/Adyen/adyen-pos-mobile-ios', 'terminal-sdk', 'tier1', 'semver-tags', True, 'releases-and-default-branch', 'weekly'),
-    ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'test-tooling', 'tier3', 'commit', False, 'default-branch', 'on-demand'),
+    ('adyen/adyen-pos-mobile-ios-test', 'https://github.com/Adyen/adyen-pos-mobile-ios-test', 'terminal-sdk', 'tier3', 'semver-tags', True, 'releases-and-default-branch', 'on-demand'),
     ('adyen/adyen-postman', 'https://github.com/Adyen/adyen-postman', 'api-collection', 'tier2', 'commit', True, 'default-branch', 'monthly'),
     ('adyen/adyen-php-api-library', 'https://github.com/Adyen/adyen-php-api-library', 'server-sdk', 'tier2', 'semver-tags', True, 'releases-and-default-branch', 'monthly'),
     ('adyen/adyen-sdk-automation', 'https://github.com/Adyen/adyen-sdk-automation', 'automation', 'tier3', 'commit', True, 'default-branch', 'on-demand'),
@@ -703,7 +703,28 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(140, capsule.max_packet_files)
         self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
         self.assertEqual((), repo.secret_allowlist)
-        self.assertFalse(next(r for r in repos if r.id == "adyen/adyen-pos-mobile-ios-test").enabled)
+    def test_adyen_pos_ios_test_uses_independent_release_tracked_sample_scope(self):
+        repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
+        repo = next(r for r in repos if r.id == "adyen/adyen-pos-mobile-ios-test")
+        main = next(r for r in repos if r.id == "adyen/adyen-pos-mobile-ios")
+
+        self.assertTrue(repo.enabled)
+        self.assertEqual("terminal-sdk", repo.repo_type)
+        self.assertEqual("semver-tags", repo.version_strategy)
+        self.assertEqual("releases-and-default-branch", repo.track)
+        self.assertEqual("on-demand", repo.collection_frequency)
+        self.assertEqual(main.version_tracks, repo.version_tracks)
+        self.assertEqual(1, len(repo.capsules))
+        capsule = repo.capsules[0]
+        self.assertEqual("adyen-pos-ios-test-distribution", capsule.id)
+        for field in (
+            "adapter", "focus_packages", "dependency_scope", "changed_path_policy",
+            "default_required_roots", "default_generated_target_paths", "include_paths",
+            "excluded_categories", "max_file_bytes", "max_capsule_files",
+            "max_capsule_utf8_bytes", "max_packet_files", "max_packet_utf8_bytes",
+        ):
+            self.assertEqual(getattr(main.capsules[0], field), getattr(capsule, field), field)
+        self.assertEqual((), repo.secret_allowlist)
 
     def test_adyen_ios_uses_the_reviewed_complete_swift_source_capsule(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

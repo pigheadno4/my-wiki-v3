@@ -2777,6 +2777,9 @@ Operations history: [[adyen-log]]
 
 ### GitHub repository evidence
 
+- [[source-github-adyen-pos-mobile-ios-test]] - independent TEST-only `AdyenPOS@3.22.0`, shared SwiftUI/UIKit flow, configuration and incomplete-registration boundaries (github-repo, 2026-10-30)
+- [[changelog-github-adyen-pos-mobile-ios-test]] - repository-qualified TEST baseline, release announcements and evidence limits (github-repo, 2026-10-30)
+
 - [[source-github-adyen-pos-mobile-ios]] — `AdyenPOS@3.22.0`: binary distribution, complete SwiftUI/UIKit samples, Terminal API/session flow and incomplete-registration/provisioning boundaries (github-repo, 2026-10-30)
 - [[changelog-github-adyen-pos-mobile-ios]] — package-qualified Mobile POS baseline, localization/UI announcements and NYC1 PIN expiry scope (github-repo, 2026-10-30)
 

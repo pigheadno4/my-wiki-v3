@@ -24,7 +24,21 @@ The shared model retains PaymentService and its delegate, obtains installationId
 
 The 3.22.0 release notes announce language/fallback/UI corrections and an NYC1 PIN support expiry of 2027-04-13; that is not a universal Tap to Pay or all-version expiry. README links still target 3.21.0 documentation. Sample target iOS 18.4 settings, entitlement-file presence and binary checksums do not independently prove current SDK requirements, Apple provisioning, regional/live enablement or successful payments.
 
+## Independent TEST-Only iOS Repository: `AdyenPOS@3.22.0`
+
+The separate `adyen/adyen-pos-mobile-ios-test` release at SHA `5e2234351d6164f11911d09efed4630fe82e0050` distributes only AdyenPOSTEST and ADYPOSTEST for the Adyen TEST environment. It shares the package name/version with the main repository, not its repository identity or evidence history. Its seven retained sample Swift files match the main repository's baseline; this is not a newer payment-flow implementation. See [[source-github-adyen-pos-mobile-ios-test]] and [[changelog-github-adyen-pos-mobile-ios-test]].
+
+This TEST snapshot adds an important configuration distinction: its SwiftUI target declares Bluetooth/camera usage descriptions and has no target deployment override, leaving project-level iOS 17.0 applicable in the retained settings; UIKit explicitly sets 18.4. The main repository's four target configurations instead explicitly set 18.4. Neither snapshot proves the SDK's actual supported OS floor, successful signing or payment execution. Declared TEST binary checksums match across the manifests, but downloaded binary contents were not compared.
+
+> [!warning] Contradiction
+> This TEST repository has the same unfinished registration contract: comments require sending setupToken to a merchant backend, while the code never forwards it, uses a placeholder URL and ignores HTTP status. Its own source [[source-github-adyen-pos-mobile-ios-test]] retains the reciprocal warning; do not treat matching sample code as a working session integration.
+
+Release announcements and stale 3.21.0 README documentation links are preserved separately for this exact TEST release. TEST-only metadata is not live-environment enablement evidence.
+
 ## Sources
+
+- [[source-github-adyen-pos-mobile-ios-test]] - independent TEST-only 3.22.0 binary distribution and sample/build-setting baseline.
+- [[changelog-github-adyen-pos-mobile-ios-test]] - repository-qualified TEST release history, separate from the main distribution.
 
 - [[source-github-adyen-pos-mobile-ios]] — exact-SHA AdyenPOS 3.22.0 distribution and complete integration samples, with incomplete-registration and binary-runtime boundaries.
 - [[changelog-github-adyen-pos-mobile-ios]] — package-qualified initial baseline and version-specific release announcements.
