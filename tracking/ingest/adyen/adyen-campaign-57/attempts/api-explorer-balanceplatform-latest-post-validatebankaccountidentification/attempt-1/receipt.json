@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-validatebankaccountidentification",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /validateBankAccountIdentification \u2014 Validate bank account details | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/validateBankAccountIdentification\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/validateBankAccountIdentification/2026-09-15.md\"\ntags: [adyen, balance-platform, bank-account-validation, transfer-instruments, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `POST /validateBankAccountIdentification`, a check of bank account identification details that can precede a separate transfer or transfer-instrument creation. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL says `latest` while the listed server path identifies `v2`. The check is for identification details, not proof of account ownership, transfer-instrument verification, payout permission or funds delivery. See [[adyen-platforms]].\n\n## Key takeaways\n\n- The request-body table marks `accountIdentification` required but does not expand its nested schema or state that either illustrated shape is exhaustive. Request examples show `iban` and `usLocal` objects; their values are sample inputs, and later 422 examples show them rejected. The page does not mark individual nested fields required in its request table. [Raw: lines 14\u201341, 169\u2013208]\n- The 200 heading says to look at the actual response code for request status, but supplies no success response-body schema or success example. It does not define an ownership match, verification status, registered transfer instrument or completed transfer as a result. [Raw: lines 42\u201346, 127\u2013222]\n- The documented errors are 401 authentication required, 403 insufficient permissions, 422 request validation error and 500 server processing failure. Specific 422 examples identify invalid IBAN and invalid US account/routing values. A separate generic 422 example concerns changing a payment instrument's balanceAccountId, and the generic 500 example concerns creating a payment instrument; neither defines this validation endpoint's account-ownership or instrument lifecycle behavior. [Raw: lines 48\u2013125, 155\u2013222]\n\n## Detail locators\n\n- Purpose, preceding-use links and TEST v2 server: pinned raw lines 5\u201310.\n- Required top-level request field and illustrative IBAN/US payloads: lines 12\u201341.\n- 200 heading, error schemas and status descriptions: lines 42\u2013125.\n- Error examples, including endpoint-specific invalid-detail 422s and unrelated generic payment-instrument examples: lines 127\u2013222.\n\n## Related\n\n- [[adyen-platforms]] \u2014 resource context and evidence boundary.\n- [[source-adyen-docs-platforms-manage-transfer-instruments]] \u2014 separate transfer-instrument creation, verification and payout prerequisites.\n- [[adyen-platform-internal-transfers]] \u2014 separate transfer operation context; this validation call does not move funds.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/validateBankAccountIdentification/2026-09-15|POST /validateBankAccountIdentification \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Validates bank account identification details. You can use this endpoint to validate bank account details before you [make a transfer](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers) or [create a transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| accountIdentification |  | Yes | Bank account identification. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "Look at the actual response code for the status of the request.",
+      "location": "raw line 45"
+    },
+    {
+      "text": "| title | string | Yes | A short, human-readable summary of the problem type. |",
+      "location": "raw line 64"
+    },
+    {
+      "text": "\"title\": \"Invalid bank account identification details provided\"",
+      "location": "raw line 173"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-validate-bank-account-identification-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-validatebankaccountidentification]] \u2014 2026-09-15-captured Balance Platform API v2 TEST `POST /validateBankAccountIdentification` reference for a pre-transfer or pre-instrument bank-detail check; it does not prove account ownership, verified instrument status or funds delivery.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The 200 section lacks a success body/schema, and generic 422/500 examples discuss payment-instrument operations rather than this validation outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/validateBankAccountIdentification/2026-09-15.md",
+  "raw_sha256": "4d92702d384f5f2aa76cc2514914792c5a7248d8881fee40651062f63ee9e39e",
+  "status": "candidate_ready"
+}

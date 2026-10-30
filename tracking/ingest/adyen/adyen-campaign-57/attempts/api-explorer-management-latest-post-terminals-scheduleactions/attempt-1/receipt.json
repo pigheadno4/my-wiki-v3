@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-post-terminals-scheduleactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: schedule terminal actions\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/terminals/scheduleActions\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/terminals/scheduleActions/2026-09-15.md\"\ntags: [adyen, management-api, terminals, terminal-actions, scheduling, api]\n---\n\n## Overview\n\nThis 2026-09-15-captured Management API v3 reference documents `POST /terminals/scheduleActions`, which schedules one action for specified terminals. The listed server is `https://management-test.adyen.com/v3`. An API credential needs the **Management API\u2014Terminal actions read and write** role. Scheduling acknowledgement is distinct from an action taking effect on a terminal. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- The endpoint accepts **one action per request** and at most **100 terminal IDs**. If one or more terminal IDs has an error, the page says the action is scheduled for none of the terminals; fix the IDs and retry. Optional `storeId`, when present, requires all listed terminals to be assigned to that store. The body table marks `actionDetails`, `scheduledAt`, `storeId` and `terminalIds` individually **not required**; do not convert the examples into a stricter schema. The `actionDetails` type and allowed action list are not expanded in this capture.\n- `scheduledAt` is described as RFC 3339 without `Z` before the time offset, with an example such as `2021-11-15T12:16:21+0100`. The action is sent with the first terminal maintenance call after the specified time in the terminal's time zone; an empty value sends it as soon as possible at the next maintenance call. A scheduled time is therefore not proof of execution at that instant.\n- The `200` response can include an `items` list of per-terminal action `id` and `terminalId`, `terminalsWithErrors`, `totalErrors` and `totalScheduled`. The page explicitly says `totalScheduled` does **not** mean the action has happened. The examples show `InstallAndroidApp` with an `appId` and `UninstallAndroidCertificate` with a `certificateId`; these are illustrated action types, not a complete allowed-value list. The `verification-error` example returns `422` for empty terminal IDs.\n- The page notes live-environment rate limits without numbers. It lists `400`, `401`, `403`, `422` and `500` errors. For action status and eventual outcome, use the separate [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps-terminal-actions-api|Android terminal actions guide]], which describes querying an action ID; this scheduling response alone does not prove installation, removal, device connectivity, payment readiness or transaction success.\n\n## Detail locators\n\n- Purpose, one-action/100-ID limits, all-or-none terminal-ID error rule, role and v3 test server: raw lines 5\u201324.\n- Request-body fields and maintenance-call timing: lines 26\u201334.\n- Android app/certificate request examples and empty-ID example input: lines 36\u201387.\n- `200` scheduled-action identifiers, errors and counts: lines 88\u2013104.\n- Error schema: lines 107\u2013204; illustrative responses: lines 206\u2013279.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal fleet administration.\n- [[adyen-android-terminals]] \u2014 Android app/certificate deployment context.\n- [[source-adyen-docs-point-of-sale-android-terminals-deploy-apps-terminal-actions-api]] \u2014 separate planning, timing and action-status guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/terminals/scheduleActions/2026-09-15|POST /terminals/scheduleActions API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Schedules a [terminal action](https://docs.adyen.com/point-of-sale/automating-terminal-management/terminal-actions-api) by specifying the action and the terminals that the action must be applied to.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "You can schedule only one action at a time.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "If there is an error with one or more terminal IDs in the request, the action is scheduled for none of the terminals.",
+      "location": "raw line 15"
+    },
+    {
+      "text": "Management API\u2014Terminal actions read and write",
+      "location": "raw line 19"
+    },
+    {
+      "text": "This doesn't mean the action has happened yet.",
+      "location": "raw line 104"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-schedule-actions-terminal-management-link",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-terminals-scheduleactions]] \u2014 2026-09-15-captured Management API v3 TEST terminal-action scheduling reference for one action, at most 100 terminal IDs, store-assignment condition and per-terminal scheduling result; `totalScheduled` is not device-execution proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/terminals/scheduleActions/2026-09-15.md",
+  "raw_sha256": "d166b37108779b2d96c2f5a1418fcd22b1389112f3a0f8bc6ed1f55e620b237e",
+  "status": "candidate_ready"
+}

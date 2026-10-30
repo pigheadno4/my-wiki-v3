@@ -1,0 +1,11 @@
+# Fixed query audit — GET /publicKey
+
+Pinned raw: `raw/adyen/api-explorer/balanceplatform/latest/get/publicKey/2026-09-15.md` (SHA-256 `f1003b375386784a5ae9f556b6e3ffc690939a949e6a3b784f24d4e38df34571`). Proposed source: `wiki/sources/adyen/source-adyen-api-explorer-balanceplatform-latest-get-publickey.md`; canonical URL: https://docs.adyen.com/api-explorer/balanceplatform/latest/get/publicKey.
+
+## Q1: For `balanceplatform/latest/get/publicKey`, what purpose and object identities does this captured page establish, and which required/conditional fields, permissions, prerequisites or consequential constraints govern use?
+
+The captured Balance Platform API v2 test-server `GET /publicKey` retrieves an RSA public key used to generate `encryptedKey` for PIN change, PIN reveal, or PAN reveal; linked operations are separate endpoints (raw lines 5–18). The two query parameters are optional: `format` is `jwk` or `pem` (default `pem`), and `purpose` is `pinChange`, `pinReveal`, or `panReveal` (default `pinReveal`; lines 20–26). This page does not identify a card/paymentInstrument, accountHolder, balanceAccount, merchant, or grant as an input to this GET. It lists authentication and permission errors, but no named role or credential prerequisite (lines 40–61). No request body or conditional property is documented.
+
+## Q2: What do the response/errors establish, and which lifecycle, deletion, verification/approval, propagation, asynchronous financial outcome, version/environment or missing-evidence boundaries prevent broader inference?
+
+A 200 success schema requires `publicKey` and `publicKeyExpiryDate` (raw lines 28–37); the key encrypts a symmetric session key. The page lists 401 authentication, 403 insufficient permission, 422 validation, and 500 server errors (lines 40–117). Its 422 and 500 *generic* examples mention a balance-account reassignment and payment-instrument creation (lines 157–183), neither an operation of this GET. The captured server is `https://balanceplatform-api-test.adyen.com/bcl/v2` (lines 17–18); the URL's `latest` segment does not turn this into proof of a currently deployed version or live access. There is no key-rotation rule, deletion, verification or approval transition, propagation guarantee, financial movement, or evidence that later PIN/PAN calls succeed. The sample 2023 expiry is illustrative (lines 119–129).

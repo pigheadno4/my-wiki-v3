@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-registereddevices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: list registered SCA devices\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/registeredDevices\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/registeredDevices/2026-09-15.md\"\ntags: [adyen, balance-platform, issuing, sca, api]\n---\n\n## Overview\n\nThis captured API Explorer reference documents `GET /registeredDevices` on the Balance Platform API v2 test server. It retrieves a paginated list of currently registered SCA devices associated with a specified payment instrument; the payment instrument and SCA device are distinct objects. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- `paymentInstrumentId` is a required query parameter and limits the list to devices associated with that payment instrument. Optional `pageNumber` defaults to zero, and `pageSize` defaults to 20 with a maximum of 100.\n- A 200 response is a successful list request. Its schema marks `data`, pagination totals and links, and device detail fields optional; listed device types are `ios`, `android`, and `browser`. It does not establish a device registration, cardholder authentication, or payment outcome.\n- The reference lists 400, 401, 403, 422 and 500 errors; 401 means authentication is required and 403 means insufficient permission. Its 422 and 500 sample messages concern changing a balance account or creating a payment instrument, so they do not establish behavior or lifecycle rules for this read endpoint.\n- The captured server is `https://balanceplatform-api-test.adyen.com/bcl/v2`. The `latest` URL and test snapshot do not establish a fixed current release, live availability, or account-specific access.\n\n## Detail locators\n\n- Request purpose and test server: pinned raw lines 5\u201310.\n- Required payment-instrument filter and pagination bounds: pinned raw lines 12\u201319.\n- Successful response fields and pagination links: pinned raw lines 21\u201346.\n- Error statuses and schemas: pinned raw lines 49\u2013146; example payloads: lines 148\u2013215.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuer-side card and SCA context.\n- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-manage-devices]] \u2014 separate device-management guide; this reference only describes a list request.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/registeredDevices/2026-09-15|Captured GET /registeredDevices API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "Get a paginated list of the SCA devices you have currently registered for a specific payment instrument.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| paymentInstrumentId | string | Yes | The unique identifier of a payment instrument. It limits the returned list to SCA devices associated to this payment instrument. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page.  Default: 20. Maximum: 100. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "|   - type | string | No | The type of device.  Possible values: **ios**, **android**, **browser**. |",
+      "location": "raw line 33"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-registereddevices-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-registereddevices]] \u2014 2026-09-15-captured Balance Platform API v2 TEST reference for paginated SCA-device lookup by required payment-instrument ID; a successful list read is not registration or authentication proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/registeredDevices/2026-09-15.md",
+  "raw_sha256": "f314163e8fd92e47edd18f8762e4466458d24390e768895a452946482e97b100",
+  "status": "candidate_ready"
+}

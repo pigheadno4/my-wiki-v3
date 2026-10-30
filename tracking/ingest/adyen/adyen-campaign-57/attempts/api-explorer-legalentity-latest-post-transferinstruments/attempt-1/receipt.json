@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-legalentity-latest-post-transferinstruments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: create a transfer instrument\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/post/transferInstruments/2026-09-15.md\"\ntags: [adyen, legal-entity-management, transfer-instruments, verification, api-reference]\n---\n\n## Overview\n\nCaptured Legal Entity Management API reference for `POST /transferInstruments` on the listed test `lem/v4` server. A transfer instrument is a bank account owned by a legal entity. Creating its resource is distinct from Adyen's verification checks: only after the instrument passes those checks does the page say funds can be sent from the balance platform to it. Verification results are communicated by webhooks or API responses. See [[adyen]], [[adyen-platforms]], and [[adyen-payouts]].\n\n## Key takeaways\n\n- The request-property table marks `bankAccount`, `legalEntityId`, and `type` required; the only listed `type` is `bankAccount`. `legalEntityId` names the owner, not a merchant account or source balance account (raw lines 32\u201341). The table marks nested `accountIdentification`, `accountType`, `bankName`, and `countryCode` optional, and does not separately state request-body requiredness.\n- Three examples show IBAN, UK local account-number/sort-code, and US local account-number/routing-number identification (lines 43\u201387). The page does not provide a complete country/type-required-fields matrix for bank identification; example values should not be promoted into universal requirements. The US response example adds `accountType: checking` even though its request example omits it (lines 74\u201386, 246\u2013269).\n- The `200` response says the request succeeded and includes instrument `id`, owning `legalEntityId`, bank account and type. Optional `capabilities` and `problems` report verification state/errors; `verificationStatus` can be `pending`, `invalid`, `valid`, or `rejected` (lines 88\u2013133). The EUR and US examples show `sendToTransferInstrument` requested but not allowed while verification is pending; the UK example omits capabilities (lines 200\u2013270). A created ID or `200` is not verification approval or payout eligibility.\n- Rate limits are listed as 700 requests per five seconds live, 200 per five seconds test, plus five failed requests per ten seconds (lines 13\u201319). The optional `x-requested-verification-code` header is test-only and takes one suberror code at a time (lines 24\u201329). Documented errors are `400`, `401`, `403`, `422`, and `500` (lines 136\u2013198); the page does not name a specific permission role or guarantee live access.\n\n## Detail locators\n\n- Request schema and examples: raw lines 32\u201387. Response schema and verification fields: lines 88\u2013133. Error schema: lines 136\u2013198. Response examples: lines 200\u2013270.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform legal-entity and verification context.\n- [[adyen-payouts]] \u2014 payout lifecycle is separate from instrument creation.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/post/transferInstruments/2026-09-15|POST /transferInstruments API reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A transfer instrument is a bank account that a legal entity owns. Adyen performs verification checks on the transfer instrument as required by payment industry regulations. We inform you of the verification results through webhooks or API responses.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "When the transfer instrument passes the verification checks, you can start sending funds from the balance platform to the transfer instrument (such as payouts).",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| bankAccount | object | Yes | Contains information about the legal entity's bank account. |",
+      "location": "raw line 35"
+    },
+    {
+      "text": "| legalEntityId | string | Yes | The unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id) that owns the transfer instrument. |",
+      "location": "raw line 40"
+    },
+    {
+      "text": "|   - verificationStatus | string | No | The status of the verification checks for the capability of the supporting entity.  Possible values:  **pending**: Adyen is running the verification.  **invalid**: The verification failed. Check if the `errors` array contains more information.  **valid**: The verification has been successfully completed.  **rejected**: Adyen has verified the information, but found reasons to not allow the capability. |",
+      "location": "raw line 106"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-transfer-instrument-post-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-post-transferinstruments]] \u2014 2026-09-15-captured Legal Entity Management API v4 test-server `POST /transferInstruments` reference for creating a legal-entity-owned bank-account resource; separate verification must pass before funds can be sent to it.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/post/transferInstruments/2026-09-15.md",
+  "raw_sha256": "96040b41dcfad2f544edb20a010e9fee17c7ef4112f19e12e5c5b4622b91390f",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-transfers-latest-post-transfers-cancel",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API v4: Cancel transfers under review\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/post/transfers/cancel\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/post/transfers/cancel/2026-09-15.md\"\ntags: [adyen, transfers-api, platforms, transfer-review, cancellation]\n---\n\n## Overview\n\nCaptured Transfers API v4 test-server reference for `POST /transfers/cancel`. It **initiates** cancellation of a list of transfers that triggered additional review; Adyen sends the cancel-request outcome by webhook. This endpoint is about reviewed transfer requests, not a general reversal of booked transfers or proof that funds were returned. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- Use requires the `TransferService Approve` API-credential role and required account-holder capabilities; the reference directs setup of these permissions through an Adyen contact. The linked capabilities page is navigation, not a list of exact capability names on this capture.\n- The optional `Idempotency-Key` header has a 64-character maximum; UUID is recommended. The request-body table marks `transferIds` (array of transfer identifiers) **No**. The example supplies two IDs, but this capture does not separately mark the body required or specify empty-list behavior or a batch maximum.\n- The 200 passage says to look at the actual response code for request status; its example body is `{}`. A successful HTTP response does not establish cancellation outcome. Use the later webhook outcome; no cancellation webhook schema or resulting funds movement is shown here.\n- 401 authentication, 403 permission, 422 validation and 500 server errors are documented. Their generic error schemas include optional `routingDetails`, which does not itself establish that a cancellation attempt routed a bank transfer.\n\n## Detail locators\n\n- Purpose, review eligibility, role/capability prerequisites, and test server: pinned raw lines 5\u201318.\n- Header and request-body tables, request example: `## Parameters` and `## Request examples`, lines 20\u201343.\n- 200 acknowledgement and error schemas: `## Responses`, lines 44\u2013147; empty 200 example: `## Response examples`, lines 149\u2013156.\n\n## Related\n\n- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts]] \u2014 broader platform review lifecycle, with its own scope and qualifications.\n- [[adyen-platform-internal-transfers]] \u2014 narrower internal-transfer context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/post/transfers/cancel/2026-09-15|Captured POST /transfers/cancel API Explorer reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Initiates the cancellation of a list of transfers that triggered an additional [review](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers#request-review). Adyen sends the outcome of the cancel request through webhooks.",
+      "location": "raw line 7, under # POST /transfers/cancel"
+    },
+    {
+      "text": "- Your API credential must have the **TransferService Approve** [role](https://docs.adyen.com/platforms/manage-access/webservice-roles/?tab=transfers_3).",
+      "location": "raw line 11, To use this endpoint"
+    },
+    {
+      "text": "- The account holder must have the required [capabilities](https://docs.adyen.com/platforms/verification-overview/capabilities).",
+      "location": "raw line 13, To use this endpoint"
+    },
+    {
+      "text": "| transferIds | array of string | No | Contains the unique identifiers of the transfers that you want to cancel. |",
+      "location": "raw line 31, ## Parameters \u2192 ### Request body"
+    },
+    {
+      "text": "Look at the actual response code for the status of the request.",
+      "location": "raw line 47, ## Responses \u2192 ### 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-transfers-cancel-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-post-transfers-cancel]] \u2014 2026-09-15-captured Transfers API v4 TEST cancellation-request reference for transfers under additional review, requiring TransferService Approve and account-holder capabilities; 200/empty body precedes webhook outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/post/transfers/cancel/2026-09-15.md",
+  "raw_sha256": "eac8ac08914e28852ea15b4cc5c8593630bd0395ce5b6651a85f6dc2722568f8",
+  "status": "candidate_ready"
+}

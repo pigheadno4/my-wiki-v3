@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-transferroutes-calculate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Configuration API v2: calculate transfer routes\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/transferRoutes/calculate\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/transferRoutes/calculate/2026-09-15.md\"\ntags: [adyen, configuration-api, transfer-routes, balance-platform]\n---\n\n## Overview\n\nThis 2026-09-15 Configuration API v2 reference describes `POST /transferRoutes/calculate`, a pre-transfer lookup for available bank-transfer priorities and their requirements from a country/currency/counterparty/priority combination. The request does not initiate a transfer; the page points separately to the Transfers API for that action. [[adyen]] [[adyen-platforms]] [[adyen-business-accounts]]\n\n## Key takeaways\n\n- The request-body table marks `balancePlatform`, `category` (documented value `bank`) and `currency` required. Either `counterparty` or `country` must be supplied. `counterparty` may identify a bank account or transfer instrument; `balanceAccountId` is required when `counterparty` uses `transferInstrumentId`. Within `bankAccount`, `accountIdentification` is marked required, and its fields vary by bank country and transfer currency. See raw lines 14\u201326. These are property/conditional requirements; the capture does not separately state whether the whole request body is required.\n- Optional `priorities` select requested speed/fee categories; the table names regular, fast, wire, instant, crossBorder and internal, with stated scope or recommendations. Returned routes expose priority and clearing-house/banking-partner requirements for a later transfer request. See lines 26, 48\u201359.\n- The page lists a TEST `/bcl/v2` server. A 200 response means route calculation succeeded, not that a priority is live-eligible for a specific account or that a transfer was submitted, booked or received. See lines 5\u201310 and 46\u201359.\n\n## Error and example boundaries\n\nThe reference lists 401 authentication, 403 permissions, 422 validation and 500 server failures, with common problem fields (raw lines 62\u2013139). The 422 example refers to changing a payment instrument's `balanceAccountId`, and the 500 example refers to creating a payment instrument\u2014neither describes route calculation. Do not infer route-specific conditions from those examples (lines 249\u2013275). The 200 sample shows NL/USD crossBorder and wire routes with amount, address, bank-identification and instrument requirements; these sample values are illustrative, not general limits or current route availability (lines 141\u2013221).\n\n## Detail locators\n\n- Request property and conditional matrix: raw lines 14\u201326; request example: 28\u201345.\n- Success response shape and requirement meaning: 46\u201359; example requirement variants: 141\u2013221.\n- Error schemas and examples: 62\u2013139, 223\u2013275.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/transferRoutes/calculate/2026-09-15|Configuration API v2 calculate transfer routes, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returns available transfer routes based on a combination of transfer `country`, `currency`, `counterparty`, and `priorities`.",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/post/transferRoutes/calculate/2026-09-15.md:7"
+    },
+    {
+      "text": "Required if `counterparty` is **transferInstrumentId**.",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/post/transferRoutes/calculate/2026-09-15.md:17"
+    },
+    {
+      "text": "Either `counterparty` or `country` field must be provided in a transfer route request.",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/post/transferRoutes/calculate/2026-09-15.md:24"
+    },
+    {
+      "text": "A set of rules defined by clearing houses and banking partners. Your transfer request must adhere to these rules to ensure successful initiation of transfer.",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/post/transferRoutes/calculate/2026-09-15.md:59"
+    },
+    {
+      "text": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/post/transferRoutes/calculate/2026-09-15.md:257"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-transfer-route-calc-platforms",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-transferroutes-calculate]] \u2014 2026-09-15-captured Configuration API v2 route-calculation reference for bank-transfer priorities and requirements before a separate transfer request; sample requirements and unrelated payment-instrument error examples do not establish live availability or funds movement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/transferRoutes/calculate/2026-09-15.md",
+  "raw_sha256": "f8b10dcf6186e8fb044f135b82f8759a9df2da4104060487ed47c5fcbb23bec8",
+  "status": "candidate_ready"
+}

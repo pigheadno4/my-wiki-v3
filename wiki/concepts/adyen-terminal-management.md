@@ -15,6 +15,12 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-post-terminals-scheduleactions]] — 2026-09-15-captured Management API v3 TEST terminal-action scheduling reference for one action, at most 100 terminal IDs, store-assignment condition and per-terminal scheduling result; `totalScheduled` is not device-execution proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-terminals]] — 2026-09-15-captured Management API v3 test-server `GET /terminals` contract for role-gated fleet listing, filters, pages and assignment states; inventory data does not prove live readiness.
+
+
 - [[source-adyen-docs-point-of-sale-firmware-release-notes]] — 2026-09-15 snapshot of physical-terminal software and separate mobile SDK/Payments-app release histories, with version/model availability, LTS and breaking-change locators; no installed-version or transaction proof.
 
 

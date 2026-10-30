@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-foreignexchange-latest-post-rates-calculate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Foreign Exchange API v1: calculate currency amounts and rates\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/foreignexchange/latest/post/rates/calculate\"\nraw_files:\n  - \"adyen/api-explorer/foreignexchange/latest/post/rates/calculate/2026-09-15.md\"\ntags: [adyen, foreign-exchange, currency-conversion, api]\n---\n\n## Overview\n\nThis captured Foreign Exchange API v1 reference documents `POST /rates/calculate`, which calculates amounts and rates for a proposed transaction currency conversion. It returns calculation data that may be used in payment requests; the response does not execute a payment, conversion, refund, or settlement. See [[adyen]] and [[adyen-currencies-and-fx]].\n\n## Key takeaways\n\n- The request schema requires `exchangeCalculations`, an array whose entries require `exchangeSide` (`buy` or `sell`), `sourceAmount` (three-character currency and integer value in minor units), `targetCurrency`, and transaction `type` (`splitPayment` or `splitRefund`). It gives no array-size, supported-pair, quote-duration, or rate-lock constraint.\n- A 200 response may contain calculation entries with `targetAmount` and `appliedExchangeRate`; the latter includes Adyen's markup. The page does not break out a separate fee or promise that a later transaction uses the same rate.\n- Listed errors are 401, 403 and 422. The 422 example illustrates invalid currency and negative source value; it is example validation evidence, not a complete rule set. The 403 example mentions token-policy resources, so it does not establish an FX-specific permission requirement.\n- The capture lists test and live `/fx/api/v1` server URLs. Their listing and the `latest` page URL do not prove account eligibility, current pair availability, or a fixed current API release.\n\n## Detail locators\n\n- Purpose and test/live server URLs: pinned raw lines 5\u201315.\n- Required request fields and example: pinned raw lines 19\u201356.\n- 200 response fields and calculation example: pinned raw lines 57\u201374, 133\u2013169.\n- Error schemas and examples: pinned raw lines 77\u2013131, 171\u2013219.\n\n## Related\n\n- [[adyen-currencies-and-fx]] \u2014 currency and conversion concept.\n- [[source-adyen-docs-development-resources-currency-codes]] \u2014 separate minor-unit reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/foreignexchange/latest/post/rates/calculate/2026-09-15|Captured POST /rates/calculate API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "Returns the calculated amounts and rates required to convert the currency of a transaction.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| exchangeCalculations | array of object | Yes | An array of objects, where each object defines a currency and value for which you want to perform an exchange calculation. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "|   - exchangeSide | string | Yes | The operation performed on the source amount. Possible values:  - **buy**  - **sell** |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "|   - type | string | Yes | The type of transaction. Possible values:  - **splitPayment**: for payments  - **splitRefund**: for refunds |",
+      "location": "raw line 28"
+    },
+    {
+      "text": "|   - appliedExchangeRate | number | No | The exchange rate to convert the source currency to the target currency. This includes Adyen's markup. |",
+      "location": "raw line 66"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-fx-calculate-route",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-foreignexchange-latest-post-rates-calculate]] \u2014 2026-09-15-captured Foreign Exchange API v1 calculation reference for split-payment/refund source and target amounts and markup-inclusive applied rates; calculation is not conversion or settlement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/foreignexchange/latest/post/rates/calculate/2026-09-15.md",
+  "raw_sha256": "62228ee5299377f75f5eeaf47a97d1666eb6894ac1b53f081560834c5bf14a69",
+  "status": "candidate_ready"
+}

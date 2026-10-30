@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-legalentity-latest-post-documents",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: upload a verification document\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/post/documents\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/post/documents/2026-09-15.md\"\ntags: [adyen, platforms, legal-entity, verification, documents, api]\n---\n\n## Overview\n\nThis captured Legal Entity Management API v4 test-server reference documents `POST /documents` to upload a document for verification checks. Adyen first runs automated checks from legal-entity information and may ask for additional documents when those checks fail; the page advises uploading only when Adyen requests them. A successful upload is not verification approval. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request table marks `description` and `type` required. It lists singular `attachment` and plural `attachments` as optional containers, but `content` is required within an attachment supplied and must be Base64 encoded. The page does not make either attachment container unconditionally required in its schema.\n- Optional `owner` has required nested `id` and `type` when present: `legalEntity` maps to a legal-entity ID, while `bankAccount` maps to a transfer-instrument ID. Document `type` values depend on legal-entity type; `bankStatement` is the listed type for transfer-instrument documents. Supported content types are PDF, JPG/JPEG and PNG.\n- For `driversLicense` or `identityCard`, each side must have `pageType` front/back and both sides must be included in one API request. Photo IDs are limited to 15 pages. This page specifies no byte-size limit.\n- The optional `x-requested-verification-code` header accepts one suberror code per request and is test-only. Published limits are 700 requests per five seconds live, 200 per five seconds test, and five failed requests per ten seconds.\n- A 200 says the upload request succeeded and may include a document `id`; it does not say checks passed or a capability was approved. Listed errors are 400, 401, 403, 422 and 500. The captured server is `https://kyc-test.adyen.com/lem/v4`; `latest` is not a fixed current release.\n\n## Detail locators\n\n- Purpose, upload advice, page/rate limits, test server: pinned raw lines 5\u201324.\n- Test-only header and request fields/type matrix: pinned raw lines 28\u201358; request example: lines 60\u201377.\n- Response fields and example: pinned raw lines 78\u2013110, 177\u2013198.\n- Error status/schema sections: pinned raw lines 113\u2013175.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform onboarding and verification context.\n- [[source-adyen-docs-platforms-verification-requirements-document-requirements]] \u2014 separate country, entity, product and document conditions.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/post/documents/2026-09-15|Captured POST /documents API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "You should only upload documents when Adyen requests additional information for the legal entity.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "You can upload a maximum of 15 pages for photo IDs.",
+      "location": "raw line 13"
+    },
+    {
+      "text": "| x-requested-verification-code | string | No | Use a suberror code as your requested verification code. You can include one code at a time in your request header. Requested verification codes can only be used in your test environment. |",
+      "location": "raw line 31"
+    },
+    {
+      "text": "|   - pageType | string | No | Specifies which side of the ID card is uploaded.  If the `type` is **driversLicense** or **identityCard**, you must set this to **front** or **back** and include both sides in the same API request.  For any other types, when this is omitted, we infer the page number based on the order of attachments. |",
+      "location": "raw line 42"
+    },
+    {
+      "text": "|   - type | string | Yes | Type of resource that owns the document.  Possible values: **legalEntity**, **bankAccount**. |",
+      "location": "raw line 57"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-documents-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-post-documents]] \u2014 2026-09-15-captured Legal Entity Management API v4 TEST document-upload schema for requested verification evidence, with owner/type, ID-side, page and rate limits; upload success is not verification approval.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/post/documents/2026-09-15.md",
+  "raw_sha256": "43fc99fdaa53eec4b13833de6c0a8d6f27803156340a0422d54e8a070e1d6b59",
+  "status": "candidate_ready"
+}

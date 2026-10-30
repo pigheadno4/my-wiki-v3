@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Management API: list company accounts\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/2026-09-15.md\"\ntags: [adyen, management-api, company-accounts, api-access]\n---\n\n## Overview\n\nThis 2026-09-15 Management API reference for `GET /companies` returns a paginated list of **company accounts accessible to the calling API credential**. It is a scoped read, not an operation to create or enable a company account or merchant payment capabilities. The credential needs the `Management API\u2014Account read` role. [[adyen]] [[adyen-account-structure]] [[adyen-api-access]]\n\n## Key takeaways\n\n- The listed server is `https://management-test.adyen.com/v3`. Optional `pageSize` defaults to 10 and has maximum 100; `pageNumber` is optional (raw lines 13\u201322).\n- A 200 response has required `itemsTotal` and `pagesTotal`; `data` and top-level `_links` are marked optional. Nested first/last/self links are marked required **within** `_links`, while next/prev are conditional on page existence (lines 24\u201358). Each listed company's `id`, `name`, `status`, `dataCenters` and connected-resource links are optional schema properties.\n- Company `Active` permits user login, but processing and payouts still depend on merchant-account status. `Inactive` permits login while disabling payment processing/payouts; `Closed` is irreversible and disallows login/processing/payouts. These are company-status descriptions, not an observed transition in this GET response (line 56).\n- `dataCenters.livePrefix` is empty in TEST; the page recommends a shopper-proximate live prefix for live requests (lines 49\u201351). The success sample uses `/v1` links despite the declared `/v3` server, so do not derive the captured endpoint version from sample hrefs (lines 13\u201314, 160\u2013208).\n\n## Detail locators\n\n- Resource scope, role and pagination inputs: raw lines 5\u201322.\n- Success response shape and optionality: 24\u201358; example: 160\u2013208.\n- 400 request, 401 authentication, 403 permission, 422 validation and 500 server error schemas: 61\u2013158. No error examples are present.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/2026-09-15|Management API GET companies, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returns the list of company accounts that your API credential has access to.",
+      "location": "raw/adyen/api-explorer/Management/latest/get/companies/2026-09-15.md:7"
+    },
+    {
+      "text": "Management API\u2014Account read",
+      "location": "raw/adyen/api-explorer/Management/latest/get/companies/2026-09-15.md:11"
+    },
+    {
+      "text": "The number of items to have on a page, maximum 100. The default is 10 items on a page.",
+      "location": "raw/adyen/api-explorer/Management/latest/get/companies/2026-09-15.md:21"
+    },
+    {
+      "text": "Processing and payout capabilities depend on the status of the merchant account.",
+      "location": "raw/adyen/api-explorer/Management/latest/get/companies/2026-09-15.md:56"
+    },
+    {
+      "text": "This field is empty for requests made in the test environment.",
+      "location": "raw/adyen/api-explorer/Management/latest/get/companies/2026-09-15.md:50"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-get-companies-api-access",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies]] \u2014 2026-09-15-captured Management API test-server company-account list scoped to credential access and Account read role, with pagination and company-status meanings; response sample uses older /v1 links than the listed /v3 server.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c57-get-companies-account-structure",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies]] \u2014 2026-09-15-captured Management API v3 TEST list of company accounts accessible to the calling credential, requiring Account read role; sample links use /v1 and listing does not enable accounts or merchant processing.",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/2026-09-15.md",
+  "raw_sha256": "0b6051c849b24297c6457bc832c0697509de8dcb4c49e590a13995f1d308557e",
+  "status": "candidate_ready"
+}

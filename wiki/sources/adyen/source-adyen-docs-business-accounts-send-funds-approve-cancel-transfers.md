@@ -20,6 +20,9 @@ This 2026-09-15 capture of an Adyen Business Accounts guide (page metadata last 
 - If SCA applies, the guide says to authenticate either the initiating user or the approving reviewer. To perform SCA during approval, set `review.scaOnApproval: true` in the initial POST `/transfers` request. The page links to the separate SCA workflow for its implementation.
 - HTTP 200 on an approve/cancel API call is a request response, not final settlement proof. Transfer webhooks communicate review state: a created event for `status: received`, `reason: pending`, `review.numberOfApprovalsRequired: 1`; updated events for approved `authorised/approved` or canceled `cancelled/unknown`. The guide describes expiry after 30 days but does not provide an expiry payload example.
 
+> [!warning] Contradiction
+> This dated guide names **TransferService Approval role**. The separately captured Transfers API v4 [[source-adyen-api-explorer-transfers-latest-post-transfers-approve]] names **TransferService Approve**. Preserve the two role labels in their source contexts; the snapshots do not establish that they are interchangeable.
+
 ## Detail locators
 
 - `## Requirements` and `## How it works` (raw lines 23–50): credential role, webhook prerequisite, review initiation, decision consequences and 30-day deadline.

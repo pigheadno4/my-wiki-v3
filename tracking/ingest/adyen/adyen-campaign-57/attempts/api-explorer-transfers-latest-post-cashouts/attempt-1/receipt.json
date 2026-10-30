@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-transfers-latest-post-cashouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API v4: initiate a cashout\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/post/cashouts\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/post/cashouts/2026-09-15.md\"\ntags: [adyen, platforms, cashout, transfers-api, payouts]\n---\n\n## Overview\n\nThis captured Transfers API v4 test-server reference documents `POST /cashouts`, which initiates a cashout request from an instructing balance account. It is a request/response contract, not proof that funds have settled or reached a bank. See [[adyen]], [[adyen-platforms]], and the separate [[source-adyen-docs-platforms-cash-out-instantly-cashout-request]] guide for enablement, capability, route, balance, and asynchronous outcome conditions.\n\n## Key takeaways\n\n- The request schema requires `instructingBalanceAccountId` and `amount` with currency and value in minor units. The optional `counterparty.transferInstrumentId` identifies a payout destination; without it, cashout funds remain in the instructing balance account after the cashout transfer settles. The top-level `transferInstrumentId` is present but marked to use `counterparty.transferInstrumentId` instead.\n- `fee` is optional; its nested `amount` and currency/value are required when that object is supplied. `description` and `referenceForBeneficiary` are allowed and returned only with `counterparty.transferInstrumentId`; the page specifies supported characters and automatic-generation behavior at the request table.\n- A 200 marks the request successful. Its response has a cashout `id` and a `transfers` array. The listed transfer types are `cashoutRepayment` and `cashoutFee`; their presence and amounts in the example are illustrative, not evidence of completed repayment, fee debit, bank credit, or settlement.\n- Errors listed are 400, 401, 403, 404, 422, 429 and 500. This reference says 401 is an invalid API credential and 403 is insufficient permission, but names no particular roles, capability grants, bank routes, or live-account eligibility. The captured server is `https://balanceplatform-api-test.adyen.com/btl/v4`; `latest` does not identify a fixed current release.\n\n## Detail locators\n\n- Purpose and test server: pinned raw lines 5\u201310.\n- Required and conditional request fields, plus example: pinned raw lines 14\u201353.\n- 200 response fields, transfer types and example: pinned raw lines 54\u201381, 216\u2013259.\n- Error statuses and schemas: pinned raw lines 84\u2013214.\n\n## Related\n\n- [[adyen-platforms]] \u2014 principal platform concept.\n- [[source-adyen-docs-platforms-cash-out-instantly-cashout-request]] \u2014 separate Platforms prerequisites, checks, constraints, webhooks and failure route.\n- [[source-adyen-docs-platforms-cash-out-instantly-cashout-webhooks]] \u2014 separate asynchronous leg tracking.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/post/cashouts/2026-09-15|Captured POST /cashouts API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "Initiates a [cashout](https://docs.adyen.com/platforms/cash-out-instantly) request.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - transferInstrumentId | string | No | The unique identifier of the counterparty transfer instrument.  If you do not provide this field, the cashout funds remain in the instructing balance account after the cashout transfer is settled. |",
+      "location": "raw line 21"
+    },
+    {
+      "text": "| instructingBalanceAccountId | string | Yes | The unique identifier of the balance account that initiates the cashout request. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "| transferInstrumentId | string | No | **Use `counterparty.transferInstrumentId` instead.**  The unique identifier of the counterparty transfer instrument. |",
+      "location": "raw line 29"
+    },
+    {
+      "text": "| transfers | array of object | Yes | The list of transfers related to cashout. |",
+      "location": "raw line 76"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-cashouts-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-post-cashouts]] \u2014 2026-09-15-captured Transfers API v4 TEST `POST /cashouts` request/response schema for optional transfer-instrument payout and repayment/fee references; a 200 response is not settled funds or bank-credit proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/post/cashouts/2026-09-15.md",
+  "raw_sha256": "933a53125bf1adc80edc7909cf2d3d246a7177120222dcef2e970b365f19a9b6",
+  "status": "candidate_ready"
+}

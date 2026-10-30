@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-cardorders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: List card orders\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/cardorders\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/cardorders/2026-09-15.md\"\ntags: [adyen, issuing, balance-platform, card-orders, api]\n---\n\n## Overview\n\nCaptured API Explorer reference for `GET /cardorders` in the Balance Platform API, with the test server shown at `https://balanceplatform-api-test.adyen.com/bcl/v2`. It returns a paginated list of card orders. This is a card-order lookup, not card creation, manufacturing confirmation, payment authorization, or funds movement. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- All listed query parameters are optional. `limit` defaults to 10 and `offset` to 0; the reference also offers service-center, creation/lock-time, card-manufacturer, status, and card-order-ID filters. The timestamp filters specify ISO 8601; `serviceCenter` is case-sensitive.\n- The 200 response documents optional `cardOrders` and required `hasNext`/`hasPrevious` page indicators. A card order can expose its identifier, manufacturing-profile identifier, service center, dates, and status. The table describes `Open` and `Closed`; its success example instead uses lowercase `closed`. Do not infer a canonical status casing from this capture.\n- The `endDate` field is for manual closure; the reference says card orders automatically close by the end of their creation day. `lockDate` denotes the start of processing and `closedDate` its end. These field descriptions do not prove that any particular order was manufactured or delivered.\n- The reference lists 401 authentication, 403 permission, 422 validation, and 500 server errors. Its generic 422 and 500 JSON examples describe payment-instrument changes/creation, so they are not evidence of card-order-specific validation or failure behavior. No particular required role or live availability is established here.\n\n## Detail locators\n\n- Query parameters, optionality, defaults, and filters: pinned raw, `## Parameters` \u2192 `### Query parameters`, lines 12\u201327.\n- Success schema, date meanings, status, and page indicators: `## Responses` \u2192 `### 200 Success`, lines 29\u201347.\n- Error meanings and schemas: `## Responses`, lines 50\u2013127. Example/schema mismatches: `## Response examples`, lines 129\u2013204.\n\n## Related\n\n- [[adyen-issuing]] \u2014 card-program context.\n- [[adyen-platforms]] \u2014 balance-platform context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/cardorders/2026-09-15|Captured GET /cardorders API Explorer reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Returns a paginated list of card orders.",
+      "location": "raw line 7, immediately under # GET /cardorders"
+    },
+    {
+      "text": "| limit | integer | No | The number of card orders returned per page. **Default:** 10. |",
+      "location": "raw line 17, ## Parameters \u2192 ### Query parameters"
+    },
+    {
+      "text": "|   - endDate | string | No | The date when you manually closed the card order.  Card orders are automatically closed by the end of the day it was created. If you manually closed it beforehand, the closing date is shown as the `endDate`. |",
+      "location": "raw line 41, ## Responses \u2192 ### 200 Success"
+    },
+    {
+      "text": "|   - status | string | No | The status of the card order.  Possible values: **Open**, **Closed**. |",
+      "location": "raw line 45, ## Responses \u2192 ### 200 Success"
+    },
+    {
+      "text": "\"status\": \"closed\"",
+      "location": "raw line 144, ## Response examples \u2192 ### 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-cardorders-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-cardorders]] \u2014 2026-09-15-captured Balance Platform API v2 GET card-order list reference for optional filters, pagination and order dates; status-case and generic error-example mismatches limit interpretation.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Response schema lists Open/Closed while success example shows lowercase closed.",
+          "Generic 422/500 examples concern payment instruments rather than this card-order lookup."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/cardorders/2026-09-15.md",
+  "raw_sha256": "d106aa3a17cf911ef927b0b16c06ec28a2c10536898ec185d28f12b7bf488463",
+  "status": "candidate_ready"
+}

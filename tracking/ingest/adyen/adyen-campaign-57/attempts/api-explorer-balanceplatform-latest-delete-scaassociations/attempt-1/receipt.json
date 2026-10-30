@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-delete-scaassociations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"DELETE /scaAssociations \u2014 Delete association to devices | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/scaAssociations\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/delete/scaAssociations/2026-09-15.md\"\ntags: [adyen, balance-platform, sca, device-associations, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `DELETE /scaAssociations` for deleting one or more SCA associations for a device. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL contains `latest`, while the server path identifies `v2`. This is an association deletion route for an entity, not evidence that the registered device itself is deregistered. See [[adyen-business-accounts]] for the related SCA device management context.\n\n## Key takeaways\n\n- The page lists `WWW-Authenticate` as a required SCA authentication header. Its request-body table marks `entityId`, `entityType`, and `scaDeviceIds` required. `entityType` can be `accountHolder`, `legalEntity`, or `paymentInstrument`; `scaDeviceIds` is the list of associated device IDs to remove. The example uses an account holder and one device ID; it does not narrow the documented entity types or establish a list-size limit. [Raw: lines 12\u201338]\n- A 204 response is labeled successful association deletion. The page also documents 401 authentication required, 403 insufficient permissions, and 500 server-could-not-process errors. Its optional error-body fields and nested `invalidFields` requirements are schema details, not evidence of any additional runtime status. [Raw: lines 39\u201399]\n- Deletion affects the specified SCA associations. The snapshot does not specify device deregistration, reversal, downstream propagation timing, a separate verification step, or any payment or funds movement. A successful sample or documented response is not proof of a live deletion. [Raw: lines 5\u20137, 23\u201325, 39\u201346]\n\n## Detail locators\n\n- Purpose and TEST v2 server: pinned raw lines 5\u201310.\n- Required header and body fields, entity-type values, and sample request: lines 12\u201338.\n- 204 and 401/403/500 response headings, descriptions, and error schemas: lines 39\u201399.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 related SCA device management and evidence boundary.\n- [[source-adyen-docs-business-accounts-manage-sca-devices]] \u2014 separate guide to registered-device association and device deregistration flows; its `DELETE /registeredDevices/{id}` route has different request identity.\n- [[adyen-api-access]] \u2014 general credential access boundary; this endpoint's listed SCA header and errors are specific to the captured contract.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/delete/scaAssociations/2026-09-15|DELETE /scaAssociations \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Deletes one or more SCA associations for a device.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| WWW-Authenticate | string | Yes | The header for authenticating through SCA. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| entityType | string | Yes | The type of the entity.  Possible values: **accountHolder**, **legalEntity** or **paymentInstrument**. |",
+      "location": "raw line 24"
+    },
+    {
+      "text": "| scaDeviceIds | array of string | Yes | A list of device ids associated with the entity that should be removed. |",
+      "location": "raw line 25"
+    },
+    {
+      "text": "Successful association deletion.",
+      "location": "raw line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-delete-scaassociations-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-delete-scaassociations]] \u2014 2026-09-15-captured Balance Platform API v2 TEST `DELETE /scaAssociations` reference for removing specified SCA device associations from an account holder, legal entity or payment instrument; 204 documents association deletion, not device deregistration or a financial outcome.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/delete/scaAssociations/2026-09-15.md",
+  "raw_sha256": "495f918f199668e43b2a50e086c316c9f79933359f8aabf4659063c605f945f0",
+  "status": "candidate_ready"
+}

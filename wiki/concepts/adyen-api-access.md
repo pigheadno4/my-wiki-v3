@@ -26,6 +26,24 @@ These snapshot statements do not prove current merchant or user eligibility, suc
 Adyen's 2026-09-15 mTLS guide adds a client certificate to API-key authentication for supported APIs using a company-level API credential. The merchant keeps the private key, links the certificate subject DN to the credential, and presents the leaf plus full CA chain at an mTLS endpoint. Linking is a cutover: supported-API requests with that credential fail without the certificate. The guide excludes merchant-level and balance-platform credentials and identifies separate supported/unsupported APIs and endpoints; see the source for scope and regions. This TLS client certificate is distinct from the JWE card-encryption certificate, whose retained EC/RSA sample conflict remains unresolved.
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-get-me]] — 2026-09-15-captured Management API v3 TEST `GET /me` reference for reading the API-key-associated credential's identity, roles, active flag, IP restrictions and client-side settings; resource links are not merchant-account management or key rotation.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies]] — 2026-09-15-captured Management API test-server company-account list scoped to credential access and Account read role, with pagination and company-status meanings; response sample uses older /v1 links than the listed /v3 server.
+
+
+- [[source-adyen-api-explorer-management-latest-post-me-generateclientkey]] — 2026-09-15-captured Management API v3 TEST client-key generation reference requiring an API credential with Management API credentials read/write role; new client key usable after a few minutes and old client key expires after 24 hours, separate from API-key rotation.
+
+
+- [[source-adyen-api-explorer-management-latest-post-me-allowedorigins]] — 2026-09-15-captured Management API v3 TEST reference for adding an allowed origin to the API credential identified by the request API key; exact origin syntax and propagation are outside this endpoint capture.
+
+
+- [[source-adyen-api-explorer-management-latest-get-me-allowedorigins]] — 2026-09-15-captured Management API v3 TEST GET reference for allowed origins of the API-key-selected credential; any Management API role can read, and the response does not create an origin or establish client-key/payment acceptance.
+
+
+- [[source-adyen-api-explorer-management-latest-overview]] — 2026-09-15-captured Management API v3 overview for API-key and test/live endpoint orientation plus company, merchant, store and terminal route catalog; operation details remain in separate references.
+
+
 - [[source-adyen-api-explorer-checkout-latest-post-originkeys]] — 2026-09-15-captured Checkout API v72 test-server `POST /originKeys` contract for domain-to-origin-key creation, with client-key migration recommendation; no live availability or migration proof.
 
 

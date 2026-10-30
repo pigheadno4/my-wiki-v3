@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-mandates",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: list mandates\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/mandates\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/mandates/2026-09-15.md\"\ntags: [adyen, balance-platform, business-accounts, direct-debit, mandates, api]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `GET /mandates` on the **Balance Platform API v2 test server** (`https://balanceplatform-api-test.adyen.com/bcl/v2`). It returns a list of direct debit mandates created for a business account. The URL's `latest` segment does not establish a current API version or live availability. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The three query parameters are optional: `cursor` from a previous list request, `paymentInstrumentId` for the instrument linked to a mandate, and `balanceAccountId` for the balance account linked to that instrument. The response's `link` and `mandates` fields are marked required; page links are present only where applicable.\n- Each mandate entry may carry its own `id`, `balanceAccountId`, `paymentInstrumentId`, `counterparty`, timestamps, `status` (`pending`, `approved`, or `cancelled`) and `type` (`bacs`). Within a returned `counterparty`, the table marks `accountHolder` and `accountIdentification` required; it says the latter's required fields depend on bank-account country and transfer currency. These are response-schema markings, not required request fields.\n- A successful list response reads mandate records; it neither creates nor approves a mandate, changes its status, authorizes a collection, nor proves a debit or downstream funds receipt. The separate [[source-adyen-docs-business-accounts-accept-direct-debits-uk|UK Bacs Business Accounts guide]] describes limited-availability eligibility, capability checks and external confirmation for mandate changes; do not infer those outcomes from this list read.\n- The captured error sections are `401` authentication required, `403` insufficient permissions, `422` request validation error and `500` server processing failure. The page specifies no credential role, live endpoint, response example, status-transition timing or collection outcome.\n\n## Detail locators\n\n- Purpose, method and test-server base path: raw lines 5\u201310.\n- Optional filters and pagination cursor: lines 12\u201319.\n- `200` result and conditional page links: lines 21\u201340.\n- Mandate object identities, counterparty detail, status and type: lines 40\u201350.\n- Error meanings and problem-body fields: lines 53\u2013126.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product context.\n- [[source-adyen-docs-business-accounts-accept-direct-debits-uk]] \u2014 separate dated UK Bacs pilot and mandate/collection flow.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/mandates/2026-09-15|GET /mandates API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of all [direct debit mandates](https://docs.adyen.com/business-accounts/accept-direct-debits-uk) created for a business account.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "https://balanceplatform-api-test.adyen.com/bcl/v2",
+      "location": "raw line 10"
+    },
+    {
+      "text": "The pagination cursor returned in a previous GET `/mandates` request.",
+      "location": "raw line 17"
+    },
+    {
+      "text": "The status of the mandate.  Possible values: **pending**, **approved**, **cancelled**.",
+      "location": "raw line 48"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 73"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-mandates-business-accounts-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-mandates]] \u2014 2026-09-15-captured Balance Platform API v2 test-server `GET /mandates` list reference for Business Account direct debit mandate records, optional linked-account/instrument filters and cursor pagination; a read does not approve mandates or collect funds.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/mandates/2026-09-15.md",
+  "raw_sha256": "1f55d47eed1e5e9fdca48b02d75020bc0c6cffad93d42c588d0d48e20c78b09f",
+  "status": "candidate_ready"
+}

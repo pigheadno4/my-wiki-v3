@@ -30,6 +30,15 @@ This is a 2023-last-modified Adyen page captured 2026-09-15. It does not identif
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-get-companies]] — 2026-09-15-captured Management API v3 TEST list of company accounts accessible to the calling credential, requiring Account read role; sample links use /v1 and listing does not enable accounts or merchant processing.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants]] — 2026-09-15-captured Management API v3 test-server `POST /merchants` reference for creating a merchant account under a specified company account, with contact-set access, Accounts read/write role and conditional Platforms Manage fields; creation is not live-processing proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants]] — 2026-09-15-captured Management API v3 TEST credential-scoped merchant-account list, requiring Account read role with pagination and status fields; v1 example links conflict with v3 server and listing does not prove live activation or payment.
+
+
 - [[source-adyen-docs-set-up-adyen-payments-application-requirements]] — 2025-modified, 2026-09-15-captured Adyen live-account application checklist for legal-entity/tax or VAT/identity/residency evidence, conditionally reviewed online-site content and ownership documentation; submission is not live approval.
 
 

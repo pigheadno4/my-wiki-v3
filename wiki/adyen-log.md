@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-31] ingest | Adyen API Explorer C57
+
+- All 50 exact-manifest API Explorer sources independently approved and promoted: Balance Platform 21, Transfers 9, Legal Entity 6, Management 12 and Foreign Exchange 2. First full-review approvals 44/50; 6 targeted correction reviews. Full pinned raw reads, 3–5 located quotes, independent first reviews and coordinator-only concept-before-source promotion.
+- 9 concepts touched (0 new). September 2026 snapshots retain captured API version/environment, separate resource and credential identities, required versus conditional fields, creation versus verification, and acknowledgement versus final financial outcome. Page-level contradictions remain scoped. The 27 title-only stubs remain excluded; no collection or inferred schemas. Reciprocal counterpart warnings preserve card-reveal and transfer-approval role-label conflicts, plus terminal-action requiredness/timing scopes.
+- Source_count 2663 = 2547 General Docs + 100 API Explorer + 16 GitHub. All 50 hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Validation: `tracking/ingest/adyen/adyen-campaign-57/close-validation.md`.
+- Historical-snapshot ingestion only. No provider/account/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-30] ingest | AdyenPOS TEST repository `3.22.0`
 
 - Approved initial full ingest of `github-94b1577d10e409c59120`, repository `adyen/adyen-pos-mobile-ios-test`, SHA `5e2234351d6164f11911d09efed4630fe82e0050`. All 30 assigned paths and both packet files read completely: 27 retained files, seven sample Swift files, 51,055 bytes; no reading exception or prior collected baseline.

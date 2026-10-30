@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-paymentinstruments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API POST /paymentInstruments \u2014 create payment instrument\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/paymentInstruments\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/paymentInstruments/2026-09-15.md\"\ntags: [adyen, balance-platform-api, issuing, business-accounts, payment-instruments]\n---\n\n## Overview\n\nThis 2026-09-15 Balance Platform API Explorer capture describes `POST /paymentInstruments` on the `/bcl/v2` test server. The operation creates a payment instrument associated with a balance account: a physical or virtual card for [[adyen-issuing]], or a `bankAccount` business account for [[adyen-business-accounts]]. Its request schema marks `balanceAccountId`, `issuingCountryCode` and `type` (`card` or `bankAccount`) required; the `card` object is conditionally required for a card despite its `No` table flag. The page does not mark the request body itself required separately from its properties.\n\n## Key takeaways\n\n- For a card, `brand`, `brandVariant`, `cardholderName` and `formFactor` are marked required within `card`. The card brand options are `visa` and `mc`, and form factors are `virtual` and `physical`. Adyen contact guidance qualifies relevant brand variants and certain card settings. Authentication data is conditionally required for cards usable for online payments in the EEA/UK or digital wallets; the phone object has mobile-number requirements and an ownership-verification instruction. A provided `configuration` object requires `configurationProfileId`.\n- The optional `bankAccount.formFactor` defaults to `physical` for NL, US and UK business accounts. The described virtual DE/FR local IBANs refer to a physical NL account and route funds through the NL central bank. These are schema descriptions and examples, not account-opening or funds-movement proof.\n- Omitted `status` generally defaults to `active`, with exceptions by card form factor and issuing country; the page gives US physical cards defaulting to `inactive` as an example. `closed` is permanent and cannot be undone. If `statusReason` is `other`, `statusComment` must accompany it. Do not infer a universal active-card default.\n- A 200 response documents a succeeded request and includes a payment-instrument `id`; `bankAccount` or `card` details are conditional on the requested type. The response says PAN is masked by default and PAN/CVC are returned only for single-use virtual cards in the POST response. The virtual-card success example includes full PAN/CVC but omits `usage`; it cannot establish that all virtual cards return these values. The physical-card example's masked PAN ends `5785` while `lastFour` says `2765`; preserve this sample inconsistency rather than using it as a matching invariant.\n- Error classes are 400, 401, 403, 422 and 500. The generic 422 example describes changing `balanceAccountId` at certain statuses, which is not a creation rule for this POST. The capture names no credential role, live server, current `latest` version, verification approval, successful card payment, account funding or final transfer outcome.\n\n## Detail locators\n\n- `## Parameters` \u2192 request properties, conditional card authentication, configuration, country/form-factor behavior, status defaults and irreversible closure.\n- `## Request examples` \u2192 NL/DE/FR/UK/US business-account and physical/virtual-card example requests.\n- `## Responses` \u2192 success schema including conditional account/card fields, sensitive-card-data response limits, and generic error structures.\n- `## Response examples` \u2192 illustrative success/error payloads and the card-example inconsistencies.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-issuing]] \u2014 card product context.\n- [[adyen-business-accounts]] \u2014 business-account product context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/paymentInstruments/2026-09-15|2026-09-15 captured API Explorer reference]]\n",
+  "quotes": [
+    {
+      "text": "Creates a payment instrument to issue a physical card, a virtual card, or a business account to your user.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| balanceAccountId | string | Yes | The unique identifier of the [balance account](https://docs.adyen.com/api-explorer/#/balanceplatform/v1/post/balanceAccounts__resParam_id) associated with the payment instrument. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| card | object | No | Contains information about the card. Required when you create a payment instrument of `type` **card**. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "|   - cvc | string | No | The CVC2 value of the card.  The CVC2 is not sent by default. This is only returned in the `POST` response for single-use virtual cards. |",
+      "location": "raw line 217"
+    },
+    {
+      "text": "|   - number | string | No | The primary account number (PAN) of the card.  The PAN is masked by default and returned only for single-use virtual cards. |",
+      "location": "raw line 231"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-post-paymentinstruments-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments]] \u2014 2026-09-15-captured Balance Platform API v2 TEST card/business-account payment-instrument creation contract, with conditional card authentication, country-dependent status defaults and restricted POST-response PAN/CVC; examples do not prove activation or payment.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Virtual-card success example shows full PAN/CVC without a usage field, while response schema restricts them to single-use virtual cards; physical-card sample masked PAN and lastFour disagree."
+        ]
+      },
+      {
+        "update_id": "c57-post-paymentinstruments-business-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments]] \u2014 2026-09-15-captured Balance Platform API v2 TEST `POST /paymentInstruments` contract for `bankAccount` business-account creation linked to a balance account, including NL/US/UK physical defaults and DE/FR virtual-local-IBAN description; response is not account funding or transfer proof.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/paymentInstruments/2026-09-15.md",
+  "raw_sha256": "31c086190c5fa9b09ad55a3466b1a58727b03398236859d522203d4bde04057c",
+  "status": "candidate_ready"
+}

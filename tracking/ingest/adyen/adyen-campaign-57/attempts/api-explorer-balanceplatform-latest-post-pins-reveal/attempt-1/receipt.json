@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-pins-reveal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: reveal an encrypted card PIN block\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/pins/reveal\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/pins/reveal/2026-09-15.md\"\ntags: [adyen, balance-platform, issuing, pin, api]\n---\n\n## Overview\n\nThis captured API Explorer reference documents `POST /pins/reveal` on the Balance Platform API v2 test server. For the card identified by its `paymentInstrumentId`, it returns an **encrypted PIN block**, not a plaintext PIN. Decrypted data can be used to display the PIN in a user interface. See [[adyen]], [[adyen-issuing]], and the separate [[source-adyen-docs-issuing-manage-card-data-reveal-pin]] guide for the broader client flow.\n\n## Key takeaways\n\n- The API credential must have the `Bank Issuing PIN Reveal Webservice` role. The request schema marks `paymentInstrumentId` and `encryptedKey` required; `encryptedKey` is the symmetric session key encrypted with Adyen's public key.\n- A 200 response marks the request successful and requires `encryptedPinBlock` and a 16-digit `token` needed to extract it. The reference does not itself specify the full client-side decryption procedure, prove that a user saw the PIN, or establish cardholder authentication or payment authorization.\n- Listed errors are 401 (authentication), 403 (insufficient permission), 422 (validation), and 500 (server error). The generic 422 and 500 examples discuss unrelated payment-instrument changes/creation; they do not specify this endpoint's PIN or card lifecycle behavior.\n- The only captured server is `https://balanceplatform-api-test.adyen.com/bcl/v2`. The `latest` URL does not establish a fixed current release or live account access.\n\n## Detail locators\n\n- Purpose, role, and test server: pinned raw lines 5\u201314.\n- Required request fields and request example: pinned raw lines 18\u201332.\n- Success response fields and example: pinned raw lines 35\u201342, 124\u2013134.\n- Error schemas and examples: pinned raw lines 45\u2013122, 136\u2013188.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuer-side card management context.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-publickey]] \u2014 separate public-key endpoint reference.\n- [[source-adyen-docs-issuing-manage-card-data-reveal-pin]] \u2014 separate PIN-reveal flow guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/pins/reveal/2026-09-15|Captured POST /pins/reveal API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "Returns an encrypted PIN block that contains the PIN of a specified card. You can use the decrypted data to reveal the PIN in your user interface.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- Bank Issuing PIN Reveal Webservice role",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| encryptedKey | string | Yes | The symmetric session key that you encrypted with the [public key](https://docs.adyen.com/api-explorer/balanceplatform/2/get/publicKey) that you received from Adyen. |",
+      "location": "raw line 21"
+    },
+    {
+      "text": "| paymentInstrumentId | string | Yes | The unique identifier of the payment instrument, which is the card for which you are managing the PIN. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| token | string | Yes | The 16-digit token that you need to extract the `encryptedPinBlock`. |",
+      "location": "raw line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-pins-reveal-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-pins-reveal]] \u2014 2026-09-15-captured Balance Platform API v2 TEST reference for role-gated encrypted card PIN-block retrieval; the returned block and token are not a plaintext PIN or proof of user display.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/pins/reveal/2026-09-15.md",
+  "raw_sha256": "4128c1a937fd69fad11f1ab03d98d9ed7ec29f1a2e92d56b571c2b64b559eac2",
+  "status": "candidate_ready"
+}

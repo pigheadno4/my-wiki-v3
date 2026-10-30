@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-pins-change",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API: change a card PIN\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/pins/change\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/pins/change/2026-09-15.md\"\ntags: [adyen, balance-platform, issuing, pin, api-reference]\n---\n\n## Overview\n\nCaptured Balance Platform API v2 test-server reference for `POST /pins/change`, which requests a PIN change for the card identified by `paymentInstrumentId`. The API credential needs the **Bank Issuing PIN Change Webservice role**. This endpoint is distinct from fetching the public key and from revealing a PIN or PAN. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The request-body schema lists four required properties: `paymentInstrumentId` (the card), `encryptedKey` (a symmetric session key encrypted with Adyen's public key), `encryptedPinBlock`, and the 16-digit `token` used to generate that block. The capture does not separately mark the body object as required. See the raw `### Request body` and the related public-key reference.\n- A 200 response requires a request `status` with values `completed`, `pending`, or `unavailable`. A successful HTTP response or the sample `completed` value does not establish that every submitted PIN change completed; inspect the returned status.\n- The documented errors are 401 authentication, 403 insufficient permission, 422 validation, and 500 server failure. The generic 422/500 examples refer to balance-account reassignment and payment-instrument creation, so they do not establish PIN-change-specific constraints or effects.\n\n## Detail locators\n\n- Raw `## Parameters` / `### Request body`: required properties and descriptions.\n- Raw `## Request examples`: illustrative encrypted values and card identifier.\n- Raw `## Responses` and `## Response examples`: status enum, error schemas, and illustrative bodies.\n\n## Related\n\n- [[source-adyen-api-explorer-balanceplatform-latest-get-publickey]] \u2014 RSA public-key retrieval for generating `encryptedKey`.\n- [[source-adyen-docs-issuing-manage-card-data-change-pin]] \u2014 PIN-change guide with broader flow context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/pins/change/2026-09-15|Balance Platform v2 POST /pins/change reference (2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "Changes the personal identification number (PIN) of a specified card.",
+      "location": "raw line 7, under # POST /pins/change - Change a card PIN"
+    },
+    {
+      "text": "- Bank Issuing PIN Change Webservice role",
+      "location": "raw line 11, under role prerequisite"
+    },
+    {
+      "text": "| encryptedKey | string | Yes | The symmetric session key that you encrypted with the [public key](https://docs.adyen.com/api-explorer/balanceplatform/2/get/publicKey) that you received from Adyen. |",
+      "location": "raw line 21, ## Parameters > ### Request body"
+    },
+    {
+      "text": "| paymentInstrumentId | string | Yes | The unique identifier of the payment instrument, which is the card for which you are managing the PIN. |",
+      "location": "raw line 23, ## Parameters > ### Request body"
+    },
+    {
+      "text": "| status | string | Yes | The status of the request for PIN change.  Possible values: **completed**, **pending**, **unavailable**. |",
+      "location": "raw line 45, ## Responses > ### 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-pins-change-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-pins-change]] \u2014 2026-09-15-captured Balance Platform API v2 test-server `POST /pins/change` contract for a card's encrypted PIN-change request and role prerequisite; its 200 response may report `completed`, `pending`, or `unavailable`.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/pins/change/2026-09-15.md",
+  "raw_sha256": "74eafcb7e9a97c88304093b11d1427bb749cbb721076c1b8b49104db797fde3b",
+  "status": "candidate_ready"
+}

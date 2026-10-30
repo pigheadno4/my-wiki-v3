@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-terminals",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: list terminals\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/terminals\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/terminals/2026-09-15.md\"\ntags: [adyen, management-api, terminals, point-of-sale, api-reference]\n---\n\n## Overview\n\nCaptured Management API v3 test-server `GET /terminals` reference. It lists payment terminals accessible to the API credential and matching the supplied filters. The credential needs the **Management API \u2014 Terminal actions read** role. This is fleet inventory and assignment information, not proof of a device's live connectivity or successful transaction. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- All query parameters are optional. `pageSize` defaults to 20 and has a maximum of 100; `pageNumber` chooses the page. Filters cover brand/model, store IDs, merchant IDs and countries. `otpQuery` or `searchQuery` causes other query parameters to be ignored; `searchQuery` matches terminal IDs containing the given text.\n- A 200 response requires `itemsTotal` and `pagesTotal`; `_links` and `data` are optional. Where `_links` is present, its `first`, `last`, and `self` objects are marked required, with `next`/`prev` conditional on page availability. Returned terminal details can include terminal `id`, model, serial number, firmware, store/merchant/company assignment, and connectivity information. Do not conflate these IDs with each other.\n- Assignment status distinguishes `inventory` (cannot process transactions), `boarded` (boarded to store or store-representing merchant account and can process transactions), `deployed`, and `reassignmentInProgress` (wait for synchronization). An inventory read does not prove a particular terminal is online, synchronized, fully configured, or able to complete a payment. Last-activity and last-transaction timestamps are omitted when older than 14 days.\n- The sample includes a `next` link while `pagesTotal` is 1. Treat sample pagination as illustrative; use the response schema and actual links rather than inferring a guaranteed next page.\n\n## Detail locators\n\n- Raw `## Parameters` / `### Query parameters`: all filters, precedence, and paging values.\n- Raw `## Responses` / `### 200 Success`: assignment-state meanings, nested terminal fields, page links and counts.\n- Raw `## Response examples`: illustrative terminal and link object; error schemas under 400/401/403/422/500.\n\n## Related\n\n- [[source-adyen-docs-point-of-sale-automating-terminal-management-assign-terminals-api]] \u2014 reassignment and boarding flow.\n- [[adyen-payment-terminals]] \u2014 physical terminal context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/terminals/2026-09-15|Management API v3 GET /terminals reference (2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "Returns the payment terminals that the API credential has access to and that match the query parameters.",
+      "location": "raw line 7, under # GET /terminals - Get a list of terminals"
+    },
+    {
+      "text": "- Management API \u2014 Terminal actions read",
+      "location": "raw line 10, credential-role prerequisite"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 20 items on a page. |",
+      "location": "raw line 22, ## Parameters > ### Query parameters"
+    },
+    {
+      "text": "| otpQuery | string | No | Returns one or more terminals associated with the one-time passwords specified in the request. If this query parameter is used, other query parameters are ignored. |",
+      "location": "raw line 28, ## Parameters > ### Query parameters"
+    },
+    {
+      "text": "|     - status | string | Yes | The status of the reassignment. Possible values:  - `reassignmentInProgress`: the terminal was boarded and is now scheduled to remove the configuration. Wait for the terminal to synchronize with the Adyen platform.  - `deployed`: the terminal is deployed and reassigned.  - `inventory`: the terminal is in inventory and cannot process transactions.  - `boarded`: the terminal is boarded to a store, or a merchant account representing a store, and can process transactions. |",
+      "location": "raw line 55, ## Responses > ### 200 Success > data.assignment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-terminals-terminal-management-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-terminals]] \u2014 2026-09-15-captured Management API v3 test-server `GET /terminals` contract for role-gated fleet listing, filters, pages and assignment states; inventory data does not prove live readiness.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The sample shows a next link despite pagesTotal 1; do not infer pagination behavior from that example."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/terminals/2026-09-15.md",
+  "raw_sha256": "e05d2a36fec19db32a8141c4d38a0040493ca681a7f54ca6ee55d1f71d02b854",
+  "status": "candidate_ready"
+}

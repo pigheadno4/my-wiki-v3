@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-transfers-latest-post-transfers-approve",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /transfers/approve \u2014 Initiate approval of reviewed transfers | Adyen Transfers API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/post/transfers/approve\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/post/transfers/approve/2026-09-15.md\"\ntags: [adyen, transfers, transfer-review, approval, sca, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Transfers API Explorer snapshot documents `POST /transfers/approve` for initiating approval of transfers that triggered additional review. Adyen says it sends the approval-request outcome through webhooks. The captured server is TEST `https://balanceplatform-api-test.adyen.com/btl/v4`; the URL says `latest`, while the server path identifies `v4`. The transfer IDs identify already initiated transfers, not account holders, balance accounts or recipients. See [[adyen-platforms]].\n\n## Key takeaways\n\n- The page requires an API credential with the **TransferService Approve** role and the account holder's required capabilities; it directs the reader to an Adyen contact to set up those permissions. It does not identify a human approver or state that the API caller and initiating user must be distinct. A separate Business Accounts guide labels the role **TransferService Approval**; preserve this wording discrepancy and verify the applicable grant rather than treating either label as a demonstrated current permission. [Raw: lines 7\u201315]\n- The header table marks `WWW-Authenticate` for SCA and `Idempotency-Key` optional. The latter is described as a unique message identifier of at most 64 characters, with UUID recommended. This page does not say when SCA applies, define a challenge sequence or guarantee replay behavior. [Raw: lines 20\u201326]\n- The body table marks `transferIds` optional and describes it as an array of transfer IDs to approve. The two-ID payload is illustrative; the page states no batch limit, and optionality does not establish what omission does. The related Business Accounts workflow guide gives its own one-to-500 limit and conditional SCA choice, which are not stated in this API Explorer page. [Raw: lines 29\u201344]\n- The 200 section says to look at the actual response code and shows `{}` as its only success example. Since the opening says the approval-request outcome arrives through webhooks, this response is not evidence that review was approved, the transfer finished, funds were booked, or a recipient bank received them. [Raw: lines 5\u20137, 45\u201348, 138\u2013145]\n- The page lists 401 authentication required, 403 insufficient permissions, 422 validation error and 500 server-processing failure. Error schemas include conditional `routingDetails` with bank-transfer priorities; those nested details do not create a transfer route or success guarantee for this approval call. [Raw: lines 51\u2013136]\n\n## Detail locators\n\n- Purpose, role/capability setup and TEST v4 server: pinned raw lines 5\u201318.\n- Optional SCA/idempotency headers, `transferIds` body field and sample: lines 20\u201344.\n- 200 acknowledgement, error headings/schemas and empty success example: lines 45\u2013145.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform-transfer context and reciprocal route.\n- [[source-adyen-docs-business-accounts-send-funds-approve-cancel-transfers]] \u2014 separate Business Accounts review guide with batch, conditional SCA and webhook details; its role label differs from this API page.\n- [[adyen-business-accounts]] \u2014 product context for the related review guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/post/transfers/approve/2026-09-15|POST /transfers/approve \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Initiates the approval of a list of transfers that triggered an additional [review](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers#request-review). Adyen sends the outcome of the approval request through webhooks.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Your API credential must have the **TransferService Approve** [role](https://docs.adyen.com/platforms/manage-access/webservice-roles/?tab=transfers_3).",
+      "location": "raw line 11 (substring after list marker)"
+    },
+    {
+      "text": "The account holder must have the required [capabilities](https://docs.adyen.com/platforms/verification-overview/capabilities).",
+      "location": "raw line 13 (substring after list marker)"
+    },
+    {
+      "text": "| Idempotency-Key | string | No | A unique identifier for the message with a maximum of 64 characters (we recommend a UUID). |",
+      "location": "raw line 26"
+    },
+    {
+      "text": "| transferIds | array of string | No | Contains the unique identifiers of the transfers that you want to approve. |",
+      "location": "raw line 32"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-transfers-approve-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-post-transfers-approve]] \u2014 2026-09-15-captured Transfers API v4 TEST `POST /transfers/approve` reference for initiating approval of reviewed transfers, with role/capability gates and webhook outcome; HTTP 200 is not final transfer or bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "API Explorer says TransferService Approve; the related Business Accounts review guide says TransferService Approval. Keep source-specific labels until permission names are reconciled."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/post/transfers/approve/2026-09-15.md",
+  "raw_sha256": "102dee34718093449cba92d823a084b063bd47e4ed1026ce52e0ce86a8e1b299",
+  "status": "candidate_ready"
+}

@@ -15,6 +15,21 @@ The captured overview conditions eligibility on user entity type, supported oper
 
 ## Sources
 
+- [[source-adyen-api-explorer-transfers-latest-get-transactions]] — 2026-09-15-captured Transfers API v4 test-server transaction-list reference with required date bounds and account/platform scope, conditional cursor links, and separate transaction/transfer IDs; booked means balance-account booking, not beneficiary receipt. The endpoint also spans non-Business-Accounts platform contexts.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices]] — 2026-09-15-captured Balance Platform API v2 TEST reference for initiating eligible SCA-device registration by payment instrument and SDK output; its 200 response requires SDK continuation and does not prove completed registration.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments]] — 2026-09-15-captured Balance Platform API v2 TEST `POST /paymentInstruments` contract for `bankAccount` business-account creation linked to a balance account, including NL/US/UK physical defaults and DE/FR virtual-local-IBAN description; response is not account funding or transfer proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-scaassociations]] — 2026-09-15-captured Balance Platform API v2 TEST `DELETE /scaAssociations` reference for removing specified SCA device associations from an account holder, legal entity or payment instrument; 204 documents association deletion, not device deregistration or a financial outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-mandates]] — 2026-09-15-captured Balance Platform API v2 test-server `GET /mandates` list reference for Business Account direct debit mandate records, optional linked-account/instrument filters and cursor pagination; a read does not approve mandates or collect funds.
+
+
 - [[source-adyen-docs-business-accounts-verification-requirements-reference-additional-products-brand-specific-industry-codes]] — 2026-09-15-captured Business Accounts brand-specific IC/MCC classification and conditional approval-contact reference; the captured page omits its promised accepted-value list.
 
 

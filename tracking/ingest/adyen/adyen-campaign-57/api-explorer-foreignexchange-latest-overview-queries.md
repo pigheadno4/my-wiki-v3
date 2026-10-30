@@ -1,0 +1,11 @@
+# Fixed query audit — Foreign Exchange API overview
+
+Pinned raw: `raw/adyen/api-explorer/foreignexchange/latest/overview/2026-09-15.md` (SHA-256 `38ab9d11463922651f74672afe05c7aaffbe1312d97d0913b71340127a296498`). Proposed source: `wiki/sources/adyen/source-adyen-api-explorer-foreignexchange-latest-overview.md`; canonical URL: https://docs.adyen.com/api-explorer/foreignexchange/latest/overview.
+
+## Q1: For `foreignexchange/latest/overview`, what purpose and object identities does this captured page establish, and which required/conditional fields, permissions, prerequisites or consequential constraints govern use?
+
+The page labels Foreign Exchange API v1 and describes managing/converting currencies enabled for the integration (raw lines 5–7). It recommends API-key authentication and an `X-API-Key` header; Issuing integrations generate the key in Balance Platform Customer Area (lines 9–24). For the cataloged `rates/calculate` operation, it specifies credential format `ws@BalancePlatform.[YourBalancePlatform]` (line 15). The sole endpoint catalog entry is `POST /rates/calculate`, described as calculating an amount in another currency (lines 46–51). There is no request-body schema, named role, currency-pair eligibility, rate TTL, or response field contract on this overview.
+
+## Q2: What do the response/errors establish, and which lifecycle, deletion, verification/approval, propagation, asynchronous financial outcome, version/environment or missing-evidence boundaries prevent broader inference?
+
+No response or error schemas or examples appear in this 51-line overview; the endpoint table is navigation (raw lines 46–51). The documentation URL says `latest`, but the title and URL suffix description identify v1 (lines 5, 26–32). Server entries use `/fx/api/v1` for test and live (lines 38–44), while the versioning example uses `/fx/v1` on test and the going-live paragraph again points to a test `/fx/v1` URL after directing live-key generation (lines 30–36). The page does not resolve those conflicts, prove live access, quote acceptance, a conversion result, settlement, transfer, or any financial movement. It establishes no deletion, propagation, verification/approval, or asynchronous outcome rule.

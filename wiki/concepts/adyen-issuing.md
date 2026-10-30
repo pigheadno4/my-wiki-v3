@@ -15,6 +15,36 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-latest-post-transactionrules]] — 2026-09-15-captured Balance Platform API v2 TEST POST transaction-rule reference for scoped conditions, intervals and outcomes; schema also lists bank-transfer request type, and creation does not prove a transaction result.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices]] — 2026-09-15-captured Balance Platform API v2 TEST reference for initiating an eligible issued-card SCA-device registration with SDK output; initiation is separate from completed enrollment.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-pins-reveal]] — 2026-09-15-captured Balance Platform API v2 TEST reference for role-gated encrypted card PIN-block retrieval; the returned block and token are not a plaintext PIN or proof of user display.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments-reveal]] — 2026-09-15-captured Balance Platform API v2 test-server encrypted PAN/CVC/expiry reveal reference; its credential-role label differs from the separate Issuing guide, and ciphertext response does not prove cardholder display or payment.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-pins-change]] — 2026-09-15-captured Balance Platform API v2 test-server `POST /pins/change` contract for a card's encrypted PIN-change request and role prerequisite; its 200 response may report `completed`, `pending`, or `unavailable`.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments]] — 2026-09-15-captured Balance Platform API v2 TEST card/business-account payment-instrument creation contract, with conditional card authentication, country-dependent status defaults and restricted POST-response PAN/CVC; examples do not prove activation or payment.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstrumentgroups]] — 2026-09-15-captured Balance Platform API v2 group-creation reference for grouping payment instruments and possible transaction-rule scope; creation alone does not attach cards or apply rules, and generic error examples concern payment instruments.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-registereddevices]] — 2026-09-15-captured Balance Platform API v2 TEST reference for paginated SCA-device lookup by required payment-instrument ID; a successful list read is not registration or authentication proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-publickey]] — 2026-09-15-captured Balance Platform API v2 test-server `GET /publicKey` reference for purpose-specific RSA keys used in PIN change, PIN reveal, and PAN reveal; response includes key expiry, while generic error examples do not establish endpoint-specific card operations.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-cardorders]] — 2026-09-15-captured Balance Platform API v2 GET card-order list reference for optional filters, pagination and order dates; status-case and generic error-example mismatches limit interpretation.
+
+
 - [[source-adyen-docs-issuing-verification-requirements-required-kyc-information]] — 2023-modified, 2026-09-15-captured Issuing KYC field matrix by entity type and country/region, with required, conditional, optional and not-applicable statuses; linked conditions are not expanded in the capture.
 
 

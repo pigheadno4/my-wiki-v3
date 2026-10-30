@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-stores",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: list stores\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/stores\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/stores/2026-09-15.md\"\ntags: [adyen, management-api, pos, stores, pagination, api]\n---\n\n## Overview\n\nThis 2026-09-15-captured Management API v3 reference documents `GET /stores`, a paged read of store records. The listed server is `https://management-test.adyen.com/v3`. The page requires an API credential with **Management API\u2014Stores read** or **Management API\u2014Stores read and write** role; the response is limited to the stores accessible to that credential, not proof of operational readiness. See [[adyen]] and [[adyen-pos-store-management]].\n\n## Key takeaways\n\n- The optional query filters are merchant-account `merchantId` and store `reference`; `pageSize` defaults to 10 and is capped at 100, while `pageNumber` selects a page. The response marks `itemsTotal` and `pagesTotal` required, while top-level `_links` and `data` are optional. Within `_links`, first/last/self are marked required if that object appears; next/prev are conditional.\n- A store entry can include Adyen-generated `id`, owning `merchantId`, store `reference`, address, business-line IDs, localized shopper statements, split configuration and sub-merchant data. The response table's conditional descriptions for address/state, business lines, external references and sub-merchant fields should not be mistaken for query requirements of this read; use the raw field rows for their exact scope.\n- The `status` field is optional in the response schema and may be `active`, `inactive` or `closed`. The reference says active is assigned automatically on creation; inactive blocks terminals under the store from accepting new transactions while outstanding captures remain possible; closed is irreversible and reassigns terminals to merchant inventory. Reading a status does not create a store, activate a terminal, configure a payment method or prove a successful POS transaction.\n- The page notes live-environment rate limits without giving numbers. It lists `400`, `401`, `403`, `422` and `500` errors. Its `200` example is internally inconsistent: links use **v1 merchant-scoped** paths although the listed server is **v3 `/stores`**, and `pagesTotal: 1` accompanies a last/next link to page 2 and two records despite `pageSize=1`. Treat the example as illustrative, not an implementation endpoint or pagination invariant.\n\n## Detail locators\n\n- Purpose, role requirement, live rate-limit note and v3 test server: raw lines 5\u201318.\n- Optional filters and page controls: lines 20\u201328.\n- Response page counts, links, store identity, field conditions and statuses: lines 30\u201380.\n- Error meanings and problem-body schema: lines 83\u2013180.\n- Inconsistent v1 paths, page counts and illustrative stores: lines 182\u2013251.\n\n## Related\n\n- [[adyen-pos-store-management]] \u2014 store administration and operational lifecycle.\n- [[adyen-terminal-management]] \u2014 separate terminal assignment and boarding context.\n- [[source-adyen-docs-point-of-sale-design-your-integration-determine-account-structure-automate-store-management]] \u2014 broader Management API automation guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/stores/2026-09-15|GET /stores API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of stores. The list is grouped into pages as defined by the query parameters.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Management API\u2014Stores read",
+      "location": "raw line 11; longer role on line 13"
+    },
+    {
+      "text": "The number of items to have on a page, maximum 100. The default is 10 items on a page.",
+      "location": "raw line 27"
+    },
+    {
+      "text": "This status is irreversible. The terminals under the store are reassigned to the merchant inventory.",
+      "location": "raw line 73, closed status description"
+    },
+    {
+      "text": "https://management-test.adyen.com/v1/merchants/YOUR_MERCHANT_ACCOUNT_ID/stores?pageNumber=2&pageSize=1",
+      "location": "raw line 194, also line 197, illustrative response links"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-stores-pos-management-link",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-stores]] \u2014 2026-09-15-captured Management API v3 TEST store-list reference for role-gated merchant/reference filters, page counts and status descriptions; its example has v1/v3 path and page-count inconsistencies, and a read does not establish terminal or payment readiness.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/stores/2026-09-15.md",
+  "raw_sha256": "5559f9e6c251e3a45de697f36e0a93bbaf96f75b31277fdb8065b5f3d66bab2d",
+  "status": "candidate_ready"
+}

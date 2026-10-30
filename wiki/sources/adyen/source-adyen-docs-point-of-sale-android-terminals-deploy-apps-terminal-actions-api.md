@@ -21,6 +21,9 @@ Adyen's dated Management API guide explains how to schedule installation or remo
 - A scheduling request specifies one action for up to 100 terminal IDs. If any terminal ID fails validation, none are scheduled; after IDs pass validation, the response can still report per-terminal scheduling failures. An optional `storeId` must match the terminals' assigned store. `totalScheduled` counts planned actions, not completed actions. See `## 3. Schedule an Android terminal action`.
 - A returned `TRAC` action ID can be queried for `pending`, `successful`, `failed`, or `cancelled` status and a result when present. Details are available for actions you planned, not Adyen-planned actions. See `## Get terminal action details`.
 
+> [!warning] Contradiction
+> This Android scheduling guide marks `actionDetails` and `terminalIds` required for its flow. The separately captured Management API v3 [[source-adyen-api-explorer-management-latest-post-terminals-scheduleactions]] marks both request properties `No` in its Required column. Its maintenance-call wording also omits this guide's WebSockets timing exception. Preserve these source scopes; the API table does not establish that the Android flow can omit those fields or that every action waits for maintenance.
+
 ## Detail locators
 
 - `## 1. Get Android app and certificate IDs`: GET `/companies` for company identity, then company-level `/androidApps` or `/androidCertificates` for ready IDs; response fields, pagination and dated library examples.

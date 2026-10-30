@@ -18,6 +18,66 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities]] — 2026-09-15-captured LEM API v4 TEST legal-entity creation contract with conditional type branches and separate capability verification; a 200/ID is not approval, and its top-level type enum conflicts with the unincorporated-partnership branch/example.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-transferinstruments]] — 2026-09-15-captured Legal Entity Management API v4 test-server `POST /transferInstruments` reference for creating a legal-entity-owned bank-account resource; separate verification must pass before funds can be sent to it.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-documents]] — 2026-09-15-captured Legal Entity Management API v4 TEST document-upload schema for requested verification evidence, with owner/type, ID-side, page and rate limits; upload success is not verification approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-businesslines]] — 2026-09-15-captured LEM API v4 test-server `POST /businessLines` reference for legal-entity-linked, service-specific industry/source-of-funds creation; a returned business-line ID is not verification approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-themes]] — 2026-09-15-captured Legal Entity Management API v4 TEST `GET /themes` list reference for hosted-onboarding presentation themes, optional page links and captured rate limits; listing does not apply a theme or establish verification approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-overview]] — 2026-09-15-captured Legal Entity Management API v4 overview for API-key/test-live access, dated rate limits and verification-related endpoint navigation; existing Platforms legal-entity guidance is v3 and route listings do not prove verification or endpoint outcomes.
+
+
+- [[source-adyen-api-explorer-transfers-latest-post-transfers-cancel]] — 2026-09-15-captured Transfers API v4 TEST cancellation-request reference for transfers under additional review, requiring TransferService Approve and account-holder capabilities; 200/empty body precedes webhook outcome.
+
+
+- [[source-adyen-api-explorer-transfers-latest-post-transfers-approve]] — 2026-09-15-captured Transfers API v4 TEST `POST /transfers/approve` reference for initiating approval of reviewed transfers, with role/capability gates and webhook outcome; HTTP 200 is not final transfer or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-transfers-latest-post-transfers]] — 2026-09-15-captured Transfers API v4 test-server `POST /transfers` reference for initiating balance-account, bank, card or transfer-instrument requests; requires transfer-initiate role and holder capability, while `200`/`202` only acknowledge processing and later outcomes use webhooks.
+
+
+- [[source-adyen-api-explorer-transfers-latest-get-transfers]] — 2026-09-15-captured Transfers API v4 test-server `GET /transfers` reference for scoped, date-bounded, cursor-paged transfer lists across categories; returned status needs category-specific outcome interpretation.
+
+
+- [[source-adyen-api-explorer-transfers-latest-post-cashouts]] — 2026-09-15-captured Transfers API v4 TEST `POST /cashouts` request/response schema for optional transfer-instrument payout and repayment/fee references; a 200 response is not settled funds or bank-credit proof.
+
+
+- [[source-adyen-api-explorer-transfers-latest-overview]] — 2026-09-15-captured Transfers API v4 overview spanning platform payouts, Business Account transfers, Capital grants, transaction reads and endpoint routes; states v1/v2 deprecation, API-key/role/source-account prerequisites and separate TEST/LIVE bases without proving transfer outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-validatebankaccountidentification]] — 2026-09-15-captured Balance Platform API v2 TEST `POST /validateBankAccountIdentification` reference for a pre-transfer or pre-instrument bank-detail check; it does not prove account ownership, verified instrument status or funds delivery.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-transferroutes-calculate]] — 2026-09-15-captured Configuration API v2 route-calculation reference for bank-transfer priorities and requirements before a separate transfer request; sample requirements and unrelated payment-instrument error examples do not establish live availability or funds movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-scadevices]] — 2026-09-15-captured Balance Platform API v2 test-server `POST /scaDevices` reference for beginning Authentication SDK-based SCA device registration; `201` creates a resource but the device is not yet ready for use.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts]] — 2026-09-15-captured Balance Platform API v2 TEST `POST /balanceAccounts` creation reference for an account-holder-linked balance account, with immutable default currency and conditional settlement-delay configuration; response examples are not funding or payout proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-overview]] — 2026-09-15-captured Configuration API v2 overview for balance-platform resource routes, API-key authentication and TEST/LIVE base URLs; endpoint table is navigation, not operation schemas or execution proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-accountholders]] — 2026-09-15-captured Balance Platform API v2 POST account-holder creation reference, with legal-entity link, conditional balance-platform selector and separate capability verification.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-scaassociations]] — 2026-09-15-captured Balance Platform API v2 test-server `PATCH /scaAssociations` reference for approving a previously created pending SCA device association; approval does not establish a separate authentication or financial outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-scaassociations]] — 2026-09-15-captured Balance Platform API v2 test-server GET reference for paginated SCA device associations by account holder, legal entity or payment instrument, including reported active/pending-approval status; readback is not device approval or live access proof.
+
+
 - [[source-adyen-docs-payment-methods-paypal-setup-paypal-marketplaces]] — 2026-09-15 PayPal Marketplace setup guide for modern Adyen for Platforms, PayPal/Adyen account permission and TEST/LIVE separation, split/risk integration, and marketplace-owned disputes/refund routing; dated settlement-currency scope is qualified in the source.
 
 

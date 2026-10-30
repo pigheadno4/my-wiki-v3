@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-transfers-latest-get-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API v4: list transactions\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/get/transactions\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/get/transactions/2026-09-15.md\"\ntags: [adyen, transfers, transactions, balance-accounts, pagination, api]\n---\n\n## Overview\n\nThis 2026-09-15-captured Transfers API reference documents `GET /transactions` on the **v4 test server** (`https://balanceplatform-api-test.adyen.com/btl/v4`). It lists transactions related to a balance account, account holder or balance platform. The page says Transfers API versions 1 and 2 are deprecated; the URL's `latest` segment does not establish present live availability or a currently deployed version. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- A request must provide at least one of `balanceAccountId`, `accountHolderId` or `balancePlatform`; `createdSince` and `createdUntil` are each marked required ISO 8601 creation-time bounds. If both account-holder and balance-account IDs are supplied, they must be related. A `paymentInstrumentId` filter requires one of the three scopes and must relate to a supplied balance-account or account-holder ID when either is supplied.\n- Optional pagination and ordering controls are `limit` (default 10, maximum 100), `sortOrder` by transaction creation date (`asc` by default or `desc`), and a returned `cursor`. The first page and conditional `_links.next`/`_links.prev` support traversal. The `200` response schema marks top-level `data` and `_links` optional, so the illustrated multi-item response must not become a guaranteed shape or count.\n- Each returned transaction has its own `id` and may separately include a related `transfer.id` and transfer `reference`; these are different objects. The table marks `amount` (minor-unit currency/value), `accountHolder`, `balanceAccount`, `balancePlatform`, `bookingDate`, `status` and `valueDate` required within a transaction item, while other fields are optional. `status` is `pending` or `booked`; the latter means booked to the balance account, not delivery to an external beneficiary bank. The response examples show signed amounts and a cursor link but are illustrative records, not actual account or transfer proof.\n- The page lists `401` authentication, `403` insufficient permissions, `422` validation and `500` server errors but no exact credential role. The separate [[source-adyen-docs-business-accounts-transactions|Business Accounts transaction guide]] gives more product-specific role, signed-amount and date explanations; do not generalize its Business Accounts prerequisites to every v4 query context.\n\n## Detail locators\n\n- Purpose, deprecated older versions, scope and cursor behavior: raw lines 5\u201322.\n- Date bounds, required scope relationships, instrument filter, page size and ordering: lines 24\u201337.\n- Response fields, transaction versus transfer IDs, statuses, booking/value dates: lines 39\u201380.\n- Error meanings and problem-body schema: lines 83\u2013160.\n- Illustrative signed transactions and `_links.next` cursor: lines 162\u2013273.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts transaction-query context.\n- [[adyen-platforms]] \u2014 broader platform scope.\n- [[source-adyen-docs-business-accounts-transactions]] \u2014 separate product guide with role and accounting interpretation.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/get/transactions/2026-09-15|GET /transactions API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Versions 1 and 2 of the Transfers API are deprecated. If you are just starting your implementation, use the latest version.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "When making this request, you must include at least one of the following:",
+      "location": "raw line 11"
+    },
+    {
+      "text": "Only include transactions that have been created on or before this point in time. The value must be in ISO 8601 format.",
+      "location": "raw line 31"
+    },
+    {
+      "text": "The unique identifier of the transaction.",
+      "location": "raw line 68"
+    },
+    {
+      "text": "**booked**: The transaction has been booked to the balance account.",
+      "location": "raw line 75"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-transactions-business-accounts-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-get-transactions]] \u2014 2026-09-15-captured Transfers API v4 test-server transaction-list reference with required date bounds and account/platform scope, conditional cursor links, and separate transaction/transfer IDs; booked means balance-account booking, not beneficiary receipt. The endpoint also spans non-Business-Accounts platform contexts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/get/transactions/2026-09-15.md",
+  "raw_sha256": "8dd9cd1b1d26ddd1393510b6177c59b253a1b5506d5fa3bbe5fea95e0bdc37eb",
+  "status": "candidate_ready"
+}

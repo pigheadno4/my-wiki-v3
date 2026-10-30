@@ -19,6 +19,9 @@ This 2026-09-15 Issuing guide describes an app or website flow for revealing an 
 - Generate a 256-bit AES key, then encrypt it with Adyen's public RSA key using the guide's PKCS 1 wording. POST `/paymentInstruments/reveal` supplies `paymentInstrumentId` and `encryptedKey`; its response contains `encryptedData`, which is passed to the client. Decrypt with that AES key in CBC mode with PKCS 5 padding, then render the extracted card details to the cardholder. This flow makes PAN/CVC plaintext available to the rendering client after decryption; a successful API request alone does not prove that the intended cardholder saw it.
 - The SDK snippets for GET `/publicKey` use placeholder `purpose: string`/`format: string` while the prose and curl specify `panReveal`. Do not substitute the placeholder for the stated purpose. The GET and reveal sections also show different language-library version labels; treat these as dated examples rather than one pinned SDK integration.
 
+> [!warning] Contradiction
+> This guide names **Bank Issuing PaymentInstrument Reveal Webservice**. The separately captured Configuration API v2 [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments-reveal]] instead names **Bank Issuing PAN Reveal Webservice**. Preserve the two snapshot labels; neither establishes that the role names are interchangeable.
+
 ## Detail locators
 
 - Cardholder-facing data and high-level sequence: raw lines 17–39. Credential role: raw lines 41–46.

@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-legalentity-latest-post-businesslines",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API: create a business line\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/post/businessLines\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/post/businessLines/2026-09-15.md\"\ntags: [adyen, legal-entity, business-line, verification, api-reference]\n---\n\n## Overview\n\nCaptured Legal Entity Management API v4 test-server `POST /businessLines` reference. A business line records a user's industry and source-of-funds information for verification and belongs to the legal entity named by `legalEntityId`; the returned `id` identifies the business line, not the legal entity. Adyen says verification results arrive through webhooks or API responses, so creation alone does not establish verified capabilities. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request property table requires `industryCode`, `legalEntityId`, and `service` (`paymentProcessing`, `issuing`, or `banking`). It does not separately mark the enclosing body object required. `salesChannels` is required with `paymentProcessing`; `sourceOfFunds` is required with `banking` or `issuing`. Within `sourceOfFunds`, `adyenProcessedFunds` is required, and `type` is required when that boolean is false. Further fields depend on the fund type; use the raw table for those conditions and web-data rules.\n- The captured page caps **payment-processing** business lines at 200 per legal entity. Its stated rate limits are 700 requests per five seconds in live, 200 in test, and five failed requests per ten seconds; these are snapshot statements, not current capacity guarantees.\n- A 200 response requires the business-line `id`, `industryCode`, `legalEntityId`, and `service`. Optional `problems` may contain verification errors; receipt of a created business line is not approval, enabled capability, or successful payment/funds movement.\n\n## Detail locators\n\n- Raw `## Parameters` / `### Request body`: all conditional source-of-funds, website, and sales-channel fields. Nested required properties apply when their containing object is present.\n- Raw `## Request examples`: banking, issuing, and payment-processing examples; values are illustrative.\n- Raw `## Responses`: success/verification-problem fields and 400/401/403/422/500 error schemas.\n\n## Related\n\n- [[source-adyen-docs-platforms-account-structure-resources-legal-entity-management]] \u2014 resource relationships.\n- [[source-adyen-docs-platforms-verification-requirements-reference-additional-products]] \u2014 additional-capability verification context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/post/businessLines/2026-09-15|LEM v4 POST /businessLines reference (2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "This resource contains information about your user's line of business, including their industry and their source of funds. Adyen uses this information to verify your users as required by payment industry regulations.Adyen informs you of the verification results through webhooks or API responses.",
+      "location": "raw line 9, introduction"
+    },
+    {
+      "text": "You can create a maximum of 200 business lines per legal entity for payment processing.",
+      "location": "raw line 11, introduction"
+    },
+    {
+      "text": "| legalEntityId | string | Yes | Unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/legalEntities__resParam_id) that owns the business line. |",
+      "location": "raw line 30, ## Parameters > ### Request body"
+    },
+    {
+      "text": "| sourceOfFunds | object | No | Contains information about the source of your user's funds. Required only if the `service` is **banking** or **issuing**. |",
+      "location": "raw line 33, ## Parameters > ### Request body"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the business line. |",
+      "location": "raw line 127, ## Responses > ### 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-businesslines-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-post-businesslines]] \u2014 2026-09-15-captured LEM API v4 test-server `POST /businessLines` reference for legal-entity-linked, service-specific industry/source-of-funds creation; a returned business-line ID is not verification approval.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/post/businessLines/2026-09-15.md",
+  "raw_sha256": "a2691ee92713694ef6cb2b8f05349800ea025cb35f5b9703c775e4ab93c75142",
+  "status": "candidate_ready"
+}

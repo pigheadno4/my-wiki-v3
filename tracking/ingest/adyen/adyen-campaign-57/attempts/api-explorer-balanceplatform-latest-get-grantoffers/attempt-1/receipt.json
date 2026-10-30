@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-grantoffers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API GET /grantOffers \u2014 available grant offers\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/grantOffers\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/grantOffers/2026-09-15.md\"\ntags: [adyen, capital, balance-platform-api, grant-offers]\n---\n\n## Overview\n\nThis 2026-09-15 capture of the Balance Platform API Explorer `GET /grantOffers` reference shows a test server at `/bcl/v2`. It describes returning grant offers available for the supplied `accountHolderId`. The query parameter is required; the response's `grantOffers` array is required and each offer's `accountHolderId` identifies the account holder to which it is offered. This is an offer lookup for [[adyen-capital]], not a grant request, acceptance, disbursement or repayment record.\n\n## Key takeaways\n\n- The query table calls `accountHolderId` the unique identifier of the **grant account**, while the overview and response row identify an **account holder**. The captured reference does not resolve that identity conflict; do not substitute a grant-account ID on this page's authority alone.\n- The 200 schema lists optional offer fields including principal `amount`, `contractType` (`cashAdvance` or `loan`), validity dates, fee, offer `id` and repayment configuration. Where the optional parent object is present, nested rows mark currency/value, fee amount or repayment basis points required; this does not make the optional parent required.\n- Listed errors are 400 (request problem), 401 (authentication), 403 (insufficient permission), 422 (validation) and 500 (server processing). The generic 422 and 500 examples describe payment-instrument operations, so they do not establish grant-offer-specific status rules or failures.\n- This captured contract gives no named credential role, eligibility gate, offer-count or expiry guarantee, live endpoint, current `latest` version, or evidence that any account holder received an offer or funds.\n\n## Detail locators\n\n- `## Servers` and `## Parameters` \u2192 captured test base URL and required query parameter.\n- `## Responses` \u2192 200 offer fields, nested requiredness and error response schemas.\n- `## Response examples` \u2192 generic 400/401/403/422/500 payloads; the latter two include unrelated payment-instrument details.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-capital]] \u2014 financing product and offer context.\n- [[source-adyen-docs-capital-get-grant-offers]] \u2014 offer-choice documentation; separate from this endpoint contract.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/grantOffers/2026-09-15|2026-09-15 captured API Explorer reference]]\n",
+  "quotes": [
+    {
+      "text": "# GET /grantOffers - Get all available grant offers",
+      "location": "raw line 5"
+    },
+    {
+      "text": "Returns a list of all [grant offers](https://docs.adyen.com/platforms/capital#grant-offers) available for `accountHolderId` specified as a query parameter.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| accountHolderId | string | Yes | The unique identifier of the grant account. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "|   - accountHolderId | string | Yes | The identifier of the account holder to which the grant is offered. |",
+      "location": "raw line 28"
+    },
+    {
+      "text": "|   - repayment | object | No | Details of the repayment configuration. |",
+      "location": "raw line 37"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-grantoffers-capital-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-grantoffers]] \u2014 2026-09-15-captured Balance Platform API `/bcl/v2` test-server GET grant-offer list contract for required `accountHolderId`; query description conflicts with account-holder wording, and generic payment-instrument error examples are not offer-specific evidence.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The query row describes accountHolderId as a grant-account identifier, contrary to the overview and response account-holder wording; preserve this conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/grantOffers/2026-09-15.md",
+  "raw_sha256": "e3ab4d2019013bf907ea6bf170f8b3f0c5e2a91175026028f0835c7faa5e7e22",
+  "status": "candidate_ready"
+}

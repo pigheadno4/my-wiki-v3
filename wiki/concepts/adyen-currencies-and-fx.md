@@ -16,6 +16,12 @@ Where Adyen converts a transaction amount between currencies, it describes an FX
 
 ## Sources
 
+- [[source-adyen-api-explorer-foreignexchange-latest-post-rates-calculate]] — 2026-09-15-captured Foreign Exchange API v1 calculation reference for split-payment/refund source and target amounts and markup-inclusive applied rates; calculation is not conversion or settlement.
+
+
+- [[source-adyen-api-explorer-foreignexchange-latest-overview]] — 2026-09-15-captured Foreign Exchange API v1 authentication/server overview and `POST /rates/calculate` catalog; prose and server list conflict on `/fx/v1` versus `/fx/api/v1` and live versus test host.
+
+
 - [[source-adyen-docs-marketplaces-currency-conversion]] — 2023-modified, 2026-09-15-captured Marketplace pilot FX overview distinguishing acceptance and settlement currencies and routing to separate payment/refund guides; no account-specific eligibility or financial-outcome proof.
 
 

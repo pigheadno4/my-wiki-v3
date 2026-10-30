@@ -15,6 +15,15 @@ The landing page lists supported regions with specific inclusions and exclusions
 
 ## Sources
 
+- [[source-adyen-api-explorer-transfers-latest-post-grants]] — 2026-09-15-captured Transfers API v4 TEST `POST /grants` reference for requesting payout of a selected Capital offer, with grant/status readback; a 200 or Pending grant is not final disbursement or repayment proof, and the 404 payment wording is mismatched.
+
+
+- [[source-adyen-api-explorer-transfers-latest-get-grants]] — 2026-09-15-captured Transfers API v4 TEST `GET /grants` list contract for optional counterparty-holder filter, grant/offer/account IDs, balances and statuses; title and 404 wording conflict with the grant-list body, and a read is not disbursement or repayment proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-grantoffers]] — 2026-09-15-captured Balance Platform API `/bcl/v2` test-server GET grant-offer list contract for required `accountHolderId`; query description conflicts with account-holder wording, and generic payment-instrument error examples are not offer-specific evidence.
+
+
 - [[source-adyen-docs-marketplaces-compliance-financial-products-user-interface-capital-requirements]] — 2023-modified, 2026-09-15-captured Marketplace Capital-specific UI guideline for offers, KYC/terms, insights/security and Ireland precontract disclosures; not legal advice or grant proof.
 
 

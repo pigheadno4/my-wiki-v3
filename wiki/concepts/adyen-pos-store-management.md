@@ -18,6 +18,12 @@ The 2026-09-15 Adyen guide uses a platform-unique store ID for store updates; a 
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-post-stores]] — 2026-09-15-captured Management API v3 TEST store-creation contract for merchant-linked request, conditional address/business-line fields, automatic active status and irreversible closure effects; `/v1` example link does not prove v3 route behavior or terminal readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-stores]] — 2026-09-15-captured Management API v3 TEST store-list reference for role-gated merchant/reference filters, page counts and status descriptions; its example has v1/v3 path and page-count inconsistencies, and a read does not establish terminal or payment readiness.
+
+
 - [[source-adyen-docs-point-of-sale-payment-facilitators]] — POS payment-facilitator guide (2026-09-15 snapshot) for sub-merchant store `subMerchantData`, Management API role and standalone store-only route; full commercial/data model belongs to [[adyen-pos-payment-facilitators]].
 
 

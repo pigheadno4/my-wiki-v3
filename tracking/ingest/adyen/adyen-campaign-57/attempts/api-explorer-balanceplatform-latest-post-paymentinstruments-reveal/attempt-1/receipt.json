@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-paymentinstruments-reveal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: reveal payment-instrument data\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/paymentInstruments/reveal\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/paymentInstruments/reveal/2026-09-15.md\"\ntags: [adyen, balance-platform, issuing, payment-instruments, card-data, encryption, api]\n---\n\n## Overview\n\nThis 2026-09-15-captured Balance Platform API v2 reference documents `POST /paymentInstruments/reveal` on the test server. For a specified card payment instrument, it returns encrypted PAN, CVC and expiry data for later decryption and display in a user interface. The page does not itself establish who viewed the data, an active card, a payment or current live availability. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The page requires the API credential to have the **Bank Issuing PAN Reveal Webservice** role. Its separate [[source-adyen-docs-issuing-manage-card-data-reveal-card-details|Issuing card-details guide]] names **Bank Issuing PaymentInstrument Reveal Webservice** for this flow. The captured sources use different role labels; do not treat them as equivalent without separate confirmation.\n- The request-body table marks both `encryptedKey` and `paymentInstrumentId` required. `encryptedKey` is the symmetric session key encrypted with an Adyen public key obtained separately; `paymentInstrumentId` identifies the card payment instrument. The endpoint returns required `encryptedData` encrypted using that key. The reference links a version-`2` `GET /publicKey` page for the key; this capture does not specify the key's purpose, expiry, format or a full cryptographic implementation.\n- A `200` response confirms the reveal request succeeded and contains ciphertext. Decryption and UI display are separate client steps; the response is not proof of cardholder access, card activation, authorization, settlement or funds movement. Handle the encrypted card data as sensitive.\n- The page lists `400` malformed/unreadable request, `401` authentication, `403` insufficient permission, `422` validation and `500` server-processing errors. Its generic `422` example discusses a balance-account ID status change, and its generic `500` example says creation of a payment instrument failed; neither establishes a reveal-specific lifecycle rule or creation effect.\n\n## Detail locators\n\n- Purpose, sensitive fields and credential role: raw lines 5\u201319.\n- Test-server base URL: line 22; request-body fields and public-key link: lines 24\u201330.\n- `200` encrypted response: lines 32\u201340.\n- Error meanings and common problem-body schema: lines 43\u2013140.\n- Generic error examples, including unrelated `422`/`500` wording: lines 142\u2013209.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing card-program context.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-publickey]] \u2014 separate key-retrieval reference.\n- [[source-adyen-docs-issuing-manage-card-data-reveal-card-details]] \u2014 broader cardholder-facing flow and conflicting credential-role label.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/paymentInstruments/reveal/2026-09-15|POST /paymentInstruments/reveal API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Returns the encrypted data of a specified payment instrument.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Bank Issuing PAN Reveal Webservice role",
+      "location": "raw line 19"
+    },
+    {
+      "text": "The symmetric session key that you encrypted with the [public key](https://docs.adyen.com/api-explorer/balanceplatform/2/get/publicKey) that you received from Adyen.",
+      "location": "raw line 29"
+    },
+    {
+      "text": "The data encrypted using the `encryptedKey`.",
+      "location": "raw line 40"
+    },
+    {
+      "text": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+      "location": "raw line 191, generic 422 response example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-reveal-issuing-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments-reveal]] \u2014 2026-09-15-captured Balance Platform API v2 test-server encrypted PAN/CVC/expiry reveal reference; its credential-role label differs from the separate Issuing guide, and ciphertext response does not prove cardholder display or payment.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The API Explorer says Bank Issuing PAN Reveal Webservice role; the existing source-adyen-docs-issuing-manage-card-data-reveal-card-details says Bank Issuing PaymentInstrument Reveal Webservice role. Preserve as a source-scoped conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/paymentInstruments/reveal/2026-09-15.md",
+  "raw_sha256": "dc86d9681a65613d488f3f488f7aa67fef56912f80c3f54b9bccdd22496106a8",
+  "status": "candidate_ready"
+}

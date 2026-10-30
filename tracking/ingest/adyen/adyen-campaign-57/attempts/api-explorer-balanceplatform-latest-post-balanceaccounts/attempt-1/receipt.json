@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-balanceaccounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /balanceAccounts \u2014 Create a balance account | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/2026-09-15.md\"\ntags: [adyen, balance-platform, balance-accounts, account-holders, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `POST /balanceAccounts` to create a balance account that holds funds of an associated account holder. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL says `latest`, while the server path identifies `v2`. The account holder, created balance account and any separate legal entity, payment instrument or transfer instrument are distinct resources. See [[adyen-platforms]] for the platform resource context.\n\n## Key takeaways\n\n- The request-body table marks only `accountHolderId` required. The response table marks `accountHolderId` and the new balance-account `id` required; the account holder ID associates the two resources. The EUR, CAD, GBP and USD request/response examples illustrate payloads and do not establish live creation, enabled currencies or funded balances. [Raw: lines 14\u201317, 27\u201365, 66\u201384, 194\u2013279]\n- `defaultCurrencyCode` is optional, defaults to EUR, and cannot be changed after creation. The optional description and reference have maximum lengths of 300 and 150 characters. The optional `timeZone` defaults to the account holder's time zone. If metadata is later updated, omitted existing key-value pairs are deleted. [Raw: lines 18\u201320, 24\u201325]\n- Optional `platformPaymentConfiguration` contains sales-day closing time and settlement delay. The closing-time field permits HH:MM with hours 00\u201307 and minutes 00, defaulting to 00:00. `settlementDelayDays` permits 1\u201320 or null, defaults to null, and requires Custom Sales Day Payout enablement; the page says to contact the account or implementation manager for enablement. This is a conditional configuration prerequisite, not a universal requirement to create an account. [Raw: lines 21\u201323]\n- The 200 response is labeled request success; its `status` field is optional and described as active by default. The response's optional `balances` array defines amount fields, with required child fields only within an included balance object. Example zero balances do not prove later available funds, settlement or payout. [Raw: lines 66\u201392, 194\u2013279]\n- The page lists 400 request-reading/understanding, 401 authentication, 403 permission, 422 validation and 500 server-processing errors. The generic 422 example talks about changing a payment instrument's balanceAccountId, and the 500 example says payment-instrument creation failed. Those examples do not establish a balance-account-specific status transition or failure condition. [Raw: lines 95\u2013192, 320\u2013346]\n\n## Detail locators\n\n- Purpose, TEST v2 server and request schema: pinned raw lines 5\u201325.\n- Request examples: lines 27\u201365. Success schema, including balance-field meanings and status: lines 66\u201392.\n- Error headings and schemas: lines 95\u2013192. Success and generic error examples: lines 194\u2013346.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform account-holder and balance-account resource context.\n- [[source-adyen-docs-platforms-account-structure-resources]] \u2014 account holder, balance account, legal entity and instruments as separate platform resources.\n- [[adyen-business-accounts]] \u2014 separate financial product; this balance account creation reference does not itself prove an opened Business Account or payment instrument.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/2026-09-15|POST /balanceAccounts \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Creates a balance account that holds the funds of the associated account holder.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| accountHolderId | string | Yes | The unique identifier of the [account holder](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/accountHolders#responses-200-id) associated with the balance account. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "The default value is **EUR**.  After a balance account is created, you cannot change its default currency.",
+      "location": "raw line 18 (substring of defaultCurrencyCode row)"
+    },
+    {
+      "text": "Requires Custom Sales Day Payout to be enabled for your balance account. Contact your account manager or implementation manager to enable this.",
+      "location": "raw line 23 (substring of settlementDelayDays row)"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the balance account. |",
+      "location": "raw line 84"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-post-balanceaccounts-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts]] \u2014 2026-09-15-captured Balance Platform API v2 TEST `POST /balanceAccounts` creation reference for an account-holder-linked balance account, with immutable default currency and conditional settlement-delay configuration; response examples are not funding or payout proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page's generic 422 and 500 examples concern payment-instrument operations; do not treat them as balance-account lifecycle rules."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/2026-09-15.md",
+  "raw_sha256": "23d051cf8b7455f77c9aa33c14fe68a26a85ac9f5cd347c362e2619d33a32181",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-transactionrules",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: POST /transactionRules\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/transactionRules\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/transactionRules/2026-09-15.md\"\ntags: [adyen, balance-platform, issuing, transaction-rules, api]\n---\n\n## Overview\n\nThis 2026-09-15 Balance Platform Configuration API v2 reference describes `POST /transactionRules`, which creates a scoped rule whose conditions and outcome can affect a user's Adyen-issued-card transaction. The request schema also lists `bankTransfer` among `requestType` values; that wider schema scope should not be silently collapsed into card authorization. The only displayed server is the test host `https://balanceplatform-api-test.adyen.com/bcl/v2`. The `latest` documentation URL does not establish current live version or access. See [[adyen]], [[adyen-issuing]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request table marks `description`, `entityKey`, `interval`, `reference`, `ruleRestrictions` and `type` required. `entityKey` identifies the resource scope: balance platform, payment-instrument group, account holder, balance account or payment instrument; its two child fields are individually marked optional in the table. The page does not separately state whole-body requiredness.\n- `blockList`, `maxUsage`, `velocity` and `bypass` are rule types. For `velocity` or `maxUsage`, `aggregationLevel` must be at or below the `entityKey` hierarchy and defaults to payment-instrument accumulation. `bypass` requires the overridden rule ID in `overridesRule` and an empty `ruleRestrictions` object, despite that field's general description saying it contains one or more conditions.\n- `interval.type` is required within `interval`; rolling/sliding intervals require `duration`, with a 90-day maximum (or equivalent). Minutes and hours are only allowed for sliding intervals. The request table describes fixed daily/weekly/monthly resets in CET while `interval.timeZone` defaults to UTC; consult the precise schema and companion guide before assuming a reset instant. `interval.dayOfWeek` omits Saturday from its listed values, although the separate `ruleRestrictions.dayOfWeek` includes Saturday.\n- Default `requestType` is `authorization`. Default `outcomeType` is `hardBlock`; `scoreBased` requires a `score` from -100 to 100 and is disallowed for `bankTransfer`; `enforceSCA` is only allowed for `authentication`, with failed or timed-out authentication declining the transaction. The three transfer-pattern restrictions `matchingValues`, `sameAmountRestriction` and `sameCounterpartyRestriction` each specify velocity, interval and matching-transaction prerequisites.\n- The page says a supplied `startDate` creates the rule active; without one, `startDate` is set when status becomes active. An omitted `endDate` leaves evaluation until status is inactive. The 200 response schema lists a rule `id` as optional, and its illustrative 200 payloads show IDs; 400, 401, 403, 422 and 500 errors are documented. The 422/500 JSON samples concern payment-instrument operations, so they do not define this endpoint's specific failures. A successful create response or illustrative rule payload does not prove that any particular authorization, authentication, bank transfer or funds movement occurred.\n\n## Detail locators\n\n- Scope, defaults, interval and outcome conditions: pinned raw `## Parameters > ### Request body`, lines 14\u201337 and 113\u2013116.\n- All available rule restrictions and supported operations: same request-body table, lines 38\u2013112. Note the separate `operation` and `value` rows inside each restriction.\n- Four illustrative request payloads: `## Request examples`, lines 118\u2013237; these are examples, not universal rule requirements or transaction-outcome evidence.\n- Response fields and statuses: `## Responses`, lines 238\u2013447; response payload examples and generic errors: `## Response examples`, lines 448\u2013654.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuing authorization and transaction-rule context.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules]] \u2014 separate rule-concept guide.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] \u2014 separate lifecycle guide, with its own recorded condition and example conflicts.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/transactionRules/2026-09-15|Balance Platform POST /transactionRules snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Creates a [transaction rule](https://docs.adyen.com/issuing/transaction-rules).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The level must be the [same or lower in hierarchy](https://docs.adyen.com/issuing/transaction-rules#accumulate-data) than the `entityKey`.",
+      "location": "raw line 17, aggregationLevel request row"
+    },
+    {
+      "text": "This value is not allowed when `requestType` is **bankTransfer**.",
+      "location": "raw line 32, outcomeType request row"
+    },
+    {
+      "text": "You must provide the `id` of the rule to bypass in `overridesRule` and leave the `ruleRestrictions` object empty.",
+      "location": "raw line 116, type request row"
+    },
+    {
+      "text": "If you provide a `startDate` in the request, the rule is automatically created with an **active** status.",
+      "location": "raw line 115, status request row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-post-transactionrules-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-transactionrules]] \u2014 2026-09-15-captured Balance Platform API v2 TEST POST transaction-rule reference for scoped conditions, intervals and outcomes; schema also lists bank-transfer request type, and creation does not prove a transaction result.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The API table's general one-or-more ruleRestrictions wording conflicts with its bypass-specific empty-object instruction; source page retains this exception."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/transactionRules/2026-09-15.md",
+  "raw_sha256": "58258c29053531d7f3b795e85d06029896f0484c1dc929baea7c4af8d0fbf969",
+  "status": "candidate_ready"
+}

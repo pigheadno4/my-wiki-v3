@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-accountholders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: POST /accountHolders\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/accountHolders\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/accountHolders/2026-09-15.md\"\ntags: [adyen, balance-platform, account-holders, api, verification]\n---\n\n## Overview\n\nThis 2026-09-15 capture of the Balance Platform Configuration API `POST /accountHolders` reference describes creating an account holder linked to an existing legal entity. The page shows the test server at `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` in the URL is a documentation route, not an independently verified current version or live endpoint. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request schema marks `legalEntityId` required. `balancePlatform` is marked optional in the table but is required when the API credential covers multiple balance platforms. The page does not separately state whether the entire request body is required; the JSON example supplies `legalEntityId`.\n- `capabilities` is an optional request map. `requested` asks for a capability; the response `allowed` field indicates permission following verification. `enabled: false` temporarily disables it. Requested levels may require additional checks and monitoring.\n- The 200 response includes a required account-holder `id` and `legalEntityId`; capability verification may still be pending. Its example shows `status: active` while requested capabilities have `allowed: false` and `verificationStatus: pending`. Creation and active status alone do not establish usable capabilities, completed legal-entity verification, a balance account, funds, or payout.\n- The response schema describes `active`, `suspended` (payouts blocked), and irreversibly `closed` account-holder states. A primary balance account is assigned by default only when the first balance account is created. The metadata description warns that omitting existing key-value pairs **during an update** deletes them; this POST does not itself document an update.\n- Documented responses are 200, 400, 401, 403, 422, and 500. The 422 and 500 JSON examples mention payment-instrument operations rather than account-holder creation; treat them as generic examples, not endpoint-specific error conditions.\n\n## Detail locators\n\n- Request field conditions and nested contact details: pinned raw `## Parameters > ### Request body`, lines 14\u201339.\n- Request JSON: `## Request examples > ### createAccountHolder`, lines 41\u201350.\n- Response identity, capabilities, statuses, verification deadlines and primary balance account: `## Responses > ### 200 Success`, lines 53\u2013115.\n- Error schemas and example bodies: `## Responses`, lines 118\u2013215, and `## Response examples`, lines 217\u2013331.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform account-holder and verification context.\n- [[source-adyen-docs-platforms-manage-account-holders]] \u2014 separate lifecycle guide; this API reference is limited to creation.\n- [[source-adyen-docs-platforms-verification-overview-capabilities]] \u2014 separate capability verification guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/accountHolders/2026-09-15|Balance Platform POST /accountHolders snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Creates an account holder linked to a [legal entity](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/legalEntities).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Required in the request if your API credentials can be used for multiple balance platforms.",
+      "location": "raw line 17, balancePlatform request row"
+    },
+    {
+      "text": "Adyen performs a verification process against the legal entity of the account holder.",
+      "location": "raw line 36, legalEntityId request row"
+    },
+    {
+      "text": "To check whether the account holder is permitted to use the capability, refer to the `allowed` field.",
+      "location": "raw line 20, capabilities.requested request row"
+    },
+    {
+      "text": "**closed**: The account holder and all of its capabilities are permanently disabled. This is a final status and cannot be changed.",
+      "location": "raw line 110, response status row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-post-accountholders-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-accountholders]] \u2014 2026-09-15-captured Balance Platform API v2 POST account-holder creation reference, with legal-entity link, conditional balance-platform selector and separate capability verification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/accountHolders/2026-09-15.md",
+  "raw_sha256": "2dbc035a8e056283651cdca582b92c1b35c6d0960faa202c28e4242b00e18fdc",
+  "status": "candidate_ready"
+}

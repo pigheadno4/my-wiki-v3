@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-management-latest-get-me",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"GET /me \u2014 Get API credential details | Adyen Management API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/me\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/me/2026-09-15.md\"\ntags: [adyen, management-api, api-credentials, access-control, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Management API Explorer snapshot documents `GET /me`: it returns details of the API credential associated with the API key used in the request. The page says any Management API role can call it. The captured server is TEST `https://management-test.adyen.com/v3`; the URL says `latest`, while the server path identifies `v3`. It is a credential read, not a merchant-account management action. See [[adyen-api-access]].\n\n## Key takeaways\n\n- The response schema requires the credential's `id`, `username`, `roles`, `active`, `allowedIpAddresses` and public `clientKey`. The `_links` object is optional; if present, its `self` child is marked required. `active` must be true to use the credential in an integration. An empty allowed-IP list means requests from any IP are allowed; a nonempty list blocks request IPs outside it with a security error. These are documented access fields, not proof that a particular operation or merchant account is authorized. [Raw: lines 19\u201348]\n- Optional links can point to allowed origins, company or merchant resources, and API/client-key generation. The merchant link is described as present only for merchant-level API credentials; the company-link description specifically says it is present only for company-level webhooks. Preserve that page wording rather than inferring every company-level credential has the link. Merely returning a generation link does not rotate a key. [Raw: lines 22\u201334]\n- `allowedOrigins` and `clientKey` concern client-side authentication. The page also lists optional `companyName`, description and certificate `subjectDN`; these fields do not disclose the secret API key in this response schema. [Raw: lines 37\u201348]\n- A 200 means this read request succeeded. The page lists 400 malformed/unreadable request, 401 authentication required, 403 insufficient permissions, 422 validation error and 500 server-processing failure. Error-body requiredness is separate from success-body requiredness. No page-level response examples are present. [Raw: lines 14\u201317, 51\u2013148]\n\n## Detail locators\n\n- Purpose, role scope and TEST v3 server: pinned raw lines 5\u201312.\n- 200 response fields, resource links, credential and client-side settings: lines 14\u201348.\n- Error headings and schemas: lines 51\u2013148.\n\n## Related\n\n- [[adyen-api-access]] \u2014 credential roles, account scope and lifecycle context.\n- [[source-adyen-docs-development-resources-api-credentials]] \u2014 separate guide for credential management, account scope and test/live separation.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/me/2026-09-15|GET /me \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returns your [API credential](https://docs.adyen.com/development-resources/api-credentials) details based on the API Key you used in the request.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "You can make this request with any of the Management API roles.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "|   - company | object | No | Company account that the API credential is linked to. Only present for company-level webhooks. |",
+      "location": "raw line 25"
+    },
+    {
+      "text": "| active | boolean | Yes | Indicates if the API credential is enabled. Must be set to **true** to use the credential in your integration. |",
+      "location": "raw line 35"
+    },
+    {
+      "text": "| roles | array of string | Yes | List of [roles](https://docs.adyen.com/development-resources/api-credentials#roles-1) for the API credential. |",
+      "location": "raw line 46"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-management-get-me-api-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-me]] \u2014 2026-09-15-captured Management API v3 TEST `GET /me` reference for reading the API-key-associated credential's identity, roles, active flag, IP restrictions and client-side settings; resource links are not merchant-account management or key rotation.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The optional company link is described as only present for company-level webhooks; do not generalize that wording to all company-level API credentials."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/me/2026-09-15.md",
+  "raw_sha256": "d7c8e9eefed67fab1ef169a868f6aaa139e8b654a0ddb7e0ab8364b3a9e91a9d",
+  "status": "candidate_ready"
+}

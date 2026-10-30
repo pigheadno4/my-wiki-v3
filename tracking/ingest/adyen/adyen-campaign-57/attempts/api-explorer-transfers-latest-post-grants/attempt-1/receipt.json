@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-transfers-latest-post-grants",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API v4: POST /grants\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/post/grants\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/post/grants/2026-09-15.md\"\ntags: [adyen, transfers-api, capital, grants, api-reference]\n---\n\n## Overview\n\nThis 2026-09-15-captured Transfers API v4 test-server reference defines `POST /grants` to request payout of a selected [[adyen-capital|Adyen Capital]] grant offer. The grant account, selected offer, receiving counterparty, and returned grant reference are distinct identities. A successful request response is not evidence that the grant was accepted, disbursed, booked, received, or repaid.\n\n## Key takeaways\n\n- The request property table requires `grantAccountId` and `grantOfferId`. An optional `counterparty` object can identify a receiving account holder's balance account or that account holder's legal entity transfer instrument; its two child IDs are each marked optional, with no choice/exclusivity rule stated here. The table does not separately state whole-body requiredness.\n- `Idempotency-Key` is an optional header with a 64-character maximum; a UUID is recommended. This page gives no retry or deduplication semantics.\n- The 200 response identifies the grant reference (`id`), grant account and selected offer, reports `status` among `Pending`, `Active`, `Repaid`, `WrittenOff`, `Failed`, and `Revoked`, and includes balances. Optional amount, fee, counterparty and repayment objects may appear. The repayment description covers daily deduction from incoming net volume in basis points and an optional 30-day threshold; `maximumDays` applies only when `contractType` is `loan`, although this request table does not define `contractType`. The example is `Pending`, so a 200 response alone does not prove payout completion.\n- Error categories are 400, 401, 403, 404, 422 and 500. The 404 description says a *payment* was not found, an object-name mismatch with this grant request; do not infer which grant object was missing. The page names no specific permission role, offer-acceptance step, transfer webhook or final funding state.\n\n## Detail locators\n\n- Purpose, test v4 server, optional idempotency header and request fields: raw lines 5\u201327. Request example: lines 29\u201340.\n- Response identifiers, amounts, balances, repayment and status: raw `### 200 Success`, lines 43\u201375. Pending example: lines 197\u2013232.\n- Error schemas and 404 wording: raw lines 78\u2013195.\n\n## Related\n\n- [[adyen-capital]] \u2014 financing offer and grant context.\n- [[adyen-api-access]] \u2014 general credentials; this endpoint reference states only 401/403 classes.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/post/grants/2026-09-15|POST /grants captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Requests the payout of the selected grant offer.",
+      "location": "raw line 7, POST /grants introduction"
+    },
+    {
+      "text": "| grantAccountId | string | Yes | The identifier of the grant account used for the grant. |",
+      "location": "raw line 26, Request body"
+    },
+    {
+      "text": "| grantOfferId | string | Yes | The identifier of the grant offer that has been selected and from which the grant details will be used. |",
+      "location": "raw line 27, Request body"
+    },
+    {
+      "text": "| status | string | Yes | The current status of the grant. Possible values: **Pending**, **Active**, **Repaid**, **WrittenOff**, **Failed**, **Revoked**. |",
+      "location": "raw line 75, 200 Success response body"
+    },
+    {
+      "text": "The payment was not found",
+      "location": "raw line 139, 404 Client Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-post-grants-capital-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-post-grants]] \u2014 2026-09-15-captured Transfers API v4 TEST `POST /grants` reference for requesting payout of a selected Capital offer, with grant/status readback; a 200 or Pending grant is not final disbursement or repayment proof, and the 404 payment wording is mismatched.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The endpoint's 404 description names a payment rather than a grant; do not derive grant-specific not-found behavior from it."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/post/grants/2026-09-15.md",
+  "raw_sha256": "c5d2904067a4bb9e3fa556dd851d178bd0148ddd515564ae9e8df8929a338a96",
+  "status": "candidate_ready"
+}

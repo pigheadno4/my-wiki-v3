@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-transfers-latest-get-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API: list transfers\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/get/transfers\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/get/transfers/2026-09-15.md\"\ntags: [adyen, transfers, balance-platform, api-reference, pagination]\n---\n\n## Overview\n\nCaptured Transfers API v4 test-server reference for `GET /transfers`, a read of transfers related to a balance account, account holder, or balance platform. It covers categories beyond internal transfers, including bank, card, issued-card, platform-payment, and top-up records. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request must include at least one of `balanceAccountId`, `accountHolderId`, or `balancePlatform`; the query table marks each individually optional because they are alternatives. `paymentInstrumentId` also needs one of these scope identifiers and must relate to a supplied balance account or account holder. When both account-holder and balance-account IDs are supplied, they must be related.\n- `createdSince` and `createdUntil` are both marked required, use ISO 8601, and bound a window of no more than six months. `limit` defaults to 10 and permits at most 100 per page; `sortOrder` defaults to ascending creation date. Cursor pagination supplies next/previous links when applicable.\n- The 200 schema has optional `_links` and `data`; each returned transfer has required `amount`, `category`, and `status` properties in the item schema. The `status` descriptions distinguish `received`, `authorised` (funds reserved), and `booked` (deducted from the user's balance account), as well as `refused`, `failed`, and `returned`. A list result or `booked` outbound status alone does not prove beneficiary-bank receipt or final settlement across categories; inspect applicable tracking and event records.\n- The example next-page URL spans March to December 2021, exceeding the stated six-month date-window rule. Treat it as illustrative, not an exception to the parameter constraint.\n\n## Detail locators\n\n- Raw `## Parameters` / `### Query parameters`: scope/filter conditions, date window, category/reference, pagination and sort rules.\n- Raw `## Responses` / `### 200 Success`: nested transfer, event, review, tracking, status and error-model fields. Nested properties marked required are conditional on their containing object being present.\n- Raw `## Response examples`: two illustrative internal-transfer rows and a next-page link.\n\n## Related\n\n- [[adyen-platform-internal-transfers]] \u2014 internal balance-account movements are only one category in this list.\n- [[source-adyen-docs-platforms-view-transfers-details]] \u2014 Platforms guide to list/detail inspection and event tracking.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/get/transfers/2026-09-15|Transfers API v4 GET /transfers reference (2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "Returns all the transfers related to a balance account, account holder, or balance platform.",
+      "location": "raw line 7, under # GET /transfers - Get all transfers"
+    },
+    {
+      "text": "This endpoint supports cursor-based pagination. The response returns the first page of results, and returns links to the next and previous pages when applicable. You can use the links to page through the results.",
+      "location": "raw line 17, introduction"
+    },
+    {
+      "text": "| createdUntil | string | Yes | Only include transfers that have been created on or before this point in time. The value must be in ISO 8601 format and not later than 6 months after the `createdSince` date. For example, **2021-05-30T15:07:40Z**. |",
+      "location": "raw line 30, ## Parameters > ### Query parameters"
+    },
+    {
+      "text": "| paymentInstrumentId | string | No | The unique identifier of the [payment instrument](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/paymentInstruments/_id_).  To use this parameter, you must also provide a `balanceAccountId`, `accountHolderId`, or `balancePlatform`.  The `paymentInstrumentId` must be related to the `balanceAccountId` or `accountHolderId` that you provide. |",
+      "location": "raw line 34, ## Parameters > ### Query parameters"
+    },
+    {
+      "text": "|   - status | string | Yes | The result of the transfer.  For example:  - **received**: an outgoing transfer request is created.  **refused**: the transfer request is rejected by Adyen for one of the following reasons:  - Transfer limit exceeded.  - Transaction rule requirements violated.  - **authorised**: the transfer request is authorized and the funds are reserved.  - **booked**: the funds are deducted from your user's balance account.  - **failed**: the transfer is rejected by the counterparty's bank.  - **returned**: the transfer is returned by the counterparty's bank. |",
+      "location": "raw line 132, ## Responses > ### 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-transfers-list-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-get-transfers]] \u2014 2026-09-15-captured Transfers API v4 test-server `GET /transfers` reference for scoped, date-bounded, cursor-paged transfer lists across categories; returned status needs category-specific outcome interpretation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The example next-page URL spans more than the query table's maximum six-month creation window; keep the table constraint and treat the URL as illustrative."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/get/transfers/2026-09-15.md",
+  "raw_sha256": "b400b90d6e6d685c1a221d5a7a6f2258452f2a2bfd3a85affa214de3dc3778bd",
+  "status": "candidate_ready"
+}

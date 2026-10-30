@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: create a merchant account\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/2026-09-15.md\"\ntags: [adyen, management-api, merchant-accounts, account-structure]\n---\n\n## Overview\n\nCaptured Management API reference for `POST /merchants` on the listed test `/v3` server. The endpoint creates a merchant account under the company account identified by `companyId`; it is presented for integrations that require it, such as Adyen for Platforms Manage. Adyen contact setup and the **Management API\u2014Accounts read and write** credential role are stated prerequisites. Creating this account is separate from live processing activation, payment-method configuration, or a successful payment. See [[adyen]], [[adyen-account-structure]], [[adyen-platforms]], and [[adyen-api-access]].\n\n## Key takeaways\n\n- The request-property table marks `companyId` required. For an Adyen for Platforms Manage integration, it additionally describes `businessLineId`, `legalEntityId`, and `pricingPlan` as required even though their general table rows say `No`; Adyen provides usable pricing-plan values (raw lines 20\u201329). The page does not separately state request-body requiredness.\n- `reference` is generally optional. If Adyen configures a company-account reference template, `reference` becomes required and unique within that company; the template's format is 6\u2013255 upper/lower-case letters, underscores and numbers. In that case the returned merchant `id` equals the submitted reference; otherwise Adyen generates the ID (lines 28, 54). The example has a reference and matching ID, but does not prove a template for every company (lines 31\u201342, 163\u2013177).\n- `200` says the request succeeded and describes the returned merchant-account fields; `204` says processing succeeded with no additional content (lines 43\u201361). The page does not describe a later activation or verification status. Error cases are `400`, `401`, `403`, `422`, and `500` (lines 64\u2013161). The listed server is test `/v3`, and `latest` in the URL does not establish a live endpoint or current access.\n\n## Detail locators\n\n- Request fields and conditional requirements: raw lines 20\u201329. Request example: lines 31\u201342. Success schemas: lines 43\u201361. Error schemas: lines 64\u2013161. Response example: lines 163\u2013177.\n\n## Related\n\n- [[adyen-account-structure]] \u2014 company and merchant account hierarchy.\n- [[adyen-platforms]] \u2014 conditional Platforms Manage context.\n- [[adyen-api-access]] \u2014 credential and role boundaries.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/2026-09-15|POST /merchants API reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Creates a merchant account for the company account specified in the request.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Use this endpoint if your integration requires it, such as Adyen for Platforms Manage. Your Adyen contact will set up your access.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "- Management API\u2014Accounts read and write",
+      "location": "raw line 13"
+    },
+    {
+      "text": "| companyId | string | Yes | The unique identifier of the company account. |",
+      "location": "raw line 24"
+    },
+    {
+      "text": "| reference | string | No | Your reference for the merchant account. To make this reference the unique identifier of the merchant account, your Adyen contact can set up a template on your company account. The template can have 6 to 255 characters with upper- and lower-case letters, underscores, and numbers. When your company account has a template, then the `reference` is required and must be unique within the company account. |",
+      "location": "raw line 28"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-management-post-merchants-account-structure-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants]] \u2014 2026-09-15-captured Management API v3 test-server `POST /merchants` reference for creating a merchant account under a specified company account, with contact-set access, Accounts read/write role and conditional Platforms Manage fields; creation is not live-processing proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/2026-09-15.md",
+  "raw_sha256": "dabc1f9a1726a10d4121ec6513f5c76bd71ffb8e88deddaa0b0159781c6ed001",
+  "status": "candidate_ready"
+}

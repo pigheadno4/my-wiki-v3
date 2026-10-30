@@ -1,0 +1,66 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-registereddevices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: POST /registeredDevices\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/registeredDevices\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/registeredDevices/2026-09-15.md\"\ntags: [adyen, balance-platform, sca, device-registration, api-reference]\n---\n\n## Overview\n\nThis 2026-09-15-captured Balance Platform API v2 test-server reference defines `POST /registeredDevices` to **initiate** registration of a user's Strong Customer Authentication (SCA) device for a payment instrument. It points to separate [[adyen-business-accounts|Business Accounts]] and [[adyen-issuing|Adyen Issuing]] registration guides. A successful request requires an SCA-eligible device; this endpoint alone does not complete enrollment.\n\n## Key takeaways\n\n- The request-body field table marks `paymentInstrumentId` and `strongCustomerAuthentication.sdkOutput` required. The latter is base64-encoded data obtained through the authentication SDK. `name` is optional; Adyen generates one if omitted. The table describes required properties, but does not separately state whether the whole request body is required.\n- The 200 response has optional `id`, `paymentInstrumentId`, `sdkInput`, and `success` fields. `sdkInput` must be passed to the authentication SDK to **continue** registration; `success` says whether initiation succeeded, not whether the device was registered, associated, approved or used to authenticate an action.\n- Errors documented here are 400 request problem, 401 authentication required, 403 insufficient permissions, 422 request validation, and 500 server processing failure. The 422 and 500 JSON examples mention payment-instrument balance-account changes or creation, unrelated to this registration operation; they do not define its device-registration error conditions. The snapshot gives no specific credential role, completion result, idempotency behavior, live availability, payment result or funds movement.\n\n## Detail locators\n\n- Purpose, supported product routes, eligibility and test v2 server: raw lines 5\u201312.\n- Request property table: raw `## Parameters` / `### Request body`, lines 14\u201322.\n- Initiation response: raw `### 200 Success`, lines 26\u201335.\n- Error schemas: raw `### 400 Client Error` through `### 500 Server Error`, lines 38\u2013135. Generic examples, including unrelated 422/500 prose: raw `## Response examples`, lines 137\u2013204.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts SCA device flow.\n- [[adyen-issuing]] \u2014 Adyen-issued card device flow.\n- [[adyen-api-access]] \u2014 credential context; this reference names only authentication and permission errors.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/registeredDevices/2026-09-15|POST /registeredDevices captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Initiates the registration of a user's device for Strong Customer Authentication (SCA).",
+      "location": "raw line 7, POST /registeredDevices introduction"
+    },
+    {
+      "text": "For a successful request, the device must be eligible for SCA.",
+      "location": "raw line 9, introduction"
+    },
+    {
+      "text": "|   - sdkOutput | string | Yes | A base64-encoded block with the data required to register the SCA device. You obtain this information by using our authentication SDK. |",
+      "location": "raw line 22, Request body"
+    },
+    {
+      "text": "| sdkInput | string | No | A string that you must pass to the authentication SDK to continue with the registration process. |",
+      "location": "raw line 34, 200 Success response body"
+    },
+    {
+      "text": "| success | boolean | No | Specifies if the registration was initiated successfully. |",
+      "location": "raw line 35, 200 Success response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c57-post-registereddevices-business-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices]] \u2014 2026-09-15-captured Balance Platform API v2 TEST reference for initiating eligible SCA-device registration by payment instrument and SDK output; its 200 response requires SDK continuation and does not prove completed registration.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c57-post-registereddevices-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices]] \u2014 2026-09-15-captured Balance Platform API v2 TEST reference for initiating an eligible issued-card SCA-device registration with SDK output; initiation is separate from completed enrollment.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/registeredDevices/2026-09-15.md",
+  "raw_sha256": "67773449df44fa3ed2f09c0918c6fb2e7482df0683946b15ba85a02efd9d09fc",
+  "status": "candidate_ready"
+}
