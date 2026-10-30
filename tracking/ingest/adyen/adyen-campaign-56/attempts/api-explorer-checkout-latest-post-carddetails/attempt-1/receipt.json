@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-carddetails",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72 POST /cardDetails\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/cardDetails\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/cardDetails/2026-09-15.md\"\ntags: [adyen, checkout, api, cards, co-badged]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Checkout API Explorer capture documents `POST /cardDetails` on the listed TEST v72 server. It looks up brands and other card or network-token details to inform transaction-routing and eligibility decisions. It is a card-information lookup, not a payment or authorization request. The URL's `latest` segment does not establish the current API version or LIVE availability.\n\n## Key takeaways\n\n- The request table marks `merchantAccount` required. `cardNumber`, `encryptedCardNumber`, `countryCode`, and `supportedBrands` are marked optional; the table does not explicitly state a required either-or rule for the two card-number fields or separately state whole-body requiredness. A raw `cardNumber` can be a minimum six-digit prefix, while a full number gives the best result; collecting raw card data requires full PCI compliance. `encryptedCardNumber` is the documented alternative. The `Idempotency-Key` header is optional.\n- When `supportedBrands` is supplied, the response can indicate support for each identified brand. Without it, the API uses brands configured for the merchant account and, if provided, `countryCode`. In an API-only card-data integration, the page directs the merchant to identify co-badged cards and let the shopper choose the brand if both are supported. A response is not proof of a particular card's acceptance or a completed routing choice.\n- The 200 response schema lists optional `brands` (with optional `type`, `supported`, and healthcare eligibility), `fundingSource`, `isCardCommercial`, and `issuingCountryCode`. Its examples show a Visa/Cartes Bancaires card with different `supported` values depending on the request's `supportedBrands`; they are illustrations, not guaranteed account or card outcomes. This captured page has no separate error-response table, so a specific failure code or retry behavior cannot be inferred.\n- The developer-resources paragraph names a \u201cBIN Lookup API\u201d Postman collection even though this page's title, URL and server place the documented operation in Checkout `/cardDetails`. Treat that paragraph as navigation, not a change in endpoint identity.\n\n## Detail locators\n\n- Raw lines 5\u201311: purpose, supported-brand and co-badged shopper-choice conditions. Lines 35\u201342: developer-resources wording and captured TEST v72 server.\n- Raw lines 44\u201359: header and request-body schema. Lines 61\u201382: basic and supported-brands request examples.\n- Raw lines 83\u201397: 200 response schema. Lines 99\u2013139: two response examples and their support flags.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[co-badged-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/cardDetails/2026-09-15|Adyen Checkout API Explorer POST /cardDetails (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Use this endpoint to get information about the card or network token that enables you to decide on the routing of the transaction and the eligibility of the card for the type of transaction.",
+      "location": "raw line 7, opening purpose"
+    },
+    {
+      "text": "For co-badged cards, you must let the shopper choose the brand to pay with  if you support both brands.",
+      "location": "raw line 11, API-only co-badged condition"
+    },
+    {
+      "text": "| cardNumber | string | No | A minimum of the first six digits of the card number. The full card number gives the best result.  You must be [fully PCI compliant](https://docs.adyen.com/development-resources/pci-dss-compliance-guide) to collect raw card data. Alternatively, you can use the `encryptedCardNumber` field. |",
+      "location": "raw line 55, request-body cardNumber row"
+    },
+    {
+      "text": "If not included, our API uses the ones configured for your merchant account and, if provided, the country code.",
+      "location": "raw line 59, request-body supportedBrands row"
+    },
+    {
+      "text": "| brands | array of object | No | The list of brands identified for the card. |",
+      "location": "raw line 91, 200 response-body brands row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-carddetails-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-carddetails]] \u2014 2026-09-15-captured Checkout TEST v72 `POST /cardDetails` card/network-token brand-information lookup for routing and co-badged choice; request, response and evidence limits remain in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/cardDetails/2026-09-15.md",
+  "raw_sha256": "a63d71de216d51b53c017b1acc44887c33c1d1ff36baf809e740c889bfded661",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "api-explorer-binlookup-latest-post-getcostestimate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BIN Lookup API POST /getCostEstimate (captured v54)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/BinLookup/latest/post/getCostEstimate\"\nraw_files:\n  - \"adyen/api-explorer/BinLookup/latest/post/getCostEstimate/2026-09-15.md\"\ntags: [adyen, bin-lookup, cost-estimate, surcharging, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents BinLookup API `POST /getCostEstimate` on the displayed test `https://pal-test.adyen.com/pal/servlet/BinLookup/v54` server. It estimates interchange and scheme fees **before** payment authorisation for merchants operating in Australia, the EU or the UK. Estimates depend on assumed transaction characteristics that are not all known in advance. It is an estimate/lookup, not an actual payment, charged fee or permission to surcharge. See [[adyen]], [[adyen-online-payments]] and [[adyen-currencies-and-fx]].\n\n## Key takeaways\n\n- The request property table marks transaction `amount.currency` and minor-unit `amount.value`, plus `merchantAccount`, required. It marks `cardNumber` and `encryptedCardNumber` optional individually but says one of those must be provided \u201cin a payment request\u201d; a separate recurring-detail example uses `selectedRecurringDetailReference` and `shopperReference` without either card-number field. Therefore the examples do not support a universal card-number requirement for every estimate path. Raw card numbers are for PCI-compliant use cases; the encrypted alternative is described for non-PCI-compliant use cases.\n- Optional `assumptions` cover successful 3DS authentication, valid Level 3 data and installments. For merchants not using Adyen as the payment-authorisation gateway, `merchantDetails.countryCode` is required by its description. `shopperReference` is required for recurring payments; `selectedRecurringDetailReference` can select a stored detail, including `LATEST`. These are conditional descriptions within optional parent fields, not global required marks.\n- The 200 response schema offers optional `costEstimateAmount` (estimated scheme fee plus interchange in settlement currency, or EUR when settlement currency cannot be determined), `costEstimateReference`, `resultCode` and card-BIN details. Some BIN fields require merchant-account settings. The examples show EUR 12 and `Success` only; those values do not predict actual fees. The introduction says the response also contains which surcharging policy is possible, but the response table shown here has no named surcharging-policy property. Treat that as an unresolved source gap, not a documented field contract or legal permission.\n- The page lists 400/401/403/422/500 generic request/error schemas and a 400 error example. The captured `latest` path shows test BinLookup v54, not current version, live regional eligibility, actual fee assessment, authorization or settlement.\n\n## Detail locators\n\n- Regional scope, estimate purpose/assumption limit, displayed server: raw lines 5\u201316.\n- Request schema: lines 20\u201345; card selectors 30\u201331, non-Adyen gateway condition 33\u201334, recurring selectors 37\u201345; examples 47\u2013142.\n- 200 response fields and qualification: lines 143\u2013167; generic error schemas 170\u2013237; response examples 239\u2013297.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider concept and reciprocal source route.\n- [[adyen-currencies-and-fx]] \u2014 currency/minor-unit and settlement-currency context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/BinLookup/latest/post/getCostEstimate/2026-09-15|BinLookup API POST /getCostEstimate snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This API is available only for merchants operating in Australia, the EU, and the UK.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Since not all information is known in advance (for example, if the cardholder will successfully authenticate via 3D Secure or if you also plan to provide additional Level 2/3 data), the returned amounts are based on a set of assumption criteria you define in the `assumptions` parameter.",
+      "location": "raw line 13"
+    },
+    {
+      "text": "| cardNumber | string | No | The card number (4-19 characters) for PCI compliant use cases. Do not use any separators.  Either the `cardNumber` or `encryptedCardNumber` field must be provided in a payment request. |",
+      "location": "raw line 30"
+    },
+    {
+      "text": "|   - countryCode | string | No | 2-letter ISO 3166 country code of the card acceptor location.  This parameter is required for the merchants who don't use Adyen as the payment authorisation gateway. |",
+      "location": "raw line 34"
+    },
+    {
+      "text": "| costEstimateAmount | object | No | The estimated cost (scheme fee + interchange) in the settlement currency. If the settlement currency cannot be determined, the fee in EUR is returned. |",
+      "location": "raw line 163"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bin-costestimate-v54-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-binlookup-latest-post-getcostestimate]] \u2014 2026-09-15 BinLookup API v54 POST /getCostEstimate reference for region-scoped assumed interchange/scheme-fee estimates before authorisation; source flags absent named surcharging-policy response field.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Introduction mentions surcharging-policy output, but captured response schema has no named policy field.",
+          "Captured test v54 and example amount do not establish actual assessed fees or live eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/BinLookup/latest/post/getCostEstimate/2026-09-15.md",
+  "raw_sha256": "8195dceca6c0284194f804438fa3d9e7413691502a7522276be49dc31b382704",
+  "status": "candidate_ready"
+}

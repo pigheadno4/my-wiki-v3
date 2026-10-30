@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-paypal-updateorder",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API POST /paypal/updateOrder \u2014 PayPal Express order update\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/paypal/updateOrder\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/paypal/updateOrder/2026-09-15.md\"\ntags: [adyen, checkout-api, paypal, express-checkout, order-update]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents Checkout API `POST /paypal/updateOrder` for updating a **PayPal Express Checkout order**: the PayPal lightbox can reflect a changed amount and delivery methods based on the delivery address. It is distinct from Checkout API partial-payment `POST /orders`. The captured server is Checkout **v72 test**, although the canonical URL contains `latest`. See [[adyen-online-payments]] and the related PayPal Express Web Component guide.\n\n## Key takeaways\n\n- The request schema marks every top-level body field **No** under Required and does not mark the body itself required. It describes `paymentData` from the client as changing on each `/paypal/updateOrder` request, the original `/payments` `pspReference`, and the original `/sessions` `sessionId`. Illustrative Advanced requests use `pspReference` plus `paymentData`; illustrative Sessions requests use `sessionId` plus `paymentData`. The table alone does not establish that an empty request can update an order or that both identifiers should be sent together.\n- The optional `amount` is the updated final payment amount, described as item total plus the shipping cost of the selected delivery method. Optional `deliveryAddress`, `deliveryMethods`, `discountAmount`, `shippingAmount`, and `taxTotal` are specified separately. Nested amount objects require `currency` and minor-unit integer `value` when included; the delivery-method `selected` description permits only one selected method at a time. The address table makes `stateOrProvince` conditionally required for the US and Canada despite its **No** marker.\n- A `200 Success` response has required `paymentData` and `status` response properties; `status` indicates whether the order was successfully updated with PayPal. The example value is `success`, but the source does not establish authorization, capture, settlement, or a final payment outcome. Keep the returned updated `paymentData` in the ongoing PayPal flow rather than treating the incoming value as invariant.\n- The page documents `400` malformed/unreadable request, `401` authentication required, `403` insufficient permissions, `422` validation error, and `500` server processing error schemas. Their generic examples include error codes/messages; the example `422` missing Return URL and `500` unsupported payment details do not define all failure conditions for this endpoint.\n\n## Detail locators\n\n- Endpoint purpose and v72 test server: raw lines 5\u201310.\n- Idempotency header, request fields, nested amount/address/delivery conditions, and changing `paymentData`: raw lines 12\u201355.\n- Advanced versus Sessions request examples, each with and without delivery methods: raw lines 57\u2013149.\n- `200` response meaning and required response properties; `400`, `401`, `403`, `422`, `500` error schemas: raw lines 150\u2013229.\n- Success and generic error examples: raw lines 231\u2013328.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-online-payments]]\n- PayPal Express integration guide: [[source-adyen-docs-payment-methods-paypal-web-component-express-checkout]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/paypal/updateOrder/2026-09-15|Checkout API POST /paypal/updateOrder (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Updates the order for PayPal Express Checkout. This can be used to update the PayPal lightbox with an updated amount and delivery methods based on the delivery address.",
+      "location": "raw line 7, opening paragraph"
+    },
+    {
+      "text": "- https://checkout-test.adyen.com/v72",
+      "location": "raw line 10, Servers"
+    },
+    {
+      "text": "| paymentData | string | No | The `paymentData` from the client side. This value changes every time you make a `/paypal/updateOrder` request. |",
+      "location": "raw line 46, Request body"
+    },
+    {
+      "text": "| pspReference | string | No | The original `pspReference` from the `/payments` response. |",
+      "location": "raw line 47, Request body"
+    },
+    {
+      "text": "| status | string | Yes | The status of the request. This indicates whether the order was successfully updated with PayPal. |",
+      "location": "raw line 159, 200 Success response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-paypal-updateorder-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-paypal-updateorder]] \u2014 2026-09-15 Checkout API v72 test reference for PayPal Express Checkout lightbox order updates, Sessions/Advanced identifiers, updated `paymentData`, and request/error schemas; an order-update success is not a payment outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/paypal/updateOrder/2026-09-15.md",
+  "raw_sha256": "9e564192c42cb65373c69703d0de68dc30954677a2b6067a5d994a1099640233",
+  "status": "candidate_ready"
+}

@@ -15,6 +15,36 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-api-explorer-recurring-latest-post-disable]] — 2026-09-15-captured inactive Classic Recurring API v68 test-server disable reference for shopper-scoped specific-detail versus all-details selection and response; its source flags the linked guide's contradictory all-details example.
+
+
+- [[source-adyen-api-explorer-recurring-latest-post-scheduleaccountupdater]] — 2026-09-15-captured Recurring API TEST v68 `POST /scheduleAccountUpdater` scheduling contract for card data or shopper and recurring-detail references; the source flags conflicting card-field requiredness and separates scheduling from completed updates.
+
+
+- [[source-adyen-api-explorer-recurring-latest-post-notifyshopper]] — 2026-09-15 Recurring API v68 POST /notifyShopper reference for India local-acquiring pre-debit notification request, shopper/token identifiers and downstream request reference; notification response is not payment outcome.
+
+
+- [[source-adyen-api-explorer-recurring-latest-post-listrecurringdetails]] — 2026-09-15-captured Recurring API v68 test-server reference for shopper-scoped legacy recurring-detail lookup, optional contract matching and returned recurring-detail identifiers; lookup is separate from authorization.
+
+
+- [[source-adyen-api-explorer-recurring-latest-post-disablepermit]] — 2026-09-15-captured Recurring API v68 `POST /disablePermit` reference for a permit linked to a recurring-detail reference; response fields describe the disable request without specifying propagation or payment outcome.
+
+
+- [[source-adyen-api-explorer-recurring-latest-post-createpermit]] — 2026-09-15-captured Recurring API v68 POST /createPermit reference for permits linked to a recurring contract, optional partner/shared models and restrictions, and optional permit-token results.
+
+
+- [[source-adyen-api-explorer-recurring-latest-overview]] — Captured legacy Recurring API v68 overview for token management, authentication, test/live URL patterns and endpoint directory; it recommends Checkout recurring endpoints when possible (2026-09-15).
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-forward]] — Captured Checkout API Explorer `POST /forward` v72 test-server request and third-party-response contract for forwarding card details or network tokens (2026-09-15); the `200` response does not itself establish a payment outcome.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-storedpaymentmethods]] — Captured Checkout API Explorer `POST /storedPaymentMethods` v72 test-server request and `201` stored-token response contract (2026-09-15); separate from payment authorization and future token use.
+
+
+- [[source-adyen-api-explorer-checkout-latest-get-storedpaymentmethods]] — Checkout API v72 test-server API Explorer reference for listing shopper stored-payment-method tokens and response summaries (2026-09-15 snapshot); source flags its path-versus-query shopper-reference discrepancy.
+
+
 - [[source-adyen-docs-payment-methods-eps-react-native-component]] — EPS React Native Components guide's SEPA Direct Debit recurring-token path after initial settlement, with permission recommendation and later stored-ID/ContAuth fields (2026-09-15).
 
 

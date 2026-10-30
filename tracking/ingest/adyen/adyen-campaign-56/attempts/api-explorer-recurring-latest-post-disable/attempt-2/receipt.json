@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-recurring-latest-post-disable",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Recurring API POST /disable\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Recurring/latest/post/disable\"\nraw_files:\n  - \"adyen/api-explorer/Recurring/latest/post/disable/2026-09-15.md\"\ntags: [adyen, recurring-api, tokenization, stored-payment-methods, disable]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Recurring API reference documents `POST /disable` on the listed `pal-test.adyen.com/pal/servlet/Recurring/v68` test server. It disables stored payment details to stop charging a shopper with the relevant recurring detail. The URL's `latest` segment does not establish the current API version. The linked [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-disable-stored-details|Classic disable guide]] marks this endpoint inactive and unsupported for new integrations; it directs new builds to Checkout API and existing users to migration (guide raw lines 14\u201321).\n\n## Key takeaways\n\n- The API body requires `merchantAccount` and `shopperReference`; the shopper reference must match the one used in the initial payment. `recurringDetailReference` is optional in the API schema but determines scope: when supplied, it identifies a specific stored detail; when omitted, the shopper's whole recurring contract, including all recurring details, is disabled (API raw lines 19\u201322).\n- The linked Classic guide's prose agrees that omitting `recurringDetailReference` selects all shopper details (guide raw line 27), but its example labeled \u201call the details\u201d still includes that field (guide raw lines 76\u201385). Do not use that example as an all-details recipe; retain the API reference's selector rule.\n- Optional `contract` can limit disabling to a specified use: `ONECLICK`, `RECURRING`, `PAYOUT`, or a comma-separated combination. Do not infer how this selector interacts with omitted `recurringDetailReference` beyond the documented descriptions.\n- The 200 response's optional `response` field is described as `[detail-successfully-disabled]` or `[all-details-successfully-disabled]`, depending on whether a detail was specified. This is a stored-detail disable response, not payment authorization or settlement evidence. The captured API page does not describe propagation timing to other integrations or deletion of historical transactions.\n- The API page lists 400, 401, 403, 422 and 500 error response tables; no response examples are included.\n\n## Detail locators\n\n- Purpose and v68 test server: API raw lines 5\u201312.\n- Request conditions and example: API raw lines 14\u201333.\n- Success and error responses: API raw lines 34\u2013112.\n- Inactive/migration notice and contradictory all-details example: linked Classic guide raw lines 14\u201321, 25\u201327, 76\u201385.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored payment detail and shopper reference context.\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-disable-stored-details]] \u2014 Classic guide with inactive status and conflicting all-details example.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Recurring/latest/post/disable/2026-09-15|Recurring API POST /disable, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Disables stored payment details to stop charging a shopper with this particular recurring detail ID.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| contract | string | No | Specify the contract if you only want to disable a specific use.  This field can be set to one of the following values, or to their combination (comma-separated):  - ONECLICK  - RECURRING  - PAYOUT |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| recurringDetailReference | string | No | The ID that uniquely identifies the recurring detail reference.  If it is not provided, the whole recurring contract of the `shopperReference` will be disabled, which includes all recurring details. |",
+      "location": "raw line 21"
+    },
+    {
+      "text": "| shopperReference | string | Yes | The ID that uniquely identifies the shopper.  This `shopperReference` must be the same as the `shopperReference` used in the initial payment. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| response | string | No | Depending on whether a specific recurring detail was in the request, result is either [detail-successfully-disabled] or [all-details-successfully-disabled]. |",
+      "location": "raw line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-recurring-disable-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-recurring-latest-post-disable]] \u2014 2026-09-15-captured inactive Classic Recurring API v68 test-server disable reference for shopper-scoped specific-detail versus all-details selection and response; its source flags the linked guide's contradictory all-details example.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Linked Classic disable guide already warns about inactive/new-integration status and the contradictory all-details example; no reciprocal guide edit is needed."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Recurring/latest/post/disable/2026-09-15.md",
+  "raw_sha256": "7ad3bb263a78f12e54fa56cd1ee34fbb62f535e4fb616f1b33019e310cb57f96",
+  "status": "candidate_ready"
+}

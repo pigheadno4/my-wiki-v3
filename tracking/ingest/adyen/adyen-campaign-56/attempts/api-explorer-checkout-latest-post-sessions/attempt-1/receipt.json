@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-sessions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API POST /sessions (captured v72)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/sessions/2026-09-14.md\"\ntags: [adyen, checkout, sessions, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-14 API Explorer snapshot documents Checkout API `POST /sessions` against the displayed test server `https://checkout-test.adyen.com/v72`. It creates a payment session for Drop-in, Components or Hosted Checkout. The response carries a session identifier and encrypted session data for the front end, or a Hosted Checkout URL where applicable. The payment outcome arrives asynchronously through an `AUTHORISATION` webhook. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The request table marks `amount` (with `currency` and minor-unit `value`), `merchantAccount`, `reference`, and `returnUrl` required. The latter is the redirect return URL and has channel-specific formats; it must exclude personally identifiable information. The optional `Idempotency-Key` header is limited to 64 characters. The table lists no separate request-body requiredness declaration, so these are property-level marks.\n- `mode` defaults to `embedded` for Drop-in or Components; `hosted` selects Hosted Checkout. The optional `channel` can filter platform-specific methods. `expiresAt` is optional in the request table: the default is one hour after creation, and the maximum is 24 hours after creation. The response table marks `expiresAt` required while repeating the request-side \u201cwhen not specified\u201d explanation; read those columns in their separate request/response contexts.\n- Conditional inputs include `lineItems` for the listed buy-now-pay-later methods, `shopperName` for some methods or PayPal Seller Protection, `shopperIP` and phone data in specified 3DS cases, `store` for a platform-model Adyen for Platforms integration, and `recurringProcessingModel` when creating a payment-details token. Address and nested-object `Yes` marks apply when those optional parent objects are supplied; see the full request table for each condition.\n- The response documents HTTP `201 Success` as creation of a resource. Its `id` identifies the session, `sessionData` is for the front end, and `url` is the Hosted Checkout redirect destination. Creation and the example payloads do not prove authorization, capture, settlement, merchant enablement, or live availability. The snapshot's `latest` URL does not establish today's latest API version.\n\n## Detail locators\n\n- Purpose, asynchronous outcome and displayed test `v72` server: raw lines 5\u201314.\n- Header and request schema: lines 18\u2013303; core amount lines 52\u201354, merchant/payment references 227 and 253, return URL 254; expiry 117, mode 230, and conditional fields 190, 250, 262\u2013286.\n- Request examples: lines 305\u2013440. Response status/schema: lines 441\u2013727; session `id` 608, `sessionData` 683, Hosted Checkout `url` 727; response examples 729\u2013880.\n\n## Related\n\n- [[source-adyen-docs-online-payments-build-your-integration-sessions-flow]] \u2014 separate integration guide for client flow and webhook handling.\n- [[adyen-online-payments]] \u2014 provider concept and source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/sessions/2026-09-14|Checkout API POST /sessions snapshot (2026-09-14)]]\n",
+  "quotes": [
+    {
+      "text": "Creates a payment session for [Drop-in](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Drop-in), [Components](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Components), and [Hosted Checkout](https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/?platform=Web&integration=Hosted+Checkout) integrations.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "You get the payment outcome asynchronously, in an [AUTHORISATION](https://docs.adyen.com/api-explorer/#/Webhooks/latest/post/AUTHORISATION) webhook.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| expiresAt | string | No | The date the session expires in [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html) format. When not specified, the expiry date is set to 1 hour after session creation. You cannot set the session expiry to more than 24 hours after session creation. |",
+      "location": "raw line 117, request body table"
+    },
+    {
+      "text": "| id | string | Yes | A unique identifier of the session. |",
+      "location": "raw line 608, response body table"
+    },
+    {
+      "text": "| sessionData | string | No | The payment session data you need to pass to your front end. |",
+      "location": "raw line 683, response body table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sessions-v72-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-sessions]] \u2014 2026-09-14 Checkout API v72 POST /sessions reference for session creation request/response schema, expiry and async outcome boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured latest-path page displays the test v72 server; it does not establish current latest or live availability."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/sessions/2026-09-14.md",
+  "raw_sha256": "4b0571e88d22ac969c7eb13ab15e5c673d9f89461e1e79917553f17cf7d95857",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,47 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-donationcampaigns",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72 POST /donationCampaigns \u2014 List campaigns\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/donationCampaigns\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/donationCampaigns/2026-09-15.md\"\ntags: [adyen, checkout, api, giving, donations]\n---\n\n## Overview\n\nThis captured API Explorer reference documents Checkout API v72 `POST /donationCampaigns` at the test server. It queries active donation campaigns using donation context; it does not create a campaign or make a donation. See [[adyen]] and [[adyen-giving]].\n\n## Key takeaways\n\n- The request body table marks `currency` and `merchantAccount` required. `label` and `locale` are optional. `store` is marked optional in the table but described as required for Adyen for Platforms integrations using a platform model; its identifier meaning differs between balance-platform and classic integrations. `Idempotency-Key` is an optional header with a 64-character maximum.\n- A 200 response may contain `donationCampaigns`, an array of active campaigns for the merchant account. Campaign details can include a unique campaign `id`, nonprofit details, banner/logo/terms URLs, and fixed-amount or roundup donation configuration. The array itself and many child fields are marked optional in this schema; child-field requiredness applies when its containing object is present.\n- This discovery response does not establish donation eligibility for a particular shopper, a donation request, authorization, settlement, or a `DONATION` webhook outcome. The reference lists 400, 401, 403, 422, and 500 errors. Its generic 422 example says \u201cReturn URL is missing,\u201d but no `returnUrl` is listed for this request; do not infer one from that example.\n- The URL says `latest`, while the captured server is `https://checkout-test.adyen.com/v72` (2026-09-15 snapshot). It does not establish a current live version.\n\n## Detail locators\n\n- Purpose, test server, header and request body with conditional `store`: raw lines 5\u201327.\n- Response campaign object, optionality and donation types: raw lines 38\u201364.\n- HTTP error tables and illustrative payloads: raw lines 67\u2013247.\n\n## Related\n\n- [[source-adyen-docs-online-payments-donations-integration-options-advanced-flow]] \u2014 online Giving integration guide.\n- [[adyen-giving]] \u2014 provider concept route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/donationCampaigns/2026-09-15|Captured Checkout API POST /donationCampaigns reference]]\n",
+  "quotes": [
+    {
+      "text": "Queries the available donation campaigns for a donation based on the donation context (like merchant account, currency, and locale). The response contains active donation campaigns.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| store | string | No | Required for Adyen for Platforms integrations if you are a platform model.",
+      "location": "raw line 27 (opening exact substring)"
+    },
+    {
+      "text": "| donationCampaigns | array of object | No | List of active donation campaigns for your merchant account. |",
+      "location": "raw line 46"
+    },
+    {
+      "text": "|   - id | string | No | The unique campaign ID of the donation campaign. |",
+      "location": "raw line 59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-donationcampaigns-reciprocal",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-donationcampaigns]] \u2014 2026-09-15-captured Checkout API v72 POST /donationCampaigns reference for active-campaign discovery, request context, conditional platform store, and optional campaign details.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/donationCampaigns/2026-09-15.md",
+  "raw_sha256": "177ea2c6e77bed4261799a33080e25d88649550a4234d7e83b3285145d2f2170",
+  "status": "candidate_ready"
+}

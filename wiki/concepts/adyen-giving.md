@@ -28,6 +28,15 @@ The captured Advanced-flow guide lists Web Components v5.0.0 or later and descri
 
 ## Sources
 
+- [[source-adyen-api-explorer-payment-latest-post-donate]] — 2026-09-15-captured inactive Payment API v68 `POST /donate` reference for scheduling a separate donation request from an original payment; its response acknowledges receipt for processing, not the donation outcome.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-donations]] — 2026-09-15-captured Checkout API v72 test-server donation request/response reference for token or stored-method examples, conditional original-payment identity, donation status and nested payment result; merchant `DONATION` webhook remains the Giving outcome route.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-donationcampaigns]] — 2026-09-15-captured Checkout API v72 POST /donationCampaigns reference for active-campaign discovery, request context, conditional platform store, and optional campaign details.
+
+
 - [[source-adyen-docs-standard-integration-drop-in-donations]] — 2026-09-15 Standard Drop-in Giving guide for post-payment campaign presentation, donation callbacks, separate DONATION-webhook outcome, and test/live checks.
 
 

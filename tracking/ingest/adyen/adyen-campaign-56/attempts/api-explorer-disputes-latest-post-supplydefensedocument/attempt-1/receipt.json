@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-disputes-latest-post-supplydefensedocument",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Disputes API POST /supplyDefenseDocument \u2014 upload dispute evidence\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Disputes/latest/post/supplyDefenseDocument\"\nraw_files:\n  - \"adyen/api-explorer/Disputes/latest/post/supplyDefenseDocument/2026-09-15.md\"\ntags: [adyen, disputes-api, defense-documents, chargebacks, evidence]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents Disputes Service `POST /supplyDefenseDocument`, supplying defense documents for a **specific dispute**. The captured server is **v30 test**, although the canonical route contains `latest`. The request identifies the dispute by `disputePspReference`, separate from the merchant account and any payment-reference field in generic error bodies. See [[adyen-risk-management]] and the broader Disputes API workflow guide.\n\n## Key takeaways\n\n- The schema marks `defenseDocuments`, `disputePspReference`, and `merchantAccountCode` required request-body properties. Each listed document object marks `content`, `contentType`, and `defenseDocumentTypeCode` required. The single example uses `application/pdf` and `DefenseMaterial`; it does not establish all permitted formats, type codes, size limits, or that this example fits every dispute's applicable defense reason.\n- `200 Success` means the API request succeeded; the required `disputeServiceResult` object contains a required `success` boolean and optional `errorMessage`. The shown `success: true` is a supply-document request result. The related Adyen workflow guide says upload stores evidence for a later `/defendDispute` submission; it is not itself final defense submission, issuer acceptance, or a won dispute.\n- The page lists `400` unreadable request, `401` authentication required, `403` insufficient permission, `422` validation error, and `500` server error schemas, but shows no examples of these failures. The generic error body has an optional payment `pspReference`; do not confuse that field with required `disputePspReference` that selects the dispute. This page alone does not define account role, case deadline, scheme-specific evidence requirements, or live availability.\n\n## Detail locators\n\n- Endpoint purpose and captured v30 test server: raw lines 5\u201310.\n- Required dispute/merchant/document request fields: raw lines 14\u201322.\n- Single illustrative PDF/DefenseMaterial request: raw lines 24\u201339.\n- `200` request-level result and example: raw lines 40\u201350 and 117\u2013128.\n- HTTP error classes and generic body fields: raw lines 53\u2013115.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-risk-management]]\n- Disputes API workflow: [[source-adyen-docs-risk-management-disputes-api]]\n- Applicable reason/type-code reference: [[source-adyen-docs-risk-management-disputes-api-disputes-api-reference]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Disputes/latest/post/supplyDefenseDocument/2026-09-15|Disputes API POST /supplyDefenseDocument (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Supplies a specific dispute defense document.",
+      "location": "raw line 7, opening paragraph"
+    },
+    {
+      "text": "- https://ca-test.adyen.com/ca/services/DisputeService/v30",
+      "location": "raw line 10, Servers"
+    },
+    {
+      "text": "| defenseDocuments | array of object | Yes | An array containing a list of the defense documents. |",
+      "location": "raw line 17, Request body"
+    },
+    {
+      "text": "| disputePspReference | string | Yes | The PSP reference assigned to the dispute. |",
+      "location": "raw line 21, Request body"
+    },
+    {
+      "text": "|   - success | boolean | Yes | Indicates whether the request succeeded. |",
+      "location": "raw line 50, 200 Success response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-supplydefensedocument-risk-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-disputes-latest-post-supplydefensedocument]] \u2014 2026-09-15 Disputes Service v30 test reference for dispute-scoped defense-document supply, required document fields and request-level `success`; upload is separate from final defense and dispute outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Disputes/latest/post/supplyDefenseDocument/2026-09-15.md",
+  "raw_sha256": "3dcf09daf17995e539b57bec65f645ea8f3096371af02df87837020e2a1ae915",
+  "status": "candidate_ready"
+}

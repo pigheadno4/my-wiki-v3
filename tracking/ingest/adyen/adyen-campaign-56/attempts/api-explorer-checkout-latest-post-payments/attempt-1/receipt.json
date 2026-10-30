@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72 POST /payments\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/payments\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/payments/2026-09-15.md\"\ntags: [adyen, checkout, api, online-payments, payment]\n---\n\n## Overview\n\nThis 2026-09-15 capture of [[adyen]] Checkout API Explorer documents `POST /payments`, which sends a transaction amount and shopper payment details to start a payment. The captured server is `https://checkout-test.adyen.com/v72`; the URL segment `latest` is a navigation route, not evidence of a later API version or LIVE behavior. This endpoint is part of the [[adyen-online-payments]] Advanced flow.\n\n## Key takeaways\n\n- The request table marks `amount` (currency and minor-unit value), `merchantAccount`, `paymentMethod`, `reference`, and `returnUrl` required. The table does not separately state whether the entire HTTP request body is required. `returnUrl` is the return destination for redirects and must exclude personal information. The optional `Idempotency-Key` header has a 64-character maximum.\n- Method and flow determine further inputs. For example, the page requires billing address for browser and mobile 3D Secure 2 transactions, full browser information for web 3D Secure, and `origin` for browser-based Web 3D Secure 2. `lineItems` is required for the listed buy-now-pay-later methods. `shopperReference` is required for recurring payments and `recurringProcessingModel` for storing or using stored details. Raw card details are expressly limited to fully PCI-compliant collection. Consult the exact field descriptions and method guides before constructing a method-specific request.\n- In a direct flow, the response can provide `pspReference` and `resultCode`, such as `Authorised` or `Refused`. A redirect or additional-action flow returns `action`; the response table says `pspReference` for such methods arrives in `/payments/details`. `IdentifyShopper`, `ChallengeShopper`, `RedirectShopper`, `PresentToShopper`, `Pending`, and `Received` have distinct non-final or further-action meanings. An authentication-only result is not a payment authorization. The response table calls `Authorised`, `Cancelled`, `Error`, and `Refused` final payment-result states; it does not establish capture, settlement, or merchant payout.\n- HTTP 200 means the request succeeded, not that every payment was authorised: the 200 schema includes refusal and error result codes. Separate 400, 401, 403, 422, and 500 sections describe request, authentication, permission, validation, and server errors. The examples are illustrative TEST payloads and responses, not guarantees for a merchant or a live transaction.\n\n## Detail locators\n\n- Raw lines 5-22: endpoint purpose, direct/action split, captured TEST v72 server and idempotency header.\n- Raw lines 25-520: complete request schema, including requiredness and conditional 3DS, recurring, platform, token, split, and method fields. Raw lines 523-1007: request examples.\n- Raw lines 1008-1087: 200 response schema, result-code meanings, PSP reference timing and additional-details handoff. Raw lines 1090-1157: HTTP error schemas.\n- Raw lines 1159-1457: response and error examples. The card and redirect examples show different outcomes; do not generalize an example to all methods.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-api-idempotency]]\n- [[source-adyen-docs-online-payments-build-your-integration-advanced-flow]] \u2014 flow-level client action, webhook and live-region qualifications.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/payments/2026-09-15|Adyen Checkout API Explorer POST /payments (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Sends payment parameters (like amount, country, and currency) together with other required input details collected from the shopper.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "For a redirect or additional action, the response contains an `action` object.",
+      "location": "raw line 12, opening description"
+    },
+    {
+      "text": "| paymentMethod |  | Yes | The type and required details of a payment method to use. |",
+      "location": "raw line 378, request-body table"
+    },
+    {
+      "text": "For payment methods that require a redirect or additional action, you will get this value in the `/payments/details` response.",
+      "location": "raw line 1048, 200 response-body pspReference row"
+    },
+    {
+      "text": "**Authorised** \u2013 The payment was successfully authorised. This state serves as an indicator to proceed with the delivery of goods and services. This is a final state.",
+      "location": "raw line 1051, 200 response-body resultCode row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-payments-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-payments]] \u2014 2026-09-15-captured Checkout API Explorer TEST v72 `POST /payments` request, direct/action response and HTTP error reference; method-specific conditions and payment-outcome limits remain in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/payments/2026-09-15.md",
+  "raw_sha256": "e77a1c5268251b4697d761f43798cb21627b42e7e3d51925f83d9e3effd66f2e",
+  "status": "candidate_ready"
+}

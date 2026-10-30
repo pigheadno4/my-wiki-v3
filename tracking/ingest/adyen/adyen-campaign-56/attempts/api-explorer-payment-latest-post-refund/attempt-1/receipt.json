@@ -1,0 +1,55 @@
+{
+  "job_id": "api-explorer-payment-latest-post-refund",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Payment API POST /refund (captured v68)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/refund\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/refund/2026-09-15.md\"\ntags: [adyen, classic-api, payment-api, refunds, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents Classic Payment API `POST /refund` at the displayed test `https://pal-test.adyen.com/pal/servlet/Payment/v68` server. It requests a full or partial refund of a previously captured payment and returns a unique request reference. The page marks the endpoint inactive for new integrations, directs new builds to Checkout API `/payments/{paymentPspReference}/refunds`, and advises existing users to contact Adyen about migration. This is a Classic endpoint contract, not the Checkout refunds contract. See [[adyen]] and [[adyen-refunds]].\n\n## Key takeaways\n\n- The payment must have been captured. An authorised but uncaptured payment is directed to cancellation instead. Multiple partial refunds are described as acceptable while their sum stays within the captured amount, subject to method/gateway support; a configurable margin above the captured limit can cover shipping or handling. The request table also says `modificationAmount.value` must be at most the **authorised** amount. These captured-versus-authorised phrasings are not identical; preserve the qualified overview rather than treating the table's bound as proof that uncaptured value can be refunded.\n- The request property table marks `merchantAccount`, `modificationAmount` with matching authorisation currency and minor-unit value, and `originalReference` required. `originalReference` is the original payment PSP reference from authorisation; optional `reference` labels this refund modification. The table does not separately state whole-body requiredness.\n- HTTP 200 returns a PSP reference for the refund request and a `response` value indicating receipt for processing; the example is `[refund-received]`. Receipt is not completed refund, shopper receipt of funds, or settlement proof. The wider Classic refund guide covers asynchronous result handling.\n- The page lists 400 malformed-request, 401 authentication, 403 permission, 422 validation, and 500 server error schemas, with 200/400/401/500 examples. Its optional `originalMerchantReference` description says \u201cto cancel\u201d despite this refund endpoint; do not use that copy to infer a cancellation action.\n- The captured `latest` path displays Classic Payment API test v68 only. It does not establish today's latest version, live account eligibility, a real refund, or the linked Checkout endpoint's schema.\n\n## Detail locators\n\n- Captured-payment eligibility, partial-refund qualifications, inactive/migration note, and test server: raw lines 5\u201323.\n- Request schema: lines 27\u201364; core required fields 31\u201334 and 49, optional original merchant/reference fields 48 and 54, platform-specific splits 50\u201362. Request example: 66\u201379.\n- Response 200 acknowledgement and request PSP identity: lines 80\u201390 and 162\u2013172. Error schemas and examples: 93\u2013160 and 174\u2013209.\n\n## Related\n\n- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-refund]] \u2014 broader Classic refund lifecycle and webhook guide.\n- [[adyen-refunds]] \u2014 provider concept and reciprocal source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/refund/2026-09-15|Classic Payment API POST /refund snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Refunds a payment that has previously been captured, returning a unique reference for this request. Refunding can be done on the full captured amount or a partial amount. Multiple (partial) refunds will be accepted as long as their sum doesn't exceed the captured amount. Payments which have been authorised, but not captured, cannot be refunded, use the /cancel method instead.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Some payment methods/gateways do not support partial/multiple refunds.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "This endpoint is [inactive](https://docs.adyen.com/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 14"
+    },
+    {
+      "text": "| modificationAmount | object | Yes | The amount that needs to be refunded. The `currency` must match the currency used in authorisation, the `value` must be smaller than or equal to the authorised amount. |",
+      "location": "raw line 32"
+    },
+    {
+      "text": "| response | string | Yes | Indicates if the modification request has been received for processing. |",
+      "location": "raw line 90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "classic-refund-v68-reciprocal",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-refund]] \u2014 2026-09-15 inactive Classic Payment API v68 POST /refund reference for captured-payment eligibility, partial-refund qualification, original PSP identity and received-for-processing response.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Overview caps ordinary refunds by captured amount, while modificationAmount table says value at most authorised amount; these are not equivalent.",
+          "The endpoint is inactive Classic Payment API; linked Checkout /refunds has a separate contract."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/refund/2026-09-15.md",
+  "raw_sha256": "6824971a96b4ab7fb2e62deb1ad4832f3d1e7c3fbd1f71b698672d1a2bdc615d",
+  "status": "candidate_ready"
+}

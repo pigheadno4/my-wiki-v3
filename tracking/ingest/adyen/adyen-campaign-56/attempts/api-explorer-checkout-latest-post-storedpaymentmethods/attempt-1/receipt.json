@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-storedpaymentmethods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API POST /storedPaymentMethods (captured v72)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/storedPaymentMethods\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/storedPaymentMethods/2026-09-15.md\"\ntags: [adyen, checkout-api, tokenization, stored-payment-methods]\n---\n\n## Overview\n\nThis captured [[adyen]] Checkout API Explorer reference describes `POST /storedPaymentMethods`: creating a shopper-linked token for stored payment details that can be used for future payments. Its listed server is `https://checkout-test.adyen.com/v72`; the `latest` URL is not evidence of a newer or current version. This is a token-creation contract, not a payment authorization or future-payment result. See [[adyen-tokenization]].\n\n## Key takeaways\n\n- The request schema marks `merchantAccount`, `paymentMethod`, `recurringProcessingModel`, and `shopperReference` required. The model distinguishes `Subscription`, `CardOnFile`, and `UnscheduledCardOnFile`; see the source's request-body table for their definitions. The card fields nested under `paymentMethod` are individually shown as optional in this capture, while its `type` description says to set `scheme`.\n- Raw `cvc`, `expiryMonth`, `expiryYear`, and `number` fields each carry the fully PCI-compliant collection qualification. The encrypted and unencrypted card examples are examples, not an expanded required-property list.\n- `201 Success` says a resource was created. The response schema's optional `id` is the stored payment method identifier; its examples show that ID with masked card details and `shopperReference`. This response alone does not establish a payment authorization, settlement, or later successful token charge.\n- This endpoint capture does not state shopper-consent or account-eligibility rules. Consult the broader [[adyen-tokenization]] guides for those separate conditions before treating a stored-token flow as complete.\n\n## Detail locators\n\n- Server and idempotency header: raw lines 9\u201317.\n- Request properties, recurring models, PCI qualification, and request examples: raw lines 20\u201380.\n- `201` response and optional stored-method fields, including `id`, mandate details, and supported models: raw lines 81\u2013138; response examples: lines 140\u2013168.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/storedPaymentMethods/2026-09-15|Checkout API Explorer POST /storedPaymentMethods capture]]\n",
+  "quotes": [
+    {
+      "text": "Creates a token to store the shopper's payment details. This token can be used for the shopper's future payments.",
+      "location": "raw lines 5\u20137"
+    },
+    {
+      "text": "- https://checkout-test.adyen.com/v72",
+      "location": "raw lines 9\u201310"
+    },
+    {
+      "text": "| recurringProcessingModel | string | Yes | Defines a recurring payment type. Required when creating a token to store payment details.",
+      "location": "raw line 37, opening substring"
+    },
+    {
+      "text": "| shopperReference | string | Yes | A unique identifier for the shopper (for example, user ID or account ID). |",
+      "location": "raw line 40"
+    },
+    {
+      "text": "| id | string | No | A unique identifier of this stored payment method. |",
+      "location": "raw line 108"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-storedpaymentmethods-post-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-storedpaymentmethods]] \u2014 Captured Checkout API Explorer `POST /storedPaymentMethods` v72 test-server request and `201` stored-token response contract (2026-09-15); separate from payment authorization and future token use.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/storedPaymentMethods/2026-09-15.md",
+  "raw_sha256": "8f1b51e1023bd4f480b1f38091493fb3cff8d2a7fa89380bfd27ad501ae4e43c",
+  "status": "candidate_ready"
+}

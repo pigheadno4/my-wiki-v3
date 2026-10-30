@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-recurring-latest-post-disable",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Recurring API POST /disable\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Recurring/latest/post/disable\"\nraw_files:\n  - \"adyen/api-explorer/Recurring/latest/post/disable/2026-09-15.md\"\ntags: [adyen, recurring-api, tokenization, stored-payment-methods, disable]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Recurring API reference documents `POST /disable` on the listed `pal-test.adyen.com/pal/servlet/Recurring/v68` test server. It disables stored payment details to stop charging a shopper with the relevant recurring detail. The URL's `latest` segment does not establish the current API version.\n\n## Key takeaways\n\n- The body requires `merchantAccount` and `shopperReference`; the shopper reference must match the one used in the initial payment. `recurringDetailReference` is optional in the schema but determines scope: when supplied, it identifies a specific stored detail; when omitted, the shopper's whole recurring contract, including all recurring details, is disabled.\n- Optional `contract` can limit disabling to a specified use: `ONECLICK`, `RECURRING`, `PAYOUT`, or a comma-separated combination. Do not infer how this selector interacts with omitted `recurringDetailReference` beyond the documented descriptions.\n- The 200 response's optional `response` field is described as `[detail-successfully-disabled]` or `[all-details-successfully-disabled]`, depending on whether a detail was specified. This is a stored-detail disable response, not payment authorization or settlement evidence. The captured page does not describe propagation timing to other integrations or deletion of historical transactions.\n- The page lists 400, 401, 403, 422 and 500 error response tables; no response examples are included.\n\n## Detail locators\n\n- Purpose and v68 test server: raw lines 5\u201312.\n- Request conditions and example: raw lines 14\u201333.\n- Success and error responses: raw lines 34\u2013112.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored payment detail and shopper reference context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Recurring/latest/post/disable/2026-09-15|Recurring API POST /disable, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Disables stored payment details to stop charging a shopper with this particular recurring detail ID.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| contract | string | No | Specify the contract if you only want to disable a specific use.  This field can be set to one of the following values, or to their combination (comma-separated):  - ONECLICK  - RECURRING  - PAYOUT |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| recurringDetailReference | string | No | The ID that uniquely identifies the recurring detail reference.  If it is not provided, the whole recurring contract of the `shopperReference` will be disabled, which includes all recurring details. |",
+      "location": "raw line 21"
+    },
+    {
+      "text": "| shopperReference | string | Yes | The ID that uniquely identifies the shopper.  This `shopperReference` must be the same as the `shopperReference` used in the initial payment. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| response | string | No | Depending on whether a specific recurring detail was in the request, result is either [detail-successfully-disabled] or [all-details-successfully-disabled]. |",
+      "location": "raw line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-recurring-disable-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-recurring-latest-post-disable]] \u2014 2026-09-15-captured Recurring API v68 test-server disable reference; merchant/shopper identity, specific-detail versus all-details scope, optional contract-use selector and disable response.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Recurring/latest/post/disable/2026-09-15.md",
+  "raw_sha256": "7ad3bb263a78f12e54fa56cd1ee34fbb62f535e4fb616f1b33019e310cb57f96",
+  "status": "candidate_ready"
+}

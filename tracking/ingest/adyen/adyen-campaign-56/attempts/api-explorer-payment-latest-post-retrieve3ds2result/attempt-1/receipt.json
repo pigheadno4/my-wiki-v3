@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-payment-latest-post-retrieve3ds2result",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payment API v68 POST /retrieve3ds2Result\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/retrieve3ds2Result\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/retrieve3ds2Result/2026-09-15.md\"\ntags: [adyen, payment-api, classic, 3ds2, authentication]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Payment API Explorer capture documents `POST /retrieve3ds2Result` at the listed TEST `Payment/v68` server. It retrieves `threeDS2Result` after a 3D Secure 2 authentication-only flow, using the `pspReference` returned by the earlier `/authorise` call. This is the Classic Payment API route, distinct from Checkout API payment and details endpoints. The URL's `latest` segment does not establish a newer captured version or LIVE availability.\n\n## Key takeaways\n\n- The request-body table marks `merchantAccount` and `pspReference` required properties. It does not separately state whole-body requiredness. The reference identifies the preceding `/authorise` request; it is not a generic shopper, order or capture reference.\n- HTTP 200 says the retrieval request succeeded. The response schema marks the `threeDS2Result` object optional and lists authentication fields such as `authenticationValue`, `eci`, `transStatus`, `transStatusReason`, `dsTransID` and `timestamp` as optional. The captured page gives no 200 response example and no guarantee that every field is present. A retrieved authentication result is not itself payment authorization, capture, settlement or payout; a separate authorization step may be needed for an authentication-only flow.\n- The page lists 400 request-reading, 401 authentication, 403 permission, 422 validation and 500 server errors, with common optional error fields. Its examples show 400, 401 and 500 payloads only. These are API failure illustrations, not payment outcome or retry rules. The page gives no deletion, propagation or asynchronous payment-status contract.\n\n## Detail locators\n\n- Raw lines 5\u201318: purpose, TEST Payment/v68 server and required request properties. Lines 20\u201328: request example.\n- Raw lines 29\u201351: 200 response and nested 3DS2 authentication fields. Lines 54\u2013121: error status tables. Lines 123\u2013160: error examples.\n\n## Related\n\n- [[adyen]]\n- [[adyen-3d-secure]]\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-native-3ds2-authentication-only-integration]] \u2014 legacy flow and separate-authorization context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/retrieve3ds2Result/2026-09-15|Adyen Payment API Explorer POST /retrieve3ds2Result (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Retrieves the `threeDS2Result` after doing a 3D Secure 2 authentication only.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "https://pal-test.adyen.com/pal/servlet/Payment/v68",
+      "location": "raw line 10, Servers"
+    },
+    {
+      "text": "| pspReference | string | Yes | The pspReference returned in the /authorise call. |",
+      "location": "raw line 18, request-body table"
+    },
+    {
+      "text": "| threeDS2Result | object | No | The result of the 3D Secure 2 authentication. |",
+      "location": "raw line 37, 200 response-body table"
+    },
+    {
+      "text": "The request has succeeded.",
+      "location": "raw line 32, 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-retrieve3ds2result-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-retrieve3ds2result]] \u2014 2026-09-15-captured Classic Payment API TEST v68 `POST /retrieve3ds2Result` authentication-only result lookup by `/authorise` PSP reference; it is not a payment-authorization or capture result.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/retrieve3ds2Result/2026-09-15.md",
+  "raw_sha256": "30c8d4aa1e1c5dac14e33609277444c6a3079a318986667998d132280c29c0ed",
+  "status": "candidate_ready"
+}

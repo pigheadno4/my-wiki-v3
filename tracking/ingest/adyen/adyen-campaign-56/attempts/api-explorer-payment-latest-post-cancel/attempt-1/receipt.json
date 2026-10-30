@@ -1,0 +1,47 @@
+{
+  "job_id": "api-explorer-payment-latest-post-cancel",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Payment API v68 POST /cancel \u2014 Cancel an authorisation\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/cancel\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/cancel/2026-09-15.md\"\ntags: [adyen, classic-payment-api, cancellation, authorisation]\n---\n\n## Overview\n\nThis captured Classic Payment API v68 reference documents `POST /cancel` for requesting cancellation of a payment's authorisation hold. It applies after authorisation only to payment methods with distinct authorisations and captures. The endpoint is marked inactive and unsupported for new integrations; the page points new integrations to Checkout API `/payments/{paymentPspReference}/cancels`, and existing users to migration. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The request body table requires `merchantAccount` and `originalReference`, the original payment PSP reference from an authorisation response or notification. Optional `reference` is the merchant's modification reference, not the original payment reference. `originalMerchantReference` is also optional.\n- The 200 response returns a new `pspReference` for the cancellation request and a `response` indicating that the modification request was received for processing. It does not itself establish that the authorisation hold has been cancelled. Confirm the asynchronous modification outcome through the relevant notification route in [[source-adyen-docs-online-payments-classic-integrations-modify-payments-cancel]].\n- The broad request schema also lists optional `additionalData`, `mpiData`, platform chargeback logic, `splits`, and POS identifiers with their own conditional field descriptions. These table entries should not be converted into blanket cancellation prerequisites. Error tables list 400, 401, 403, 422, and 500.\n- The `latest` page captured on 2026-09-15 lists the test server `https://pal-test.adyen.com/pal/servlet/Payment/v68`. It does not establish the current API version or a Checkout endpoint contract.\n\n## Detail locators\n\n- Cancellation scope, inactive status and Checkout migration: raw lines 5\u201320.\n- Request identities and optional/conditional schema: raw lines 24\u201358.\n- Example request: raw lines 60\u201369.\n- 200 acknowledgement and errors/examples: raw lines 70\u2013189.\n\n## Related\n\n- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-cancel]] \u2014 Classic cancellation guide and asynchronous outcome.\n- [[source-adyen-docs-online-payments-cancel]] \u2014 Checkout cancellation guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/cancel/2026-09-15|Captured Classic Payment API POST /cancel reference]]\n",
+  "quotes": [
+    {
+      "text": "Cancels the authorisation hold on a payment, returning a unique reference for this request. You can cancel payments after authorisation only for payment methods that support distinct authorisations and captures.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "This endpoint is [inactive](https://docs.adyen.com/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| originalReference | string | Yes | The original pspReference of the payment to modify.",
+      "location": "raw line 43 (opening exact substring)"
+    },
+    {
+      "text": "| response | string | Yes | Indicates if the modification request has been received for processing. |",
+      "location": "raw line 80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-payment-cancel-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-cancel]] \u2014 2026-09-15-captured inactive Classic Payment API v68 POST /cancel reference for original-payment identity, cancellation-request acknowledgement, and Checkout migration route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/cancel/2026-09-15.md",
+  "raw_sha256": "98a3e91be368abb71ecc5706f7eeb01a08e714a747ee6f4397824f612fd39004",
+  "status": "candidate_ready"
+}

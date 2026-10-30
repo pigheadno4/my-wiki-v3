@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-paymentmethods-balance",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72: POST /paymentMethods/balance\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods/balance\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/paymentMethods/balance/2026-09-15.md\"\ntags: [adyen, checkout-api, gift-cards, balance-inquiry]\n---\n\n## Overview\n\nCaptured API Explorer reference for Checkout API `POST /paymentMethods/balance`: retrieve the remaining balance on a shopper's gift card by sending its details in `paymentMethod`. The page shows the test server at `https://checkout-test.adyen.com/v72`; `latest` in the URL does not establish a newer version or live availability. This is a balance inquiry, not evidence of payment authorization or capture. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The request table marks `amount`, `merchantAccount`, and `paymentMethod` required. The nested `amount.currency` and `amount.value` are marked required within `amount`; `paymentMethod` contains the method type and method-specific details. The page does not separately state whole-body requiredness. The request examples use Givex card details and show a EUR 10 request beside a EUR 100 not-enough example; examples are illustrative, not universal card-field rules.\n- A 200 response has a required `balance` object with currency and minor-unit value and a required `resultCode`. `Success` means the balance check succeeded; `NotEnoughBalance` commonly means the card balance is below the requested amount or its currency differs; `Failed` means the check failed. Optional `transactionLimit` is the maximum spendable amount for one transaction for some gift cards. An HTTP 200 alone therefore does not mean enough balance or a completed payment.\n- The response table calls `resultCode` the result of a \"cancellation request\" even though the endpoint title, description and enum explanations describe a balance check. Treat that label as an internal source inconsistency, not a cancellation operation. The optional `refusalReason` wording also discusses authorization; this reference alone does not establish authorization semantics for the balance inquiry.\n- The documented non-200 cases are 400 unreadable request, 401 authentication required, 403 insufficient permissions, 422 validation error and 500 server processing failure. The listed error fields are optional in the schema.\n\n## Detail locators\n\n- Purpose, test v72 server and idempotency header: pinned raw lines 5\u201317.\n- Full request schema, including conditional fields and nested requiredness: pinned raw lines 20\u2013258. Gift-card examples: lines 260\u2013292.\n- 200 response schema and result values: pinned raw lines 293\u2013316. Error schemas: lines 319\u2013386. Response examples: lines 388\u2013477.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment concept and source route.\n- [[adyen-pos-gift-cards]] \u2014 separate Terminal API gift-card context; its POS behavior does not govern this Checkout endpoint.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/paymentMethods/balance/2026-09-15|Checkout API POST /paymentMethods/balance captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Retrieves the balance remaining on a shopper's gift card.",
+      "location": "raw line 7, introductory paragraph"
+    },
+    {
+      "text": "https://checkout-test.adyen.com/v72",
+      "location": "raw line 10, Servers"
+    },
+    {
+      "text": "| amount | object | Yes | The amount information for the transaction",
+      "location": "raw line 47, Request body table (substring)"
+    },
+    {
+      "text": "| paymentMethod | object (string) | Yes | The collection that contains the type of the payment method and its specific information. |",
+      "location": "raw line 149, Request body table"
+    },
+    {
+      "text": "**NotEnoughBalance** \u2013 Commonly indicates that the card did not have enough balance to pay the amount in the request, or that the currency of the balance on the card did not match the currency of the requested amount.",
+      "location": "raw line 313, 200 Success response body (substring)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-balance-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-paymentmethods-balance]] \u2014 2026-09-15-captured Checkout API v72 test-server `POST /paymentMethods/balance` reference for gift-card balance inquiry, request schema and result codes; it is not payment authorization or live availability evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "The raw response table labels resultCode as a cancellation-request result although its enum explanations describe balance checks."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/paymentMethods/balance/2026-09-15.md",
+  "raw_sha256": "de6eff55ffe455ab7298f961fc9015e7c907ad02a8472d470a66e985a74016ae",
+  "status": "candidate_ready"
+}

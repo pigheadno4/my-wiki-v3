@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | Adyen API Explorer C56
+
+- All 50 exact-manifest API Explorer sources independently approved and promoted: Checkout 20, Payment 14, Recurring 7, Disputes 6 and BinLookup 3. First full-review approvals 46/50; 4 targeted correction reviews. Full pinned raw reads, 3–5 located quotes, independent first reviews and coordinator-only concept-before-source promotion.
+- 11 concepts touched (0 new). September 2026 snapshots retain captured API version/environment, Classic versus Checkout, separate object identities, required versus conditional fields, and acknowledgement versus final outcome. Page-level contradictions remain scoped. The 27 title-only stubs and ten Checkout navigation paths without page-level raw remain excluded; no collection or inferred schemas.
+- Source_count 2612 = 2547 General Docs + 50 API Explorer + 15 GitHub. All 50 hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Validation: `tracking/ingest/adyen/adyen-campaign-56/close-validation.md`.
+- Historical-snapshot ingestion only. No provider/account/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-30] ingest | AdyenPOS `3.22.0`
 
 - Approved initial full ingest of `github-acde5488bc61b0847b55`, exact SHA `689bdbdd7197545fbf15160ea64461a53b02b432`. All 30 assigned paths read in full, plus both packet files: 27 retained files, seven Swift files, 50,860 bytes; no reading exception. Raw hashes and identity verified; no prior release comparison exists.

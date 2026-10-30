@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-disputes-latest-post-deletedisputedefensedocument",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Disputes API v30 POST /deleteDisputeDefenseDocument\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Disputes/latest/post/deleteDisputeDefenseDocument\"\nraw_files:\n  - \"adyen/api-explorer/Disputes/latest/post/deleteDisputeDefenseDocument/2026-09-15.md\"\ntags: [adyen, disputes, api, defense, document-deletion]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Disputes API Explorer capture documents `POST /deleteDisputeDefenseDocument` on the listed TEST `DisputeService/v30` server. It deletes one previously supplied dispute defense document identified by document type and dispute PSP reference. The `latest` route does not establish a newer captured version or LIVE availability. This is a document-level operation within [[adyen-risk-management]], not acceptance or resolution of the dispute.\n\n## Key takeaways\n\n- The request table marks `defenseDocumentType`, `disputePspReference`, and `merchantAccountCode` required properties. It does not separately state whole-body requiredness. The PSP reference is assigned to the dispute, rather than being the original payment reference. The example uses `DefenseMaterial` as a document-type value, but the page does not present a full type enum.\n- This is a deletion request for a document supplied earlier. HTTP 200 says the API request succeeded, while the required `disputeServiceResult.success` boolean reports whether the service request succeeded; `errorMessage` is optional. The example shows `success: true`. The page does not specify restoration, propagation delay, dispute-defense submission, issuer acceptance or a won outcome. Treat deletion as consequential and check the actual response before relying on success.\n- Separate 400, 401, 403, 422 and 500 tables describe request, authentication, permission, validation and server errors with optional error fields. The captured page supplies no error response examples and no retry or asynchronous outcome contract.\n\n## Detail locators\n\n- Raw lines 5\u201319: purpose, TEST DisputeService/v30 server and required request properties. Lines 21\u201330: request example.\n- Raw lines 31\u201341: 200 response contract. Lines 44\u2013106: API error tables. Lines 108\u2013119: 200 success example.\n\n## Related\n\n- [[adyen]]\n- [[adyen-risk-management]]\n- [[disputes]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Disputes/latest/post/deleteDisputeDefenseDocument/2026-09-15|Adyen Disputes API Explorer POST /deleteDisputeDefenseDocument (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Deletes a specific dispute defense document that was supplied earlier.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "https://ca-test.adyen.com/ca/services/DisputeService/v30",
+      "location": "raw line 10, Servers"
+    },
+    {
+      "text": "| disputePspReference | string | Yes | The PSP reference assigned to the dispute. |",
+      "location": "raw line 18, request-body table"
+    },
+    {
+      "text": "|   - success | boolean | Yes | Indicates whether the request succeeded. |",
+      "location": "raw line 41, 200 response-body table"
+    },
+    {
+      "text": "\"success\": true",
+      "location": "raw line 116, 200 response example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-delete-dispute-document-risk-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-disputes-latest-post-deletedisputedefensedocument]] \u2014 2026-09-15-captured Disputes API TEST v30 `POST /deleteDisputeDefenseDocument` reference for deleting a previously supplied defense document; response success is distinct from dispute outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Disputes/latest/post/deleteDisputeDefenseDocument/2026-09-15.md",
+  "raw_sha256": "d46b7a6d6ab6aeb9dd4b3ec4a9761b81b3780501631b81df70d58a4040f6c8c1",
+  "status": "candidate_ready"
+}

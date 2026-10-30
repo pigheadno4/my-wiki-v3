@@ -1,0 +1,8 @@
+## api-explorer-payment-latest-post-cancelorrefund
+
+Pinned raw: `raw/adyen/api-explorer/Payment/latest/post/cancelOrRefund/2026-09-15.md`. Canonical source: `source-adyen-api-explorer-payment-latest-post-cancelorrefund` — https://docs.adyen.com/api-explorer/Payment/latest/post/cancelOrRefund
+
+- Q1: For `Payment/latest/post/cancelOrRefund`, what purpose, API/version and object identity does this captured page establish, and what central required/conditional inputs or prerequisites govern its use?
+  - A: Captured Classic Payment API v68 test-server `POST /cancelOrRefund` requests cancellation before capture or refund after capture, for uncertain capture state. It requires merchant account and `originalReference`, the original payment PSP reference. It excludes multiple partial captures and Platforms split data; check capture state and use the corresponding Classic cancel/refund call then. The endpoint is inactive for new integrations, which are directed to a distinct Checkout reversals route (raw lines 5–28, 30–58).
+- Q2: For `Payment/latest/post/cancelOrRefund`, what does the documented response or failure establish, and which lifecycle, deletion/propagation, asynchronous outcome, version/environment or missing-evidence boundaries prevent broader inference?
+  - A: 200 returns a new modification-request PSP reference and `response` indicating receipt for processing; the example says `[cancelOrRefund-received]`. It does not prove the cancellation or refund completed. The page lists 400, 401, 403, 422 and 500 error tables, with examples for 400, 401 and 500. The `latest` URL captures a v68 test server; it gives neither live outcome nor the Checkout reversal contract (raw lines 1–28, 70–199).

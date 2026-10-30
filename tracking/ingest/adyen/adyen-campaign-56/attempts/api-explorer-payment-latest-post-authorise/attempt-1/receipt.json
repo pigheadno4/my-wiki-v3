@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-payment-latest-post-authorise",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Payment API v68: POST /authorise\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/authorise\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/authorise/2026-09-15.md\"\ntags: [adyen, classic-payment-api, authorisation, api-reference]\n---\n\n## Overview\n\nThis captured [[adyen]] **Classic Payment API**, not Checkout API, reference describes `POST /authorise`. It creates a payment with an Adyen `pspReference` and attempts an authorization hold. For cards, the amount can later be captured or cancelled; non-card methods typically auto-capture as part of authorization. The page labels the endpoint **inactive** and unsupported for new integrations: use Checkout `/payments` for a new integration and contact Adyen about migrating an existing one. The captured server is `https://pal-test.adyen.com/pal/servlet/Payment/v68`; the `latest` URL does not establish a currently live latest version or live endpoint.\n\n## Key takeaways\n\n- The request table marks `amount`, `merchantAccount` and merchant `reference` required; `amount.currency` and `amount.value` are required children, with value in minor units. `reference` identifies the payment in merchant communication and is distinct from Adyen's response `pspReference`.\n- The table describes either `bankAccount` or `card` in a payment request, but the recurring ContAuth sample supplies stored-detail identifiers without either field. Do not treat that table sentence as a universal schema rule for the recurring sample. `shopperReference` and `recurringProcessingModel` have recurring/token use conditions. Raw card examples and their fields are historical Classic API examples, not Checkout `/payments` schema or a recommendation to pass raw card data.\n- 3DS2 inputs depend on channel and flow. `billingAddress` is conditionally required for browser/mobile 3DS2, `browserInfo` for web 3DS, and the table gives mobile redirect fields and Visa/JCB email/phone/IP conditions. Within optional `threeDS2RequestData`, `deviceChannel` is marked required; authentication-only flags and several 3DS fields have separate conditions. Use the raw field descriptions and relevant guide for the selected flow.\n- HTTP 200 says the **request** succeeded. Optional `resultCode` can report `Authorised`, other final outcomes, pending/received states, or further 3DS/shopper action; authentication-only outcomes are not payment authorization. The `pspReference` identifies the request/transaction, and refusal reasons may accompany declined or errored authorization. Request success or an authorization hold does not itself establish later card capture or settlement.\n- The raw reference lists 400, 401, 403, 422 and 500 error categories. Its example error bodies illustrate responses, not a complete set of possible codes.\n\n## Detail locators\n\n- Purpose, inactive/migration warning and v68 TEST server: raw lines 5\u201318.\n- Core request fields and conditions: raw lines 22\u2013102, 201\u2013294; 3DS2 nested schema: lines 294\u2013369.\n- Alternative request examples, including 3DS, card, recurring and split flows: raw lines 373\u2013572.\n- 200 response fields and result states: raw lines 573\u2013596; error response shapes and examples: lines 599\u2013705.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider-level online payments and migration route.\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration]] \u2014 Classic integration guide and historical prerequisites.\n- [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api]] \u2014 migration guidance.\n- [[adyen-3d-secure]] \u2014 broader 3DS context; this raw retains the Classic v68 fields.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/authorise/2026-09-15|Classic Payment v68 POST /authorise capture]]\n",
+  "quotes": [
+    {
+      "text": "Creates a payment with a unique reference (`pspReference`) and attempts to obtain an authorisation hold.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "This endpoint is [inactive](https://docs.adyen.com/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 9, lifecycle warning"
+    },
+    {
+      "text": "| amount | object | Yes | The amount information for the transaction",
+      "location": "raw line 49, request table"
+    },
+    {
+      "text": "Either `bankAccount` or `card` field must be provided in a payment request.",
+      "location": "raw line 102, card request description"
+    },
+    {
+      "text": "**Pending** \u2013 Indicates that it is not possible to obtain the final status of the payment.",
+      "location": "raw line 596, resultCode description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-classic-authorise-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-authorise]] \u2014 captured inactive Classic Payment API v68 TEST `POST /authorise` reference for authorization attempt, conditional 3DS/recurring inputs, result states and migration direction (API Explorer snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "The raw bankAccount-or-card request sentence conflicts with its recurring ContAuth example, which supplies stored-detail identifiers without either; retain the scoped caveat in the source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/authorise/2026-09-15.md",
+  "raw_sha256": "1785d84e5ca467be5f0f7e54f204d86d95c93ec20903c2e03161633501aa02de",
+  "status": "candidate_ready"
+}

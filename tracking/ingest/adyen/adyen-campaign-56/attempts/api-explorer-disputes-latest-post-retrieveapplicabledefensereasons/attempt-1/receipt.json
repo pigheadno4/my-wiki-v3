@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-disputes-latest-post-retrieveapplicabledefensereasons",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Disputes API v30: POST /retrieveApplicableDefenseReasons\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Disputes/latest/post/retrieveApplicableDefenseReasons\"\nraw_files:\n  - \"adyen/api-explorer/Disputes/latest/post/retrieveApplicableDefenseReasons/2026-09-15.md\"\ntags: [adyen, disputes, defense-reasons, api-reference]\n---\n\n## Overview\n\nThis captured [[adyen]] Disputes API reference describes `POST /retrieveApplicableDefenseReasons`, which returns applicable defense reasons for a **specific dispute**. The captured server is `https://ca-test.adyen.com/ca/services/DisputeService/v30`; the `latest` URL does not establish current latest version or live availability. This is a lookup, not a defense submission, document upload, dispute acceptance or win.\n\n## Key takeaways\n\n- The request table requires `disputePspReference`, the PSP reference assigned to the **dispute**, and `merchantAccountCode`, the merchant account for the dispute transaction. The dispute reference should not be substituted with a payment PSP reference or a document identifier.\n- HTTP 200 says the request succeeded. The response body requires `disputeServiceResult` with a required `success` boolean; an optional `errorMessage` may accompany that result. `defenseReasons` is optional and, when present, contains reason codes plus optional document-type arrays.\n- For each document type in a returned reason, `available` reports whether that type has been uploaded. `requirementLevel` distinguishes `Required`, `OneOrMore`, `Optional` and `AlternativeRequired`; the latter is a generic-document route that needs Adyen Support enablement. A reason's `satisfied` reports whether sufficient defense material has been supplied. Neither `available`, `satisfied`, nor `disputeServiceResult.success` means a defense was submitted or accepted by the scheme, or that the dispute was won.\n- The 200 example shows selected reasons with `satisfied: false` and one `disputeServiceResult.success: true`; it is illustrative rather than a universal reason list or outcome. The reference lists 400, 401, 403, 422 and 500 error categories and generic response fields, without error examples.\n\n## Detail locators\n\n- Purpose, v30 TEST server and required dispute/merchant identifiers: raw lines 5\u201318; request example: lines 20\u201328.\n- 200 result and nested reason/document fields: raw lines 29\u201346; illustrative reason list: lines 113\u2013190.\n- Error categories and response shapes: raw lines 49\u2013111.\n\n## Related\n\n- [[adyen-risk-management]] \u2014 provider-level disputes and risk route.\n- [[source-adyen-docs-risk-management-disputes-api]] \u2014 defense workflow guidance.\n- [[source-adyen-docs-risk-management-disputes-api-disputes-api-reference]] \u2014 broader scheme-specific reason and document codes.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Disputes/latest/post/retrieveApplicableDefenseReasons/2026-09-15|Disputes v30 retrieveApplicableDefenseReasons capture]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of all applicable defense reasons to defend a specific dispute.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "| disputePspReference | string | Yes | The PSP reference assigned to the dispute. |",
+      "location": "raw line 17, request table"
+    },
+    {
+      "text": "| defenseReasons | array of object | No | The defense reasons that can be used to defend the dispute. |",
+      "location": "raw line 37, 200 response table"
+    },
+    {
+      "text": "**AlternativeRequired**: You must supply a generic defense document. To enable this functionality, contact our Support Team.",
+      "location": "raw line 41, requirementLevel description"
+    },
+    {
+      "text": "|   - satisfied | boolean | Yes | Indicates if sufficient defense material has been supplied. |",
+      "location": "raw line 43, reason response fields"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-disputes-retrieve-reasons-risk-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-disputes-latest-post-retrieveapplicabledefensereasons]] \u2014 captured Disputes API v30 TEST reference for retrieving applicable defense reasons and document requirements for a specific dispute; lookup and material sufficiency are separate from defense outcome (API Explorer snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Disputes/latest/post/retrieveApplicableDefenseReasons/2026-09-15.md",
+  "raw_sha256": "4d6d39678de0f1e2a50ce9702dc598166d420a9925c8434a6d00753c32d734af",
+  "status": "candidate_ready"
+}

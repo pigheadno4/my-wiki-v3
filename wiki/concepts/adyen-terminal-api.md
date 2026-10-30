@@ -89,6 +89,9 @@ Terminal API defines terminal messages. Adyen's Cloud Device API, represented se
 
 ## Related
 
+- [[source-adyen-api-explorer-payment-latest-post-voidpendingrefund]] — 2026-09-15 Payment API v68 test reference for requesting cancellation of a pending POS unreferenced refund; identifies original-refund selector routes, flags reused `originalReference` wording, and distinguishes request receipt from cancellation outcome.
+
+
 - [[source-adyen-docs-point-of-sale-nfc-tags]] — 2026-09-15 Adyen POS NFC tag CardAcquisition guide for UID, memory and Ultralight AES counter operations, with terminal/tag/software qualifications and a separate payment-result boundary.
 
 

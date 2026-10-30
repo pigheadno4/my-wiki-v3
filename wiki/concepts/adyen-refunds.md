@@ -15,6 +15,9 @@ Refund processing is asynchronous. A `REFUND` webhook reports validation success
 
 ## Sources
 
+- [[source-adyen-api-explorer-payment-latest-post-refund]] — 2026-09-15 inactive Classic Payment API v68 POST /refund reference for captured-payment eligibility, partial-refund qualification, original PSP identity and received-for-processing response.
+
+
 - [[source-adyen-docs-industries-peak-season-refunds]] — 2026-09-15 seasonal guide to reserve advice, asynchronous ecommerce/POS and always-referenced omnichannel refunds, offline constraints, and direct-merchant versus platform payout timing; request or schedule is not bank-credit proof.
 
 

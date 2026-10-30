@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-payment-latest-post-getauthenticationresult",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payment API v68 POST /getAuthenticationResult\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/getAuthenticationResult\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/getAuthenticationResult/2026-09-15.md\"\ntags: [adyen, payment-api, classic, 3d-secure, authentication]\n---\n\n## Overview\n\nCaptured **Payment API v68** `POST /getAuthenticationResult` reference on the `pal-test` server. It returns a 3D Secure authentication result after **authentication only**, using the transaction's `pspReference` and `merchantAccount`. This is the Classic Payment API route, distinct from Checkout API; [[source-adyen-api-explorer-payment-latest-overview]] marks the Payment API inactive and directs new integrations to Checkout. See [[adyen]] and [[adyen-3d-secure]].\n\n## Key takeaways\n\n- The request table marks `merchantAccount` (the account used for authentication) and the transaction `pspReference` required. The page does not separately label the request body as required. The example supplies those two properties.\n- The 200 response schema has optional `threeDS1Result` and `threeDS2Result` objects. The 3DS1 object can include CAVV, ECI, authentication/offered responses and XID. The 3DS2 object can include authentication value, ECI, transaction IDs, status/reason, challenge and exemption indicators, and Cartes Bancaires-specific fields. Consult the raw response table for field meanings and allowed values.\n- A successful HTTP request and authentication data do not establish a payment authorization, capture, settlement, refund or liability shift. The raw gives no 200 response example, no payment `resultCode`, and no later financial-state transition.\n- The listed server is `https://pal-test.adyen.com/pal/servlet/Payment/v68`. `latest` in the canonical URL does not establish a current latest version or a live endpoint.\n- Error classes shown are 400 (request parsing), 401 (authentication), 403 (permissions), 422 (validation) and 500 (server processing); only 400, 401 and 500 have illustrative response bodies.\n\n## Detail locators\n\n- Raw lines 5\u201318: endpoint purpose, captured server and both required request properties.\n- Raw lines 20\u201328: request example.\n- Raw lines 29\u201358: 200 response schema, including optional 3DS1/3DS2 fields and enum text.\n- Raw lines 61\u2013128 and 130\u2013167: error schemas and illustrative error response bodies.\n\n## Related\n\n- [[adyen-3d-secure]] \u2014 provider 3D Secure concept.\n- [[source-adyen-api-explorer-payment-latest-overview]] \u2014 Payment API v68 lifecycle and endpoint directory.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/getAuthenticationResult/2026-09-15|Captured Payment API v68 POST /getAuthenticationResult reference]]",
+  "quotes": [
+    {
+      "text": "Return the authentication result after doing a 3D Secure authentication only.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| merchantAccount | string | Yes | The merchant account identifier, with which the authentication was processed. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| pspReference | string | Yes | The pspReference identifier for the transaction. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "| threeDS1Result | object | No | The result of the 3D Secure authentication. |",
+      "location": "raw line 37"
+    },
+    {
+      "text": "| threeDS2Result | object | No | The result of the 3D Secure 2 authentication. |",
+      "location": "raw line 44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-getauthresult-3ds-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-getauthenticationresult]] \u2014 2026-09-15-captured Classic Payment API v68 POST /getAuthenticationResult reference for transaction-keyed 3DS1/3DS2 authentication-only data; it does not establish payment authorization or later financial outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/getAuthenticationResult/2026-09-15.md",
+  "raw_sha256": "056a3effccb8d8f8d9094fa272874e5ef2c0d88be782989b7de6ee2c7cf6343f",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,12 @@
+# C56 fixed query answers — Payment POST /voidPendingRefund
+
+Source: `source-adyen-api-explorer-payment-latest-post-voidpendingrefund` — https://docs.adyen.com/api-explorer/Payment/latest/post/voidPendingRefund
+Pinned raw: `raw/adyen/api-explorer/Payment/latest/post/voidPendingRefund/2026-09-15.md` (fully read contiguous numbered lines 1–55, 56–110, 111–165, 166–212; SHA-256 `90c179afcf589bd0eb13c22aac4e8379e2b9e58bfa40bc38bfc0828b6440f2f1`).
+
+## Q1: For `Payment/latest/post/voidPendingRefund`, what purpose, API/version and object identity does this captured page establish, and what central required/conditional inputs or prerequisites govern its use?
+
+`POST /voidPendingRefund` requests cancellation of an **in-person unreferenced refund request before completion**. It is a Payment API v68 **test** reference, despite `latest` in its URL (raw lines 5–15). The opening prose says to identify the **original refund request** by tender reference or PSP reference, preferring tender because it exists for offline and online transactions (lines 7–9). `merchantAccount` is marked required; examples pair it with either `originalReference` or `tenderReference` plus `uniqueTerminalId` (lines 18–22, 54–74). The generic `originalReference` field text instead says original payment PSP reference (line 40), an identity conflict with this endpoint's refund-specific prose. The page itself does not state a configured delay, credential role, or inactive/migration status; see its linked detailed POS guide for eligibility and outcome procedure (line 11).
+
+## Q2: For `Payment/latest/post/voidPendingRefund`, what does the documented response or failure establish, and which lifecycle, deletion/propagation, asynchronous outcome, version/environment or missing-evidence boundaries prevent broader inference?
+
+`200 Success` returns a new `pspReference` associated with this void request and a `response` that indicates the modification was **received for processing**; both examples show `[voidPendingRefund-received]` (lines 75–85, 157–175). That receipt does not prove the pending refund was cancelled, funds were reversed, or any shopper-bank posting occurred. The page lists HTTP `400`, `401`, `403`, `422`, and `500` error schemas; only generic `400`, `401`, and `500` response examples are shown (lines 88–155, 177–212). The captured v68 test page has no live outcome evidence and supplies no Checkout replacement contract (lines 1–15).

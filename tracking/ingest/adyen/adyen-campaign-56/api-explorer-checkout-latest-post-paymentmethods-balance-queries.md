@@ -1,0 +1,10 @@
+# C56 fixed retrieval checks: Checkout paymentMethods balance
+
+Fully read pinned raw numbered lines 1–120, 121–240, 241–360, 361–477; no truncated range. SHA-256: `de6eff55ffe455ab7298f961fc9015e7c907ad02a8472d470a66e985a74016ae`.
+
+Source: `source-adyen-api-explorer-checkout-latest-post-paymentmethods-balance` — https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods/balance
+
+- Q1: For `post/paymentMethods/balance`, what is the endpoint purpose and object identity, and which central required or conditional inputs/prerequisites govern using it?
+  - A Checkout API `POST /paymentMethods/balance` balance inquiry for a shopper's gift card, with card details inside `paymentMethod` (raw lines 5–7). The captured server is test v72 (line 10). The request table marks `amount`, `merchantAccount` and `paymentMethod` required; `amount.currency` and `amount.value` are required within `amount` (lines 47–49, 128, 149). The table contains many other optional or conditionally required fields; consult lines 20–258 for context rather than applying those payment/3DS conditions to every balance inquiry. Body-wide requiredness is not separately declared. Givex examples are illustrative (lines 260–292).
+- Q2: For `post/paymentMethods/balance`, what does the documented response or failure establish, and which lifecycle, asynchronous outcome, version/environment or missing-evidence boundaries prevent broader inference?
+  - A 200 response provides required `balance` and `resultCode`; `Success` indicates a successful balance check, `NotEnoughBalance` commonly means insufficient balance or currency mismatch, and `Failed` means the check failed (lines 295–316). Optional `transactionLimit` is per-transaction for some cards (lines 314–316). Documented HTTP errors are 400, 401, 403, 422 and 500 (lines 319–386). This reference establishes neither authorization nor capture nor live account eligibility. The page's `resultCode` description erroneously says “cancellation request” while the enum explanations say balance check (line 313). `latest` is the URL path; captured server is test v72 (lines 1–10). No asynchronous payment outcome is documented here.

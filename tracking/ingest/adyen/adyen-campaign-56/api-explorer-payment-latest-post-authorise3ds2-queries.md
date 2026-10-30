@@ -1,0 +1,11 @@
+# Payment POST /authorise3ds2 query audit
+
+Source: `source-adyen-api-explorer-payment-latest-post-authorise3ds2` — https://docs.adyen.com/api-explorer/Payment/latest/post/authorise3ds2. Fully read pinned raw lines 1–110, 111–220, 221–320, and 321–427; SHA-256 `d6d70cae80052938d2f4942bc40e71639c6432692a061677a1d59c4a7915d0d5`.
+
+## Q1: For `Payment/latest/post/authorise3ds2`, what purpose, API/version and object identity does this captured page establish, and what central required/conditional inputs or prerequisites govern its use?
+
+This is the **Payment API** `POST /authorise3ds2` completion of authorisation after an authenticated 3DS2 session, on the listed Payment **test v68** server (raw lines 5–18). It is inactive and unsupported for new integrations; the page directs new users to the distinct Checkout `/payments/details` endpoint (lines 9–13). Prose says `threeDS2Token` and `threeDS2Result` must both be received, while the table marks both optional and the example includes only the token (lines 7, 257, 272, 277–294): an unresolved source inconsistency. The request table requires `amount` (with currency/value), `merchantAccount`, and `reference` (lines 49–51, 130, 158). Browser/mobile, authentication-only, Visa/JCB, and recurring conditions appear in lines 74–90 and 162–273; those conditions are not universal table-required properties.
+
+## Q2: For `Payment/latest/post/authorise3ds2`, what does the documented response or failure establish, and which lifecycle, deletion/propagation, asynchronous outcome, version/environment or missing-evidence boundaries prevent broader inference?
+
+HTTP `200` says the request succeeded, but the `resultCode` determines authentication or payment state. `AuthenticationFinished` is authentication-only; `Authorised` denotes authorisation; `ChallengeShopper`, `IdentifyShopper`, `Pending`, and `Received` do not establish a final payment outcome (raw lines 295–318). `threeDSAuthenticationOnly=true` expressly stops before payment authorisation (line 273). Refusal/error details are conditional, and HTTP 400/401/403/422/500 schemas and limited examples follow (lines 321–427). This endpoint does not document capture, settlement, deletion, or propagation. It is inactive Payment API test v68 evidence, not a Checkout contract or proof of current/live availability (lines 9–18).

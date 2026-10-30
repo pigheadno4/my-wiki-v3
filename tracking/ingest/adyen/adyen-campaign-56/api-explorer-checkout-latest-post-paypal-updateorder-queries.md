@@ -1,0 +1,12 @@
+# C56 fixed query answers — Checkout POST /paypal/updateOrder
+
+Source: `source-adyen-api-explorer-checkout-latest-post-paypal-updateorder` — https://docs.adyen.com/api-explorer/Checkout/latest/post/paypal/updateOrder
+Pinned raw: `raw/adyen/api-explorer/Checkout/latest/post/paypal/updateOrder/2026-09-15.md` (fully read contiguous numbered lines 1–85, 86–170, 171–255, 256–328; SHA-256 `9e564192c42cb65373c69703d0de68dc30954677a2b6067a5d994a1099640233`).
+
+## Q1: For `post/paypal/updateOrder`, what is the endpoint purpose and object identity, and which central required or conditional inputs/prerequisites govern using it?
+
+`POST /paypal/updateOrder` updates a **PayPal Express Checkout order** so the lightbox can show changed amount and delivery methods based on the address; it is not Checkout partial-payment order creation (raw lines 5–7). The captured server is Checkout v72 test (line 10). The table marks all top-level request body fields optional, including the changing client `paymentData`, original Advanced `/payments` `pspReference`, and original Sessions `/sessions` `sessionId` (lines 20–55). The examples use `pspReference` for Advanced and `sessionId` for Sessions, each with `paymentData` and `amount` (lines 57–149); they illustrate flow identity rather than proving an empty request works. Included amount objects use ISO currency plus integer minor-unit value; only one delivery method may be selected, and US/Canadian addresses require `stateOrProvince` despite its table No marker (lines 23–45). `Idempotency-Key` is an optional header (lines 14–17).
+
+## Q2: For `post/paypal/updateOrder`, what does the documented response or failure establish, and which lifecycle, asynchronous outcome, version/environment or missing-evidence boundaries prevent broader inference?
+
+The `200` response requires updated `paymentData` and a `status` saying whether the PayPal order update succeeded; examples show `success` (lines 150–159, 231–265). This is an order/lightbox update result, not payment authorization, capture, settlement, or final shopper payment outcome. The page lists `400`, `401`, `403`, `422`, and `500` error classes with optional error body fields and generic examples (lines 162–229, 267–328); those examples do not exhaust endpoint-specific failures. The canonical `latest` route is represented here by a dated v72 **test** server snapshot only, without live operation evidence (lines 1–10).

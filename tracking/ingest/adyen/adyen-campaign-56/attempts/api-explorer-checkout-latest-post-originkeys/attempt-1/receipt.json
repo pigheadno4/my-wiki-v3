@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-originkeys",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72: POST /originKeys\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/originKeys\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/originKeys/2026-09-15.md\"\ntags: [adyen, checkout-api, origin-key, client-side-authentication]\n---\n\n## Overview\n\nCaptured Checkout API reference for `POST /originKeys`. It accepts origin domains and returns corresponding origin keys. Its server listing is `https://checkout-test.adyen.com/v72`; the `latest` URL does not establish a newer contract or live availability. See [[adyen]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- The request table marks `originDomains` as a required array of strings. The basic example supplies three HTTPS origins. The optional `Idempotency-Key` header permits a unique identifier up to 64 characters. The page does not separately state whole-body requiredness or additional origin-format constraints.\n- The 200 response schema lists an optional `originKeys` string-valued object mapping requested domains to keys. The example shows all three input domains represented, but it does not establish an unconditional one-to-one issuance guarantee.\n- The page recommends switching Web Drop-in or Components integrations still using origin keys to client keys. Its stated benefits include one key for all origins, origin changes without new-key generation, and card-type detection from the entered number. This is migration guidance, not a claim that this endpoint is unavailable or that an existing integration has migrated. Consult the separate client-side authentication and migration guides for version and environment conditions.\n- The documented error responses are 400 unreadable request, 401 authentication required, 403 insufficient permissions, 422 validation error, and 500 server processing failure. Their shared error fields are optional in the tables. Generic error examples mention merchant accounts, return URLs and payment details; these examples do not establish endpoint-specific requirements for origin-key creation.\n\n## Detail locators\n\n- Purpose, client-key recommendation and test v72 server: pinned raw lines 5\u201312. Header and request table: lines 14\u201325.\n- Basic request example: lines 27\u201338. 200 response table: lines 39\u201347. Error schemas: lines 50\u2013117. Response examples: lines 119\u2013195.\n\n## Related\n\n- [[adyen-api-access]] \u2014 provider API credential and client-side authentication source route.\n- [[source-adyen-docs-development-resources-client-side-authentication-migrate-from-origin-key-to-client-key]] \u2014 separate version-qualified migration guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/originKeys/2026-09-15|Checkout API POST /originKeys captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This operation takes the origin domains and returns a JSON object containing the corresponding origin keys for the domains.",
+      "location": "raw line 7, introduction"
+    },
+    {
+      "text": "we recommend [switching to client key]",
+      "location": "raw line 9, client-key recommendation (substring)"
+    },
+    {
+      "text": "https://checkout-test.adyen.com/v72",
+      "location": "raw line 12, Servers"
+    },
+    {
+      "text": "| originDomains | array of string | Yes | The list of origin domains, for which origin keys are requested. |",
+      "location": "raw line 25, Request body table"
+    },
+    {
+      "text": "| originKeys | object (string) | No | The list of origin keys for all requested domains. For each list item, the key is the domain and the value is the origin key. |",
+      "location": "raw line 47, 200 response body table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-originkeys-api-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-originkeys]] \u2014 2026-09-15-captured Checkout API v72 test-server `POST /originKeys` contract for domain-to-origin-key creation, with client-key migration recommendation; no live availability or migration proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/originKeys/2026-09-15.md",
+  "raw_sha256": "4297cf386f4f28f6470bd55c68ebcd0bab254ffc330d5eb3b5c770906d2b79fe",
+  "status": "candidate_ready"
+}

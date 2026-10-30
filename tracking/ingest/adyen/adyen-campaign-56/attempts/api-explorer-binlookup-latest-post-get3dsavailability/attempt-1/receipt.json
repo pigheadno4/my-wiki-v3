@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-binlookup-latest-post-get3dsavailability",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BinLookup API v54 POST /get3dsAvailability\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/BinLookup/latest/post/get3dsAvailability\"\nraw_files:\n  - \"adyen/api-explorer/BinLookup/latest/post/get3dsAvailability/2026-09-15.md\"\ntags: [adyen, bin-lookup, api, 3d-secure]\n---\n\n## Overview\n\nCaptured **BinLookup API v54** `POST /get3dsAvailability` reference on the `pal-test` server. It checks whether 3D Secure is available for a specified BIN or card brand; for 3DS2 it can return device-fingerprinting keys and related card-range information. This is an availability lookup, not an authentication or payment result. See [[adyen]] and [[adyen-3d-secure]].\n\n## Key takeaways\n\n- The request table marks only `merchantAccount` required at the top level. `cardNumber` (card number or BIN), `brands`, `recurringDetailReference`, `shopperReference` and `additionalData` are optional in the captured schema. The purpose describes a specified BIN or brand, but the table does not specify a required-one-of constraint; the example uses `cardNumber`. The page does not separately label the entire body as required.\n- Optional 200 fields include `threeDS1Supported`, `threeDS2supported` (preserve the lower-case \u201cs\u201d in `supported`), `threeDS2CardRangeDetails`, `dsPublicKeys` and `binDetails`. Card-range details can contain brands, BIN ranges, supported 3DS2 versions and browser `threeDSMethodURL`; DS key entries include SDK version, public key and root certificates.\n- The example response has `threeDS1Supported: true`, `threeDS2supported: false` and an empty 3DS2 card-range array. It is an illustration, not a guarantee of support for a merchant, card or region. A returned availability flag or DS key does not prove authentication, liability shift, authorization, capture or settlement.\n- The documented server is `https://pal-test.adyen.com/pal/servlet/BinLookup/v54`. `latest` in the canonical URL does not establish today's latest API version or a live endpoint. Errors shown are 400, 401, 403, 422 and 500; only 400 has an example body.\n\n## Detail locators\n\n- Raw lines 5\u201312: purpose, 3DS2 keys and captured test server.\n- Raw lines 14\u201334: full request schema and card-number request example.\n- Raw lines 35\u201359 and 131\u2013142: 200 response schema and illustrative response.\n- Raw lines 62\u2013129 and 144\u2013154: error classes, schema and 400 example.\n\n## Related\n\n- [[adyen-3d-secure]] \u2014 provider 3DS concept.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/BinLookup/latest/post/get3dsAvailability/2026-09-15|Captured BinLookup API v54 POST /get3dsAvailability reference]]",
+  "quotes": [
+    {
+      "text": "Verifies whether 3D Secure is available for the specified BIN or card brand. For 3D Secure 2, this endpoint also returns device fingerprinting keys.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| cardNumber | string | No | Card number or BIN. |",
+      "location": "raw line 21"
+    },
+    {
+      "text": "| merchantAccount | string | Yes | The merchant account identifier. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| dsPublicKeys | array of object | No | List of Directory Server (DS) public keys. |",
+      "location": "raw line 45"
+    },
+    {
+      "text": "| threeDS2supported | boolean | No | Indicator if 3D Secure 2 is supported. |",
+      "location": "raw line 59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-get3dsavailability-3ds-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-binlookup-latest-post-get3dsavailability]] \u2014 2026-09-15-captured BinLookup API v54 test-server reference for BIN/card-brand 3DS availability and optional 3DS2 card-range/device-key data; lookup does not establish authentication or payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/BinLookup/latest/post/get3dsAvailability/2026-09-15.md",
+  "raw_sha256": "4d6024c9ce43ec1964c1ee00902ae73d7d18e6e32c40475bc1f8f6be9f7ec29f",
+  "status": "candidate_ready"
+}

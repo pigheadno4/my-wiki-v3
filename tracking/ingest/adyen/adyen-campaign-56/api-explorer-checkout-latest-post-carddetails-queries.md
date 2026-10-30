@@ -1,0 +1,10 @@
+# api-explorer-checkout-latest-post-carddetails fixed retrieval check
+
+Read log: entire pinned raw lines 1–139 read as one numbered, untruncated contiguous range. SHA-256 verified: a63d71de216d51b53c017b1acc44887c33c1d1ff36baf809e740c889bfded661.
+
+Canonical source: [[source-adyen-api-explorer-checkout-latest-post-carddetails]] — https://docs.adyen.com/api-explorer/Checkout/latest/post/cardDetails
+
+- Q1: For `post/cardDetails`, what is the endpoint purpose and object identity, and which central required or conditional inputs/prerequisites govern using it?
+  - Answer: Captured Checkout TEST v72 `POST /cardDetails` looks up card/network-token brand and other details for routing and transaction-type eligibility (lines 5–7, 41–42). The request table marks `merchantAccount` required, while card-number fields, `countryCode`, and `supportedBrands` are optional (52–59). Raw card-number collection requires full PCI compliance; an encrypted-card-number alternative is listed (55–57). For an API-only integration collecting card data, the page says to offer shopper brand choice for a co-badged card if both brands are supported (11). No explicit card-number either-or or whole-body requiredness is stated.
+- Q2: For `post/cardDetails`, what does the documented response or failure establish, and which lifecycle, asynchronous outcome, version/environment or missing-evidence boundaries prevent broader inference?
+  - Answer: A 200 response may include identified brands and support flags, funding source, commercial-card flag and issuing country (83–97). When `supportedBrands` is omitted, merchant-account configuration and optional country code govern support indication (9, 59); examples differ accordingly (99–139). The page supplies no separate error schema and establishes no authorization, capture, settlement, payout, guaranteed routing or LIVE merchant eligibility. Its server is TEST v72 (41–42), while a developer-resources paragraph calls a Postman collection BIN Lookup API (35–39), which does not change this Checkout endpoint's identity.

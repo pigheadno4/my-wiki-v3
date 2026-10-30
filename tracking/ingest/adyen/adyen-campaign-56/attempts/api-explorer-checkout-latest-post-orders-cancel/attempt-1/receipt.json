@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-orders-cancel",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API POST /orders/cancel\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/orders/cancel\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/orders/cancel/2026-09-15.md\"\ntags: [adyen, checkout, api, orders, partial-payments, cancellation]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Checkout API reference documents `POST /orders/cancel` on the listed test server `https://checkout-test.adyen.com/v72`. It cancels an order and says order cancellation automatically rolls back payments made in that order by cancellation or refund, according to payment-method type. The URL's `latest` segment does not establish a current API version.\n\n## Key takeaways\n\n- The request body lists `merchantAccount` and `order` as required. The merchant account is the one to which the encrypted `orderData` belongs. The required order object pairs that data with the order's `pspReference`; the example values are illustrative.\n- `Idempotency-Key` is an optional header, with a maximum of 64 characters.\n- A 200 response contains a cancellation-request `pspReference` and `resultCode`. The documented `Received` value means Adyen received the cancellation request for processing. This response alone does not establish that every payment cancellation or refund has completed.\n- The page lists 400, 401, 403, 422 and 500 error responses. Their example payloads do not define endpoint-specific preconditions beyond the request contract.\n\n## Detail locators\n\n- Request header, body and example: raw lines 12\u201339.\n- 200 response and acknowledgement meaning: raw lines 40\u201349; response example at 121\u2013131.\n- Error response tables and examples: raw lines 52\u2013119 and 133\u2013194.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Adyen online-payment and partial-payment source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/orders/cancel/2026-09-15|Checkout API POST /orders/cancel, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Cancels an order. Cancellation of an order results in an automatic rollback of all payments made in the order, either by canceling or refunding the payment, depending on the type of payment method.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| merchantAccount | string | Yes | The merchant account identifier that orderData belongs to. |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "| order | object | Yes | The order request object that contains a pspReference that represents the order and the matching encrypted order data. |",
+      "location": "raw line 24"
+    },
+    {
+      "text": "| pspReference | string | Yes | A unique reference of the cancellation request. |",
+      "location": "raw line 48"
+    },
+    {
+      "text": "| resultCode | string | Yes | The result of the cancellation request.  Possible values:  - **Received** \u2013 Indicates the cancellation has successfully been received by Adyen, and will be processed. |",
+      "location": "raw line 49"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-orders-cancel-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-orders-cancel]] \u2014 2026-09-15-captured Checkout API v72 test-server order cancellation reference; required merchant/order data, cancellation-or-refund rollback description, and `Received` acknowledgement boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/orders/cancel/2026-09-15.md",
+  "raw_sha256": "222436cba2c4370e79b1d411e6cc9a303b3f5e0330311532d1e73f342282757e",
+  "status": "candidate_ready"
+}

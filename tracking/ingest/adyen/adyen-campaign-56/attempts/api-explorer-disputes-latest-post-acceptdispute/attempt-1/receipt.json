@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-disputes-latest-post-acceptdispute",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Disputes API v30 POST /acceptDispute\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Disputes/latest/post/acceptDispute\"\nraw_files:\n  - \"adyen/api-explorer/Disputes/latest/post/acceptDispute/2026-09-15.md\"\ntags: [adyen, disputes, api, chargebacks]\n---\n\n## Overview\n\nCaptured **Disputes API v30** `POST /acceptDispute` reference on the `ca-test` server. It accepts a specified dispute identified by its **dispute** PSP reference, scoped to a merchant account. In the related [[source-adyen-docs-risk-management-disputes-api]] workflow, accepting is the choice made when the merchant does not defend the dispute. See [[adyen]] and [[adyen-risk-management]].\n\n## Key takeaways\n\n- The request table marks `disputePspReference` and `merchantAccountCode` required properties. `disputePspReference` is the PSP reference **assigned to the dispute**, not the payment PSP reference that may appear in generic error schemas. The page does not separately label the request body as required.\n- This is a consequential acceptance action, not defense submission. The related [[source-adyen-docs-risk-management-manage-disputes]] guide says that after acceptance **and expiry of the defense period**, a chargeback's final status becomes `Lost` and its dispute cycle ends. That timing/status detail comes from the separate guide, not this endpoint's response schema.\n- A 200 HTTP response contains required `disputeServiceResult`; its nested required `success` boolean reports whether the **request** succeeded, and optional `errorMessage` may explain a general error. The example shows `success: true`. Do not treat HTTP 200 alone as `success: true`, a defense win, an immediate final dispute status, or a payment/settlement result.\n- The captured test server is `https://ca-test.adyen.com/ca/services/DisputeService/v30`. `latest` in the canonical URL does not prove the current latest version or live-account eligibility. Error classes shown are 400, 401, 403, 422 and 500; this raw contains no error response examples or detailed propagation timing.\n\n## Detail locators\n\n- Raw lines 5\u201318: endpoint purpose, v30 test server and two required request properties.\n- Raw lines 20\u201328: acceptance request example.\n- Raw lines 29\u201339 and 106\u2013117: 200 response schema and `success: true` example.\n- Raw lines 42\u2013104: error classes and generic error response fields.\n- Related guide raw: `risk-management/disputes-api` lines 143\u2013145 describes accepting in place of defending; `risk-management/manage-disputes` lines 52\u201364 supplies the later Lost-status qualification.\n\n## Related\n\n- [[adyen-risk-management]] \u2014 provider risk and disputes concept.\n- [[source-adyen-docs-risk-management-disputes-api]] \u2014 dispute API workflow and accept/defend choice.\n- [[source-adyen-docs-risk-management-manage-disputes]] \u2014 related acceptance and final-status guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Disputes/latest/post/acceptDispute/2026-09-15|Captured Disputes API v30 POST /acceptDispute reference]]",
+  "quotes": [
+    {
+      "text": "Accepts a specific dispute.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| disputePspReference | string | Yes | The PSP reference assigned to the dispute. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| merchantAccountCode | string | Yes | The merchant account identifier, for which you want to process the dispute transaction. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "| disputeServiceResult | object | Yes | The result of the dispute service. |",
+      "location": "raw line 37"
+    },
+    {
+      "text": "|   - success | boolean | Yes | Indicates whether the request succeeded. |",
+      "location": "raw line 39"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-acceptdispute-risk-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-disputes-latest-post-acceptdispute]] \u2014 2026-09-15-captured Disputes API v30 test-server reference for accepting a dispute by dispute PSP reference and merchant account, with request-level success response and separate final-status guidance.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Disputes/latest/post/acceptDispute/2026-09-15.md",
+  "raw_sha256": "e08b582fd7dc836c258955c85e29a71393dfc66992e4aeaebd5d1c629b869ea5",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,47 @@
+{
+  "job_id": "api-explorer-payment-latest-post-cancelorrefund",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payment API POST /cancelOrRefund\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/cancelOrRefund\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/cancelOrRefund/2026-09-15.md\"\ntags: [adyen, payment-api, classic, cancellation, refund]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Payment API reference documents Classic `POST /cancelOrRefund` on the listed `pal-test.adyen.com/pal/servlet/Payment/v68` test server. It requests cancellation before capture or refund after capture when capture state is uncertain. The page marks the endpoint inactive and unsupported for new integrations; it directs new builds to Checkout API `/payments/{paymentPspReference}/reversals` and existing users to contact Adyen about migration. That Checkout link is navigation, not evidence of its request or response contract.\n\n## Key takeaways\n\n- Do not use this endpoint for payments with multiple partial captures or Adyen for Platforms split data supplied at payment or capture. The page instead directs users to check capture state and make the corresponding Classic `/refund` or `/cancel` call.\n- The request body requires `merchantAccount` and `originalReference`, the original payment's PSP reference from its authorization response or notification. `reference` is an optional modification reference. Other conditional fields are in the raw schema.\n- The 200 response includes a *modification-request* `pspReference` and `response`, which indicates receipt for processing; the example is `[cancelOrRefund-received]`. This is not proof that cancellation or refund finished. The original payment reference and new modification reference have different roles.\n- The page lists 400, 401, 403, 422 and 500 error tables; its response examples cover 400, 401 and 500. Example errors do not establish a complete endpoint-specific error catalog.\n\n## Detail locators\n\n- Lifecycle, exclusions, inactivity, migration and v68 server: raw lines 5\u201328.\n- Request schema and example: raw lines 30\u201369.\n- 200 acknowledgement and error tables: raw lines 70\u2013150; examples: 152\u2013199.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Classic integration and modification routes.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/cancelOrRefund/2026-09-15|Payment API POST /cancelOrRefund, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Cancels a payment if it has not been captured yet, or refunds it if it has already been captured. This is useful when it is not certain if the payment has been captured or not (for example, when using auto-capture).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "This endpoint is [inactive](https://docs.adyen.com/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| originalReference | string | Yes | The original pspReference of the payment to modify. This reference is returned in:  - authorisation response  - authorisation notification |",
+      "location": "raw line 51"
+    },
+    {
+      "text": "| response | string | Yes | Indicates if the modification request has been received for processing. |",
+      "location": "raw line 80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-cancelorrefund-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-cancelorrefund]] \u2014 2026-09-15-captured inactive Classic Payment API v68 test-server cancel-or-refund reference, with partial-capture/split exclusions, original-payment identity and asynchronous modification receipt; Checkout reversal is a migration route, not this endpoint's schema.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/cancelOrRefund/2026-09-15.md",
+  "raw_sha256": "0bf9e86539d89e8795f0ae49381713ad17824a1ef03a6ae87adfb1f29ef5ef10",
+  "status": "candidate_ready"
+}

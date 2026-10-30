@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-recurring-latest-post-listrecurringdetails",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Recurring API v68 POST /listRecurringDetails\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Recurring/latest/post/listRecurringDetails\"\nraw_files:\n  - \"adyen/api-explorer/Recurring/latest/post/listRecurringDetails/2026-09-15.md\"\ntags: [adyen, recurring, api, stored-payment-methods, classic]\n---\n\n## Overview\n\nCaptured **Recurring API v68** `POST /listRecurringDetails` reference on the `pal-test` server. It lists stored payment details for a shopper when available and returns summaries for shopper presentation. A `recurringDetailReference` identifies a legacy recurring detail that can be used with a separate regular authorization request; this lookup itself does not charge the shopper. See [[adyen]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- The request table marks `merchantAccount` and `shopperReference` required. The `recurring` object and its `contract` property are optional in the schema; the page does not separately label the request body as required.\n- If filtering by contract, the value generally needs to match the original payment's recurring contract. For an original `ONECLICK,RECURRING` contract, the page says to request either `ONECLICK` or `RECURRING`, according to whether the shopper will enter the card security code. The table describes `PAYOUT` and `EXTERNAL` contract values too; consult the raw for their scopes.\n- The 200 response may include an optional `details` array of `RecurringDetailWrapper` objects. Within a returned `RecurringDetail`, `recurringDetailReference` and `variant` are marked required; many other card, bank, contract and token-related fields are optional. The array's optional schema marking and \u201cif available\u201d purpose do not guarantee a stored detail for every shopper.\n- The `recurringDetailReference` is a recurring-detail identifier, distinct from the shopper reference, merchant account and original payment's `firstPspReference`. A listed detail or a successful lookup is not a payment authorization, capture or settlement result, and does not prove the detail can currently be charged.\n- The captured server is `https://pal-test.adyen.com/pal/servlet/Recurring/v68`, not Checkout API v72. `latest` in the canonical URL does not establish today's latest API version or live availability. Errors documented are 400, 401, 403, 422 and 500; this raw includes no response examples.\n\n## Detail locators\n\n- Raw lines 5\u201312: purpose, legacy authorization-reference statement and captured server.\n- Raw lines 14\u201326: full request schema and contract-match exception.\n- Raw lines 28\u201339: request example with `RECURRING` contract.\n- Raw lines 40\u201370: optional response array, nested recurring-detail fields and identifier roles.\n- Raw lines 73\u2013140: error classes and response schema.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 provider tokenization and stored-details concept.\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-retrieve-stored-details]] \u2014 related Classic guide for this lookup.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Recurring/latest/post/listRecurringDetails/2026-09-15|Captured Recurring API v68 POST /listRecurringDetails reference]]",
+  "quotes": [
+    {
+      "text": "Lists the stored payment details for a shopper, if there are any available. The recurring detail ID can be used with a regular authorisation request to charge the shopper. A summary of the payment detail is returned for presentation to the shopper.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| merchantAccount | string | Yes | The merchant account identifier you want to process the (transaction) request with. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| shopperReference | string | Yes | The reference you use to uniquely identify the shopper (e.g. user ID or account ID). |",
+      "location": "raw line 26"
+    },
+    {
+      "text": "| details | array of RecurringDetailWrapper | No | Payment details stored for recurring payments. |",
+      "location": "raw line 49"
+    },
+    {
+      "text": "|     - recurringDetailReference | string | Yes | The reference that uniquely identifies the recurring detail. |",
+      "location": "raw line 63"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-listrecurringdetails-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-recurring-latest-post-listrecurringdetails]] \u2014 2026-09-15-captured Recurring API v68 test-server reference for shopper-scoped legacy recurring-detail lookup, optional contract matching and returned recurring-detail identifiers; lookup is separate from authorization.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Recurring/latest/post/listRecurringDetails/2026-09-15.md",
+  "raw_sha256": "530d143a4ee34d8c88dcf7ae79ff6a22e078f0d2c91d93236567e0af94fa72cc",
+  "status": "candidate_ready"
+}

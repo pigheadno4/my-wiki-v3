@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-payment-latest-post-capture",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Payment API v68: POST /capture\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/capture\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/capture/2026-09-15.md\"\ntags: [adyen, classic-payment-api, capture, authorization]\n---\n\n## Overview\n\nCaptured Classic Payment API `POST /capture` reference for requesting capture of a payment authorization hold. The page lists the test server `https://pal-test.adyen.com/pal/servlet/Payment/v68`; `latest` in the URL is not evidence of a newer contract or live availability. The endpoint is labeled inactive and unsupported for new integrations: the page directs new integrations to Checkout API `POST /payments/{paymentPspReference}/captures` and existing integrations to migration guidance. This page does not supply that Checkout endpoint's schema. See [[adyen]] and [[adyen-payment-capture]].\n\n## Key takeaways\n\n- The request table marks `merchantAccount`, `modificationAmount`, and `originalReference` required. `originalReference` is the original payment's authorization `pspReference`, distinct from the reference returned for this capture request. `modificationAmount.currency` must match the authorization currency and its minor-unit `value` must not exceed the authorized amount. The table marks both nested amount fields required within that object; it does not separately declare whole-body requiredness.\n- The introduction says capturing less than the full authorized amount cancels the remaining authorization balance. The related guide and concept separately document an enabled multiple-partial-capture mode that can retain the remainder; do not generalize this page's default statement to that separately configured mode. Automatically captured methods and immediate/delayed auto-capture ordinarily need no explicit request, and the page says submitting one on already auto-captured transactions does not double charge.\n- A 200 response returns a required request `pspReference` and `response` indicating that the modification request was received for processing; its example is `[capture-received]`. Receipt is not final capture completion, settlement, or proof of funds. The related Classic capture guide describes subsequent webhook and possible later failure outcomes.\n- The page lists 400 unreadable request, 401 authentication required, 403 insufficient permissions, 422 validation error and 500 server processing failure. Consult the full request table for conditional MPI, platform split and POS fields rather than applying them universally.\n\n## Detail locators\n\n- Purpose, auto-capture and inactive/Checkout migration boundary: pinned raw lines 5\u201322. Full request schema and conditional fields: lines 24\u201363. Request example: lines 65\u201378.\n- 200 response and receipt identity: lines 79\u201389, example lines 161\u2013171. Error response tables: lines 92\u2013159; available error examples: lines 173\u2013208.\n\n## Related\n\n- [[adyen-payment-capture]] \u2014 capture lifecycle and result boundary.\n- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-capture]] \u2014 Classic guide for webhook outcomes and multiple partial capture conditions.\n\n## Related raw API references\n\n- `Checkout/latest/post/payments/(paymentPspReference)/captures` \u2014 new-integration route named in this source; its endpoint contract must be read separately.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/capture/2026-09-15|Classic Payment API POST /capture captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Captures the authorisation hold on a payment, returning a unique reference for this request.",
+      "location": "raw line 7, introduction (substring)"
+    },
+    {
+      "text": "This endpoint is [inactive]",
+      "location": "raw line 13, lifecycle warning (substring)"
+    },
+    {
+      "text": "https://pal-test.adyen.com/pal/servlet/Payment/v68",
+      "location": "raw line 22, Servers"
+    },
+    {
+      "text": "| originalReference | string | Yes | The original pspReference of the payment to modify.",
+      "location": "raw line 48, Request body table (substring)"
+    },
+    {
+      "text": "| response | string | Yes | Indicates if the modification request has been received for processing. |",
+      "location": "raw line 89, 200 response body table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-classic-capture-route",
+        "target_path": "wiki/concepts/adyen-payment-capture.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-capture]] \u2014 2026-09-15-captured inactive Classic Payment API v68 test-server `/capture` contract for original authorization reference, amount, modification receipt and Checkout migration route; receipt is not final capture outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source states partial capture cancels remaining authorization balance; existing concept and Classic guide qualify this for separately enabled multiple partial captures."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/capture/2026-09-15.md",
+  "raw_sha256": "6c8866a27f266d5b5d3a96b379e7e4779f441e1870d8a5a7780faa668979bb2a",
+  "status": "candidate_ready"
+}

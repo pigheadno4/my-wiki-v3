@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-payments-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72: POST /payments/details\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/payments/details/2026-09-15.md\"\ntags: [adyen, checkout, payments, payment-details, api-reference]\n---\n\n## Overview\n\nThis captured [[adyen]] Checkout API reference describes `POST /payments/details`: submit follow-up details for a payment created with `/payments` when that request has not reached a final state, such as after a shopper redirect. The captured server is `https://checkout-test.adyen.com/v72`; the `latest` URL does not establish a currently live latest version or a live endpoint.\n\n## Key takeaways\n\n- The request-body table marks the `details` object **required**. Its listed child fields are individually marked optional and cover flow-specific return data, including `redirectResult`, 3DS results, wallet identifiers and callbacks. The redirect and native 3DS examples illustrate alternatives, not a requirement to send every listed field.\n- `authenticationData.authenticationOnly` is marked optional, with the page saying `true` triggers an authentication-only 3DS2 flow without proceeding to payment authorization. `threeDSAuthenticationOnly` changes the value previously set in `/payments` only when a change is wanted. The `paymentData` note gives distinct authentication-only values to submit after `AuthenticationNotRequired` and `AuthenticationFinished`; use the precise field mapping in the raw table.\n- HTTP 200 says the **request** succeeded. The optional `resultCode` describes payment state: `Authorised`, `Cancelled`, `Error` and `Refused` are listed as final, while `Pending` lacks a final status; `Received` is an initial received state; `ChallengeShopper`, `IdentifyShopper`, `PresentToShopper` and `RedirectShopper` require further interaction or presentation. Authentication-only results are not payment authorization. An optional `action` can require more work. A 200 response or the illustrated `Authorised` response does not guarantee authorization for every call, capture, or settlement.\n- The optional `pspReference` refers to the transaction/request; the optional `order` carries updated order information when order information was provided. Neither is interchangeable with the other. The optional `paymentMethod` and `paymentValidations` objects have narrower `Authorised` conditions in the response table.\n- The raw reference documents 400, 401, 403, 422 and 500 error categories and response shapes. Example codes/messages are examples, not an exhaustive error contract.\n\n## Detail locators\n\n- Purpose, captured test server and idempotency header: raw lines 5\u201317.\n- Request `details`, flow-specific child fields, authentication-only controls and `paymentData`: raw lines 20\u201347; alternative request examples: lines 49\u201367.\n- 200 response fields and conditional objects: raw lines 68\u2013110; `resultCode` states, 3DS response fields and `threeDSPaymentData`: lines 111\u2013148.\n- Error categories and response schema: raw lines 151\u2013218; illustrative responses: lines 220\u2013293.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider-level server/client/webhook architecture and online-payment routes.\n- [[adyen-3d-secure]] \u2014 authentication flow context; this API reference retains the versioned request and response contract.\n- [[source-adyen-docs-online-payments-build-your-integration-payment-result-codes]] \u2014 broader result-code and later-status guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/payments/details/2026-09-15|Checkout v72 POST /payments/details capture]]\n",
+  "quotes": [
+    {
+      "text": "Submits details for a payment created using `/payments`. This step is only needed when no final state has been reached on the `/payments` request",
+      "location": "raw line 7, opening paragraph"
+    },
+    {
+      "text": "| details | object | Yes | Use this collection to submit the details that were returned as a result of the `/payments` call. |",
+      "location": "raw line 25, request body table"
+    },
+    {
+      "text": "If set to **true**, you will only perform the 3D Secure 2 authentication, and will not proceed to the payment authorization.",
+      "location": "raw line 24, authenticationData.authenticationOnly description"
+    },
+    {
+      "text": "| action |  | No | Action to be taken for completing the payment. When returned, only the 3D Secure action is needed in most cases. |",
+      "location": "raw line 76, 200 response table"
+    },
+    {
+      "text": "**Pending** \u2013 Indicates that it is not possible to obtain the final status of the payment.",
+      "location": "raw line 111, resultCode description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-checkout-payments-details-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-payments-details]] \u2014 captured Checkout API v72 TEST reference for `POST /payments/details`, submitting follow-up `/payments` details and interpreting optional action/result states (API Explorer snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/payments/details/2026-09-15.md",
+  "raw_sha256": "a4d1540a001c4ce613609740fdaa4222949b7e4eaa38e25ef3f9a33cdbfe53cd",
+  "status": "candidate_ready"
+}

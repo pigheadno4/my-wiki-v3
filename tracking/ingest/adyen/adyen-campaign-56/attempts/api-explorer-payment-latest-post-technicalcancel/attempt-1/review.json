@@ -1,0 +1,20 @@
+{
+  "job_id": "api-explorer-payment-latest-post-technicalcancel",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Independently read all 203 numbered endpoint raw lines; the trusted SHA-256, five quotes/locators, candidate/receipt and suggestions match. One material omission remains. For the query 'Can I use /technicalCancel days later with a reused merchant reference because I lack the original PSP reference?', the candidate's unrestricted opening can suggest yes. The endpoint raw does not state the limits, but its linked Classic cancellation guide explicitly restricts technical cancel to 24 hours after authorization and unique payment references (guide raw lines 138-145). That guide also scopes cancellation to uncaptured authorization, distinguishes captured/uncertain states (lines 17, 35-39), identifies the response PSP reference as the modification's (161-164), and documents later TECHNICAL_CANCEL webhook success/failure (172-178). The current source and fixed answers leave those consequential qualifications undiscoverable at the route and say no later outcome mechanism is specified without directing readers to the guide.",
+  "required_changes": [
+    "Add a concise cross-source qualification to the candidate, explicitly attributed to the linked Classic cancellation guide rather than the API Explorer endpoint capture: technical cancel is valid only within 24 hours after authorization and when original payment references are unique, for an uncaptured authorization with missing original PSP reference; captured payments use refund and uncertain capture status uses cancelOrRefund. State that the immediate response PSP reference is for the modification and the guide's later TECHNICAL_CANCEL webhook reports success/failure. Preserve that the endpoint raw itself documents only received-for-processing acknowledgement. Update fixed Q1/Q2 answers to include these limits/outcome route, and revise the reciprocal suggestion's text or warnings to avoid an unrestricted original-reference route."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "c56-classic-technicalcancel-online-route",
+      "verdict": "rejected",
+      "reason": "The route currently presents technical cancel by original merchant reference without the linked guide's 24-hour and unique-reference limits; revise it with the source qualification."
+    }
+  ],
+  "reviewer_identity": "c56-rapi-explorer-payment-latest-post-technicalcancel",
+  "reviewer_model": "gpt-6-sol"
+}

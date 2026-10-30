@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-payment-latest-post-authorise3ds2",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payment API POST /authorise3ds2 (captured v68)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/authorise3ds2\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/authorise3ds2/2026-09-15.md\"\ntags: [adyen, payment-api, classic-api, 3ds2, authorisation]\n---\n\n## Overview\n\nThis captured [[adyen]] **Payment API** reference describes `POST /authorise3ds2` for completing payment authorisation after an authenticated 3D Secure 2 session. The listed server is `https://pal-test.adyen.com/pal/servlet/Payment/v68`. The endpoint is marked inactive and unsupported for new integrations; the page directs new integrations to Checkout API `/payments/details` and existing users to migrate. This Payment API contract must not be read as the Checkout endpoint's schema. See [[adyen-3d-secure]].\n\n## Key takeaways\n\n- Introductory prose says the endpoint must receive both `threeDS2Token` and `threeDS2Result`, but the request table marks each `No`, and the supplied request example contains the token without a result. Preserve this inconsistency; do not infer a universally sufficient request from the example or silently treat the table as overriding the prose.\n- The request table marks `amount`, `merchantAccount`, and `reference` required. Inside `amount`, `currency` and `value` are required. The `threeDS2RequestData.deviceChannel` nested field is marked required if that object is supplied; app, browser, Visa/JCB, recurring, and authentication-only routes carry further conditional fields in the table. `billingAddress` is described as required for 3DS2 browser and mobile implementations, while `browserInfo` is required for web 3DS integrations.\n- `threeDSAuthenticationOnly=true` means authentication without payment authorisation. A `200` response is an API success, while `resultCode` distinguishes `AuthenticationFinished`, `Authorised`, `ChallengeShopper`, `IdentifyShopper`, `Pending`, `Received`, `Refused`, and other outcomes. `Authorised` is an authorisation state, not evidence of capture or settlement. `pspReference` identifies the Adyen transaction/request; `refusalReason` applies to refusals or errors.\n- The page documents HTTP 400, 401, 403, 422, and 500 error schemas and examples for 400, 401, and 500. Those examples do not exhaust failure behavior. The inactive status and test v68 server bound this captured reference; `latest` in the URL does not establish current support or live execution.\n\n## Detail locators\n\n- Purpose, inactive/migration warning, and server: raw lines 5\u201318.\n- Request body and conditional 3DS fields: raw lines 22\u2013275; request example: lines 277\u2013294.\n- `200` response and result codes: raw lines 295\u2013318. HTTP error schemas and examples: lines 321\u2013427.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/authorise3ds2/2026-09-15|Payment API Explorer POST /authorise3ds2 capture]]\n",
+  "quotes": [
+    {
+      "text": "For an authenticated 3D Secure 2 session, completes the payment authorisation. This endpoint must receive the `threeDS2Token` and `threeDS2Result` parameters.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "This endpoint is [inactive](https://docs.adyen.com/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "- https://pal-test.adyen.com/pal/servlet/Payment/v68",
+      "location": "raw line 18"
+    },
+    {
+      "text": "| threeDS2Result | object | No | The ThreeDS2Result that was returned in the final CRes. |",
+      "location": "raw line 257"
+    },
+    {
+      "text": "| threeDS2Token | string | No | The ThreeDS2Token that was returned in the /authorise call. |",
+      "location": "raw line 272"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-payment-authorise3ds2-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-authorise3ds2]] \u2014 Captured inactive Payment API v68 test-server `POST /authorise3ds2` authorisation contract after 3DS2 authentication, with prose/table disagreement on required token and result; new integrations are directed to separate Checkout `/payments/details` (2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Opening prose requires both threeDS2Token and threeDS2Result, but request table marks both optional and example omits result; preserve source conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/authorise3ds2/2026-09-15.md",
+  "raw_sha256": "d6d70cae80052938d2f4942bc40e71639c6432692a061677a1d59c4a7915d0d5",
+  "status": "candidate_ready"
+}

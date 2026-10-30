@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-forward",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API POST /forward (captured v72)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/forward\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/forward/2026-09-15.md\"\ntags: [adyen, checkout-api, tokenization, forwarding]\n---\n\n## Overview\n\nThis captured [[adyen]] Checkout API Explorer reference describes `POST /forward`, which sends stored card details or network tokens to a merchant-specified third-party API and returns the response received from that third party. The listed server is `https://checkout-test.adyen.com/v72`; the `latest` URL does not establish a newer or current version. See [[adyen-tokenization]] and the broader [[source-adyen-docs-online-payments-tokenization-forward-payment-details|forwarding guide]] for setup and eligibility.\n\n## Key takeaways\n\n- The request table marks `baseUrl`, `merchantAccount`, `request`, and `shopperReference` required. The nested `request.body` and `request.httpMethod` are marked required; the body uses placeholders that Adyen replaces with payment details before calling the third party. The `shopperReference` description requires at least three characters, is case-sensitive, and excludes personally identifiable information.\n- `storedPaymentMethodId` is optional in this request schema; the page also exposes optional `paymentMethod` card details and `options.tokenize`. Network-token options and conditional placeholders have their own descriptions in the raw table. Do not infer that the optional token ID is required for every forwarding mode. Collection of a raw card number is qualified by full PCI compliance.\n- `options.dryRun` is test-only and returns a masked copy of Adyen's third-party request. The page's card-forwarding JSON is an example, not a universal required-property list.\n- `200 Success` states that the forward request succeeded and includes a `response` object for what Adyen received from the third party, including optional body, headers, and HTTP status. The example third-party body has a `success` value, but neither that example nor Adyen's `200` establishes a third-party payment authorization or settlement. No failure-response table appears in this capture.\n\n## Detail locators\n\n- Purpose, test server, idempotency header: raw lines 5\u201317.\n- Request body, forwarding options, network token and placeholder conditions: raw lines 20\u201356; card example: lines 58\u201377.\n- `200` response fields and third-party example: raw lines 78\u2013111.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/forward/2026-09-15|Checkout API Explorer POST /forward capture]]\n",
+  "quotes": [
+    {
+      "text": "Forwards the payment details you stored with Adyen to a third-party that you specify and returns the response from the third-party.",
+      "location": "raw line 7, opening sentence"
+    },
+    {
+      "text": "- https://checkout-test.adyen.com/v72",
+      "location": "raw line 10"
+    },
+    {
+      "text": "| baseUrl | string | Yes | The base URL of the third party API, where Adyen will send the request to forward the payment details. |",
+      "location": "raw line 26"
+    },
+    {
+      "text": "| storedPaymentMethodId | string | No | The unique identifier of the token that you want to forward to the third party.",
+      "location": "raw line 56, opening substring"
+    },
+    {
+      "text": "| response | object | Yes | The details of the response Adyen received from the third party. |",
+      "location": "raw line 88"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-forward-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-forward]] \u2014 Captured Checkout API Explorer `POST /forward` v72 test-server request and third-party-response contract for forwarding card details or network tokens (2026-09-15); the `200` response does not itself establish a payment outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/forward/2026-09-15.md",
+  "raw_sha256": "2a05768d5eb5988728ba0f3f61444f60a87f6e4f93f05e7abbd623909cd6bea1",
+  "status": "candidate_ready"
+}

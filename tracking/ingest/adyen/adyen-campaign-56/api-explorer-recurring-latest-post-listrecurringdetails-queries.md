@@ -1,0 +1,10 @@
+# C56 fixed-query audit — api-explorer-recurring-latest-post-listrecurringdetails
+
+Full raw read: numbered contiguous lines 1–140; SHA-256 530d143a4ee34d8c88dcf7ae79ff6a22e078f0d2c91d93236567e0af94fa72cc.
+
+Canonical source: [[source-adyen-api-explorer-recurring-latest-post-listrecurringdetails]] — https://docs.adyen.com/api-explorer/Recurring/latest/post/listRecurringDetails
+
+- Q1: For `Recurring/latest/post/listRecurringDetails`, what purpose, API/version and object identity does this captured page establish, and what central required/conditional inputs or prerequisites govern its use?
+  - Answer: Recurring API v68 `POST /listRecurringDetails` on `pal-test` lists shopper stored details if available; its detail ID may be used in a separate regular authorization request (raw lines 5–12). Required request properties are `merchantAccount` and `shopperReference` (16–26). The `recurring` container and `contract` property are optional; if contract is supplied, it generally matches the original payment's contract, with the documented `ONECLICK,RECURRING` exception selecting ONECLICK or RECURRING according to security-code entry (20–21). The page does not separately label the body required.
+- Q2: For `Recurring/latest/post/listRecurringDetails`, what does the documented response or failure establish, and which lifecycle, deletion/propagation, asynchronous outcome, version/environment or missing-evidence boundaries prevent broader inference?
+  - Answer: A 200 request success may return an optional `details` array; nested `recurringDetailReference` and `variant` are marked required within a returned detail, while the response has no guaranteed detail for every shopper (42–70). The lookup does not itself authorize, capture, settle, delete or update a token, and the raw gives no charging outcome or response example (5–7, 40–70). Errors listed are 400/401/403/422/500 (73–140). The captured server is Recurring v68 test, not Checkout, and `latest` in the URL is not a current-version or live claim (1, 11–12).

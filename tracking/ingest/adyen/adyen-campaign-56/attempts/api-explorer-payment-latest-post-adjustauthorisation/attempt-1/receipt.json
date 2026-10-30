@@ -1,0 +1,55 @@
+{
+  "job_id": "api-explorer-payment-latest-post-adjustauthorisation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Payment API POST /adjustAuthorisation (captured v68)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/adjustAuthorisation\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/adjustAuthorisation/2026-09-15.md\"\ntags: [adyen, classic-api, payment-api, authorization-adjustment, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents Classic Payment API `POST /adjustAuthorisation` at the displayed test `https://pal-test.adyen.com/pal/servlet/Payment/v68` server. It requests an increase or decrease to an already authorised payment amount. The page marks this endpoint inactive and unsupported for new integrations, directs new builds to Checkout API `/payments/{paymentPspReference}/amountUpdates`, and tells existing users to contact Adyen about migration. This source is the Classic endpoint contract, not the Checkout amount-update contract. See [[adyen]] and [[adyen-authorization-adjustment]].\n\n## Key takeaways\n\n- The request property table marks `merchantAccount`, `modificationAmount.currency`, `modificationAmount.value`, and `originalReference` required. `modificationAmount` is the **new total** authorised amount in minor units, not the incremental difference. `originalReference` is the original payment PSP reference from the authorisation response or notification. Optional `reference` is the merchant's reference for this modification, distinct from the original PSP reference and response's modification/request PSP reference.\n- The 200 response's `response` field indicates that the modification request was **received for processing**; the example is `[adjustAuthorisation-received]`. The returned `pspReference` identifies this request. Neither 200 nor that acknowledgement establishes final issuer acceptance, capture or settlement; the related Classic adjustment guide provides the later webhook and lifecycle detail.\n- The raw lists 400 malformed-request, 401 authentication, 403 permission, 422 validation and 500 server failures with generic error objects. It gives 200, 400, 401 and 500 examples. The optional `originalMerchantReference` row says \u201coriginal merchant reference to cancel,\u201d wording inconsistent with this adjustment endpoint; do not read it as a cancellation action.\n- This captured `latest` path displays Classic Payment API test v68 and does not prove today's latest version, live eligibility, a successful adjustment, or the schema of the linked Checkout replacement.\n\n## Detail locators\n\n- Purpose, inactive/new-build migration note and displayed test server: raw lines 5\u201318.\n- Request table: lines 22\u201359; core required properties 26\u201329 and 44, optional modification reference 49, ambiguous originalMerchantReference 43, conditional platform split data 45\u201357. Example request: 61\u201374.\n- 200 response fields and received-state meaning: lines 75\u201385, example 157\u2013167. Error schemas/examples: 88\u2013155 and 169\u2013204.\n\n## Related\n\n- [[source-adyen-docs-online-payments-classic-integrations-modify-payments-adjust-authorisation]] \u2014 wider Classic pre-authorization, webhook, capture and expiry guide.\n- [[adyen-authorization-adjustment]] \u2014 provider concept and reciprocal source route.\n\n## Related raw API references\n\n- Checkout `/payments/{paymentPspReference}/amountUpdates` is linked by this raw at line 11; use its separately reviewed contract for Checkout request/response details.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/adjustAuthorisation/2026-09-15|Classic Payment API POST /adjustAuthorisation snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is [inactive](https://docs.adyen.com/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "- If you are building a new integration, use the Checkout API [`/payments/{paymentPspReference}/amountUpdates`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/amountUpdates) endpoint instead.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| modificationAmount | object | Yes | The currency and value of the new total amount in minor units. For example, to increase the amount, the value is the sum of the pre-authorized amount and the additional amount. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "| originalReference | string | Yes | The original pspReference of the payment to modify. This reference is returned in:  - authorisation response  - authorisation notification |",
+      "location": "raw line 44"
+    },
+    {
+      "text": "| response | string | Yes | Indicates if the modification request has been received for processing. |",
+      "location": "raw line 85"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "classic-adjust-v68-reciprocal",
+        "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-adjustauthorisation]] \u2014 2026-09-15 Classic Payment API v68 POST /adjustAuthorisation reference for new-total request, original PSP identity, received-state response and inactive/new-build migration boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is the inactive Classic Payment API endpoint; the linked Checkout amountUpdates endpoint has a separate contract.",
+          "The optional originalMerchantReference row says to cancel despite this endpoint's adjustment purpose."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/adjustAuthorisation/2026-09-15.md",
+  "raw_sha256": "5f55ad3d99e052035c56a068d56277c6a265f15d93a96ecc0eeb4d9acba3493e",
+  "status": "candidate_ready"
+}

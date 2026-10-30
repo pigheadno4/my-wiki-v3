@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-recurring-latest-post-notifyshopper",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Recurring API POST /notifyShopper (captured v68)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Recurring/latest/post/notifyShopper\"\nraw_files:\n  - \"adyen/api-explorer/Recurring/latest/post/notifyShopper/2026-09-15.md\"\ntags: [adyen, recurring-api, india, pre-debit-notification, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents Recurring API `POST /notifyShopper` on the displayed test `https://pal-test.adyen.com/pal/servlet/Recurring/v68` server. It asks the issuer to inform a shopper about an upcoming recurring payment and is scoped to **local acquiring in India**. It is a notification request, not the later recurring payment, issuer delivery proof, mandate approval, or payment authorization. See [[adyen]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- The request property table marks upcoming `amount.currency` and minor-unit `amount.value`, `merchantAccount`, the merchant's pre-debit notification `reference`, and `shopperReference` required. The shopper reference must match the one used in the initial payment. `billingDate` and `billingSequenceNumber` are optional in this table; `displayedReference` defaults to `reference` if omitted. `recurringDetailReference` and `storedPaymentMethodId` are shown as optional token-identifying fields; the example supplies the latter, which does not make it universally required by the table.\n- The 200 response schema lists `resultCode`, `message`, request `pspReference`, downstream `shopperNotificationReference`, stored-payment-method ID and references as optional properties. Its example has `resultCode: Success` and `Request Processed Successfully`, establishing the illustrated request processing only. It does not prove issuer delivery to the shopper or authorize/settle the subsequent recurring charge.\n- The page lists 400, 401, 403, 422 and 500 generic request/error schemas. It gives a 200 response example but no example for those failures and no `resultCode` enum. The wider India recurring-card guide provides separate pre-debit timing, payment-request and webhook steps; those details are not specified by this endpoint contract.\n- The captured `latest` URL displays a test Recurring v68 server; it does not establish today's latest version, live India acquiring eligibility, or a successful notification/payment.\n\n## Detail locators\n\n- Purpose, India local-acquiring scope and displayed server: raw lines 5\u201310.\n- Request table, token and shopper identity: lines 14\u201327; example: 29\u201345.\n- 200 response fields: lines 46\u201360; generic error schemas: 63\u2013130; 200 response example: 132\u2013147.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-cards-cards-recurring-india]] \u2014 broader historical India mandate, pre-debit and later charge guide; review its timing/version qualifications.\n- [[adyen-tokenization]] \u2014 provider concept and reciprocal source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Recurring/latest/post/notifyShopper/2026-09-15|Recurring API POST /notifyShopper snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Sends a request to the issuer so they can inform the shopper about the upcoming recurring payment. This endpoint is used only for local acquiring in India. For more information, refer to [Recurring card payments in India](https://docs.adyen.com/payment-methods/cards/cards-recurring-india).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| amount | object | Yes | The amount of the upcoming payment. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| reference | string | Yes | Pre-debit notification reference sent by the merchant. This is a mandatory field |",
+      "location": "raw line 25"
+    },
+    {
+      "text": "| shopperReference | string | Yes | The ID that uniquely identifies the shopper.  This `shopperReference` must be the same as the `shopperReference` used in the initial payment. |",
+      "location": "raw line 26"
+    },
+    {
+      "text": "| shopperNotificationReference | string | No | The unique reference for the request sent downstream. |",
+      "location": "raw line 59, response table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "recurring-notifyshopper-v68-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-recurring-latest-post-notifyshopper]] \u2014 2026-09-15 Recurring API v68 POST /notifyShopper reference for India local-acquiring pre-debit notification request, shopper/token identifiers and downstream request reference; notification response is not payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured test v68 endpoint does not establish issuer delivery, current India eligibility or subsequent recurring payment success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Recurring/latest/post/notifyShopper/2026-09-15.md",
+  "raw_sha256": "f8eee5ee68e0a69ac56108ae100e60129d6992dfdbd12a1af6ea141ab95ce88a",
+  "status": "candidate_ready"
+}

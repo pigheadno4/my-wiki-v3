@@ -31,6 +31,9 @@ Klarna is pre-authorized by default and supports only asynchronous authorization
 
 ## Sources
 
+- [[source-adyen-api-explorer-payment-latest-post-adjustauthorisation]] — 2026-09-15 Classic Payment API v68 POST /adjustAuthorisation reference for new-total request, original PSP identity, received-state response and inactive/new-build migration boundary.
+
+
 - [[source-adyen-docs-online-payments-classic-integrations-modify-payments-adjust-authorisation]] — 2026-09-15 snapshot of inactive Classic Payment API pre-authorisation, asynchronous/synchronous adjustment, original versus modification PSP references, total-amount updates, final capture, and validity qualifications (page metadata last modified 2020-11-11).
 
 

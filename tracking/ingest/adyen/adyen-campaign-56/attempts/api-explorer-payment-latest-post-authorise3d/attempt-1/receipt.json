@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-payment-latest-post-authorise3d",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Payment API POST /authorise3d \u2014 complete 3DS authorisation\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payment/latest/post/authorise3d\"\nraw_files:\n  - \"adyen/api-explorer/Payment/latest/post/authorise3d/2026-09-15.md\"\ntags: [adyen, classic-payment-api, 3d-secure, authorisation, migration]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot describes **Classic Payment API** `POST /authorise3d`, which completes payment authorisation following an authenticated 3D Secure session using issuer-returned `md` and `paResponse`. Its captured server is the **v68 test** Payment endpoint, despite `latest` in the canonical route. Adyen marks this endpoint **inactive** and unsupported for new integrations, routes new integrations to Checkout API `/payments/details`, and directs existing integrations to migrate. See [[adyen-3d-secure]] and [[adyen]].\n\n## Key takeaways\n\n- The request-body table marks `md` (issuer-returned payment-session identifier), `paResponse` (issuer-returned PaRes), and `merchantAccount` as required properties. The opening paragraph likewise says the endpoint must receive the two issuer parameters. The example supplies those plus `shopperIP`; an illustrative example is not a complete catalog of conditional requirements.\n- Other body fields are marked optional at the top level, but the descriptions add conditions: `billingAddress` for browser/mobile 3DS2, browser information for web 3DS, certain contact/IP fields for Visa/JCB 3DS2 cases, `threeDS2RequestData.deviceChannel` within that object, and app SDK or browser notification fields in their specified 3DS2 scenarios. The long nested schema and its exact conditions remain at the raw locators. Recommendations for risk/account information are not unconditional requirements.\n- `threeDSAuthenticationOnly: true` requests 3DS2 authentication without payment authorisation; the similarly named `threeDS2RequestData.authenticationOnly` has its own conditional description. The response's `AuthenticationFinished` and `AuthenticationNotRequired` codes therefore must not be read as authorised payments.\n- A `200 Success` means the API request succeeded, not necessarily that the payment was authorised. The optional `resultCode` can describe `Authorised`, refusal/error, partial authorisation, further shopper action, pending or `Received` states, or authentication-only states; `refusalReason` qualifies failures, and `pspReference` identifies the transaction/request. `Authorised` is an authorisation state, not capture or settlement evidence.\n- The reference also documents `400`, `401`, `403`, `422`, and `500` error schemas; the response examples are generic for `400`, `401`, and `500`. No successful authorisation example or live execution is established by this snapshot. Its Classic schema must not be transferred to the Checkout `/payments/details` route merely because that route is named as the migration successor.\n\n## Detail locators\n\n- Purpose, inactive/new-integration warning, migration route, and v68 test server: raw lines 5\u201318.\n- Required `md`, `merchantAccount`, `paResponse`; 3DS2 address/browser/phone and other conditional request fields: raw lines 22\u2013259, especially 74\u201390, 130\u2013165, 183\u2013184, 203\u2013229, 259.\n- Example body: raw lines 263\u2013273.\n- `200` response fields, `pspReference`, `resultCode` alternatives and refusal meaning: raw lines 274\u2013297.\n- HTTP error schemas and generic examples: raw lines 300\u2013406.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-3d-secure]]\n- Classic-to-Checkout migration guide: [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api]]\n- Checkout successor reference: [[source-adyen-api-explorer-checkout-latest-post-payments-details]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payment/latest/post/authorise3d/2026-09-15|Classic Payment API POST /authorise3d (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "For an authenticated 3D Secure session, completes the payment authorisation. This endpoint must receive the `md` and `paResponse` parameters that you get from the card issuer after a shopper pays via 3D Secure.",
+      "location": "raw line 7, opening paragraph"
+    },
+    {
+      "text": "This endpoint is [inactive](https://docs.adyen.com/online-payments/upgrade-your-integration#checkout-api-lifecycle) and is no longer supported for new integrations.",
+      "location": "raw line 9, lifecycle warning"
+    },
+    {
+      "text": "- https://pal-test.adyen.com/pal/servlet/Payment/v68",
+      "location": "raw line 18, Servers"
+    },
+    {
+      "text": "| md | string | Yes | The payment session identifier returned by the card issuer. |",
+      "location": "raw line 130, Request body"
+    },
+    {
+      "text": "| paResponse | string | Yes | Payment authorisation response returned by the card issuer. The `paResponse` field holds the PaRes value received from the card issuer. |",
+      "location": "raw line 152, Request body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-classic-authorise3d-3dsecure-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-latest-post-authorise3d]] \u2014 2026-09-15 Classic Payment API v68 test reference for inactive post-3DS `/authorise3d`, issuer `md`/`paResponse`, conditional 3DS2 fields and result-code boundaries; new integrations use Checkout `/payments/details`.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payment/latest/post/authorise3d/2026-09-15.md",
+  "raw_sha256": "401615aa129111f3bfa6a010f4c72bb02406039c07a54252073b5a8f210b9196",
+  "status": "candidate_ready"
+}

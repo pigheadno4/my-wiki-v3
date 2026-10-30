@@ -27,6 +27,21 @@ In `@adyen/adyen-web@6.47.0`, the challenge handler checks for a missing `result
 
 ## Related
 
+- [[source-adyen-api-explorer-binlookup-latest-post-get3dsavailability]] — 2026-09-15-captured BinLookup API v54 test-server reference for BIN/card-brand 3DS availability and optional 3DS2 card-range/device-key data; lookup does not establish authentication or payment outcome.
+
+
+- [[source-adyen-api-explorer-payment-latest-post-retrieve3ds2result]] — 2026-09-15-captured Classic Payment API TEST v68 `POST /retrieve3ds2Result` authentication-only result lookup by `/authorise` PSP reference; it is not a payment-authorization or capture result.
+
+
+- [[source-adyen-api-explorer-payment-latest-post-getauthenticationresult]] — 2026-09-15-captured Classic Payment API v68 POST /getAuthenticationResult reference for transaction-keyed 3DS1/3DS2 authentication-only data; it does not establish payment authorization or later financial outcome.
+
+
+- [[source-adyen-api-explorer-payment-latest-post-authorise3ds2]] — Captured inactive Payment API v68 test-server `POST /authorise3ds2` authorisation contract after 3DS2 authentication, with prose/table disagreement on required token and result; new integrations are directed to separate Checkout `/payments/details` (2026-09-15).
+
+
+- [[source-adyen-api-explorer-payment-latest-post-authorise3d]] — 2026-09-15 Classic Payment API v68 test reference for inactive post-3DS `/authorise3d`, issuer `md`/`paResponse`, conditional 3DS2 fields and result-code boundaries; new integrations use Checkout `/payments/details`.
+
+
 - [[source-adyen-docs-online-payments-3d-secure-native-3ds2]] — 2026-09-15 snapshot of the Checkout native 3DS2 guide for Web, iOS, Android, and Flutter Drop-in/Components, plus React Native Drop-in; consult the platform sections for Advanced-flow API/version qualifications, request fields, action handoffs, and redirect fallback.
 
 

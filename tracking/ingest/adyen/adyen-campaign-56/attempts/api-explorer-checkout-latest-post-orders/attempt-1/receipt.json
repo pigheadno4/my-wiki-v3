@@ -1,0 +1,47 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-orders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72 POST /orders \u2014 Create an order\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/orders\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/orders/2026-09-15.md\"\ntags: [adyen, checkout, api, orders, partial-payments]\n---\n\n## Overview\n\nThis captured API Explorer reference documents Checkout API v72 `POST /orders` at the test server. It creates an order for partial payments with different payment methods before a `/payments` call. The order is distinct from any subsequent payment authorization, capture, or settlement. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The request body table marks `amount` (with currency and minor-unit value), `merchantAccount`, and `reference` required. `expiresAt` is optional; without it, the documented default expiry is one day. The optional `Idempotency-Key` header has a 64-character maximum.\n- A 200 response reports order creation with `resultCode: Success`, initial `amount`, `remainingAmount`, `expiresAt`, and encrypted `orderData` for adding payments to the order. Its `pspReference` is described as a transaction/request reference; the response is not proof that a payment was authorized or that the order is fully paid.\n- The captured reference lists 400, 401, 403, 422, and 500 errors. Their response examples illustrate errors, rather than adding request requirements: for example, the 422 example says \u201cReturn URL is missing\u201d although `returnUrl` is absent from this endpoint's request body table. Do not treat that generic example as this endpoint's required field.\n- The URL says `latest`, while the captured server is `https://checkout-test.adyen.com/v72` (2026-09-15 snapshot). It does not establish the current live version or availability.\n\n## Detail locators\n\n- Purpose, server, optional header, and request body: raw lines 5\u201328.\n- Success response fields and their requiredness: raw lines 43\u201369.\n- HTTP errors and generic error schemas: raw lines 72\u2013139.\n- Illustrative success and error payloads: raw lines 141\u2013225. The success example's `amount.value` differs from its request example; use the schema descriptions for field meaning.\n\n## Related\n\n- [[source-adyen-docs-online-payments-partial-payments]] \u2014 broader multi-method order lifecycle guide.\n- [[adyen-online-payments]] \u2014 provider concept route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/orders/2026-09-15|Captured Checkout API POST /orders reference]]\n",
+  "quotes": [
+    {
+      "text": "Creates an order to be used for partial payments. Make a POST `/orders` call before making a `/payments` call when processing payments with different payment methods.",
+      "location": "raw lines 5\u20137"
+    },
+    {
+      "text": "| expiresAt | string | No | The date when the order should expire. If not provided, the default expiry duration is 1 day.",
+      "location": "raw line 26 (opening exact substring)"
+    },
+    {
+      "text": "| orderData | string | Yes | The encrypted data that will be used by merchant for adding payments to the order. |",
+      "location": "raw line 62"
+    },
+    {
+      "text": "| resultCode | string | Yes | The result of the order creation request. The value is always **Success**. |",
+      "location": "raw line 69"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-orders-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-orders]] \u2014 2026-09-15-captured Checkout API v72 POST /orders reference for partial-payment order creation, required body fields, expiry, order response, and documented errors.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/orders/2026-09-15.md",
+  "raw_sha256": "bad45d47bbc821b46d415f5babf0e4c901e4b0f81b2e7f18bc0481a85dd73f08",
+  "status": "candidate_ready"
+}

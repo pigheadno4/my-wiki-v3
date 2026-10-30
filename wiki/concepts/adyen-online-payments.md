@@ -21,6 +21,66 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-api-explorer-binlookup-latest-post-getcostestimate]] — 2026-09-15 BinLookup API v54 POST /getCostEstimate reference for region-scoped assumed interchange/scheme-fee estimates before authorisation; source flags absent named surcharging-policy response field.
+
+
+- [[source-adyen-api-explorer-payment-latest-post-technicalcancel]] — captured inactive Classic Payment API v68 TEST `POST /technicalCancel` request/receipt contract for missing original PSP reference; the linked Classic cancellation guide limits use to unique original merchant references within 24 hours for uncaptured authorizations and routes final success/failure through `TECHNICAL_CANCEL` webhook (2026-09-15).
+
+
+- [[source-adyen-api-explorer-binlookup-latest-overview]] — 2026-09-15-captured BinLookup API v54 overview for BIN-based 3DS availability and fee-estimate endpoint navigation, credential alternatives, and test/live URL setup; child references own schemas and results.
+
+
+- [[source-adyen-api-explorer-payment-latest-post-authorise]] — captured inactive Classic Payment API v68 TEST `POST /authorise` reference for authorization attempt, conditional 3DS/recurring inputs, result states and migration direction (API Explorer snapshot, 2026-09-15).
+
+
+- [[source-adyen-api-explorer-payment-latest-post-cancelorrefund]] — 2026-09-15-captured inactive Classic Payment API v68 test-server cancel-or-refund reference, with partial-capture/split exclusions, original-payment identity and asynchronous modification receipt; Checkout reversal is a migration route, not this endpoint's schema.
+
+
+- [[source-adyen-api-explorer-payment-latest-post-cancel]] — 2026-09-15-captured inactive Classic Payment API v68 POST /cancel reference for original-payment identity, cancellation-request acknowledgement, and Checkout migration route.
+
+
+- [[source-adyen-api-explorer-payment-latest-overview]] — 2026-09-15-captured inactive Classic Payment API v68 overview for authentication, versioned test/live hosts, migration direction and endpoint navigation; listed operations need their own reference for behavior.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-validateshopperid]] — 2026-09-15-captured Checkout API v72 `POST /validateShopperId` request/response reference for shopper-ID validation, with an unresolved `shopperId` versus optional `shopperReference` field mismatch.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-payments]] — 2026-09-15-captured Checkout API Explorer TEST v72 `POST /payments` request, direct/action response and HTTP error reference; method-specific conditions and payment-outcome limits remain in the source.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-paypal-updateorder]] — 2026-09-15 Checkout API v72 test reference for PayPal Express Checkout lightbox order updates, Sessions/Advanced identifiers, updated `paymentData`, and request/error schemas; an order-update success is not a payment outcome.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-applepay-sessions]] — captured Checkout API v72 TEST reference for `POST /applePay/sessions`, returning Apple Pay merchant-validation session data for API-only integrations using Adyen's certificate (API Explorer snapshot, 2026-09-15).
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-carddetails]] — 2026-09-15-captured Checkout TEST v72 `POST /cardDetails` card/network-token brand-information lookup for routing and co-badged choice; request, response and evidence limits remain in the source.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-cancels]] — Captured Checkout API v72 POST /cancels test-server reference for uncaptured authorization cancellation by original merchant payment reference, with a received acknowledgement and asynchronous TECHNICAL_CANCEL outcome (2026-09-15 snapshot).
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-paymentmethods-balance]] — 2026-09-15-captured Checkout API v72 test-server `POST /paymentMethods/balance` reference for gift-card balance inquiry, request schema and result codes; it is not payment authorization or live availability evidence.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-sessions]] — 2026-09-14 Checkout API v72 POST /sessions reference for session creation request/response schema, expiry and async outcome boundary.
+
+
+- [[source-adyen-api-explorer-checkout-latest-overview]] — 2026-09-14-captured Checkout API v72 overview for authentication, versioned test/live URLs and endpoint navigation; its table does not supply endpoint schemas or prove live availability.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-orders]] — 2026-09-15-captured Checkout API v72 POST /orders reference for partial-payment order creation, required body fields, expiry, order response, and documented errors.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-payments-details]] — captured Checkout API v72 TEST reference for `POST /payments/details`, submitting follow-up `/payments` details and interpreting optional action/result states (API Explorer snapshot, 2026-09-15).
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-orders-cancel]] — 2026-09-15-captured Checkout API v72 test-server order cancellation reference; required merchant/order data, cancellation-or-refund rollback description, and `Received` acknowledgement boundary.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-paymentmethods]] — Captured Checkout API v72 POST /paymentMethods test-server reference for transaction-context payment-method discovery, optional filters and method/stored-method response fields (2026-09-14 snapshot).
+
+
 - [[source-adyen-docs-online-payments-build-your-integration-advanced-flow]] — 2026-09-15-captured Advanced flow base guide for Web, iOS, Android, React Native and Flutter Drop-in, Components and API-only; merchant server, actions, redirect, webhook and platform-specific caveats.
 
 

@@ -1,0 +1,55 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-paymentlinks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API POST /paymentLinks (captured v72)\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentLinks\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/paymentLinks/2026-09-15.md\"\ntags: [adyen, checkout, pay-by-link, payment-links, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents Checkout API `POST /paymentLinks` on the displayed test `https://checkout-test.adyen.com/v72` server. It creates a payment-link object and URL for an Adyen-hosted Pay by Link page, with presented methods dependent on request currency and country. It does not itself execute or confirm a shopper payment. See [[adyen]] and [[adyen-unified-commerce]].\n\n## Key takeaways\n\n- The request property table marks `amount` (with currency and minor-unit value), `merchantAccount`, and `reference` required. `countryCode` is optional in the table even though the introduction says method presentation depends on currency and country. The optional `Idempotency-Key` header has a 64-character maximum. Nested `Yes` marks apply within optional parent objects; the page does not separately declare the entire request body required.\n- `expiresAt` defaults to 24 hours after creation and can be no later than 70 days after creation. `reusable` defaults to false, which permits one successful payment only; true requests a reusable link. `returnUrl` is marked optional and, when supplied, shows a Continue button for shopper-selected redirection. A 422 example says \u201cReturn URL is missing,\u201d an unresolved conflict with that optional mark; do not generalize the example into a universal requirement.\n- Conditional request fields include `lineItems` for listed buy-now-pay-later methods, `shopperName` for certain methods or PayPal Seller Protection, `recurringProcessingModel` when `storePaymentMethodMode` is `askForConsent` or `enabled`, and specified phone data for Visa/JCB 3DS authentication without shopper email. `requiredShopperFields` can request named fields on the hosted page. The metadata table gives 20-pair/20-character-key limits and reserved `checkout.linkId` behavior.\n- The `201` response identifies the link with `id`, gives its shopper-facing `url`, and includes a link `status` such as `active`, `expired`, `completed` or `paymentPending`. `paymentPending` denotes an unfinished asynchronous shopper flow. This response is link creation, not payment authorization, manual capture or settlement; even a link status should not be collapsed into those financial events. The page lists 400, 401, 403, 422 and 500 error schemas/examples, which are request/error outcomes rather than payment results.\n- The captured `latest` URL displays a test v72 server. It does not establish current latest version, live merchant eligibility or any actual link/payment execution. Related GET/PATCH routes have separate contracts; this page alone supplies no detail for their behavior.\n\n## Detail locators\n\n- Purpose and displayed server: raw lines 5\u201312. Header: 16\u201319.\n- Request schema: 22\u2013222; core fields 26\u201328, 173, 181; expiry/reuse/return 71, 183\u2013184; conditional fields 145, 175, 180, 182, 192, 209\u2013220. Request example: 224\u2013256.\n- Response 201 schema: 257\u2013466; link identity 380, statuses 449, URL 466. Error schemas: 469\u2013536. Response and error examples: 538\u2013640, including 422 return-URL tension at 616\u2013627.\n\n## Related\n\n- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links-api]] \u2014 broader API integration guide with webhook, reuse and forced-expiry routes.\n- [[adyen-unified-commerce]] \u2014 provider concept and reciprocal source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/paymentLinks/2026-09-15|Checkout API POST /paymentLinks snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Creates a payment link to a [Pay by Link](https://docs.adyen.com/unified-commerce/pay-by-link/) page where the shopper can pay. The list of payment methods presented to the shopper depends on the `currency` and `country` parameters sent in the request.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| expiresAt | string | No | The date when the payment link expires.  [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format with time zone offset: YYYY-MM-DDThh:mm:ss+TZD, for example, **2020-12-18T10:15:30+01:00**.  The maximum expiry date is 70 days after the payment link is created.  If not provided, the payment link expires 24 hours after it was created. |",
+      "location": "raw line 71, request body table"
+    },
+    {
+      "text": "| returnUrl | string | No | Website URL used for redirection after payment is completed. If provided, a **Continue** button will be shown on the payment page. If shoppers select the button, they are redirected to the specified URL. |",
+      "location": "raw line 183, request body table"
+    },
+    {
+      "text": "| status | string | Yes | Status of the payment link. Possible values:  - **active**: The link can be used to make payments.  - **expired**: The expiry date for the payment link has passed. Shoppers can no longer use the link to make payments.  - **completed**: The shopper completed the payment.  - **paymentPending**: The shopper is in the process of making the payment. Applies to payment methods with an asynchronous flow. |",
+      "location": "raw line 449, response body table"
+    },
+    {
+      "text": "\"message\": \"Return URL is missing.\"",
+      "location": "raw line 623, 422 response example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paymentlinks-v72-reciprocal",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-paymentlinks]] \u2014 2026-09-15 Checkout API v72 POST /paymentLinks reference for link creation request/response, expiry, reuse, status and error schemas; source flags returnUrl requiredness tension.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Request returnUrl is No, but a 422 response example says Return URL is missing; no universal requirement inferred.",
+          "Captured latest-path page displays test v72 only."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/paymentLinks/2026-09-15.md",
+  "raw_sha256": "89f5ef51123f08e15818c97f938a4d839a85be0586552dd792a13b76117dadeb",
+  "status": "candidate_ready"
+}

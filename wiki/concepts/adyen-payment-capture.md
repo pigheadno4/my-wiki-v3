@@ -19,6 +19,9 @@ A successful `CAPTURE` webhook means the request was valid and submitted onward,
 
 ## Related
 
+- [[source-adyen-api-explorer-payment-latest-post-capture]] — 2026-09-15-captured inactive Classic Payment API v68 test-server `/capture` contract for original authorization reference, amount, modification receipt and Checkout migration route; receipt is not final capture outcome.
+
+
 - [[source-adyen-docs-payment-methods-affirm-web-component]] — Affirm Web Component method-specific capture within 28 days after authorization; capture starts installments, and lesser fulfillment calls for capture then refund of the difference (2026-09-15).
 
 

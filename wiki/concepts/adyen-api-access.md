@@ -26,6 +26,9 @@ These snapshot statements do not prove current merchant or user eligibility, suc
 Adyen's 2026-09-15 mTLS guide adds a client certificate to API-key authentication for supported APIs using a company-level API credential. The merchant keeps the private key, links the certificate subject DN to the credential, and presents the leaf plus full CA chain at an mTLS endpoint. Linking is a cutover: supported-API requests with that credential fail without the certificate. The guide excludes merchant-level and balance-platform credentials and identifies separate supported/unsupported APIs and endpoints; see the source for scope and regions. This TLS client certificate is distinct from the JWE card-encryption certificate, whose retained EC/RSA sample conflict remains unresolved.
 ## Sources
 
+- [[source-adyen-api-explorer-checkout-latest-post-originkeys]] — 2026-09-15-captured Checkout API v72 test-server `POST /originKeys` contract for domain-to-origin-key creation, with client-key migration recommendation; no live availability or migration proof.
+
+
 - [[source-adyen-docs-development-resources]] — 2026-09-15 Development resources landing page for integration-type selection, credentials, libraries, webhooks, examples and AI/documentation links; navigation only.
 
 

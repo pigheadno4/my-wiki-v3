@@ -1,0 +1,10 @@
+# C56 fixed-query audit — api-explorer-checkout-latest-post-paymentmethods
+
+Full raw read: numbered contiguous lines 1–250, 251–500, 501–750, 751–1000, 1001–1250, 1251–1500, 1501–1750 and 1751–2053; SHA-256 69883aca08d2c38887c1c987a5cd970c8f59d2db7049e630328dbcd53d18a6ad.
+
+Canonical source: [[source-adyen-api-explorer-checkout-latest-post-paymentmethods]] — https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods
+
+- Q1: For `post/paymentMethods`, what is the endpoint purpose and object identity, and which central required or conditional inputs/prerequisites govern using it?
+  - Answer: Checkout API v72 `POST /paymentMethods` returns available payment methods for a transaction context; the captured server is test `https://checkout-test.adyen.com/v72` (raw lines 5–10). `merchantAccount` is the only top-level property marked required (line 41); the basic example supplies just that field (57–62). Optional amount/country/channel and allow/block lists filter discovery (23–40). Amount's currency/value are required within amount, `store` is required for the stated platform-model case, and `shopperReference` for recurring payments (25–27, 49–52). The page does not separately mark the body required.
+- Q2: For `post/paymentMethods`, what does the documented response or failure establish, and which lifecycle, asynchronous outcome, version/environment or missing-evidence boundaries prevent broader inference?
+  - Answer: A 200 means the discovery request succeeded and may contain `paymentMethods` and `storedPaymentMethods` arrays, both optional in the table (91–127). Nested entries describe forms, method codes, apps/issuers and stored-method data (97–146). This is no payment authorization, capture or settlement result. Errors cover 400/401/403/422/500 (149–216); sample error bodies are illustrative, including a 422 missing-return-URL sample despite no return URL request-table field (2029–2039, 20–53). The captured v72 test endpoint and lengthy response examples do not prove live availability, merchant enablement or current latest version (9–10, 218–1990).

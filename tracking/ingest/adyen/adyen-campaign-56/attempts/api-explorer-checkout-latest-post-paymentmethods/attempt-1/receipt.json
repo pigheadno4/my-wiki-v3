@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-paymentmethods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72 POST /paymentMethods\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/paymentMethods/2026-09-14.md\"\ntags: [adyen, checkout, api, payment-methods]\n---\n\n## Overview\n\nCaptured API Explorer reference for Checkout API **v72** `POST /paymentMethods` on the test server. It retrieves payment methods available for the supplied transaction context, such as amount, country and currency. This is method discovery, not a payment creation, authorization, capture or settlement result. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- `merchantAccount` is the only top-level request property marked required in this captured schema. The basic request example contains just that property. The page does not separately label the entire request body as required.\n- Optional context and filters include `amount` (currency and minor-unit value are required within that object), `countryCode`, `channel` (iOS, Android or Web platform filtering), `allowedPaymentMethods`, `blockedPaymentMethods`, `store` and `storeFiltrationMode`. `store` is described as required for platform-model Adyen for Platforms integrations. `shopperReference` is described as required for recurring payments and must exclude shopper PII.\n- The 200 response schema has optional `paymentMethods` and `storedPaymentMethods` arrays. Entries can include method codes, localized names, input details, issuers, apps and stored-method identifiers/recurring support. Supplying `shopperReference` appears in the include-stored example; the example does not guarantee stored methods.\n- The page's test-server URL is `https://checkout-test.adyen.com/v72`; the path segment `latest` in its canonical URL does not establish the current latest API version or live endpoint. Its long response examples are illustrative and do not prove a merchant's enabled methods or shopper eligibility.\n- Documented failure classes are 400 (request parsing), 401 (authentication), 403 (permission), 422 (validation) and 500 (server processing). The 422 example says \u201cReturn URL is missing,\u201d while no `returnUrl` appears in this endpoint's request table; treat that as an example, not a general `/paymentMethods` requirement.\n\n## Detail locators\n\n- Raw lines 9\u201353: server, header and complete request property table, including conditional browser/3DS, shopper contact and platform/store notes.\n- Raw lines 55\u201388: basic, filtered and include-stored request examples.\n- Raw lines 89\u2013146: 200 response schema, nested method/input/issuer/app fields and stored-method fields.\n- Raw lines 149\u2013216 and 1992\u20132053: error schemas and illustrative error responses.\n- Raw lines 218\u20131990: three illustrative success response bodies; method catalogs here are examples.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept and source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/paymentMethods/2026-09-14|Captured Checkout API v72 POST /paymentMethods reference]]",
+  "quotes": [
+    {
+      "text": "Retrieves the list of available payment methods for the transaction, based on the transaction information like amount, country, and currency.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| merchantAccount | string | Yes | The merchant account identifier, with which you want to process the transaction. |",
+      "location": "raw line 41"
+    },
+    {
+      "text": "| channel | string | No | The platform where a payment transaction takes place. This field can be used for filtering out payment methods that are only available on specific platforms. Possible values:  - iOS  - Android  - Web |",
+      "location": "raw line 39"
+    },
+    {
+      "text": "| storedPaymentMethods | array of object | No | List of all stored payment methods. |",
+      "location": "raw line 127"
+    },
+    {
+      "text": "### 422 Client Error\nA request validation error.",
+      "location": "raw lines 191\u2013192"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c56-paymentmethods-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-paymentmethods]] \u2014 Captured Checkout API v72 POST /paymentMethods test-server reference for transaction-context payment-method discovery, optional filters and method/stored-method response fields (2026-09-14 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/paymentMethods/2026-09-14.md",
+  "raw_sha256": "69883aca08d2c38887c1c987a5cd970c8f59d2db7049e630328dbcd53d18a6ad",
+  "status": "candidate_ready"
+}

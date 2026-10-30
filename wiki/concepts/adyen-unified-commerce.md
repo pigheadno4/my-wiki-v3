@@ -15,6 +15,9 @@ The 2026-09-15 snapshot is an overview with a 2021 last-modified date. It does n
 
 ## Sources
 
+- [[source-adyen-api-explorer-checkout-latest-post-paymentlinks]] — 2026-09-15 Checkout API v72 POST /paymentLinks reference for link creation request/response, expiry, reuse, status and error schemas; source flags returnUrl requiredness tension.
+
+
 - [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links-api]] — 2026-09-15-captured Pay by Link API guide for creating/sending links, webhook and link-status checks, reuse, tokenization, method data, forced expiry and customization; source preserves expiry and BNPL cross-page qualifications.
 
 
