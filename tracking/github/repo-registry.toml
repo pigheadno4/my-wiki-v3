@@ -3542,11 +3542,35 @@ id="adyen/adyen-pos-mobile-ios"
 collection_frequency="weekly"
 company="adyen"
 url="https://github.com/Adyen/adyen-pos-mobile-ios"
-enabled=false
+enabled=true
 repo_type="terminal-sdk"
 priority="tier1"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
+[[repos.version_tracks]]
+selector="package:AdyenPOS@3"
+backfill="latest-stable"
+future="all-stable"
+include_prerelease=false
+pinned_versions=["3.22.0"]
+[[repos.capsules]]
+id="adyen-pos-ios-sample-distribution"
+adapter="tagged-tree-v1"
+focus_packages=["AdyenPOS"]
+dependency_scope="configured-repository-paths"
+changed_path_policy="policy-bounded"
+# SDK implementation is binary; preserve integration samples and distribution identity.
+# The bundled DocC archive is stale and is not current-version API evidence.
+default_required_roots=["POSSampleApp"]
+default_generated_target_paths=[]
+include_paths=["LICENSE", "Package.swift", "README.md", "SECURITY.md", "SUPPORT.md"]
+excluded_categories=["tests", "fixtures"]
+secret_detector="text-secrets-v1"
+max_file_bytes=128000
+max_capsule_files=60
+max_capsule_utf8_bytes=500000
+max_packet_files=140
+max_packet_utf8_bytes=1500000
 [[repos]]
 id="adyen/adyen-pos-mobile-ios-test"
 collection_frequency="on-demand"

@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | AdyenPOS `3.22.0`
+
+- Approved initial full ingest of `github-acde5488bc61b0847b55`, exact SHA `689bdbdd7197545fbf15160ea64461a53b02b432`. All 30 assigned paths read in full, plus both packet files: 27 retained files, seven Swift files, 50,860 bytes; no reading exception. Raw hashes and identity verified; no prior release comparison exists.
+- Existing Mobile POS concept updated first, with reciprocal setupToken-comment/implementation warning. Added independent cumulative source/changelog, company and provider catalog; no new concept or cross-company comparison. Records TEST/LIVE distribution, shared UI flows, dependency pin, warm-up/result limitations, target-versus-project deployment settings, entitlement-file limit, documentation-version mismatch and release-specific expiry.
+- Source_count 2562 = 2547 website + 15 GitHub summaries; changelog is the same repository's history, not an extra company source. Unique ingested package count reconciled to 26 (25 prior + AdyenPOS). Existing C55 and all older histories retained; unrelated staged/worktree changes untouched.
+- No Xcode/SDK build, binary or dependency download, credentials, provider/device/payment execution, commit or push. [[source-github-adyen-pos-mobile-ios]] [[changelog-github-adyen-pos-mobile-ios]] [[adyen-mobile-pos]]
+
 ## [2026-10-30] ingest | Adyen website C55
 
 - All 4 exact-manifest firmware, Sessions, online release and Advanced flow General Docs sources independently approved and promoted. First full-review approvals 2/4; 2 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

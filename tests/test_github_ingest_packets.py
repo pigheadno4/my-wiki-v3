@@ -1615,6 +1615,8 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "ios/module.modulemap": "framework module Example { umbrella header \"Example.h\" }\n",
             "ios/StripeSdk.entitlements": "<?xml version=\"1.0\"?><plist />\n",
             "ios/StripeSdk.xcodeproj/project.pbxproj": "// project\n",
+            "ios/StripeSdk.xcodeproj/project.xcworkspace/contents.xcworkspacedata": "<Workspace />\n",
+            "ios/StripeSdk.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": "{\"pins\":[],\"version\":2}\n",
             "ios/StripeSdk.xcodeproj/xcshareddata/xcschemes/Tests.xcscheme": "<Scheme />\n",
             "ios/StripeSdk.xctestplan": "{}\n",
             "java/config.yaml": "files: {}\n",

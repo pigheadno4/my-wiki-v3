@@ -2724,6 +2724,9 @@ Operations history: [[adyen-log]]
 
 ### GitHub repository evidence
 
+- [[source-github-adyen-pos-mobile-ios]] — `AdyenPOS@3.22.0`: binary distribution, complete SwiftUI/UIKit samples, Terminal API/session flow and incomplete-registration/provisioning boundaries (github-repo, 2026-10-30)
+- [[changelog-github-adyen-pos-mobile-ios]] — package-qualified Mobile POS baseline, localization/UI announcements and NYC1 PIN expiry scope (github-repo, 2026-10-30)
+
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
 - [[changelog-github-adyen-3ds2-ios-swift]] — package-qualified Swift-native iOS 3DS2 release ledger beginning at `3.0.1`, including binary and upstream-metadata boundaries (github-repo, 2026-08-29)
 - [[source-github-release-automation-action]] — exact-commit release-action baseline: merged-PR discovery, semantic version selection, prerelease handling, release pull requests, and GitHub releases (github-repo, 2026-08-28)

@@ -4412,6 +4412,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.432/2026-09-20/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.431--5.0.432/comparison.json)
 
+## `github-acde5488bc61b0847b55`
+
+- Repository: `adyen/adyen-pos-mobile-ios`
+- SHA: `689bdbdd7197545fbf15160ea64461a53b02b432`
+- Collection date: `2026-10-30`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-pos-mobile-ios/snapshots/2026-10-30-689bdbd/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-pos-mobile-ios/ingest-packets/github-acde5488bc61b0847b55/packet.md)
+- Review priority: `high`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `AdyenPOS@3.22.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-pos-mobile-ios/releases/adyenpos/3.22.0/2026-10-30/manifest.json)
+  Comparison: Not applicable
+
 ## `github-ad4fcbca3a2e659553a7`
 
 - Repository: `stripe/stripe-php`

@@ -13,7 +13,21 @@ Adyen's Mobile POS documentation covers in-person payment solutions using a merc
 
 The Android overview sends readers to separate requirements, security, checklist, build, management and error guides. It does not state device/OS or regional support, SDK/API versions, account eligibility, go-live approval, or successful payment execution. Keep this mobile-device route distinct from [[adyen-android-terminals]] (apps on Adyen payment terminals), [[adyen-android-sdk]] (native online checkout), and the device-specific [[adyen-mobile-card-readers]] concept. An iOS Mobile POS overview can contribute a separate source route after its own evidence review.
 
+## iOS Repository Baseline: `AdyenPOS@3.22.0`
+
+The separately versioned `adyen/adyen-pos-mobile-ios` repository supplies binary SDK distribution metadata and SwiftUI/UIKit integration samples, not the SDK's internal implementation. Its 3.22.0 sample targets link `AdyenPOSTEST`; the manifest also declares LIVE products. This is merchant-device in-person payment evidence, distinct from [[adyen-ios-sdk]] for online checkout. See [[source-github-adyen-pos-mobile-ios]] and [[changelog-github-adyen-pos-mobile-ios]].
+
+The shared model retains PaymentService and its delegate, obtains installationId, encodes a Terminal API payment request, selects tapToPay or cardReader and performs the transaction. SwiftUI uses viewModifier with transactionModal; UIKit presents from a view controller. Warm-up errors are suppressed and responses/errors are printed, not reconciled as a production payment outcome. The resolved TerminalAPIKit dependency belongs to another repository and is not part of this implementation evidence.
+
+> [!warning] Contradiction
+> The sample registration comment says to supply setupToken to the merchant backend, but the implementation does not put it in the request. It uses a placeholder URL and ignores HTTP status. Follow the backend session requirement, not this incomplete snippet as a working session integration. The exact code and evidence limits are retained in [[source-github-adyen-pos-mobile-ios]].
+
+The 3.22.0 release notes announce language/fallback/UI corrections and an NYC1 PIN support expiry of 2027-04-13; that is not a universal Tap to Pay or all-version expiry. README links still target 3.21.0 documentation. Sample target iOS 18.4 settings, entitlement-file presence and binary checksums do not independently prove current SDK requirements, Apple provisioning, regional/live enablement or successful payments.
+
 ## Sources
+
+- [[source-github-adyen-pos-mobile-ios]] — exact-SHA AdyenPOS 3.22.0 distribution and complete integration samples, with incomplete-registration and binary-runtime boundaries.
+- [[changelog-github-adyen-pos-mobile-ios]] — package-qualified initial baseline and version-specific release announcements.
 
 - [[source-adyen-docs-point-of-sale-firmware-release-notes]] — 2026-09-15 release-note snapshot with separate iOS SDK, Android SDK and Android Payments app histories; use version-specific expiry/removal or support cutoffs, transaction-blocking notices and breaking-change locators, not this route as proof of current integration eligibility.
 

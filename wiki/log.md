@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-30] ingest | AdyenPOS `3.22.0`
+
+- Approved full baseline with complete 30-path reading: binary distribution plus SwiftUI/UIKit POS samples, incomplete setupToken forwarding, build/provisioning limits and version-specific NYC1 PIN expiry. Existing concept first; prior histories preserved. Details: [[adyen-log]], [[source-github-adyen-pos-mobile-ios]], [[changelog-github-adyen-pos-mobile-ios]]. No SDK/payment execution, commit or push.
+
 ## [2026-10-30] ingest | Adyen website C55
 
 - Four independently approved firmware, Sessions, online release and Advanced flow documentation sources; first full-review approvals 2/4 and 2 targeted correction reviews. 3 concepts touched (0 new); source_count 2561 = 2547 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-55/`; details [[adyen-log]]. No commit/push.
