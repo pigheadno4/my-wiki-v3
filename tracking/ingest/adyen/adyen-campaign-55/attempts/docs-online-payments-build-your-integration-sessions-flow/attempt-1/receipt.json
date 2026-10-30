@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-build-your-integration-sessions-flow",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Sessions flow integration guide\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/build-your-integration/sessions-flow\"\nraw_files:\n  - \"adyen/docs/online-payments/build-your-integration/sessions-flow/2026-09-15.md\"\ntags: [adyen, online-payments, sessions, drop-in, components]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the Adyen Sessions flow guide covers Web Drop-in and Components, iOS and Android Drop-in and Components, React Native Drop-in, and Flutter Drop-in and Components. The Web Hosted Checkout tab has no substantive guide content in this raw snapshot. It is a client/server integration guide: the merchant payment server creates a Checkout API session, the client uses its `id` and `sessionData` to show payment UI and handle shopper actions, and the webhook server receives the payment outcome. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The merchant server creates a session with `/sessions`; the guide marks `merchantAccount`, `amount`, `returnUrl`, and `reference` required. `countryCode`, `channel`, `shopperLocale`, shopper identifiers, and other fields have platform or use-case qualifications. The response passes `id` and `sessionData` to the client. A session expires after one hour by default and cannot be set beyond 24 hours.\n- Web v6 Drop-in or Components configure `AdyenCheckout` with session data, environment, displayed amount, country/locale and client key, then mount the payment UI. Web redirect returns append `sessionId` and `redirectResult` to `returnUrl`; the client can submit the redirect result, or an extra server endpoint can confirm it. If the shopper does not return, wait for the webhook.\n- Updating a session amount is a Checkout API v72+ feature. The initial session uses `payable: false`; the merchant server supplies the final amount for PATCH `/sessions/{sessionId}`, returns updated `sessionData`, and setting `payable: true` prevents further updates. The page names `onSubmit` as required for amount changes in one Web configuration table but its amount-update procedure uses `beforeSubmit`; treat that callback choice as an unresolved version/guide inconsistency.\n- iOS uses `AdyenSession` with Drop-in or method Components and app URL handlers for redirects. Android uses `CheckoutSessionProvider` with Compose or non-Compose Drop-in/Components and, for Components redirects, an activity intent filter and `handleIntent`. React Native Drop-in has platform return handlers and requires dismissing its UI from completion/error callbacks. Flutter has platform-specific return URL setup; its Components InstantComponent example calls an `advanced` method inside this Sessions guide, so do not treat that snippet alone as a verified Sessions recipe.\n- Client callbacks and optional GET `/sessions/{id}?sessionResult=...` support showing the shopper a current result. The guide says the GET response's `status` is not updated, so it is not a polling endpoint. Use asynchronous `AUTHORISATION` webhooks, matched by `merchantReference`, to update the order system. An authorization outcome does not itself establish capture or settlement.\n- The React Native section says Drop-in v1 and Components v1/v2 support only Advanced flow; this page's Sessions guidance is for its React Native Drop-in v2 path. The guide mixes Checkout API example versions v70, v71 and v72, server library versions, and platform environment names. Those examples establish snapshot navigation, not a universal compatible version set or current merchant availability.\n\n## Detail locators\n\n- Web v6 scope, prerequisites and three integration roles: lines 19\u201395; server API library language tabs: 119\u2013465.\n- Web `/sessions` field table, versioned examples and response: lines 466\u2013765; Drop-in installation, configuration, events and method-specific options: 766\u20131064; Web Components counterpart: 2027\u20133015.\n- Web amount update and irreversible `payable` transition: lines 1514\u20131613 and 3132\u20133231; callback wording tension: 895\u2013903 against 1528\u20131570.\n- Web redirects, shopper result, immutable session GET and authorization webhook: lines 1615\u20131963 and 3233\u20133581.\n- iOS Drop-in and Components, app return handling and result codes: lines 3649\u20136217. Android Drop-in and Components, Compose/non-Compose setup and redirect intent: lines 6218\u20138829.\n- React Native Drop-in version caveat, platform setup, callbacks and result: lines 8830\u201310022. Flutter Drop-in and Components setup, return URLs and result: lines 10023\u201312250; Flutter Components InstantComponent snippet caveat: lines 12030\u201312048.\n- Test/live account, HTTPS for Web, region-matched API/client environments and payment-method setup: Web lines 1965\u20131997; corresponding mobile go-live sections follow each platform. Capture/refund are linked as next steps, not demonstrated by the session flow.\n\n## Related\n\n- [[source-adyen-docs-online-payments-build-your-integration]] \u2014 flow selection and Advanced comparison.\n- [[source-adyen-docs-online-payments-build-your-integration-payment-result-codes]] \u2014 result-code meanings.\n- [[adyen-online-payments]] \u2014 provider concept and source route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/build-your-integration/sessions-flow/2026-09-15|Adyen Sessions flow integration guide (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "A payment session is a resource with information about a payment flow initiated by the shopper.",
+      "location": "Web Drop-in > Create a session, line 470"
+    },
+    {
+      "text": "When you set this to true, you can no longer update the session.",
+      "location": "Web Drop-in > Optional: Update the payment amount > Update the session amount, line 1536"
+    },
+    {
+      "text": "If the shopper doesn't return to you website, you do not get a `redirectResult`.",
+      "location": "Web Drop-in > Handle the redirect, line 1635"
+    },
+    {
+      "text": "The `status` included in the response doesn't get updated.",
+      "location": "Web Drop-in > Optional: Get the result of the payment session on your server, line 1888"
+    },
+    {
+      "text": "React Native Drop-in v1, Components v1, and Components v2 only support [Advanced flow](/online-payments/build-your-integration/advanced-flow) integrations.",
+      "location": "React Native Drop-in > Intro, line 8838"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c55-sessions-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-build-your-integration-sessions-flow]] \u2014 2026-09-15-captured Sessions integration guide for Web, iOS, Android, React Native Drop-in v2 and Flutter Drop-in/Components; server session, client action/redirect and asynchronous authorization-webhook boundaries, with versioned examples and callback/snippet caveats.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Web amount-update callback table names onSubmit while procedure uses beforeSubmit; the source page retains the unresolved tension.",
+          "Flutter Components InstantComponent example calls AdyenCheckout.advanced inside this Sessions guide; do not promote that sample to durable behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/build-your-integration/sessions-flow/2026-09-15.md",
+  "raw_sha256": "2a4f52965f5d49bdcc9b3a3d274ad4e65e2d4b274dbbd9e5669fbfa0ed04fe29",
+  "status": "candidate_ready"
+}

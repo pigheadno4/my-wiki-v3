@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | Adyen website C55
+
+- All 4 exact-manifest firmware, Sessions, online release and Advanced flow General Docs sources independently approved and promoted. First full-review approvals 2/4; 2 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 3 concepts, including 0 new concept(s). Platform/product/version and historical chronology, server/client/action identity and authorization versus capture remain distinct. Material source conflicts, LTS/expiry scopes and mobile/Web snippet qualifications remain explicit. Original reviews, attempts and bounded correction evidence retained. Website guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 2561 = 2547 website + 14 GitHub summaries. All 4 raw hashes unchanged; 8 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-55/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-30] ingest | Adyen website C54
 
 - All 3 exact-manifest plugin release notes, native 3DS2 and dispute reason codes General Docs sources independently approved and promoted. First full-review approvals 1/3; 2 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

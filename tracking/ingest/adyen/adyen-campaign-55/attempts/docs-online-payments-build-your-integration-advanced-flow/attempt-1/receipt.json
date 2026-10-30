@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-build-your-integration-advanced-flow",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Advanced flow integration guide\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/build-your-integration/advanced-flow\"\nraw_files:\n  - \"adyen/docs/online-payments/build-your-integration/advanced-flow/2026-09-15.md\"\ntags: [adyen, online-payments, advanced-flow, checkout, drop-in, components, api-only]\n---\n\n## Overview\n\nAdyen's 2026-09-15-captured Advanced flow guide spans Web, iOS, Android, React Native and Flutter, each with Drop-in, Components and API-only variants. In the Advanced flow, the merchant server obtains available methods with `/paymentMethods`, creates payments with `/payments`, and supplies further details through `/payments/details` when needed. The client presents the chosen UI or an API-only merchant UI, submits payment data, and handles returned actions. A webhook server receives the asynchronous payment outcome. This is a base integration guide; payment-method-specific fields and behavior remain in individual method guides.\n\n## Key takeaways\n\n- Drop-in and Components supply client UI and action handling but delegate Advanced server requests to merchant code. API-only requires the merchant to build the client UI and handle actions. Web callback handling uses `onSubmit` and `onAdditionalDetails` with `actions.resolve` or `actions.reject`; mobile frameworks use their own delegate/callback/result contracts. Follow the variant's own section, rather than transferring a callback rule across platforms.\n- A `/payments` response without `action` can proceed to current-status display. With `action`, handle the named action and submit details when available. Redirects can return to the merchant client with `redirectResult` or `MD`/`PaRes`; when the shopper does not return, details may be unavailable and the merchant must wait for the webhook. API-only redirect handling differs from Drop-in/Components handoff.\n- Synchronous `resultCode` supports shopper-facing current status; the `AUTHORISATION` webhook supplies the final outcome for the order management system, matched by `merchantReference`. HTTP 200 with `Refused` or `Error` is a payment result, while a non-200 API response is an API error.\n- Raw card collection in API-only variants is conditioned on PCI assessment and Adyen Account Manager eligibility confirmation; the guide recommends an encrypted Custom Card Component for card collection. Method, risk, 3DS, tokenization and recurring cases can require additional request fields. Go-live steps include live-account and payment-method setup, PCI assessment, live endpoint selection, and keeping `/payments` and `/payments/details` in the same live region for a payment.\n- Source caveats: Web Drop-in and Components contain embedded Sessions-specific amount-update blocks; these are not a blanket Advanced-flow step. Several mobile `/paymentMethods` code examples use an iOS or Android `channel` that conflicts with adjacent platform prose. API-only 3DS redirect examples use `PaReq` in `action.data` and POST samples while nearby field tables say `PaRes`; retain the discrepancy rather than copying a single normalized field rule.\n\n## Detail locators\n\n- Web Drop-in: raw lines 19-2087; Web Components: 2088-4086; Web API-only: 4087-5765. Web callback and action details are at 1175-1937; API-only redirects and details at 5148-5442.\n- iOS Drop-in: 5766-7485; iOS Components: 7486-9326; iOS API-only: 9327-10655. Android Drop-in: 10656-12335; Android Components: 12336-14008; Android API-only: 14009-15339. Native return handling, callback/delegate contracts and API-only PCI conditions are in their respective sections.\n- React Native Drop-in: 15340-17001; Components: 17002-18628; API-only: 18629-19959. React Native `component.hide(result)` callback obligation: 16243 and 17871. Flutter Drop-in: 19960-21442; Components: 21443-22949; API-only: 22950-24629. Flutter `AdvancedCheckout`, `PaymentEvent` and `PaymentAdvancedFinished` are at 20770-20820, 21091-21100 and 21290-21304.\n- Outcome and live-region examples recur by variant; Web Drop-in lines 1939-2059 give a compact starting point. Web API-only PCI and redirect example conflicts are at 4100-4115, 4638-4643, 5197-5275; Flutter/API-only equivalents are at 23501-23506 and 24064-24138.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-ios-sdk]]\n- [[adyen-android-sdk]]\n- [[adyen-react-native-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/build-your-integration/advanced-flow/2026-09-15|Adyen Advanced flow integration guide (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "For a Drop-in integration, you must implement the following parts:",
+      "location": "raw line 70, Web Drop-in > How it works"
+    },
+    {
+      "text": "This synchronous response doesn't give you the final outcome of the payment.",
+      "location": "raw line 1947, Web Drop-in > Get the payment outcome > Inform the shopper"
+    },
+    {
+      "text": "if the shopper fails to return to your website, you do not get additional payment details to send.",
+      "location": "raw line 1773, Web Drop-in > Send additional payment details"
+    },
+    {
+      "text": "In your `onSubmit`, `onAdditionalDetails`, and `onError` callbacks, you must call `component.hide(result)` to dismiss the payment UI when the API request is completed and the payment result is known.",
+      "location": "raw line 16243, React Native Drop-in > Initialize"
+    },
+    {
+      "text": "Make sure that all API requests you make for the same payment session use the same live endpoint region.",
+      "location": "raw line 2049, Web Drop-in > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c55-advanced-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-build-your-integration-advanced-flow]] \u2014 2026-09-15-captured Advanced flow base guide for Web, iOS, Android, React Native and Flutter Drop-in, Components and API-only; merchant server, actions, redirect, webhook and platform-specific caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Retain the source-page caveats for embedded Sessions blocks, platform-channel sample conflicts and API-only PaReq/PaRes mismatch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/build-your-integration/advanced-flow/2026-09-15.md",
+  "raw_sha256": "dbfc4c515cc40764229b30f52cfb42cab28bed5c7674e7fd7c78bcb165bab196",
+  "status": "candidate_ready"
+}

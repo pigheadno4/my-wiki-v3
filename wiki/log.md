@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-30] ingest | Adyen website C55
+
+- Four independently approved firmware, Sessions, online release and Advanced flow documentation sources; first full-review approvals 2/4 and 2 targeted correction reviews. 3 concepts touched (0 new); source_count 2561 = 2547 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-55/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-30] ingest | Stripe CLI `1.55.3`
 
 - Final serial focused delta records grouped accounts, stale-context reporting and invalid_scope recovery limits; all seven approved releases now documented without replacing history. Details: [[stripe-log]], [[source-github-stripe-cli]], [[changelog-github-stripe-cli]].

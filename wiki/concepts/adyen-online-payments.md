@@ -21,6 +21,15 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-build-your-integration-advanced-flow]] — 2026-09-15-captured Advanced flow base guide for Web, iOS, Android, React Native and Flutter Drop-in, Components and API-only; merchant server, actions, redirect, webhook and platform-specific caveats.
+
+
+- [[source-adyen-docs-online-payments-release-notes]] — 2026-09-15-captured, dated Checkout API, Pay by Link, Hosted Checkout and Web/mobile SDK release history; consult the product/version entry for compatibility, migration changes and issue chronology.
+
+
+- [[source-adyen-docs-online-payments-build-your-integration-sessions-flow]] — 2026-09-15-captured Sessions integration guide for Web, iOS, Android, React Native Drop-in v2 and Flutter Drop-in/Components; server session, client action/redirect and asynchronous authorization-webhook boundaries, with versioned examples and callback/snippet caveats.
+
+
 - [[source-adyen-docs-development-resources-raw-acquirer-responses]] — 2024-modified, 2026-09-15-captured online raw acquirer/provider response catalog with scoped code, journal, retry and shopper-disclosure diagnostics; source distinguishes normalized refusal, HTTP and payment outcome layers.
 
 

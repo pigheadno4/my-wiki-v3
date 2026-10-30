@@ -15,6 +15,9 @@ The Android overview sends readers to separate requirements, security, checklist
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-firmware-release-notes]] — 2026-09-15 release-note snapshot with separate iOS SDK, Android SDK and Android Payments app histories; use version-specific expiry/removal or support cutoffs, transaction-blocking notices and breaking-change locators, not this route as proof of current integration eligibility.
+
+
 - [[source-adyen-docs-point-of-sale-mobile-android-requirements]] — 2026-09-15 Android Mobile device/OS/security requirements and card-reader/dock-specific NYC1, PIN, SDK and firmware gates; region and method availability remain separate.
 
 

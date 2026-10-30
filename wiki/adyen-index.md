@@ -2715,6 +2715,13 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-online-payments-3d-secure-native-3ds2]] — Adyen native 3D Secure 2 authentication (webpage, 2026-10-30)
 - [[source-adyen-docs-risk-management-understanding-disputes-dispute-reason-codes]] — Adyen dispute reason codes and defense requirements (webpage, 2026-10-30)
 
+### Website documentation — Campaign 55
+
+- [[source-adyen-docs-point-of-sale-firmware-release-notes]] — Adyen POS release notes: terminal software and mobile solutions (webpage, 2026-10-30)
+- [[source-adyen-docs-online-payments-build-your-integration-sessions-flow]] — Adyen Sessions flow integration guide (webpage, 2026-10-30)
+- [[source-adyen-docs-online-payments-release-notes]] — Adyen online payments release notes (2018–2026 snapshot) (webpage, 2026-10-30)
+- [[source-adyen-docs-online-payments-build-your-integration-advanced-flow]] — Adyen Advanced flow integration guide (webpage, 2026-10-30)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)

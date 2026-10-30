@@ -15,6 +15,9 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-firmware-release-notes]] — 2026-09-15 snapshot of physical-terminal software and separate mobile SDK/Payments-app release histories, with version/model availability, LTS and breaking-change locators; no installed-version or transaction proof.
+
+
 - [[source-adyen-docs-industries-peak-season-in-person-payments]] — 2026-09-15 Adyen peak-season in-person planning guide for method testing, fleet/software preparation, outage options and cloud endpoint checks; terminal version/freeze details are 2025-season guidance with an inconsistent date range.
 
 
