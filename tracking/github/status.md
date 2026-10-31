@@ -733,6 +733,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-node/releases/stripe/22.6.1/2026-09-21/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-node/comparisons/stripe/22.6.0--22.6.1/comparison.json)
 
+## `github-255c5762c0ce5e6af973`
+
+- Repository: `metronome-industries/metronome-node`
+- SHA: `5e8d4ac4659f9378f2341e4e18f89274908523ed`
+- Collection date: `2026-10-31`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/manifest.json)
+- Packet: [review packet](repos/metronome/metronome-node/ingest-packets/github-255c5762c0ce5e6af973/packet.md)
+- Review priority: `normal`
+- Required reading: `48` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@metronome/sdk@3.11.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/metronome/metronome-node/releases/sdk/3.11.0/2026-10-31/manifest.json)
+  Comparison: [manifest](repos/metronome/metronome-node/comparisons/sdk/3.10.0--3.11.0/comparison.json)
+
 ## `github-260fad0b0f25345618ad`
 
 - Repository: `stripe/stripe-android`

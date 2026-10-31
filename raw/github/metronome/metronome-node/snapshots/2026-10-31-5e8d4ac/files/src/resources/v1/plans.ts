@@ -1,0 +1,352 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+import { APIResource } from '../../core/resource';
+import * as Shared from '../shared';
+import * as CustomersAPI from './customers/customers';
+import { APIPromise } from '../../core/api-promise';
+import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
+import { RequestOptions } from '../../internal/request-options';
+import { path } from '../../internal/utils/path';
+
+/**
+ * [Plans](https://docs.metronome.com/pricing-and-packaging/create-plans/) determine the base pricing for a customer. Use these endpoints to add a plan to a customer, end a customer plan, retrieve plans, and retrieve plan details. Create plans in the [Metronome app](https://app.metronome.com/plans).
+ */
+export class Plans extends APIResource {
+  /**
+   * List all available plans. This is a Plans (deprecated) endpoint. New clients
+   * should implement using Contracts.
+   *
+   * @example
+   * ```ts
+   * // Automatically fetches more pages as needed.
+   * for await (const planListResponse of client.v1.plans.list()) {
+   *   // ...
+   * }
+   * ```
+   */
+  list(
+    query: PlanListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<PlanListResponsesCursorPage, PlanListResponse> {
+    return this._client.getAPIList('/v1/plans', CursorPage<PlanListResponse>, { query, ...options });
+  }
+
+  /**
+   * Fetch high level details of a specific plan. This is a Plans (deprecated)
+   * endpoint. New clients should implement using Contracts.
+   *
+   * @example
+   * ```ts
+   * const response = await client.v1.plans.getDetails({
+   *   plan_id: 'd7abd0cd-4ae9-4db7-8676-e986a4ebd8dc',
+   * });
+   * ```
+   */
+  getDetails(params: PlanGetDetailsParams, options?: RequestOptions): APIPromise<PlanGetDetailsResponse> {
+    const { plan_id } = params;
+    return this._client.get(path`/v1/planDetails/${plan_id}`, options);
+  }
+
+  /**
+   * Fetches a list of charges of a specific plan. This is a Plans (deprecated)
+   * endpoint. New clients should implement using Contracts.
+   *
+   * @example
+   * ```ts
+   * // Automatically fetches more pages as needed.
+   * for await (const planListChargesResponse of client.v1.plans.listCharges(
+   *   { plan_id: 'd7abd0cd-4ae9-4db7-8676-e986a4ebd8dc' },
+   * )) {
+   *   // ...
+   * }
+   * ```
+   */
+  listCharges(
+    params: PlanListChargesParams,
+    options?: RequestOptions,
+  ): PagePromise<PlanListChargesResponsesCursorPage, PlanListChargesResponse> {
+    const { plan_id, ...query } = params;
+    return this._client.getAPIList(
+      path`/v1/planDetails/${plan_id}/charges`,
+      CursorPage<PlanListChargesResponse>,
+      { query, ...options },
+    );
+  }
+
+  /**
+   * Fetches a list of customers on a specific plan (by default, only currently
+   * active plans are included). This is a Plans (deprecated) endpoint. New clients
+   * should implement using Contracts.
+   *
+   * @example
+   * ```ts
+   * // Automatically fetches more pages as needed.
+   * for await (const planListCustomersResponse of client.v1.plans.listCustomers(
+   *   { plan_id: 'd7abd0cd-4ae9-4db7-8676-e986a4ebd8dc' },
+   * )) {
+   *   // ...
+   * }
+   * ```
+   */
+  listCustomers(
+    params: PlanListCustomersParams,
+    options?: RequestOptions,
+  ): PagePromise<PlanListCustomersResponsesCursorPage, PlanListCustomersResponse> {
+    const { plan_id, ...query } = params;
+    return this._client.getAPIList(
+      path`/v1/planDetails/${plan_id}/customers`,
+      CursorPage<PlanListCustomersResponse>,
+      { query, ...options },
+    );
+  }
+}
+
+export type PlanListResponsesCursorPage = CursorPage<PlanListResponse>;
+
+export type PlanListChargesResponsesCursorPage = CursorPage<PlanListChargesResponse>;
+
+export type PlanListCustomersResponsesCursorPage = CursorPage<PlanListCustomersResponse>;
+
+export interface PlanDetail {
+  id: string;
+
+  /**
+   * Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+   */
+  custom_fields: { [key: string]: string };
+
+  name: string;
+
+  credit_grants?: Array<PlanDetail.CreditGrant>;
+
+  description?: string;
+
+  minimums?: Array<PlanDetail.Minimum>;
+
+  overage_rates?: Array<PlanDetail.OverageRate>;
+}
+
+export namespace PlanDetail {
+  export interface CreditGrant {
+    amount_granted: number;
+
+    amount_granted_credit_type: Shared.CreditTypeData;
+
+    amount_paid: number;
+
+    amount_paid_credit_type: Shared.CreditTypeData;
+
+    effective_duration: number;
+
+    name: string;
+
+    priority: string;
+
+    send_invoice: boolean;
+
+    reason?: string;
+
+    recurrence_duration?: number;
+
+    recurrence_interval?: number;
+  }
+
+  export interface Minimum {
+    credit_type: Shared.CreditTypeData;
+
+    name: string;
+
+    /**
+     * Used in price ramps. Indicates how many billing periods pass before the charge
+     * applies.
+     */
+    start_period: number;
+
+    value: number;
+  }
+
+  export interface OverageRate {
+    credit_type: Shared.CreditTypeData;
+
+    fiat_credit_type: Shared.CreditTypeData;
+
+    /**
+     * Used in price ramps. Indicates how many billing periods pass before the charge
+     * applies.
+     */
+    start_period: number;
+
+    to_fiat_conversion_factor: number;
+  }
+}
+
+export interface PlanListResponse {
+  id: string;
+
+  description: string;
+
+  name: string;
+
+  /**
+   * Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+   */
+  custom_fields?: { [key: string]: string };
+}
+
+export interface PlanGetDetailsResponse {
+  data: PlanDetail;
+}
+
+export interface PlanListChargesResponse {
+  id: string;
+
+  charge_type: 'usage' | 'fixed' | 'composite' | 'minimum' | 'seat';
+
+  credit_type: Shared.CreditTypeData;
+
+  /**
+   * Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+   */
+  custom_fields: { [key: string]: string };
+
+  name: string;
+
+  prices: Array<PlanListChargesResponse.Price>;
+
+  product_id: string;
+
+  product_name: string;
+
+  quantity?: number;
+
+  /**
+   * Used in price ramps. Indicates how many billing periods pass before the charge
+   * applies.
+   */
+  start_period?: number;
+
+  /**
+   * Used in pricing tiers. Indicates how often the tier resets. Default is 1 - the
+   * tier count resets every billing period.
+   */
+  tier_reset_frequency?: number;
+
+  /**
+   * Specifies how quantities for usage based charges will be converted.
+   */
+  unit_conversion?: PlanListChargesResponse.UnitConversion;
+}
+
+export namespace PlanListChargesResponse {
+  export interface Price {
+    /**
+     * Used in pricing tiers. Indicates at what metric value the price applies.
+     */
+    tier: number;
+
+    value: number;
+
+    collection_interval?: number;
+
+    collection_schedule?: string;
+
+    quantity?: number;
+  }
+
+  /**
+   * Specifies how quantities for usage based charges will be converted.
+   */
+  export interface UnitConversion {
+    /**
+     * The conversion factor
+     */
+    division_factor: number;
+
+    /**
+     * Whether usage should be rounded down or up to the nearest whole number. If null,
+     * quantity will be rounded to 20 decimal places.
+     */
+    rounding_behavior?: 'floor' | 'ceiling';
+  }
+}
+
+export interface PlanListCustomersResponse {
+  customer_details: CustomersAPI.CustomerDetail;
+
+  plan_details: PlanListCustomersResponse.PlanDetails;
+}
+
+export namespace PlanListCustomersResponse {
+  export interface PlanDetails {
+    id: string;
+
+    /**
+     * Custom fields to be added eg. { "key1": "value1", "key2": "value2" }
+     */
+    custom_fields: { [key: string]: string };
+
+    customer_plan_id: string;
+
+    name: string;
+
+    /**
+     * The start date of the plan
+     */
+    starting_on: string;
+
+    /**
+     * The end date of the plan
+     */
+    ending_before?: string | null;
+  }
+}
+
+export interface PlanListParams extends CursorPageParams {}
+
+export interface PlanGetDetailsParams {
+  plan_id: string;
+}
+
+export interface PlanListChargesParams extends CursorPageParams {
+  /**
+   * Path param
+   */
+  plan_id: string;
+}
+
+export interface PlanListCustomersParams extends CursorPageParams {
+  /**
+   * Path param
+   */
+  plan_id: string;
+
+  /**
+   * Query param: Status of customers on a given plan. Defaults to `active`.
+   *
+   * - `all` - Return current, past, and upcoming customers of the plan.
+   * - `active` - Return current customers of the plan.
+   * - `ended` - Return past customers of the plan.
+   * - `upcoming` - Return upcoming customers of the plan.
+   *
+   * Multiple statuses can be OR'd together using commas, e.g. `active,ended`.
+   * **Note:** `ended,upcoming` combination is not yet supported.
+   */
+  status?: 'all' | 'active' | 'ended' | 'upcoming';
+}
+
+export declare namespace Plans {
+  export {
+    type PlanDetail as PlanDetail,
+    type PlanListResponse as PlanListResponse,
+    type PlanGetDetailsResponse as PlanGetDetailsResponse,
+    type PlanListChargesResponse as PlanListChargesResponse,
+    type PlanListCustomersResponse as PlanListCustomersResponse,
+    type PlanListResponsesCursorPage as PlanListResponsesCursorPage,
+    type PlanListChargesResponsesCursorPage as PlanListChargesResponsesCursorPage,
+    type PlanListCustomersResponsesCursorPage as PlanListCustomersResponsesCursorPage,
+    type PlanListParams as PlanListParams,
+    type PlanGetDetailsParams as PlanGetDetailsParams,
+    type PlanListChargesParams as PlanListChargesParams,
+    type PlanListCustomersParams as PlanListCustomersParams,
+  };
+}

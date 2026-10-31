@@ -67,6 +67,10 @@ On the documented production server `https://api.metronome.com`, top-level beare
 
 ## Contract and invoice behavior
 
+### Node SDK contract traversal at `3.11.0`
+
+`client.v1.contracts.list()` and `client.v2.contracts.list()` switch from plain response promises to `PagePromise` with `BodyCursorPageCursorField`. The exact SDK documents 20 contracts per page, sends continuation as JSON-body `cursor`, and exposes `for await`, `hasNextPage()` and `getNextPage()`. A single awaited page is not a complete provisioning check. Keep the older website snapshots' omissions and the `3.10.0` response shapes version-scoped; neither proves current all-contract completeness. SDK traversal is not a stable-snapshot or concurrent-create uniqueness guarantee. V2 edit input additionally accepts `update_subscriptions[].name`; response `product_custom_fields` belongs to the subscription product, separately from instance `custom_fields`. [[source-github-metronome-node]]
+
 ### Package-scoped contract association list
 
 Bearer-authenticated `POST /v1/packages/listContractsOnPackage` returns package-associated projection items whose required fields are `customer_id`, `contract_id`, and `starting_at`; optional `ending_before` and `archived_at` describe the projection's time and archive surfaces. A supplied payload requires `package_id`, but the enclosing request body is not marked required and unknown-property behavior is unspecified. `starting_at` and `covering_date` are mutually exclusive, `include_archived` defaults false, and query `limit` and `next_page` paginate results. This projection is not a contract-detail or current-state authority: it omits package identity, contract terms, pricing, rate-card, invoice, mutation, and migration-result fields, and the page defines no ordering, total count, snapshot consistency, freshness, relationship-validation behavior, or read-after-change guarantee. [[source-metronome-api-reference-contracts-list-contracts-associated-with-a-package]]

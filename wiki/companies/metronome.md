@@ -22,6 +22,8 @@ The documentation home is a navigation overview. The SDK walkthrough adds an int
 
 The retained `@metronome/sdk@3.10.0` GitHub baseline adds the exact Node/TypeScript client contract: built-in Web Fetch with no runtime dependencies, typed V1 and V2 resources, two default retries, one-minute per-attempt timeout, async pagination, raw-response access, and webhook verification. It supports Node 20+, browsers, Deno, Bun, edge runtimes, and related server environments but explicitly excludes React Native. The generated package proves client implementation, not account feature enablement or current REST behavior; its stale `api.md` Payments listing conflicts with the removed source resource and the `3.7.0` changelog. [[source-github-metronome-node]]
 
+The full additive `@metronome/sdk@3.11.0` update preserves that baseline and adds quantity-based balances, pricing-unit management, lifecycle-notification controls and broader contract/pricing types. Its breaking contract pagination and required response timestamps need migration despite the minor version; affected Stripe collection-method unions also narrow. The stale Payments index is corrected in this version, not evidence of a newly removed working resource. Exact SDK source/types do not prove tenant availability, payment or webhook outcomes. [[source-github-metronome-node]] [[changelog-github-metronome-node]]
+
 The `Metronome-Industries/ai` baseline adds Metronome-authored operating instructions for coding and customer-success agents: integration best practices, catalog and contract setup, PLG billing, CSM reviews, and Stripe usage-billing migration. It is workflow and example evidence rather than an SDK or API schema. Its preview-before-write controls and parallel-run migration process are useful, but exact endpoint, enum, numeric-property, and rate claims require canonical verification because the retained skills contain internal and cross-source conflicts. [[source-github-ai]]
 
 The experimental `terraform-provider-metronome@0.1.0-alpha.3` baseline configures a Metronome Go client through base URL, bearer token, and webhook-secret settings, but registers no Terraform resources or data sources. It is not production-ready and cannot be treated as a Metronome infrastructure-management surface at this version. [[source-github-terraform-provider-metronome]]
@@ -149,6 +151,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - Object-storage delivery is append-only and at-least-once, so consumers must resolve repeated primary keys using the most recent row.
 
 ## Knowledge status
+
+- Latest Node SDK ingest: `@metronome/sdk@3.11.0`, SHA `5e8d4ac4659f9378f2341e4e18f89274908523ed`, full additive with focused reading on 2026-10-31; all `3.10.0` history retained. Includes cursor traversal, quantity balances, lifecycle controls and additional source-level migration cautions. [[source-github-metronome-node]] [[changelog-github-metronome-node]]
 
 - Latest Metronome AI repository ingest: `default-branch@0519b4b`, SHA `0519b4b79908312e9dbfe64c5e4451fefc9aa30d`, full additive with focused reading on 2026-10-31; August baseline retained. Nine skills now include group-key design and token-billing orchestration, with sync provenance, contract/collection safeguards and explicit unresolved example conflicts. This is instruction evidence, not API runtime verification. [[source-github-ai]] [[changelog-github-ai]]
 - Repository update only: total source_count remains 232; no new source identity or website promotion.
@@ -286,7 +290,7 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 
 - [[source-github-ai]] - cumulative Metronome agent workflows, including group-key/token-billing skills at 0519b4b and preserved August integration/catalog/CSM/migration history
 - [[changelog-github-ai]] - commit-qualified Metronome AI skills history
-- [[source-github-metronome-node]] - exact `@metronome/sdk@3.10.0` server client, API surface, transport, webhook helper, and evidence boundaries
+- [[source-github-metronome-node]] - exact `@metronome/sdk@3.11.0` additive update, breaking pagination, quantity balances and lifecycle controls; preserved `3.10.0` runtime/API history
 - [[changelog-github-metronome-node]] - package-qualified Node SDK release history and upgrade ledger
 - [[source-metronome-guides-get-started-home]] — documentation entry point and four pricing/packaging routes
 - [[source-metronome-guides-get-started-developer-sdks]] — SDK setup and introductory event-to-invoice workflow

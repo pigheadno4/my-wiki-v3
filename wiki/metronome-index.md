@@ -152,8 +152,8 @@ Operational evidence:
 
 - [[source-github-ai]] - nine Metronome AI skills at 0519b4b: group-key design, token billing, contract/collection safeguards and preserved August baseline (updated 2026-10-31)
 - [[changelog-github-ai]] - 59193aa to 0519b4b full-additive history, corrections and unresolved conflicts; August baseline retained
-- [[source-github-metronome-node]] - `@metronome/sdk@3.10.0` server client, runtime, transport, generated API surface, and webhook helper
-- [[changelog-github-metronome-node]] - package-qualified Node SDK release and upgrade history
+- [[source-github-metronome-node]] - `@metronome/sdk@3.11.0`: breaking contract pagination, quantity balances, pricing units, lifecycle controls and preserved `3.10.0` baseline (updated 2026-10-31)
+- [[changelog-github-metronome-node]] - `3.10.0` to `3.11.0` full-additive Node SDK history, migration and source-level Stripe type changes
 - [[source-github-terraform-provider-metronome]] - experimental `0.1.0-alpha.3` provider configuration and empty resource/data-source surface
 - [[changelog-github-terraform-provider-metronome]] - package-qualified Terraform provider prerelease history and future comparison rule
 - [[source-metronome-guides-get-started-home]] — documentation entry point, getting-started routes, and four pricing/packaging models

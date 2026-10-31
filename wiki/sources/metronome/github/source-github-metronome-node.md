@@ -2,11 +2,115 @@
 title: "GitHub: Metronome-Industries/metronome-node"
 type: source
 date_ingested: 2026-08-12
+date_updated: 2026-10-31
 original_format: github-repo
 raw_files:
+  - "github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/manifest.json"
   - "github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/manifest.json"
 tags: [metronome, node-js, typescript, server-sdk, usage-billing, contracts, webhooks, github-repository]
 ---
+
+## Versioned Coverage
+
+Full additive ingestion of `@metronome/sdk@3.11.0`, released 2026-10-27 at `5e8d4ac4659f9378f2341e4e18f89274908523ed`, extends the preserved `3.10.0` baseline below. The user approved full mode despite the packet's mechanical delta recommendation because the minor release includes incompatible API/type changes. No older knowledge or raw evidence is replaced. See [[changelog-github-metronome-node]] for the release ledger.
+
+The approved focused read covers every changed implementation/API/documentation section across 39 changed/new retained files, affected prior code, all five newly added files in full, release notes, comparison and cumulative wiki history. Both manifests and duplicated diff/inventories were checked mechanically, along with 66 unchanged files. The current capsule has 105 files / 1,299,665 bytes; all 205 prior/current file sizes, SHA-256 hashes and Git blob IDs were verified. This is bounded package evidence, not a full upstream-repository read, executed integration test or account-enablement proof.
+
+## `3.11.0` Breaking Changes and Migration
+
+### Contract lists now require page traversal
+
+Both V1 and V2 `contracts.list()` change from `APIPromise<ContractListResponse>` to `PagePromise` over shared `Contract`/`ContractV2` items. The old response interfaces and their barrel exports are removed; their replacements are `ContractsBodyCursorPageCursorField` (V1) and `ContractV2sBodyCursorPageCursorField` (V2), exported from the corresponding contract modules and shared type layer.
+
+The generated methods still POST to `/v1/contracts/list` or `/v2/contracts/list`, but now use `getAPIList` and `BodyCursorPageCursorField`. That page class reads response `cursor`, normalizes a missing/falsy cursor to an empty string, preserves the original request options/body and sends the next cursor in the JSON body. Its `hasNextPage()` depends on cursor presence rather than a nonempty item array. Do not substitute query `next_page` from other endpoint families. Both method docstrings describe 20 contracts per page; generated params expose `limit` but do not enforce that bound locally.
+
+```typescript
+// 3.11.0: traverse every returned page, not just one awaited data array.
+for await (const contract of client.v2.contracts.list({
+  customer_id: customerId,
+  covering_date: new Date().toISOString(),
+})) {
+  console.log(contract.id);
+}
+
+// Manual traversal remains available when page-level control is needed.
+let page = await client.v2.contracts.list({ customer_id: customerId });
+while (true) {
+  for (const contract of page.data) console.log(contract.id);
+  if (!page.hasNextPage()) break;
+  page = await page.getNextPage();
+}
+```
+
+These examples describe package usage, not an executed API call. Traversal prevents treating the first page as exhaustive but does not guarantee cross-page snapshot consistency or atomic duplicate-provisioning prevention. Older website snapshots and the baseline response wrapper remain historical evidence, not a current all-contract guarantee. [[metronome-customers-and-contracts]]
+
+### Required response timestamps and MCP removal
+
+Recurring commit and credit response models now require `anchor_date`; subscription responses require `created_at`. Update typed fixtures and adapters constructing these objects. These are response-model changes, not a statement that every corresponding create request now requires those fields. Credit response `created_at` is optional, with separate recurring-credit and rollover-credit timestamp descriptions.
+
+The upstream tree removes `packages/mcp-server`, and README installation links are removed. Those implementation paths were outside this approved SDK capsule; removal is grounded in the complete upstream changed-path inventory and release notes, not a deep read of excluded MCP code. The release notes say already published MCP versions remain available and recommend pinning an existing version while arranging a replacement; no package unpublication or installed-server failure was tested.
+
+### Additional Stripe type narrowing
+
+> [!warning] Version-scoped Stripe configuration change
+> Beyond the release-note migration bullets, `customers/customers.ts` and `customers/billing-config.ts` remove `auto_charge_payment_intent` and `manually_charge_payment_intent` from `stripe_collection_method`; only `charge_automatically` and `send_invoice` remain in those `3.11.0` request/response unions. Customer billing-provider configuration also removes the prior PaymentIntent-only restriction from its `tax_provider` description. This establishes a compile-time/docs change, not service-wide removal, wider tax eligibility or retirement of the independently documented threshold PaymentIntent flow. Preserve the `3.10.0` types and separate product authorities rather than conflating the surfaces. [[metronome-integrations]] retains the reciprocal warning.
+
+## `3.11.0` Billing and Notification Additions
+
+- **Quantity balances:** commit/credit access schedules and recurring access amounts add `SPEND` and `QUANTITY`. Creation schedules describe omitted access type as `SPEND`; response optionality does not supply a universal default. Net-balance lookup defaults to spend and forbids `credit_type_id` with quantity. Quantity response docstrings describe the null credit-type UUID, not a nullable JavaScript field. Seat-balance detail gains access-type/credit-type identity; invoice attribution gains `quantity_consumed` and applied-balance access type. [[metronome-credits-and-commits]]
+- **Manual balance deduplication:** `addManualBalanceEntry` accepts `uniqueness_key`. Duplicate keys create no new record and return `409`, rather than replaying a successful response. The unchanged generic client retries `409`; use a stable key and reconcile ambiguous outcomes rather than blindly generating a fresh key. Retention, concurrency and service-side retry safety are not established by this docstring.
+- **Threshold-created commits:** prepaid threshold commit configuration adds duration, `COMMIT_RATE`/`LIST_RATE`, and rollover fraction from zero to one. Shared duration documentation starts validity at invoice service-period end and defaults to one year; V2 edit fields permit null to clear the setting. Payment-gate completion is a separate boundary.
+- **Metric and subscription changes:** `v1.billableMetrics.update({billable_metric_id, name})` sends PUT for display-name-only changes; calculation configuration remains immutable. V2 `update_subscriptions` adds `name`; returned `product_custom_fields` belongs to the referenced subscription product and is distinct from instance custom fields. Subscription/package types also add `custom_credit_type_id`. [[metronome-billable-metrics]]
+- **Custom pricing units:** `v1.pricingUnits.create({name})` and `.archive({id})` POST to `/v1/credit-types/create` and `/v1/credit-types/archive`, returning `data.id`. Archival hides the unit from selectors by default; this does not prove deletion, historical repricing or existing-contract effects. [[metronome-products-and-rate-cards]]
+- **Lifecycle notifications:** the new `v2.notifications.offset` resource creates, retrieves, lists, archives and edits offset configurations. Its list uses body `cursor`, with a documented maximum of 400 results per request; archive filter defaults to `NOT_ARCHIVED`. Policies carry signed ISO-8601 offsets. The sibling `system.list()` returns a plain response with optional cursor and no typed pagination input, so it is not an automatic complete inventory.
+- **System enablement uses the offset namespace:** `v2.notifications.offset.edit({policy:{type}, is_enabled})` enables/disables system webhook publishing without an offset ID. Offset-policy edits instead identify the configuration and require a matching lifecycle-event type. This shared method/union response is not a separate `system.edit()` API. [[metronome-alerts-and-notifications]]
+- **Threshold notifications:** types add `low_remaining_contract_credit_and_commit_percentage_reached` and selected access-type filters; quantity access cannot specify a credit type. Archiving an already archived threshold is now explicitly documented as succeeding. Neither statement proves webhook delivery, entitlement enforcement or propagation timing.
+- **Named schedules:** `v1.contracts.rateCards.namedSchedules.list()` newly calls `/v1/contracts/listNamedSchedules` for one required customer, optionally one contract, name, covering date and property subset. It uses `BodyCursorPage`/body `next_page`, unlike contract lists and lifecycle offset lists. Existing get/update methods gain property qualifiers. Do not confuse it with the separately nested rate-card-catalog named-schedule resource at `v1.contracts.namedSchedules`.
+- **Other pricing/invoice changes:** composite create/update/read shapes expose `include_composite_spend`, default false; package usage-statement day accepts `CUSTOM_DATE`; customer invoice listing adds `include_historical_commit_invoices`, default false. Applied-commit attribution extends to `CPU_CONVERSION` lines, and `billable_status` documentation explains provider-delivery intent while leaving its type `unknown`. These are not payment-success or accounting-completeness guarantees.
+
+## `3.11.0` Documentation Corrections and Limits
+
+The stale top-level Payments section is removed from `api.md`. That resolves the baseline index-versus-implementation inconsistency; it does not newly remove a working Payments resource in `3.11.0`, since the retained `3.10.0` source already lacked it.
+
+Usage aggregation docstrings now explicitly require UTC-midnight time bounds separated by at least one day. Grouped usage accepts at most 200 filter values in total across arrays, with a 100-row default/maximum for compound-group pages; the prose qualifies rejection as applying when the limit is enforced. These are docstring clarifications, not new local client validation or measured server behavior. Existing exact metric/group-key matching and product-level calculation boundaries remain controlling.
+
+`customFields.setValues()` documents that changing custom fields on credits, commits or contracts does not emit the corresponding `credit.edit`, `commit.edit` or `contract.edit` events. Do not use those events as guaranteed custom-field refresh signals. Customer-level commit/credit creation guidance favors contract edits for ordinary changes. V2 edit docs now describe an edit ID and optional edit details instead of incorrectly calling it the contract ID; generated `data.edit` remains optional, so the prose does not guarantee complete returned details.
+
+The wider earlier Web Fetch migration guide is retained history. Its only change here adds the new offset-list method to the request-options-overload examples; the old Node/fetch/export migrations are not re-attributed to `3.11.0`.
+
+## `3.11.0` Grounding Excerpts
+
+> "Results are limited to 20 contracts per page. When the response includes a"
+>
+> `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/contracts.ts:63`
+
+> "Important: Only the name can be modified via this endpoint; configurations"
+>
+> `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/billable-metrics.ts:112`
+
+> "request will fail with a 409 error."
+>
+> `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/contracts/contracts.ts:3601`
+
+> "Adding or updating custom fields on credits, commits, or contracts does not emit"
+>
+> `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/custom-fields.ts:144`
+
+> "Edit an existing offset notification, or enable/disable a system notification"
+>
+> `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/notifications/offset.ts:97`
+
+## `3.11.0` Evidence Routes
+
+- Snapshot manifest: `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/manifest.json`
+- Release manifest: `raw/github/metronome/metronome-node/releases/sdk/3.11.0/2026-10-31/manifest.json`
+- Release notes: `raw/github/metronome/metronome-node/releases/sdk/3.11.0/2026-10-31/release-notes.md`
+- Exact comparison: `tracking/github/repos/metronome/metronome-node/comparisons/sdk/3.10.0--3.11.0/comparison.json`, `comparison.md` and `diff.patch` in the same directory.
+- Changed implementation: `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/`, especially `src/core/pagination.ts`, `src/resources/shared.ts`, V1/V2 contract modules, customer billing-config/invoice modules, billable metrics, pricing units and V2 notification modules. The manifest maps each exact path to its immutable hash.
+
+## Preserved `3.10.0` Baseline
+
+The following original baseline sections and excerpts are retained unchanged. Their version-scoped behavior and unresolved-at-the-time warnings are not latest-version claims; the additions above describe the `3.11.0` changes and corrections.
 
 ## Overview
 

@@ -22,6 +22,13 @@ Metronome's Public Beta NetSuite integration supports direct billing and revenue
 
 `@metronome/sdk@3.10.0` is a generated server-side TypeScript and JavaScript client with no runtime dependencies. It defaults bearer authentication from `METRONOME_BEARER_TOKEN`, supports configurable fetch, proxy, timeout, retry, logging, raw-response, and pagination behavior, and exposes both typed resources and generic HTTP methods. Its generated types prove an exact package's client surface, not feature enablement or current service behavior. React Native is explicitly unsupported in this release. [[source-github-metronome-node]]
 
+## Node SDK `3.11.0` migration boundary
+
+The full additive `@metronome/sdk@3.11.0` ingest preserves the `3.10.0` baseline. Both contract-list methods now return cursor-paginated pages; migrate removed `ContractListResponse` imports and traverse all pages rather than treating one awaited `data` array as exhaustive. Recurring commit/credit response objects require `anchor_date`, and subscription response objects require `created_at`; these response-type requirements are not new universal create-request requirements. MCP server source/install instructions are removed from this repository, not proof that existing published packages stop working. The stale Payments API-index section is removed too; it was already absent from the `3.10.0` implementation. [[source-github-metronome-node]] [[changelog-github-metronome-node]]
+
+> [!warning] Version-scoped Stripe configuration change
+> At `3.11.0`, customer creation and legacy billing-config create/retrieve types narrow `stripe_collection_method` to `charge_automatically` or `send_invoice`, removing the two beta PaymentIntent values present at `3.10.0`. Customer billing-provider configuration also drops the old PaymentIntent-only qualification from `tax_provider` documentation. These are exact SDK type/docstring changes, not proof of service-wide retirement, broader tax eligibility, or changes to the separately documented threshold payment-gate flow. The cumulative source retains the reciprocal warning. [[source-github-metronome-node]]
+
 ## AI operating-guidance boundary
 
 `Metronome-Industries/ai` packages integration, catalog, customer, contract, PLG, CSM, and Stripe-migration instructions for coding and operational agents. Its preview-before-write controls and reference-first routing are useful workflow evidence, but its examples do not replace dedicated API schemas or prove account enablement. Internal conflicts in event value types, rate representation, endpoint names, and migration consequences must be reconciled against canonical documentation before execution. [[source-github-ai]]

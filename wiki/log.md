@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-31] ingest | Metronome Node `@metronome/sdk@3.11.0`
+
+- Approved full additive ingest with focused reading, preserving all `3.10.0` source/changelog history. Captures breaking contract cursor pagination/response types, quantity balances, pricing units, lifecycle controls and additional Stripe type narrowing; stale Payments index fixed without rewriting history. Six existing concepts updated first; source_count unchanged. Details [[metronome-log]], [[source-github-metronome-node]], [[changelog-github-metronome-node]]. No SDK/provider/payment execution, commit or push.
+
 ## [2026-10-31] ingest | Adyen API Explorer C59
 
 - Fifty independently approved API Explorer sources; first full-review approvals 39/50 and 11 targeted correction reviews. 7 concepts touched (0 new); source_count 2763 = 2547 General Docs + 200 API Explorer + 16 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-59/`; details [[adyen-log]]. No commit/push.

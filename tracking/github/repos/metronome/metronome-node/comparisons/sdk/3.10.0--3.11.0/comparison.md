@@ -1,0 +1,217 @@
+# GitHub package comparison
+
+- Repository: `metronome-industries/metronome-node`
+- Package: `@metronome/sdk`
+- From: `3.10.0` (`f8ac11210fbca9616a220e82ea82ac1d340ea2df`)
+- To: `3.11.0` (`5e8d4ac4659f9378f2341e4e18f89274908523ed`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.dockerignore`
+- `.github/workflows/ci.yml`
+- `.github/workflows/publish-npm.yml`
+- `.github/workflows/release-please.yml`
+- `.github/workflows/stlc-promote.yml`
+- `.github/workflows/stlc-sync.yml`
+- `.gitignore`
+- `.prettierignore`
+- `.release-please-manifest.json`
+- `.stats.yml`
+- `CHANGELOG.md`
+- `MIGRATION.md`
+- `README.md`
+- `api.md`
+- `eslint.config.mjs`
+- `package.json`
+- `packages/mcp-server/Dockerfile`
+- `packages/mcp-server/README.md`
+- `packages/mcp-server/build`
+- `packages/mcp-server/jest.config.ts`
+- `packages/mcp-server/manifest.json`
+- `packages/mcp-server/package.json`
+- `packages/mcp-server/scripts/copy-bundle-files.cjs`
+- `packages/mcp-server/scripts/postprocess-dist-package-json.cjs`
+- `packages/mcp-server/src/auth.ts`
+- `packages/mcp-server/src/code-tool-paths.cts`
+- `packages/mcp-server/src/code-tool-types.ts`
+- `packages/mcp-server/src/code-tool-worker.ts`
+- `packages/mcp-server/src/code-tool.ts`
+- `packages/mcp-server/src/docs-search-tool.ts`
+- `packages/mcp-server/src/http.ts`
+- `packages/mcp-server/src/index.ts`
+- `packages/mcp-server/src/instructions.ts`
+- `packages/mcp-server/src/local-docs-search.ts`
+- `packages/mcp-server/src/logger.ts`
+- `packages/mcp-server/src/methods.ts`
+- `packages/mcp-server/src/options.ts`
+- `packages/mcp-server/src/server.ts`
+- `packages/mcp-server/src/stdio.ts`
+- `packages/mcp-server/src/types.ts`
+- `packages/mcp-server/src/util.ts`
+- `packages/mcp-server/tests/options.test.ts`
+- `packages/mcp-server/tsc-multi.json`
+- `packages/mcp-server/tsconfig.build.json`
+- `packages/mcp-server/tsconfig.dist-src.json`
+- `packages/mcp-server/tsconfig.json`
+- `packages/mcp-server/yarn.lock`
+- `release-please-config.json`
+- `scripts/build`
+- `scripts/build-all`
+- `scripts/mock`
+- `scripts/publish-packages.ts`
+- `scripts/test`
+- `scripts/utils/make-dist-package-json.cjs`
+- `src/client.ts`
+- `src/core/pagination.ts`
+- `src/index.ts`
+- `src/internal/headers.ts`
+- `src/resources/shared.ts`
+- `src/resources/v1/alerts.ts`
+- `src/resources/v1/billable-metrics.ts`
+- `src/resources/v1/contracts/contracts.ts`
+- `src/resources/v1/contracts/index.ts`
+- `src/resources/v1/contracts/products.ts`
+- `src/resources/v1/contracts/rate-cards/index.ts`
+- `src/resources/v1/contracts/rate-cards/named-schedules.ts`
+- `src/resources/v1/contracts/rate-cards/rate-cards.ts`
+- `src/resources/v1/custom-fields.ts`
+- `src/resources/v1/customers/alerts.ts`
+- `src/resources/v1/customers/billing-config.ts`
+- `src/resources/v1/customers/commits.ts`
+- `src/resources/v1/customers/credits.ts`
+- `src/resources/v1/customers/customers.ts`
+- `src/resources/v1/customers/invoices.ts`
+- `src/resources/v1/index.ts`
+- `src/resources/v1/packages.ts`
+- `src/resources/v1/pricing-units.ts`
+- `src/resources/v1/usage.ts`
+- `src/resources/v1/v1.ts`
+- `src/resources/v2/contracts.ts`
+- `src/resources/v2/index.ts`
+- `src/resources/v2/notifications.ts`
+- `src/resources/v2/notifications/index.ts`
+- `src/resources/v2/notifications/notifications.ts`
+- `src/resources/v2/notifications/offset.ts`
+- `src/resources/v2/notifications/system.ts`
+- `src/resources/v2/v2.ts`
+- `src/version.ts`
+- `tests/api-resources/v1/alerts.test.ts`
+- `tests/api-resources/v1/billable-metrics.test.ts`
+- `tests/api-resources/v1/contracts/contracts.test.ts`
+- `tests/api-resources/v1/contracts/products.test.ts`
+- `tests/api-resources/v1/contracts/rate-cards/named-schedules.test.ts`
+- `tests/api-resources/v1/customers/commits.test.ts`
+- `tests/api-resources/v1/customers/credits.test.ts`
+- `tests/api-resources/v1/customers/invoices.test.ts`
+- `tests/api-resources/v1/packages.test.ts`
+- `tests/api-resources/v1/pricing-units.test.ts`
+- `tests/api-resources/v2/contracts.test.ts`
+- `tests/api-resources/v2/notifications/offset.test.ts`
+- `tests/api-resources/v2/notifications/system.test.ts`
+- `yarn.lock`
+
+## Upstream changes
+
+- `deleted`: `.dockerignore`
+- `modified`: `.github/workflows/ci.yml`
+- `modified`: `.github/workflows/publish-npm.yml`
+- `added`: `.github/workflows/release-please.yml`
+- `added`: `.github/workflows/stlc-promote.yml`
+- `added`: `.github/workflows/stlc-sync.yml`
+- `modified`: `.gitignore`
+- `modified`: `.prettierignore`
+- `modified`: `.release-please-manifest.json`
+- `modified`: `.stats.yml`
+- `modified`: `CHANGELOG.md`
+- `modified`: `MIGRATION.md`
+- `modified`: `README.md`
+- `modified`: `api.md`
+- `modified`: `eslint.config.mjs`
+- `modified`: `package.json`
+- `deleted`: `packages/mcp-server/Dockerfile`
+- `deleted`: `packages/mcp-server/README.md`
+- `deleted`: `packages/mcp-server/build`
+- `deleted`: `packages/mcp-server/jest.config.ts`
+- `deleted`: `packages/mcp-server/manifest.json`
+- `deleted`: `packages/mcp-server/package.json`
+- `deleted`: `packages/mcp-server/scripts/copy-bundle-files.cjs`
+- `deleted`: `packages/mcp-server/scripts/postprocess-dist-package-json.cjs`
+- `deleted`: `packages/mcp-server/src/auth.ts`
+- `deleted`: `packages/mcp-server/src/code-tool-paths.cts`
+- `deleted`: `packages/mcp-server/src/code-tool-types.ts`
+- `deleted`: `packages/mcp-server/src/code-tool-worker.ts`
+- `deleted`: `packages/mcp-server/src/code-tool.ts`
+- `deleted`: `packages/mcp-server/src/docs-search-tool.ts`
+- `deleted`: `packages/mcp-server/src/http.ts`
+- `deleted`: `packages/mcp-server/src/index.ts`
+- `deleted`: `packages/mcp-server/src/instructions.ts`
+- `deleted`: `packages/mcp-server/src/local-docs-search.ts`
+- `deleted`: `packages/mcp-server/src/logger.ts`
+- `deleted`: `packages/mcp-server/src/methods.ts`
+- `deleted`: `packages/mcp-server/src/options.ts`
+- `deleted`: `packages/mcp-server/src/server.ts`
+- `deleted`: `packages/mcp-server/src/stdio.ts`
+- `deleted`: `packages/mcp-server/src/types.ts`
+- `deleted`: `packages/mcp-server/src/util.ts`
+- `deleted`: `packages/mcp-server/tests/options.test.ts`
+- `deleted`: `packages/mcp-server/tsc-multi.json`
+- `deleted`: `packages/mcp-server/tsconfig.build.json`
+- `deleted`: `packages/mcp-server/tsconfig.dist-src.json`
+- `deleted`: `packages/mcp-server/tsconfig.json`
+- `deleted`: `packages/mcp-server/yarn.lock`
+- `modified`: `release-please-config.json`
+- `modified`: `scripts/build`
+- `deleted`: `scripts/build-all`
+- `modified`: `scripts/mock`
+- `deleted`: `scripts/publish-packages.ts`
+- `modified`: `scripts/test`
+- `modified`: `scripts/utils/make-dist-package-json.cjs`
+- `modified`: `src/client.ts`
+- `modified`: `src/core/pagination.ts`
+- `modified`: `src/index.ts`
+- `modified`: `src/internal/headers.ts`
+- `modified`: `src/resources/shared.ts`
+- `modified`: `src/resources/v1/alerts.ts`
+- `modified`: `src/resources/v1/billable-metrics.ts`
+- `modified`: `src/resources/v1/contracts/contracts.ts`
+- `modified`: `src/resources/v1/contracts/index.ts`
+- `modified`: `src/resources/v1/contracts/products.ts`
+- `modified`: `src/resources/v1/contracts/rate-cards/index.ts`
+- `modified`: `src/resources/v1/contracts/rate-cards/named-schedules.ts`
+- `modified`: `src/resources/v1/contracts/rate-cards/rate-cards.ts`
+- `modified`: `src/resources/v1/custom-fields.ts`
+- `modified`: `src/resources/v1/customers/alerts.ts`
+- `modified`: `src/resources/v1/customers/billing-config.ts`
+- `modified`: `src/resources/v1/customers/commits.ts`
+- `modified`: `src/resources/v1/customers/credits.ts`
+- `modified`: `src/resources/v1/customers/customers.ts`
+- `modified`: `src/resources/v1/customers/invoices.ts`
+- `modified`: `src/resources/v1/index.ts`
+- `modified`: `src/resources/v1/packages.ts`
+- `modified`: `src/resources/v1/pricing-units.ts`
+- `modified`: `src/resources/v1/usage.ts`
+- `modified`: `src/resources/v1/v1.ts`
+- `modified`: `src/resources/v2/contracts.ts`
+- `modified`: `src/resources/v2/index.ts`
+- `added`: `src/resources/v2/notifications.ts`
+- `added`: `src/resources/v2/notifications/index.ts`
+- `added`: `src/resources/v2/notifications/notifications.ts`
+- `added`: `src/resources/v2/notifications/offset.ts`
+- `added`: `src/resources/v2/notifications/system.ts`
+- `modified`: `src/resources/v2/v2.ts`
+- `modified`: `src/version.ts`
+- `modified`: `tests/api-resources/v1/alerts.test.ts`
+- `modified`: `tests/api-resources/v1/billable-metrics.test.ts`
+- `modified`: `tests/api-resources/v1/contracts/contracts.test.ts`
+- `modified`: `tests/api-resources/v1/contracts/products.test.ts`
+- `modified`: `tests/api-resources/v1/contracts/rate-cards/named-schedules.test.ts`
+- `modified`: `tests/api-resources/v1/customers/commits.test.ts`
+- `modified`: `tests/api-resources/v1/customers/credits.test.ts`
+- `modified`: `tests/api-resources/v1/customers/invoices.test.ts`
+- `modified`: `tests/api-resources/v1/packages.test.ts`
+- `modified`: `tests/api-resources/v1/pricing-units.test.ts`
+- `modified`: `tests/api-resources/v2/contracts.test.ts`
+- `added`: `tests/api-resources/v2/notifications/offset.test.ts`
+- `added`: `tests/api-resources/v2/notifications/system.test.ts`
+- `modified`: `yarn.lock`

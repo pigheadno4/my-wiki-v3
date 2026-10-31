@@ -1,0 +1,167 @@
+# GitHub ingest packet
+
+- Repository: `metronome-industries/metronome-node`
+- Work item: `github-255c5762c0ce5e6af973`
+- Snapshot: `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `@metronome/sdk`
+
+- Version: `3.10.0` -> `3.11.0`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `66`
+
+### Required reading
+
+- `raw/github/metronome/metronome-node/releases/sdk/3.11.0/2026-10-31/manifest.json`
+- `raw/github/metronome/metronome-node/releases/sdk/3.11.0/2026-10-31/release-notes.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-08-12-f8ac112/manifest.json`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/CHANGELOG.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/MIGRATION.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/README.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/api.md`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/package.json`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/client.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/core/pagination.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/internal/headers.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/shared.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/alerts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/billable-metrics.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/contracts/contracts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/contracts/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/contracts/products.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/contracts/rate-cards/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/contracts/rate-cards/named-schedules.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/contracts/rate-cards/rate-cards.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/custom-fields.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/customers/alerts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/customers/billing-config.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/customers/commits.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/customers/credits.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/customers/customers.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/customers/invoices.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/packages.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/pricing-units.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/usage.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v1/v1.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/contracts.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/notifications.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/notifications/index.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/notifications/notifications.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/notifications/offset.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/notifications/system.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/resources/v2/v2.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/files/src/version.ts`
+- `raw/github/metronome/metronome-node/snapshots/2026-10-31-5e8d4ac/manifest.json`
+- `tracking/github/repos/metronome/metronome-node/comparisons/sdk/3.10.0--3.11.0/comparison.json`
+- `tracking/github/repos/metronome/metronome-node/comparisons/sdk/3.10.0--3.11.0/comparison.md`
+- `tracking/github/repos/metronome/metronome-node/comparisons/sdk/3.10.0--3.11.0/diff.patch`
+
+### Upstream changes
+
+- `deleted` `.dockerignore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/ci.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/publish-npm.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/release-please.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/stlc-promote.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/stlc-sync.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.gitignore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.prettierignore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.release-please-manifest.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.stats.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `MIGRATION.md`: `retained-evidence` (snapshot-file)
+- `modified` `README.md`: `retained-evidence` (snapshot-file)
+- `modified` `api.md`: `retained-evidence` (snapshot-file)
+- `modified` `eslint.config.mjs`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
+- `deleted` `packages/mcp-server/Dockerfile`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/README.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/build`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/jest.config.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/manifest.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/package.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/scripts/copy-bundle-files.cjs`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/scripts/postprocess-dist-package-json.cjs`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/auth.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/code-tool-paths.cts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/code-tool-types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/code-tool-worker.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/code-tool.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/docs-search-tool.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/http.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/index.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/instructions.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/local-docs-search.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/logger.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/methods.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/options.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/server.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/stdio.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/src/util.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/tests/options.test.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/tsc-multi.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/tsconfig.build.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/tsconfig.dist-src.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/tsconfig.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `packages/mcp-server/yarn.lock`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `release-please-config.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/build`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `scripts/build-all`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/mock`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `scripts/publish-packages.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/test`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `scripts/utils/make-dist-package-json.cjs`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/client.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/core/pagination.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/index.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/internal/headers.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/shared.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/alerts.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/billable-metrics.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/contracts/contracts.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/contracts/index.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/contracts/products.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/contracts/rate-cards/index.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/contracts/rate-cards/named-schedules.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/contracts/rate-cards/rate-cards.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/custom-fields.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/customers/alerts.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/customers/billing-config.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/customers/commits.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/customers/credits.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/customers/customers.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/customers/invoices.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/index.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/packages.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/pricing-units.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/usage.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v1/v1.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v2/contracts.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v2/index.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/resources/v2/notifications.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/resources/v2/notifications/index.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/resources/v2/notifications/notifications.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/resources/v2/notifications/offset.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/resources/v2/notifications/system.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/resources/v2/v2.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/version.ts`: `retained-evidence` (snapshot-file)
+- `modified` `tests/api-resources/v1/alerts.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/billable-metrics.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/contracts/contracts.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/contracts/products.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/contracts/rate-cards/named-schedules.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/customers/commits.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/customers/credits.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/customers/invoices.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/packages.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v1/pricing-units.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `tests/api-resources/v2/contracts.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `tests/api-resources/v2/notifications/offset.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `tests/api-resources/v2/notifications/system.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `yarn.lock`: `intentional-policy-exclusion` (outside-capsule-policy)
