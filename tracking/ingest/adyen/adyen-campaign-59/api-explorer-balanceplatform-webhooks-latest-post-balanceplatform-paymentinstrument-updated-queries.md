@@ -1,0 +1,11 @@
+# Fixed query answers — api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated
+
+Canonical route: [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated]]; [captured API Explorer URL](https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.updated). Pinned raw: `raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.updated/2026-09-15.md`.
+
+## Q1
+
+The captured incoming `balancePlatform.paymentInstrument.updated` POST reference says Adyen sends the event when a payment instrument is successfully updated (raw lines 5–7, 65–67). The body table requires top-level `data`, `environment`, and `type`, while `data.paymentInstrument` is optional; if present, that nested object marks `balanceAccountId`, instrument `id`, `issuingCountryCode`, and instrument `type` required (raw lines 14–18, 22–23, 31–34). Instrument type is `card` or `bankAccount` (raw line 31). Optional status has active, inactive, suspended and permanently closed values; its creation-default explanation has card exceptions and does not define what an omitted status means in this update event (raw line 28). Optional `statusReason` has listed reasons and says `other` requires `statusComment` to be sent (raw lines 29–30). The card example is one suspended virtual-card payload, not a universal branch or transition (raw lines 36–69).
+
+## Q2
+
+The event reports a successful payment-instrument resource update, not an authorization, transfer, booking, or bank receipt (raw lines 5–7). The source's `closed` status is irreversible, but the example is merely `suspended`; do not infer a closure or any payment outcome from it (raw lines 28, 43–68). Some field descriptions say bank/card details are returned when **creating** an instrument, despite this update page, so their presence in every update is not established (raw lines 17, 19–20). A receiving endpoint accepts the webhook with any `2xx`; this is acknowledgement, not additional resource or financial-state evidence (raw lines 70–78). This reference does not specify delivery order, retry/deduplication, signatures, later failure/reversal, or numbered-version/current availability guarantees (raw lines 1–7, 9–78).

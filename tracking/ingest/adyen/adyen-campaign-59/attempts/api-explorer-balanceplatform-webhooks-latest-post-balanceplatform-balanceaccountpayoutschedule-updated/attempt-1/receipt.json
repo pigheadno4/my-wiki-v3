@@ -1,0 +1,63 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutschedule-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Configuration webhooks v2: managed payout schedule updated on a balance account\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutSchedule.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutSchedule.updated/2026-09-15.md\"\ntags: [adyen, webhooks, balance-platform, managed-payouts]\n---\n\n## Overview\n\nCaptured Configuration webhooks v2 reference for the incoming `balancePlatform.balanceAccountPayoutSchedule.updated` event. Adyen says it sends this webhook when a managed payout schedule on a balance account is successfully updated. This is schedule-configuration evidence, not a merchant POST operation or evidence that a scheduled payout executed or reached a bank. See [[adyen]], [[adyen-webhooks]], and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request-body table marks top-level `data`, `environment`, and `type` required; `timestamp` is optional. Every listed child of `data` is marked optional, including balance-account and payout-schedule identifiers, platform, currency, enabled state, frequency, amount controls, retained amount, sales-day closing time and destination transfer instrument. The table does not make the event's complete object snapshot or any individual child identifier mandatory.\n- The event is about a schedule update. The listed `enabled` field describes whether a schedule is active; `retainedAmount` describes funds that must remain available after execution and says execution is not initiated if funds are below it. These field descriptions do not show that this webhook records an execution, transfer booking, settlement, or recipient-bank receipt.\n- The response section says any `2xx` HTTP status accepts the webhook; its example is `200 Success` with optional `notificationResponse`. That acceptance is separate from the underlying schedule change or later payout outcome. The captured `latest` route and versioned family context do not establish the version currently served, and this reference does not specify delivery order, retries, deduplication, or signature verification.\n\n## Detail locators\n\n- Event identity and trigger: pinned raw lines 5\u20137.\n- `## Parameters` \u2192 `### Request body`: required top-level fields, optional `data` children, and field constraints: lines 9\u201332. In particular, `frequencyValue` is allowed only for monthly or weekly schedules (line 22); description and beneficiary-reference qualifications are at lines 19 and 26.\n- `## Responses` \u2192 `### 200 Success`: webhook acceptance and response-body entry, lines 34\u201342.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutSchedule.updated/2026-09-15|Captured managed payout schedule updated webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you successfully update a managed payout schedule on a balance account.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "| data | object | Yes | Contains event details. |",
+      "location": "pinned raw line 14, Parameters > Request body"
+    },
+    {
+      "text": "|   - balanceAccountPayoutScheduleId | string | No | The unique identifier of the balance platform payout schedule that was applied to the balance account. |",
+      "location": "pinned raw line 16, Parameters > Request body"
+    },
+    {
+      "text": "|   - retainedAmount | integer | No | The amount of funds that must remain available in the balance account after an execution of the payout schedule. If the funds in the balance account are less than the retained amount, the execution is not initiated. |",
+      "location": "pinned raw line 27, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 42, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-baps-updated-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutschedule-updated]] \u2014 2026-09-15-captured Configuration webhooks v2 balance-account managed-payout-schedule update event contract, with required envelope fields, optional schedule details and `2xx` acknowledgement distinct from payout execution.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-baps-updated-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutschedule-updated]] \u2014 Configuration webhooks v2 reference for a successfully updated managed payout schedule on a balance account; schedule configuration does not prove payout execution or bank receipt (captured 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutSchedule.updated/2026-09-15.md",
+  "raw_sha256": "5f4ff4be9dbf53c551ff82b26a7c8ec7638658c1d35ed53d01ef9c22abb12a90",
+  "status": "candidate_ready"
+}

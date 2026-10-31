@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-updated",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Sweep updated webhook | Adyen Balance Platform webhooks\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.updated/2026-09-15.md\"\ntags: [adyen, platforms, sweeps, webhooks]\n---\n\n## Overview\n\nThis captured Balance Platform webhook POST reference says Adyen sends `balancePlatform.balanceAccountSweep.updated` after a successful sweep-configuration update. It describes an incoming event associated with a balance account and sweep resource, not an instruction to update a sweep or evidence that a sweep transfer executed. The `latest` URL is the captured label, not proof of a current version. [[adyen-platforms]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The body marks `data`, `environment` (`test` or `live`) and `type` required. Within `data`, the balance-account `accountId`, `balancePlatform`, and `sweep` are optional; within a present `sweep`, `counterparty`, `currency`, `id` and `schedule` are marked required. The counterparty description requires one of `balanceAccountId`, `transferInstrumentId` or `merchantAccount`, according to sweep direction.\n- Sweep `type` describes push out of, or pull in to, the balance account and defaults to `push` when omitted. `status` defaults to `active`; `inactive` disables triggering. The optional `triggerAmount` is evaluated on the specified schedule and defaults to zero: pull triggers when balance is at or below it, push when balance is at or above it. `sweepAmount` and `targetAmount` are alternative configuration amounts, not simultaneous settings. The configured currency must match one of the balance currencies.\n- The optional category distinguishes bank transfers to a transfer instrument from internal transfers to another platform balance account. The `priorities` description concerns ordered bank-transfer route preferences and states that at least one provided priority must be valid for request acceptance. These configuration descriptions do not establish a particular transfer, balance booking, payout or recipient-bank receipt.\n- The test example shows an inactive weekly push sweep with EUR zero target and trigger amounts and a destination balance-account ID; it is illustrative, not a general requirement. The response section says any `2xx` accepts the webhook. This reference does not establish delivery ordering, retries, deduplication, signature verification or transfer finality.\n\n## Detail locators\n\n- Event trigger and identity: raw lines 5\u20137 and 40\u201370.\n- Body requiredness and resource identities: raw lines 9\u201322 and 34\u201336.\n- Direction, status, schedule/amount thresholds, currency, category and priorities: raw lines 18\u201333.\n- Example payload and webhook acknowledgment: raw lines 38\u201380.\n\n## Related\n\n- [[adyen]] \u2014 Adyen company route.\n- [[adyen-platforms]] \u2014 platform balance-account and sweep context.\n- [[adyen-platform-internal-transfers]] \u2014 separate internal-fund-transfer context.\n- [[adyen-webhooks]] \u2014 general webhook handling context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.updated/2026-09-15|Captured balancePlatform.balanceAccountSweep.updated reference]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you successfully [update a sweep](https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/balanceAccounts/_balanceAccountId_/sweeps/_sweepId_).",
+      "location": "raw line 7, under POST balancePlatform.balanceAccountSweep.updated"
+    },
+    {
+      "text": "|   - sweep | object | No | Contains information about the sweep resource that triggered the event. |",
+      "location": "raw line 17, Parameters > Request body"
+    },
+    {
+      "text": "|     - counterparty | object | Yes | The destination or the source of the funds, depending on the sweep `type`.  Either a `balanceAccountId`, `transferInstrumentId`, or `merchantAccount` is required. |",
+      "location": "raw line 19, Parameters > Request body"
+    },
+    {
+      "text": "|     - status | string | No | The status of the sweep. If not provided, by default, this is set to **active**.  Possible values:  **active**:  the sweep is enabled and funds will be pulled in or pushed out based on the defined configuration.  **inactive**: the sweep is disabled and cannot be triggered. |",
+      "location": "raw line 29, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 80, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-sweep-updated-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-updated]] \u2014 2026-09-15-captured Balance Platform incoming sweep-configuration-updated webhook reference covering account/sweep identities, direction, status and threshold fields; `2xx` acceptance is not transfer execution or bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.updated/2026-09-15.md",
+  "raw_sha256": "e1b8c1372cb5e8953679ba16a6b6c3bb502158ae2c46b1b775f5831683e3ffad",
+  "status": "candidate_ready"
+}

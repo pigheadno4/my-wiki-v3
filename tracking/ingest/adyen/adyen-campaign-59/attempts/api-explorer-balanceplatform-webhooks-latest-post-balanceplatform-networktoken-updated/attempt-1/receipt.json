@@ -1,0 +1,67 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform webhook: network token updated\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.updated/2026-09-15.md\"\ntags: [adyen, issuing, webhooks, network-tokens]\n---\n\n## Overview\n\nThis 2026-09-15 capture documents the incoming `balancePlatform.networkToken.updated` webhook that Adyen sends for an internal network-token status update during provisioning. It is an event contract, not a merchant POST operation or a payment result. The `latest` route does not independently verify a current API version. See [[adyen]], [[adyen-issuing]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The envelope requires `data`, `environment` (`test` or `live`) and top-level `type`; queue `timestamp` is optional. Every listed `data` field, including token `id`, associated `paymentInstrumentId`, `status`, `decision`, `authenticationApplied`, token `type`, and risk/validation details, is optional in this table. The page supplies no example payload and no allowed values for `data.status` or `authentication.result`; an update event alone does not establish that the token is active, authentication succeeded, or a payment occurred.\n- `data.decision` lists `approved`, `declined` and `requiresAuthentication`. The separate [[source-adyen-docs-issuing-webhook-types-network-tokens-events|Issuing network-token webhook guide]] lists `requireAuthentication` for that decision instead (its raw line 41). Treat the differing enum spellings as an unresolved source conflict; do not silently normalize them.\n- Optional `authentication` identifies process method (`sms_OTP` or `email_OTP`) and result, while `authenticationApplied` indicates whether authentication was triggered during provisioning. `data.type` can be `wallet` or `cof`; `wallet` details are returned only for wallet type. `validationFacts.reasons` is sent only for an invalid `walletValidation` result. Risk scores, transaction-rule results and validation facts are documented fields, not proof of approval or payment authorization.\n- A `2xx` response accepts the webhook. This page does not establish delivery order, retries, deduplication or signature mechanics.\n\n## Detail locators\n\n- Event trigger: pinned raw title/introduction, lines 5\u20137.\n- Envelope, token/payment-instrument IDs, decision and authentication: `## Parameters > ### Request body`, lines 11\u201324.\n- Requestor, risk/validation and wallet-only details: same table, lines 25\u201348.\n- Acknowledgement: `## Responses > ### 200 Success`, lines 50\u201358.\n\n## Related\n\n- [[source-adyen-docs-issuing-webhook-types-network-tokens-events]] \u2014 separate wallet-focused lifecycle guide; its decision enum spelling differs from this API Explorer table.\n- [[source-adyen-docs-issuing-network-tokens]] \u2014 network-token types and lifecycle overview.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.updated/2026-09-15|Network token updated webhook snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when there is an internal status update for the network token during the provisioning process.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - decision | string | No | The decision about the network token provisioning.  Possible values: **approved**, **declined**, **requiresAuthentication**. |",
+      "location": "raw line 20"
+    },
+    {
+      "text": "|   - paymentInstrumentId | string | No | The unique identifier of the payment instrument to which the network token is associated. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "|     - reasons | array of string | No | The reason for the `result` of the validations.  This field is only sent for `validationFacts.type` **walletValidation**, when `validationFacts.result` is **invalid**. |",
+      "location": "raw line 36"
+    },
+    {
+      "text": "|   - wallet | object | No | Contains information about the wallet for which the network token is provisioned.  Returned only when `type` is **wallet**. |",
+      "location": "raw line 39"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-network-token-updated-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-updated]] \u2014 2026-09-15-captured incoming network-token provisioning-status event contract, with optional token/card identities, authentication, wallet/risk detail and no payment-result proof; its `requiresAuthentication` decision spelling conflicts with the Issuing webhook guide's `requireAuthentication`.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Existing [[source-adyen-docs-issuing-webhook-types-network-tokens-events]] and its raw line 41 use requireAuthentication; this API Explorer raw line 20 uses requiresAuthentication. Coordinator should preserve reciprocal warning in that existing source if touched."
+        ]
+      },
+      {
+        "update_id": "c59-network-token-updated-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-updated]] \u2014 2026-09-15-captured Balance Platform network-token status-update webhook schema for provisioning, with optional identity, authentication, decision and wallet fields; not a payment-result event.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.updated/2026-09-15.md",
+  "raw_sha256": "21bb59f374b7f0b995a1a8e84131a54ceeaf5bc53ffa294e11b32ade10cbf08e",
+  "status": "candidate_ready"
+}

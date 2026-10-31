@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balance-webhooks-latest-post-balanceplatform-balanceaccount-balance-block-released",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance webhook: blocked funds released\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balance-webhooks/latest/post/balancePlatform.balanceAccount.balance.block.released\"\nraw_files:\n  - \"adyen/api-explorer/balance-webhooks/latest/post/balancePlatform.balanceAccount.balance.block.released/2026-09-15.md\"\ntags: [adyen, balance-webhooks, balance-accounts, blocked-funds]\n---\n\n## Overview\n\nThis captured Balance Webhooks API Explorer POST reference describes Adyen's incoming `balancePlatform.balanceAccount.balance.block.released` notification. Adyen says it sends the event when previously blocked funds are released, making them available. It gives collateral-for-payments and risk-mitigation holds as possible reasons for a prior block, not as conditions guaranteed for every release. This is an event contract, not a merchant request to release funds. The `latest` route label gives no numbered webhook version. See [[adyen-webhooks]], [[adyen-platforms]], and [[adyen]].\n\n## Key takeaways\n\n- The body requires `data`, `environment` (`test` or `live`), and `type`. Within `data`, the account-holder object, released `amount`, and balance-account object are marked required. `amount.currency` and `amount.value` are required; value is in minor units. The account-holder and balance-account objects' `id`, `description`, and `reference` fields are individually marked optional.\n- `blockedBalanceBefore` and `blockedBalanceAfter` are optional snapshots, each with required currency and minor-unit value if present. The optional batch reference, balance-platform ID, event-trigger `creationDate`, and release `valueDate` supply context. The example shows a EUR 25,000-minor-unit release and blocked balance values moving from -100,000 to -75,000 in a test event. Those numbers illustrate a block release; the schema has no `availableBalance` or booked-balance field and does not quantify a general available-balance change.\n- This event concerns release of a block on funds, distinct from a new credit, transfer booking, payout, or bank receipt. The response table says any HTTP `2xx` accepts the webhook, with `notificationResponse` optional. The page does not establish delivery order, retry, deduplication, signature verification, or later financial outcome.\n\n## Detail locators\n\n- Event trigger and example hold reasons: pinned raw lines 5\u201311.\n- Required envelope, released amount, identities, optional blocked-balance snapshots and dates: pinned raw lines 15\u201342.\n- Signed blocked-balance test example: pinned raw lines 44\u201381.\n- Acknowledgment response and example: pinned raw lines 82\u2013101.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 event and acknowledgment context.\n- [[adyen-platforms]] \u2014 balance-platform resource context.\n- [[source-adyen-docs-platforms-balance-updates]] \u2014 separate pilot Balance webhook settings overview.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balance-webhooks/latest/post/balancePlatform.balanceAccount.balance.block.released/2026-09-15|Blocked funds released webhook reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when funds that were previously blocked are released, making them available. Funds may be blocked for reasons such as:",
+      "location": "pinned raw line 7, directly below event heading"
+    },
+    {
+      "text": "|   - amount | object | Yes | The amount released. |",
+      "location": "pinned raw line 23, Parameters > Request body"
+    },
+    {
+      "text": "|   - blockedBalanceAfter | object | No | The new blocked balance after the funds were released. |",
+      "location": "pinned raw line 32, Parameters > Request body"
+    },
+    {
+      "text": "|   - blockedBalanceBefore | object | No | The blocked balance before the funds were released. |",
+      "location": "pinned raw line 35, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 90, Responses > 200 Success > Response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-block-released-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balance-webhooks-latest-post-balanceplatform-balanceaccount-balance-block-released]] \u2014 2026-09-15-captured Balance webhook contract for releasing previously blocked balance-account funds, with released amount and optional blocked-balance before/after snapshots; availability is distinct from booked credit, payout or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balance-webhooks/latest/post/balancePlatform.balanceAccount.balance.block.released/2026-09-15.md",
+  "raw_sha256": "9807819594dc37b1f7d6a1f4cabf13517a4a19facb0ae64d4460b10611503d5d",
+  "status": "candidate_ready"
+}

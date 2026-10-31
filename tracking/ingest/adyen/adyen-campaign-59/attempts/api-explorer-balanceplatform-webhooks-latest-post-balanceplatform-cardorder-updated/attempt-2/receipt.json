@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-updated",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Card order updated webhook | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.updated/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, issuing, card-orders]\n---\n\n## Overview\n\nThis captured Adyen Balance Platform webhook POST reference describes the incoming `balancePlatform.cardorder.updated` event sent when a card order status changes. It can report card or PIN delivery information for a card order item. The `latest` route does not resolve a numbered webhook API version in this capture. [[adyen]] [[adyen-issuing]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The request-body table requires outer `data`, `environment`, and `type`; `timestamp` is optional. All listed `data` fields are marked optional, including `balancePlatform`, `card`, `cardOrderItemId`, `creationDate`, resource `id`, `paymentInstrumentId`, `pin`, and `shippingMethod`. The table thus does not guarantee that a particular card-order or payment-instrument identifier appears in every event. [Raw: Request body, lines 11\u201331]\n- `cardOrderItemId` identifies the order item; `paymentInstrumentId` identifies the related payment instrument. Optional `card` and `pin` objects have status, error-message and tracking-number rows. The table lists card-delivery values `created`, `rejected`, `processing`, `produced`, `shipped`, `delivered`, `notApplicable`, and `unknown` on the `card` object row, but both nested `card.status` and `card.trackingNumber` are described as PIN delivery fields. The shipped-card example places `trackingNumber` under `card`. Preserve this schema-versus-example conflict rather than resolving the two field descriptions by inference or treating the list as a verified enum for both status fields. [Raw: lines 16\u201328, 54\u201369]\n- The three test examples show a produced card and PIN together, a shipped card with its tracking number, and a separately shipped PIN with its own tracking number. A produced or shipped example is not proof of delivery to a cardholder, card activation, or payment readiness. `environment` may be `test` or `live`; any `2xx` response accepts the webhook. [Raw: lines 29\u201395]\n\n## Detail locators\n\n- Event purpose: opening statement, lines 5\u20137.\n- Payload identities, optional fields, state-list wording and card/PIN schema conflict: Request body, lines 11\u201331.\n- Produced-card/PIN and separately shipped card/PIN examples: Request examples, lines 33\u201386.\n- Receiver `2xx` acknowledgement: Responses, lines 87\u201395.\n\n## Related\n\n- [[adyen-issuing]] \u2014 physical-card and payment-instrument context.\n- [[adyen-webhooks]] \u2014 incoming event and acknowledgement context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.updated/2026-09-15|Adyen Balance Platform card order updated webhook \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when there is an update in card order status.",
+      "location": "Opening statement, line 7"
+    },
+    {
+      "text": "|   - card | object | No | The status of the card delivery.  Possible values: **created**, **rejected**, **processing**, **produced**, **shipped**, **delivered**, **notApplicable**, **unknown**. |",
+      "location": "Request body table, line 16"
+    },
+    {
+      "text": "|     - status | string | No | The status of the PIN delivery. |",
+      "location": "Request body table, line 18; same text recurs at line 26 under pin"
+    },
+    {
+      "text": "|   - cardOrderItemId | string | No | The unique identifier of the card order item. |",
+      "location": "Request body table, line 20"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "Response body table, line 95"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-cardorder-updated-issuing",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-updated]] \u2014 2026-09-15-captured card-order status webhook with optional card/PIN delivery fields and separate produced/shipped examples; both `card.status` and `card.trackingNumber` are labeled PIN delivery despite the card parent/example, and examples do not prove cardholder delivery.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Both nested card.status and card.trackingNumber are described as PIN delivery despite the card parent row and shipped-card example; do not resolve the schema-versus-example conflict by inference."
+        ]
+      },
+      {
+        "update_id": "c59-cardorder-updated-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-updated]] \u2014 2026-09-15-captured Balance Platform card-order update event contract; optional order/instrument identities and card/PIN delivery fields, with `2xx` acknowledgement separate from physical delivery.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.updated/2026-09-15.md",
+  "raw_sha256": "091587aa2f1366ce114e917ded068698eb3fa34b4ff11e33c8e90fd15a77a935",
+  "status": "candidate_ready"
+}

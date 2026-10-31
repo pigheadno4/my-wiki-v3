@@ -1,0 +1,64 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-mandate-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen balance-platform mandate updated webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.mandate.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.mandate.updated/2026-09-15.md\"\ntags: [adyen, webhooks, balance-platform, business-accounts, direct-debit]\n---\n\n## Overview\n\nCaptured incoming `balancePlatform.mandate.updated` webhook reference. Adyen says it sends the event when a direct debit mandate is updated, and links the mandate term to its UK direct-debit guide. The `POST` heading describes a webhook sent to the receiver, not a merchant operation. See [[adyen]], [[adyen-webhooks]], and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The request-body table requires top-level `data`, `environment` (`test` or `live`), and `type`; `timestamp` is optional. `data.mandate` and all its listed children are optional in this schema. The children identify a linked balance account and payment instrument, counterparty, mandate ID, creation/update times, status, and type. The listed mandate statuses are `pending`, `approved`, and `cancelled`; the listed mandate type is `bacs`. An update event alone does not identify which status applies when the optional status is absent.\n- The response section says any `2xx` HTTP status accepts the webhook, with optional `notificationResponse` in the `200 Success` response-body table. Receiver acceptance and a mandate update are distinct from a direct-debit request, authorization, funds booking or bank receipt. This reference does not define the cause of an update or the effect of each status on a particular debit.\n- The captured `latest` URL does not establish the currently served version; this endpoint page itself does not state one. It provides no delivery-order, retry, deduplication, authentication or signature rule.\n\n## Detail locators\n\n- Event identity and direct-debit-mandate trigger: pinned raw lines 5\u20137.\n- `## Parameters` \u2192 `### Request body`: top-level requiredness, linked identities, optional mandate status/type and environment, lines 9\u201327.\n- `## Responses` \u2192 `### 200 Success`: `2xx` acceptance and optional response field, lines 29\u201337.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.mandate.updated/2026-09-15|Captured mandate updated webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a [direct debit mandate](https://docs.adyen.com/business-accounts/accept-direct-debits-uk) is updated.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "| data | object | Yes | Contains event details. |",
+      "location": "pinned raw line 14, Parameters > Request body"
+    },
+    {
+      "text": "|   - mandate | object | No | Contains information about the mandate that triggered the event. |",
+      "location": "pinned raw line 16, Parameters > Request body"
+    },
+    {
+      "text": "|     - status | string | No | The status of the mandate.  Possible values: **pending**, **approved**, **cancelled**. |",
+      "location": "pinned raw line 22, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 37, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-mandate-updated-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-mandate-updated]] \u2014 2026-09-15-captured incoming direct-debit mandate update event contract with optional mandate status and `2xx` acknowledgement; no debit or funds outcome follows from event receipt.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-mandate-updated-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-mandate-updated]] \u2014 Balance-platform webhook reference for UK-linked direct-debit mandate updates, with optional mandate IDs/status (`pending`, `approved`, `cancelled`) and `bacs` type (captured 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.mandate.updated/2026-09-15.md",
+  "raw_sha256": "c03a6f5e68c85e1d57d61c64dec795beb8b62a60d763b596c987dcc16a2798ea",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceplatformpayoutschedule-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform webhook: platform payout schedule created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.created\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.created/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, managed-payouts]\n---\n\n## Overview\n\nThis captured Balance Platform Webhooks API Explorer POST reference describes Adyen's incoming `balancePlatform.balancePlatformPayoutSchedule.created` event when a managed payout schedule is successfully created on a balance platform. This is a platform-level schedule creation event, distinct from a schedule being created on or applied to a specific balance account. The `latest` path is a captured label; this page identifies no numbered webhook API version. See [[adyen-platforms]], [[adyen-webhooks]], and [[adyen]].\n\n## Key takeaways\n\n- The request body requires `data`, `environment`, and `type`. `environment` can be `test` or `live`; optional `timestamp` says when the event was queued. The listed `data` properties, including `balancePlatform` and `balancePlatformPayoutScheduleId`, are all marked optional. The schedule ID description mentions a schedule applied to a balance account, but this event's title and trigger establish creation on the balance platform; the page does not identify a specific balance account or prove application to one.\n- Optional schedule attributes include country code, currency, default description, frequency and references, payout amount limits, and retained amount. `defaultFrequencyValue` is allowed only with monthly or weekly `defaultFrequency`; the table gives monthly and weekly value ranges and calendar adjustments. A default reference carries to a balance-account schedule unless a new reference is specified. If available funds are below `retainedAmount`, a payout schedule execution is not initiated. These field descriptions do not establish a payout execution for this event.\n- The response section says any HTTP `2xx` accepts the webhook; `notificationResponse` is optional. Platform schedule creation and webhook acceptance do not establish account-level application, payout initiation, booking, settlement, or bank receipt. This page has no example payload and states no delivery ordering, retry/deduplication, signature verification, or financial finality guarantee.\n\n## Detail locators\n\n- Event title and platform-level creation trigger: pinned raw lines 5\u20137.\n- Required envelope and optional platform/schedule identifiers: pinned raw lines 11\u201318 and 27\u201329.\n- Optional defaults, amount limits and execution condition: pinned raw lines 19\u201326.\n- Webhook acceptance response: pinned raw lines 31\u201339.\n\n## Related\n\n- [[adyen-platforms]] \u2014 managed payout schedule context.\n- [[adyen-webhooks]] \u2014 webhook family and acceptance context.\n- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutschedule-created]] \u2014 distinct balance-account schedule creation event.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.created/2026-09-15|Platform managed payout schedule created webhook reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a managed payout schedule is successfully created on your balance platform.",
+      "location": "pinned raw line 7, below event title"
+    },
+    {
+      "text": "| data | object | Yes | Contains event details. |",
+      "location": "pinned raw line 14, Parameters > Request body"
+    },
+    {
+      "text": "|   - balancePlatformPayoutScheduleId | string | No | The unique identifier of the balance platform payout schedule that is applied to the balance account. |",
+      "location": "pinned raw line 16, Parameters > Request body"
+    },
+    {
+      "text": "|   - retainedAmount | integer | No | The amount of funds that must remain available in a balance account after an execution of the payout schedule. If the funds in the balance account are less than the retained amount, the execution is not initiated. |",
+      "location": "pinned raw line 26, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 39, Responses > 200 Success > Response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-platform-payout-schedule-created-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceplatformpayoutschedule-created]] \u2014 2026-09-15-captured Balance Platform managed payout schedule creation webhook POST reference for platform-level defaults and limits; creation does not prove account application or payout execution.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.created/2026-09-15.md",
+  "raw_sha256": "444b580c09e5fc0925d971e7c45326aeef6741dd3ed7bc0abe15703fecb3ef04",
+  "status": "candidate_ready"
+}

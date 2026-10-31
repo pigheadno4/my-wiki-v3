@@ -1,0 +1,11 @@
+# C59 worker fixed-query answers: accountHolder.created
+
+Pinned raw: `raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.accountHolder.created/2026-09-15.md` (SHA-256 `506495bc7f6b22ff46fe7cdc9a72bebba157fd08126c6063196a5d576b3cbd49`). Canonical route: [Adyen API Explorer, balancePlatform.accountHolder.created](https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.accountHolder.created). Proposed source route: [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-accountholder-created]].
+
+## Q1
+
+Adyen says it sends this incoming webhook after successful account-holder creation (raw lines 5–7); the examples identify `type: balancePlatform.accountHolder.created` (lines 95–98, 248–250). The envelope table requires `data`, `environment` (`test` or `live`), and `type`; it marks `timestamp` and `data.accountHolder` optional. Within `accountHolder`, `id` and `legalEntityId` are marked required, while the platform reference, balance-platform ID, capabilities, status and other fields are optional (lines 11–32). The account-holder balance-platform field's conditional requirement applies to the *creation request* when credentials span platforms (line 16), not to the webhook table. `id` is the account-holder resource ID and `legalEntityId` is the legal-entity ID subject to verification (lines 20–21). The status description names active as initial, suspended as payout-blocking, and closed as irreversible (line 26).
+
+## Q2
+
+The event establishes successful account-holder creation as described by this captured reference, but does not establish verified capability permission. In the examples, `status` is active while capabilities are `allowed: false` and `verificationStatus: pending` (lines 59–92, 225–250); the live example also contains legal-entity and bank-account verification problems (lines 101–241). Those values illustrate possible payloads, not a universal state. The reference gives a `2xx` acknowledgment instruction (lines 253–261), but no event-specific ordering, retry, deduplication, signature, payout, settlement, or bank-receipt guarantee. The URL says `latest`; this 2026-09-15 snapshot does not prove a current pinned API version (raw lines 1–2).

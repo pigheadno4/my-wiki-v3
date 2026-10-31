@@ -1,0 +1,64 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-recurringtopup-deleted",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Balance Platform recurring top-up deleted webhook | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.recurringTopUp.deleted\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.recurringTopUp.deleted/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, recurring-top-ups]\n---\n\n## Overview\n\nThis captured Adyen Balance Platform webhook POST reference describes the incoming `balancePlatform.balanceAccount.recurringTopUp.deleted` event sent when a recurring top-up is successfully deleted from a balance account. It is a configuration deletion event, not a merchant deletion request or evidence that a top-up transfer was funded or booked. The path says `latest`; the captured page does not resolve a numbered webhook API version. [[adyen]] [[adyen-webhooks]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The request body marks `data`, `environment`, and `type` required. Inside `data`, `accountId` and `webhookTopUpConfiguration` are required; inside that configuration, `counterparty`, `description`, `id`, `status`, `topUpAmount`, and `trigger` are required. `balancePlatform`, `creationDate`, top-level `data.id`, `timestamp`, configuration `mandate`, and `referenceForBeneficiary` are optional in the table. These are table-level field requirements; the page does not specify required child fields within the required object fields. [Raw: Request body, lines 11\u201330]\n- `accountId` identifies the balance account; the nested configuration `id` identifies the recurring top-up configuration. The `status` field describes `active` and `inactive` configurations, `topUpAmount` may be fixed or target, and `trigger` may be schedule or minimum balance threshold. The example's `status: active` appears in a deletion event; read it as example payload content, not proof the deleted configuration remains active. [Raw: Request body, lines 15\u201327; request example, lines 34\u201371]\n- `environment` can be `test` or `live`. The example includes a fixed EUR amount, a weekly schedule and EUR threshold, a transfer-instrument counterparty, a beneficiary reference, and a mandate; those sample values are not universal requirements or evidence of a particular debit. The response section says any `2xx` accepts the webhook; this acknowledgement does not prove transfer execution or financial finality. [Raw: lines 28\u201330, 34\u201381]\n\n## Detail locators\n\n- Event purpose and deletion trigger: opening statement, lines 5\u20137.\n- Full payload field table, requiredness and status/amount/trigger descriptions: Request body, lines 11\u201330.\n- Illustrative envelope and configuration, including `active` status: Request examples, lines 32\u201372.\n- Receiver response and `2xx` acknowledgement: Responses, lines 73\u201392.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 incoming event and acknowledgement context.\n- [[adyen-platforms]] \u2014 balance-account top-up context; the existing scheduled-top-up sweep guide describes a separate configuration surface and should not be equated to this recurring-top-up event.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.recurringTopUp.deleted/2026-09-15|Adyen Balance Platform recurring top-up deleted webhook \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a [recurring top-up](https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/balanceAccounts/_balanceAccountId_/recurringTopUps/_recurringTopUpId_) is successfully deleted from a balance account.",
+      "location": "Opening statement, line 7"
+    },
+    {
+      "text": "|   - accountId | string | Yes | The unique identifier of the balance account for which the recurring top-up is configured. |",
+      "location": "Request body table, line 15"
+    },
+    {
+      "text": "|     - id | string | Yes | The unique identifier of the recurring top-up configuration. |",
+      "location": "Request body table, line 22"
+    },
+    {
+      "text": "|     - status | string | Yes | The status of the top-up configuration.  Possible values:  **active**: the top-up is enabled and funds are pulled in.  **inactive**: the top-up is disabled and cannot be triggered. |",
+      "location": "Request body table, line 25"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "Response body table, line 81"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-recurring-topup-deleted-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-recurringtopup-deleted]] \u2014 2026-09-15-captured Balance Platform recurring-top-up configuration deletion event contract; example retains `active` status, and acknowledgement is separate from any transfer or booked-credit outcome.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "The deletion example retains status active; do not infer that deletion leaves the configuration enabled."
+        ]
+      },
+      {
+        "update_id": "c59-recurring-topup-deleted-platforms",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-recurringtopup-deleted]] \u2014 2026-09-15-captured recurring-top-up configuration deletion webhook, separate from a funded top-up transfer and from the scheduled-top-up sweep guide's configuration surface.",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.recurringTopUp.deleted/2026-09-15.md",
+  "raw_sha256": "a185c834f33f8e7acd852a236637000e3f510c765872c30b4278d631e3efb75d",
+  "status": "candidate_ready"
+}

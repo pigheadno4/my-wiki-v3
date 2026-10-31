@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen network token created webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.created\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.created/2026-09-15.md\"\ntags: [adyen, webhooks, issuing, network-tokens]\n---\n\n## Overview\n\nCaptured API Explorer reference for Adyen's incoming `balancePlatform.networkToken.created` webhook. Despite the \u201ccreated\u201d event label, its trigger text says Adyen sends it when a network-token provisioning request is initiated. The payload can express `approved`, `declined`, or `requiresAuthentication` decisions, so event receipt alone is not proof of an active, usable token. The `latest` URL is a 2026-09-15 snapshot, not a fixed version.\n\n## Key takeaways\n\n- The body table requires top-level `data`, `environment`, and `type`; `timestamp` is optional. All listed `data` fields are marked optional, including network-token `id`, associated `paymentInstrumentId`, `decision`, `status`, token type (`wallet` or `cof`), requestor, authentication and validation detail. `environment` can be `test` or `live`.\n- `authenticationApplied` says whether authentication was triggered; optional authentication detail has `sms_OTP` or `email_OTP` method and a result without enumerated values. `validationFacts.reasons` is only sent for an invalid `walletValidation` fact. The `wallet` object is returned only when the network-token type is `wallet`.\n- The optional `transactionRulesResult` contains risk advice, a hard-block-rules result, score and triggered rules. The optional scheme risk score describes Visa `00`\u2013`99`, where `00` means no score supplied. Wallet account/device scores are separate 1\u20135 values; the source describes their directions but does not make them authentication or provisioning outcomes.\n- The reference instructs any HTTP `2xx` to accept the webhook. It gives no example payload or event-specific ordering, retry, deduplication, signature, completed authentication, token activation, payment authorization or settlement guarantee.\n\n## Detail locators\n\n- Event label and request-initiation trigger: raw lines 5\u20137.\n- Envelope, token/payment-instrument IDs, decision and authentication: raw lines 11\u201325.\n- Requestor, risk/validation and conditional wallet fields: raw lines 26\u201348.\n- Acknowledgment: raw lines 50\u201358.\n\n## Related\n\n- [[adyen]]; [[adyen-webhooks]]; [[adyen-issuing]].\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.created/2026-09-15|2026-09-15 captured API Explorer reference]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you initiate a request for provisioning a network token.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Possible values: **approved**, **declined**, **requiresAuthentication**.",
+      "location": "raw line 20, decision description"
+    },
+    {
+      "text": "This field is only sent for `validationFacts.type` **walletValidation**, when `validationFacts.result` is **invalid**.",
+      "location": "raw line 36, validationFacts.reasons description"
+    },
+    {
+      "text": "Returned only when `type` is **wallet**.",
+      "location": "raw line 39, wallet description"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 58"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-networktoken-created-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-created]] \u2014 2026-09-15-captured network-token provisioning-request webhook; the created label coexists with approved/declined/requiresAuthentication decisions, so receipt does not prove active token or payment outcome.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Event name says created while the trigger text says provisioning request initiated; preserve this lifecycle distinction."
+        ]
+      },
+      {
+        "update_id": "c59-networktoken-created-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-created]] \u2014 2026-09-15-captured Issuing network-token provisioning event contract for payment-instrument, decision, authentication, validation and wallet-scoped fields; creation label alone does not prove usable token.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.created/2026-09-15.md",
+  "raw_sha256": "45c739d8fbc2f4c1914898e99a43dffe4acb89c1b29279105b2460b8a38a031b",
+  "status": "candidate_ready"
+}

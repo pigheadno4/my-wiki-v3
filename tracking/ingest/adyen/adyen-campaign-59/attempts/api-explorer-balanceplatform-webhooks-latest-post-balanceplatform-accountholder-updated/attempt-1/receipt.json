@@ -1,0 +1,63 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-accountholder-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform webhook: accountHolder.updated\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.accountHolder.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.accountHolder.updated/2026-09-15.md\"\ntags: [adyen, webhooks, balance-platform, account-holders]\n---\n\n## Overview\n\nThis 2026-09-15 capture documents the incoming Balance Platform `balancePlatform.accountHolder.updated` webhook that Adyen sends after a successful account-holder update. It is an event contract, not a merchant POST operation. The `latest` route is a documentation label; the captured page does not state an independently verified current API version. See [[adyen]], [[adyen-platforms]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request-body table requires top-level `data`, `environment` (`test` or `live`) and `type`; `timestamp` is optional and denotes when the event was queued. `data.balancePlatform` and `data.accountHolder` are optional in that table. Within the optional `accountHolder` object, `id` and `legalEntityId` are marked required. Keep the holder ID distinct from the associated legal-entity ID and the balance-platform ID.\n- The optional holder `status` describes `active`, `suspended` (temporarily disabled with payouts blocked) and `closed` (permanently disabled, final). The optional `capabilities` object carries per-capability settings; the examples show `requested`, `enabled`, `allowed`, verification errors and `verificationStatus` values that differ despite holder `status: active`. An update event or active status alone does not establish capability approval or payout eligibility.\n- The table describes omitted existing metadata key-value pairs as deleted during a metadata update. That is a qualification of the update behavior, not evidence that every webhook event changes metadata.\n- The examples are illustrative test and live payloads, including verification problems and pending/invalid capability states. The page does not establish financial movement, event ordering, duplicate handling, retries or signature verification. Its response section says a `2xx` HTTP response accepts the webhook, not that the underlying holder capability is verified.\n\n## Detail locators\n\n- Trigger and event purpose: pinned raw introduction, lines 5\u20137.\n- Request-body requirements, identities, status and metadata descriptions: `## Parameters > ### Request body`, lines 11\u201332.\n- Test and live event examples, including capability and verification problems: `## Request examples`, lines 34\u2013235.\n- Webhook acknowledgement: `## Responses > ### 200 Success`, lines 236\u2013244.\n\n## Related\n\n- [[source-adyen-api-explorer-balanceplatform-latest-post-accountholders]] \u2014 separate account-holder creation API reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.accountHolder.updated/2026-09-15|Account holder updated webhook snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you successfully [update an account holder](https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/accountHolders/_id_).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|     - id | string | Yes | The unique identifier of the account holder. |",
+      "location": "raw line 20"
+    },
+    {
+      "text": "|     - legalEntityId | string | Yes | The unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id) associated with the account holder. Adyen performs a verification process against the legal entity of the account holder. |",
+      "location": "raw line 21"
+    },
+    {
+      "text": "|     - status | string | No | The status of the account holder.  Possible values:  **active**: The account holder is active and allowed to use its capabilities. This is the initial status for account holders and balance accounts. You can change this status to **suspended** or **closed**.  **suspended**: The account holder is temporarily disabled and payouts are blocked. You can change this status to **active** or **closed**.  **closed**: The account holder and all of its capabilities are permanently disabled. This is a final status and cannot be changed. |",
+      "location": "raw line 26"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 244"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-account-holder-updated-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-accountholder-updated]] \u2014 2026-09-15-captured incoming Balance Platform account-holder update webhook reference for holder/legal-entity identities, optional capability and status detail, and separate verification state; an event is not capability approval or payout proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-account-holder-updated-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-accountholder-updated]] \u2014 2026-09-15-captured `balancePlatform.accountHolder.updated` event contract for account-holder updates, with optional holder/capability detail and `2xx` acknowledgement distinct from verification approval.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.accountHolder.updated/2026-09-15.md",
+  "raw_sha256": "6d7d5126d872f2c4049a42a6dab816284c6e179543f3149cd0f12eff7667795b",
+  "status": "candidate_ready"
+}

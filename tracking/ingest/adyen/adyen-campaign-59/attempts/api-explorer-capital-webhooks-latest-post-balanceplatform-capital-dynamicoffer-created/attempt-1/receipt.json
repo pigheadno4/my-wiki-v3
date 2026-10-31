@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-capital-webhooks-latest-post-balanceplatform-capital-dynamicoffer-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Capital dynamic offer created webhook | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.capital.dynamicOffer.created\"\nraw_files:\n  - \"adyen/api-explorer/capital-webhooks/latest/post/balancePlatform.capital.dynamicOffer.created/2026-09-15.md\"\ntags: [adyen, capital, webhooks, dynamic-offers, business-financing]\n---\n\n## Overview\n\nThis captured Adyen Capital webhook POST reference says Adyen sends `balancePlatform.capital.dynamicOffer.created` to provide details of a dynamic offer created for an account holder. It is an offer event, not a grant request, accepted financing agreement, disbursement or booked funding. The `latest` route does not resolve a numbered webhook API version in this capture. [[adyen]] [[adyen-capital]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The request-body table places required fields directly at its top level: `accountHolderId`, `contractType` (`loan` or `cashAdvance`), `expiresAt`, `financingType` (listed as `businessFinancing`), dynamic-offer `id`, `maximumAmount`, `minimumAmount`, `repayment`, and `startsAt`. Each amount object requires `currency` and integer `value` in minor units. The page does not show an enclosing `data` object, `type`, `environment`, or example payload; do not import an envelope from another Capital webhook page. [Raw: Request body, lines 11\u201329]\n- `accountHolderId` identifies the intended holder and `id` the dynamic offer. `startsAt` and `expiresAt` bound the offer validity period. `repayment.term.estimatedDays` is required; `maximumDays` is optional and applies only when `contractType` is `loan`. The `repayment` description calls it a configuration \u201cof the grant,\u201d but this event's stated subject remains a dynamic offer; that wording alone does not establish a grant. [Raw: lines 14\u201329]\n- The response section says any `2xx` HTTP status accepts the webhook. Receipt or acceptance of this event does not establish current account-holder eligibility, completed terms acceptance, creation of a static/formal offer, grant approval, money movement or repayment. The related [[source-adyen-docs-capital-get-grant-offers-dynamic-offers|dynamic-offer guide]] routes selected amounts to later calculation and formal-offer steps. [Raw: lines 5\u20137, 31\u201339]\n\n## Detail locators\n\n- Dynamic-offer event purpose: opening statement, lines 5\u20137.\n- Required account-holder/offer IDs, amount range and validity dates: Request body, lines 11\u201324 and 29.\n- Repayment term and loan-only maximum duration: Request body, lines 25\u201328.\n- Receiver `2xx` acknowledgement: Responses, lines 31\u201339.\n\n## Related\n\n- [[adyen-capital]] \u2014 financing offer and grant lifecycle context.\n- [[adyen-webhooks]] \u2014 incoming event and acknowledgement context.\n- [[source-adyen-docs-capital-get-grant-offers-dynamic-offers]] \u2014 dynamic range, later calculation and formal-offer route.\n- [[source-adyen-docs-capital-webhook-types-capital-webhooks]] \u2014 Capital offer and grant event-family distinctions.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital-webhooks/latest/post/balancePlatform.capital.dynamicOffer.created/2026-09-15|Adyen Capital dynamic offer created webhook \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook to provide details about a dynamic offer that has been created for an account holder.",
+      "location": "Opening statement, line 7"
+    },
+    {
+      "text": "| accountHolderId | string | Yes | The unique identifier of the account holder that the dynamic offer is for. |",
+      "location": "Request body table, line 14"
+    },
+    {
+      "text": "| maximumAmount | object | Yes | The maximum financing amount available to the account holder under this offer. |",
+      "location": "Request body table, line 19"
+    },
+    {
+      "text": "|     - maximumDays | integer | No | The maximum duration of the repayment term, in days. Only applies when `contractType` is **loan**. |",
+      "location": "Request body table, line 28"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "Response body table, line 39"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-capital-dynamic-offer-created",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-capital-dynamicoffer-created]] \u2014 2026-09-15-captured account-holder dynamic-offer creation event with range, validity and repayment-term fields; offer creation is separate from formal-offer selection, grant acceptance and funding.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The request table calls repayment a grant configuration, but the event subject is a dynamic offer; do not infer that a grant exists."
+        ]
+      },
+      {
+        "update_id": "c59-capital-dynamic-offer-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-capital-dynamicoffer-created]] \u2014 2026-09-15-captured Capital dynamic-offer webhook contract; the page lists top-level offer fields without a shown envelope, and `2xx` receipt is not grant or funding proof.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital-webhooks/latest/post/balancePlatform.capital.dynamicOffer.created/2026-09-15.md",
+  "raw_sha256": "c6991b0a6cc29ef1dc13ce99eb0786456482c48eb033d2affa70000c107ab8e0",
+  "status": "candidate_ready"
+}

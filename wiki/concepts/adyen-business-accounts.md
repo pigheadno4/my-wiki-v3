@@ -15,6 +15,15 @@ The captured overview conditions eligibility on user entity type, supported oper
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated]] — 2026-09-15-captured payment-instrument-updated webhook reference also covering `bankAccount` instruments; optional branch details and a resource update do not prove account funding or transfer completion.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-mandate-updated]] — Balance-platform webhook reference for UK-linked direct-debit mandate updates, with optional mandate IDs/status (`pending`, `approved`, `cancelled`) and `bacs` type (captured 2026-09-15).
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-mandate-created]] — 2026-09-15-captured UK direct-debit mandate-created webhook reference; optional account/instrument IDs, bacs type and status field, separate from mandate approval or funds collection.
+
+
 - [[source-adyen-api-explorer-transfers-latest-get-transactions]] — 2026-09-15-captured Transfers API v4 test-server transaction-list reference with required date bounds and account/platform scope, conditional cursor links, and separate transaction/transfer IDs; booked means balance-account booking, not beneficiary receipt. The endpoint also spans non-Business-Accounts platform contexts.
 
 

@@ -1,0 +1,63 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleexecution-failed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform webhook: payout schedule execution failed\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.failed\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.failed/2026-09-15.md\"\ntags: [adyen, webhooks, balance-platform, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 capture documents the incoming `balancePlatform.balanceAccountPayoutScheduleExecution.failed` webhook, which Adyen sends when a scheduled payout execution fails. It describes an event, not a merchant POST operation. The `latest` documentation route does not establish a current API version. See [[adyen]], [[adyen-platforms]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request-body table requires top-level `data`, `environment` (`test` or `live`) and `type`. `timestamp`, meaning the event queue time, is optional. Every listed field inside `data` is optional: the source balance-account ID, managed payout-schedule ID, balance-platform ID, execution `result`, `resultDetails` and `triggeredAt`. The page provides no example payload or permitted `result` values.\n- Optional `resultDetails` may include a failure `reason`, numeric `reasonCode` and `transferId` for a transfer created for this execution. A failed-execution event does not establish that a transfer was created; `transferId` is optional. The page does not define reason-code meanings or any later transfer outcome.\n- The `2xx` response accepts the webhook. The page does not establish debit, bank receipt, retry, delivery order, duplicate handling or signature verification. A failed payout-schedule execution is distinct from a completed transfer or payout.\n\n## Detail locators\n\n- Event trigger and identity: pinned raw title/introduction, lines 5\u20137.\n- Required envelope and optional execution identifiers, result/details and trigger time: `## Parameters > ### Request body`, lines 11\u201326.\n- Webhook acknowledgement: `## Responses > ### 200 Success`, lines 28\u201336.\n\n## Related\n\n- [[source-adyen-docs-platforms-managed-payouts-view-payout-executions]] \u2014 separate managed payout execution guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.failed/2026-09-15|Failed payout-schedule execution webhook snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a scheduled payout execution fails.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - balanceAccountId | string | No | The unique identifier of the balance account from which the payout is initiated. |",
+      "location": "raw line 15"
+    },
+    {
+      "text": "|   - balanceAccountPayoutScheduleId | string | No | The unique identifier of the managed payout schedule. |",
+      "location": "raw line 16"
+    },
+    {
+      "text": "|     - transferId | string | No | The unique identifier of the transfer created for this execution. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 36"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-payout-schedule-failed-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleexecution-failed]] \u2014 2026-09-15-captured incoming Balance Platform failed managed-payout-schedule execution event reference, with optional account/schedule/transfer IDs and reason detail; failure does not prove a created transfer or bank movement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-payout-schedule-failed-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleexecution-failed]] \u2014 2026-09-15-captured `balancePlatform.balanceAccountPayoutScheduleExecution.failed` event contract for failed scheduled payout execution, optional result details and `2xx` acknowledgement.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.failed/2026-09-15.md",
+  "raw_sha256": "bb9472de11b46fb01dfa5131c307e451ae1cb53f96b31d0c1465213bf32687e7",
+  "status": "candidate_ready"
+}

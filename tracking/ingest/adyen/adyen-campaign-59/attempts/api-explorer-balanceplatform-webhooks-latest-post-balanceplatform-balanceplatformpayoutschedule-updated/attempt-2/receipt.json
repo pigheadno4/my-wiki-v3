@@ -1,0 +1,64 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceplatformpayoutschedule-updated",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen balance-platform managed payout schedule updated webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.updated/2026-09-15.md\"\ntags: [adyen, webhooks, balance-platform, managed-payouts]\n---\n\n## Overview\n\nCaptured API Explorer reference for the incoming `balancePlatform.balancePlatformPayoutSchedule.updated` webhook. Adyen sends it when a managed payout schedule is successfully updated **on the balance platform**. This is a schedule-definition update, not evidence that the schedule was applied to a particular balance account or that a payout ran. The `latest` URL was captured on 2026-09-15 and does not pin an API version.\n\n## Key takeaways\n\n- The webhook body requires top-level `data`, `environment`, and `type`; `timestamp` is optional. Every listed `data` property is marked optional, including the balance-platform and payout-schedule IDs, country, currency, default description/frequency/references, minimum and maximum payout amounts, and retained amount. `environment` can be `test` or `live`.\n- The schedule ID field describes a balance-platform payout schedule \u201cthat is applied to the balance account,\u201d although this event's heading and trigger describe an update on the balance platform. The field description alone does not establish application to any specific account; no balance-account ID is listed.\n- The `defaultFrequencyValue` description allows it only for monthly or weekly default frequency and describes date and weekday ranges, weekend shift, and nonexistent month-end date handling. The monthly 1\u201331 range sentence uses `frequency`, while the weekly 1\u20135 range sentence uses `defaultFrequency`; preserve those distinct labels rather than resolving them by inference.\n- `retainedAmount` is the amount that must remain available after a schedule execution; the description says execution is not initiated if account funds are below that amount. The reference does not specify amount units or a particular currency conversion for the integer amount fields.\n- The response section says any HTTP `2xx` accepts the webhook. It supplies no example payload or event-specific ordering, retry, deduplication, signature, payout execution or bank-receipt guarantee.\n\n## Detail locators\n\n- Event identity and platform-level update trigger: raw lines 5\u20137.\n- Envelope and schedule fields: raw lines 11\u201329; frequency/date wording at line 21 and retained amount at line 26.\n- Acknowledgment: raw lines 31\u201339.\n\n## Related\n\n- [[adyen]]; [[adyen-webhooks]]; [[adyen-platforms]].\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.updated/2026-09-15|2026-09-15 captured API Explorer reference]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a managed payout schedule is successfully updated on your balance platform.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - balancePlatformPayoutScheduleId | string | No | The unique identifier of the balance platform payout schedule that is applied to the balance account. |",
+      "location": "raw line 16"
+    },
+    {
+      "text": "Allowed only if `defaultFrequency` is **monthly** or **weekly**.",
+      "location": "raw line 21, defaultFrequencyValue description"
+    },
+    {
+      "text": "If the funds in the balance account are less than the retained amount, the execution is not initiated.",
+      "location": "raw line 26, retainedAmount description"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 39"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-platform-payout-schedule-updated-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceplatformpayoutschedule-updated]] \u2014 2026-09-15-captured platform-level managed payout schedule update event, with optional schedule settings and a schedule-ID field description that does not prove account-level application or payout execution.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "The raw schedule-ID description mentions a balance account, while the event trigger is a balance-platform schedule update. Do not equate the two scopes."
+        ]
+      },
+      {
+        "update_id": "c59-platform-payout-schedule-updated-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceplatformpayoutschedule-updated]] \u2014 2026-09-15-captured webhook for a managed payout schedule updated on the balance platform; optional frequency, amount and retained-funds fields describe settings, not execution or bank receipt.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.updated/2026-09-15.md",
+  "raw_sha256": "24c5f71b50639b58224c46cd059a85326ce276e76b7252f5cdc818a53acf078d",
+  "status": "candidate_ready"
+}

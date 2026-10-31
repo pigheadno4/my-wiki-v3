@@ -1,0 +1,66 @@
+{
+  "job_id": "api-explorer-transaction-webhooks-latest-post-balanceplatform-transaction-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen transaction created webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transaction-webhooks/latest/post/balancePlatform.transaction.created\"\nraw_files:\n  - \"adyen/api-explorer/transaction-webhooks/latest/post/balancePlatform.transaction.created/2026-09-15.md\"\ntags: [adyen, transaction-webhooks, balance-accounts, transfers]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer `latest` POST reference describes Adyen's incoming `balancePlatform.transaction.created` webhook with transaction information after a transfer is booked in a balance account. It records a balance-account transaction and is distinct from a Transfer webhook's transfer-state update; booking is not proof of beneficiary-bank receipt. [[adyen]] [[adyen-webhooks]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The body requires `data` and `environment`, while top-level `type` and `timestamp` are marked optional in this table despite examples containing both. Within `data`, required fields include `accountHolder`, `amount` (currency and minor-unit value), `balanceAccount`, `balancePlatform`, `bookingDate`, transaction `id`, `status`, and `valueDate`. Nested holder and account IDs are individually marked optional. See raw lines 11\u201345.\n- `data.id` is the transaction identifier. Optional `data.transfer` can carry a distinct transfer `id`; within that optional object, `reference` is marked required and is the request reference or an Adyen-generated one. `bookingDate` is the account booking date and `valueDate` is when the amount becomes available in that balance account. See raw lines 27\u201342.\n- The status enum lists `pending` and `booked`, while the introduction says Adyen sends this event after booking. Keep that documentation tension visible; do not infer a universal status transition from this page. The examples show booked EUR -10000 outgoing bank and business-account entries, and a +10000 internal incoming entry, all in `test`. The internal incoming example's balance-account description still says \"from where the amount is debited\"; the positive amount and heading should not be silently rewritten into a debit claim. See raw lines 7, 37, 47\u2013170.\n- An HTTP 2xx accepts the webhook; `notificationResponse` is optional. The reference gives no delivery, ordering, retry/deduplication, signature or external-bank finality guarantee. See raw lines 171\u2013179.\n\n## Detail locators\n\n- Envelope and transaction schema: raw lines 9\u201345.\n- Outgoing payout, internal incoming and outgoing business-account examples: raw lines 47\u2013170.\n- Acknowledgment response: raw lines 171\u2013179.\n\n## Related\n\n- [[adyen-webhooks]]\n- [[adyen-platforms]]\n- [[adyen-reporting]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transaction-webhooks/latest/post/balancePlatform.transaction.created/2026-09-15|Transaction created webhook reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "After a transfer is booked in a balance account, Adyen sends this webhook with information about the transaction.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - id | string | Yes | The unique identifier of the transaction. |",
+      "location": "raw line 30"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of the transaction.  Possible values:  **pending**: The transaction is still pending.  **booked**: The transaction has been booked to the balance account. |",
+      "location": "raw line 37"
+    },
+    {
+      "text": "|   - transfer | object | No | Contains information about the transfer related to the transaction. |",
+      "location": "raw line 38"
+    },
+    {
+      "text": "|   - valueDate | string | Yes | The date the transfer amount becomes available in the balance account. |",
+      "location": "raw line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "transaction-created-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transaction-webhooks-latest-post-balanceplatform-transaction-created]] \u2014 2026-09-15-captured Transaction webhook contract for balance-account entries after transfer booking, distinct transaction/transfer IDs and pending/booked schema tension; no bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Intro says after booking, while status enum also allows pending."
+        ]
+      },
+      {
+        "update_id": "transaction-created-platforms",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transaction-webhooks-latest-post-balanceplatform-transaction-created]] \u2014 2026-09-15-captured balance-account transaction-created event schema and test examples for outgoing bank and incoming internal legs; booking is separate from external receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transaction-webhooks/latest/post/balancePlatform.transaction.created/2026-09-15.md",
+  "raw_sha256": "7b2d6125968c6565536e75b6af188502bb47895552402f549cddd3e82702c4e5",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,11 @@
+# Adyen C59 coordinator full-read audit
+
+**PASS** — three predetermined final-source audits, 2026-10-31. No final material partial/fail; no expansion required. Initial review corrections were resolved before this final audit.
+
+Coordinator personally read each full raw through numbered, contiguous, model-visible chunks, including schemas, tables, all JSON examples and responses. No omitted/truncated raw ranges. Checked final accepted candidate, query answers, quotations, raw pin, independent review and approved reciprocal routes. Aggregate catalog/count checks follow in close validation.
+
+- `api-explorer-balanceplatform-webhooks-latest-overview`: raw 1–45. v2 Configuration catalog and POST direction retained; event labels are not payload definitions, delivery guarantees or financial outcomes. Final attempt 1 passes; Webhooks reciprocal route approved.
+- `api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-updated`: raw 1–115,116–410,411–710,711–1010,1011–1290. Final attempt 2 passes. Distinct required envelope/core properties and optional fields, resource ID correlation, accounting/tracking, outer versus nested status, sequence reconstruction, bank deduction versus receipt, and direct-debit example/enum inconsistencies retained. Corrected ordinary internal incoming target leg versus separate internal-direct-debit booked pair verified against 299–457 and764–942. No silent normalization of cancelled/refused or FRST. Webhooks, Platforms and internal-transfers routes approved.
+- `api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-created`: raw 1–130,131–371. Final attempt 2 passes. Required amount/category/status/environment, conditional ultimate-party rules, six categories, future execution pending status, optional sequence helper and four TEST examples retained with bank-receipt limits. v4 provenance route now links separately captured overview. Webhooks and Platforms routes approved.
+
+All three exact final canonical texts match accepted receipts; raw hashes and final independent approvals verified. Endpoint acknowledgement remains distinct from financial outcome; latest labels remain snapshots. Fixed queries have grounded raw locators and canonical retrieval routes.

@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-dispute-webhooks-latest-post-balanceplatform-dispute-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Dispute webhook: balance-platform dispute created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/dispute-webhooks/latest/post/balancePlatform.dispute.created\"\nraw_files:\n  - \"adyen/api-explorer/dispute-webhooks/latest/post/balancePlatform.dispute.created/2026-09-15.md\"\ntags: [adyen, dispute-webhooks, balance-platform, disputes]\n---\n\n## Overview\n\nThis captured Dispute Webhooks API Explorer POST reference describes Adyen's incoming `balancePlatform.dispute.created` event when a dispute is created. The page says the webhook only informs the receiving server of requests. It is a balance-platform dispute event contract, distinct from a merchant request to accept or defend a dispute and from the separate Standard dispute notification flow. The `latest` route label gives no numbered webhook version. See [[adyen-webhooks]], [[adyen-risk-management]], and [[adyen]].\n\n## Key takeaways\n\n- The body table requires only `data` and outer `type`. All listed fields under `data` are optional: capture Acquirer Reference Number (`arn`), balance platform, event-trigger `creationDate`, description, disputed amount, dispute resource `id`, current dispute `status` and `statusDetail`, disputed `transactionId`, and dispute `type`. This page gives no status or type enum and no request example.\n- `disputedAmount` is optional, but its `currency` and minor-unit integer `value` are marked required when the amount object is supplied. The table says the disputed amount cannot exceed the transaction amount and that omission means the whole transaction amount is disputed. This describes dispute amount, not a debit, reversal, transfer, or payment outcome.\n- The optional `arn` is described as a scheme-generated reference for each capture; `transactionId` refers to the transaction for which the dispute is requested. The optional dispute `id` is a separate resource ID. The reference does not establish a match to a specific payment or transfer without the relevant identifiers.\n- Any HTTP `2xx` accepts the webhook, with optional `notificationResponse`. A received dispute-creation notification or acknowledgment does not determine dispute resolution, payment finality, fund movement, or bank receipt. The page does not specify delivery ordering, retry, deduplication, or signature rules.\n\n## Detail locators\n\n- Event and information-only statement: pinned raw lines 5\u20137.\n- Required envelope and optional dispute, transaction, capture and amount fields: pinned raw lines 11\u201327.\n- Acknowledgment response: pinned raw lines 29\u201337.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 webhook family and receipt context.\n- [[adyen-risk-management]] \u2014 dispute monitoring and handling context.\n- [[source-adyen-docs-risk-management-disputes-api-dispute-notifications]] \u2014 separate Standard dispute webhook route; do not substitute its payload for this event.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/dispute-webhooks/latest/post/balancePlatform.dispute.created/2026-09-15|Balance-platform dispute created webhook reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a dispute is created. This webhook only informs your server of requests.",
+      "location": "pinned raw line 7, directly below POST event heading"
+    },
+    {
+      "text": "|   - disputedAmount | object | No | The amount for which the transaction is being disputed. The disputed amount cannot be greater than the transaction amount. If an amount was not provided, the entire transaction amount is disputed. |",
+      "location": "pinned raw line 19, Parameters > Request body"
+    },
+    {
+      "text": "|   - id | string | No | The ID of the resource. |",
+      "location": "pinned raw line 22, Parameters > Request body"
+    },
+    {
+      "text": "|   - transactionId | string | No | The unique reference of the transaction for which the dispute is requested. |",
+      "location": "pinned raw line 25, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 37, Responses > 200 Success > Response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-dispute-created-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-dispute-webhooks-latest-post-balanceplatform-dispute-created]] \u2014 2026-09-15-captured balance-platform dispute-created event contract with optional dispute/transaction/capture references and disputed amount; notification and 2xx receipt do not establish dispute resolution or financial outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/dispute-webhooks/latest/post/balancePlatform.dispute.created/2026-09-15.md",
+  "raw_sha256": "d7b9bfa91361b049a463a7e97ce2b60c00550f432f3a411eb4627d801fbec0e0",
+  "status": "candidate_ready"
+}

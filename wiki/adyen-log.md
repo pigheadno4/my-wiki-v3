@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-31] ingest | Adyen API Explorer C59
+
+- All 50 exact-manifest API Explorer sources independently approved and promoted: Configuration 30, Transfer 3, Balance 3, Transaction 2, Report 2, Dispute 3, Capital 5 and Negative Balance Compensation Warning 2. First full-review approvals 39/50; 11 targeted correction reviews. Full pinned raw reads, 3–5 located quotes, independent first reviews and coordinator-only concept-before-source promotion.
+- 7 concepts touched (0 new). September 2026 snapshots retain captured API version/environment, separate resource and credential identities, required versus conditional fields, creation versus verification, and acknowledgement versus final financial outcome. Page-level contradictions remain scoped. The 27 title-only stubs remain excluded; no collection or inferred schemas. Source conflicts and linked-guide qualifications remain explicit; incoming event contracts are distinct from merchant API operations. No delivery/finality guarantees are inferred.
+- Source_count 2763 = 2547 General Docs + 200 API Explorer + 16 GitHub. All 50 hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Validation: `tracking/ingest/adyen/adyen-campaign-59/close-validation.md`.
+- Historical-snapshot ingestion only. No provider/account/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-31] ingest | Adyen API Explorer C58
 
 - All 50 exact-manifest API Explorer sources independently approved and promoted: Account 21, Fund 9, Payout 7, Notification Configuration 7 and deprecated POS Terminal Management 6. First full-review approvals 45/50; 5 targeted correction reviews. Full pinned raw reads, 3–5 located quotes, independent first reviews and coordinator-only concept-before-source promotion.

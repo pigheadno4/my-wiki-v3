@@ -15,6 +15,9 @@ The overview does not define currency, timing, role, failure or booked-status ru
 
 ## Sources
 
+- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-updated]] — 2026-09-15-captured Transfer event schema with TEST ordinary internal incoming target-account authorised/booked examples and a separate internal-direct-debit incoming/outgoing booked pair; do not infer an outgoing ordinary-internal leg.
+
+
 - [[source-adyen-docs-payouts-payout-service-internal-fund-transfers]] — 2020-modified, 2026-09-15-captured Payout Service overview for scheduled or on-demand balance-account-to-balance-account movement and webhook/detail routes; orientation does not prove execution.
 
 

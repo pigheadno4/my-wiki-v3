@@ -1,0 +1,68 @@
+{
+  "job_id": "api-explorer-report-webhooks-latest-post-balanceplatform-report-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Report webhooks v1: report created event\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/report-webhooks/latest/post/balancePlatform.report.created\"\nraw_files:\n  - \"adyen/api-explorer/report-webhooks/latest/post/balancePlatform.report.created/2026-09-15.md\"\ntags: [adyen, webhooks, reports, balance-platform]\n---\n\n## Overview\n\nCaptured incoming `balancePlatform.report.created` webhook reference in the Report webhooks catalog, whose separately captured overview is headed v1. Adyen says it sends this event after a report is generated and ready for download, with a URL in the event body. This is report-availability notification, not a merchant POST operation or evidence that a report has been fetched, reconciled, or used to prove settlement. See [[adyen]], [[adyen-webhooks]], and [[adyen-reporting]].\n\n## Key takeaways\n\n- The request-body table requires top-level `data`, `environment` (`test` or `live`), and `type`; `timestamp` is optional. Within `data`, `downloadUrl`, `fileName`, and `reportType` are required. Account-holder, balance-account, platform and resource identifiers, plus event `creationDate`, are optional. The listed report types include accounting, interactive accounting, balance, fee, payment-instrument, payout and statement reports. The TEST example shows an accounting-report URL and filename; it does not define every report's contents or account scope.\n- Download requires an authenticated GET. The prose says to ask an Adyen contact for **report credentials** and use them for the GET, while the `downloadUrl` field description says to authenticate with **API credentials**. This wording conflict needs route-specific confirmation before choosing credentials; the webhook does not itself grant access to the report.\n- The response section says any `2xx` accepts the webhook; its `200 Success` example includes `[accepted]` as `notificationResponse`. Receiver acceptance does not establish completed report download, accurate reconciliation, booked funds, settlement, or bank receipt. This reference gives no delivery-order, retry, deduplication, or signature rule. The captured `latest` URL and v1 family heading do not prove the current served version.\n\n## Detail locators\n\n- Event trigger, download availability and prose credential instruction: pinned raw lines 5\u20139.\n- `## Parameters` \u2192 `### Request body`: requiredness, optional scope IDs, report types and field-level credential instruction, lines 11\u201333.\n- `## Request examples`: TEST accounting-report event, lines 35\u201352.\n- `## Responses` and `## Response examples`: `2xx` acceptance and sample response, lines 53\u201372.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/report-webhooks/latest/post/balancePlatform.report.created/2026-09-15|Captured report created webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook after a report is generated and ready to be downloaded. The webhook contains the URL at which the report can be downloaded.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "Before you download reports, ask your Adyen contact for your report credentials. You must use your credentials to authenticate your GET request.",
+      "location": "pinned raw line 9"
+    },
+    {
+      "text": "|   - downloadUrl | string | Yes | The URL at which you can download the report. To download, you must authenticate your GET request with your [API credentials](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/overview). |",
+      "location": "pinned raw line 27, Parameters > Request body"
+    },
+    {
+      "text": "|   - reportType | string | Yes | The type of report.",
+      "location": "pinned raw line 30, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 61, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-report-created-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-report-webhooks-latest-post-balanceplatform-report-created]] \u2014 2026-09-15-captured Report webhooks v1 report-availability event contract, with authenticated GET required and conflicting report-versus-API credential wording in the endpoint reference.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Endpoint prose says report credentials, while downloadUrl field says API credentials; source preserves both without choosing one."
+        ]
+      },
+      {
+        "update_id": "c59-report-created-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-report-webhooks-latest-post-balanceplatform-report-created]] \u2014 Report webhooks v1 generated-report notification with URL, filename and type; credential wording conflicts between prose and schema, and availability is not reconciliation proof (captured 2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Endpoint prose says report credentials, while downloadUrl field says API credentials; source preserves both without choosing one."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/report-webhooks/latest/post/balancePlatform.report.created/2026-09-15.md",
+  "raw_sha256": "06cb3906f0f33170463dc528ca9dac300b535be5dc3222e13d3d6c7c131f00c9",
+  "status": "candidate_ready"
+}

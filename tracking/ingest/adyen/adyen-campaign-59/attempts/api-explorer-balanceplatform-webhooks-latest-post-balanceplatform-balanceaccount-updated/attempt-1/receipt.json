@@ -1,0 +1,49 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Balance account updated webhook | Adyen Balance Platform webhooks\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.updated/2026-09-15.md\"\ntags: [adyen, platforms, balance-accounts, webhooks]\n---\n\n## Overview\n\nThis captured `POST balancePlatform.balanceAccount.updated` reference describes an incoming [[adyen-platforms|Adyen for Platforms]] Balance Platform webhook that Adyen sends when a balance account is successfully updated. It is an event contract, not a merchant operation for updating an account. The example identifies `type` as `balancePlatform.balanceAccount.updated`; the captured `latest` URL is not proof of a current version. [[adyen-webhooks]]\n\n## Key takeaways\n\n- The request body marks `data`, `environment` (`test` or `live`), and `type` required. It marks `data.balanceAccount` optional; within that object, `accountHolderId` and balance-account `id` are marked required. `data.balancePlatform` and queued-event `timestamp` are optional. The example is a test event with account-holder and balance-account IDs, default currency, active status and time zone; it does not make those optional fields universal.\n- Optional balance-account fields include balances, default currency, description, metadata, migrated Classic account code, platform-payment configuration, reference, status and time zone. The field descriptions say the default currency cannot change after creation; omitted existing metadata key-value pairs during an update are deleted. Those descriptions should not be read as saying that an omitted field in this webhook deletes data.\n- A `200 Success` response section says any `2xx` HTTP status code accepts the webhook. Acceptance is a delivery acknowledgment, not proof of a financial balance change, settlement, payout or bank receipt. This reference does not establish ordering, retries, deduplication, signature verification or event finality.\n\n## Detail locators\n\n- Trigger and event identity: raw lines 5\u20137 and 34\u201350.\n- Request body requiredness, resource IDs, optional fields and environment: raw lines 9\u201330.\n- Example payload: raw lines 32\u201351.\n- Acknowledgment response: raw lines 52\u201360.\n\n## Related\n\n- [[adyen-platforms]] \u2014 balance-account resource and platform context.\n- [[adyen-webhooks]] \u2014 broader webhook context; this event's exact payload remains in the pinned raw.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.updated/2026-09-15|Captured balancePlatform.balanceAccount.updated reference]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you successfully [update a balance account](https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/balanceAccounts/_id_).",
+      "location": "raw lines 5\u20137, under POST balancePlatform.balanceAccount.updated"
+    },
+    {
+      "text": "|   - balanceAccount | object | No |  |",
+      "location": "raw line 15, Parameters > Request body"
+    },
+    {
+      "text": "|     - accountHolderId | string | Yes | The unique identifier of the [account holder](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/accountHolders#responses-200-id) associated with the balance account. |",
+      "location": "raw line 16, Parameters > Request body"
+    },
+    {
+      "text": "|     - metadata | object (string) | No | A set of key and value pairs for general use. The keys do not have specific names and may be used for storing miscellaneous data as desired.  Note that during an update of metadata, the omission of existing key-value pairs will result in the deletion of those key-value pairs. |",
+      "location": "raw line 21, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 60, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-balanceaccount-updated-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-updated]] \u2014 2026-09-15-captured Balance Platform `balancePlatform.balanceAccount.updated` incoming webhook reference for a successfully updated balance-account resource; its payload and `2xx` acknowledgment do not prove a financial movement.\n",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.updated/2026-09-15.md",
+  "raw_sha256": "42226160e08414e17851906c686f36cf03519109779363d44262b6f5bad7b18e",
+  "status": "candidate_ready"
+}

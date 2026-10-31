@@ -20,6 +20,9 @@ This 2026-09-15-captured Issuing guide (marked modified 2026-03-16) explains `ba
 - An `.updated` event reports a later status change. The examples distinguish `active` with `authenticationApplied=false` after automatic activation from `active` with `authenticationApplied=true` after the required verification. `active` means the card is available in the wallet and ready for payments; it does not prove any particular payment was authorized or settled (raw lines 194–251).
 - The `.updated` `closed` case is permanent. The guide lists failed provisioning risk analysis, cardholder wallet removal, platform PATCH revocation, and closure of the underlying payment instrument as closure scenarios. The status table also labels `suspended` temporarily disabled, but this page gives no suspended event example (raw lines 37–41, 283–326).
 
+> [!warning] Contradiction
+> This captured Issuing guide uses `requireAuthentication` for `data.decision` (raw line 41), while the captured API Explorer network-token [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-created|created]] and [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-updated|updated]] tables use `requiresAuthentication` (their raw line 20). The spelling difference remains unresolved; preserve each source literally and verify the applicable integration contract before mapping values.
+
 ## Detail locators
 
 - Webhook type/status/decision field table and subscription route: raw lines 26–41. The table names `declined`, but the worked `created` scenarios cover only `requireAuthentication` and `approved`; closure after failed risk analysis is under `.updated` (raw lines 43–50, 283–297).

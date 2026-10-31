@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform webhook: card order created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.created\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.created/2026-09-15.md\"\ntags: [adyen, issuing, balance-platform, webhooks, card-orders]\n---\n\n## Overview\n\nThis captured Balance Platform Webhooks API Explorer POST reference describes Adyen's incoming `balancePlatform.cardorder.created` event. It indicates successful creation of a card order after a physical card payment instrument is created; it is not a merchant request to create that instrument or order. The `latest` route label does not identify a numbered webhook version. See [[adyen-issuing]], [[adyen-webhooks]], and [[adyen]].\n\n## Key takeaways\n\n- The body requires `data`, `environment` (`test` or `live`), and `type`. The queued-event `timestamp` is optional. All listed `data` fields are marked optional: balance platform, card and PIN delivery objects, card-order item ID, event trigger date, resource ID, related payment-instrument ID, and shipping method.\n- The event's successful *order creation* does not mean successful card production or delivery. The two test examples have `type: balancePlatform.cardorder.created` with card and PIN statuses of `processing` and `rejected`, respectively; the rejected example includes `Unknown value in the image field`. The table lists card-delivery status values `created`, `rejected`, `processing`, `produced`, `shipped`, `delivered`, `notApplicable`, and `unknown`.\n- The raw table describes `data.card` as card delivery status, yet labels the nested `data.card.status` and `data.card.trackingNumber` as PIN delivery fields, duplicating the separate `data.pin` descriptions. Treat those labels as a documentation inconsistency; do not map card status to PIN delivery by inference.\n- The optional `notificationResponse` response field accompanies a statement that any HTTP `2xx` accepts the webhook. Neither an example nor an acknowledgment proves physical delivery, card activation, payment authorization, or any financial outcome. This page does not specify event ordering, retry, deduplication, or signature rules.\n\n## Detail locators\n\n- Trigger and physical-card condition: pinned raw lines 5\u20137.\n- Required envelope, optional IDs and delivery fields, and duplicated status descriptions: pinned raw lines 11\u201331.\n- Processing and rejected test examples: pinned raw lines 33\u201373.\n- Acknowledgment response: pinned raw lines 74\u201382.\n\n## Related\n\n- [[adyen-issuing]] \u2014 card program and payment-instrument context.\n- [[adyen-webhooks]] \u2014 webhook processing context.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments]] \u2014 separate physical-card payment-instrument creation reference.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-cardorders]] \u2014 separate card-order read reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.created/2026-09-15|Card order created webhook reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook to indicate a successful creation of a card order after you create a [payment instrument](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/paymentInstruments) of `type` **card** and `formFactor` **physical**.",
+      "location": "pinned raw line 7, directly below POST event heading"
+    },
+    {
+      "text": "|   - card | object | No | The status of the card delivery.  Possible values: **created**, **rejected**, **processing**, **produced**, **shipped**, **delivered**, **notApplicable**, **unknown**. |",
+      "location": "pinned raw line 16, Parameters > Request body"
+    },
+    {
+      "text": "|     - status | string | No | The status of the PIN delivery. |",
+      "location": "pinned raw line 18, nested under card object, before separate pin object at line 24"
+    },
+    {
+      "text": "\"status\": \"rejected\"",
+      "location": "pinned raw line 60, Request examples > balancePlatform-cardorder-created-rejected, card object; repeated at line 66 in pin object"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 82, Responses > 200 Success > Response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-card-order-created-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-created]] \u2014 2026-09-15-captured physical-card order creation webhook contract; processing and rejected delivery examples show that order creation is separate from card/PIN delivery, and the card-status table duplicates PIN labels.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw request-body table labels card.status and card.trackingNumber as PIN delivery fields despite a separate pin object; source page preserves this inconsistency."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.created/2026-09-15.md",
+  "raw_sha256": "548edf793986eb973d7530c9ebf5897dec84d7fc72f1c21b10e37bcd9bc91940",
+  "status": "candidate_ready"
+}

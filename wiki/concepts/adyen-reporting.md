@@ -19,6 +19,12 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-api-explorer-report-webhooks-latest-post-balanceplatform-report-created]] — Report webhooks v1 generated-report notification with URL, filename and type; credential wording conflicts between prose and schema, and availability is not reconciliation proof (captured 2026-09-15).
+
+
+- [[source-adyen-api-explorer-report-webhooks-latest-overview]] — 2026-09-15-captured Report webhooks v1 catalog for report-ready notifications and the `balancePlatform.report.created` event; GET/manual download routes are mentioned, but payload and delivery rules are not defined here.
+
+
 - [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-transfers]] — 2026-09-15 Payout Service guide to matching transaction webhooks against Balance Platform Accounting or Statement reports by transaction PSP reference, Status and Amount, with internal/bank/card category and type lookup; no worked direction, timing or bank-receipt proof.
 
 

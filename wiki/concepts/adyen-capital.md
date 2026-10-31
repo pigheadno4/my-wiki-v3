@@ -15,6 +15,21 @@ The landing page lists supported regions with specific inclusions and exclusions
 
 ## Sources
 
+- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-grants-updated]] — 2026-09-15-captured Capital incoming grant-updated webhook reference with grant balance, recipient and status fields; disbursement/repayment are illustrative triggers, while `2xx` acceptance is not funding or repayment proof.
+
+
+- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-capital-dynamicoffer-created]] — 2026-09-15-captured account-holder dynamic-offer creation event with range, validity and repayment-term fields; offer creation is separate from formal-offer selection, grant acceptance and funding.
+
+
+- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-grants-created]] — 2026-09-15-captured Capital grant-created webhook schema for offer/grant-account IDs, principal/fee/total, optional destination and status/actions; creation alone is not disbursement or receipt proof.
+
+
+- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-balanceaccountholder-capitaloffer-created]] — 2026-09-15-captured Capital static-offer-created webhook contract for an account holder, with optional amount, fee, contract type, validity and repayment terms; an offer is separate from grant acceptance or disbursement.
+
+
+- [[source-adyen-api-explorer-capital-webhooks-latest-overview]] — 2026-09-15-captured Capital webhooks v1 catalog for static/dynamic-offer creation and grant creation/update; event listing supplies no payload or funding-transfer outcome.
+
+
 - [[source-adyen-api-explorer-transfers-latest-post-grants]] — 2026-09-15-captured Transfers API v4 TEST `POST /grants` reference for requesting payout of a selected Capital offer, with grant/status readback; a 200 or Pending grant is not final disbursement or repayment proof, and the 404 payment wording is mismatched.
 
 

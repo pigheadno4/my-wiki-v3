@@ -1,0 +1,11 @@
+# C59 fixed-query answers: transfer.updated
+
+Pinned raw: `raw/adyen/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated/2026-09-15.md` (SHA-256 `4983b9a1272f7c1523492a5c3a0e619c8832bf1e620d79d78a7f16190b97f603`). Canonical route: [Adyen API Explorer](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated). Proposed source: [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-updated]].
+
+## Q1
+
+Adyen sends the incoming `balancePlatform.transfer.updated` webhook when transfer status changes; the prose directs correlation by `data.id` with the original created event and says `status` indicates the triggering event (raw lines 5–9). Top-level `data` and `environment` are required, while the table marks outer `type` and `timestamp` optional. Within `data`, `amount` with currency/minor-unit value, `category`, and `status` are required; `id`, history and other fields are table-optional (lines 13–119). Categories include bank, card, internal, issuedCard, platformPayment and topUp (line 34). Outer transfer `data.status` and nested `events[].status` have distinct scopes (lines 52–70, 95–96). Sequence number can restore per-transfer sequence after out-of-order arrival (line 95).
+
+## Q2
+
+The status table describes received, refused, authorised reservation, booked balance-account deduction, failed bank rejection and returned bank return (line 96). Bank payout TEST examples show authorised and booked stages (121–297), but a booked source deduction is not bank receipt. Ordinary internal examples show only an incoming target-account authorised/booked leg (299–457); separate internal-direct-debit examples show incoming and outgoing booked legs (764–942); top-up examples show authorised/captured states (944–1281), not external bank finality. The direct-debit cancelled example has nested cancelled but outer refused (573–667), while failed has nested refused but outer cancelled (669–762); both use `FRST` although the table's sequenceType enum differs (line 49). Any `2xx` accepts the webhook (1282–1290). This source does not establish event-specific retry, deduplication or signature rules, and `latest` plus the fetched date is snapshot rather than fixed current-version proof (1–2).

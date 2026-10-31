@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-negative-balance-compensation-warning-webhooks-latest-post-balanceplatform-negativebalancecompensationwarning-scheduled",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen negative balance compensation warning scheduled webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/negative-balance-compensation-warning-webhooks/latest/post/balancePlatform.negativeBalanceCompensationWarning.scheduled\"\nraw_files:\n  - \"adyen/api-explorer/negative-balance-compensation-warning-webhooks/latest/post/balancePlatform.negativeBalanceCompensationWarning.scheduled/2026-09-15.md\"\ntags: [adyen, webhooks, platforms, negative-balances]\n---\n\n## Overview\n\nCaptured 2026-09-15 API Explorer incoming `POST balancePlatform.negativeBalanceCompensationWarning.scheduled` webhook reference. Adyen says the warning concerns a balance account negative for 20 or more days and a future scheduled compensation from the platform's liable balance account if the shortfall is not covered first. The warning does not establish that the compensating transfer has occurred. See [[adyen]], [[adyen-platforms]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The body requires `data`, `environment` (`test` or `live`), and `type`; `timestamp` and all listed `data` properties are optional. If the optional `amount` object is present, its `currency` and minor-unit integer `value` are required within that object. Optional identifiers include account holder, balance platform, resource ID, and liable balance account ID.\n- `negativeBalanceSince` and `scheduledCompensationAt` describe dates; the latter is a planned compensation date, not transfer execution evidence. The sample is a TEST example with EUR -145050, a liable balance account ID, and a future compensation date; its example values do not establish a specific account's current state.\n- **Timing conflict in this captured page:** prose says the balance has been negative for 20 or more days, but the example shows `negativeBalanceSince` 2024-10-19 and event `creationDate` 2024-10-22, about three days later. Do not derive a reliable warning threshold from that example.\n- The response says webhook acceptance is based on HTTP status code, without a specific acceptance code on this page. This reference does not establish delivery order, retries, deduplication, signature verification, actual compensation, or final balance.\n\n## Detail locators\n\n- Trigger and conditional future transfer: raw lines 5\u20137.\n- Requiredness, amount, identities and dates: raw lines 11\u201330.\n- TEST example and timing discrepancy: raw lines 32\u201358.\n- Response wording: raw lines 59\u201362.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/negative-balance-compensation-warning-webhooks/latest/post/balancePlatform.negativeBalanceCompensationWarning.scheduled/2026-09-15|Captured negative balance compensation warning reference]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook to inform you about a balance account whose balance has been negative for 20 or more days. If you do not transfer funds to that balance account to cover the negative balance before the scheduled compensation date, a transfer is made from your liable balance account on that date.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - amount | object | No | The negative balance amount of the balance account. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "|   - scheduledCompensationAt | string | No | The date when a compensation transfer to the account is scheduled to happen. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "\"negativeBalanceSince\": \"2024-10-19T00:33:13+02:00\",",
+      "location": "raw line 51"
+    },
+    {
+      "text": "\"creationDate\": \"2024-10-22T00:00:00+02:00\",",
+      "location": "raw line 39"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-negative-compensation-warning-platform-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-negative-balance-compensation-warning-webhooks-latest-post-balanceplatform-negativebalancecompensationwarning-scheduled]] \u2014 2026-09-15-captured negative-balance compensation warning webhook for a future conditional liable-account transfer; prose says 20 or more negative days but TEST example dates show about three days, so timing needs verification and warning is not money-movement proof.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured prose threshold and TEST example dates conflict; keep both qualified."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/negative-balance-compensation-warning-webhooks/latest/post/balancePlatform.negativeBalanceCompensationWarning.scheduled/2026-09-15.md",
+  "raw_sha256": "af391798718ccc917b1a925e4019f68d5708611d79237861beee63472369c372",
+  "status": "candidate_ready"
+}

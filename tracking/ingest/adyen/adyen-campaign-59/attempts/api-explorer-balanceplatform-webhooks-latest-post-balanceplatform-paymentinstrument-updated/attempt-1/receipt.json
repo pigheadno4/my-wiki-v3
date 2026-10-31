@@ -1,0 +1,76 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform webhook: payment instrument updated\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.updated\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.updated/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, payment-instruments]\n---\n\n## Overview\n\nCaptured API Explorer `latest` POST reference for the incoming `balancePlatform.paymentInstrument.updated` webhook. Adyen says it sends the event when a payment instrument is successfully updated. The schema spans `card` and `bankAccount` instruments; a resource update or receiver acknowledgement does not establish an authorization, transfer, or funds outcome. See [[adyen]], [[adyen-issuing]], [[adyen-business-accounts]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The table requires top-level `data`, `environment`, and `type`, but marks `data.paymentInstrument` optional. **If that object is present**, its table marks `balanceAccountId`, `id`, `issuingCountryCode`, and `type` required. `type` is `card` or `bankAccount`; the balance-account ID and payment-instrument ID identify distinct resources.\n- The object has optional bank-account and card branches, description/reference/group IDs, and replacement IDs. Some branch descriptions say they are returned **when creating** a payment instrument, despite this page's update-event heading; do not treat those descriptions as a guarantee of branch presence in every update. The request example shows one suspended virtual card only.\n- Optional `status` lists `active`, `inactive`, `suspended`, and `closed`; `closed` is permanently closed and cannot be undone. The text says creation defaults to `active` when unspecified, with card exceptions by form factor and issuing country (including inactive US physical cards). That creation-default wording is not a rule for interpreting a missing `status` in this update webhook. Optional `statusReason` includes listed reasons; for `other`, the source describes sending `statusComment`.\n- `environment` is `test` or `live`; optional `timestamp` records when the event was queued. Any HTTP `2xx` accepts the webhook, separately from the instrument's state. The captured `latest` route does not itself establish a numbered API version, current availability, or delivery behavior.\n\n## Detail locators\n\n- Event purpose and type: raw lines 5\u20137 and 65\u201367.\n- Requiredness, resource IDs, instrument branches, status and reasons: raw lines 9\u201334.\n- Illustrative suspended-card payload: raw lines 36\u201369.\n- Receiver acknowledgement: raw lines 70\u201378.\n\n## Related\n\n- [[adyen]]\n- [[adyen-issuing]]\n- [[adyen-business-accounts]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.updated/2026-09-15|Captured payment-instrument-updated webhook reference]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you successfully [update a payment instrument](https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/paymentInstruments/_id_).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - paymentInstrument | object | No | Contains information about the payment instrument resource that triggered the event. |",
+      "location": "raw line 16"
+    },
+    {
+      "text": "|     - id | string | Yes | The unique identifier of the payment instrument. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "|     - status | string | No | The status of the payment instrument. If a status is not specified when creating a payment instrument, it is set to **active** by default. However, there can be exceptions for cards based on the `card.formFactor` and the `issuingCountryCode`. For example, when issuing physical cards in the US, the default status is **inactive**.  Possible values:  **active**:  The payment instrument is active and can be used to make payments.  **inactive**: The payment instrument is inactive and cannot be used to make payments.  **suspended**: The payment instrument is suspended, either because it was stolen or lost.  **closed**: The payment instrument is permanently closed. This action cannot be undone. |",
+      "location": "raw line 28"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 78"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-payment-instrument-updated-issuing",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated]] \u2014 2026-09-15-captured Balance Platform incoming payment-instrument-updated webhook contract for card or bankAccount resources, with optional resource object, conditional required identifiers and irreversible `closed` status; the suspended-card example is not payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-payment-instrument-updated-business-accounts",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated]] \u2014 2026-09-15-captured payment-instrument-updated webhook reference also covering `bankAccount` instruments; optional branch details and a resource update do not prove account funding or transfer completion.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-payment-instrument-updated-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated]] \u2014 2026-09-15-captured `balancePlatform.paymentInstrument.updated` event contract; a `2xx` receiver acknowledgement is separate from the instrument update and any financial outcome.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.updated/2026-09-15.md",
+  "raw_sha256": "267302d2053076b98cd4a682d6e63927cd88ba95be782cc7d926728dbe49f851",
+  "status": "candidate_ready"
+}

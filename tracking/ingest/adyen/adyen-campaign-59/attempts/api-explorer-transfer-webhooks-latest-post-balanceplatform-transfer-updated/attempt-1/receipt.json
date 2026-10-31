@@ -1,0 +1,78 @@
+{
+  "job_id": "api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfer webhook: transfer updated\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated\"\nraw_files:\n  - \"adyen/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated/2026-09-15.md\"\ntags: [adyen, webhooks, transfers, balance-platform]\n---\n\n## Overview\n\nCaptured incoming `balancePlatform.transfer.updated` Transfer webhook reference. Adyen sends it when a transfer's status changes. Use `data.id` to correlate with the original transfer in `balancePlatform.transfer.created`; `data.status` is the transfer result, while each `data.events[].status` describes an individual event. The captured `latest` URL is not a fixed version.\n\n## Key takeaways\n\n- The schema requires the top-level `data` and `environment` fields. Within `data`, `amount` (with required `currency` and minor-unit `value`), `category`, and `status` are marked required; `data.id`, outer `type`, `timestamp`, event history and other details are marked optional in the table. The prose nevertheless directs correlation by `data.id`. Category values include bank, card, internal, issuedCard, platformPayment and topUp.\n- `data.status` examples distinguish `received` request creation, `refused` Adyen rejection, `authorised` reservation, `booked` balance-account deduction, `failed` counterparty-bank rejection and `returned` counterparty-bank return. The event list can contain accounting/tracking events, mutations and transaction IDs; a transaction ID is described as sent only for accounting events where the balance changes. `eventId` is only included for issuedCard category.\n- Optional `sequenceNumber` increases per transfer and can help restore event sequence if webhooks arrive out of order. This does not make arrival ordered. `referenceForBeneficiary` is described as carried in related transfer webhooks for source/recipient tracking; it is distinct from internal `reference`.\n- The TEST examples illustrate outgoing bank payout authorisation and booking; two-sided internal balance-account authorisation/booking; direct debit; and authorised/captured top-ups. A bank payout's `booked` status means source balance-account deduction, not beneficiary-bank receipt. The top-up examples show balance-account credit at `captured`, but do not establish external bank debit finality.\n- **Example conflicts:** `directDebit-cancelled` has nested event `cancelled` but outer `data.status: refused` (raw lines 573\u2013667). `directDebit-failed` has nested event `refused` but outer `data.status: cancelled` (669\u2013762). Both use `sequenceType: FRST` although the table lists `OneOff`, `First`, `Recurring`, `Final` (line 49). Do not normalize these examples into a single state or enum.\n- The response says any HTTP `2xx` accepts the webhook. The source does not establish event-specific retry, deduplication, signature verification or bank-credit finality.\n\n## Detail locators\n\n- Trigger, correlation and status semantics: raw lines 5\u20139, 79, 95\u201396.\n- Full schema and conditional fields: raw lines 13\u2013119.\n- Bank payout and internal transfer examples: raw lines 121\u2013457.\n- Direct-debit examples and conflicts: raw lines 459\u2013762; internal direct debit examples: 764\u2013942.\n- On-demand and scheduled top-up examples: raw lines 944\u20131281.\n- Acknowledgment: raw lines 1282\u20131290.\n\n## Related\n\n- [[adyen]]; [[adyen-webhooks]]; [[adyen-platforms]]; [[adyen-platform-internal-transfers]].\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated/2026-09-15|2026-09-15 captured API Explorer reference]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when the status of a transfer changes. Use the `data.id` to track the original transfer resource in the [balancePlatform.transfer.created](https://docs.adyen.com/api-explorer/transfer-webhooks/1/post/balancePlatform.transfer.created) webhook.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The `status` field indicates the event that triggered the webhook.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "The sequence number can help you restore the correct sequence of events even if they arrive out of order.",
+      "location": "raw line 95, sequenceNumber description"
+    },
+    {
+      "text": "**booked**: the funds are deducted from your user's balance account.",
+      "location": "raw line 96, data.status description"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 1290"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-transfer-updated-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-updated]] \u2014 2026-09-15-captured Transfer status-change webhook contract; correlate by transfer ID, distinguish outer status from nested event history, and use sequence number for possible out-of-order arrival. Direct-debit TEST examples conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "directDebit-cancelled nested cancelled/outer refused; directDebit-failed nested refused/outer cancelled; sequenceType FRST differs from table enum."
+        ]
+      },
+      {
+        "update_id": "c59-transfer-updated-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-updated]] \u2014 2026-09-15-captured status-change reference across bank, internal, issued-card, platform-payment and top-up transfers; booked bank payout is source balance-account deduction, not bank receipt, and direct-debit examples have status/enum conflicts.",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Preserve direct-debit example mismatches at raw lines 573\u2013762."
+        ]
+      },
+      {
+        "update_id": "c59-transfer-updated-internal-route",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-updated]] \u2014 2026-09-15-captured Transfer event schema with TEST two-sided internal and internal-direct-debit booked examples; source/target balance-account legs and nested statuses must be read separately.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated/2026-09-15.md",
+  "raw_sha256": "4983b9a1272f7c1523492a5c3a0e619c8832bf1e620d79d78a7f16190b97f603",
+  "status": "candidate_ready"
+}

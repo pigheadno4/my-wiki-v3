@@ -1,0 +1,11 @@
+# api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-created fixed query answers
+
+Pinned raw: `raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.created/2026-09-15.md` (SHA-256 `24ffc25f8ae17236bbea53f9ef702a260e7a169d24e50260a68d80fb75700d7f`). Canonical source route: `wiki/sources/adyen/source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-created.md`. Canonical URL: https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.created
+
+## Q1
+
+Adyen's captured incoming `balancePlatform.paymentInstrument.created` webhook follows successful payment-instrument creation (raw lines 5–7). Required envelope fields are `data`, `environment` (`test` or `live`) and `type`; queue `timestamp` and `data.paymentInstrument` are optional. Within a supplied instrument, `balanceAccountId`, `id`, `issuingCountryCode` and `type` are marked required, with `type` equal to `card` or `bankAccount`; card and business-account details are type conditional (raw lines 13–36). The card and bank-account test examples show corresponding resource identities and `active` statuses (raw lines 38–94). The page gives no numbered webhook version; `latest` is its captured route label.
+
+## Q2
+
+Creation notification is not proof of card activation, approved/usable Business Account, payment, transfer, settlement or bank receipt. Status defaults to active when unspecified, subject to card exceptions including inactive US physical cards; the schema also describes irreversible `closed` and requires `statusComment` when `statusReason` is `other` (raw lines 30–32). Crucially, prose says the virtual-card number is omitted from this webhook and only available in the `POST /paymentInstruments` response, but the virtual-card webhook test example includes `card.number`; that conflict prevents inferring actual webhook PAN disclosure from the example (raw lines 9, 40–71). Any HTTP 2xx accepts the webhook; `notificationResponse` is optional (raw lines 95–103). This reference states no event ordering, retry, deduplication or signature rule (full raw lines 1–103).

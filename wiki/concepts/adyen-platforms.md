@@ -18,6 +18,84 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-api-explorer-negative-balance-compensation-warning-webhooks-latest-post-balanceplatform-negativebalancecompensationwarning-scheduled]] — 2026-09-15-captured negative-balance compensation warning webhook for a future conditional liable-account transfer; prose says 20 or more negative days but TEST example dates show about three days, so timing needs verification and warning is not money-movement proof.
+
+
+- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-updated]] — 2026-09-15-captured status-change reference across bank, internal, issued-card, platform-payment and top-up transfers; booked bank payout is source balance-account deduction, not bank receipt, and direct-debit examples have status/enum conflicts.
+
+
+- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-created]] — 2026-09-15-captured balance-platform transfer-created event schema spanning internal, bank, card, issued-card, platform-payment and top-up categories; initial event is not payout completion or bank receipt.
+
+
+- [[source-adyen-api-explorer-transaction-webhooks-latest-post-balanceplatform-transaction-created]] — 2026-09-15-captured balance-account transaction-created event schema and test examples for outgoing bank and incoming internal legs; booking is separate from external receipt.
+
+
+- [[source-adyen-api-explorer-transaction-webhooks-latest-overview]] — 2026-09-15-captured v4 Transaction webhook overview for booked balance-account transaction information and the single created-event route; consult the event contract for ledger-entry fields.
+
+
+- [[source-adyen-api-explorer-balance-webhooks-latest-post-balanceplatform-balanceaccount-balance-updated]] — 2026-09-15-captured Balance webhook contract for a balance account reaching or falling below a configured balance-type threshold; available, settled, pending and reserved fields are distinct, and the alert is not a transaction or payout result.
+
+
+- [[source-adyen-api-explorer-balance-webhooks-latest-overview]] — 2026-09-15-captured Balance webhook v1 overview for platform, account-holder and single balance-account condition scopes, plus two event routes; notification does not prove funds movement.
+
+
+- [[source-adyen-api-explorer-transfer-webhooks-latest-overview]] — 2026-09-15-captured Transfer webhooks v4 family overview and created/updated endpoint route; detailed transfer state belongs to child contracts.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-score-triggered]] — 2026-09-15-captured opt-in Score account-holder signal event with optional score, signal and automated-action fields; example values are not fraud, verification or payout proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceplatformpayoutschedule-updated]] — 2026-09-15-captured webhook for a managed payout schedule updated on the balance platform; optional frequency, amount and retained-funds fields describe settings, not execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-updated]] — 2026-09-15-captured Balance Platform incoming sweep-configuration-updated webhook reference covering account/sweep identities, direction, status and threshold fields; `2xx` acceptance is not transfer execution or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleexecution-succeeded]] — 2026-09-15-captured Balance Platform incoming managed payout-schedule execution-succeeded webhook reference; its optional transfer ID and 2xx acceptance do not establish bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceplatformpayoutschedule-deleted]] — Balance-platform payout-schedule deletion webhook reference; deletion event does not state applied-account effects or prove payout outcome (captured 2026-09-15).
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleexecution-failed]] — 2026-09-15-captured incoming Balance Platform failed managed-payout-schedule execution event reference, with optional account/schedule/transfer IDs and reason detail; failure does not prove a created transfer or bank movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceplatformpayoutschedule-created]] — 2026-09-15-captured Balance Platform managed payout schedule creation webhook POST reference for platform-level defaults and limits; creation does not prove account application or payout execution.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-deleted]] — 2026-09-15-captured sweep deletion webhook; the sample's active sweep status is payload context, not proof that a deleted configuration remains active or funds moved.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-created]] — 2026-09-15-captured push/pull balance-account sweep configuration creation webhook, separate from later transfer execution and booked funds.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutschedule-deleted]] — 2026-09-15-captured Balance Platform incoming webhook reference for successful removal of a managed payout schedule from a balance account; configuration deletion is not payout execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleautoapplication-failed]] — 2026-09-15-captured managed payout schedule automatic-application failure webhook for a balance account; optional reason and resource IDs do not establish payout execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutschedule-updated]] — Configuration webhooks v2 reference for a successfully updated managed payout schedule on a balance account; schedule configuration does not prove payout execution or bank receipt (captured 2026-09-15).
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutschedule-created]] — 2026-09-15-captured Balance Platform managed payout schedule creation webhook POST reference, with optional schedule fields and 2xx acknowledgment; creation is not payout execution or bank-receipt evidence.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-updated]] — 2026-09-15-captured Balance Platform `balancePlatform.balanceAccount.updated` incoming webhook reference for a successfully updated balance-account resource; its payload and `2xx` acknowledgment do not prove a financial movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-recurringtopup-deleted]] — 2026-09-15-captured recurring-top-up configuration deletion webhook, separate from a funded top-up transfer and from the scheduled-top-up sweep guide's configuration surface.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-accountholder-created]] — 2026-09-15-captured account-holder-created webhook reference for resource IDs, legal-entity verification context and optional status/capability fields; creation is not capability approval.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-recurringtopup-created]] — 2026-09-15-captured Balance Platform incoming recurring-top-up-created Configuration webhook contract for a balance account; required configuration fields and status are distinct from a triggered transfer or booked credit.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-accountholder-updated]] — 2026-09-15-captured incoming Balance Platform account-holder update webhook reference for holder/legal-entity identities, optional capability and status detail, and separate verification state; an event is not capability approval or payout proof.
+
+
 - [[source-adyen-api-explorer-legalentity-latest-post-legalentities]] — 2026-09-15-captured LEM API v4 TEST legal-entity creation contract with conditional type branches and separate capability verification; a 200/ID is not approval, and its top-level type enum conflicts with the unincorporated-partnership branch/example.
 
 

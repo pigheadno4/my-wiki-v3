@@ -1,0 +1,11 @@
+# api-explorer-balance-webhooks-latest-post-balanceplatform-balanceaccount-balance-block-released fixed query answers
+
+Pinned raw: `raw/adyen/api-explorer/balance-webhooks/latest/post/balancePlatform.balanceAccount.balance.block.released/2026-09-15.md` (SHA-256 `9807819594dc37b1f7d6a1f4cabf13517a4a19facb0ae64d4460b10611503d5d`). Canonical source route: `wiki/sources/adyen/source-adyen-api-explorer-balance-webhooks-latest-post-balanceplatform-balanceaccount-balance-block-released.md`. Canonical URL: https://docs.adyen.com/api-explorer/balance-webhooks/latest/post/balancePlatform.balanceAccount.balance.block.released
+
+## Q1
+
+The captured incoming `balancePlatform.balanceAccount.balance.block.released` Balance webhook says previously blocked funds were released, making them available; collateral and risk mitigation are examples of why funds may have been blocked (raw lines 5–11). The envelope requires `data`, `environment` (`test` or `live`) and `type`; `timestamp` is optional queue time. Within data, account-holder and balance-account objects and the released `amount` are required; amount currency and minor-unit value are required, while individual account-holder/account fields are optional. Optional fields include balance platform, batch reference, blocked-balance before/after objects and trigger/release dates (raw lines 15–42). The test example identifies account holder, account, EUR 25,000-minor-unit release and blocked values -100,000 before/-75,000 after (raw lines 44–81). No numbered webhook version appears; `latest` is only the captured route label.
+
+## Q2
+
+The event reports release of a prior block, described as making the funds available. The payload reports a released amount and optionally blocked-balance snapshots; it has no explicit available-balance or booked-balance field, and its signed example values are illustrative (raw lines 23–39, 55–75). This is distinct from a new booked credit, transfer execution, payout or beneficiary bank receipt. The page gives no event-specific later state or failure/reversal sequence. Any HTTP 2xx accepts the webhook, with optional `notificationResponse`; the response example is `[accepted]` (raw lines 82–101). The page does not establish delivery ordering, retry, deduplication or signature rules (full raw lines 1–101).

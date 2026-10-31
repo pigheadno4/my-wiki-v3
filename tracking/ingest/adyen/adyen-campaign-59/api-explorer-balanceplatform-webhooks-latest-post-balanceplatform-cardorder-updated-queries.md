@@ -1,0 +1,9 @@
+# C59 fixed query answers — card order updated webhook
+
+## Q1
+
+The captured Adyen Balance Platform incoming POST event is `balancePlatform.cardorder.updated`, sent for an update in card-order status. The outer `data`, `environment`, and `type` fields are required; every listed `data` child, including `cardOrderItemId`, `paymentInstrumentId`, `card`, `pin`, `shippingMethod`, and resource `id`, is optional. The examples show produced card and PIN states, a shipped card with tracking number, and a separately shipped PIN with tracking number, all in test. The `card` row lists card-delivery states, but both nested `card.status` and `card.trackingNumber` are described as PIN-delivery fields; the shipped-card example places the tracking number under `card`. This schema-versus-example conflict remains unresolved. The `latest` URL establishes no numbered version. [Raw: lines 5–31, 33–86] Canonical route: [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-updated]]; https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.updated
+
+## Q2
+
+This event reports a card-order status change; its examples do not prove receipt by the cardholder, activation, authorization, capture, or settlement. `2xx` accepts the webhook, which is an acknowledgement rather than proof of physical delivery. The pinned page does not specify delivery order, retries or deduplication, signature verification, or further state finality; the optional identities and card/PIN subobjects also limit any claim that every event has tracking data. The card-status wording conflict remains unresolved, and `latest` is unnumbered in this capture. [Raw: lines 7, 14–31, 33–95] Canonical route: [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-updated]]; https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.updated

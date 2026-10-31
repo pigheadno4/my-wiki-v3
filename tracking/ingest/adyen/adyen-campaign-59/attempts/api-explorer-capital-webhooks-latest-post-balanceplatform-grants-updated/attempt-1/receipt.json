@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-capital-webhooks-latest-post-balanceplatform-grants-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Grant updated webhook | Adyen Capital webhooks\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.updated\"\nraw_files:\n  - \"adyen/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.updated/2026-09-15.md\"\ntags: [adyen, capital, grants, webhooks]\n---\n\n## Overview\n\nThis captured `POST balancePlatform.grants.updated` Capital webhook reference says [[adyen]] sends information about a grant after that grant is updated. It gives financing disbursement to a user and user repayment as examples of when the notification can arrive. It is an incoming grant-lifecycle event contract, not a merchant grant-update request; the captured `latest` URL does not establish the current version. [[adyen-capital]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The request-body table marks `balances` and its `currency`, `fee`, `principal` and `total` fields required. It describes `total` as fee plus principal and identifies these as grant amounts, not a payment or bank-transfer receipt. The table also requires `grantAccountId`, `grantOfferId`, grant-reference `id`, and `status` with a required `code`.\n- `counterparty` is optional; its account-holder, balance-account and transfer-instrument IDs are optional fields described as possible disbursement recipients/resources. A reported recipient identifier alone does not prove delivery to that destination.\n- Status codes listed are `Pending`, `Active`, `Repaid`, `WrittenOff`, `Failed`, `Revoked`, `Requested`, `Reviewing`, `Approved`, `Rejected`, and `Cancelled`. Optional `status.actions` carry required `actionCode` and `resolved` fields within each action. The reference does not provide a transition graph or say that every listed state follows the same funding or repayment path.\n- The response section says any `2xx` accepts the webhook. This is a receiver acknowledgment, separate from grant status and any disbursement, booked transfer, repayment or bank receipt. The captured page has no example payload or delivery, ordering, retry, deduplication or signature contract.\n\n## Detail locators\n\n- Event purpose and illustrative triggers: raw lines 5\u20139.\n- Required balance, grant and status fields: raw lines 11\u201320 and 25\u201332.\n- Optional counterparty resource identifiers: raw lines 21\u201324.\n- Acknowledgment response: raw lines 34\u201342.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-capital]] \u2014 grant lifecycle and financing context.\n- [[adyen-webhooks]] \u2014 general webhook context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.updated/2026-09-15|Captured balancePlatform.grants.updated reference]]\n",
+  "quotes": [
+    {
+      "text": "After a grant is updated, Adyen sends this webhook with information about the grant.",
+      "location": "raw line 7, under Grant updated heading"
+    },
+    {
+      "text": "For example, you receive this webhook when the financing amount is disbursed to your user, or when your user repays the financing amount.",
+      "location": "raw line 9, under Grant updated heading"
+    },
+    {
+      "text": "| balances | object | Yes | Contains information about the balances of the grant. |",
+      "location": "raw line 16, Parameters > Request body"
+    },
+    {
+      "text": "|   - code | string | Yes | The code for the status of the grant. Possible values:  - **Pending**  - **Active**  - **Repaid**  - **WrittenOff**  - **Failed**  - **Revoked**  - **Requested**  - **Reviewing**  - **Approved**  - **Rejected**  - **Cancelled** |",
+      "location": "raw line 32, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 42, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-grants-updated-capital-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-grants-updated]] \u2014 2026-09-15-captured Capital incoming grant-updated webhook reference with grant balance, recipient and status fields; disbursement/repayment are illustrative triggers, while `2xx` acceptance is not funding or repayment proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.updated/2026-09-15.md",
+  "raw_sha256": "dee6fde721e8c3ffc360059e55cba4d0369aaf3f4c199d8768cbe9e826adcfc8",
+  "status": "candidate_ready"
+}

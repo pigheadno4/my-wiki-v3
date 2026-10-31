@@ -1,0 +1,62 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-deleted",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform sweep deleted webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.deleted\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.deleted/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, sweeps]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer `latest` POST reference describes the incoming `balancePlatform.balanceAccountSweep.deleted` webhook Adyen sends after a sweep is successfully deleted. It concerns deletion of the sweep configuration, not reversal or completion of a transfer. [[adyen]] [[adyen-webhooks]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The event body requires `data`, `environment` and `type`; `data.accountId`, `data.balancePlatform`, and `data.sweep` are marked optional. If `sweep` is supplied, its nested `counterparty`, `currency`, `id` and `schedule` are marked required. The configuration ID is `sweep.id`, while `accountId` is the balance account for which it was configured. See raw lines 11\u201336.\n- The nested sweep schema describes bank or internal `category`, source/destination `counterparty`, and `push` or `pull` direction. It describes threshold evaluation on a schedule, with optional `sweepAmount` or `targetAmount` (one or the other), optional `triggerAmount`, and optional `status`. These describe the sweep resource, not a transfer triggered by this deletion event. See raw lines 17\u201333.\n- The test example includes a `push` sweep to another balance account and `status: active` inside the deleted-sweep payload. That example status must not be read as proof the configuration remains active after deletion. No transfer ID, executed amount, booked movement or beneficiary-bank receipt is shown. See raw lines 38\u201371.\n- The response table says any HTTP 2xx accepts the webhook; `notificationResponse` is optional. The page does not establish delivery ordering, retries, deduplication, signature verification, or transfer finality. See raw lines 72\u201380.\n\n## Detail locators\n\n- Envelope and nested sweep fields: raw lines 9\u201336.\n- Test example and event type: raw lines 38\u201371.\n- Acknowledgment: raw lines 72\u201380.\n\n## Related\n\n- [[adyen-webhooks]]\n- [[adyen-platforms]]\n- [[adyen-platform-internal-transfers]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.deleted/2026-09-15|Sweep deleted webhook reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you successfully [delete a sweep](https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/balanceAccounts/_balanceAccountId_/sweeps/_sweepId_).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - sweep | object | No | Contains information about the sweep resource that triggered the event. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "|     - id | string | Yes | The unique identifier of the sweep. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "|     - schedule | object | Yes | The schedule when the `triggerAmount` is evaluated. If the balance meets the threshold, funds are pushed out of or pulled in to the balance account. |",
+      "location": "raw line 28"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sweep-deleted-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-deleted]] \u2014 2026-09-15-captured Balance Platform sweep configuration-deleted event contract; optional account/platform/sweep envelope fields and nested sweep schema, separate from transfer execution.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sweep-deleted-platforms",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-deleted]] \u2014 2026-09-15-captured sweep deletion webhook; the sample's active sweep status is payload context, not proof that a deleted configuration remains active or funds moved.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.deleted/2026-09-15.md",
+  "raw_sha256": "ef098a521fbe290f9a7bbf31a791bc7d04b5586c2e67d82a8db78d7cc14fe5f5",
+  "status": "candidate_ready"
+}

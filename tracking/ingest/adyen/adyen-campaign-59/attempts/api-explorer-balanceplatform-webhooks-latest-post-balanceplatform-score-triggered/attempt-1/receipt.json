@@ -1,0 +1,63 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-score-triggered",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Score signal triggered webhook | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.score.triggered\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.score.triggered/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, score, account-holder-risk]\n---\n\n## Overview\n\nThis captured Adyen Balance Platform webhook POST reference describes the incoming `balancePlatform.score.triggered` event: for merchants opted in to Score, Adyen sends it when a score signal is triggered against an account holder. The `latest` route does not resolve a numbered webhook API version in this capture. A signal is risk information, not a finding of fraud or proof of a financial action. [[adyen]] [[adyen-platforms]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The request-body table requires outer `data`, `environment`, and `type`; `timestamp` is optional. Every listed `data` child is optional: `accountHolder` (and its `description`, `id`, `reference`), `accountHolderStatus`, `automatedActions`, `balancePlatform`, `creationDate`, resource `id`, `riskScore`, `scoreSignalsTriggered`, and `signalSourceTypes`. The page therefore does not guarantee that a given payload contains a score, action, account-holder ID or signal list. [Raw: Request body, lines 11\u201329]\n- `accountHolder.id` identifies the account-holder resource, while `data.id` is separately described only as an ID of the resource. The related [[source-adyen-docs-platforms-manage-account-holder-risk|Platforms Score guide]] identifies `data.id` in its example as a score calculation/recalculation ID; do not conflate it with the account-holder ID. The `automatedActions` field, if present, lists actions taken as a result of triggered signals; `riskScore` is a score resulting from those signals. [Raw: lines 15\u201326; related guide: Webhook setup and identity]\n- The test example shows account-holder status `Active`, a `riskScore` of 67, signal names and source types, and `bumpKYCTier` as an automated action. Those sample values are not a universal threshold, current account state, confirmed fraud, verification result or payout outcome. `environment` may be `test` or `live`; any `2xx` response accepts the webhook, independently of later review or operational outcomes. [Raw: lines 27\u201375]\n\n## Detail locators\n\n- Opt-in scope and signal trigger: opening statement, lines 5\u20137.\n- Payload optionality, identities, action/score/signal fields: Request body, lines 11\u201329.\n- Illustrative account holder, score, signals and action: Request example, lines 31\u201366.\n- Receiver `2xx` acknowledgement: Responses, lines 67\u201375.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform-user and Score context.\n- [[adyen-webhooks]] \u2014 incoming event and acknowledgement context.\n- [[source-adyen-docs-platforms-manage-account-holder-risk]] \u2014 product availability, Score cases and the example score-calculation versus account-holder identity distinction.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.score.triggered/2026-09-15|Adyen Balance Platform Score signal webhook \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For merchants who opt in to the Score product, Adyen sends this webhook when a score signal is triggered against an account holder.",
+      "location": "Opening statement, line 7"
+    },
+    {
+      "text": "|   - accountHolder | object | No | Contains information about the account holder. |",
+      "location": "Request body table, line 15"
+    },
+    {
+      "text": "|   - automatedActions | array of string | No | The automated action(s) taken as a result of the score signals that were triggered. |",
+      "location": "Request body table, line 20"
+    },
+    {
+      "text": "|   - riskScore | integer | No | The score of the identity resulting from the signal(s) that were triggered. |",
+      "location": "Request body table, line 24"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "Response body table, line 75"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-score-triggered-platforms",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-score-triggered]] \u2014 2026-09-15-captured opt-in Score account-holder signal event with optional score, signal and automated-action fields; example values are not fraud, verification or payout proof.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-score-triggered-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-score-triggered]] \u2014 2026-09-15-captured Balance Platform Score signal webhook for opted-in merchants; optional account-holder, score and action data, with `2xx` receipt separate from risk-review outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.score.triggered/2026-09-15.md",
+  "raw_sha256": "0553d9e5b8636ba38392be2fdd6c270a52bac92127b7fcda59020bc92fa0b67e",
+  "status": "candidate_ready"
+}

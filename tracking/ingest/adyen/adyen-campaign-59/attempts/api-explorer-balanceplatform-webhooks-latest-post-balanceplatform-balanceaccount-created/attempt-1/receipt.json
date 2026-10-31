@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform webhook: balance account created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.created\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.created/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, balance-accounts]\n---\n\n## Overview\n\nThis captured Balance Platform Webhooks API Explorer POST reference describes an incoming `balancePlatform.balanceAccount.created` event that Adyen sends when a balance account is successfully created. It is a webhook event contract, not an instruction to create an account. The page's `latest` path is a captured label; the raw does not identify a numbered webhook API version. See [[adyen-webhooks]], [[adyen-platforms]], and [[adyen]].\n\n## Key takeaways\n\n- The request body requires `data`, `environment` (`test` or `live`), and `type`. `timestamp` is optional and describes when the event was queued. The `data.balanceAccount` object and `data.balancePlatform` identifier are marked optional in the table; if `balanceAccount` is supplied, its `accountHolderId` and balance-account `id` are marked required within that object. The example uses `type: balancePlatform.balanceAccount.created`.\n- The balance account schema lists optional `balances`, `defaultCurrencyCode`, `description`, `metadata`, `migratedAccountCode`, `platformPaymentConfiguration`, `reference`, `status`, and `timeZone`. Default currency is EUR and cannot change after creation; status defaults to active. The metadata deletion warning concerns an update that omits existing key-value pairs, not this creation event.\n- The example is a test-environment payload with account holder ID, balance-account ID, EUR and active status. It illustrates the event shape; it does not prove a specific account's funding, verification, eligibility, payout, or bank receipt. The response section says any HTTP `2xx` accepts the webhook and labels `notificationResponse` optional. It does not establish delivery ordering, deduplication, retry, signature verification, or final financial state for this event.\n\n## Detail locators\n\n- Trigger and event title: pinned raw lines 5\u20137.\n- Envelope, conditional nested fields, default currency, status and metadata qualifications: pinned raw lines 11\u201330.\n- Example payload and event type: pinned raw lines 32\u201350.\n- Acknowledgment response: pinned raw lines 51\u201359.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 webhook family and processing context.\n- [[adyen-platforms]] \u2014 balance-platform resource context.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts]] \u2014 separate balance-account creation API reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.created/2026-09-15|Balance account created webhook reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you successfully [create a balance account](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts).",
+      "location": "pinned raw line 7, immediately below # POST balancePlatform.balanceAccount.created"
+    },
+    {
+      "text": "| data | object | Yes | Contains event details. |",
+      "location": "pinned raw line 14, Parameters > Request body table"
+    },
+    {
+      "text": "|     - accountHolderId | string | Yes | The unique identifier of the [account holder](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/accountHolders#responses-200-id) associated with the balance account. |",
+      "location": "pinned raw line 16, Parameters > Request body table, under optional balanceAccount object at line 15"
+    },
+    {
+      "text": "|     - defaultCurrencyCode | string | No | The default three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes) of the balance account. This is the currency displayed on the Balance Account overview page in your Customer Area. The default value is **EUR**.  After a balance account is created, you cannot change its default currency. |",
+      "location": "pinned raw line 18, Parameters > Request body table"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 59, Responses > 200 Success > Response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-ba-created-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-created]] \u2014 2026-09-15-captured Balance Platform balance-account-created webhook POST reference: creation trigger, envelope and conditional balance-account fields, immutable default currency, test example and 2xx acknowledgment; receipt is not funding or verification proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.created/2026-09-15.md",
+  "raw_sha256": "70c6c453e27699f807856127911270802ad51d9bcd0bd33de031faf669556423",
+  "status": "candidate_ready"
+}

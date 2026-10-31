@@ -1,0 +1,9 @@
+# C59 fixed query answers — Capital dynamic offer created webhook
+
+## Q1
+
+The captured incoming Adyen Capital POST event is `balancePlatform.capital.dynamicOffer.created`, which provides details of a dynamic offer created for an account holder. The request table directly requires `accountHolderId`, `contractType` (`loan` or `cashAdvance`), validity `startsAt`/`expiresAt`, `financingType` (`businessFinancing`), dynamic-offer `id`, minimum and maximum amount objects with required currency and minor-unit integer value, and `repayment.term.estimatedDays`. `repayment.term.maximumDays` is optional and loan-only. The page shows no envelope, environment, type field or sample payload, and the `latest` path does not resolve a numbered version. [Raw: lines 5–29] Canonical route: [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-capital-dynamicoffer-created]]; https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.capital.dynamicOffer.created
+
+## Q2
+
+The stated event establishes creation of a dynamic offer for the named account holder, with a validity window and amount range. It does not establish that the holder remains eligible after expiry, selected an amount, received a formal/static offer, accepted terms, initiated or received a grant, or repaid funds. The table's `repayment` description mentions a grant, but the event remains offer creation. Any `2xx` accepts the webhook; no delivery order, retry/deduplication, signature-verification, failure/reversal or funding-finality guarantee appears on this pinned page. The dated `latest` capture does not prove the current version. [Raw: lines 5–39] Canonical route: [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-capital-dynamicoffer-created]]; https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.capital.dynamicOffer.created

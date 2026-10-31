@@ -15,6 +15,30 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-api-explorer-dispute-webhooks-latest-post-balanceplatform-dispute-updated]] — 2026-09-15-captured Balance Platform dispute-updated incoming webhook contract for request information and optional dispute/transaction/status fields; update receipt is not a dispute decision or financial outcome.
+
+
+- [[source-adyen-api-explorer-dispute-webhooks-latest-overview]] — 2026-09-15-captured Dispute webhooks v4 catalog for raised-dispute creation/update and resulting chargeback notifications, listing created/updated routes without payload or outcome detail.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-updated]] — 2026-09-15-captured incoming network-token provisioning-status event contract, with optional network-token and payment-instrument IDs, authentication, wallet/risk detail and no payment-result proof; its `requiresAuthentication` decision spelling conflicts with the Issuing webhook guide's `requireAuthentication`.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-updated]] — 2026-09-15-captured card-order status webhook with optional card/PIN delivery fields and separate produced/shipped examples; both `card.status` and `card.trackingNumber` are labeled PIN delivery despite the card parent/example, and examples do not prove cardholder delivery.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated]] — 2026-09-15-captured Balance Platform incoming payment-instrument-updated webhook contract for card or bankAccount resources, with optional resource object, conditional required identifiers and irreversible `closed` status; the suspended-card example is not payment proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-networktoken-created]] — 2026-09-15-captured Issuing network-token provisioning event contract for payment-instrument, decision, authentication, validation and wallet-scoped fields; creation label alone does not prove usable token.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-cardorder-created]] — 2026-09-15-captured physical-card order creation webhook contract; processing and rejected delivery examples show that order creation is separate from card/PIN delivery, and the card-status table duplicates PIN labels.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccount-recurringtopup-updated]] — 2026-09-15-captured API Explorer event contract for a successful recurring top-up configuration update, separate from direct-debit transfer and booked-credit events.
+
+
 - [[source-adyen-api-explorer-balanceplatform-latest-post-transactionrules]] — 2026-09-15-captured Balance Platform API v2 TEST POST transaction-rule reference for scoped conditions, intervals and outcomes; schema also lists bank-transfer request type, and creation does not prove a transaction result.
 
 

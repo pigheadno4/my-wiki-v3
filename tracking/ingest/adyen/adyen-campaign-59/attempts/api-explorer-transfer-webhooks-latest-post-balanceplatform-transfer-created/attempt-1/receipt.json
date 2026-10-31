@@ -1,0 +1,64 @@
+{
+  "job_id": "api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfer webhooks v4: transfer created event\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created\"\nraw_files:\n  - \"adyen/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created/2026-09-15.md\"\ntags: [adyen, webhooks, transfers, balance-platform]\n---\n\n## Overview\n\nCaptured `balancePlatform.transfer.created` incoming webhook reference in the Transfer webhooks catalog, whose separately captured overview is headed v4. Adyen says it sends this event when there are fund movements on a platform. The `POST` heading describes an event delivered to a receiver, not a merchant API operation. This schema spans incoming and outgoing transfer categories, so the event name alone does not prove that funds were booked or reached a bank. See [[adyen]], [[adyen-webhooks]], and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request-body table requires top-level `data` and `environment` (`test` or `live`); top-level `type` and `timestamp` are marked optional. Within `data`, `amount` with minor-unit `value` and `currency`, `category`, and `status` are required. The listed categories are `bank`, `card`, `internal`, `issuedCard`, `platformPayment`, and `topUp`; direction, transfer/resource IDs, counterparties, event history and sequence number are optional. Some nested descriptions impose category-specific conditions despite `No` in their table rows: for example, `ultimateParty` full name for bank and individual-name/type details for card. Read the exact nested field context before treating an optional row as universally absent or required.\n- `status` describes a transfer result, with examples ranging from `received` (outgoing request created) and `authorised` (funds reserved) to `booked` (deducted from the user's balance account), `refused`, `failed` (counterparty-bank rejection), and `returned` (counterparty-bank return). These are distinct stages. In particular, `booked` is balance-account deduction, not beneficiary-bank receipt. A future execution date leaves status `received` and reason `pending` until that date according to its field description.\n- Optional `events` separate `accounting` from `tracking`; an event `transactionId` is sent only for accounting events where the balance changes. The optional transfer `sequenceNumber` starts at 1 and can help restore per-transfer order if webhooks arrive out of order; it is not a delivery-order guarantee. `eventId` is documented only for `issuedCard`. These identifiers and the transfer's `id`, `reference`, and beneficiary reference have different roles.\n- The four TEST examples cover incoming internal, initiated on-demand top-up, initiated scheduled top-up, and outgoing external bank transfer. They show `received` status, including a negative `received` register mutation for the outgoing bank example, but are illustrative snapshots rather than proof of later authorization, booking, settlement, or bank receipt. The two top-up examples use different `category` values (`topUp` and `platformPayment`), so they do not establish one universal top-up category mapping.\n- The response section says any `2xx` accepts the webhook; optional `notificationResponse` appears in its `200 Success` table. This is receiver acknowledgement, not transfer outcome. The endpoint does not supply delivery, retry, deduplication or signature guarantees. The `latest` route and captured v4 family heading do not prove which version is currently served.\n\n## Detail locators\n\n- Event trigger and required envelope/core transfer fields: pinned raw lines 5\u201321, 32, 93\u201394, 115\u2013117.\n- Transfer categories, optional identities, event/tracking and accounting fields, future execution, status meanings, conditional `ultimateParty` details: `## Parameters` \u2192 `### Request body`, lines 22\u2013114.\n- Four `## Request examples`: incoming internal lines 121\u2013175; on-demand top-up 177\u2013239; scheduled top-up 241\u2013298; outgoing external bank 300\u2013362.\n- `## Responses` \u2192 `### 200 Success`, lines 363\u2013371.\n\n## Related\n\n- [[adyen-platform-internal-transfers]] \u2014 one category-specific flow; this contract also spans other transfer categories.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created/2026-09-15|Captured transfer created webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when there are fund movements on your platform.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "|   - amount | object | Yes | The amount of the transfer. |",
+      "location": "pinned raw line 19, Parameters > Request body"
+    },
+    {
+      "text": "|   - sequenceNumber | integer | No | The sequence number of the transfer webhook. The numbers start from 1 and increase with each new webhook for a specific transfer.  The sequence number can help you restore the correct sequence of events even if they arrive out of order. |",
+      "location": "pinned raw line 93, Parameters > Request body"
+    },
+    {
+      "text": "|   - status | string | Yes | The result of the transfer.",
+      "location": "pinned raw line 94, Parameters > Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "pinned raw line 371, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-transfer-created-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-created]] \u2014 2026-09-15-captured Transfer webhooks v4 `transfer.created` incoming-event contract across transfer categories, statuses and optional event history; `received`, `booked` and bank receipt are distinct.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-transfer-created-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-created]] \u2014 2026-09-15-captured balance-platform transfer-created event schema spanning internal, bank, card, issued-card, platform-payment and top-up categories; initial event is not payout completion or bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created/2026-09-15.md",
+  "raw_sha256": "fc4ef54a5e3068ce0218cc8b720aed84565bfd4248759f2e955a26b4b2e49bd4",
+  "status": "candidate_ready"
+}

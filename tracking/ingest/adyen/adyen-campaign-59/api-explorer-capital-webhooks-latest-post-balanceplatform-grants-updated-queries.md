@@ -1,0 +1,9 @@
+# Fixed retrieval answers: balancePlatform.grants.updated
+
+## Q1
+
+The 2026-09-15 captured Capital webhook reference says Adyen sends `balancePlatform.grants.updated` after a grant update; disbursement to a user and repayment are examples of triggers. The body requires a `balances` object with `currency`, `fee`, `principal` and `total`, plus `grantAccountId`, `grantOfferId`, grant-reference `id` and `status.code`. An optional `counterparty` may identify account holder, balance account or transfer instrument. The listed status codes cover pending/active/repaid/written-off, failed/revoked, requested/reviewing/approved/rejected/cancelled; optional actions carry required code/resolved fields within each action. The page does not define a transition sequence or event envelope fields. See pinned raw lines 5–32; route: [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-grants-updated]], https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.updated.
+
+## Q2
+
+This event reports grant information after an update. Its illustrative disbursement and repayment triggers and status values should not be read as independent evidence of a booked funding transfer, completed repayment or recipient-bank receipt for a particular grant. The optional counterparty IDs identify possible disbursement resources. Any `2xx` response accepts the webhook, which acknowledges receipt rather than a financial outcome. The captured page gives no example payload, ordering, retries, deduplication, signature or finality guarantee; `latest` is only the captured route label. See pinned raw lines 7–9, 16–32 and 34–42; route: [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-grants-updated]], https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.updated.

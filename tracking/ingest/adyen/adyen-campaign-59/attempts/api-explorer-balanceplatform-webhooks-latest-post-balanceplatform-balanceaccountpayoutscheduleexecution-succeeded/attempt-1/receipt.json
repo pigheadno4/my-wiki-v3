@@ -1,0 +1,63 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleexecution-succeeded",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform webhook: payout schedule execution succeeded\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.succeeded\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.succeeded/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, managed-payouts]\n---\n\n## Overview\n\nCaptured API Explorer `latest` POST reference for the incoming `balancePlatform.balanceAccountPayoutScheduleExecution.succeeded` webhook. Adyen says it sends this event when a scheduled payout execution succeeds. This is an execution-result event, not proof of bank receipt or a completed external transfer. See [[adyen-platforms]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request-body table requires top-level `data`, `environment`, and `type`; it marks **every listed field inside `data` optional**. These include `balanceAccountId` (account from which payout is initiated), `balanceAccountPayoutScheduleId` (managed payout schedule), `balancePlatform`, `result`, `resultDetails`, and `triggeredAt`. The table does not define `result` values.\n- `resultDetails.transferId` is optional and identifies a transfer created for this execution when supplied. The same optional object also describes `reason` and `reasonCode` for an unsuccessful execution; their inclusion in this succeeded-event schema does not mean this event reports a failure or that those fields are present.\n- `environment` is `test` or `live`; optional `timestamp` records when the event was queued, while optional `data.triggeredAt` records when the execution was triggered.\n- Any HTTP `2xx` accepts the webhook. The response table lists optional `notificationResponse`; receiver acknowledgement is separate from the execution outcome. The captured `latest` route supplies no numbered version or delivery, ordering, retry, deduplication, or signature contract.\n\n## Detail locators\n\n- Event identity and trigger: raw lines 5\u20137.\n- Request-body requiredness and resource identities: raw lines 9\u201326.\n- Optional transfer ID, result fields, and timestamps: raw lines 18\u201325.\n- Receiver acknowledgement: raw lines 28\u201336.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.succeeded/2026-09-15|Captured payout schedule execution succeeded webhook reference]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a scheduled payout execution succeeds.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - balanceAccountId | string | No | The unique identifier of the balance account from which the payout is initiated. |",
+      "location": "raw line 15"
+    },
+    {
+      "text": "|   - balanceAccountPayoutScheduleId | string | No | The unique identifier of the managed payout schedule. |",
+      "location": "raw line 16"
+    },
+    {
+      "text": "|     - transferId | string | No | The unique identifier of the transfer created for this execution. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 36"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-payout-execution-succeeded-platforms",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleexecution-succeeded]] \u2014 2026-09-15-captured Balance Platform incoming managed payout-schedule execution-succeeded webhook reference; its optional transfer ID and 2xx acceptance do not establish bank receipt.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-payout-execution-succeeded-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountpayoutscheduleexecution-succeeded]] \u2014 2026-09-15-captured `balancePlatform.balanceAccountPayoutScheduleExecution.succeeded` event contract for a scheduled payout execution result, separate from receiver acknowledgement and external transfer finality.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.succeeded/2026-09-15.md",
+  "raw_sha256": "bbdaf1306ada041998b9636e476d28c00c3193332ad9b6da9b56076e3af14ba2",
+  "status": "candidate_ready"
+}

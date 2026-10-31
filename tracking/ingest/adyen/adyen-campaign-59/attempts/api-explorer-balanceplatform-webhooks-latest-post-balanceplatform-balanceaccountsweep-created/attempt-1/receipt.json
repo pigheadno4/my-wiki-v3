@@ -1,0 +1,62 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Balance-account sweep created webhook | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.created\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.created/2026-09-15.md\"\ntags: [adyen, balance-platform, webhooks, sweeps]\n---\n\n## Overview\n\nThis captured Adyen Balance Platform webhook POST reference describes the incoming `balancePlatform.balanceAccountSweep.created` event sent when a sweep is successfully created. The event concerns a sweep configuration, not execution of a sweep transfer or booking of funds. The `latest` route in this capture does not establish a numbered webhook API version. [[adyen]] [[adyen-webhooks]] [[adyen-platforms]]\n\n## Key takeaways\n\n- At the outer request-body level, `data`, `environment`, and `type` are marked required; `timestamp` is optional. Within `data`, `accountId`, `balancePlatform`, and `sweep` are all marked optional. If the `sweep` object is present, its field rows mark `counterparty`, `currency`, `id`, and `schedule` required. The table says the counterparty needs one of `balanceAccountId`, `transferInstrumentId`, or `merchantAccount`, according to sweep direction; it does not make the optional parent `sweep` mandatory. [Raw: Request body, lines 11\u201336]\n- The schema describes `push` as moving funds out and `pull` as moving funds in; omitted sweep `type` defaults to `push`. Omitted `status` defaults to `active`; `inactive` cannot be triggered. The schedule governs threshold evaluation. For `pull`, a balance at or below `triggerAmount` triggers pulling in; for `push`, a balance at or above it triggers pushing out. The trigger defaults to zero if absent. `sweepAmount` and `targetAmount` are alternatives. These describe configuration and potential trigger behavior, not a completed transfer. [Raw: Request body, lines 28\u201333]\n- `category` may be `bank` or `internal` and is described as required when setting optional `priorities`; the listed priority options apply to bank-transfer routing. The example is a test-environment, active, weekly `push` to another balance account in EUR with zero target and trigger amounts. Those example values do not constrain every sweep or prove funds moved. Any `2xx` HTTP status accepts the webhook; acknowledgement is separate from later transfer outcomes. [Raw: lines 18\u201323, 38\u201380]\n\n## Detail locators\n\n- Creation event purpose: opening statement, lines 5\u20137.\n- Full payload table and nested requiredness: Request body, lines 11\u201336.\n- Direction, schedule, status, amount and priority semantics: Request body, lines 18\u201333.\n- Illustrative envelope and receiver response: Request examples and Responses, lines 38\u201380.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 incoming event and receiver acknowledgement context.\n- [[adyen-platforms]] \u2014 platform sweep and balance-account context.\n- [[source-adyen-docs-platforms-top-up-balance-account-scheduled-top-ups]] \u2014 a pull-sweep creation guide that distinguishes the configuration event from later top-up transfer outcomes.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.created/2026-09-15|Adyen Balance Platform sweep created webhook \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when you successfully [create a sweep](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts/_balanceAccountId_/sweeps).",
+      "location": "Opening statement, line 7"
+    },
+    {
+      "text": "|   - sweep | object | No | Contains information about the sweep resource that triggered the event. |",
+      "location": "Request body table, line 17"
+    },
+    {
+      "text": "|     - counterparty | object | Yes | The destination or the source of the funds, depending on the sweep `type`.  Either a `balanceAccountId`, `transferInstrumentId`, or `merchantAccount` is required. |",
+      "location": "Request body table, line 19"
+    },
+    {
+      "text": "|     - status | string | No | The status of the sweep. If not provided, by default, this is set to **active**.  Possible values:  **active**:  the sweep is enabled and funds will be pulled in or pushed out based on the defined configuration.  **inactive**: the sweep is disabled and cannot be triggered. |",
+      "location": "Request body table, line 29"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "Response body table, line 80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c59-sweep-created-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-created]] \u2014 2026-09-15-captured Balance Platform sweep creation event contract; optional `data.sweep` parent has required nested fields when present, and creation/acknowledgement does not prove a transfer.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c59-sweep-created-platforms",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweep-created]] \u2014 2026-09-15-captured push/pull balance-account sweep configuration creation webhook, separate from later transfer execution and booked funds.",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.created/2026-09-15.md",
+  "raw_sha256": "cd501ec0429bb002e0aca6f068495671a62db15714dfcd319591892c80cf915f",
+  "status": "candidate_ready"
+}
