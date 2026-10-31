@@ -1301,6 +1301,52 @@ class GitHubIngestPacketTests(unittest.TestCase):
             self.assertEqual("runtime-configuration", classified[path])
         self.assertEqual("unclassified", classified["custom.json"])
 
+    def test_root_skills_sync_provenance_is_context_without_allowing_other_json(self):
+        config = RepoConfig(
+            id="acme/widgets",
+            company="acme",
+            url="https://github.com/acme/widgets",
+            enabled=True,
+            repo_type="developer-tooling",
+            priority="tier2",
+            track="default-branch",
+            version_strategy="commit",
+            capsules=(CapsuleConfig(
+                id="widget-skills",
+                adapter="commit-tree-v1",
+                source_id="widgets",
+                dependency_scope="configured-repository-paths",
+                changed_path_policy="policy-bounded",
+                default_required_roots=("skills",),
+                max_packet_files=30,
+                max_packet_utf8_bytes=200000,
+            ),),
+        )
+        files = {
+            path: ('{"source":{"repo":"acme/api"}}\n',
+                   "source-capsule", "include-path", "widgets")
+            for path in (".skills-sync.json", "custom.json", "data/.skills-sync.json")
+        }
+        snapshot = self.snapshot(self.current_sha, "", files)
+        packet = build_ref_ingest_packet(
+            self.root, config, "github-" + ("5" * 20),
+            self.relative(snapshot),
+            RefPacketInput("default-branch", "main", "", self.current_sha,
+                           "", "", ()),
+            "queued",
+        )
+        classified = {
+            row["path"]: row["classification"]
+            for row in packet.document["selected_changes"]
+        }
+        self.assertEqual("repository-context", classified[".skills-sync.json"])
+        self.assertEqual("unclassified", classified["custom.json"])
+        self.assertEqual("unclassified", classified["data/.skills-sync.json"])
+        self.assertIn(
+            str(PurePosixPath(self.relative(snapshot)).parent / "files/.skills-sync.json"),
+            packet.document["required_reading"],
+        )
+
     def test_codegen_versions_are_classified_as_build_configuration(self):
         prior = {
             "package.json": self.manifest_content("22.3.2"),

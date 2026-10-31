@@ -6,6 +6,15 @@ tags: [metronome, usage-based-billing, operations]
 
 Newest entries appear first. Detailed collection evidence remains under `tracking/collections/metronome/`; ingest evidence remains under `tracking/ingest/metronome/`.
 
+## 2026-10-31 - Metronome AI full additive ingest at 0519b4b
+
+- Approved `github-127cdae08488cb9466bb`, from August baseline `59193aabd9c43cca32f320d6f68f5d63d04034d4` to `0519b4b79908312e9dbfe64c5e4451fefc9aa30d`, collected 2026-10-30. Full mode with explicit focused reading: 39 current changed/new documents fully read, affected prior replacement/deletion ranges and all three removed scenarios read; inventories, unchanged LICENSE/history and duplicated diff mechanically verified. Relevant shared sections read. Effective assignment remains 90 paths; no full upstream-repository claim.
+- All 79 retained file sizes/SHA-256/Git blob IDs verified. Current snapshot: 40 files / 319,917 bytes, four additions, 35 modifications, three removals and one unchanged. Nine skills; group-key/token-billing additions and declared private upstream provenance. Current packet has no gaps or unclassified changes. Old policy registered without modifying historical evidence.
+- Four existing concepts updated first; source/changelog append the new commit and preserve every August body line and warning. Captures stale-event whole-batch 400 correction, FLAT/batched recurring-fee example correction, covering_date/cursor checks, commit-specific discounts, distinct collection/default-payment-method routing, canonical model IDs and managed-sync/markup verification limits. Numeric-property, group-key, UNIQUE, amount-conversion, invoice-item and CSM conflicts remain scoped.
+- Company source_count remains 232, repository count unchanged; provider catalog and root log updated. No new concept or cross-company comparison. [[source-github-ai]] [[changelog-github-ai]]
+- Validation: eight typed pages and 107 targeted tests pass; all 100 August source-body lines and 24 changelog-body lines preserved in order; raw links, unique catalog entries, five located quotes and source count verified. Seven retrieval anchors pass. Collection validator retains only the same 13 unrelated errors, none for Metronome AI; work item ingested, zero pending ingests. The prior full-suite run retained only the three known unrelated registry failures (815/818 passing).
+- Wiki ingestion only: no credentials, provider API/OAuth/feedback, skill execution, controlled usage, billing/payment execution, commit or push. Unrelated concurrent Adyen/BYD work preserved.
+
 ## 2026-09-13 — Metronome Campaign 46 final frozen-inventory pages
 
 - Promoted five previously uncovered sources: v1 single-contract retrieval, package creation, package-definition listing, single-package retrieval, and relative invoice product-order movement.

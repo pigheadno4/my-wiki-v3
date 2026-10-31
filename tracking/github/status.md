@@ -375,6 +375,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.438/2026-10-24/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.437--5.0.438/comparison.json)
 
+## `github-127cdae08488cb9466bb`
+
+- Repository: `metronome-industries/ai`
+- SHA: `0519b4b79908312e9dbfe64c5e4451fefc9aa30d`
+- Collection date: `2026-10-30`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/manifest.json)
+- Packet: [review packet](repos/metronome/ai/ingest-packets/github-127cdae08488cb9466bb/packet.md)
+- Review priority: `normal`
+- Required reading: `90` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@0519b4b` (recommended `full`)
+  Ref: `main`
+  From SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
+  To SHA: `0519b4b79908312e9dbfe64c5e4451fefc9aa30d`
+  Comparison: [manifest](repos/metronome/ai/comparisons/default-branch/59193aa--0519b4b/comparison.json)
+
 ## `github-16166784785e0ab99eae`
 
 - Repository: `braintree/braintree-web`

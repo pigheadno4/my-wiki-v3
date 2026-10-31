@@ -150,6 +150,8 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 
 ## Knowledge status
 
+- Latest Metronome AI repository ingest: `default-branch@0519b4b`, SHA `0519b4b79908312e9dbfe64c5e4451fefc9aa30d`, full additive with focused reading on 2026-10-31; August baseline retained. Nine skills now include group-key design and token-billing orchestration, with sync provenance, contract/collection safeguards and explicit unresolved example conflicts. This is instruction evidence, not API runtime verification. [[source-github-ai]] [[changelog-github-ai]]
+- Repository update only: total source_count remains 232; no new source identity or website promotion.
 - Collected documentation pages: 226
 - Official documentation source summaries: 226
 - Raw snapshots without source summaries: 60
@@ -282,7 +284,7 @@ The subscription guides use both `entitlement` and `entitled`, and one lifecycle
 - [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] - commit pacing and burn analysis with export-grain and deduplication cautions
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] - parent-child contracts, shared commits, consolidated invoicing, reporting, and hierarchy limits
 
-- [[source-github-ai]] - Metronome-authored agent workflows for integrations, catalog setup, CSM reviews, and Stripe migration
+- [[source-github-ai]] - cumulative Metronome agent workflows, including group-key/token-billing skills at 0519b4b and preserved August integration/catalog/CSM/migration history
 - [[changelog-github-ai]] - commit-qualified Metronome AI skills history
 - [[source-github-metronome-node]] - exact `@metronome/sdk@3.10.0` server client, API surface, transport, webhook helper, and evidence boundaries
 - [[changelog-github-metronome-node]] - package-qualified Node SDK release history and upgrade ledger

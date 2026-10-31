@@ -2851,7 +2851,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(60, capsule.max_packet_files)
         self.assertEqual(900000, capsule.max_packet_utf8_bytes)
 
-    def test_metronome_ai_uses_complete_skills_and_scenarios_profile(self):
+    def test_metronome_ai_uses_complete_synced_skills_and_provenance_profile(self):
         repos = {
             repo.id: repo
             for repo in load_registry(ROOT / "tracking/github/repo-registry.toml")
@@ -2876,9 +2876,7 @@ class RegistryTests(unittest.TestCase):
                 "README.md",
                 "CONTRIBUTING.md",
                 "LICENSE",
-                "tests/dogfood/scenarios/add-new-product-to-existing.md",
-                "tests/dogfood/scenarios/change-pricing-raise-rate.md",
-                "tests/dogfood/scenarios/start-billing-saas-with-credits.md",
+                ".skills-sync.json",
             },
             set(capsule.include_paths),
         )
@@ -2888,7 +2886,11 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(80, capsule.max_capsule_files)
         self.assertEqual(1000000, capsule.max_capsule_utf8_bytes)
         self.assertEqual(100, capsule.max_packet_files)
-        self.assertEqual(1500000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(2000000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(
+            ("f31672d08e0e8fc86738d96d7f7734190e40b9f1af073d1a3122fac24069b098",),
+            capsule.historical_policy_hashes,
+        )
 
     def test_adyen_magento2_uses_checkout_plugin_profile(self):
         repos = {

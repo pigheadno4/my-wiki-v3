@@ -158,6 +158,12 @@ Rate-card aliases can stand in for generated IDs during provisioning, and contra
 
 Package creation is customer agnostic; customer binding occurs later through `/contracts/create`. In package mode, the guide says contract creation accepts only `package_id` or `package_alias` plus `transition`, and additional terms return HTTP 400. The provisioned contract retains an attached package ID visible in the app, data export, and API. [[source-metronome-guides-implement-metronome-core-concepts-packages-overview]]
 
+## Agent Provisioning Safeguards at `0519b4b`
+
+The AI contract skill now checks active contracts with v2 list plus `covering_date`, follows a returned cursor and evaluates start/end timestamps instead of a nonexistent status field. A customer-only first page can miss an active contract; this check is not an atomic uniqueness or concurrent-create guarantee. Customer setup explicitly concerns the merchant's end customer, with preregistered custom-field keys rather than assumed universal Salesforce/Slack requirements. [[source-github-ai]]
+
+Commit-limited discounts use `is_commit_specific: true` with same-request temporary commit references in `override_specifiers`; dates alone can also discount overage. The skill separates an override's COMMIT_RATE/LIST_RATE target from the commit's own rate_type and describes mutually exclusive commit-selector families. Token Billing further separates account connection, customer configuration and contract/package routing. These are version-qualified instructions and examples, not proof of successful provisioning or a replacement for schema validation. See [[source-github-ai]] and [[changelog-github-ai]].
+
 ## Prepaid threshold configuration
 
 `prepaid_balance_threshold_configuration` adds contract-level automatic recharge. It defines the eligible balance threshold, recharge target, commit attribution, enablement, and optional payment gate. Changes take effect immediately and force an evaluation of the customer's current balance.

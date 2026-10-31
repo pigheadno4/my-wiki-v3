@@ -111,7 +111,16 @@ The product catalog's `initial` and `current` states, and each update entry, can
 
 Dimension-scoped spend alerts require their `group_values` key to be a group key on the underlying billable metrics associated with the customer's contract. Products whose metric lacks the key do not contribute to that threshold. Metronome recomputes the selected usage as if the key were a presentation group, so tiered pricing, quantity rounding, and `MAX` aggregation apply to the subset. A customer can use three distinct keys for spend-threshold notifications; a fourth is blocked. When one key has more than 5,000 values for that customer, the current guide routes configuration discussion through the Metronome support portal rather than defining a hard maximum. [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-controls]]
 
+## Agent Design Guidance at `0519b4b`
+
+The new group-key skill requires a confirmed dimension/role/cardinality plan before metric creation. It distinguishes standalone dimensions from compound keys required when dimensions co-occur, including the pricing/presentation union used in invoice computation. Compound scan cost multiplies dimension cardinalities; roughly 1,000 values is support-consultation guidance, not a hard platform limit. Its recommended payload supplies an `exists: true` property filter for each grouping and aggregation property. The Token Billing skill separately prescribes an ordered compound key beginning with model/provider and all approved extra dimensions; do not silently substitute the generic standalone-key default for that managed workflow. [[source-github-ai]]
+
+> [!warning] Contradiction
+> The same commit's older PLG pattern says presentation-only breakdowns do not need group keys, and setup text says unused keys have no cost; the new dedicated skill requires compound coverage and warns about populated compound-key scan cost even when not queried. Some example metrics still omit the property filters required by that skill, and UNIQUE guidance remains inconsistent. Preserve the exact file scopes, read the actual endpoint schema and do not treat these snippets as validated integration code. [[source-github-ai]] retains the reciprocal warnings.
+
 ## Sources
+
+- [[source-github-ai]] - group-key design, compound cardinality and internal example conflicts at an exact commit.
 
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-customer-dashboards-and-reporting]] - customer-facing dimensional usage visualization and the material guide splice between batched `/v1/usage` and the singular selectors, deprecated grouping input, and item fields aligned with current `/v1/usage/groups`
 

@@ -150,8 +150,8 @@ Operational evidence:
 - [[source-metronome-guides-reporting-insights-gtm-reporting-get-commit-and-usage-analytics]] - commit pacing and burn analysis with export-grain and deduplication cautions
 - [[source-metronome-guides-pricing-packaging-billing-model-guides-model-hierarchical-customer-relationships]] - parent-child contracts, shared commits, consolidated invoicing, reporting, and hierarchy limits
 
-- [[source-github-ai]] - Metronome-authored AI skills for integration, catalog and contract setup, PLG billing, CSM reviews, and Stripe migration
-- [[changelog-github-ai]] - commit-qualified Metronome AI skills history and future comparison rule
+- [[source-github-ai]] - nine Metronome AI skills at 0519b4b: group-key design, token billing, contract/collection safeguards and preserved August baseline (updated 2026-10-31)
+- [[changelog-github-ai]] - 59193aa to 0519b4b full-additive history, corrections and unresolved conflicts; August baseline retained
 - [[source-github-metronome-node]] - `@metronome/sdk@3.10.0` server client, runtime, transport, generated API surface, and webhook helper
 - [[changelog-github-metronome-node]] - package-qualified Node SDK release and upgrade history
 - [[source-github-terraform-provider-metronome]] - experimental `0.1.0-alpha.3` provider configuration and empty resource/data-source surface

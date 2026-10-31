@@ -1,0 +1,154 @@
+# GitHub ingest packet
+
+- Repository: `metronome-industries/ai`
+- Work item: `github-127cdae08488cb9466bb`
+- Snapshot: `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+- Ref: `default-branch@0519b4b` (`main`)
+- Transition: `59193aabd9c43cca32f320d6f68f5d63d04034d4` -> `0519b4b79908312e9dbfe64c5e4451fefc9aa30d`
+- Author date: `2026-10-29T20:53:05Z`
+- Commit date: `2026-10-29T20:53:05Z`
+
+## Required reading
+
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/CONTRIBUTING.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/LICENSE`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/README.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-best-practices/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-best-practices/references/contracts.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-best-practices/references/credits-and-commits.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-best-practices/references/events.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-best-practices/references/invoicing.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-best-practices/references/stripe-integration.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-create-contract/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-create-customer/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-csm-reviews/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-csm-reviews/references/anomaly-detection.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-csm-reviews/references/commit-health.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-csm-reviews/references/portfolio-briefing.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-csm-reviews/references/renewal-prep.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-plg-billing/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-plg-billing/references/blast-radius.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-plg-billing/references/diagnostics.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-plg-billing/references/patterns.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-plg-billing/references/worked-examples.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-setup-catalog/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-setup-catalog/references/billable-metrics.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-setup-catalog/references/custom-pricing-units.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-setup-catalog/references/pricing-patterns.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-setup-catalog/references/products.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/metronome-setup-catalog/references/rate-cards.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/references/concept-mapping.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/references/cutover.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/references/implementation.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/references/integration-patterns.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/references/legacy-migration.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/references/product-catalog-design.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/references/scoping.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/skills/stripe-to-metronome-migration/references/testing.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/tests/dogfood/scenarios/add-new-product-to-existing.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/tests/dogfood/scenarios/change-pricing-raise-rate.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/files/tests/dogfood/scenarios/start-billing-saas-with-credits.md`
+- `raw/github/metronome/ai/snapshots/2026-08-15-59193aa/manifest.json`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/.skills-sync.json`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/CONTRIBUTING.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/LICENSE`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/README.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/README.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-best-practices/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-best-practices/references/contracts.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-best-practices/references/credits-and-commits.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-best-practices/references/events.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-best-practices/references/invoicing.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-best-practices/references/stripe-integration.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-create-contract/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-create-customer/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-csm-reviews/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-csm-reviews/references/anomaly-detection.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-csm-reviews/references/commit-health.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-csm-reviews/references/portfolio-briefing.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-csm-reviews/references/renewal-prep.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-group-keys/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-plg-billing/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-plg-billing/references/blast-radius.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-plg-billing/references/diagnostics.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-plg-billing/references/patterns.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-plg-billing/references/worked-examples.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-setup-catalog/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-setup-catalog/references/billable-metrics.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-setup-catalog/references/custom-pricing-units.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-setup-catalog/references/pricing-patterns.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-setup-catalog/references/products.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-setup-catalog/references/rate-cards.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/metronome-token-billing/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/SKILL.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/references/concept-mapping.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/references/cutover.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/references/implementation.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/references/integration-patterns.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/references/legacy-migration.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/references/product-catalog-design.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/references/scoping.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/files/skills/stripe-to-metronome-migration/references/testing.md`
+- `raw/github/metronome/ai/snapshots/2026-10-30-0519b4b/manifest.json`
+- `tracking/github/repos/metronome/ai/comparisons/default-branch/59193aa--0519b4b/comparison.json`
+- `tracking/github/repos/metronome/ai/comparisons/default-branch/59193aa--0519b4b/comparison.md`
+- `tracking/github/repos/metronome/ai/comparisons/default-branch/59193aa--0519b4b/diff.patch`
+- `wiki/companies/metronome.md`
+- `wiki/log.md`
+- `wiki/metronome-index.md`
+- `wiki/metronome-log.md`
+- `wiki/sources/metronome/github/changelog-github-ai.md`
+- `wiki/sources/metronome/github/source-github-ai.md`
+
+## Selected changes
+
+- `added` `.skills-sync.json`
+- `modified` `CONTRIBUTING.md`
+- `modified` `README.md`
+- `added` `skills/README.md`
+- `modified` `skills/metronome-best-practices/SKILL.md`
+- `modified` `skills/metronome-best-practices/references/contracts.md`
+- `modified` `skills/metronome-best-practices/references/credits-and-commits.md`
+- `modified` `skills/metronome-best-practices/references/events.md`
+- `modified` `skills/metronome-best-practices/references/invoicing.md`
+- `modified` `skills/metronome-best-practices/references/stripe-integration.md`
+- `modified` `skills/metronome-create-contract/SKILL.md`
+- `modified` `skills/metronome-create-customer/SKILL.md`
+- `modified` `skills/metronome-csm-reviews/SKILL.md`
+- `modified` `skills/metronome-csm-reviews/references/anomaly-detection.md`
+- `modified` `skills/metronome-csm-reviews/references/commit-health.md`
+- `modified` `skills/metronome-csm-reviews/references/portfolio-briefing.md`
+- `modified` `skills/metronome-csm-reviews/references/renewal-prep.md`
+- `added` `skills/metronome-group-keys/SKILL.md`
+- `modified` `skills/metronome-plg-billing/SKILL.md`
+- `modified` `skills/metronome-plg-billing/references/blast-radius.md`
+- `modified` `skills/metronome-plg-billing/references/diagnostics.md`
+- `modified` `skills/metronome-plg-billing/references/patterns.md`
+- `modified` `skills/metronome-plg-billing/references/worked-examples.md`
+- `modified` `skills/metronome-setup-catalog/SKILL.md`
+- `modified` `skills/metronome-setup-catalog/references/billable-metrics.md`
+- `modified` `skills/metronome-setup-catalog/references/custom-pricing-units.md`
+- `modified` `skills/metronome-setup-catalog/references/pricing-patterns.md`
+- `modified` `skills/metronome-setup-catalog/references/products.md`
+- `modified` `skills/metronome-setup-catalog/references/rate-cards.md`
+- `added` `skills/metronome-token-billing/SKILL.md`
+- `modified` `skills/stripe-to-metronome-migration/SKILL.md`
+- `modified` `skills/stripe-to-metronome-migration/references/concept-mapping.md`
+- `modified` `skills/stripe-to-metronome-migration/references/cutover.md`
+- `modified` `skills/stripe-to-metronome-migration/references/implementation.md`
+- `modified` `skills/stripe-to-metronome-migration/references/integration-patterns.md`
+- `modified` `skills/stripe-to-metronome-migration/references/legacy-migration.md`
+- `modified` `skills/stripe-to-metronome-migration/references/product-catalog-design.md`
+- `modified` `skills/stripe-to-metronome-migration/references/scoping.md`
+- `modified` `skills/stripe-to-metronome-migration/references/testing.md`
+- `removed` `tests/dogfood/scenarios/add-new-product-to-existing.md`
+- `removed` `tests/dogfood/scenarios/change-pricing-raise-rate.md`
+- `removed` `tests/dogfood/scenarios/start-billing-saas-with-credits.md`
+
+## Excluded changes
+
+- None

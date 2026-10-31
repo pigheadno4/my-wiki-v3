@@ -1,0 +1,97 @@
+# GitHub repository ref comparison
+
+- Repository: `metronome-industries/ai`
+- Ref: `default-branch/main`
+- From SHA: `59193aabd9c43cca32f320d6f68f5d63d04034d4`
+- To SHA: `0519b4b79908312e9dbfe64c5e4451fefc9aa30d`
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.skills-sync.json`
+- `CONTRIBUTING.md`
+- `README.md`
+- `skills/README.md`
+- `skills/metronome-best-practices/SKILL.md`
+- `skills/metronome-best-practices/references/contracts.md`
+- `skills/metronome-best-practices/references/credits-and-commits.md`
+- `skills/metronome-best-practices/references/events.md`
+- `skills/metronome-best-practices/references/invoicing.md`
+- `skills/metronome-best-practices/references/stripe-integration.md`
+- `skills/metronome-create-contract/SKILL.md`
+- `skills/metronome-create-customer/SKILL.md`
+- `skills/metronome-csm-reviews/SKILL.md`
+- `skills/metronome-csm-reviews/references/anomaly-detection.md`
+- `skills/metronome-csm-reviews/references/commit-health.md`
+- `skills/metronome-csm-reviews/references/portfolio-briefing.md`
+- `skills/metronome-csm-reviews/references/renewal-prep.md`
+- `skills/metronome-group-keys/SKILL.md`
+- `skills/metronome-plg-billing/SKILL.md`
+- `skills/metronome-plg-billing/references/blast-radius.md`
+- `skills/metronome-plg-billing/references/diagnostics.md`
+- `skills/metronome-plg-billing/references/patterns.md`
+- `skills/metronome-plg-billing/references/worked-examples.md`
+- `skills/metronome-setup-catalog/SKILL.md`
+- `skills/metronome-setup-catalog/references/billable-metrics.md`
+- `skills/metronome-setup-catalog/references/custom-pricing-units.md`
+- `skills/metronome-setup-catalog/references/pricing-patterns.md`
+- `skills/metronome-setup-catalog/references/products.md`
+- `skills/metronome-setup-catalog/references/rate-cards.md`
+- `skills/metronome-token-billing/SKILL.md`
+- `skills/stripe-to-metronome-migration/SKILL.md`
+- `skills/stripe-to-metronome-migration/references/concept-mapping.md`
+- `skills/stripe-to-metronome-migration/references/cutover.md`
+- `skills/stripe-to-metronome-migration/references/implementation.md`
+- `skills/stripe-to-metronome-migration/references/integration-patterns.md`
+- `skills/stripe-to-metronome-migration/references/legacy-migration.md`
+- `skills/stripe-to-metronome-migration/references/product-catalog-design.md`
+- `skills/stripe-to-metronome-migration/references/scoping.md`
+- `skills/stripe-to-metronome-migration/references/testing.md`
+- `tests/dogfood/scenarios/add-new-product-to-existing.md`
+- `tests/dogfood/scenarios/change-pricing-raise-rate.md`
+- `tests/dogfood/scenarios/start-billing-saas-with-credits.md`
+
+## Upstream changes
+
+- `added`: `.skills-sync.json`
+- `modified`: `CONTRIBUTING.md`
+- `modified`: `README.md`
+- `added`: `skills/README.md`
+- `modified`: `skills/metronome-best-practices/SKILL.md`
+- `modified`: `skills/metronome-best-practices/references/contracts.md`
+- `modified`: `skills/metronome-best-practices/references/credits-and-commits.md`
+- `modified`: `skills/metronome-best-practices/references/events.md`
+- `modified`: `skills/metronome-best-practices/references/invoicing.md`
+- `modified`: `skills/metronome-best-practices/references/stripe-integration.md`
+- `modified`: `skills/metronome-create-contract/SKILL.md`
+- `modified`: `skills/metronome-create-customer/SKILL.md`
+- `modified`: `skills/metronome-csm-reviews/SKILL.md`
+- `modified`: `skills/metronome-csm-reviews/references/anomaly-detection.md`
+- `modified`: `skills/metronome-csm-reviews/references/commit-health.md`
+- `modified`: `skills/metronome-csm-reviews/references/portfolio-briefing.md`
+- `modified`: `skills/metronome-csm-reviews/references/renewal-prep.md`
+- `added`: `skills/metronome-group-keys/SKILL.md`
+- `modified`: `skills/metronome-plg-billing/SKILL.md`
+- `modified`: `skills/metronome-plg-billing/references/blast-radius.md`
+- `modified`: `skills/metronome-plg-billing/references/diagnostics.md`
+- `modified`: `skills/metronome-plg-billing/references/patterns.md`
+- `modified`: `skills/metronome-plg-billing/references/worked-examples.md`
+- `modified`: `skills/metronome-setup-catalog/SKILL.md`
+- `modified`: `skills/metronome-setup-catalog/references/billable-metrics.md`
+- `modified`: `skills/metronome-setup-catalog/references/custom-pricing-units.md`
+- `modified`: `skills/metronome-setup-catalog/references/pricing-patterns.md`
+- `modified`: `skills/metronome-setup-catalog/references/products.md`
+- `modified`: `skills/metronome-setup-catalog/references/rate-cards.md`
+- `added`: `skills/metronome-token-billing/SKILL.md`
+- `modified`: `skills/stripe-to-metronome-migration/SKILL.md`
+- `modified`: `skills/stripe-to-metronome-migration/references/concept-mapping.md`
+- `modified`: `skills/stripe-to-metronome-migration/references/cutover.md`
+- `modified`: `skills/stripe-to-metronome-migration/references/implementation.md`
+- `modified`: `skills/stripe-to-metronome-migration/references/integration-patterns.md`
+- `modified`: `skills/stripe-to-metronome-migration/references/legacy-migration.md`
+- `modified`: `skills/stripe-to-metronome-migration/references/product-catalog-design.md`
+- `modified`: `skills/stripe-to-metronome-migration/references/scoping.md`
+- `modified`: `skills/stripe-to-metronome-migration/references/testing.md`
+- `deleted`: `tests/dogfood/scenarios/add-new-product-to-existing.md`
+- `deleted`: `tests/dogfood/scenarios/change-pricing-raise-rate.md`
+- `deleted`: `tests/dogfood/scenarios/start-billing-saas-with-credits.md`

@@ -41,6 +41,13 @@ For Metronome's platform-pricing terminology, one Event is each discrete JSON ob
 > [!warning] AI migration guidance conflict
 > The `Metronome-Industries/ai` Stripe-migration skill says numeric event properties must be JSON numbers and that string-typed numbers fail, while the implementation guide above recommends string-valued properties to preserve precision. The repository is agent guidance rather than an API schema; verify the current endpoint contract before changing producer serialization. [[source-github-ai]]
 
+## Agent Guidance Correction at `0519b4b`
+
+The AI skills now describe an event older than 34 days or more than 24 hours in the future as causing HTTP 400 for the entire ingest batch, before publishing any event. They recommend removing invalid events and retrying the valid remainder, retaining deterministic transaction IDs and the rolling deduplication boundary. This corrects the August PLG skill's silent-drop wording; that older wording remains historical evidence, not the current commit's recommendation. [[source-github-ai]] [[changelog-github-ai]]
+
+> [!warning] Contradiction
+> The new whole-batch statement is scoped to timestamp validation, not every network or server failure. It does not supersede the website producer guide's partial-ingest warning for failed requests. Its stated 24-hour future allowance must not override the website walkthroughs' direction to use non-future timestamps. The numeric-versus-string property conflict above also persists, and new absolute no-backfill language in the skill does not establish that the separately documented representative-assisted reflow route is unavailable. Verify the relevant endpoint/error and recovery authority before implementing retries or changing serialization. [[source-github-ai]] preserves the reciprocal boundaries.
+
 ## Event design
 
 Metronome recommends working backward from billing and operational outcomes, then forward from the timing and data available in the source system. A producer can send detailed events as activity occurs or send periodic summaries; the appropriate choice depends on whether the producer can resolve `customer_id` and whether the cadence meets needs such as usage-spike notifications.
