@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-payout-thirdparty",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest POST /PAYOUT_THIRDPARTY\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAYOUT_THIRDPARTY\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/PAYOUT_THIRDPARTY/2026-09-15.md\"\ntags: [adyen, webhooks, payouts, deprecated]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer Webhooks `latest` POST /PAYOUT_THIRDPARTY snapshot describes an incoming notification for the result of a third-party payout request under the legacy payout route. The webhook is explicitly deprecated and no longer supports new integrations. New integrations are directed to Transfer Webhooks; existing Payout API users are directed to their Adyen contact for migration to the Transfers API. See [[adyen]], [[adyen-payouts]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- This POST heading names a webhook event, not a merchant operation to submit a payout. The request-body table marks top-level `live` and `notificationItems` optional; `live` distinguishes live and test origin. Within `NotificationRequestItem`, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and string `success` are marked required. The example uses `eventCode: \"PAYOUT_THIRDPARTY\"`.\n- `merchantReference` is the merchant payment reference, while `pspReference` is Adyen's transaction or request reference. Optional `originalReference` is described for modifications as corresponding to the original payment request; it is absent from this example. The `amount` table describes a payment amount and says HTTP POST notification currency/value are URL parameters, while the JSON example nests them in an amount object; this snapshot does not reconcile the two representations.\n- `success` reports whether the named event was executed successfully. Optional `reason` gives a refusal explanation when `success = false`. The successful Visa example, including card details and `hmacSignature` in `additionalData`, is example data; it does not establish universal fields or a signature-verification contract. Event execution or an approved example does not alone prove recipient credit, bank receipt, or settlement.\n- The response section lists `200 Success` and says webhook events are accepted by HTTP status code. Receiver acceptance is separate from the event's `success` value and payout lifecycle. This page gives no delivery, ordering, retry, deduplication, or reversal rule.\n\n## Detail locators\n\n- Deprecation, new-integration Transfer Webhooks route, existing-user migration route, and payout-request purpose: raw lines 5\u201323.\n- Body field requiredness, references, amount wording, conditional reason, and event-scoped success: raw lines 27\u201343.\n- Example wrapper, event code, amount, optional card fields, and string success: raw lines 45\u201376.\n- HTTP response acceptance: raw lines 77\u201380.\n\n## Related\n\n- [[adyen]]\n- [[adyen-payouts]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_THIRDPARTY/2026-09-15|API Explorer PAYOUT_THIRDPARTY webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This webhook is **deprecated** and no longer supports new integrations. Do one of the following:",
+      "location": "raw line 7, introductory deprecation notice"
+    },
+    {
+      "text": "If you are building a new integration, use the [Transfer Webhooks](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/overview) instead.",
+      "location": "raw line 9, migration direction"
+    },
+    {
+      "text": "The result of the [payout request](https://docs.adyen.com/online-payments/online-payouts).",
+      "location": "raw line 23, event purpose"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw line 43, Request body table"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 80, 200 Success response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-payout-thirdparty-webhook-source-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-payout-thirdparty]] \u2014 2026-09-15-captured deprecated PAYOUT_THIRDPARTY webhook result contract, with legacy payout event fields, event-scoped success, HTTP receipt, and Transfer Webhooks migration route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_THIRDPARTY/2026-09-15.md",
+  "raw_sha256": "ede71f8791013baf0c0315bc92dccd7a2aa7095bfd634c297db43bbbed3c62b4",
+  "status": "candidate_ready"
+}

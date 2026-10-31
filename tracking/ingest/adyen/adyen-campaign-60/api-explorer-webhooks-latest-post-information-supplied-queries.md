@@ -1,0 +1,11 @@
+# C60 fixed-query answers: INFORMATION_SUPPLIED
+
+Canonical retrieval route: `wiki/sources/adyen/source-adyen-api-explorer-webhooks-latest-post-information-supplied.md`; canonical URL: `https://docs.adyen.com/api-explorer/Webhooks/latest/post/INFORMATION_SUPPLIED`.
+
+## Q1
+
+The captured `Webhooks/latest` POST reference is an incoming `INFORMATION_SUPPLIED` event for successfully uploaded dispute defense documents or an Adyen auto-defended dispute (raw lines 5–7). It is not an upload API request. The displayed table marks top-level `live`, `notificationItems`, and the nested `NotificationRequestItem` wrapper optional, while `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` within the item are required (lines 11–27). `eventCode` identifies the event type, shown as `INFORMATION_SUPPLIED` in the example (lines 19, 47). `merchantReference` is the merchant's payment reference, `pspReference` Adyen's transaction or request reference, and optional `originalReference` is described for modifications as corresponding to the original payment request (lines 22–25). `success` is event-scoped; `reason` is described for a false outcome (lines 26–27). The illustrative live-origin payload includes USD 10000, `additionalData.disputeStatus: Pending`, chargeback codes, and a nonempty `reason` alongside `success: true` (lines 33–60). `eventDate` gives event generation time in ISO 8601 (line 20); no further timing rule is stated.
+
+## Q2
+
+The page describes defense documents supplied or auto-defense, and defines `success` as the outcome of that event (raw lines 5–7, 27). The example's `Pending` dispute status does not establish final resolution; the nonempty `reason` with `success=true` conflicts with the conditional wording for `reason`, so its presence alone is not a refusal signal (lines 26, 38–55). The response lists `200 Success` and bases webhook acceptance on HTTP status (lines 61–64), separate from the dispute-defense event outcome and any financial recovery. The 64-line reference gives no delivery-order, retry, deduplication, signature-verification, final dispute decision, or funds-settlement guarantee. `latest` is a captured API Explorer path; the immutable raw was fetched 2026-09-15 (lines 1–3). Use the canonical source route above for its evidence and raw link.

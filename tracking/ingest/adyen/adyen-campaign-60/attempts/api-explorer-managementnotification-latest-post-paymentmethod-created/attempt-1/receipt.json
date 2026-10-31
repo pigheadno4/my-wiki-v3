@@ -1,0 +1,46 @@
+{
+  "job_id": "api-explorer-managementnotification-latest-post-paymentmethod-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ManagementNotification latest: paymentMethod.created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/ManagementNotification/latest/post/paymentMethod.created\"\nraw_files:\n  - \"adyen/api-explorer/ManagementNotification/latest/post/paymentMethod.created/2026-09-15.md\"\ntags: [adyen, webhooks, management, payment-methods]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen's ManagementNotification `latest` `paymentMethod.created` reference describes an incoming webhook after a request to add a payment method has completed. It is a notification contract, not the request to add a method or proof that the method can receive payments. [[adyen]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The required `data.status` reports the add-request outcome: `success` means the method was added; `failure` means the request failed; `capabilityPending` means the `receivePayments` capability is not allowed. Keep this request status separate from optional `data.enabled`, `data.allowed`, and `data.verificationStatus`. The reference says Adyen sets `allowed` to true after merchant-account screening.\n- Required identifiers include `data.id` for the payment-method resource and `data.merchantId` for the merchant account. `data.storeId` and merchant-supplied `data.reference` are optional. `data.type` is the payment-method variant; the outer `type` is the notification type.\n- The sample is for `environment: test` and `type: paymentMethod.created`, with `data.status: success`. It does not illustrate `allowed`, `enabled`, or `verificationStatus`, so sample success alone does not establish those states.\n- The response section says any `2xx` HTTP status code accepts the webhook. That response concerns receipt, not the add-request status or permission to receive payments.\n\n## Detail locators\n\n- Request body requiredness, statuses and identifiers: pinned raw lines 9\u201326. `createdAt` is the webhook creation timestamp; `environment` is `test` or `live`.\n- Example payload: pinned raw lines 28\u201344.\n- `200 Success` and optional `notificationResponse` response-body field: pinned raw lines 45\u201353. The page gives no delivery ordering, retry, deduplication, or signature rule.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethod.created/2026-09-15|Adyen ManagementNotification paymentMethod.created reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "A request to [add a payment method](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/_merchantId_/paymentMethodSettings) was completed.",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethod.created/2026-09-15.md:7"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of the request to add a payment method. Possible values:  - **success**: the payment method was added.  - **failure**: the request failed.  - **capabilityPending**: the **receivePayments** capability is not allowed. |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethod.created/2026-09-15.md:21"
+    },
+    {
+      "text": "|   - allowed | boolean | No | Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account. |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethod.created/2026-09-15.md:16"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethod.created/2026-09-15.md:53"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-management-paymentmethod-created-webhooks-link",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-managementnotification-latest-post-paymentmethod-created]] \u2014 2026-09-15-captured ManagementNotification `paymentMethod.created` add-request completion contract; status distinguishes added, failed and capability pending, while `2xx` acknowledges webhook receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethod.created/2026-09-15.md",
+  "raw_sha256": "03257bbb972aa874047e76868816dda2178c465336139e851408b69a472a0a74",
+  "status": "candidate_ready"
+}

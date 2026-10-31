@@ -15,6 +15,9 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-api-explorer-webhooks-latest-post-recurring-contract]] — 2026-09-15-captured `Webhooks/latest` RECURRING_CONTRACT creation event: Customer Area enablement, `originalPsp` for the initial payment versus token-valued `pspReference`, and HTTP receipt separate from later recurring payment outcome.
+
+
 - [[source-adyen-api-explorer-recurring-latest-post-disable]] — 2026-09-15-captured inactive Classic Recurring API v68 test-server disable reference for shopper-scoped specific-detail versus all-details selection and response; its source flags the linked guide's contradictory all-details example.
 
 

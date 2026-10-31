@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-relayed-authorisation-webhooks-latest-post-balanceplatform-authorisation-relayed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen relayed authorisation webhook: balancePlatform.authorisation.relayed\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/relayed-authorisation-webhooks/latest/post/balancePlatform.authorisation.relayed\"\nraw_files:\n  - \"adyen/api-explorer/relayed-authorisation-webhooks/latest/post/balancePlatform.authorisation.relayed/2026-09-15.md\"\ntags: [adyen, issuing, relayed-authorisation, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen API Explorer `relayed-authorisation-webhooks/latest` endpoint describes an incoming `balancePlatform.authorisation.relayed` request through which Adyen asks an Issuing platform for a transaction authorisation decision. To complete the relayed decision, the receiver must return HTTP 200 with `authorisationDecision` in the response body; if Adyen does not receive the response within two seconds, it applies configured fallback logic. This is a decision exchange, not an ordinary webhook receipt acknowledgement or proof of capture or settlement. See [[adyen]], [[adyen-issuing]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request table marks all top-level fields optional. It describes `accountHolder`, `balanceAccount`, `paymentInstrument`, and transfer `id` separately; `reference` is the payment reference, while scheme trace and unique transaction IDs are separate optional fields. `amount` and `originalAmount` are optional parents whose `currency` and minor-unit `value` children are marked required when present. `paymentInstrument` is optional but has required nested identifiers and type fields; the table's many conditional card and bank-account fields belong to that resource, not mandatory webhook envelope fields.\n- The sample request carries a prefilled `authorisationDecision.status: Authorised`, a negative EUR amount, balance mutation, validation results, and `environment: test`; these are example request data, not the platform's response or evidence that the transaction was finally approved, captured, or settled. `type` is shown as `balancePlatform.authorisation.relayed` in the sample.\n- The 200 response-body table marks `authorisationDecision` optional but its nested `status` required when that object is present, with `Authorised` and `Refused` values; optional `refusalReason`, `metadata`, and `reference` are also listed. The response example nests `status` inside `authorisationDecision`. The introductory prose nevertheless directs including `authorisationDecision` to complete the relayed authorisation, so the optional table parent must not be read as permission to omit a decision from a completed response.\n- The endpoint lists 400, 401, 403, 422, and 500 error responses with optional error details. It expressly states two-second fallback on no response. The separate Issuing relayed-authorisation guide describes a prose `status` response shape that conflicts with its nested examples, while the validation-checks guide mentions a 1500 ms stand-in trigger; this endpoint's 200 nested response and two-second statement do not reconcile those separate guide claims. See their source pages before implementing.\n\n## Detail locators\n\n- Purpose, required decision response, and two-second fallback: raw lines 5\u201311.\n- Full request schema, optional top-level versus required nested fields: raw lines 13\u2013143.\n- Illustrative incoming request, including identifiers, amounts, validation and type: raw lines 145\u2013304.\n- 200 response schema and error-status bodies: raw lines 305\u2013382.\n- Nested decision response example: raw lines 384\u2013399.\n\n## Related\n\n- [[source-adyen-docs-issuing-authorisation-relayed-authorisation]] \u2014 Issuing decision guide with response-shape tension.\n- [[source-adyen-docs-issuing-validation-checks]] \u2014 separate 1500 ms stand-in wording.\n- [[adyen-issuing]] \u2014 product and authorisation context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/relayed-authorisation-webhooks/latest/post/balancePlatform.authorisation.relayed/2026-09-15|Adyen relayed authorisation endpoint reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To complete a relayed authorization, respond to this webhook with an **HTTP 200** response. Include the `authorisationDecision` in the response body.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "If we do not receive the response within two seconds, we apply your [fallback logic](https://docs.adyen.com/issuing/authorisation/relayed-authorisation/#fallback).",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| id | string | No | The unique identifier of the transfer. |",
+      "location": "raw line 65"
+    },
+    {
+      "text": "| authorisationDecision | object | No | Object representing the authorization decision. |",
+      "location": "raw line 313"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of the authorization.  Possible values:  **Authorised**  **Refused**  For more information, refer to [Use relayed authorization](https://docs.adyen.com/issuing/authorisation/relayed-authorisation/). |",
+      "location": "raw line 315"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-relayed-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-relayed-authorisation-webhooks-latest-post-balanceplatform-authorisation-relayed]] \u2014 2026-09-15-captured Issuing relayed-authorisation request/response contract: HTTP 200 with nested decision within two seconds or fallback; optional response parent versus required nested status and separate guide response-shape/1500 ms tensions remain visible.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The existing Issuing guide reports a prose-versus-example response-shape conflict and separate validation-checks 1500 ms stand-in wording; preserve these as unresolved, not universal timing/shape rules."
+        ]
+      },
+      {
+        "update_id": "c60-relayed-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-relayed-authorisation-webhooks-latest-post-balanceplatform-authorisation-relayed]] \u2014 2026-09-15-captured relayed Issuing authorisation decision exchange requiring HTTP 200 plus decision body within two seconds before fallback; distinct from generic webhook acknowledgement.\n",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/relayed-authorisation-webhooks/latest/post/balancePlatform.authorisation.relayed/2026-09-15.md",
+  "raw_sha256": "d72eec781de77b04ed69500c365c6069eab1faf246c62e140ed5df51f668b30d",
+  "status": "candidate_ready"
+}

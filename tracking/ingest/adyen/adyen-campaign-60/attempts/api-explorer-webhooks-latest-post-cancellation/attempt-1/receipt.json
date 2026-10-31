@@ -1,0 +1,47 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-cancellation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: CANCELLATION notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/CANCELLATION\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/CANCELLATION/2026-09-15.md\"\ntags: [adyen, webhooks, online-payments, cancellation]\n---\n\n## Overview\n\nCaptured API Explorer `Webhooks/latest` reference for an incoming `CANCELLATION` notification reporting the result of a request to cancel a payment. Its `POST /CANCELLATION` label describes the webhook delivery, not a merchant cancellation API call. This snapshot does not name a numbered Webhooks API version. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request-body table marks both top-level `live` and `notificationItems` as not required. Within a `NotificationRequestItem`, it marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` as required. These are table-level flags; they do not make the top-level body fields required.\n- `success` is a string describing the outcome of the event identified by `eventCode`: `true` means the event executed successfully; `false` means it did not. The optional `reason` gives a short refusal explanation when `success` is `false`. The example has `eventCode: \"CANCELLATION\"` and `success: \"true\"`; it illustrates one notification, not every cancellation result.\n- `pspReference` is Adyen's reference for the transaction or request. Optional `originalReference` corresponds, for modifications, to the request assigned to the original payment. The required `merchantReference` is the merchant's payment reference. Keep these identities separate when correlating the cancellation result.\n- `amount` describes the payment amount. The example uses EUR 1000, and the table says HTTP POST notifications return currency and value as URL parameters. `eventDate` is the event-generation time; `live` distinguishes live from test origin when present.\n- The response section says webhook events are accepted on the basis of HTTP status code and labels `200` \u201cSuccess.\u201d That is receiver acceptance of the notification, distinct from the `success` field's cancellation-event outcome. This page does not specify a response body or establish delivery, ordering, retry, deduplication, signature, capture, or settlement guarantees.\n\n## Detail locators\n\n- Purpose and POST label: raw lines 5\u20137.\n- Body required flags, event outcome and reference meanings: raw lines 11\u201327.\n- Illustrative cancellation payload: raw lines 29\u201355.\n- Receiver acceptance: raw lines 56\u201359.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/CANCELLATION/2026-09-15|Captured CANCELLATION webhook reference]]\n",
+  "quotes": [
+    {
+      "text": "The result of the request to [cancel a payment](https://docs.adyen.com/online-payments/cancel).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|     - originalReference | string | No | For modifications, this field corresponds to the payment request assigned to the original payment. |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-cancellation-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-cancellation]] \u2014 2026-09-15-captured `CANCELLATION` webhook reference for cancellation-request outcome, original-payment correlation and receiver HTTP-status acceptance; notification receipt is separate from event success.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/CANCELLATION/2026-09-15.md",
+  "raw_sha256": "6ea4dd72603a24157d0058e49b60d7cfe648680f04607de5bb42f7baa035f547",
+  "status": "candidate_ready"
+}

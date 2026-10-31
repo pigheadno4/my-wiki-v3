@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-expire",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest POST /EXPIRE\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/EXPIRE\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/EXPIRE/2026-09-15.md\"\ntags: [adyen, webhooks, authorisation, expiry]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the API Explorer Webhooks `latest` POST /EXPIRE reference describes an incoming notification that the remaining uncaptured amount of an authorisation expired. The POST heading identifies the webhook event, not a merchant operation. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The table marks top-level `live` and `notificationItems` optional; the latter contains an optional `NotificationRequestItem` wrapper. Within the item, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and string `success` are marked required. The example uses `eventCode: \"EXPIRE\"`; `live` distinguishes live versus test origin.\n- The page defines `amount` as the amount **originally authorised**, while the event description says the **remaining uncaptured amount** expired. Do not interpret the amount object as a measured remainder. `merchantReference` identifies the merchant's payment reference, `pspReference` Adyen's transaction or request reference, and optional `originalReference` is described for modifications as corresponding to the original payment request. The example omits `originalReference`.\n- The EXPIRE item's string `success` is defined as always `true`: it is the event's success flag, not a claim that the authorisation remains usable, the payment was captured, or funds settled. The optional `reason` description addresses `success = false`, although the EXPIRE description says `success` is always true; the example shows an empty reason.\n- The response section lists `200 Success` and HTTP-status-based webhook acceptance. This receiving endpoint acceptance is separate from the expired-authorisation event state. This page states no delivery, order, retry, deduplication, signature, reversal, or funds-receipt contract.\n\n## Detail locators\n\n- Event identity and remaining-uncaptured-amount description: raw lines 5\u20137.\n- Request-body requiredness, originally authorised amount, reference identities, conditional reason, and always-true success: raw lines 11\u201327.\n- EXPIRE example with EUR amount, no `originalReference`, empty `reason`, and string `success`: raw lines 29\u201353.\n- HTTP response acceptance: raw lines 54\u201357.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n- [[adyen-payment-capture]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/EXPIRE/2026-09-15|API Explorer EXPIRE webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The remaining uncaptured amount expired",
+      "location": "raw line 7, beneath POST /EXPIRE heading"
+    },
+    {
+      "text": "|     - amount | object | Yes | The amount that was originally authorised. |",
+      "location": "raw line 18, Request body table"
+    },
+    {
+      "text": "|     - originalReference | string | No | For modifications, this field corresponds to the payment request assigned to the original payment. |",
+      "location": "raw line 23, Request body table"
+    },
+    {
+      "text": "|     - success | string | Yes | Always `true`. |",
+      "location": "raw line 27, Request body table"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 57, 200 Success response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-expire-webhook-source-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-expire]] \u2014 2026-09-15-captured Webhooks `latest` EXPIRE notification reference: remaining uncaptured authorisation expiry, originally authorised amount field, event-scoped always-true `success`, and HTTP-status acceptance.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/EXPIRE/2026-09-15.md",
+  "raw_sha256": "f0f8847fcb1b740300fd4240af3df3e0df812fd0332767a724087df7c8c32a22",
+  "status": "candidate_ready"
+}

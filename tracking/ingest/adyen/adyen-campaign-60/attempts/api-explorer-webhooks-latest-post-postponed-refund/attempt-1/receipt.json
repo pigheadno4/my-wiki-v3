@@ -1,0 +1,46 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-postponed-refund",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: POSTPONED_REFUND notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/POSTPONED_REFUND\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/POSTPONED_REFUND/2026-09-15.md\"\ntags: [adyen, webhooks, refunds, capture]\n---\n\n## Overview\n\nThis captured Adyen API Explorer `Webhooks/latest` POST reference describes an incoming `POSTPONED_REFUND` notification: the refund was postponed until after payment capture. The page says to contact Adyen Support to enable this notification. The POST heading is a webhook event route, not an instruction to submit a refund. See [[adyen]], [[adyen-refunds]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The displayed request-body table marks `live`, `notificationItems`, and the nested `NotificationRequestItem` wrapper optional. Within the item, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` are marked required. The example uses `eventCode: \"POSTPONED_REFUND\"`; its EUR 1000 amount and `directdebit_NL` payment method are illustrative, not general conditions for the event.\n- `merchantReference` identifies the merchant's payment reference. `pspReference` is Adyen's transaction or request reference. Optional `originalReference` is described for modifications as corresponding to the original payment request; the example contains distinct original and PSP references.\n- `success` describes execution of the specified event, not successful payment capture, completed refund, shopper credit, or settlement. `reason` is described as a short refusal explanation if `success=false`. The notification's defining state is postponement until after capture.\n- The example includes `additionalData.hmacSignature`, but this reference does not define a signature verification procedure or state that every event includes that field.\n- The response section lists `200 Success` and says webhook events are accepted based on HTTP status. Receiver acceptance is separate from the refund state. This reference does not establish delivery order, retries, deduplication, or a later refund outcome.\n\n## Detail locators\n\n- Raw lines 5\u20137: postponed-until-after-capture meaning and Support enablement condition.\n- Raw lines 11\u201327: request-body schema, optional versus required item fields, `live` environment flag, reference identities, conditional `reason`, and event-scoped `success`. `amount` is described as the payment amount; the table notes currency and value as URL parameters for HTTP POST notifications.\n- Raw lines 29\u201358: illustrative test-origin payload, `hmacSignature` extra field, EUR 1000 amount, `directdebit_NL`, and `success=\"true\"`.\n- Raw lines 59\u201362: `200 Success` and HTTP status based webhook acceptance.\n\n## Related\n\n- [[adyen-refunds]] \u2014 online refund lifecycle and outcome boundaries.\n- [[adyen-webhooks]] \u2014 Adyen webhook families and receiver context.\n- [[adyen-payment-capture]] \u2014 capture lifecycle context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/POSTPONED_REFUND/2026-09-15|Captured POSTPONED_REFUND webhook reference]]\n",
+  "quotes": [
+    {
+      "text": "The refund was postponed until after [payment capture](https://docs.adyen.com/online-payments/capture). To enable this notification, contact our [Support Team](https://www.adyen.help/hc/en-us/requests/new).",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/POSTPONED_REFUND/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - originalReference | string | No | For modifications, this field corresponds to the payment request assigned to the original payment. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/POSTPONED_REFUND/2026-09-15.md:23"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/POSTPONED_REFUND/2026-09-15.md:27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/POSTPONED_REFUND/2026-09-15.md:62"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-postponed-refund-route",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-postponed-refund]] \u2014 2026-09-15-captured `Webhooks/latest` POSTPONED_REFUND event reference: refund postponed until after capture, Support enablement for the notification, and HTTP receiver acceptance separate from refund completion.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/POSTPONED_REFUND/2026-09-15.md",
+  "raw_sha256": "a0a451b39cc53cb21859841c72448942a47f31a8d7e58e6bb1bfdc9d0513d82c",
+  "status": "candidate_ready"
+}

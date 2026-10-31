@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-issuer-comments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest ISSUER_COMMENTS notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/ISSUER_COMMENTS\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/ISSUER_COMMENTS/2026-09-15.md\"\ntags: [adyen, webhooks, disputes, chargebacks]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the Adyen Webhooks `latest` API Explorer POST reference describes an incoming `ISSUER_COMMENTS` notification. The issuer can include free-text information about why it initiated or continued a dispute; the page says issuer comments can be received for chargebacks and pre-arbitration cases. This is a notification reference, not a merchant dispute action. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The example has `eventCode: ISSUER_COMMENTS` and illustrative `additionalData` keys for issuer-comment type, explanation, dispute amount change reason, cancellation, order details, damaged or defective goods, return attempts, and items not received. `additionalData` is optional in the parameter table; the example does not make these keys required or guarantee every comment type.\n- The item table marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` required. It marks outer `live` and `notificationItems`, the item wrapper, and `originalReference` optional. `merchantReference` is the merchant's payment reference, `pspReference` identifies the associated transaction or request, and `originalReference` is described for modifications.\n- `success` describes execution of the event named by `eventCode`, not the outcome or finality of the underlying dispute. The table describes optional `reason` as a refusal explanation if `success` is false, yet the example supplies a nonempty `reason` alongside `success: \"true\"`. Interpret that field in context; this page does not resolve the mismatch.\n- The response section shows `200 Success` and says webhook events are accepted on the basis of HTTP status. That is webhook acceptance, not dispute resolution or a financial outcome.\n\n## Detail locators\n\n- Pinned raw, lines 5\u20137: event purpose and chargeback/pre-arbitration scope.\n- Pinned raw, lines 11\u201327: envelope and item requiredness, identities, `live`, event time and `success`/`reason` descriptions.\n- Pinned raw, lines 29\u201368: illustrative payload and the `reason`/`success` mismatch.\n- Pinned raw, lines 69\u201372: HTTP status acceptance statement.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/ISSUER_COMMENTS/2026-09-15|ISSUER_COMMENTS API Explorer reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The issuer included [free-text comments](https://docs.adyen.com/risk-management/disputes-api/dispute-notifications/issuer-comments) with relevant information about the dispute process, such as why the issuer decided to initiate or continue the dispute. You can receive issuer comments for chargebacks and pre-arbitration cases.",
+      "location": "line 7, under POST /ISSUER_COMMENTS - Issuer included comments"
+    },
+    {
+      "text": "|     - reason | string | No | If `success` = `false`, then this includes a short message with an explanation for the refusal. |",
+      "location": "line 26, Parameters > Request body"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "line 27, Parameters > Request body"
+    },
+    {
+      "text": "\"reason\": \"Not as Described or Defective Merchandise/Services\",",
+      "location": "line 62, Request examples > issuer_comments"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "line 72, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-issuer-comments-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-issuer-comments]] \u2014 2026-09-15-captured incoming ISSUER_COMMENTS reference for chargeback and pre-arbitration issuer free text, with a reason/success example mismatch and HTTP-status acceptance separate from dispute outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The parameter table describes reason for success=false, while the example gives nonempty reason with success=true; keep this tension in the source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/ISSUER_COMMENTS/2026-09-15.md",
+  "raw_sha256": "c7b378c7abe38e437bfb8ffdae2843211e2cf3ba9057f71657e5010212bdd7e2",
+  "status": "candidate_ready"
+}

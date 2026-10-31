@@ -1,0 +1,64 @@
+{
+  "job_id": "api-explorer-forward-api-webhooks-latest-post-forwardapi-notification",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Forward API webhook \u2014 forwardApi.notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification\"\nraw_files:\n  - \"adyen/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification/2026-09-15.md\"\ntags: [adyen, webhooks, forward-api, payments]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the Forward API webhooks `latest` `forwardApi.notification` reference describes an incoming notification after Adyen forwarded a payment request to a third-party service on the merchant's behalf. Its title calls the Forward API request completed; this is a webhook contract, not an instruction to make a payment. See [[adyen]], [[adyen-webhooks]], and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The outer `type` and `createdAt` are marked required; `version`, `environment`, and `data` are optional in the displayed table. The example uses `type: \"forwardApi.notification\"`, `version: \"1\"`, and `environment: \"test\"`; it does not pin all `latest` events to version 1.\n- Within the optional `data` object, the table marks `eventDateTime`, `externalPsp`, `merchantAccountCode`, `merchantCountryCode`, `merchantReference`, `pspReference`, `scheme`, `shopperReference`, and `storedPaymentMethodId` required. `pspReference` is Adyen's request reference; `externalPsp` names the third-party service. Optional `externalPspTransactionStatus` is the status returned by that service, not a blanket authorization guarantee.\n- Optional booleans distinguish whether network-transaction-reference and transaction-link-ID paths were requested versus found in the third-party response. The raw third-party response body is optional. See the pinned table for exact names and scope.\n- The response section says `200 Success`, \"The request has succeeded,\" and an optional `notificationResponse`; any HTTP `2xx` accepts the webhook. That receiver acknowledgement is separate from the third-party transaction status or payment finality.\n\n## Detail locators\n\n- Complete request body table, including amount currency/minor-unit value, reference matching flags, third-party body/status, identities, environment and version: raw lines 9\u201335. Nested required fields are conditional on the optional `data` object being present.\n- Single recurring example with third-party status `Authorised`, externalPsp `adyen`, VISA, EUR 100, and a raw response body: raw lines 37\u201362. These are example values, not universal outcomes.\n- Response and `2xx` acceptance wording: raw lines 63\u201371. The page gives no delivery ordering, retry, deduplication, signature, or financial settlement rule.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-webhooks]] \u2014 webhook-family context.\n- [[adyen-online-payments]] \u2014 payment context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification/2026-09-15|Forward API webhooks latest forwardApi.notification, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen forwarded a payment request to the third-party service on your behalf.",
+      "location": "raw/adyen/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification/2026-09-15.md:7"
+    },
+    {
+      "text": "| data | object | No | The details of the Forward API request. |",
+      "location": "raw/adyen/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification/2026-09-15.md:15"
+    },
+    {
+      "text": "|   - externalPspTransactionStatus | string | No | The transaction status returned by the third-party service. |",
+      "location": "raw/adyen/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification/2026-09-15.md:23"
+    },
+    {
+      "text": "|   - pspReference | string | Yes | Adyen's 16-character reference associated with the request. This value is globally unique, so you can use it as the reference when you communicate with us about this request. |",
+      "location": "raw/adyen/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification/2026-09-15.md:29"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw/adyen/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification/2026-09-15.md:71"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "forward-notification-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-forward-api-webhooks-latest-post-forwardapi-notification]] \u2014 2026-09-15-captured Forward API notification after a payment request is forwarded to a third party; optional returned status and 2xx receiver acceptance remain distinct.\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "forward-notification-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-forward-api-webhooks-latest-post-forwardapi-notification]] \u2014 2026-09-15-captured Forward API webhook schema with Adyen request reference, third-party service/status fields, and separate 2xx acceptance.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification/2026-09-15.md",
+  "raw_sha256": "4edd71f6671c311afa3f3ac1c2f885b604aa184c861e7b66c3ad29ea63185f9b",
+  "status": "candidate_ready"
+}

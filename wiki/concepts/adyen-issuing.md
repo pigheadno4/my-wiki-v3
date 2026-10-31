@@ -15,6 +15,12 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-api-explorer-relayed-authorisation-webhooks-latest-overview]] — 2026-09-15-captured Authorization webhooks v4 overview listing the relayed authorisation request route; payload, decision and timing rules require its endpoint reference.
+
+
+- [[source-adyen-api-explorer-relayed-authorisation-webhooks-latest-post-balanceplatform-authorisation-relayed]] — 2026-09-15-captured Issuing relayed-authorisation request/response contract: HTTP 200 with nested decision within two seconds or fallback; optional response parent versus required nested status and separate guide response-shape/1500 ms tensions remain visible.
+
+
 - [[source-adyen-api-explorer-dispute-webhooks-latest-post-balanceplatform-dispute-updated]] — 2026-09-15-captured Balance Platform dispute-updated incoming webhook contract for request information and optional dispute/transaction/status fields; update receipt is not a dispute decision or financial outcome.
 
 

@@ -26,9 +26,12 @@ The `REFUND` webhook reports Adyen's refund-validation result. `success: false` 
 
 A later `REFUND_FAILED` webhook is distinct from validation failure: the payment method or card scheme can reject a refund even days after `REFUND` reported `success: true`. Structured refusal details may appear in `additionalData`; do not expose refusal-reason details to shoppers.
 
-A `REFUNDED_REVERSED` webhook is a different outcome. For some payment methods, funds from a previously refunded payment can return to Adyen and the merchant account, for example when the shopper's bank account is no longer valid. Contact the shopper about the bank-account status before retrying.
+A `REFUNDED_REVERSED` webhook is a different outcome. For some payment methods, funds from a previously refunded payment can return to Adyen and be back in “your account” (the guide's wording), for example when the shopper's bank account is no longer valid. Contact the shopper about the bank-account status before retrying.
 
 Refund authorization is automatic for the listed American Express, Discover, Mastercard, and Visa flows. Even when an issuer declines the refund authorization, the guide says Adyen still tries to process the refund.
+
+> [!warning] Contradiction
+> The captured [[source-adyen-api-explorer-webhooks-latest-post-refunded-reversed|REFUNDED_REVERSED API Explorer reference]] says the refunded amount was returned to “your bank account” (its raw line 7). The captured [[source-adyen-docs-online-payments-refund|online refund guide]] instead says funds have been returned to Adyen and are back in “your account” (its raw line 659). The destination wording remains source-qualified and unresolved; the event or receiver acknowledgement alone is not independent bank-credit proof.
 
 ## Detail locators
 

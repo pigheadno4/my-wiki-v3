@@ -21,6 +21,18 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-api-explorer-forward-api-webhooks-latest-post-forwardapi-notification]] — 2026-09-15-captured Forward API webhook schema with Adyen request reference, third-party service/status fields, and separate 2xx acceptance.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-technical-cancel]] — 2026-09-15-captured `Webhooks/latest` TECHNICAL_CANCEL result-notification schema, with event-scoped success and HTTP receiver acceptance separate from the cancellation outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-order-closed]] — 2026-09-15-captured `ORDER_CLOSED` webhook schema for partial-payment orders; the API Explorer headline is not an exhaustive trigger list, and the linked guide also covers cancellation with `success: false`.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-order-opened]] — 2026-09-15-captured ORDER_OPENED partial-payment order-creation notification schema, distinct from order completion.
+
+
 - [[source-adyen-api-explorer-binlookup-latest-post-getcostestimate]] — 2026-09-15 BinLookup API v54 POST /getCostEstimate reference for region-scoped assumed interchange/scheme-fee estimates before authorisation; source flags absent named surcharging-policy response field.
 
 

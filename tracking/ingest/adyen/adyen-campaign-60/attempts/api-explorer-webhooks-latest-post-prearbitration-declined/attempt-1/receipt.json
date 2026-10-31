@@ -1,0 +1,58 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-prearbitration-declined",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks POST /PREARBITRATION_DECLINED \u2014 declined pre-arbitration case\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED/2026-09-15.md\"\ntags: [adyen, webhooks, disputes, prearbitration]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the Adyen Webhooks `latest` POST /PREARBITRATION_DECLINED reference describes an incoming notification that a pre-arbitration case was declined. The POST label identifies a webhook event, not a merchant dispute API operation. See [[adyen]], [[adyen-webhooks]], and [[adyen-risk-management]].\n\n## Key takeaways\n\n- The page states the case was declined. It provides no request example, case identifier, decline reason specific to pre-arbitration, next dispute stage, or financial outcome. Do not interpret the generic `success` field as a claim that the merchant won or lost the underlying payment dispute.\n- The displayed nested `NotificationRequestItem` table marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` required. `success` is a string indicating whether the event identified by `eventCode` executed; optional `reason` is described as a short refusal explanation when `success` is `false`. Optional `originalReference` is described generically for modifications as the original payment request. The page does not map `pspReference` specifically to a pre-arbitration case ID.\n- The response section shows `200 Success` and says webhook acceptance is based on HTTP status code. Receipt acceptance is distinct from the case-declined event and from the event's `success` value.\n\n## Detail locators\n\n- Request body table, including optional outer `live` and `notificationItems`, nested field requirements, references, and refusal-field wording: raw lines 9\u201327. Outer optionality must not be collapsed into the nested field requirements.\n- HTTP response acceptance wording: raw lines 29\u201332. The page has no example payload or delivery/order/retry/deduplication/signature/finality rule.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-webhooks]] \u2014 incoming webhook context.\n- [[adyen-risk-management]] \u2014 dispute documentation route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED/2026-09-15|Adyen Webhooks latest POST /PREARBITRATION_DECLINED, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The [pre-arbitration](https://docs.adyen.com/risk-management/understanding-disputes/dispute-process-and-flow#dispute-process) case was declined.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED/2026-09-15.md:7"
+    },
+    {
+      "text": "| notificationItems | array of DisputesNotificationRequestItemWrapper | No | A container object for the details included in the notification. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED/2026-09-15.md:15"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED/2026-09-15.md:27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED/2026-09-15.md:32"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "prearb-declined-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-declined]] \u2014 2026-09-15-captured incoming declined pre-arbitration case event; generic event success and HTTP receipt do not define dispute financial outcome.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "prearb-declined-risk-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-declined]] \u2014 2026-09-15-captured PREARBITRATION_DECLINED webhook reference; the page gives a declined-case event without case-ID or subsequent outcome detail.\n",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED/2026-09-15.md",
+  "raw_sha256": "e43e95387fcdb513899b8699291ca4d6ca69c46de0e4b6e025ca0c3b45a03651",
+  "status": "candidate_ready"
+}

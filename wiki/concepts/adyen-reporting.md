@@ -19,6 +19,9 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-api-explorer-webhooks-latest-post-report-available]] — 2026-09-15-captured Webhooks `latest` REPORT_AVAILABLE notification for a generated downloadable report; the sample has a reference-shaped `pspReference` and present but empty `merchantReference`, without establishing a schema violation or retrieval proof.
+
+
 - [[source-adyen-api-explorer-report-webhooks-latest-post-balanceplatform-report-created]] — Report webhooks v1 generated-report notification with URL, filename and type; credential wording conflicts between prose and schema, and availability is not reconciliation proof (captured 2026-09-15).
 
 

@@ -1,0 +1,63 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-autorescue",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest AUTORESCUE notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/AUTORESCUE\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/AUTORESCUE/2026-09-15.md\"\ntags: [adyen, webhooks, auto-rescue, recurring-payments]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the Adyen Webhooks `latest` API Explorer POST reference describes an incoming `AUTORESCUE` notification when the Auto Rescue process ends. It is a notification contract, not an operation for the merchant to initiate a rescue. See [[adyen]], [[adyen-webhooks]], and [[adyen-card-auto-rescue]].\n\n## Key takeaways\n\n- The example has `eventCode: AUTORESCUE`, `success: \"true\"`, and `additionalData.retry.rescueReference` and `merchantOrderReference`. Those example fields and values do not establish a universal required payload beyond the parameter table. The item schema marks `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, `amount`, and `success` as required; the outer `live` and `notificationItems` and the item wrapper are marked optional.\n- `success` reports whether the event named by `eventCode` executed successfully; when it is `false`, optional `reason` contains a short refusal explanation. This reference does not itself establish a successful underlying payment, capture, or settlement. `pspReference` identifies the associated transaction or request; `merchantReference` is the merchant's payment reference. `originalReference` is optional and described for modifications.\n- The response section says webhook events are accepted on the basis of the HTTP status code and shows `200 Success`. This is an acceptance signal, separate from the event outcome.\n\n## Detail locators\n\n- [Pinned raw, Parameters / Request body](https://docs.adyen.com/api-explorer/Webhooks/latest/post/AUTORESCUE) \u2014 envelope, item fields and requiredness; `live` identifies live versus test origin, and `eventDate` is the event-generation time.\n- [Pinned raw, Request examples / autorescue](https://docs.adyen.com/api-explorer/Webhooks/latest/post/AUTORESCUE) \u2014 one illustrative payload, including amount, references, and `additionalData`.\n- [Pinned raw, Responses / 200 Success](https://docs.adyen.com/api-explorer/Webhooks/latest/post/AUTORESCUE) \u2014 HTTP status acceptance statement.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/AUTORESCUE/2026-09-15|AUTORESCUE API Explorer reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The [Auto Rescue process](https://docs.adyen.com/online-payments/auto-rescue#rescue-process-ended) ended.",
+      "location": "line 7, under POST /AUTORESCUE - Auto Rescue process ended"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "line 27, Parameters > Request body"
+    },
+    {
+      "text": "|     - reason | string | No | If `success` = `false`, then this includes a short message with an explanation for the refusal. |",
+      "location": "line 26, Parameters > Request body"
+    },
+    {
+      "text": "\"eventCode\": \"AUTORESCUE\",",
+      "location": "line 47, Request examples > autorescue"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "line 63, Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-autorescue-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-autorescue]] \u2014 2026-09-15-captured Webhooks `latest` incoming AUTORESCUE process-ended notification schema and HTTP-status acceptance; event success is separate from payment or settlement proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c60-autorescue-card-route",
+        "target_path": "wiki/concepts/adyen-card-auto-rescue.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-autorescue]] \u2014 2026-09-15-captured AUTORESCUE process-ended notification reference, with item fields, example and HTTP-status acceptance.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/AUTORESCUE/2026-09-15.md",
+  "raw_sha256": "43c18d690eef55146ae8726d2020868cd4744ab3b42e88b858920b99c6bbf337",
+  "status": "candidate_ready"
+}

@@ -30,6 +30,9 @@ This is a 2023-last-modified Adyen page captured 2026-09-15. It does not identif
 
 ## Sources
 
+- [[source-adyen-api-explorer-managementnotification-latest-post-merchant-updated]] — 2026-09-15-captured merchant-account capability and verification update webhook; capability verification is separate from merchant status, and the valid-capability example remains `PreActive`.
+
+
 - [[source-adyen-api-explorer-management-latest-get-companies]] — 2026-09-15-captured Management API v3 TEST list of company accounts accessible to the calling credential, requiring Account read role; sample links use /v1 and listing does not enable accounts or merchant processing.
 
 

@@ -1,0 +1,46 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-offer-closed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: OFFER_CLOSED notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/OFFER_CLOSED\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/OFFER_CLOSED/2026-09-15.md\"\ntags: [adyen, webhooks, online-payments, offer-expiry]\n---\n\n## Overview\n\nCaptured API Explorer `Webhooks/latest` `POST /OFFER_CLOSED` reference for an incoming notification that an offer expired, for example after the shopper abandoned the session. For **cards**, the page says offers expire after 12 hours by default. The `POST` heading describes webhook delivery, not a merchant operation to close an offer. The `latest` label supplies no numbered version. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The body table marks top-level `live` and `notificationItems` as not required, and also marks the nested `NotificationRequestItem` wrapper as not required. Within an item, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` are marked required. These nested field flags do not make the top-level container required.\n- `success` is a **string** for the outcome of the event identified by `eventCode`: `true` means that event executed successfully; `false` means it did not. An optional `reason` gives a short refusal explanation when `success` is `false`. The example has `eventCode: \"OFFER_CLOSED\"` and `success: \"true\"`; this is an offer-closure event outcome, not a successful payment.\n- The required `merchantReference` identifies the merchant's payment reference. `pspReference` identifies Adyen's transaction or request reference. Optional `originalReference` is described for modifications as corresponding to the original payment request; the example does not include it.\n- `amount` is described as the payment amount, and the table says HTTP POST notifications return currency and value as URL parameters. `eventDate` is when the event was generated; optional `live` distinguishes live and test origin. The example shows EUR 1000, `paymentMethod: \"ideal\"`, and `additionalData` with `hmacSignature` and `paymentMethodVariant`. Those example fields do not establish a signature requirement or extend the card-specific default expiry to iDEAL.\n- The response section labels `200` Success and says webhook events are accepted based on HTTP status code. Receiver acceptance is separate from the offer-expiry event's `success` value. This page gives no response-body, delivery, ordering, retry, deduplication, or payment finality contract.\n\n## Detail locators\n\n- Event purpose and card-specific default: raw lines 5\u20137.\n- Request-body flags, identities, amount and success semantics: raw lines 11\u201327.\n- Illustrative iDEAL notification and extra fields: raw lines 29\u201358.\n- HTTP status acceptance: raw lines 59\u201362.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/OFFER_CLOSED/2026-09-15|Captured OFFER_CLOSED webhook reference]]\n",
+  "quotes": [
+    {
+      "text": "The offer expired, for example, because the shopper abandoned the session. For cards, offers expire after 12 hours by default.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| notificationItems | array of NotificationRequestItemWrapper | No | A container object for the details included in the notification. |",
+      "location": "raw line 15"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 62"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-offer-closed-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-offer-closed]] \u2014 2026-09-15-captured `OFFER_CLOSED` offer-expiry webhook reference, including a card-specific default expiry and separate event-success versus HTTP receiver-acceptance meanings.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/OFFER_CLOSED/2026-09-15.md",
+  "raw_sha256": "10de8bc74098ef49d8bfaeab1eba37c4215a9f016e28e8323ebd91ebcbec2f21",
+  "status": "candidate_ready"
+}

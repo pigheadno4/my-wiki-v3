@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-prearbitration-open",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: PREARBITRATION_OPEN notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/PREARBITRATION_OPEN\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_OPEN/2026-09-15.md\"\ntags: [adyen, webhooks, disputes, prearbitration]\n---\n\n## Overview\n\nThis 2026-09-15 capture of the Adyen API Explorer `Webhooks/latest` `POST /PREARBITRATION_OPEN` reference describes an incoming disputes notification that the cardholder's bank opened a pre-arbitration case. The heading names a webhook event received by an endpoint, not a merchant operation to open a case. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The notification-item schema requires `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success`. `eventCode` is the notification event type; `success` describes execution of that event code. This page does not provide an example payload or spell out a particular `success` value for this event.\n- `originalReference` is optional and described for modifications as the payment request assigned to the original payment. `pspReference` is Adyen's reference associated with the transaction or request. `reason` is optional, with a refusal explanation described only for `success=false`. The enclosing `live`, `notificationItems`, and `NotificationRequestItem` rows are marked optional in the table.\n- The page identifies case opening by the cardholder's bank but gives no defense deadline, required merchant action, resolution state, or financial reversal rule. It lists `200 Success` and says webhook acceptance is based on HTTP status code; that receiver acceptance does not decide the case. No delivery-order, retry, deduplication, or signature procedure is specified here.\n\n## Detail locators\n\n- Event identity and bank action: raw lines 5\u20137.\n- Request schema and field requiredness: raw lines 9\u201327.\n- HTTP response acceptance: raw lines 29\u201332.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 incoming webhook context.\n- [[source-adyen-docs-risk-management-understanding-disputes-dispute-process-and-flow]] \u2014 separate dispute-flow guide for broader lifecycle context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_OPEN/2026-09-15|Adyen API Explorer PREARBITRATION_OPEN reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The cardholder's bank opened the [pre-arbitration](https://docs.adyen.com/risk-management/understanding-disputes/dispute-process-and-flow#dispute-process) case.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|     - eventCode | string | Yes | The type of event the notification item is for. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "|     - originalReference | string | No | For modifications, this field corresponds to the payment request assigned to the original payment. |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 32"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-prearbitration-open-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-open]] \u2014 2026-09-15-captured incoming `PREARBITRATION_OPEN` dispute notification for a case opened by the cardholder's bank; item schema and HTTP receipt rule do not establish defense or resolution outcome.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_OPEN/2026-09-15.md",
+  "raw_sha256": "b069b239c354709e1f392c0960107a12b83e77931d37f5480b2c8728917e703e",
+  "status": "candidate_ready"
+}

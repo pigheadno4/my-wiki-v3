@@ -1,0 +1,60 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-capture",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks POST /CAPTURE \u2014 result of capture request\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/CAPTURE\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/CAPTURE/2026-09-15.md\"\ntags: [adyen, webhooks, capture, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the Adyen Webhooks `latest` POST /CAPTURE reference describes an incoming notification for the result of a payment capture request. The POST label identifies the webhook event, not a merchant capture API operation. See [[adyen]], [[adyen-webhooks]], and [[adyen-payment-capture]].\n\n## Key takeaways\n\n- A notification item identifies its event with `eventCode`; the example uses `CAPTURE`. Its required `success` string reports whether that event executed successfully, while optional `reason` gives a short refusal explanation when `success` is `false`. The example's `success: \"true\"` illustrates one outcome, not a guarantee for every capture.\n- The item has required `merchantAccountCode`, `merchantReference`, `pspReference`, `eventDate`, `eventCode`, `amount`, and `success` fields in the displayed table. `originalReference` is optional and, for modifications, corresponds to the original payment request. `pspReference` identifies the transaction or request; keep it distinct from the merchant reference and original reference.\n- The response section says webhook events are accepted on the basis of HTTP status code and shows `200 Success`. This is receiver acceptance of the webhook, separate from the event's `success` outcome or any later capture failure or settlement.\n\n## Detail locators\n\n- Request body table, including optional outer `live` and `notificationItems`, nested required fields, reference identities, amount, environment and refusal reason: raw lines 9\u201327. The table labels both outer fields and the nested wrapper `No`; do not recast item-field requiredness as outer-body requiredness.\n- One JSON capture notification example with EUR 1000 and `success: \"true\"`: raw lines 29\u201355.\n- Response status/acceptance wording: raw lines 56\u201359. The snapshot does not specify delivery ordering, retry, deduplication, signature validation, or financial finality.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-webhooks]] \u2014 webhook families and acknowledgement context.\n- [[adyen-payment-capture]] \u2014 capture request and outcome boundaries.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/CAPTURE/2026-09-15|Adyen Webhooks latest POST /CAPTURE, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The result of the request to [capture a payment](https://docs.adyen.com/online-payments/capture).",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CAPTURE/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - originalReference | string | No | For modifications, this field corresponds to the payment request assigned to the original payment. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CAPTURE/2026-09-15.md:23"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CAPTURE/2026-09-15.md:27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CAPTURE/2026-09-15.md:59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "capture-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-capture]] \u2014 2026-09-15-captured Webhooks latest CAPTURE notification contract: event outcome and original-payment reference, with HTTP receipt separate from capture outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "capture-payment-route",
+        "target_path": "wiki/concepts/adyen-payment-capture.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-capture]] \u2014 2026-09-15-captured CAPTURE result notification schema and HTTP acceptance boundary; later failure and settlement require separate evidence.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/CAPTURE/2026-09-15.md",
+  "raw_sha256": "354ec8ffbdbc061690476732c17ef604316b6e738aed7f3bf17ccb4f7c28d362",
+  "status": "candidate_ready"
+}

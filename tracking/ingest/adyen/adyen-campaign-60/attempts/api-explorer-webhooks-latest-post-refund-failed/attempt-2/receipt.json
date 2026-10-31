@@ -1,0 +1,70 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-refund-failed",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Webhooks POST /REFUND_FAILED \u2014 refund failure event\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/REFUND_FAILED\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md\"\ntags: [adyen, webhooks, refunds, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen Webhooks `latest` POST /REFUND_FAILED describes an incoming refund-failure event. Its heading describes failure due to card-scheme rejection, while its only example names BLIK; this page alone does not resolve payment-method coverage or establish either BLIK eligibility generally or a card-only limit. The POST label is a webhook event, not a merchant refund API operation. See [[adyen]], [[adyen-webhooks]], and [[adyen-refunds]].\n\n## Key takeaways\n\n- The example has `eventCode: \"REFUND_FAILED\"` and `success: \"true\"`: execution of this failure event is separate from refund success. The page's card-scheme wording and BLIK example should be read as that page's description and illustration, not an exhaustive method rule.\n- The table says optional `reason` explains refusal when event `success` is `false`. Yet the example includes `reason: \"Refund Failed\"` with `success: \"true\"`; retain this table/example tension.\n- Nested item fields marked required include `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success`. This API Explorer table describes optional `originalReference` generically for modifications as the original payment request. The separate [[source-adyen-docs-online-payments-refund|refund guide]] maps `originalReference` specifically to the original payment PSP reference and `pspReference` to the refund request PSP reference for REFUND_FAILED (guide raw lines 673\u2013681).\n- The response section says webhook events are accepted on the basis of HTTP status code and shows `200 Success`. Receiver acceptance is separate from the failed-refund event and does not establish money movement.\n\n## Detail locators\n\n- API Explorer request body table, including optional outer `live` and `notificationItems`, nested field requirements, reference descriptions, and `reason` wording: raw lines 9\u201327. Outer optionality differs from nested field requiredness.\n- JSON example with EUR 1000, optional HMAC sample field, BLIK method, original reference, `Refund Failed` reason, and `success: \"true\"`: raw lines 29\u201359. The sample does not establish a signature requirement.\n- HTTP acceptance wording: raw lines 60\u201363. This page gives no delivery/order/retry/deduplication or settlement-finality rule.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-webhooks]] \u2014 incoming webhook context.\n- [[adyen-refunds]] \u2014 refund lifecycle and later failure boundary.\n- [[source-adyen-docs-online-payments-refund]] \u2014 separate refund guide for refund-specific reference correlation and subsequent failure context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15|Adyen Webhooks latest POST /REFUND_FAILED, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The refund [failed due to rejection by the card scheme](https://docs.adyen.com/online-payments/refund#refund-failed).",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - reason | string | No | If `success` = `false`, then this includes a short message with an explanation for the refusal. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:26"
+    },
+    {
+      "text": "        \"reason\": \"Refund Failed\",",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:53"
+    },
+    {
+      "text": "        \"success\": \"true\"",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:54"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:63"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "refund-failed-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-refund-failed]] \u2014 2026-09-15-captured REFUND_FAILED event; API Explorer describes scheme rejection but illustrates BLIK, leaving method coverage unresolved; event success and HTTP receipt remain separate.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page's card-scheme description and BLIK example do not establish payment-method coverage; reason condition conflicts with the example."
+        ]
+      },
+      {
+        "update_id": "refund-failed-refund-route",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-refund-failed]] \u2014 2026-09-15-captured refund-failure event; API Explorer's scheme-rejection heading coexists with a BLIK example. See [[source-adyen-docs-online-payments-refund]] for original-payment versus refund-request PSP reference mapping.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Do not infer a card-only rule or general BLIK eligibility from this reference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md",
+  "raw_sha256": "c01551dfed255d21358115956e403f5dae113b0e8932a67ce72bc23f584ffac6",
+  "status": "candidate_ready"
+}

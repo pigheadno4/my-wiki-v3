@@ -1,0 +1,61 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-cancel-autorescue",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: CANCEL_AUTORESCUE\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE/2026-09-15.md\"\ntags: [adyen, webhooks, online-payments, auto-rescue, cancellation]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen's API Explorer `Webhooks/latest` reference describes the incoming `CANCEL_AUTORESCUE` notification: the Auto Rescue process was canceled. It documents the event notification, not the merchant's cancellation request. The example shows `success: \"false\"` with a reason that no Auto Rescue process was found for a rescue reference; that example does not establish every possible cancellation outcome.\n\n## Key takeaways\n\n- The displayed request-body table marks top-level `live`, `notificationItems`, and the nested `NotificationRequestItem` wrapper optional. Within a notification item, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` are marked required. See **Parameters \u2192 Request body**, raw lines 11\u201327. Do not turn the example's `additionalData.hmacSignature` into a required field.\n- `success` describes whether the `eventCode` event executed successfully. If `success` is `false`, `reason` includes a short refusal explanation. The example is specifically a `CANCEL_AUTORESCUE` event with `success: \"false\"`; receipt of the event alone is not proof that cancellation succeeded. See raw lines 26\u201327 and 31\u201357.\n- `merchantReference` identifies the merchant's payment, `pspReference` identifies Adyen's transaction or request, and optional `originalReference` corresponds to the original payment request for modifications. `eventDate` is the event-generation timestamp; `live` identifies live versus test origin. See raw lines 14 and 20\u201325.\n- The reference lists a `200 Success` response and states that webhook events are accepted on the basis of HTTP status code. This is receiver acceptance, separate from the cancellation outcome. The page does not specify delivery order, retry, deduplication, signature-verification, or payment finality rules. See **Responses**, raw lines 58\u201361.\n\n## Detail locators\n\n- **Parameters \u2192 Request body, raw lines 11\u201327** \u2014 displayed field types and required markers, identifiers, event outcome, and conditional reason.\n- **Request examples \u2192 cancel_autorescue, raw lines 29\u201357** \u2014 test-origin example with EUR amount, `CANCEL_AUTORESCUE` event code, original and PSP references, a no-process reason, and `success: \"false\"`.\n- **Responses, raw lines 58\u201361** \u2014 `200 Success` and HTTP status based webhook acceptance.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n- [[adyen-online-payments]]\n- [[adyen-card-auto-rescue]]\n- [[source-adyen-docs-online-payments-auto-rescue-sepa]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE/2026-09-15|Adyen API Explorer \u2014 CANCEL_AUTORESCUE (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The [Auto Rescue process](https://docs.adyen.com/online-payments/auto-rescue) was canceled.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE/2026-09-15.md:7"
+    },
+    {
+      "text": "If `success` = `false`, then this includes a short message with an explanation for the refusal.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE/2026-09-15.md:26"
+    },
+    {
+      "text": "Informs about the outcome of the event (`eventCode`) the notification is for.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE/2026-09-15.md:27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE/2026-09-15.md:61"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-cancel-autorescue-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-cancel-autorescue]] \u2014 2026-09-15-captured `CANCEL_AUTORESCUE` webhook event reference; `success` reports the event outcome, while HTTP status reports receiver acceptance.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c60-cancel-autorescue-card-route",
+        "target_path": "wiki/concepts/adyen-card-auto-rescue.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-cancel-autorescue]] \u2014 2026-09-15-captured `CANCEL_AUTORESCUE` event schema and response; this generic event reference supplements the card-specific cancellation guide, with `success` indicating the event outcome.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "The API Explorer event page itself does not restrict this event to card payments."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE/2026-09-15.md",
+  "raw_sha256": "42e11b2e25374e101600fb45f97028a74656c99d38b7d417776f0f6121659f07",
+  "status": "candidate_ready"
+}

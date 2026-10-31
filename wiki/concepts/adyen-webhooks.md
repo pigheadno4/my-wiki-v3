@@ -16,6 +16,126 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-api-explorer-onboarding-on-invite-webhooks-latest-overview]] — 2026-09-15-captured v1 on-invite webhook catalog for balance-platform account-holder onboarding; event payload, response and verification/capability details require separate evidence.
+
+
+- [[source-adyen-api-explorer-relayed-authorisation-webhooks-latest-overview]] — 2026-09-15-captured Authorization webhooks v4 catalog listing the relayed authorization-request route; response and decision mechanics require the separate endpoint reference.
+
+
+- [[source-adyen-api-explorer-relayed-authorisation-webhooks-latest-post-balanceplatform-authorisation-relayed]] — 2026-09-15-captured relayed Issuing authorisation decision exchange requiring HTTP 200 plus decision body within two seconds before fallback; distinct from generic webhook acknowledgement.
+
+
+- [[source-adyen-api-explorer-forward-api-webhooks-latest-post-forwardapi-notification]] — 2026-09-15-captured Forward API notification after a payment request is forwarded to a third party; optional returned status and 2xx receiver acceptance remain distinct.
+
+
+- [[source-adyen-api-explorer-forward-api-webhooks-latest-overview]] — 2026-09-15-captured Forward API webhook v1 catalog: Adyen notifies merchants of results of third-party payment requests and lists `forwardApi.notification`; event payload and outcomes require its separate reference.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-post-terminalboarding-triggered]] — 2026-09-15-captured Management Webhooks v3 terminal-boarding-success event with terminal/account IDs and any-2xx receiver acceptance.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-post-paymentmethodrequest-scheduledforremoval]] — 2026-09-15-captured ManagementNotification for add-payment-method request scheduled for removal in 30 days; KYC, request-status and 2xx receipt boundaries.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-post-paymentmethodrequest-removed]] — 2026-09-15-captured ManagementNotification removal of an add-payment-method request; request status and webhook receipt are separate from payment-method enablement.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-post-paymentmethod-created]] — 2026-09-15-captured ManagementNotification `paymentMethod.created` add-request completion contract; status distinguishes added, failed and capability pending, while `2xx` acknowledges webhook receipt.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-report-available]] — 2026-09-15-captured `REPORT_AVAILABLE` incoming-event contract with report URL in `reason`, event-scoped success and separate HTTP receiver acceptance.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-refund-failed]] — 2026-09-15-captured REFUND_FAILED event; API Explorer describes scheme rejection but illustrates BLIK, leaving method coverage unresolved; event success and HTTP receipt remain separate.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-post-merchant-updated]] — 2026-09-15-captured ManagementNotification merchant-account capability update schema, with optional verification-problem detail and `2xx` acceptance separate from account or payment readiness.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-post-merchant-created]] — 2026-09-15-captured Management `merchant.created` notification for merchant/company identity, capability request versus allowance and status-gated readiness; `PreActive` creation and HTTP receipt do not enable payments.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-overview]] — 2026-09-15-captured Management Webhooks v3 catalog for company, merchant, payment-method and terminal events; event payload and response rules belong to individual references.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-second-chargeback]] — 2026-09-15-captured SECOND_CHARGEBACK incoming dispute notification for declined defense and deducted disputed amount; event-scoped success and HTTP acceptance are distinct.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-scheme-arbitration]] — 2026-09-15-captured `SCHEME_ARBITRATION` notification for issuer escalation of a pre-arbitration case; the HTTP receipt rule does not establish arbitration decision or financial outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-refund]] — 2026-09-15-captured incoming REFUND result notification schema, failed-refund example and HTTP-status acceptance separate from the event outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-won]] — 2026-09-15-captured PREARBITRATION_WON incoming notification for cardholder-bank acceptance of a pre-arbitration case; event success and HTTP receipt are distinct.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-lost]] — 2026-09-15-captured Webhooks `latest` PREARBITRATION_LOST incoming-event contract for a cardholder-bank pre-arbitration decline, with event-scoped success and separate HTTP acceptance.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-declined]] — 2026-09-15-captured incoming declined pre-arbitration case event; generic event success and HTTP receipt do not define dispute financial outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-order-closed]] — 2026-09-15-captured `ORDER_CLOSED` event schema; its API Explorer heading cites the last partial-payment result, while the linked partial-payments guide also describes closing after order cancellation. Example per-payment and outer success values differ.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-open]] — 2026-09-15-captured incoming `PREARBITRATION_OPEN` dispute notification for a case opened by the cardholder's bank; item schema and HTTP receipt rule do not establish defense or resolution outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-offer-closed]] — 2026-09-15-captured `OFFER_CLOSED` offer-expiry webhook reference, including a card-specific default expiry and separate event-success versus HTTP receiver-acceptance meanings.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-accepted]] — 2026-09-15-captured PREARBITRATION_ACCEPTED incoming notification reference for an accepted pre-arbitration case, with item schema and HTTP-status acceptance; no request example or actor identified.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-chargeback-reversed]] — 2026-09-15-captured Webhooks `CHARGEBACK_REVERSED` notification reference: successful defense toward issuer is not final because a second chargeback can still be lost; HTTP status acknowledges receipt.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-payout-decline]] — 2026-09-15-captured deprecated legacy payout-decline event schema with event-scoped `success` and separate HTTP receipt acceptance; new integrations are directed to Transfer Webhooks.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-paidout-reversed]] — 2026-09-15-captured deprecated `PAIDOUT_REVERSED` incoming-event contract; `2xx` acceptance and event-scoped `success` do not prove recipient payout or funds-return booking.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-order-opened]] — 2026-09-15-captured ORDER_OPENED incoming event after first partial payment and order creation; HTTP acceptance is separate from event outcome and order completion.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-information-supplied]] — 2026-09-15-captured `Webhooks/latest` INFORMATION_SUPPLIED dispute-defense notification for uploaded evidence or auto-defense; its example has `Pending` status and nonempty `reason` with `success=true`, while HTTP receiver acceptance is separate from dispute outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-issuer-comments]] — 2026-09-15-captured incoming ISSUER_COMMENTS reference for chargeback and pre-arbitration issuer free text, with a reason/success example mismatch and HTTP-status acceptance separate from dispute outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-expire]] — 2026-09-15-captured Webhooks `latest` EXPIRE notification reference: remaining uncaptured authorisation expiry, originally authorised amount field, event-scoped always-true `success`, and HTTP-status acceptance.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-overview]] — 2026-09-15-captured Webhooks v1 API Explorer General event catalog; this page lists event names and purposes but specifies no event payload, receiver response or delivery rule. Follow individual event references for event-specific contracts.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-chargeback]] — 2026-09-15-captured `Webhooks/latest` CHARGEBACK notification reference for deducted funds, item identifiers and event outcome; HTTP status acknowledges receipt, while sample defense fields do not define a defense workflow.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-cancel-autorescue]] — 2026-09-15-captured `CANCEL_AUTORESCUE` webhook event reference; `success` reports the event outcome, while HTTP status reports receiver acceptance.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-capture-failed]] — 2026-09-15-captured Webhooks `latest` CAPTURE_FAILED notification contract; example `success` is event-scoped, and HTTP acceptance does not establish successful capture.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-cancellation]] — 2026-09-15-captured `CANCELLATION` webhook reference for cancellation-request outcome, original-payment correlation and receiver HTTP-status acceptance; notification receipt is separate from event success.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-capture]] — 2026-09-15-captured Webhooks latest CAPTURE notification contract: event outcome and original-payment reference, with HTTP receipt separate from capture outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-autorescue]] — 2026-09-15-captured Webhooks `latest` incoming AUTORESCUE process-ended notification schema and HTTP-status acceptance; event success is separate from payment or settlement proof.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-authorisation-adjustment]] — 2026-09-15-captured `Webhooks/latest` AUTHORISATION_ADJUSTMENT result-notification reference for `/adjustAuthorisation`, event-scoped success, original versus modification reference, and HTTP status based receiver acceptance.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-authorisation]] — 2026-09-15-captured Webhooks `latest` AUTHORISATION notification reference for payment-request result, item identity/field requiredness, conditional reason and HTTP-status acceptance.
+
+
 - [[source-adyen-api-explorer-negative-balance-compensation-warning-webhooks-latest-overview]] — 2026-09-15-captured v1 negative-balance compensation warning catalog: 20-or-more-day trigger, scheduled warning event, and conditional future transfer from the liable balance account; warning receipt is not compensation proof.
 
 

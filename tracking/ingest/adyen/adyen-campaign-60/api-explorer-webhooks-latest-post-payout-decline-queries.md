@@ -1,0 +1,9 @@
+# Fixed retrieval checks: PAYOUT_DECLINE
+
+## Q1
+
+The 2026-09-15 captured Adyen `Webhooks/latest` `POST /PAYOUT_DECLINE` is an incoming legacy payout-declined notification (raw lines 5, 23), not a merchant payout request. The example uses `eventCode=PAYOUT_DECLINE`, `success=true`, and a test-environment `live=false` value (lines 50, 62, 70). The item schema marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and event-scoped `success` required, while `originalReference` is optional; `reason` is described conditionally for `success=false` (lines 34–43). The example includes EUR 1000, a bank-transfer method, original and PSP references, but no general timing or payout-state sequence (lines 58–70). Canonical source: [[source-adyen-api-explorer-webhooks-latest-post-payout-decline]]; https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAYOUT_DECLINE .
+
+## Q2
+
+The page reports that the payout was declined (raw line 23); the example's `success=true` concerns execution of the `PAYOUT_DECLINE` event, not successful disbursement (lines 43, 62, 70). `200 Success` and the HTTP-status rule describe receiver acceptance of webhook events (lines 76–79), not payout or bank receipt. This webhook is deprecated for new integrations; new integrations are directed to Transfer Webhooks and existing Payout API users to their Adyen contact for migration (lines 7–21). The sample `hmacSignature` is not a validation procedure, and this pinned page provides no delivery order, retry/deduplication, reversal, or final recipient-credit rule (lines 54–56). `latest` is the route label in the 2026-09-15 snapshot. Canonical source: [[source-adyen-api-explorer-webhooks-latest-post-payout-decline]]; https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAYOUT_DECLINE .

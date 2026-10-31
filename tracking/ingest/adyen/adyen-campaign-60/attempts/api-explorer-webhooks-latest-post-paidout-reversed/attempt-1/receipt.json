@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-paidout-reversed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest PAIDOUT_REVERSED notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED/2026-09-15.md\"\ntags: [adyen, webhooks, payouts, reversal, deprecated]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen Webhooks `latest` POST `/PAIDOUT_REVERSED` documents an incoming notification that a financial institution rejected a payout. The page says Adyen will return the funds to the account; it does not show that return as already booked. The webhook is deprecated and does not support new integrations. New integrations are directed to Transfer Webhooks, while existing Payout API users are directed to their Adyen contact for Transfers API migration. The POST heading describes a notification received by a merchant endpoint, not a merchant payout command.\n\n## Key takeaways\n\n- The item schema marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` required within `NotificationRequestItem`. `originalReference`, `reason`, `paymentMethod`, and `additionalData` are optional; the outer `live`, `notificationItems`, and wrapper item are also marked optional. The table describes `pspReference` as the PSP reference for the Capture's PSP reference, a wording to retain as written rather than silently interpreting it as a transfer ID.\n- `success` reports the outcome of the named event, not successful payout to the recipient. The example uses `eventCode: \"PAIDOUT_REVERSED\"`, `success: \"true\"`, `EUR` amount `1000`, and separate `originalReference` and `pspReference`. The `reason` description says it contains the bank statement description if present, otherwise `PaidOutReversed`; the example instead has an empty string. Treat the example as a conflicting fixture, not a general empty-reason rule.\n- The response section labels `200 Success` and says webhook events are accepted by HTTP status code. This is receiver acceptance, distinct from the institution's rejection and any subsequent funds return. This reference does not establish delivery order, retry/deduplication rules, signature verification procedure, bank receipt, or a completed reversal booking.\n\n## Detail locators\n\n- Deprecation, migration routing and payout-rejection/return wording: raw lines 5\u201324. Request-body requiredness and identity fields: raw lines 28\u201344. Example payload and reason discrepancy: raw lines 46\u201371. HTTP acceptance: raw lines 72\u201375.\n\n## Related\n\n- [[adyen]] \u2014 provider overview.\n- [[adyen-payouts]] \u2014 legacy payout context and distinct Transfers API route.\n- [[adyen-webhooks]] \u2014 incoming webhook context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED/2026-09-15|PAIDOUT_REVERSED webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This webhook is **deprecated** and no longer supports new integrations.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED/2026-09-15.md:7"
+    },
+    {
+      "text": "The financial institution [rejected the payout](https://docs.adyen.com/online-payments/online-payouts/payout-webhook). We will return the funds back to your account.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED/2026-09-15.md:23"
+    },
+    {
+      "text": "The PSP reference for the Capture's PSP reference.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED/2026-09-15.md:42"
+    },
+    {
+      "text": "Contains the bank statement description if present, else it contains `PaidOutReversed`.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED/2026-09-15.md:43"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED/2026-09-15.md:75"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-paidout-reversed-payout-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-paidout-reversed]] \u2014 2026-09-15-captured deprecated legacy `PAIDOUT_REVERSED` notification for institution rejection, with a promised funds return distinct from a booked return or recipient receipt; new integrations route to Transfer Webhooks.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "The raw reason-field description conflicts with its empty-string example; retain this in the source entry."
+        ]
+      },
+      {
+        "update_id": "c60-paidout-reversed-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-paidout-reversed]] \u2014 2026-09-15-captured deprecated `PAIDOUT_REVERSED` incoming-event contract; `2xx` acceptance and event-scoped `success` do not prove recipient payout or funds-return booking.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED/2026-09-15.md",
+  "raw_sha256": "634eb9a56882bf6cc8984ee7f5d07112a769372db1eefafaadcff982e34497fa",
+  "status": "candidate_ready"
+}

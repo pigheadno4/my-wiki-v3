@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-settled-reversed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest POST /SETTLED_REVERSED\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/SETTLED_REVERSED\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/SETTLED_REVERSED/2026-09-15.md\"\ntags: [adyen, webhooks, settlement, reversal]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer Webhooks `latest` POST /SETTLED_REVERSED snapshot describes an incoming event for a debit reversing a settled capture when Adyen has not received funds from the card scheme or payment method within 30 days of capture. The page says the webhook is available for all payment methods for merchants on Sales Day Payout and must be enabled in Customer Area. See [[adyen]], [[adyen-webhooks]], and [[adyen-sales-day-payout]].\n\n## Key takeaways\n\n- The event is a reversal of an earlier `settled` transaction, with the 30-day condition tied to Adyen's nonreceipt of scheme or payment-method funds. The POST heading names a webhook event, not a merchant operation. The stated Sales Day Payout and enablement qualifications matter; the page does not establish availability for another payout model.\n- The table marks top-level `live` and `notificationItems` optional. Inside a `NotificationRequestItem`, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `originalReference`, `pspReference`, and string `success` are required. Here `originalReference` is required and points to the original payment request reference for modifications; `pspReference` identifies Adyen's transaction or request reference. The example uses `eventCode: \"SETTLED_REVERSED\"` and includes `settlementReference` and `expectedValueDate` only as optional `additionalData` example values.\n- String `success` reports execution outcome of this event; optional `reason` describes refusal when false. The example's true value is not proof of the original scheme funding, a later re-settlement, or bank receipt. The generic `amount` row calls it payment amount and says HTTP POST currency/value are URL parameters, while the JSON example nests them in an amount object; the page does not reconcile these representations.\n- The response lists `200 Success` and HTTP-status-based webhook acceptance. Receiver acceptance is separate from the reversal state and event `success`. No delivery, order, retry, deduplication, signature, or post-reversal recovery rule is stated here.\n\n## Detail locators\n\n- Reversal, 30-day nonreceipt condition, Sales Day Payout scope and Customer Area enablement: raw lines 5\u20137.\n- Body fields, required `originalReference`, reference identities, amount wording and success scope: raw lines 11\u201327.\n- Example event, amount and optional additionalData: raw lines 29\u201359.\n- HTTP response acceptance: raw lines 60\u201363.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n- [[adyen-sales-day-payout]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/SETTLED_REVERSED/2026-09-15|API Explorer SETTLED_REVERSED webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "A debit that reverses a **settled** transaction for which Adyen hasn't received the funds from the card scheme or payment method within 30 days of capture. This webhook is available for all payment methods for merchants on Sales Day Payout.",
+      "location": "raw line 7, event description"
+    },
+    {
+      "text": "|     - originalReference | string | Yes | For modifications, this field corresponds to the payment request reference assigned to the original payment. |",
+      "location": "raw line 23, Request body table"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw line 27, Request body table"
+    },
+    {
+      "text": "\"eventCode\": \"SETTLED_REVERSED\",",
+      "location": "raw line 46, request example"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 63, 200 Success response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-settled-reversed-webhook-route",
+        "target_path": "wiki/concepts/adyen-sales-day-payout.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-settled-reversed]] \u2014 2026-09-15-captured SETTLED_REVERSED webhook reference for debit reversal of settled capture after 30-day scheme/method nonreceipt, scoped to enabled Sales Day Payout merchants.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/SETTLED_REVERSED/2026-09-15.md",
+  "raw_sha256": "230447c5a6b2766b43e77334c4859d97410c38d8f0efc99573908ff7a5d355c0",
+  "status": "candidate_ready"
+}

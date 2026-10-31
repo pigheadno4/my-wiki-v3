@@ -1,0 +1,11 @@
+# C60 fixed-query answers: POSTPONED_REFUND
+
+Canonical retrieval route: `wiki/sources/adyen/source-adyen-api-explorer-webhooks-latest-post-postponed-refund.md`; canonical URL: `https://docs.adyen.com/api-explorer/Webhooks/latest/post/POSTPONED_REFUND`.
+
+## Q1
+
+The captured `Webhooks/latest` POST reference describes an incoming `POSTPONED_REFUND` event: a refund was postponed until after payment capture, and the page directs merchants to Adyen Support to enable this notification (raw lines 5–7). The POST heading is not a refund submission operation. The displayed table marks top-level `live`, `notificationItems`, and nested `NotificationRequestItem` wrapper optional; within an item, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` are marked required (lines 11–27). `merchantReference` is the merchant's payment reference, `pspReference` Adyen's reference for the transaction or request, and optional `originalReference` corresponds to the original payment request for modifications (lines 22–25). `eventCode` identifies the event type, shown as `POSTPONED_REFUND` in the example (lines 19, 45). `success` is event-scoped, and `reason` is described for `success=false` (lines 26–27). The example's EUR 1000, `directdebit_NL`, and HMAC-signature extra field are examples, not universal constraints (lines 33–58). `eventDate` is the event generation timestamp; the only transition stated here is postponement until after capture (lines 7, 20).
+
+## Q2
+
+This event reports a postponed refund, which by its description awaits payment capture; it does not report capture, completed refund, shopper credit, or settlement (raw lines 5–7). `success` concerns execution of the specified event rather than those later outcomes (line 27). The response lists `200 Success` and says webhook acceptance is based on HTTP status (lines 59–62), a receiver acknowledgement distinct from refund execution. The 62-line reference gives no delivery-order, retry, deduplication, or final-funds rule; the example's `additionalData.hmacSignature` does not provide a verification procedure or guarantee universal presence (lines 38–40). `latest` is a captured API Explorer path; the immutable raw was fetched 2026-09-15 (lines 1–3). Use the canonical source route above for the evidence and raw link.

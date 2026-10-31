@@ -1,0 +1,70 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-refund-failed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks POST /REFUND_FAILED \u2014 scheme-rejected refund\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/REFUND_FAILED\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md\"\ntags: [adyen, webhooks, refunds, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen Webhooks `latest` POST /REFUND_FAILED describes an incoming event for a refund that failed because the card scheme rejected it. The POST label is a webhook event, not a merchant refund API operation. See [[adyen]], [[adyen-webhooks]], and [[adyen-refunds]].\n\n## Key takeaways\n\n- The event heading and description identify card-scheme rejection of the refund. The example has `eventCode: \"REFUND_FAILED\"` and `success: \"true\"`: successful execution of the failure event must not be read as a successful refund.\n- The displayed table defines `success` as the outcome of the named event and says optional `reason` explains refusal when `success` is `false`. Yet the example includes `reason: \"Refund Failed\"` with `success: \"true\"`. Preserve this table/example tension rather than making the conditional description an invariant.\n- Nested item fields marked required include `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success`. Optional `originalReference` corresponds to the original payment request for modifications and appears in the example; keep it distinct from the request/transaction `pspReference`.\n- The response section says webhook events are accepted on the basis of HTTP status code and shows `200 Success`. Receiver acceptance is separate from the failed-refund event and does not establish money movement.\n\n## Detail locators\n\n- Request body table, including optional outer `live` and `notificationItems`, nested field requirements, reference descriptions, and `reason` wording: raw lines 9\u201327. Outer optionality is not the same as nested field requiredness.\n- JSON example with EUR 1000, optional HMAC sample field, BLIK method, original reference, `Refund Failed` reason, and `success: \"true\"`: raw lines 29\u201359. The example does not itself establish a signature requirement.\n- HTTP acceptance wording: raw lines 60\u201363. The snapshot gives no delivery/order/retry/deduplication or settlement-finality rule.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-webhooks]] \u2014 incoming webhook context.\n- [[adyen-refunds]] \u2014 refund lifecycle and later failure boundary.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15|Adyen Webhooks latest POST /REFUND_FAILED, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The refund [failed due to rejection by the card scheme](https://docs.adyen.com/online-payments/refund#refund-failed).",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - reason | string | No | If `success` = `false`, then this includes a short message with an explanation for the refusal. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:26"
+    },
+    {
+      "text": "        \"reason\": \"Refund Failed\",",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:53"
+    },
+    {
+      "text": "        \"success\": \"true\"",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:54"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md:63"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "refund-failed-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-refund-failed]] \u2014 2026-09-15-captured scheme-rejected refund event; sample `success: true` marks event execution, with a reason/table mismatch and HTTP receipt separate.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The reason field's false-success condition conflicts with the example showing reason alongside success true."
+        ]
+      },
+      {
+        "update_id": "refund-failed-refund-route",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-refund-failed]] \u2014 2026-09-15-captured REFUND_FAILED scheme-rejection event schema; example `success: true` is event execution, not refund completion, and conflicts with the table's reason condition.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Keep event-success and refund-success separate."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/REFUND_FAILED/2026-09-15.md",
+  "raw_sha256": "c01551dfed255d21358115956e403f5dae113b0e8932a67ce72bc23f584ffac6",
+  "status": "candidate_ready"
+}

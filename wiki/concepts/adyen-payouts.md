@@ -14,6 +14,18 @@ Adyen's payout documentation covers outbound disbursements to suppliers, partner
 
 ## Sources
 
+- [[source-adyen-api-explorer-webhooks-latest-post-payout-expire]] — 2026-09-15-captured deprecated PAYOUT_EXPIRE incoming webhook reference for legacy Payout API users; event-scoped success and HTTP acceptance are separate from payout completion.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-payout-thirdparty]] — 2026-09-15-captured deprecated PAYOUT_THIRDPARTY webhook result contract, with legacy payout event fields, event-scoped success, HTTP receipt, and Transfer Webhooks migration route.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-payout-decline]] — 2026-09-15-captured deprecated legacy `PAYOUT_DECLINE` notification reference; `success=true` in the example is the decline event outcome, while HTTP status acknowledges receipt and neither means recipient credit.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-paidout-reversed]] — 2026-09-15-captured deprecated legacy `PAIDOUT_REVERSED` notification for institution rejection, with a promised funds return distinct from a booked return or recipient receipt; new integrations route to Transfer Webhooks.
+
+
 - [[source-adyen-api-explorer-payout-latest-post-submitthirdparty]] — 2026-09-15-captured deprecated Payout API v68 TEST stored-detail submission reference; `payout-submit-received` identifies request receipt before separate confirm/decline, not settlement.
 
 

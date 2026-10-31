@@ -1,0 +1,47 @@
+{
+  "job_id": "api-explorer-managementnotification-latest-post-terminalassignment-completed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ManagementNotification: terminalAssignment.completed\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed\"\nraw_files:\n  - \"adyen/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed/2026-09-15.md\"\ntags: [adyen, management-notification, terminal-management, terminal-assignment]\n---\n\n## Overview\n\nThis captured Adyen API Explorer `ManagementNotification/latest` POST reference describes an incoming `terminalAssignment.completed` event: a terminal reassignment request was completed. It is a terminal-management notification, separate from Standard payment webhooks and from the merchant's Management API reassignment request. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- The request body requires `assignedToAccount`, `eventDate`, `pspReference`, and `uniqueTerminalId`. `assignedToAccount` identifies the merchant or company account receiving the assignment; `uniqueTerminalId` identifies the terminal; `pspReference` identifies the request from which the notification originates. `eventDate` records when the event was completed.\n- `assignedToStore` (store reference/code) and `assignedToStoreId` (unique store ID) are optional. Their absence in the schema does not mean the terminal is assigned to a specific store. The event reports reassignment completion, not physical boarding, configuration application, readiness for payments, or a payment outcome.\n- The `200 Success` response section says the request succeeded and lists optional `notificationResponse`; it directs the receiver to respond with any `2xx` HTTP status to accept the webhook. Receiver acceptance is distinct from the terminal reassignment described by the incoming event. The reference gives no delivery, order, retry, deduplication, or signature-verification rule.\n\n## Detail locators\n\n- Raw lines 5\u20137: event identity and completed reassignment purpose.\n- Raw lines 11\u201319: request-body requiredness and account, store, event-time, originating-request, and terminal identifiers.\n- Raw lines 21\u201329: `200 Success`, optional response-body field, and `2xx` receiver acceptance.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 assignment and boarding boundaries.\n- [[adyen-webhooks]] \u2014 Adyen webhook-family distinctions.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed/2026-09-15|Captured terminalAssignment.completed notification reference]]\n",
+  "quotes": [
+    {
+      "text": "A request to [reassign a terminal](https://docs.adyen.com/api-explorer/Management/3/post/terminals/(terminalId)/reassign) was completed.",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed/2026-09-15.md:7"
+    },
+    {
+      "text": "| assignedToAccount | string | Yes | The unique identifier of the merchant/company account to which the terminal is assigned. |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed/2026-09-15.md:14"
+    },
+    {
+      "text": "| pspReference | string | Yes | The PSP reference of the request from which the notification originates. |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed/2026-09-15.md:18"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed/2026-09-15.md:29"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-terminalassignment-completed-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-managementnotification-latest-post-terminalassignment-completed]] \u2014 2026-09-15-captured `ManagementNotification/latest` terminal reassignment-completed event with account, terminal and originating-request IDs, optional store IDs, and `2xx` receiver acceptance separate from device boarding.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed/2026-09-15.md",
+  "raw_sha256": "f70d6c773d73b57fecbd8378e027b855914533744bad2744aa9ad17af2c13739",
+  "status": "candidate_ready"
+}

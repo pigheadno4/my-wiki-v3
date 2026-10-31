@@ -15,6 +15,18 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-api-explorer-managementnotification-latest-post-terminalsettings-modified]] — 2026-09-15-captured Management notification for completed terminal-settings update request, with optional resource IDs and updater source; the event does not show settings or prove on-device application.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-post-terminalboarding-triggered]] — 2026-09-15-captured terminalBoarding.triggered successful-boarding notification contract; webhook acceptance is separate from device configuration or payment readiness.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-post-terminalassignment-completed]] — 2026-09-15-captured `ManagementNotification/latest` terminal reassignment-completed event with account, terminal and originating-request IDs, optional store IDs, and `2xx` receiver acceptance separate from device boarding.
+
+
+- [[source-adyen-api-explorer-managementnotification-latest-overview]] — 2026-09-15-captured Management Webhooks v3 overview listing terminal assignment, boarding-result and settings events alongside other account events; catalog listing is not terminal readiness proof.
+
+
 - [[source-adyen-api-explorer-postfmapi-latest-post-getterminalsunderaccount]] — 2026-09-15-captured deprecated POS Terminal Management API v1 test-server list for company, merchant and store terminal assignments; in-store means ready to board or boarded, not operational readiness.
 
 

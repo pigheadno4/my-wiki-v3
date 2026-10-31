@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-managementnotification-latest-post-paymentmethodrequest-removed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ManagementNotification paymentMethodRequest.removed webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed\"\nraw_files:\n  - \"adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed/2026-09-15.md\"\ntags: [adyen, management, webhooks, payment-methods]\n---\n\n## Overview\n\nThis 2026-09-15-captured ManagementNotification `latest` reference describes the incoming `POST paymentMethodRequest.removed` notification: a request to add a payment method was removed. The page says another add-payment-method request must be made. This event concerns the request resource; it does not itself say that an enabled payment method was removed or that a payment was reversed.\n\n## Key takeaways\n\n- The request body requires `createdAt`, `data`, `environment`, and top-level `type`. Within required `data`, it marks `id` (resource ID), `merchantId`, `status`, and nested `type` (payment-method variant) required. Top-level notification `type` and nested payment-method `type` have different meanings; this page shows no example value for either.\n- `data.status` is the status of the request to add a payment method, with listed values `success`, `failure`, and `capabilityPending`. The description says `success` means the payment method was added, `failure` means the request failed, and `capabilityPending` means `receivePayments` is not allowed. This is the general field vocabulary; the page gives no removed-event example status or timing, so it does not identify which value accompanies removal.\n- Optional `data.allowed` indicates whether receiving payments is allowed and is set true by Adyen after merchant-account screening. Optional `enabled` reports payment-method enablement, `verificationStatus` can be valid/pending/invalid/rejected, and optional `storeId` scopes a store if present. None of these optional fields is a required consequence of removal in this reference.\n- The response section labels `200 Success` and says the request has succeeded. Its optional `notificationResponse` row instructs a receiver to return any `2xx` status to accept the webhook. That is event-receipt acceptance, separate from the add-request status, payment-method enablement, screening allowance, or payment outcomes. No delivery, ordering, retry, deduplication or signature rule is specified here.\n\n## Detail locators\n\n- Raw lines 5\u20137: event meaning and need for another add-method request.\n- Raw lines 11\u201326: body requiredness, identities, status vocabulary and optional capability/enablement fields.\n- Raw lines 28\u201336: receiver response and `2xx` acceptance.\n\n## Related\n\n- [[adyen]] \u2014 company route.\n- [[adyen-webhooks]] \u2014 webhook family and receipt distinctions.\n- [[adyen-payment-method-variants]] \u2014 variant vocabulary, separate from merchant setup eligibility.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed/2026-09-15|paymentMethodRequest.removed reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A request to add a payment method is removed. You must make another request to [add a payment method](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/_merchantId_/paymentMethodSettings).",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed/2026-09-15.md:7"
+    },
+    {
+      "text": "|   - id | string | Yes | The unique identifier of the resource. |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed/2026-09-15.md:18"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of the request to add a payment method. Possible values:  - **success**: the payment method was added.  - **failure**: the request failed.  - **capabilityPending**: the **receivePayments** capability is not allowed. |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed/2026-09-15.md:21"
+    },
+    {
+      "text": "| type | string | Yes | Type of notification. |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed/2026-09-15.md:26"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed/2026-09-15.md:36"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-paymentmethodrequest-removed-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-managementnotification-latest-post-paymentmethodrequest-removed]] \u2014 2026-09-15-captured ManagementNotification removal of an add-payment-method request; request status and webhook receipt are separate from payment-method enablement.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed/2026-09-15.md",
+  "raw_sha256": "b3906fd7baaa634195f8a34d555b33760cfccc594c9922efcc47824f34c99801",
+  "status": "candidate_ready"
+}

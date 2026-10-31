@@ -18,6 +18,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-api-explorer-onboarding-on-invite-webhooks-latest-post-balanceplatform-accountholder-onboarded]] — 2026-09-15-captured onboarding-on-invite account-holder-onboarded webhook reference for created resource IDs and optional capability state; receipt and onboarding do not prove verification or payment/payout completion.
+
+
 - [[source-adyen-api-explorer-negative-balance-compensation-warning-webhooks-latest-post-balanceplatform-negativebalancecompensationwarning-scheduled]] — 2026-09-15-captured negative-balance compensation warning webhook for a future conditional liable-account transfer; prose says 20 or more negative days but TEST example dates show about three days, so timing needs verification and warning is not money-movement proof.
 
 

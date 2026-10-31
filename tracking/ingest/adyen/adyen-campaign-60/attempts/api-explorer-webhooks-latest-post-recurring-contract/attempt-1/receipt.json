@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-recurring-contract",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: RECURRING_CONTRACT created notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT/2026-09-15.md\"\ntags: [adyen, webhooks, recurring, tokenization]\n---\n\n## Overview\n\nThis captured Adyen API Explorer `Webhooks/latest` POST reference describes an incoming `RECURRING_CONTRACT` notification when a recurring contract has been created. The page directs merchants to enable this non-default webhook in Customer Area. The POST heading is the notification route, not a merchant token-creation operation. See [[adyen]], [[adyen-tokenization]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The displayed request-body table marks `live`, `notificationItems`, and the nested `NotificationRequestItem` wrapper optional. Within an item, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `originalPsp`, `pspReference`, and `success` are marked required. The example uses `eventCode: \"RECURRING_CONTRACT\"`; its USD zero-value payment and `ideal` method are illustrative.\n- For this event, `originalPsp` is the initial payment's `pspReference`, while the notification item's `pspReference` is the stored-payment-details token for recurring payments and is the same as `recurringDetailReference`. Do not read this event's `pspReference` as the initial payment reference. `merchantReference` is the merchant payment reference; optional `originalReference` is separately described for modifications.\n- `success` reports execution of the specified event; `reason` is described as a short refusal explanation if `success=false`. A created-contract notification and a successful event value do not establish any later recurring payment authorisation, capture, settlement, or token scope beyond this contract.\n- The example's `additionalData` includes shopper, recurring-detail, HMAC-signature, and checkout-session fields. These are example values in an optional generic container, not separately required fields or a signature-verification procedure in this reference.\n- The response section lists `200 Success` and says webhook events are accepted based on HTTP status. Receiver acceptance is separate from contract creation and any later payment. This page does not establish delivery order, retries, deduplication, or subsequent financial outcome.\n\n## Detail locators\n\n- Raw lines 5\u20137: contract-created event and Customer Area enablement.\n- Raw lines 11\u201328: request-body table, field requiredness, `originalPsp` initial-payment identity, `pspReference` token identity, `live` origin, conditional `reason`, and event-scoped `success`.\n- Raw lines 30\u201364: illustrative test payload, zero USD amount, `ideal` method, extra `additionalData` fields, distinct original-payment and token references, and `success=\"true\"`.\n- Raw lines 65\u201368: `200 Success` and HTTP status based webhook acceptance.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored-payment token and recurring use context.\n- [[adyen-webhooks]] \u2014 webhook families and receiver context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT/2026-09-15|Captured RECURRING_CONTRACT webhook reference]]\n",
+  "quotes": [
+    {
+      "text": "A recurring contract has been created. [Enable this webhook](https://docs.adyen.com/development-resources/webhooks/webhook-types#non-default-event-codes) in your Customer Area.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - originalPsp | string | Yes | The `pspReference` of the initial payment. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT/2026-09-15.md:23"
+    },
+    {
+      "text": "|     - pspReference | string | Yes | The [token for stored payment details](https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens/) to make recurring payments. This is the same as the `recurringDetailReference`. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT/2026-09-15.md:26"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT/2026-09-15.md:28"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT/2026-09-15.md:68"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-recurring-contract-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-recurring-contract]] \u2014 2026-09-15-captured `Webhooks/latest` RECURRING_CONTRACT creation event: Customer Area enablement, `originalPsp` for the initial payment versus token-valued `pspReference`, and HTTP receipt separate from later recurring payment outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT/2026-09-15.md",
+  "raw_sha256": "afcbed6f79921b307529c1168e01d2f725596d7719014b1e7456ac3b736b4b5e",
+  "status": "candidate_ready"
+}

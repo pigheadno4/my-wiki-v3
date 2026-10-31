@@ -1,0 +1,9 @@
+# C60 PAIDOUT_REVERSED fixed-query answers
+
+## Q1
+
+The 2026-09-15 Adyen Webhooks `latest` POST `/PAIDOUT_REVERSED` snapshot describes an incoming notification after a financial institution rejects a payout; it says funds will be returned to the account (raw lines 5, 23–24; [[source-adyen-api-explorer-webhooks-latest-post-paidout-reversed]]; https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED). Within `NotificationRequestItem`, the table requires amount, eventCode, eventDate, merchantAccountCode, merchantReference, pspReference, and success, with originalReference and reason optional (raw lines 35–44). The example uses `PAIDOUT_REVERSED`, EUR 1000, both references, empty reason, and `success: \"true\"` (raw lines 55–66). The table's pspReference description is specifically “the PSP reference for the Capture's PSP reference” (raw line 42); it does not identify a Transfers API transfer ID.
+
+## Q2
+
+The page says webhook acceptance depends on HTTP status and labels `200 Success` (raw lines 72–75; [[source-adyen-api-explorer-webhooks-latest-post-paidout-reversed]]; https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED). That receiver acknowledgement and event-scoped `success` do not turn institution rejection into recipient payout success or prove the promised return has booked (raw lines 23, 44, 59–66). The page says this webhook is deprecated for new integrations, directs new builds to Transfer Webhooks and existing Payout API users to contact Adyen about Transfers API migration (raw lines 7–21). Its reason description promises a bank statement description or `PaidOutReversed`, but the example has an empty reason (raw lines 43, 65). This snapshot gives no delivery-order, retry, deduplication, signature-verification, recipient-receipt, or completed-return proof.

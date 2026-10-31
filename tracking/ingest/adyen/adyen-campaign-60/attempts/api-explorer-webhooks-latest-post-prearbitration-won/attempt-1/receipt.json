@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-prearbitration-won",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest POST /PREARBITRATION_WON\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/PREARBITRATION_WON\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_WON/2026-09-15.md\"\ntags: [adyen, webhooks, disputes, prearbitration]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer Webhooks `latest` POST /PREARBITRATION_WON snapshot describes an incoming notification that the cardholder's bank accepted the pre-arbitration case. The POST heading names an event, not a merchant operation. See [[adyen]], [[adyen-webhooks]], and [[adyen-risk-management]].\n\n## Key takeaways\n\n- The table marks top-level `live` and `notificationItems` optional. Within a `NotificationRequestItem`, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and string `success` are marked required. The example uses `eventCode: \"PREARBITRATION_WON\"`; `live` distinguishes live and test origin.\n- `merchantReference` identifies the merchant's payment reference; `pspReference` is Adyen's reference for a transaction or request. Optional `originalReference` is described for modifications as corresponding to the original payment request, but is absent from the example. The generic `amount` table calls it the payment amount and says HTTP POST notification currency/value are URL parameters; the JSON example nests currency/value in an amount object. This page does not reconcile those representations or identify the amount as a dispute recovery.\n- The string `success` describes whether the named event was executed successfully. If false, optional `reason` gives a refusal explanation. The example shows `success: \"true\"`, an empty `reason`, and `paymentMethod: \"bankTransfer_IBAN\"`; these are sample values. The event description identifies the cardholder bank's acceptance of a pre-arbitration case, but this page does not establish settlement, a credited amount, or finality beyond that stated case event.\n- The response lists `200 Success` and HTTP-status-based webhook acceptance, distinct from event `success` and the case outcome. This page gives no delivery, ordering, retry, deduplication, signature, reversal, or subsequent arbitration rule.\n\n## Detail locators\n\n- Event identity and cardholder-bank acceptance: raw lines 5\u20137.\n- Body field requiredness, references, amount wording, reason and success scope: raw lines 11\u201327.\n- Example event code, amount, and string success: raw lines 29\u201354.\n- HTTP response acceptance: raw lines 55\u201358.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n- [[adyen-risk-management]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_WON/2026-09-15|API Explorer PREARBITRATION_WON webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The cardholder's bank accepted the [pre-arbitration](https://docs.adyen.com/risk-management/understanding-disputes/dispute-process-and-flow#dispute-process) case.",
+      "location": "raw line 7, event description"
+    },
+    {
+      "text": "| notificationItems | array of DisputesNotificationRequestItemWrapper | No | A container object for the details included in the notification. |",
+      "location": "raw line 15, Request body table"
+    },
+    {
+      "text": "|     - originalReference | string | No | For modifications, this field corresponds to the payment request assigned to the original payment. |",
+      "location": "raw line 23, Request body table"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw line 27, Request body table"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 58, 200 Success response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-prearbitration-won-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-won]] \u2014 2026-09-15-captured PREARBITRATION_WON incoming notification for cardholder-bank acceptance of a pre-arbitration case; event success and HTTP receipt are distinct.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_WON/2026-09-15.md",
+  "raw_sha256": "7d35091127c90aaab7934f0f358b8a65b20a8512b19187acf6f9269d49533f8e",
+  "status": "candidate_ready"
+}

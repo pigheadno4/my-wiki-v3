@@ -19,6 +19,12 @@ A successful `CAPTURE` webhook means the request was valid and submitted onward,
 
 ## Related
 
+- [[source-adyen-api-explorer-webhooks-latest-post-capture-failed]] — 2026-09-15-captured Webhooks `latest` CAPTURE_FAILED incoming-notification schema for card-scheme capture rejection, distinct from receiver HTTP acceptance and capture success.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-capture]] — 2026-09-15-captured CAPTURE result notification schema and HTTP acceptance boundary; later failure and settlement require separate evidence.
+
+
 - [[source-adyen-api-explorer-payment-latest-post-capture]] — 2026-09-15-captured inactive Classic Payment API v68 test-server `/capture` contract for original authorization reference, amount, modification receipt and Checkout migration route; receipt is not final capture outcome.
 
 

@@ -1,0 +1,45 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-chargeback-reversed",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest: CHARGEBACK_REVERSED\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED/2026-09-15.md\"\ntags: [adyen, webhooks, disputes, chargebacks]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen's Webhooks `latest` `POST /CHARGEBACK_REVERSED` reference describes an incoming dispute notification, not a merchant operation. It says the chargeback was successfully defended toward the issuing bank, but this stage is **not final**: a second chargeback from the issuing bank can still cause the case to be lost. [[adyen]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The example item uses `eventCode: CHARGEBACK_REVERSED` and `success: \"true\"`. The `success` field reports execution of the event named by `eventCode`; it does not establish final dispute resolution.\n- The request-body table marks the outer `live` and `notificationItems` fields and the nested `NotificationRequestItem` wrapper optional, while marking `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` required within the item. `originalReference` is optional and is described for modifications as the reference of the original payment request.\n- The `200 Success` response section says webhook events are accepted based on HTTP status code. Acceptance is separate from the dispute stage described by the event. This page specifies no delivery order, retry, or deduplication rule; it explicitly says this dispute stage is not final.\n\n## Detail locators\n\n- Request-body field meanings and requiredness: pinned raw, lines 9\u201327. In particular, `reason` is optional; the table describes its refusal explanation when `success` is `false`. The example at lines 29\u201357 has `success: \"true\"` and a `reason`, so do not treat that sample as a conditional requirement.\n- Example payload and identifiers: pinned raw, lines 29\u201357. The sample is in the test environment (`live: \"false\"`), with EUR amount, merchant reference, and a PSP reference. Its `additionalData.hmacSignature` is an example value, not a signature-validation rule.\n- Acceptance wording: pinned raw, lines 58\u201361.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED/2026-09-15|Adyen Webhooks latest CHARGEBACK_REVERSED reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This stage is not final. If the issuing bank presents a second chargeback, you can still lose the chargeback case.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - eventCode | string | Yes | The type of event the notification item is for. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED/2026-09-15.md:19"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED/2026-09-15.md:27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED/2026-09-15.md:61"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-chargeback-reversed-webhooks-link",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-chargeback-reversed]] \u2014 2026-09-15-captured Webhooks `CHARGEBACK_REVERSED` notification reference: successful defense toward issuer is not final because a second chargeback can still be lost; HTTP status acknowledges receipt.",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED/2026-09-15.md",
+  "raw_sha256": "6c780191e18118afca0c463f073e37c7cf6218dd7b9fe67789dfd22c18837d5c",
+  "status": "candidate_ready"
+}

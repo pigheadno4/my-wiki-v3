@@ -1,0 +1,9 @@
+# C60 REPORT_AVAILABLE fixed-query answers
+
+## Q1
+
+The 2026-09-15 Adyen Webhooks `latest` POST `/REPORT_AVAILABLE` snapshot says a report has been generated and is ready to download (raw lines 5–7; [[source-adyen-api-explorer-webhooks-latest-post-report-available]]; https://docs.adyen.com/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE). Within `NotificationRequestItem`, the table requires amount, eventCode, eventDate, merchantAccountCode, merchantReference, pspReference, reason and success; it describes pspReference as the report filename, reason as download URL, and success as always true (raw lines 18–27). The sample uses `REPORT_AVAILABLE`, a URL placeholder in reason, success true, empty merchantReference, and a reference-shaped pspReference (raw lines 41–51). The reference-shaped pspReference is not an evident filename, while merchantReference is present as an empty string; the table does not define a nonempty constraint or filename format.
+
+## Q2
+
+The reference labels `200 Success` and says webhook-event acceptance is based on HTTP status (raw lines 57–60; [[source-adyen-api-explorer-webhooks-latest-post-report-available]]; https://docs.adyen.com/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE). It establishes report generation/readiness, not that the report was downloaded, its contents reconciled, payment settled, or recipient bank credited (raw line 7). The table describes pspReference as a filename, while the sample value is reference-shaped; the page does not show whether it can serve as a filename. merchantReference is present as an empty string despite the table's unique-payment-reference description, and the table specifies no nonempty constraint (raw lines 22, 25, 48–49). No download authentication, delivery order, retry, deduplication, signature verification or downstream financial finality rule is supplied here. `latest` is the captured label rather than a fixed version (raw lines 1–5).

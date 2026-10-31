@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-managementnotification-latest-post-paymentmethodrequest-scheduledforremoval",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ManagementNotification latest paymentMethodRequest.scheduledForRemoval\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.scheduledForRemoval\"\nraw_files:\n  - \"adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.scheduledForRemoval/2026-09-15.md\"\ntags: [adyen, webhooks, management, payment-methods]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer ManagementNotification `latest` POST paymentMethodRequest.scheduledForRemoval snapshot describes an incoming notification that a request to add a payment method will be removed in 30 days. The page says to provide missing KYC information to make sure the payment method is added. It describes scheduled future removal of the request, not completed removal of an enabled payment method. See [[adyen]], [[adyen-webhooks]], and [[adyen-payment-method-variants]].\n\n## Key takeaways\n\n- The required body fields are `createdAt` (webhook creation timestamp), `data` (event details), `environment` (`test` or `live`), and outer `type` (notification type). Within `data`, `id` is the resource ID, `merchantId` the merchant-account ID, `status` the add-method request status, and inner `type` the payment-method variant; all four are marked required. The page supplies no request example or exact outer `type` value beyond the POST heading.\n- `data.status` values are `success` (method added), `failure` (request failed), and `capabilityPending` (the `receivePayments` capability is not allowed). Optional `allowed` concerns receiving-payments permission after screening; optional `enabled` concerns whether the payment method is enabled. Optional `verificationStatus` has `valid`, `pending`, `invalid`, and `rejected` values. These fields describe different states; this notification's heading alone proves none of them has reached a final approved or enabled state.\n- Optional `reference` is the merchant's payment-method reference; optional `storeId` identifies a store if present. The 30-day statement gives a removal horizon for the add request, but the page supplies no exact removal timestamp, remediation deadline calculation, or later removal event contract.\n- The response lists `200 Success`, an optional `notificationResponse` string, and acceptance by any `2xx` HTTP status. That is webhook receipt, separate from adding the method, completing KYC, gaining `receivePayments`, or enabling payments. No delivery, ordering, retry, deduplication, signature, or payment-processing guarantee is stated here.\n\n## Detail locators\n\n- Notification purpose, 30-day horizon and KYC direction: raw lines 5\u20137.\n- Body requiredness and nested state/identity fields: raw lines 11\u201326.\n- Receiver response and 2xx acceptance: raw lines 28\u201336.\n\n## Related\n\n- [[adyen]]\n- [[adyen-webhooks]]\n- [[adyen-payment-method-variants]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.scheduledForRemoval/2026-09-15|ManagementNotification scheduled-for-removal reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "A request to [add a payment method](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/_merchantId_/paymentMethodSettings) will be removed in 30 days. To make sure the payment method is added, provide the missing [KYC information](https://docs.adyen.com/platforms/onboard-users).",
+      "location": "raw line 7, notification purpose"
+    },
+    {
+      "text": "|   - id | string | Yes | The unique identifier of the resource. |",
+      "location": "raw line 18, data field table"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of the request to add a payment method. Possible values:  - **success**: the payment method was added.  - **failure**: the request failed.  - **capabilityPending**: the **receivePayments** capability is not allowed. |",
+      "location": "raw line 21, data field table"
+    },
+    {
+      "text": "|   - verificationStatus | string | No | Payment method status. Possible values:  - **valid**  - **pending**  - **invalid**  - **rejected** |",
+      "location": "raw line 24, data field table"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 36, Response body table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-paymentmethodrequest-scheduledforremoval-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-managementnotification-latest-post-paymentmethodrequest-scheduledforremoval]] \u2014 2026-09-15-captured ManagementNotification for add-payment-method request scheduled for removal in 30 days; KYC, request-status and 2xx receipt boundaries.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.scheduledForRemoval/2026-09-15.md",
+  "raw_sha256": "78e5582d5a1a4cacae3ae89c87ddcf81809b21573f9cde9bbb3df396a096dfbf",
+  "status": "candidate_ready"
+}

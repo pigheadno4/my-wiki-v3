@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-second-chargeback",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SECOND_CHARGEBACK webhook reference\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK/2026-09-15.md\"\ntags: [adyen, webhooks, disputes, chargebacks]\n---\n\n## Overview\n\nThe 2026-09-15-captured Webhooks `latest` `POST /SECOND_CHARGEBACK` reference describes an incoming dispute notification: the issuing bank declined material submitted in defense of the original chargeback, and the disputed amount is deducted from the merchant account. It is a notification reference, not a merchant operation to initiate a second chargeback.\n\n## Key takeaways\n\n- The request-body table marks outer `live`, `notificationItems`, and nested `NotificationRequestItem` optional, while it marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` required within the item. This is nested-property requiredness, not a claim that the outer body or wrapper is required.\n- `merchantReference` is the merchant's payment reference; `pspReference` is Adyen's transaction/request reference. `originalReference` is optional, described generically for modifications as the original payment-request reference, and absent from the shown `SECOND_CHARGEBACK` example. Do not require it for this event based on the generic row.\n- The `amount` row says the payment amount is an object but also says HTTP POST currency and value are URL parameters. The example instead nests `currency` and `value` in JSON `amount`. The snapshot does not reconcile these representations or prove the delivery format. Its narrative separately says the disputed amount is deducted; the generic amount row calls this the payment amount, so the example's EUR 1000 must not be asserted as a guaranteed deduction amount.\n- `success` is scoped to execution of the event code. The example's `SECOND_CHARGEBACK` and `success: \"true\"` accompany a declined defense; they are not a successful defense. The example also has a nonempty `reason` despite the schema describing `reason` as an explanation if `success=false`; the page does not resolve that mismatch. Its `additionalData` values are example data, not required fields.\n- Under `200 Success`, the page says webhook events are accepted on the basis of HTTP status code. Receiver acceptance is separate from the issuing bank's decision and deduction. This page does not specify a response body or delivery, ordering, retry, deduplication or signature rules.\n\n## Detail locators\n\n- Raw lines 5\u20137: event identity and declined-defense/deduction meaning.\n- Raw lines 11\u201327: request-body table, nested required flags, identities and success semantics.\n- Raw lines 31\u201359: sample `SECOND_CHARGEBACK` item, nested amount, `additionalData`, reason and success.\n- Raw lines 60\u201363: HTTP-status acceptance.\n\n## Related\n\n- [[adyen]] \u2014 company route.\n- [[adyen-webhooks]] \u2014 Adyen webhook family and receipt concepts.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK/2026-09-15|SECOND_CHARGEBACK reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The issuing bank declined the material submitted during [defense of the original chargeback](https://docs.adyen.com/risk-management/understanding-disputes/defense-requirements). The disputed amount is deducted from your account.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - amount | object | Yes | The payment amount. For HTTP POST notifications, currency and value are returned as URL parameters. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK/2026-09-15.md:18"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK/2026-09-15.md:27"
+    },
+    {
+      "text": "\"eventCode\": \"SECOND_CHARGEBACK\",",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK/2026-09-15.md:47"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK/2026-09-15.md:63"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-second-chargeback-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-second-chargeback]] \u2014 2026-09-15-captured SECOND_CHARGEBACK incoming dispute notification for declined defense and deducted disputed amount; event-scoped success and HTTP acceptance are distinct.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK/2026-09-15.md",
+  "raw_sha256": "a1f4b2dc5091498ef60f57c4d5a1c34e7bbbb78db46d93ffa0290738879b7314",
+  "status": "candidate_ready"
+}

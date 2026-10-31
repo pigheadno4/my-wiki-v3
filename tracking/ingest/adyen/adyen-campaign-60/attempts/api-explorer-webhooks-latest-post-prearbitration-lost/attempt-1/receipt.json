@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-prearbitration-lost",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest PREARBITRATION_LOST notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST/2026-09-15.md\"\ntags: [adyen, webhooks, disputes, prearbitration]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen Webhooks `latest` POST `/PREARBITRATION_LOST` describes an incoming notification that the cardholder's bank declined a pre-arbitration case. The POST heading denotes delivery to a webhook receiver, not a merchant dispute action.\n\n## Key takeaways\n\n- The item schema requires `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` within `NotificationRequestItem`. `originalReference` is optional and is described for modifications as the original payment request reference. The outer `live`, `notificationItems`, and wrapper item are marked optional.\n- The example uses `eventCode: \"PREARBITRATION_LOST\"`, `success: \"true\"`, EUR 1000, `pspReference`, payment method `visa`, and a reason string; it omits `originalReference`. The schema says `success` reports execution of the named event, not payment authorization or a new dispute resolution guarantee. The generic `reason` description associates explanatory refusal text with `success=false`, although the example has a reason and `success=true`; preserve this example/table tension.\n- The response section labels `200 Success` and says webhook events are accepted on the basis of HTTP status code. Receiver acceptance is distinct from the reported pre-arbitration outcome. This page does not establish delivery order, retry/deduplication, signature verification, funds movement, or subsequent dispute stages.\n\n## Detail locators\n\n- Event identity and bank decision: raw lines 5\u20137. Field requiredness and reference/outcome descriptions: raw lines 11\u201327. Full sample payload and example tension: raw lines 29\u201360. HTTP acceptance: raw lines 61\u201364.\n\n## Related\n\n- [[adyen]] \u2014 provider overview.\n- [[adyen-webhooks]] \u2014 incoming-event context.\n- [[disputes]] \u2014 cross-provider dispute context; this event's exact outcome remains in the source.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST/2026-09-15|PREARBITRATION_LOST webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The cardholder's bank declined the [pre-arbitration](https://docs.adyen.com/risk-management/understanding-disputes/dispute-process-and-flow#dispute-process) case.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST/2026-09-15.md:7"
+    },
+    {
+      "text": "For modifications, this field corresponds to the payment request assigned to the original payment.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST/2026-09-15.md:23"
+    },
+    {
+      "text": "Informs about the outcome of the event (`eventCode`) the notification is for.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST/2026-09-15.md:27"
+    },
+    {
+      "text": "\"eventCode\": \"PREARBITRATION_LOST\"",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST/2026-09-15.md:48"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST/2026-09-15.md:64"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-prearbitration-lost-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-prearbitration-lost]] \u2014 2026-09-15-captured Webhooks `latest` PREARBITRATION_LOST incoming-event contract for a cardholder-bank pre-arbitration decline, with event-scoped success and separate HTTP acceptance.\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "The raw reason description associates refusal explanation with success=false, but its example has reason and success=true."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST/2026-09-15.md",
+  "raw_sha256": "2d443240d16f31c2bc2174f9bf2dfe0a13e0e0ad2a745a003e50abc8c32ca352",
+  "status": "candidate_ready"
+}

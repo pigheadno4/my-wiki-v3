@@ -15,6 +15,9 @@ The upgrade guide adds four Settlement Details Report adjustment journal types f
 
 ## Sources
 
+- [[source-adyen-api-explorer-webhooks-latest-post-settled-reversed]] — 2026-09-15-captured SETTLED_REVERSED webhook reference for debit reversal of settled capture after 30-day scheme/method nonreceipt, scoped to enabled Sales Day Payout merchants.
+
+
 - [[source-adyen-docs-account-pass-through-payout]] — 2020-modified, 2026-09-15-captured Adyen guide to pass-through merchant settlement: scheme/method receipt assigns sales to payable batches, one sales day can span batches, adjustments join as they occur and currency-specific bank holidays delay timing; batch assignment is not bank receipt.
 
 

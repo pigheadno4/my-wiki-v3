@@ -1,0 +1,11 @@
+# api-explorer-webhooks-latest-post-payout-thirdparty fixed queries
+
+## Q1
+
+The 2026-09-15 Webhooks `latest` POST /PAYOUT_THIRDPARTY snapshot describes the result of a legacy payout request and explicitly says the webhook is deprecated for new integrations (raw lines 5–23; canonical source: https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAYOUT_THIRDPARTY). It is an incoming event, not an operation to submit a payout. The example uses a `NotificationRequestItem` wrapper and `eventCode: "PAYOUT_THIRDPARTY"` (lines 47–75). The table marks top-level `live` and `notificationItems` optional, but item `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and string `success` required (lines 30–43). `merchantReference` is the merchant payment reference; `pspReference` is Adyen's transaction/request reference. `originalReference` is optional and described for modifications as corresponding to the original payment request; it is omitted in the example (lines 38–41, 53–72). `eventDate` gives event generation time in ISO 8601 (line 36). The table's HTTP POST amount URL-parameter wording and example's JSON amount object differ (lines 34, 60–63), with no reconciliation here.
+
+## Q2
+
+The item `success` flag reports execution outcome of the `eventCode`; false can have a refusal `reason` (raw lines 42–43; canonical source: https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAYOUT_THIRDPARTY). The response says webhook events are accepted on the basis of HTTP status code (lines 77–80), which concerns receiver acceptance, not payout completion. The successful Visa/card example and its `hmacSignature` `additionalData` do not prove universal fields, signature-verification rules, beneficiary credit, bank receipt, or settlement (lines 47–76). The page provides no delivery, order, retry, deduplication, or reversal contract. It explicitly deprecates this webhook for new integrations, directs new builds to Transfer Webhooks, and tells existing Payout API users to contact Adyen about Transfers API migration (lines 7–21). `latest` is a captured reference label, not a fixed API version.
+
+Canonical source route: [[source-adyen-api-explorer-webhooks-latest-post-payout-thirdparty]] — https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAYOUT_THIRDPARTY.

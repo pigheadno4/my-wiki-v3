@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-report-available",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Webhooks latest REPORT_AVAILABLE notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE/2026-09-15.md\"\ntags: [adyen, webhooks, reports, reporting]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen Webhooks `latest` POST `/REPORT_AVAILABLE` documents an incoming notification that a report has been generated and is ready to download. The POST heading is the webhook delivery route, not a merchant operation to generate or download a report.\n\n## Key takeaways\n\n- Within `NotificationRequestItem`, the table requires `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, `reason`, and `success`. The table says `pspReference` contains the report filename, `reason` contains the report download URL, and `success` is always `true`. `originalReference` is optional. The outer `live`, `notificationItems`, and wrapper item are marked optional.\n- The example has `eventCode: \"REPORT_AVAILABLE\"`, `reason: \"URL_TO_DOWNLOAD_REPORT\"`, and `success: \"true\"`. Its `pspReference` value is reference-shaped rather than an evident report filename, but the page does not establish that it cannot be a filename. `merchantReference` is present as an empty string, despite the table describing it as a unique payment reference; the table gives no nonempty constraint. The `reason` URL placeholder illustrates the table's download-URL description.\n- The response section labels `200 Success` and says webhook acceptance depends on HTTP status. Notification availability and receiver acknowledgement do not establish successful download, report contents, complete reconciliation, settlement, or payment outcome. This page gives no download authentication, delivery-order, retry/deduplication, or signature-verification procedure.\n\n## Detail locators\n\n- Report-ready purpose: raw lines 5\u20137. Field requiredness, filename/URL and success descriptions: raw lines 11\u201327. Sample payload and evidence-limited field observations: raw lines 29\u201356. HTTP acceptance: raw lines 57\u201360.\n\n## Related\n\n- [[adyen]] \u2014 provider overview.\n- [[adyen-reporting]] \u2014 report and reconciliation context.\n- [[adyen-webhooks]] \u2014 incoming webhook context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE/2026-09-15|REPORT_AVAILABLE webhook reference (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The report is generated and ready to be downloaded.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE/2026-09-15.md:7"
+    },
+    {
+      "text": "Contains the file name of the report.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE/2026-09-15.md:25"
+    },
+    {
+      "text": "Contains the download URL where you can obtain a copy of the report.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE/2026-09-15.md:26"
+    },
+    {
+      "text": "Always `true`.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE/2026-09-15.md:27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE/2026-09-15.md:60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-report-available-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-report-available]] \u2014 2026-09-15-captured Webhooks `latest` REPORT_AVAILABLE notification for a generated downloadable report; the sample has a reference-shaped `pspReference` and present but empty `merchantReference`, without establishing a schema violation or retrieval proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "The sample pspReference is reference-shaped, though the table describes a report filename; the page does not establish that it cannot be a filename. merchantReference is present as an empty string and the table gives no nonempty constraint."
+        ]
+      },
+      {
+        "update_id": "c60-report-available-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-report-available]] \u2014 2026-09-15-captured `REPORT_AVAILABLE` incoming-event contract with report URL in `reason`, event-scoped success and separate HTTP receiver acceptance.\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE/2026-09-15.md",
+  "raw_sha256": "471c3f70b1cdef8822d69797685342396439313700e7d8ddbfd7399eed33506a",
+  "status": "candidate_ready"
+}

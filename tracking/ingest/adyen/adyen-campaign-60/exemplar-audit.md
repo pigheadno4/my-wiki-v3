@@ -1,0 +1,11 @@
+# Adyen C60 coordinator full-read audit
+
+**PASS** — three predetermined final-source audits, 2026-10-31. Initial review corrections resolved before final audit. No final material partial/fail; no expansion required.
+
+Coordinator personally read numbered contiguous model-visible raw including every schema, table, example and response: Webhooks overview1–63; AUTHORISATION1–68; relayed-authorisation endpoint1–100,101–205,206–399. No truncated or omitted raw ranges. Checked final candidate, quotes/locators, fixed answers, independent approvals and reciprocal routes. Structural aggregate checks follow at close.
+
+- `api-explorer-webhooks-latest-overview` final attempt2: v1 purpose/catalog only; result routes are not success claims, failure/reversal labels remain distinct, individual event behavior is not invented. Narrow reciprocal approved.
+- `api-explorer-relayed-authorisation-webhooks-latest-post-balanceplatform-authorisation-relayed` final attempt1: complete399lines; HTTP200 plus decision body within two seconds/fallback, optional top-level request fields versus nested requirements, prose include-decision versus optional response-parent schema, required nestedstatus and response example retained. Prefilled request decision is not completed platform reply. Existing relayed/validation guide response-shape and1500ms conflict remains explicitly linked and reciprocally documented in those existing sources. Not generic acknowledgement or financial completion. Issuing/Webhooks routes approved.
+- `api-explorer-webhooks-latest-post-authorisation` final attempt1: result of authorisation, optional parent versus required item fields, stringsuccess, experimentaloperations warning, original/reference identity and amount-table/example wording preserved. HTTPstatus acceptance is separate from capture/settlement. Webhooks route approved. Fixed answers retainverifiedlocators; canonical source-route label mechanically added at close without semantic change.
+
+All three canonical texts match accepted receipts; raw hashes, exact quote substrings and final independent approvals checked. Root personally inspected relevant concept/source context and existing Issuing conflict pages. No source evidence is current live/payment proof. All50 targets receive exhaustive hash/link/count checks at close.

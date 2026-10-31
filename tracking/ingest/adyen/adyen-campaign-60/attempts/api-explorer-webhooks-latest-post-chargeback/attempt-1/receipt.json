@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-chargeback",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: CHARGEBACK notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/CHARGEBACK\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/CHARGEBACK/2026-09-15.md\"\ntags: [adyen, webhooks, disputes, chargebacks]\n---\n\n## Overview\n\nThis 2026-09-15 capture of the Adyen API Explorer `Webhooks/latest` `POST /CHARGEBACK` reference describes an incoming payment chargeback notification: the payment was charged back and funds were deducted from the merchant account. The POST heading names the webhook event received by a merchant endpoint, not a merchant chargeback operation. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- In the request item, `eventCode` identifies the event type; the example sets it to `CHARGEBACK`. `success` is the outcome of that event code, not a separate statement that a dispute has been defended or reversed.\n- The item schema marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` required. The enclosing `live`, `notificationItems`, and `NotificationRequestItem` rows are marked optional in this captured table. `originalReference` is optional and, for modifications, corresponds to the original payment request; `pspReference` identifies the transaction or request.\n- The example includes `chargebackReasonCode`, `defensePeriodEndsAt`, `defendable`, `capturePspReference`, and `hmacSignature` in generic `additionalData`. The table does not make those sample fields required or define a defense workflow, signature-verification procedure, or deadline rule.\n- The response section says webhook events are accepted on the basis of HTTP status code and lists `200 Success`. Receiver acceptance is separate from the chargeback and deducted-funds event described by the notification. This page does not specify delivery order, retries, deduplication, or financial reversal.\n\n## Detail locators\n\n- Event meaning: raw lines 5\u20137.\n- Request-body requiredness, identifiers, event outcome, and conditional refusal `reason`: raw lines 11\u201327.\n- Illustrative `CHARGEBACK` payload and additional data: raw lines 29\u201370.\n- Response acceptance: raw lines 71\u201374.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 webhook-family context.\n- [[source-adyen-docs-risk-management-disputes-api-dispute-notifications]] \u2014 separate dispute-notification guide; consult its own evidence for broader lifecycle rules.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/CHARGEBACK/2026-09-15|Adyen API Explorer CHARGEBACK reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The payment was [charged back](https://docs.adyen.com/risk-management/disputes-api/dispute-notifications#chargeback), and the funds were deducted from your account.",
+      "location": "raw lines 5\u20137"
+    },
+    {
+      "text": "|     - eventCode | string | Yes | The type of event the notification item is for. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "|     - originalReference | string | No | For modifications, this field corresponds to the payment request assigned to the original payment. |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 74"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-chargeback-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-chargeback]] \u2014 2026-09-15-captured `Webhooks/latest` CHARGEBACK notification reference for deducted funds, item identifiers and event outcome; HTTP status acknowledges receipt, while sample defense fields do not define a defense workflow.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/CHARGEBACK/2026-09-15.md",
+  "raw_sha256": "4e07c45dd422626fdcd12e5437468da3ccae4f9ed18fb9f774f3acf1b5b5eb9a",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,11 @@
+# C60 fixed-query answers: RECURRING_CONTRACT
+
+Canonical retrieval route: `wiki/sources/adyen/source-adyen-api-explorer-webhooks-latest-post-recurring-contract.md`; canonical URL: `https://docs.adyen.com/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT`.
+
+## Q1
+
+The captured `Webhooks/latest` POST page describes an incoming `RECURRING_CONTRACT` notification after a recurring contract is created, and directs merchants to enable the webhook in Customer Area (raw lines 5–7). The POST heading is a webhook route, not a token-creation call. The displayed schema marks top-level `live`, `notificationItems`, and nested `NotificationRequestItem` optional; within an item, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `originalPsp`, `pspReference`, and `success` are required (lines 11–28). `originalPsp` is the initial payment's `pspReference`; this event's `pspReference` is instead the stored-payment-details token, equal to `recurringDetailReference` (lines 23, 26). Optional `originalReference` has a separate modification-related description (line 24). The example shows event code `RECURRING_CONTRACT`, a zero-value USD amount, `ideal`, and additional shopper, token, signature, and session fields; those example values do not impose universal field conditions (lines 30–64). `eventDate` is event generation time; the page states no further timing rule (line 20).
+
+## Q2
+
+The event reports recurring-contract creation, and `success` is defined for execution of the event identified by `eventCode`; `reason` is described for `success=false` (raw lines 5–7, 27–28). Neither that notification nor a `success=true` example proves later recurring payment authorization, capture, or settlement. The response lists `200 Success` and bases webhook acceptance on HTTP status (lines 65–68), separate from token creation or payment outcome. The 68-line reference does not specify delivery order, retries, deduplication, signature verification, or later financial finality; example `additionalData.hmacSignature` is not a procedure or universal field guarantee (lines 39–45). `latest` is the captured API Explorer path; the immutable raw was fetched 2026-09-15 (lines 1–3). Follow the canonical source route above for the evidence and raw link.

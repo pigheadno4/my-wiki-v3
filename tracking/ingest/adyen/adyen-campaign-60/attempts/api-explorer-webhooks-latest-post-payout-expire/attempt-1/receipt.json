@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-payout-expire",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PAYOUT_EXPIRE webhook reference\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE/2026-09-15.md\"\ntags: [adyen, webhooks, payouts, deprecated]\n---\n\n## Overview\n\nThis 2026-09-15-captured Webhooks `latest` reference describes the incoming `POST /PAYOUT_EXPIRE` notification for an expired payout. The webhook is **deprecated** and does not support new integrations. Adyen directs new integrations to Transfer Webhooks and existing Payout API users to their Adyen contact for migration to the Transfers API. The page says Transfers API webhooks have more details and defined transfer states; this legacy event must not be read as a Transfers API state.\n\n## Key takeaways\n\n- The request-body table marks outer `live` and `notificationItems` optional. Inside a `NotificationRequestItem`, it marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` required. This is nested-property requiredness as shown in the table, not a claim that the outer body or wrapper is required. `originalReference`, `paymentMethod`, `reason`, and `additionalData` are marked optional.\n- `merchantReference` is the merchant's payment reference; `pspReference` is Adyen's transaction/request reference. The optional `originalReference` is described for modifications as corresponding to the original payment request. The `amount` row calls it the payment amount; this page does not separately define an expired payout amount or funds-movement state.\n- `success` describes whether the `eventCode` event was executed successfully. The example has `eventCode: PAYOUT_EXPIRE` and `success: \"true\"`: that is an event-scoped outcome for expiry, **not** proof that the payout succeeded or reached a bank. The optional `reason` row says it explains refusal if `success=false`; the example's empty reason does not create another rule.\n- Under `200 Success`, the page says webhook events are accepted on the basis of the HTTP status code. This receiver acceptance is separate from the payout state. The page gives no response body, retry, ordering, deduplication or signature rule.\n- A standalone \u201cThe payout expired\u201d link appears without an accompanying trigger or timeout explanation. Do not infer an expiry interval or a particular payout stage from it.\n\n## Detail locators\n\n- Raw lines 5\u201321: deprecation and Transfers API migration direction.\n- Raw lines 23\u201343: fragmentary expiry link and body schema, including nested required flags and reference identities.\n- Raw lines 45\u201371: TEST example with `PAYOUT_EXPIRE`, EUR 1000, optional `originalReference`, and event-scoped `success: \"true\"`.\n- Raw lines 72\u201375: HTTP-status acceptance statement.\n\n## Related\n\n- [[adyen]] \u2014 company route.\n- [[adyen-payouts]] \u2014 legacy payout and Transfers API context.\n- [[adyen-webhooks]] \u2014 webhook receipt and family distinctions.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE/2026-09-15|PAYOUT_EXPIRE reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This webhook is **deprecated** and no longer supports new integrations. Do one of the following:",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE/2026-09-15.md:7"
+    },
+    {
+      "text": "If you are building a new integration, use the [Transfer Webhooks](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/overview) instead.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE/2026-09-15.md:9"
+    },
+    {
+      "text": "|     - eventCode | string | Yes | The type of event the notification item is for. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE/2026-09-15.md:35"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE/2026-09-15.md:43"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE/2026-09-15.md:75"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-payout-expire-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-payout-expire]] \u2014 2026-09-15-captured deprecated PAYOUT_EXPIRE incoming webhook reference for legacy Payout API users; event-scoped success and HTTP acceptance are separate from payout completion.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE/2026-09-15.md",
+  "raw_sha256": "10ff350da92f9a4ebe75db614637cfd3bfc0b27347f5137efda9538ae633de86",
+  "status": "candidate_ready"
+}

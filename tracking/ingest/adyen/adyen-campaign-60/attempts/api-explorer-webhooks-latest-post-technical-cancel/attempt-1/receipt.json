@@ -1,0 +1,46 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-technical-cancel",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: TECHNICAL_CANCEL result notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL/2026-09-15.md\"\ntags: [adyen, webhooks, technical-cancel, online-payments]\n---\n\n## Overview\n\nThis captured Adyen API Explorer `Webhooks/latest` POST reference describes an incoming `TECHNICAL_CANCEL` notification reporting the result of a technical cancel request. The POST heading is a webhook delivery route, not the merchant cancellation request endpoint. See [[adyen]], [[adyen-online-payments]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The displayed request-body table marks `live`, `notificationItems`, and the nested `NotificationRequestItem` wrapper optional. Within an item, `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` are marked required. `eventCode` identifies the event type; the example sets it to `TECHNICAL_CANCEL`.\n- `merchantReference` is the merchant payment reference, while `pspReference` is Adyen's transaction or request reference. Optional `originalReference` is described for modifications as corresponding to the original payment request. The example includes distinct original and PSP references, without changing requiredness.\n- `success` reports whether the specified event executed successfully; if `false`, `reason` is described as a short refusal explanation. This notification is the technical-cancel result. The page does not state technical-cancel request eligibility, timing limits, or any broader refund or settlement result.\n- The response section lists `200 Success` and says webhook events are accepted based on HTTP status. Receiver acceptance is separate from the cancellation event's `success` value. The reference does not establish delivery order, retries, deduplication, signature verification, or later financial finality.\n\n## Detail locators\n\n- Raw lines 5\u20137: technical-cancel result purpose.\n- Raw lines 11\u201327: request-body schema, required versus optional fields, `live` environment flag, payment and modification reference identities, conditional `reason`, and event-scoped `success`. `amount` is described as payment amount; the table notes currency and value as URL parameters for HTTP POST notifications.\n- Raw lines 29\u201358: illustrative test-origin EUR 1000 `TECHNICAL_CANCEL` payload with separate original and PSP references and `success=\"true\"`.\n- Raw lines 59\u201362: `200 Success` and HTTP status based webhook acceptance.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 payment cancellation and request context.\n- [[adyen-webhooks]] \u2014 Adyen webhook families and receiver context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL/2026-09-15|Captured TECHNICAL_CANCEL webhook reference]]\n",
+  "quotes": [
+    {
+      "text": "The result of the [technical cancel](https://docs.adyen.com/online-payments/cancel#technical-cancel-webhook) request.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - originalReference | string | No | For modifications, this field corresponds to the payment request assigned to the original payment. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL/2026-09-15.md:23"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL/2026-09-15.md:27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw/adyen/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL/2026-09-15.md:62"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-technical-cancel-webhook-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-technical-cancel]] \u2014 2026-09-15-captured `Webhooks/latest` TECHNICAL_CANCEL result-notification schema, with event-scoped success and HTTP receiver acceptance separate from the cancellation outcome.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL/2026-09-15.md",
+  "raw_sha256": "79a42c253021b0fcb747c653d44e3da0825f5564e95e4118ee03758dc0df5eb9",
+  "status": "candidate_ready"
+}

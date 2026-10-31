@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-webhooks-latest-post-refunded-reversed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Webhooks: REFUNDED_REVERSED notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Webhooks/latest/post/REFUNDED_REVERSED\"\nraw_files:\n  - \"adyen/api-explorer/Webhooks/latest/post/REFUNDED_REVERSED/2026-09-15.md\"\ntags: [adyen, webhooks, refunds, reversal]\n---\n\n## Overview\n\nCaptured API Explorer `Webhooks/latest` `POST /REFUNDED_REVERSED` reference for an incoming notification about a reversed refunded amount. This reference says the amount was reversed and returned to \u201cyour bank account.\u201d The separate [[source-adyen-docs-online-payments-refund|Adyen refund guide]] instead says the funds return to Adyen and are back in the merchant account; the captured sources do not reconcile that destination wording. The POST heading describes webhook delivery, not a merchant reversal operation. See [[adyen]], [[adyen-refunds]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The body table marks top-level `live` and `notificationItems` and the nested `NotificationRequestItem` wrapper as not required. Within an item, it marks `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and `success` required. These item-level flags do not make the outer container required.\n- `success` is a string for whether the event named by `eventCode` executed successfully. Optional `reason` is described as a short refusal explanation when `success` is `false`. The example pairs `eventCode: \"REFUNDED_REVERSED\"` and `success: \"true\"`, yet supplies a nonempty `reason`; the page does not explain that mismatch, so the example must not redefine the documented condition.\n- `merchantReference` is the merchant's payment reference; `pspReference` is Adyen's transaction or request reference. Optional `originalReference` corresponds, for modifications, to the original payment request; the example contains it. Keep original-payment and event/request identities separate.\n- `amount` is described as the payment amount. The table says currency and value for HTTP POST notifications are URL parameters (raw line 18), while the example puts them in a nested JSON `amount` object (raw lines 38\u201341); the snapshot does not reconcile those representations. `eventDate` is event-generation time, and optional `live` distinguishes live from test origin.\n- The response section labels `200` Success and says webhook events are accepted based on HTTP status code. Receiver acceptance is separate from the refund-reversal event outcome. This `latest` snapshot states no numbered version, response body, delivery, ordering, retry, deduplication, signature, or independent bank-receipt guarantee.\n\n## Detail locators\n\n- Event purpose and destination wording: raw lines 5\u20137.\n- Body requiredness, identity, amount and success conditions: raw lines 11\u201327.\n- Illustrative modification payload and reason/success mismatch: raw lines 29\u201355.\n- HTTP status acceptance: raw lines 56\u201359.\n\n## Related\n\n- [[adyen]]\n- [[adyen-refunds]]\n- [[adyen-webhooks]]\n- [[source-adyen-docs-online-payments-refund|Adyen refund guide]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Webhooks/latest/post/REFUNDED_REVERSED/2026-09-15|Captured REFUNDED_REVERSED webhook reference]]\n",
+  "quotes": [
+    {
+      "text": "The refunded amount was [reversed](https://docs.adyen.com/online-payments/refund#refunded-reversed) and returned to your bank account.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|     - amount | object | Yes | The payment amount. For HTTP POST notifications, currency and value are returned as URL parameters. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "|     - reason | string | No | If `success` = `false`, then this includes a short message with an explanation for the refusal. |",
+      "location": "raw line 26"
+    },
+    {
+      "text": "|     - success | string | Yes | Informs about the outcome of the event (`eventCode`) the notification is for. If `true`: the event was executed successfully. If `false`: the event was not executed successfully. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "Webhook events are accepted on the basis of the HTTP status code.",
+      "location": "raw line 59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-refunded-reversed-refunds-route",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-webhooks-latest-post-refunded-reversed]] \u2014 2026-09-15-captured reversed-refund notification contract; its \u201cyour bank account\u201d destination wording conflicts with the refund guide's Adyen/merchant-account wording, and HTTP receipt is separate from event outcome.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Existing ## Lifecycle boundary says funds return to Adyen and the merchant account, while this pinned endpoint reference says returned to your bank account. Preserve both as source-qualified claims; coordinator should consider a reciprocal concept warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Webhooks/latest/post/REFUNDED_REVERSED/2026-09-15.md",
+  "raw_sha256": "0b618c575eac92107db16af263ab147ed5c9371ac9ac3ff050ddd184805a335d",
+  "status": "candidate_ready"
+}

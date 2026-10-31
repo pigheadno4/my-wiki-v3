@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-onboarding-on-invite-webhooks-latest-post-balanceplatform-accountholder-onboarded",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen onboarding-on-invite accountHolder.onboarded webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded\"\nraw_files:\n  - \"adyen/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded/2026-09-15.md\"\ntags: [adyen, platforms, onboarding, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15-captured onboarding-on-invite webhook reference says Adyen sends `balancePlatform.accountHolder.onboarded` when a new account holder has been onboarded to the balance platform. The payload can contain references and IDs for resources Adyen created for that account holder, usable when processing payments or making payouts. It is an incoming event about onboarding and resource creation, not an instruction to initiate a payment or payout.\n\n## Key takeaways\n\n- The request-body table requires top-level `data`, `environment` (`test` or `live`), and `type`. `timestamp` is optional and describes queue time. Within required `data`, all listed resource objects and fields are marked optional, including `accountHolder`, primary `balanceAccount`, `balancePlatform`, `capabilities`, `creationDate` (event trigger time), `legalEntityId`, `merchantId`, `stores`, and `transferInstruments`. Do not make an example ID a required schema property.\n- Resource identity is object-specific: `accountHolder.id`, `balanceAccount.id`, `balancePlatform`, `legalEntityId`, `merchantId`, store IDs, and transfer-instrument IDs name different resources. Store entries can carry a balance-account ID, business-line ID, split-configuration ID and payment-method list; transfer instruments can carry their own ID and associated balance-account ID. Follow the raw table and example for optional nested fields.\n- `capabilities` is an optional map keyed by capability such as `receivePayments`; `allowed`, `enabled`, `requested`, and `verificationStatus` within each capability are optional. The TEST example shows `receivePayments` allowed/enabled/requested true and verification `valid`, but onboarding does not make those example values universal or prove any other account holder's verification or capability approval.\n- The TEST example has a top-level `data.id` matching `accountHolder.id`, although the displayed request-body table does not list `data.id`. It also shows `balanceAccount.id` ending `0001` while a store's `balanceAccountId` ends `000001`; the example does not establish that these two strings match. Do not repair either discrepancy by inference.\n- The response section says a receiver can return any `2xx` HTTP status to accept the webhook; its `notificationResponse: \"[accepted]\"` is an example response body, with the field marked optional. Receiver acceptance is separate from onboarding, verification, capability state, payment execution and payout bank receipt. No delivery, order, retry, deduplication or signature rule appears on this page.\n\n## Detail locators\n\n- Raw lines 5\u20139: onboarding trigger and created-resource reference purpose.\n- Raw lines 13\u201350: body schema, optional resource/capability fields and time meanings.\n- Raw lines 52\u2013114: TEST sample IDs, capability values and resource association discrepancy.\n- Raw lines 115\u2013134: `2xx` acceptance and optional example response body.\n\n## Related\n\n- [[adyen]] \u2014 company route.\n- [[adyen-platforms]] \u2014 account-holder onboarding and capability context.\n- [[adyen-webhooks]] \u2014 receipt and family distinctions.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded/2026-09-15|accountHolder.onboarded reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a new account holder has been onboarded to your balance platform.",
+      "location": "raw/adyen/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded/2026-09-15.md:7"
+    },
+    {
+      "text": "The webhook payload contains information about resources created by Adyen for the specified account holder. You can use these resource references and IDs when processing payments or making payouts to your users.",
+      "location": "raw/adyen/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded/2026-09-15.md:9"
+    },
+    {
+      "text": "|   - capabilities | object (object) | No | Contains key-value pairs that specify the actions that the account holder can do in your platform. The key is a [capability](https://docs.adyen.com/platforms/verification-overview/capabilities/) required for your integration. For example, **receivePayments**. The value is an object containing the settings for the capability. |",
+      "location": "raw/adyen/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded/2026-09-15.md:28"
+    },
+    {
+      "text": "|   - creationDate | string | No | The date and time when the event was triggered, in ISO 8601 extended format. For example, **2025-03-19T10:15:30+01:00**. |",
+      "location": "raw/adyen/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded/2026-09-15.md:33"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks#accept-notifications). |",
+      "location": "raw/adyen/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded/2026-09-15.md:123"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c60-oninvite-onboarded-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-onboarding-on-invite-webhooks-latest-post-balanceplatform-accountholder-onboarded]] \u2014 2026-09-15-captured onboarding-on-invite account-holder-onboarded webhook reference for created resource IDs and optional capability state; receipt and onboarding do not prove verification or payment/payout completion.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded/2026-09-15.md",
+  "raw_sha256": "8d9558da8ea87536012434d835a949f0cda217187850bb6e19d2fedde2c8a850",
+  "status": "candidate_ready"
+}

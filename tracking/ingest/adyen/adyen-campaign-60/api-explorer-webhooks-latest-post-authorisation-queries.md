@@ -1,0 +1,11 @@
+# api-explorer-webhooks-latest-post-authorisation fixed queries
+
+## Q1
+
+The 2026-09-15 API Explorer `Webhooks/latest` POST /AUTHORISATION snapshot describes the result of an authorisation request, linking the Classic Payment API `/authorise` reference (raw lines 5–7; canonical source: https://docs.adyen.com/api-explorer/Webhooks/latest/post/AUTHORISATION). It is an incoming notification, with an example `NotificationRequestItem` wrapper and `eventCode: "AUTHORISATION"` (lines 31–63). Top-level `live` and `notificationItems` are table-optional; item fields `amount`, `eventCode`, `eventDate`, `merchantAccountCode`, `merchantReference`, `pspReference`, and string `success` are marked required (lines 14–27). `merchantReference` identifies the merchant's payment reference; `pspReference` identifies Adyen's transaction/request reference. `eventDate` has an ISO 8601 format. The page gives no separate delivery timing rule beyond that generated timestamp. `reason` is optional with conditional success-card detail and failure information (line 26); `operations` is optional and experimental (line 23). No `originalReference` appears in the table. The response lists 200 and HTTP-status-based webhook acceptance (lines 65–68).
+
+## Q2
+
+HTTP-status-based acceptance concerns receipt by the webhook endpoint, while the item's string `success` reports whether the payment request succeeded (raw lines 27 and 65–68; canonical source: https://docs.adyen.com/api-explorer/Webhooks/latest/post/AUTHORISATION). The example's `success: "true"`, tokenization `additionalData`, `ach`, and listed operations are sample values, not universal contract guarantees (lines 31–64). A successful authorisation result does not itself prove capture, settlement, or funds receipt. This page supplies no delivery, ordering, retry, deduplication, or signature rule, and no failure reversal or deprecation statement. `latest` is the captured reference label, not a fixed API version. The table's statement that HTTP POST notification amount currency/value are URL parameters coexists with a JSON amount object in the example (lines 18 and 43–46); the snapshot does not reconcile these representations.
+
+Canonical source route: [[source-adyen-api-explorer-webhooks-latest-post-authorisation]] — https://docs.adyen.com/api-explorer/Webhooks/latest/post/AUTHORISATION.

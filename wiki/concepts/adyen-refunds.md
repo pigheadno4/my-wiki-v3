@@ -11,9 +11,24 @@ Adyen online-payment refunds return funds to a shopper after the payment has bee
 
 ## Lifecycle boundary
 
-Refund processing is asynchronous. A `REFUND` webhook reports validation success or failure; `success: true` means Adyen sent the request onward but does not guarantee final completion. A later `REFUND_FAILED` event can report payment-method rejection, while `REFUNDED_REVERSED` means funds from a previously refunded payment returned to Adyen and the merchant account.
+Refund processing is asynchronous. A `REFUND` webhook reports validation success or failure; `success: true` means Adyen sent the request onward but does not guarantee final completion. A later `REFUND_FAILED` event can report payment-method rejection, while the online refund guide describes `REFUNDED_REVERSED` as funds from a previously refunded payment returned to Adyen and back in “your account”.
+
+> [!warning] Contradiction
+> The captured [[source-adyen-api-explorer-webhooks-latest-post-refunded-reversed|REFUNDED_REVERSED API Explorer reference]] says the refunded amount was returned to “your bank account” (its raw line 7). The captured [[source-adyen-docs-online-payments-refund|online refund guide]] instead says funds have been returned to Adyen and are back in “your account” (its raw line 659). The destination wording remains source-qualified and unresolved; the event or receiver acknowledgement alone is not independent bank-credit proof.
 
 ## Sources
+
+- [[source-adyen-api-explorer-webhooks-latest-post-refund-failed]] — 2026-09-15-captured refund-failure event; API Explorer's scheme-rejection heading coexists with a BLIK example. See [[source-adyen-docs-online-payments-refund]] for original-payment versus refund-request PSP reference mapping.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-refunded-reversed]] — 2026-09-15-captured reversed-refund notification contract; its “your bank account” destination wording conflicts with the refund guide's Adyen/“your account” wording, and HTTP receipt is separate from event outcome.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-refund]] — 2026-09-15-captured REFUND webhook reference for refund-request result, item fields and an uncaptured-transaction failure example; HTTP acceptance is distinct from refund completion.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-postponed-refund]] — 2026-09-15-captured `Webhooks/latest` POSTPONED_REFUND event reference: refund postponed until after capture, Support enablement for the notification, and HTTP receiver acceptance separate from refund completion.
+
 
 - [[source-adyen-api-explorer-payment-latest-post-refund]] — 2026-09-15 inactive Classic Payment API v68 POST /refund reference for captured-payment eligibility, partial-refund qualification, original PSP identity and received-for-processing response.
 
