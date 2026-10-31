@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-payout-latest-post-storedetailandsubmitthirdparty",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout API v68: store detail and submit third-party payout\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payout/latest/post/storeDetailAndSubmitThirdParty\"\nraw_files:\n  - \"adyen/api-explorer/Payout/latest/post/storeDetailAndSubmitThirdParty/2026-09-15.md\"\ntags: [adyen, payout-api, third-party-payouts, deprecated]\n---\n\n## Overview\n\nCaptured 2026-09-15 reference for `POST /storeDetailAndSubmitThirdParty` on the Payout API v68 test server (`https://pal-test.adyen.com/pal/servlet/Payout/v68`). It both submits a third-party payout and stores the supplied details for later payouts. The endpoint is deprecated and does not support new integrations; the page directs new integrations to Transfers API `POST /transfers` and existing Payout API integrators to contact Adyen about migration. See [[adyen]] and [[adyen-payouts]].\n\n## Key takeaways\n\n- The submitted payout still requires confirmation or decline by a reviewer or `/confirmThirdParty` or `/declineThirdParty` calls. Submission and detail storage are not payout approval or completion. The 200 response's success `resultCode` is `payout-submit-received`, a submission receipt rather than a final money-movement result.\n- The request table requires `amount` with currency and minor-unit value, `merchantAccount`, `entityType`, `nationality`, `recurring`, `reference`, `shopperEmail`, and `shopperReference`. `recurring.contract` must be `PAYOUT`. One of `bank` or `card` is required. `dateOfBirth` is marked Yes in the table and described as mandatory for natural persons; preserve that conditional wording rather than infer a universal company requirement. `billingAddress` is required for cross-border payouts to and from Canada, with its listed subfields and US/Canada state condition. `shopperName.lastName` must contain the company name when entityType is Company.\n- `reference` is the merchant's payout-status communication reference; uniqueness is advised but not required. `shopperReference` identifies the shopper for this transaction. `pspReference` in the response uniquely identifies the request. A 403 means insufficient permissions. This test-server snapshot does not establish current eligibility, live availability, reviewer approval, final payout outcome or bank receipt.\n\n## Detail locators\n\n- Deprecation, operation, confirmation boundary, test server and request body: [[raw/adyen/api-explorer/Payout/latest/post/storeDetailAndSubmitThirdParty/2026-09-15|raw lines 5\u201385]]. Nested bank/card rules, billing address, identity fields and recurring contract are in lines 35\u201383.\n- Response success and error schemas plus response example: raw lines 87\u2013182.\n\n## Related\n\n- [[adyen-payouts]] \u2014 broader payout routes and legacy Payout API boundary.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payout/latest/post/storeDetailAndSubmitThirdParty/2026-09-15|Payout API v68 storeDetailAndSubmitThirdParty captured raw]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is **deprecated** and no longer supports new integrations.",
+      "location": "raw line 7, deprecation notice"
+    },
+    {
+      "text": "Submits a payout and stores its details for subsequent payouts.",
+      "location": "raw line 23, operation description"
+    },
+    {
+      "text": "The submitted payout must be confirmed or declined either by a reviewer or via `/confirmThirdParty` or `/declineThirdParty` calls.",
+      "location": "raw line 25, confirmation requirement"
+    },
+    {
+      "text": "The recurring.contract must be set to `PAYOUT`",
+      "location": "raw line 70, request body recurring"
+    },
+    {
+      "text": "In case of success is payout-submit-received.",
+      "location": "raw line 98, 200 response resultCode"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-storedetail-submit-thirdparty-payout-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payout-latest-post-storedetailandsubmitthirdparty]] \u2014 2026-09-15-captured deprecated Payout API v68 test-server reference for storing details while submitting a third-party payout; reviewer/API confirmation or decline remains necessary, and `payout-submit-received` is a submission receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payout/latest/post/storeDetailAndSubmitThirdParty/2026-09-15.md",
+  "raw_sha256": "72b8d9f55cfe98ad40c34b1861cfc708584da1ec3f1700369de5098ee5d4a8b8",
+  "status": "candidate_ready"
+}

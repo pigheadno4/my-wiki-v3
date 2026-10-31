@@ -14,6 +14,24 @@ Adyen's payout documentation covers outbound disbursements to suppliers, partner
 
 ## Sources
 
+- [[source-adyen-api-explorer-payout-latest-post-submitthirdparty]] — 2026-09-15-captured deprecated Payout API v68 TEST stored-detail submission reference; `payout-submit-received` identifies request receipt before separate confirm/decline, not settlement.
+
+
+- [[source-adyen-api-explorer-payout-latest-post-storedetailandsubmitthirdparty]] — 2026-09-15-captured deprecated Payout API v68 test-server reference for storing details while submitting a third-party payout; reviewer/API confirmation or decline remains necessary, and `payout-submit-received` is a submission receipt.
+
+
+- [[source-adyen-api-explorer-payout-latest-post-storedetail]] — 2026-09-15-captured deprecated Payout API v68 test-host `/storeDetail` reference for storing bank/card details under `PAYOUT` and returning a token for a separate later `/submitThirdParty`; `Success` is storage, not payout completion.
+
+
+- [[source-adyen-api-explorer-payout-latest-post-declinethirdparty]] — 2026-09-15-captured deprecated Payout API v68 test-server decline reference for a previously submitted third-party payout, with original submission reference, request acknowledgement and a bracketed response-example discrepancy.
+
+
+- [[source-adyen-api-explorer-payout-latest-post-confirmthirdparty]] — 2026-09-15-captured deprecated Payout API TEST v68 confirmation reference for an earlier `/submitThirdParty` PSP reference; received response is not payout completion, and example brackets differ from the schema label.
+
+
+- [[source-adyen-api-explorer-payout-latest-overview]] — 2026-09-15-captured deprecated Payout API v68 overview with new-integration migration direction, separate submit versus confirm/decline credentials, TEST/LIVE host distinction and six-operation catalog; endpoint summaries do not prove payout results.
+
+
 - [[source-adyen-docs-payment-methods-mobilepay-react-native-component]] — 2026-09-15 React Native Components guide's experimental `/payments` payout-token path, recurring lifecycle webhook and `/transfers` handoff; no completed payout is shown.
 
 

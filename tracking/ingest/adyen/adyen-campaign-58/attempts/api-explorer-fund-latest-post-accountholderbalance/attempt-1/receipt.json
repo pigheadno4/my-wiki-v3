@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-fund-latest-post-accountholderbalance",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Fund API v6: Get account-holder balances\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Fund/latest/post/accountHolderBalance\"\nraw_files:\n  - \"adyen/api-explorer/Fund/latest/post/accountHolderBalance/2026-09-15.md\"\ntags: [adyen, classic-platforms, fund-api, account-holders, balances]\n---\n\n## Overview\n\nThis Fund API Explorer snapshot, captured 2026-09-15 under `Fund/latest`, documents POST `/accountHolderBalance` on the displayed Fund v6 test server. It retrieves balances for a Classic Platforms account holder, with accounts and their currency-specific balances distinguished from a holder-level total. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The request-body table requires `accountHolderCode`; the example supplies only that holder code. This is a balance lookup, with no transfer or payout request field (raw lines 12\u201326).\n- The response schema separates optional `balancePerAccount`, a list of accounts identified by `accountCode` with `detailBalance`, from optional `totalBalance` for the holder. Both describe `balance`, `onHoldBalance` and `pendingBalance` lists; the holder-total list entries specify three-character currency and integer minor-unit value (raw lines 32\u201359, 65\u201392). Do not merge accounts or currencies into one fungible amount, or treat `onHoldBalance` or `pendingBalance` as an available-to-transfer figure.\n- The page lists 200 for a succeeded request and 202 for acceptance before processing completes; both have the same optional field schema. Neither heading provides an actual balance example or demonstrates that money moved, a payout was initiated, or funds became transferable (raw lines 27\u201392).\n- The listed errors are 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation and 500 server processing. The page names no specific permission or eligibility rule (raw lines 95\u2013157).\n\n## Detail locators\n\n- Purpose, displayed test server, required request property and JSON request example: raw lines 5\u201326.\n- 200 and 202 descriptions and full balance schemas: raw lines 27\u201392. The nested `currency` and `value` properties are marked required within the holder-total balance list entries; that does not make their parent `totalBalance` object required.\n- Error categories and optional error-body fields: raw lines 95\u2013157. The generic error body's `pspReference` description mentions a payment; this endpoint is a balance lookup, and that wording does not establish a payment.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic holder/account model and reciprocal source route.\n- [[adyen-platforms]] \u2014 separate newer balance-platform resource model.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Fund/latest/post/accountHolderBalance/2026-09-15|Fund API Explorer POST accountHolderBalance, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returns the account balances of an account holder.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The code of the Account Holder of which to retrieve the balance.",
+      "location": "raw line 17, request-body table"
+    },
+    {
+      "text": "A list of each account and their balances.",
+      "location": "raw line 35, 200 response table"
+    },
+    {
+      "text": "The total balance of the account holder.",
+      "location": "raw line 50, 200 response table"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw line 63, 202 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-accountholderbalance-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-fund-latest-post-accountholderbalance]] \u2014 2026-09-15-captured Fund API v6 test-server account-holder balance lookup, separating per-account balances from holder totals and balance, on-hold and pending currency lists.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Fund/latest/post/accountHolderBalance/2026-09-15.md",
+  "raw_sha256": "23863eb2d6be7d3c22ddfa9fbfd1171fe268281ac227b1f7dce9528bd4c70db7",
+  "status": "candidate_ready"
+}

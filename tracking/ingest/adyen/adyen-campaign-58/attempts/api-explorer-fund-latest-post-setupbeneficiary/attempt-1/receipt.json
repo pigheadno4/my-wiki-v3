@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-fund-latest-post-setupbeneficiary",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Fund API v6: set up a beneficiary account\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Fund/latest/post/setupBeneficiary\"\nraw_files:\n  - \"adyen/api-explorer/Fund/latest/post/setupBeneficiary/2026-09-15.md\"\ntags: [adyen, classic-platforms, fund-api, beneficiaries]\n---\n\n## Overview\n\nCaptured 2026-09-15 Classic Fund API v6 test-server reference for `POST /setupBeneficiary`. The operation defines a benefactor/beneficiary relationship between two accounts: the source is the benefactor and the destination is the beneficiary. The page says setup transfers the benefactor account's current funds to the beneficiary account and automatically sends later payments to the benefactor account onward to the beneficiary account. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- The request body requires `sourceAccountCode` and `destinationAccountCode`; `merchantReference` is optional. A benefactor/beneficiary series may have no more than four beneficiaries and no cycle. The page does not specify a same-account-holder or same-platform restriction for this operation.\n- This is relationship setup with described current-balance transfer and future-payment routing, not an ordinary one-time `/transferFunds` instruction. The response schema lists `invalidFields`, request `pspReference` and `resultCode`; it does not provide a posted-transfer amount or destination balance. A 200 says the request succeeded, whereas a 202 only says accepted for processing, with processing incomplete. A response receipt alone does not establish that the described funds movement has completed.\n- The page lists 400, 401, 403, 422 and 500 errors; 403 means insufficient permissions. This captured v6 test endpoint does not establish current live availability, account eligibility or an actual completed transfer.\n\n## Detail locators\n\n- Operation description, limits, server and request schema/example: [[raw/adyen/api-explorer/Fund/latest/post/setupBeneficiary/2026-09-15|raw lines 5\u201330]].\n- 200/202 responses, error schemas and permission boundary: raw lines 31\u2013129.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account and funds model.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Fund/latest/post/setupBeneficiary/2026-09-15|Fund API v6 setupBeneficiary captured raw]]\n",
+  "quotes": [
+    {
+      "text": "Defines a benefactor and a beneficiary relationship between two accounts.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "At the time of benefactor/beneficiary setup, the funds in the benefactor account are transferred to the beneficiary account, and any further payments to the benefactor account are automatically sent to the beneficiary account.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "A series of benefactor/beneficiaries may not exceed four beneficiaries and may not have a cycle in it.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "| sourceAccountCode | string | Yes | The benefactor account. |",
+      "location": "raw line 19, request body"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw lines 50\u201351, 202 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-setup-beneficiary-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-fund-latest-post-setupbeneficiary]] \u2014 2026-09-15-captured Classic Fund API v6 test-server reference for beneficiary-account setup, current-balance/future-payment routing, four-beneficiary/no-cycle limit and incomplete 202 processing.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Fund/latest/post/setupBeneficiary/2026-09-15.md",
+  "raw_sha256": "7d09970a54c12184693e44169960abd9edc6af26023a8c738a6a3b83ef95d3e8",
+  "status": "candidate_ready"
+}

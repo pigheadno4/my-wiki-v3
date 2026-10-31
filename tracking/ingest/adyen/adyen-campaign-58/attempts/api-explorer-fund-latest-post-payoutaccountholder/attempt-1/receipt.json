@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-fund-latest-post-payoutaccountholder",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Fund API v6: Pay out from an account to its holder\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Fund/latest/post/payoutAccountHolder\"\nraw_files:\n  - \"adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15.md\"\ntags: [adyen, classic-platforms, fund-api, payouts, account-holders]\n---\n\n## Overview\n\nThis 2026-09-15-captured Classic Fund API v6 reference describes `POST /payoutAccountHolder` at the listed **test** server (`https://cal-test.adyen.com/cal/services/Fund/v6`): a payout from a Classic `accountCode` to its owning `accountHolderCode`. The opening description names a bank-account destination; the request table also exposes a holder-owned `payoutMethodCode` for a stored payout method. The separate Classic card-payout guide describes the eligible-card path. Keep these Classic IDs separate from newer balance-platform transfer resources. [[adyen-classic-platforms]] [[adyen]]\n\n## Key takeaways\n\n- The request table marks `accountCode` and owning `accountHolderCode` required. `amount` is **not marked required** as a top-level property, although its nested `currency` and minor-unit `value` are marked required when the amount object is used; the endpoint's purpose describes a specified amount, so do not infer an amount-free payout contract from the table. For a multi-currency account, the table says to specify the currency. See [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|raw lines 14\u201321]].\n- Optional `bankAccountUUID` selects a bank account held by that holder; if blank, a bank account is automatically selected. Optional `payoutMethodCode` selects a holder-owned payout method; if blank, a payout instrument is automatically selected. The `amount` note says a supplied bank UUID uses the bank-supported currency and a supplied payout method code selects that method. The page does not define precedence when **both** destination identifiers are supplied. See [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|raw lines 19\u201326]].\n- `payoutSpeed` lists `STANDARD` and `SAME_DAY`, but this table alone does not establish same-day eligibility. Optional `merchantReference` links transactions. `description` is limited to 200 characters and a stated character set; the one-off example uses an en dash in `12345 \u2013 Test`, outside that stated set, so use the field rule rather than treating the example as validation proof. See [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|raw lines 23\u201342]].\n- HTTP 200 is labeled succeeded, while HTTP 202 is accepted for processing **but incomplete**. Both response schemas list optional `bankAccountUUID`, `merchantReference`, `payoutSpeed`, request-identifying `pspReference`, `resultCode` and validation `invalidFields`. A response reference or destination field does not prove bank/card receipt. The Classic manual-payout guide explicitly says to wait for `ACCOUNT_HOLDER_PAYOUT` for payout status; the status guide distinguishes `Initiated`, `Confirmed` and `Failed`, and says a bank can return funds after `Confirmed`. See [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|raw lines 43\u201382]], [[source-adyen-docs-classic-platforms-payouts-manual-payout|manual payout guide]], and [[source-adyen-docs-classic-platforms-payouts-payout-notifications|payout notifications]].\n- Errors list 400 unreadable request, 401 authentication, 403 insufficient permissions, 422 validation and 500 server failure. See [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|raw lines 85\u2013147]]. This page does not establish a specific role, successful account eligibility, available balance, live payout or current rail availability.\n\n## Detail locators\n\n- Request fields, conditional nested amount properties and bank-versus-payout-method selection: [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|raw lines 14\u201326]].\n- One-off bank example and 200/202 response schemas: [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|raw lines 28\u201382]].\n- Error response schemas: [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|raw lines 85\u2013147]].\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic holder/account context.\n- [[source-adyen-docs-classic-platforms-payouts-manual-payout-payout-to-cards]] \u2014 eligible stored-card route and its separate enablement/PCI gates.\n- [[source-adyen-docs-classic-platforms-payouts-payout-notifications]] \u2014 outcome and possible return tracking.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15|Payout account holder API reference (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Pays out a specified amount from an account to the bank account of account holder.",
+      "location": "raw line 7, opening purpose"
+    },
+    {
+      "text": "The code of the Account Holder who owns the account from which the payout is to be made.",
+      "location": "raw line 18, request body accountHolderCode row"
+    },
+    {
+      "text": "If left blank, a bank account is automatically selected.",
+      "location": "raw line 22, request body bankAccountUUID row"
+    },
+    {
+      "text": "If left blank, a payout instrument is automatically selected.",
+      "location": "raw line 25, request body payoutMethodCode row"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw line 66, 202 Success section"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-payoutaccountholder-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-fund-latest-post-payoutaccountholder]] \u2014 2026-09-15-captured Classic Fund API v6 test-host reference for account-to-holder payout requests, holder-owned bank/payout-method destination codes and 200/202 response fields; final payout status requires the separate notification route.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The one-off request example's description contains an en dash outside the field's stated allowed character set; do not treat the example as validation proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Fund/latest/post/payoutAccountHolder/2026-09-15.md",
+  "raw_sha256": "a46b879766d2c32400a5ae2feae2b44f7ebff607fd95e5bb9d4bfade784baeca",
+  "status": "candidate_ready"
+}

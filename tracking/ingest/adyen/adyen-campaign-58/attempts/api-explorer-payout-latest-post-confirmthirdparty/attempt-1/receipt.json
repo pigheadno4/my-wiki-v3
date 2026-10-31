@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-payout-latest-post-confirmthirdparty",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout API: POST /confirmThirdParty\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payout/latest/post/confirmThirdParty\"\nraw_files:\n  - \"adyen/api-explorer/Payout/latest/post/confirmThirdParty/2026-09-15.md\"\ntags: [adyen, payout-api, legacy-payouts, confirmation]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer capture documents `POST /confirmThirdParty` on the listed TEST Payout v68 server. It confirms a payout previously submitted through `/submitThirdParty`; `/declineThirdParty` is the cancellation route. The endpoint is deprecated and no longer supports new integrations. Adyen directs new integrations to the Transfers API and existing Payout API users to their Adyen contact for migration information. See [[adyen]] and [[adyen-payouts]].\n\n## Key takeaways\n\n- Required request fields are `merchantAccount` and `originalReference`. The latter is the PSP reference returned by the earlier `/submitThirdParty` response, not the PSP reference newly returned by this confirmation request. Optional `additionalData` may be required for a particular payout request; the page gives no general condition.\n- A 200 response says the request succeeded and requires `pspReference` and `response`. The response description says success can be `payout-confirm-received` or `payout-decline-received`; error returns an informational message. The confirmation example wraps `payout-confirm-received` in square brackets, unlike the unbracketed value in the schema description. Treat that as an example/description discrepancy, not a literal-value guarantee.\n- `payout-confirm-received` is confirmation receipt, not proof that money was paid out or received by the recipient. This page contains no final payout or bank-delivery status, no 202 response, and no stated named reviewer role or credential. It lists 401 authentication and 403 insufficient permissions. The separate legacy payout workflow sources govern operational review and payout-outcome tracking.\n- Error classes are 400 request reading/understanding, 401 authentication, 403 permissions, 422 validation, and 500 server processing. The generic 400 example does not establish a payout-specific recovery action.\n\n## Detail locators\n\n- Deprecation, migration direction, operation and TEST v68 server: raw lines 5\u201328.\n- Request fields and example: raw lines 30\u201347.\n- 200 response and received-label description: raw lines 48\u201358; error schemas: 61\u2013128.\n- Bracketed confirmation-response example and generic 400 example: raw lines 130\u2013152.\n\n## Related\n\n- [[adyen-payouts]] \u2014 legacy payout scope and separate Payout Service/Transfers API routes.\n- [[source-adyen-docs-online-payments-online-payouts-payout-webhook]] \u2014 legacy payout outcome route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payout/latest/post/confirmThirdParty/2026-09-15|Payout API Explorer POST /confirmThirdParty capture]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is **deprecated** and no longer supports new integrations. Do one of the following:",
+      "location": "raw/adyen/api-explorer/Payout/latest/post/confirmThirdParty/2026-09-15.md:7"
+    },
+    {
+      "text": "Confirms a previously submitted payout.",
+      "location": "raw/adyen/api-explorer/Payout/latest/post/confirmThirdParty/2026-09-15.md:23"
+    },
+    {
+      "text": "| originalReference | string | Yes | The PSP reference received in the `/submitThirdParty` response. |",
+      "location": "raw/adyen/api-explorer/Payout/latest/post/confirmThirdParty/2026-09-15.md:37"
+    },
+    {
+      "text": "| response | string | Yes | The response:  - In case of success, it is either `payout-confirm-received` or `payout-decline-received`.  - In case of an error, an informational message is returned. |",
+      "location": "raw/adyen/api-explorer/Payout/latest/post/confirmThirdParty/2026-09-15.md:58"
+    },
+    {
+      "text": "  \"response\": \"[payout-confirm-received]\"",
+      "location": "raw/adyen/api-explorer/Payout/latest/post/confirmThirdParty/2026-09-15.md:138"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-confirmthirdparty-payouts-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payout-latest-post-confirmthirdparty]] \u2014 2026-09-15-captured deprecated Payout API TEST v68 confirmation reference for an earlier `/submitThirdParty` PSP reference; received response is not payout completion, and example brackets differ from the schema label.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The 200 example wraps payout-confirm-received in brackets while the response description lists the unbracketed value; do not infer a guaranteed literal string from the discrepancy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payout/latest/post/confirmThirdParty/2026-09-15.md",
+  "raw_sha256": "ac1747d4cf784bbfdcf229d0c6bd23cae2e2958f4d8e351e440c64ee51946372",
+  "status": "candidate_ready"
+}

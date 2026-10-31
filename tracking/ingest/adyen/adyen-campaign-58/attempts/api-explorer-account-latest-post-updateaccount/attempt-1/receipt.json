@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-account-latest-post-updateaccount",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: POST /updateAccount\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/updateAccount\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/updateAccount/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, payout-schedule]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `POST /updateAccount` on the Account API v6 TEST server. It updates an account's description or payout schedule; the request table also documents optional bank-account coupling, payout-method coupling, metadata, and payout speed. The required `accountCode` identifies the account being updated, distinct from the account holder that owns the referenced bank account or payout method. The page does not separately specify request-body requiredness.\n\n## Key takeaways\n\n- `bankAccountUUID` couples the account to a bank account held by its account holder. Scheduled payouts in that bank account's currency go there; other currencies go to a matching bank account of the holder. `payoutMethodCode` couples a holder-held payout method for scheduled card payouts. Neither field is marked required.\n- On metadata update, omitting existing key-value pairs **deletes** those pairs. The optional description has a 256-character limit and stated character set.\n- If `payoutSchedule` is supplied, its nested `schedule` is marked required. `HOLD` prevents scheduled payouts but still permits manual payouts; `reason` is required when the schedule is `HOLD`. The optional `action` controls already-scheduled payout batches: `CLOSE` closes the existing batch, `UPDATE` reschedules it, and `NOTHING` (default) lets it proceed. `payoutSpeed` permits `STANDARD` (default) or `SAME_DAY`; the page does not establish eligibility or timing for same-day execution.\n- A 200 says the request succeeded, whereas a 202 says it was accepted but processing has not completed. The response includes required `accountCode` and optional updated fields, `invalidFields`, `pspReference`, and `resultCode`; `invalidFields` is described as fields causing the request to fail. Neither response proves an individual scheduled payout, transfer, or bank receipt.\n- Listed errors are 400 (request reading/understanding), 401 (authentication), 403 (insufficient permissions), 422 (validation), and 500 (server processing). This TEST-server snapshot does not establish a live endpoint or current merchant eligibility.\n\n## Detail locators\n\n- Request fields, payout routing, metadata replacement, schedule enum/action/defaults and conditional reason: pinned raw, `## Parameters > ### Request body`, lines 12\u201326.\n- Example weekly schedule with `CLOSE`: `## Request examples > ### basic`, lines 28\u201339; example is not a required combination.\n- 200/202 status text and response fields: `## Responses`, lines 40\u201391; errors and illustrative JSON: lines 94\u2013182.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder/account context and payout flow.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/updateAccount/2026-09-15|Account API v6 POST /updateAccount capture]]\n",
+  "quotes": [
+    {
+      "text": "Updates the description or payout schedule of an account.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| accountCode | string | Yes | The code of the account to update. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "Note that during an update of metadata, the omission of existing key-value pairs will result in the deletion of those key-value pairs.",
+      "location": "raw line 20, metadata description"
+    },
+    {
+      "text": "This field is required when the `schedule` parameter is set to `HOLD`.",
+      "location": "raw line 24, payoutSchedule.reason description"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw line 69"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-updateaccount-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-updateaccount]] \u2014 2026-09-15-captured Account API v6 TEST account update reference for description, bank/card payout routing, metadata replacement and payout schedule; 202 processing is incomplete.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/updateAccount/2026-09-15.md",
+  "raw_sha256": "918ae5d7027201b4a0ac0cfcf69fbbb9443c10bf1c57cd3df8e68f0b9d5923f0",
+  "status": "candidate_ready"
+}

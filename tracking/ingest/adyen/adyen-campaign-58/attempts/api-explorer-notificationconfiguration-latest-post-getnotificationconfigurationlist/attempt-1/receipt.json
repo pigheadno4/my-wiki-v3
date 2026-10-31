@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-notificationconfiguration-latest-post-getnotificationconfigurationlist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Notification API v6: List subscription configurations\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/NotificationConfiguration/latest/post/getNotificationConfigurationList\"\nraw_files:\n  - \"adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfigurationList/2026-09-15.md\"\ntags: [adyen, classic-platforms, notification-api, subscriptions, configuration]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents POST `/getNotificationConfigurationList` on the displayed Notification v6 test server. It returns details of notification subscription configurations in the platform of the executing user. This is a configuration lookup, not a notification-delivery log. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The request example is an empty JSON object; the captured page has no request-parameter table or pagination parameters (raw lines 5\u201317). Its stated scope is all notification subscriptions in the executing user's platform, not a single account holder or merchant account.\n- The optional `configurations` array can describe active state, subscribed API version, event type/include mode, notification ID, endpoint URL, SSL protocol, and optional notification credentials/HMAC key. Inside an `eventConfigs` item, `eventType` and `includeMode` are marked required; the parent array and configuration fields are optional (raw lines 23\u201347). The raw table gives the event-type enumeration and `INCLUDE`/`EXCLUDE` meanings; a listed configuration does not prove an event was delivered or acknowledged.\n- The schema says omitted `hmacSignatureKey` precludes `HmacSignature` and `Protocol` headers in notifications. This is a configuration-field description, not evidence of a delivered or verified webhook (raw line 33).\n- HTTP 200 describes a succeeded request. The example has two active entries and a request `pspReference`; it is illustrative, not a current inventory. Errors listed are 400, 401, 403, 422 and 500, with no named permission role (raw lines 20\u201321, 50\u2013151).\n\n## Detail locators\n\n- Operation purpose, test server and empty-object request example: raw lines 5\u201317.\n- Optional response schema, event enum/include semantics, credential/HMAC fields, notification ID and endpoint fields: raw lines 18\u201347. Full two-entry example: raw lines 114\u2013151.\n- Error categories and body schema: raw lines 50\u2013112.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic notification context and reciprocal route.\n- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 separate subscription setup, acknowledgement and retry guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfigurationList/2026-09-15|Notification API Explorer configuration list, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of the configurations of all of the notification subscriptions in the platform of the executing user.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Details of the notification subscription configurations.",
+      "location": "raw line 26, 200 response table"
+    },
+    {
+      "text": "Indicates whether the notification subscription is active.",
+      "location": "raw line 27, 200 response table"
+    },
+    {
+      "text": "Required when updating an existing configuration",
+      "location": "raw line 34, notificationId field"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 77, 403 Client Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-getnotificationconfigurationlist-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notificationconfiguration-latest-post-getnotificationconfigurationlist]] \u2014 2026-09-15-captured Notification API v6 test-server listing of the executing user's platform subscription configurations, with event selection and endpoint settings; listing does not prove delivery.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfigurationList/2026-09-15.md",
+  "raw_sha256": "8448b6be806b1ef29651d640e59caa146a9a2e3470a464c35c4ef0c26c143e8b",
+  "status": "candidate_ready"
+}

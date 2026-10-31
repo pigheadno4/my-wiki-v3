@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-account-latest-post-deletepayoutmethods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: delete payout methods\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/deletePayoutMethods\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/deletePayoutMethods/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, payout-methods]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `POST /deletePayoutMethods` on the TEST Account API v6 server (`https://cal-test.adyen.com/cal/services/Account/v6`). It deletes payout methods associated with a Classic Platforms account holder; the request identifies the holder by `accountHolderCode` and the methods by `payoutMethodCodes`. This is an account-holder payout-method operation, not a payout initiation or proof that a transfer reached a beneficiary.\n\n## Key takeaways\n\n- The request schema marks both `accountHolderCode` (string) and `payoutMethodCodes` (array of strings) required. The example supplies one code; the page does not state a minimum array length, idempotency rule, or what happens to an in-flight payout.\n- A 200 response says the request succeeded. A 202 response says it was accepted for processing but processing has not completed. Both response schemas list optional `invalidFields`, `pspReference`, and `resultCode`; the page gives no success example or follow-up event that proves deletion completed. Treat an accepted request as a receipt, not a confirmed final state.\n- The page lists 400 (unreadable request), 401 (authentication required), 403 (insufficient permissions), 422 (validation), and 500 (server processing) responses. It does not name a specific credential role or establish LIVE availability.\n\n## Detail locators\n\n- Operation and TEST server: raw lines 5\u201310.\n- Required request fields and example: raw lines 14\u201330.\n- Success and accepted-for-processing response schemas: raw lines 31\u201364.\n- Client/server errors and generic error examples: raw lines 67\u2013155.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-classic-platforms]] \u2014 the older account-holder/account model. Keep this Account API operation separate from newer balance-platform resource contracts.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/deletePayoutMethods/2026-09-15|Account API v6 POST /deletePayoutMethods (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Deletes payout methods associated with an account holder.",
+      "location": "raw lines 5\u20137, immediately under POST /deletePayoutMethods heading"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The code of the account holder, from which to delete the payout methods. |",
+      "location": "raw line 17, Request body table"
+    },
+    {
+      "text": "| payoutMethodCodes | array of string | Yes | The codes of the payout methods to be deleted. |",
+      "location": "raw line 18, Request body table"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw lines 50\u201351, 202 Success"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw lines 93\u201394, 403 Client Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-deletepayoutmethods-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-deletepayoutmethods]] \u2014 2026-09-15-captured Account API v6 TEST reference for deleting account-holder payout methods by holder and method codes; a 202 receipt says processing is incomplete.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/deletePayoutMethods/2026-09-15.md",
+  "raw_sha256": "0669d950d52a80e7d35ae069d7162ef91298385ec8cd0a582baafe3b9a60c8bf",
+  "status": "candidate_ready"
+}

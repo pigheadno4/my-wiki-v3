@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-fund-latest-post-accountholdertransactionlist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Fund API v6: POST /accountHolderTransactionList\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Fund/latest/post/accountHolderTransactionList\"\nraw_files:\n  - \"adyen/api-explorer/Fund/latest/post/accountHolderTransactionList/2026-09-15.md\"\ntags: [adyen, classic-platforms, fund-api, transactions, reconciliation]\n---\n\n## Overview\n\nThis captured Fund API page describes `POST /accountHolderTransactionList`, which returns transactions for a Classic account holder's accounts. Its listed server is Fund v6 TEST, `https://cal-test.adyen.com/cal/services/Fund/v6`. The request body requires `accountHolderCode`. Optional `transactionListsPerAccount` selects accounts and pages, and optional `transactionStatuses` selects status values.\n\n## Key takeaways\n\n- The page says the call returns at most 50 transactions **for each account**, ordered newest first. If `transactionListsPerAccount` is omitted, it includes the last 50 for all of the account holder's accounts. Within a supplied account entry, `accountCode` and `page` are required; page 1 is the most recent. Increment `page` to retrieve further transactions, and inspect each returned account list's optional `hasNextPage`. An omitted status filter includes all transactions. The request schema shown here has no date-range selector.\n- The documented statuses distinguish pending, failed, credited/debited, reversed, chargeback, converted, manual-correction, payout, and fund-transfer entries. The full permitted-value lists are in pinned raw lines 21 and 81/118. A `Payout` status, `payoutPspReference`, or `bankAccountDetail` in this account transaction listing is not, by itself, proof of bank receipt; the page describes account transactions and payout destination details, not a receiving-bank confirmation.\n- The 200 description says the request succeeded; the 202 description says the request was accepted for processing **but processing was not completed**. Both response schemas show optional `accountTransactionLists` with per-account `accountCode`, `hasNextPage`, and transaction entries. Transaction metadata includes amount, `creationDate` (date performed), references, source/destination account codes, status, and transfer code. Do not treat a 202 as a completed retrieval or financial outcome.\n- The listed error classes are 400, 401 (authentication), 403 (permissions), 422 (validation), and 500. The 2026-09-15 TEST reference does not establish current live availability or a specific account holder's balances, verification state, payout settlement, or bank receipt.\n\n## Detail locators\n\n- Purpose, server, account scope, page/default behavior, filters, and status vocabulary: pinned raw lines 5\u201321.\n- Illustrative basic and status-filtered request JSON: pinned raw lines 23\u201354.\n- 200 response structure, transaction fields, and status values: pinned raw lines 55\u201391.\n- 202 accepted-for-processing response and matching field structure: pinned raw lines 94\u2013128.\n- Error response descriptions and fields: pinned raw lines 131\u2013193.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder, account, transfer, and payout context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Fund/latest/post/accountHolderTransactionList/2026-09-15|Fund API v6 POST /accountHolderTransactionList capture (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The call returns a maximum of 50 transactions for each account.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The code of the account holder that owns the account(s) of which retrieve the transaction list. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "If left blank, the last fifty (50) transactions for all accounts of the account holder will be included.",
+      "location": "raw line 18, transactionListsPerAccount description"
+    },
+    {
+      "text": "|   - hasNextPage | boolean | No | Indicates whether there is a next page of transactions available. |",
+      "location": "raw line 65, 200 response accountTransactionLists"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw line 95"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-accountholdertransactionlist-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-fund-latest-post-accountholdertransactionlist]] \u2014 2026-09-15-captured Fund API v6 TEST reference for paginated, per-account Classic transaction lists and status filters; a listed payout is not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Fund/latest/post/accountHolderTransactionList/2026-09-15.md",
+  "raw_sha256": "2af465d0796823de63eea3fa0051b605a05959733b1e4db9225d24cf0e262ea2",
+  "status": "candidate_ready"
+}

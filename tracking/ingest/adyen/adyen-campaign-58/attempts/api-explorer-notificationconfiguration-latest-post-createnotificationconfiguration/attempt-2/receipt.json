@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-notificationconfiguration-latest-post-createnotificationconfiguration",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen NotificationConfiguration API v6 POST /createNotificationConfiguration\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration\"\nraw_files:\n  - \"adyen/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, webhooks, api-reference]\n---\n\n## Overview\n\nThis captured Classic NotificationConfiguration API `POST /createNotificationConfiguration` reference creates a subscription for platform event notifications sent to configured URL endpoint(s). Subscriptions are **per event type**, not per account holder: a marketplace's notifications of a subscribed type go to the configured endpoint(s). The listed server is `https://cal-test.adyen.com/cal/services/Notification/v6`. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The request requires `configurationDetails`. Inside it, `active`, `apiVersion`, `description`, `eventConfigs`, `hmacSignatureKey`, `notificationId`, `notifyURL`, `notifyUsername`, `notifyPassword` and `sslProtocol` are table-optional. Each supplied `eventConfigs` entry requires `eventType` and `includeMode`; `INCLUDE` sends the specified type and `EXCLUDE` sends all except excluded types. The page states no default for omitted `active`, `apiVersion`, `eventConfigs`, URL, credentials or SSL protocol. See raw lines 14\u201329.\n- `apiVersion` is the subscribed notification version; the page advises matching the API version your integration processes. `sslProtocol` permits `TLSv12` or `TLSv13`. `notifyURL` is the delivery URL; `notifyUsername` and `notifyPassword` are credentials for access to it. The sample credentials and URL are examples, not values to reuse or evidence of a reachable endpoint. See raw lines 19, 26\u201329 and 31\u201351.\n- Optional `hmacSignatureKey` is described here as a **32-byte, 64-hex-character** secret. If supplied, notifications include `HmacSignature` and `Protocol` headers; if omitted, those headers are not supplied. The separate [[source-adyen-docs-classic-platforms-configure-notifications-signing-notifications-with-hmac]] uses conflicting \u201c32bit\u201d wording while showing a 64-hex-character example; retain this page's explicit byte/character statement and flag the source discrepancy. The reference does not itself prove receiver-side signature validation. See raw line 24.\n- `notificationId` is Adyen-generated on create and is required when updating an existing configuration. The 200 example shows an ID and an active event subscription, but its values are illustrative. The response table requires `configurationDetails` and marks its nested fields, `invalidFields`, `pspReference` and `resultCode` optional. This create response does not establish actual delivery, acknowledgment, retry behavior or successful webhook validation. See raw lines 25, 52\u201381 and 148\u2013170.\n- Errors listed are 400, 401, 403, 422 and 500; 401 means authentication required and 403 insufficient permissions. The companion [[source-adyen-docs-classic-platforms-configure-notifications]] covers receiver acknowledgment/retry and has conflicting older sample API-version/protocol values; those samples do not redefine this endpoint table. See raw lines 84\u2013146 and the companion source.\n\n## Detail locators\n\n- Subscription scope and TEST v6 server: raw lines 5\u201310.\n- Request schema, event modes, endpoint credentials, HMAC and SSL: raw lines 14\u201329.\n- Illustrative create request: raw lines 31\u201351.\n- 200 schema, error classes and illustrative 200 response: raw lines 52\u2013170.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic platform and notification context.\n- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 separate subscription setup, acknowledgment, retry and test guide.\n- [[source-adyen-docs-classic-platforms-configure-notifications-signing-notifications-with-hmac]] \u2014 separate receiver-side HMAC verification and key-rotation guide, with key-size wording discrepancy.\n- [[adyen-platforms]] \u2014 separate newer platform webhook model.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration/2026-09-15|POST /createNotificationConfiguration, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Subscriptions must be configured on a per-event basis (as opposed to, for example, a per-account holder basis), so all event notifications of a marketplace and of a given type will be sent to the same endpoint(s).",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration/2026-09-15.md:7"
+    },
+    {
+      "text": "| configurationDetails | object | Yes | Details of the prospective notification subscription configuration. |",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration/2026-09-15.md:17"
+    },
+    {
+      "text": "**EXCLUDE**: Send all event types except the specified `eventType` and other event types with the `includeMode` set to **EXCLUDE**.",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration/2026-09-15.md:23"
+    },
+    {
+      "text": "Must be a 32-byte hex-encoded string (i.e. a string containing 64 hexadecimal characters;",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration/2026-09-15.md:24"
+    },
+    {
+      "text": "Adyen-generated ID for the entry, returned in the response when you create a notification configuration. Required when updating an existing configuration",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration/2026-09-15.md:25"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-notification-create-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notificationconfiguration-latest-post-createnotificationconfiguration]] \u2014 2026-09-15-captured Classic Notification v6 TEST subscription-create reference for per-event endpoints, optional credentials/HMAC/SSL fields and configuration ID; create response is not delivery or receiver validation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Endpoint reference specifies a 32-byte/64-hex-character HMAC key; separate Classic HMAC guide says 32bit while showing a 64-character example. Preserve source-scoped discrepancy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration/2026-09-15.md",
+  "raw_sha256": "5e4692e6a449b8323f188e61c06e24543b487b855157181e9604a32ef2de65b2",
+  "status": "candidate_ready"
+}

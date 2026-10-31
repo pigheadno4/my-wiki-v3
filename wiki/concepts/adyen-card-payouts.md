@@ -11,6 +11,9 @@ Adyen card payouts send funds to eligible recipient cards for disbursements or m
 
 ## Sources
 
+- [[source-adyen-api-explorer-payout-latest-post-payout]] — 2026-09-15-captured, deprecated Payout API v68 TEST `POST /payout` instant Visa/Mastercard card-payout reference; issuer-dependent 30-minute availability and payment-style result codes do not prove cardholder receipt.
+
+
 - [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-manage-card-details]] — 2023-modified Payout Service guide to PCI-gated third-party card collection, zero-auth eligibility and post-authorization tokenization before a separate Transfers API card payout; distinct from the legacy Payout API flow.
 
 

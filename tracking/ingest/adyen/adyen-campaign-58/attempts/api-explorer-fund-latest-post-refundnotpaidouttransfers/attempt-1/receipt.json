@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-fund-latest-post-refundnotpaidouttransfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Fund API v6: refund not-paid-out transfers\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Fund/latest/post/refundNotPaidOutTransfers\"\nraw_files:\n  - \"adyen/api-explorer/Fund/latest/post/refundNotPaidOutTransfers/2026-09-15.md\"\ntags: [adyen, classic-platforms, fund-api, refunds]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `POST /refundNotPaidOutTransfers` on the TEST Fund API v6 server (`https://cal-test.adyen.com/cal/services/Fund/v6`). It requests refunds for all transactions of one account since that account's most recent payout. It is account-based rather than payment-based: only the portion of each payment allocated to the specified account is refunded. Commissions, fees and portions sent to other accounts remain where the original split placed them.\n\n## Key takeaways\n\n- The request requires both `accountCode`, identifying the account from which to perform the refunds, and `accountHolderCode`, identifying its owner. There is no transaction-selection list or amount field in this request schema. The page does not specify an eligible-balance test, a count of affected transactions, or behavior if no transactions qualify.\n- A 200 response says the request succeeded. A 202 response says the request was accepted for processing but processing has not completed. Both success schemas list optional `invalidFields`, `pspReference` and `resultCode`; no refund outcome or completed transfer is shown. A request receipt alone does not establish that every refund was executed.\n- The page lists 400, 401, 403, 422 and 500 error classes. It does not name a specific credential role, final refund notification, propagation time, idempotency rule, or LIVE availability.\n\n## Detail locators\n\n- Operation, account-based split effect and TEST server: raw lines 5\u201310.\n- Required request fields and example: raw lines 14\u201328.\n- 200 and 202 success schemas: raw lines 29\u201362.\n- Error schemas: raw lines 65\u2013127.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-classic-platforms]] \u2014 older account-holder/account and split-payment model; separate from newer balance-platform transfer contracts.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Fund/latest/post/refundNotPaidOutTransfers/2026-09-15|Fund API v6 POST /refundNotPaidOutTransfers (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Refunds all the transactions of an account that have taken place since the most recent payout.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "only the portion of the payment that was made to the specified account is refunded.",
+      "location": "raw line 7, account-versus-payment scope"
+    },
+    {
+      "text": "The commissions, fees, and payments to other accounts remain in the accounts to which they were sent as designated by the original payment's split details.",
+      "location": "raw line 7, split effect"
+    },
+    {
+      "text": "| accountCode | string | Yes | The code of the account from which to perform the refund(s). |",
+      "location": "raw line 17, Request body table"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw lines 48\u201349, 202 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-refundnotpaidouttransfers-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-fund-latest-post-refundnotpaidouttransfers]] \u2014 2026-09-15-captured Fund API v6 TEST reference for account-scoped refund requests since the last payout; other split recipients and fees remain, and 202 is pending.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Fund/latest/post/refundNotPaidOutTransfers/2026-09-15.md",
+  "raw_sha256": "7aa4cc7d7eda3bbf7d6ab27159eb0ad62300f4dd94560b687173c1dbcdac1220",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-notificationconfiguration-latest-post-deletenotificationconfigurations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Notification API v6: POST /deleteNotificationConfigurations\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/NotificationConfiguration/latest/post/deleteNotificationConfigurations\"\nraw_files:\n  - \"adyen/api-explorer/NotificationConfiguration/latest/post/deleteNotificationConfigurations/2026-09-15.md\"\ntags: [adyen, classic-platforms, notification-api, subscriptions, deletion]\n---\n\n## Overview\n\nThis 2026-09-15-captured Classic Notification API reference documents `POST /deleteNotificationConfigurations`, which deletes existing **notification subscription configurations**. The page says that after a subscription is deleted, no further event notifications are sent to the URL defined in that subscription. That statement concerns the deleted subscription, not every subscription that might use the same URL. The listed server is **test** `https://cal-test.adyen.com/cal/services/Notification/v6`, despite `latest` in the documentation route. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The request-body table marks `notificationIds` as a required array of integers: IDs of the subscription configurations to delete. Its example contains one ID. The page gives no empty-array, duplicate-ID, partial-success, or idempotency rule (raw lines 12\u201328).\n- The only success status listed is 200, described as request succeeded. Its body schema lists optional `invalidFields`, `pspReference` and `resultCode`; the example returns only a `pspReference`. The page does not provide a per-ID deletion result or propagation timing. The stated cessation of notifications is conditioned on the subscription being deleted; a request reference alone is not evidence that any particular configuration was removed or delivery stopped (raw lines 29\u201345, 112\u2013121).\n- Listed errors are 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 request validation and 500 server processing. No specific credential role is named, and error body fields are optional in the tables (raw lines 48\u2013110).\n\n## Detail locators\n\n- Deletion purpose, delivery effect and test v6 server: raw lines 5\u201310. Required ID array and example: lines 12\u201328. Success description/schema: lines 29\u201345; example: lines 112\u2013121. Error descriptions/schemas: lines 48\u2013110.\n\n## Related\n\n- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 Classic subscription configuration, notification delivery and asynchronous operation-outcome context.\n- [[adyen-classic-platforms]] \u2014 Classic Platforms scope, separate from newer balance-platform webhooks.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/deleteNotificationConfigurations/2026-09-15|Notification configuration deletion reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Deletes an existing notification subscription configuration. After the subscription is deleted, no further event notifications will be sent to the URL defined in the subscription.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- https://cal-test.adyen.com/cal/services/Notification/v6",
+      "location": "raw line 10"
+    },
+    {
+      "text": "| notificationIds | array of integer | Yes | A list of IDs of the notification subscription configurations to be deleted. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "The request has succeeded.",
+      "location": "raw line 32"
+    },
+    {
+      "text": "| pspReference | string | No | The reference of a request. Can be used to uniquely identify the request. |",
+      "location": "raw line 44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-notification-delete-classic-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notificationconfiguration-latest-post-deletenotificationconfigurations]] \u2014 2026-09-15-captured Classic Notification API v6 TEST reference for deleting subscription configurations by integer ID; after deletion, delivery to the URL defined in that subscription stops, while the response example is only a request reference.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/deleteNotificationConfigurations/2026-09-15.md",
+  "raw_sha256": "6cfb0ea9d483ef52420fa8cceba458db3f392f1802af8a434a7792bfa01269ce",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-postfmapi-latest-post-getstoresunderaccount",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen deprecated POS Terminal Management API v1: list stores under an account\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/postfmapi/latest/post/getStoresUnderAccount\"\nraw_files:\n  - \"adyen/api-explorer/postfmapi/latest/post/getStoresUnderAccount/2026-09-15.md\"\ntags: [adyen, point-of-sale, stores, terminal-management, deprecated-api]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `POST /getStoresUnderAccount` on the TEST POS Terminal Management API v1 server (`https://postfmapi-test.adyen.com/postfmapi/terminal/v1`). It lists stores associated with a company account or, when narrowed, a merchant account, including each store's status. The page states that this API was deprecated from January 1, 2025 and support stopped April 1, 2025; it directs fleet-management automation to the Management API.\n\n## Key takeaways\n\n- The request requires `companyAccount`. With only that field, the list spans stores of all merchant accounts associated with the company account. Optional `merchantAccount` narrows the list to that merchant's stores. The two request examples illustrate these scopes.\n- Each returned store may include its `merchantAccountCode`, address, description, assigned-terminal ID list (`inStoreTerminals`), and status; `store` is the required code within a store object. The status values are `PreActive`, `Active`, `Inactive`, `InactiveWithModifications`, and `Closed`. The schema says an Active store can process payments and an inactive-with-modifications store can still support modifications such as refunds. These store-level descriptions and assigned-terminal IDs do not establish an individual terminal's boarding, configuration, connectivity, or completed payment.\n- A 200 says the lookup succeeded and the examples return one Active store. That illustrative row does not prove any account's present store inventory or LIVE readiness. The page also lists 400, 401, 403, 422 and 500 errors, without naming a specific credential role.\n\n## Detail locators\n\n- Operation, deprecation notice and TEST v1 server: raw lines 5\u201312.\n- Company-versus-merchant request scope and examples: raw lines 16\u201337.\n- Store response fields/status values and errors: raw lines 38\u2013123.\n- Illustrative success and generic error examples: raw lines 125\u2013215.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-terminal-management]] \u2014 current fleet-management route and operational boundaries.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/postfmapi/latest/post/getStoresUnderAccount/2026-09-15|POS Terminal Management API v1 POST /getStoresUnderAccount (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of stores associated with a company account or a merchant account, including the status of each store.",
+      "location": "raw line 7, operation description"
+    },
+    {
+      "text": "From January 1, 2025 POS Terminal Management API is deprecated and support stops on April 1, 2025.",
+      "location": "raw line 9, deprecation notice"
+    },
+    {
+      "text": "| companyAccount | string | Yes | The company account. If you only specify this parameter, the response includes the stores of all merchant accounts that are associated with the company account. |",
+      "location": "raw line 19, Request body table"
+    },
+    {
+      "text": "| merchantAccount | string | No | The merchant account. With this parameter, the response only includes the stores of the specified merchant account. |",
+      "location": "raw line 20, Request body table"
+    },
+    {
+      "text": "|   - inStoreTerminals | array of string | No | The list of terminals assigned to the store. |",
+      "location": "raw line 55, 200 Success response schema"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-getstoresunderaccount-terminal-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-postfmapi-latest-post-getstoresunderaccount]] \u2014 2026-09-15-captured deprecated POS Terminal Management API v1 TEST company/merchant store-list reference with store status and assigned-terminal IDs; it does not prove terminal readiness.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/postfmapi/latest/post/getStoresUnderAccount/2026-09-15.md",
+  "raw_sha256": "8d09b4f50920e0f026d574b293bd024133da95f550552423d52bbb93bbf43a28",
+  "status": "candidate_ready"
+}

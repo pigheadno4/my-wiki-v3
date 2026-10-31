@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-postfmapi-latest-post-findterminal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen legacy POS Terminal Management API: findTerminal\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/postfmapi/latest/post/findTerminal\"\nraw_files:\n  - \"adyen/api-explorer/postfmapi/latest/post/findTerminal/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-management, deprecated-api]\n---\n\n## Overview\n\nCaptured legacy POS Terminal Management API v1 TEST reference for `POST /findTerminal`. Given a terminal ID, it returns the company account, merchant account or store to which that terminal is assigned. The page says this API was deprecated from 2025-01-01 and support stopped on 2025-04-01, and directs fleet automation to the Management API. This legacy lookup contract does not define the newer Management API contract. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- The request body requires `terminal`, the unique terminal ID in `[Device model]-[Serial number]` form. The shown server is `https://postfmapi-test.adyen.com/postfmapi/terminal/v1`. See raw lines 11\u201328.\n- The 200 response requires `companyAccount` and `terminal`. Only a company-account level indicates company inventory; a `merchantAccount` with no `store` indicates merchant assignment; `store` is the assigned store code when present. `merchantInventory: true` means merchant inventory and cannot be boarded; `false` means assigned as an in-store terminal that is ready to be boarded or already boarded. Thus the lookup alone does not distinguish those latter two states or prove operational/payment readiness. See raw lines 29\u201341 and sample lines 108\u2013121.\n- The page lists 400 request-reading, 401 authentication, 403 insufficient-permission, 422 validation and 500 server errors. The example error codes are illustrative response examples, not an exhaustive status map. See raw lines 44\u2013106 and 123\u2013169.\n- The dated deprecation/support notice and TEST server limit this to captured legacy reference evidence; no current endpoint availability, successful terminal boarding, applied configuration or payment result follows from this page. See raw lines 5\u201312.\n\n## Detail locators\n\n- Purpose, deprecation and TEST server: raw lines 5\u201312.\n- Request property and example: raw lines 14\u201328.\n- Assignment semantics and response fields: raw lines 29\u201341.\n- Error schemas and examples: raw lines 44\u2013169.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 current terminal-fleet administration concept; keep its Management API routes distinct from this legacy endpoint.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/postfmapi/latest/post/findTerminal/2026-09-15|Legacy findTerminal reference captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returns the company account, merchant account, or store that a payment terminal is assigned to.",
+      "location": "raw line 7, purpose"
+    },
+    {
+      "text": "From January 1, 2025 POS Terminal Management API is deprecated and support stops on April 1, 2025.",
+      "location": "raw line 9, deprecation notice"
+    },
+    {
+      "text": "The unique terminal ID in the format `[Device model]-[Serial number]`.",
+      "location": "raw line 19, request terminal field"
+    },
+    {
+      "text": "If **true**, this indicates that the terminal is in the merchant inventory. This also means that the terminal cannot be boarded.",
+      "location": "raw line 39, merchantInventory response field"
+    },
+    {
+      "text": "This means that the terminal is ready to be boarded, or is already boarded.",
+      "location": "raw line 39, merchantInventory false meaning"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-findterminal-terminalmanagement-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-postfmapi-latest-post-findterminal]] \u2014 2026-09-15-captured deprecated POS Terminal Management API v1 TEST assignment lookup for terminal company/merchant/store, with merchant-inventory boarding distinction and 2025 support-stop notice.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/postfmapi/latest/post/findTerminal/2026-09-15.md",
+  "raw_sha256": "d3bbfe3c8e6179853414941e1f17c9d8573b50646980bdd8c7b9640013273d03",
+  "status": "candidate_ready"
+}

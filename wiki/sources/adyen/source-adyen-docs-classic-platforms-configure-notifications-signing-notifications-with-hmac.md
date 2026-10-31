@@ -20,6 +20,9 @@ This 2023-modified Classic Adyen for Platforms guide, captured 2026-09-15, descr
 - The page calls the key a **32bit hexadecimal** HMAC key, but its subscription and Java examples show a 64-hex-character key. This is a material size/terminology mismatch; do not derive a key-length rule from the wording alone (raw lines 29, 54, 114–115).
 - The subscribe prose says the example activates `ACCOUNT_HOLDER_VERIFICATION`, whereas the request and response `eventConfigs` specify `ACCOUNT_CREATED`. Treat the sample as an illustration of configuration fields, not proof that the verification event is included by that request (raw lines 35, 48–53, 71–76). The example key and credentials are illustrative, not values to reuse.
 
+> [!warning] Contradiction
+> This guide's **32bit** wording differs from the separately captured Notification Configuration API v6 [[source-adyen-api-explorer-notificationconfiguration-latest-post-createnotificationconfiguration]] and [[source-adyen-api-explorer-notificationconfiguration-latest-post-getnotificationconfiguration]], which specify a **32-byte hex-encoded string**, explicitly 64 hexadecimal characters. Keep that API requirement distinct from this guide's wording and examples; the mismatch is retained rather than silently normalized.
+
 ## Detail locators
 
 - Notifications v5+ and post-2022 integration boundary; default basic authentication and optional HMAC: raw lines 19–25. Key wording, reuse and rotation caveat: raw lines 27–31.

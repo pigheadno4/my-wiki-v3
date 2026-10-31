@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-account-latest-post-deleteshareholders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6 POST /deleteShareholders\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/deleteShareholders\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/deleteShareholders/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, shareholders]\n---\n\n## Overview\n\nThis captured Account API v6 `POST /deleteShareholders` reference describes deletion of shareholders associated with a **Classic Platforms account holder**. The request selects the account holder by `accountHolderCode` and the shareholders to delete by `shareholderCodes`; both body properties are required in the table. This is a destructive operation scoped to those selected shareholders. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The listed server is `https://cal-test.adyen.com/cal/services/Account/v6`. The request example supplies one shareholder code, but the body schema calls `shareholderCodes` an array of strings; the example does not set a one-code limit. See raw lines 9\u201330.\n- A `200` response is labeled \u201cThe request has succeeded.\u201d A `202` response says the request was accepted for processing **and processing has not been completed**. Do not treat a 202 acknowledgment as deletion completion. The page does not specify a later completion signal or propagation time. See raw lines 31\u201364.\n- Both 200 and 202 response tables make `invalidFields`, `pspReference` and `resultCode` optional. `invalidFields` can contain validation errors that would prevent requests from being processed; inspect the returned fields rather than assuming they are always present or that a request receipt proves the selected records are gone. See raw lines 36\u201364.\n- Documented error classes are 400 (request reading/understanding), 401 (authentication required), 403 (insufficient permissions), 422 (request validation), and 500 (server could not process). The example 400 and 403 error codes/messages are examples, not an exhaustive code list. See raw lines 67\u2013155.\n\n## Detail locators\n\n- Operation identity and TEST v6 server: raw lines 5\u201310.\n- Required selector properties and request example: raw lines 12\u201330.\n- 200 versus incomplete-processing 202 and optional response fields: raw lines 31\u201364.\n- Error response tables and 400/403 examples: raw lines 67\u2013155.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder and shareholder context.\n- [[source-adyen-api-explorer-account-latest-overview]] \u2014 Account API v6 overview and authentication/version boundary.\n- [[source-adyen-docs-classic-platforms-account-holders-and-accounts]] \u2014 Classic account-holder structure and onboarding.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/deleteShareholders/2026-09-15|POST /deleteShareholders, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Deletes shareholders associated with an account holder.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/deleteShareholders/2026-09-15.md:7"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The code of the Account Holder from which to delete the Shareholders. |",
+      "location": "raw/adyen/api-explorer/Account/latest/post/deleteShareholders/2026-09-15.md:17"
+    },
+    {
+      "text": "| shareholderCodes | array of string | Yes | The code(s) of the Shareholders to be deleted. |",
+      "location": "raw/adyen/api-explorer/Account/latest/post/deleteShareholders/2026-09-15.md:18"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/deleteShareholders/2026-09-15.md:51"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/deleteShareholders/2026-09-15.md:94"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-account-deleteshareholders-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-deleteshareholders]] \u2014 2026-09-15-captured Classic Account API v6 shareholder deletion reference, scoped by account-holder and shareholder codes; 202 means processing is incomplete.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/deleteShareholders/2026-09-15.md",
+  "raw_sha256": "2f1d07259c3ba3d4a5dcb3543448c00b104f5864a6b0e98581fd240554c10042",
+  "status": "candidate_ready"
+}

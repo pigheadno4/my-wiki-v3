@@ -15,6 +15,117 @@ The Classic overview explicitly directs a new implementation to a separate new-i
 
 ## Sources
 
+- [[source-adyen-api-explorer-notificationconfiguration-latest-post-getnotificationconfiguration]] — 2026-09-15-captured Notification v6 TEST configuration lookup by subscription ID, with event/HMAC/endpoint settings; request and response example IDs differ, and lookup does not prove delivery.
+
+
+- [[source-adyen-api-explorer-notificationconfiguration-latest-post-createnotificationconfiguration]] — 2026-09-15-captured Classic Notification v6 TEST subscription-create reference for per-event endpoints, optional credentials/HMAC/SSL fields and configuration ID; create response is not delivery or receiver validation.
+
+
+- [[source-adyen-api-explorer-notificationconfiguration-latest-post-updatenotificationconfiguration]] — 2026-09-15-captured Classic Notification API v6 test-host update reference for existing subscription IDs, full event-list replacement, HMAC/endpoint settings and a 200 configuration response distinct from actual delivery.
+
+
+- [[source-adyen-api-explorer-notificationconfiguration-latest-post-testnotificationconfiguration]] — 2026-09-15-captured Notification API v6 TEST reference for probing an existing Classic notification subscription by ID and event types; its 200 example reports a non-2XX recipient response.
+
+
+- [[source-adyen-api-explorer-notificationconfiguration-latest-post-getnotificationconfigurationlist]] — 2026-09-15-captured Notification API v6 test-server listing of the executing user's platform subscription configurations, with event selection and endpoint settings; listing does not prove delivery.
+
+
+- [[source-adyen-api-explorer-notificationconfiguration-latest-post-deletenotificationconfigurations]] — 2026-09-15-captured Classic Notification API v6 TEST reference for deleting subscription configurations by integer ID; after deletion, delivery to the URL defined in that subscription stops, while the response example is only a request reference.
+
+
+- [[source-adyen-api-explorer-notificationconfiguration-latest-overview]] — 2026-09-15-captured Classic Notification Configuration API v6 TEST catalog for creating, retrieving, updating, deleting and testing subscriptions, with authentication and live-credential boundaries.
+
+
+- [[source-adyen-api-explorer-fund-latest-post-refundfundstransfer]] — 2026-09-15-captured Fund API v6 TEST refund-of-transfer reference requiring the original transfer PSP reference and amount; 202 is acceptance, not completed reversal.
+
+
+- [[source-adyen-api-explorer-fund-latest-post-transferfunds]] — 2026-09-15-captured Classic Fund API v6 TEST transfer reference for same-platform accounts, account-holder status gates, required amount/codes and 200/202 request response; companion fund-transfer guide adds destination processing and webhook outcome gates.
+
+
+- [[source-adyen-api-explorer-account-latest-post-updateaccountholder]] — 2026-09-15-captured Classic Account API v6 TEST reference for account-holder detail/tier updates and adding bank accounts or shareholders, including metadata replacement and 202 processing boundary.
+
+
+- [[source-adyen-api-explorer-fund-latest-post-setupbeneficiary]] — 2026-09-15-captured Classic Fund API v6 test-server reference for beneficiary-account setup, current-balance/future-payment routing, four-beneficiary/no-cycle limit and incomplete 202 processing.
+
+
+- [[source-adyen-api-explorer-fund-latest-post-payoutaccountholder]] — 2026-09-15-captured Classic Fund API v6 test-host reference for account-to-holder payout requests, holder-owned bank/payout-method destination codes and 200/202 response fields; final payout status requires the separate notification route.
+
+
+- [[source-adyen-api-explorer-fund-latest-post-debitaccountholder]] — 2026-09-15-captured Fund API TEST v6 direct-debit request reference for holder bank account and split destinations; result webhook and `MarketPlace`/`Marketplace` spelling discrepancy qualify the sample.
+
+
+- [[source-adyen-api-explorer-fund-latest-post-refundnotpaidouttransfers]] — 2026-09-15-captured Fund API v6 TEST reference for account-scoped refund requests since the last payout; other split recipients and fees remain, and 202 is pending.
+
+
+- [[source-adyen-api-explorer-fund-latest-overview]] — 2026-09-15-captured Classic Fund API v6 overview for authentication, TEST server/version suffix, live-credential distinction and eight-operation catalog; endpoint table is not an operation contract.
+
+
+- [[source-adyen-api-explorer-account-latest-post-uploaddocument]] — 2026-09-15-captured Classic Account API v6 document-upload reference for Base64 content, type and conditional owner links; 202 acceptance is incomplete processing, not KYC approval.
+
+
+- [[source-adyen-api-explorer-fund-latest-post-accountholdertransactionlist]] — 2026-09-15-captured Fund API v6 TEST reference for paginated, per-account Classic transaction lists and status filters; a listed payout is not bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-fund-latest-post-accountholderbalance]] — 2026-09-15-captured Fund API v6 test-server account-holder balance lookup, separating per-account balances from holder totals and balance, on-hold and pending currency lists.
+
+
+- [[source-adyen-api-explorer-account-latest-post-updateaccountholderstate]] — 2026-09-15-captured Account API v6 TEST reference for enabling or disabling a holder's payout or processing state; payout allowance remains an aggregate of other conditions, and 202 is pending.
+
+
+- [[source-adyen-api-explorer-account-latest-post-createaccountholder]] — 2026-09-15-captured Classic Account API v6 test-server reference for creating a sub-merchant account holder, conditional entity details, default account creation and partial associated-bank-account failure.
+
+
+- [[source-adyen-api-explorer-account-latest-post-updateaccount]] — 2026-09-15-captured Account API v6 TEST account update reference for description, bank/card payout routing, metadata replacement and payout schedule; 202 processing is incomplete.
+
+
+- [[source-adyen-api-explorer-account-latest-post-unsuspendaccountholder]] — 2026-09-15-captured Classic Account API v6 test-server reference for moving an eligible holder from Suspended to Inactive; 202 is accepted for processing, not completion.
+
+
+- [[source-adyen-api-explorer-account-latest-post-getuploadeddocuments]] — 2026-09-15-captured Account API v6 TEST reference for retrieving previously uploaded Classic account-holder document details; response metadata does not establish verification approval.
+
+
+- [[source-adyen-api-explorer-account-latest-post-suspendaccountholder]] — 2026-09-15-captured Classic Account API v6 test-host reference for suspending a holder by `accountHolderCode`, with status, payout/processing-state and scheduled-event response fields; HTTP 202 is pending, while operational status effects are in the separate verification guide.
+
+
+- [[source-adyen-api-explorer-account-latest-post-gettaxform]] — 2026-09-15-captured Account API v6 test-server reference for US account-holder tax-form requests by code, form type and year, with optional Base64 response content; eligibility and delivery conditions remain in the separate Classic guide.
+
+
+- [[source-adyen-api-explorer-account-latest-post-getaccountholder]] — 2026-09-15-captured Account API Explorer TEST v6 `POST /getAccountHolder` retrieval reference for Classic holder/account identities, optional status and KYC views, and distinct payout versus processing state.
+
+
+- [[source-adyen-api-explorer-account-latest-post-deletesignatories]] — 2026-09-15-captured Classic Account API v6 test endpoint for deleting selected signatories from an account holder; 202 acceptance does not establish completed deletion.
+
+
+- [[source-adyen-api-explorer-account-latest-post-deleteshareholders]] — 2026-09-15-captured Classic Account API v6 shareholder deletion reference, scoped by account-holder and shareholder codes; 202 means processing is incomplete.
+
+
+- [[source-adyen-api-explorer-account-latest-post-deletepayoutmethods]] — 2026-09-15-captured Account API v6 TEST reference for deleting account-holder payout methods by holder and method codes; a 202 receipt says processing is incomplete.
+
+
+- [[source-adyen-api-explorer-account-latest-post-deletelegalarrangements]] — 2026-09-15-captured Classic Account API v6 TEST reference for deleting an account holder's legal arrangements or only listed entities; 202 means accepted, not completed.
+
+
+- [[source-adyen-api-explorer-account-latest-post-deletebankaccounts]] — 2026-09-15-captured Account API v6 TEST `POST /deleteBankAccounts` reference for deleting specified bank-account UUIDs from a Classic account holder; 202 indicates processing is incomplete.
+
+
+- [[source-adyen-api-explorer-account-latest-post-createaccount]] — 2026-09-15-captured Classic Account API v6 test-host `/createAccount` reference for additional holder accounts, conditional payout settings and response/error fields; the separate Classic creation guide requires `ACCOUNT_CREATED` before business logic even after HTTP 200.
+
+
+- [[source-adyen-api-explorer-account-latest-post-closestores]] — 2026-09-15-captured Account API v6 TEST reference for closing stores associated with a Classic account holder; requires account-holder code and store list.
+
+
+- [[source-adyen-api-explorer-account-latest-post-closeaccountholder]] — 2026-09-15-captured Account API v6 test-server reference for final Classic account-holder closure by code, including 200/202 response boundaries and liable-account routing for payments to a closed holder.
+
+
+- [[source-adyen-api-explorer-account-latest-post-closeaccount]] — 2026-09-15-captured Account API Explorer TEST v6 `POST /closeAccount` reference for irreversible Classic account closure, liable-account routing of later payments, and 200 versus pending 202 responses.
+
+
+- [[source-adyen-api-explorer-account-latest-post-checkaccountholder]] — 2026-09-15-captured Classic Account API v6 test endpoint for proactively triggering account-holder verification with `Processing` or `Payout` state and tier; 202 acceptance is not completed verification.
+
+
+- [[source-adyen-api-explorer-account-latest-overview]] — 2026-09-15-captured Classic Account API v6 overview for account-related entity operations, authentication alternatives, versioned TEST server and endpoint directory; new implementations are directed to a separate guide.
+
+
 - [[source-adyen-docs-classic-platforms-reconciliation-use-cases-transactions-scheduled-payouts]] — 2026-09-15 Classic scheduled-payout reconciliation example using account-holder/account Marketpay Payout rows; selected rows and initiated payouts are not bank-receipt proof.
 
 

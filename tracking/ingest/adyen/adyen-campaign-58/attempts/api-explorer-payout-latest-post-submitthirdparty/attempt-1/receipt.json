@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-payout-latest-post-submitthirdparty",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen legacy Payout API v68: submit a stored-detail payout\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payout/latest/post/submitThirdParty\"\nraw_files:\n  - \"adyen/api-explorer/Payout/latest/post/submitThirdParty/2026-09-15.md\"\ntags: [adyen, payouts, legacy-payout-api, staged-payouts]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `POST /submitThirdParty` on the TEST Payout API v68 server (`https://pal-test.adyen.com/pal/servlet/Payout/v68`). It submits a payout using payment details previously stored through `/storeDetail`. The endpoint is deprecated and does not support new integrations: the page directs new integrations to Transfers API `POST /transfers` and existing Payout API users to their Adyen contact for migration.\n\n## Key takeaways\n\n- Submission is a stage, not the final payout. The submitted payout must later be confirmed or declined by a reviewer or via `/confirmThirdParty` or `/declineThirdParty`. This page does not state the reviewer role, deadline, or final settlement evidence.\n- Required request properties are `amount` (with required `currency` and minor-unit `value`), `merchantAccount`, `recurring`, merchant `reference`, `selectedRecurringDetailReference`, `shopperEmail`, and `shopperReference`. Although nested `recurring.contract` is marked \u201cNo\u201d in the table, the `recurring` description explicitly says it must be `PAYOUT`. `selectedRecurringDetailReference` identifies stored details and can be `LATEST`; it is not the submission response's PSP reference.\n- Optional fields have conditional descriptions: `dateOfBirth` is mandatory for natural persons and required to update the existing recurring-contract value; `entityType`, `nationality`, and `shopperName` are required when updating their existing recurring-contract values. For a company, `shopperName.lastName` must contain the company name. The nested first and last name fields are marked required within `shopperName`.\n- The 200 schema's required `pspReference` is a **new reference identifying this submission request**, while `resultCode` is `payout-submit-received` on success. Neither establishes confirmation, transfer execution, or beneficiary receipt. The merchant `reference` is used in status communication; uniqueness is recommended but explicitly not required.\n- The page lists 400, 401, 403, 422 and 500 errors; it gives no successful payout example, idempotency contract, or LIVE execution evidence.\n\n## Detail locators\n\n- Deprecation, migration direction, stored-detail prerequisite and confirmation/decline stage: raw lines 5\u201328.\n- Request schema and conditional fields: raw lines 32\u201358.\n- Submission response reference and result code: raw lines 60\u201371.\n- Error schemas and generic 400 example: raw lines 74\u2013155.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-payouts]] \u2014 legacy Payout API versus newer Transfers API context. Do not apply this endpoint's staged contract to the newer Payout Service by analogy.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payout/latest/post/submitThirdParty/2026-09-15|Payout API v68 POST /submitThirdParty (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is **deprecated** and no longer supports new integrations.",
+      "location": "raw line 7, deprecation notice"
+    },
+    {
+      "text": "Submits a payout using the previously stored payment details. To store payment details, use the `/storeDetail` API call.",
+      "location": "raw line 23, operation description"
+    },
+    {
+      "text": "The submitted payout must be confirmed or declined either by a reviewer or via `/confirmThirdParty` or `/declineThirdParty` calls.",
+      "location": "raw line 25, stage requirement"
+    },
+    {
+      "text": "The `recurring.contract` must be set to \"PAYOUT\".",
+      "location": "raw line 44, recurring request-body row"
+    },
+    {
+      "text": "| pspReference | string | Yes | A new reference to uniquely identify this request. |",
+      "location": "raw line 69, 200 Success response schema"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-submitthirdparty-payout-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payout-latest-post-submitthirdparty]] \u2014 2026-09-15-captured deprecated Payout API v68 TEST stored-detail submission reference; `payout-submit-received` identifies request receipt before separate confirm/decline, not settlement.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payout/latest/post/submitThirdParty/2026-09-15.md",
+  "raw_sha256": "bf1089d8f0d958c60f24b8dbbb5ba0859059a13e607ade174fc0e3804ff62441",
+  "status": "candidate_ready"
+}

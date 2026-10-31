@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-account-latest-post-unsuspendaccountholder",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Account API v6: unsuspend an account holder\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/unSuspendAccountHolder\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/unSuspendAccountHolder/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, account-holders]\n---\n\n## Overview\n\nCaptured 2026-09-15 API Explorer reference for `POST /unSuspendAccountHolder` on the Classic Platforms Account API v6 test server (`https://cal-test.adyen.com/cal/services/Account/v6`). It changes an account holder from **Suspended** to **Inactive**, subject to the verification-check condition below. The request identifies the holder by `accountHolderCode`; it does not create a new account or promise an **Active** state. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- An account holder can be Suspended through `/suspendAccountHolder` or after a verification deadline expires. Unsuspension is allowed only if the holder has no verification check with **FAILED** status. The request body's sole listed property, `accountHolderCode`, is required.\n- The response schema can include `accountHolderStatus`, scheduled events, processing and payout states, validation errors, `pspReference` and `resultCode`. `payoutState.allowPayout` aggregates conditions such as KYC and disablement; unsuspending to Inactive does not itself establish that processing or payouts are enabled.\n- HTTP 200 says the request succeeded. HTTP 202 says it was accepted for processing and processing has **not** completed. The page also lists 400, 401, 403, 422 and 500 responses; 403 denotes insufficient permissions. Neither a 202 receipt nor this test-server reference proves completed state propagation, current live eligibility, verification approval or any financial outcome.\n\n## Detail locators\n\n- Purpose, suspension sources, eligibility, server, request field and example: [[raw/adyen/api-explorer/Account/latest/post/unSuspendAccountHolder/2026-09-15|raw lines 5\u201329]].\n- 200 and 202 response schemas, including status and payout/processing fields: raw lines 30\u2013103. Error schemas and examples: raw lines 106\u2013194.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder lifecycle and source routes.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/unSuspendAccountHolder/2026-09-15|Account API v6 unSuspendAccountHolder captured raw]]\n",
+  "quotes": [
+    {
+      "text": "Changes the [status of an account holder](https://docs.adyen.com/classic-platforms/account-holders-and-accounts#account-holder-statuses) from **Suspended** to **Inactive**.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "You can only unsuspend account holders if they do not have verification checks with a **FAILED**",
+      "location": "raw line 10, eligibility paragraph"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The code of the account holder to be reinstated. |",
+      "location": "raw line 20, request body"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw lines 69\u201370, 202 Success"
+    },
+    {
+      "text": "If this field is false, no payouts will be permitted for any of the account holder's accounts.",
+      "location": "raw line 44, 200 response payoutState.allowPayout; repeated at line 81 under 202"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-unsuspend-holder-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-unsuspendaccountholder]] \u2014 2026-09-15-captured Classic Account API v6 test-server reference for moving an eligible holder from Suspended to Inactive; 202 is accepted for processing, not completion.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/unSuspendAccountHolder/2026-09-15.md",
+  "raw_sha256": "4d88e6c0299d482ef6571d78122e7d476acefa0579300988d854cfc0c93a4697",
+  "status": "candidate_ready"
+}

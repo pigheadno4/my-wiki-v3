@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-postfmapi-latest-post-getterminaldetails",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS Terminal Management API v1: POST /getTerminalDetails\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/postfmapi/latest/post/getTerminalDetails\"\nraw_files:\n  - \"adyen/api-explorer/postfmapi/latest/post/getTerminalDetails/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-management, deprecated-api]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer capture documents `POST /getTerminalDetails` on the listed TEST POS Terminal Management v1 server. It looks up one physical terminal by its unique `[Device model]-[Serial number]` ID and returns fleet/assignment details like those shown in Customer Area and the Terminal Fleet report. The page states that POS Terminal Management API was deprecated from 2025-01-01, support stopped 2025-04-01, and fleet automation should use the Management API. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- The request body requires `terminal` as a string ID. A 200 response requires `companyAccount` and `terminal`; `merchantAccount`, `store`, `storeDetails`, `merchantInventory`, `terminalStatus`, network identifiers, last activity/transaction times and other attributes are optional. Nested `storeDetails.store` is required only within the optional `storeDetails` object.\n- A response with only `companyAccount` as an account level means company inventory. `merchantAccount` without `store` means merchant assignment. When returned for a merchant assignment, `merchantInventory=true` means merchant inventory and cannot be boarded; `false` means in-store merchant assignment and ready to be boarded or already boarded. A returned `store` names store assignment. These are distinct assignment/boarding states, not proof of current payment readiness.\n- Optional `storeDetails.status` has store activation states; `Active` is described as enabling payment processing for that store. Optional `terminalStatus` reports recent online or pending reassignment states, not a payment authorization result. Last activity and transaction times are omitted if older than 14 days, so absence does not prove no historical activity. The example terminal is `SwitchedOff` despite store assignment and `merchantInventory=false`; it does not demonstrate a currently ready device.\n- The page lists 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation and 500 server errors. Its generic examples and TEST URL do not show a live device, successful boarding, payment-method setup or executed payment. No named API role is specified here.\n\n## Detail locators\n\n- Identity, dated deprecation and TEST v1 server: raw lines 5\u201319.\n- Request example and 200 response schema/assignment, boarding and status semantics: raw lines 21\u201373.\n- Error classes and schemas: raw lines 76\u2013138; illustrative terminal and generic error examples: lines 140\u2013222.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 Management API and fleet procedures.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/postfmapi/latest/post/getTerminalDetails/2026-09-15|POS Terminal Management API getTerminalDetails capture]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of a payment terminal, including where the terminal is assigned to. The response returns the same details that are provided in the terminal list in your Customer Area and in the Terminal Fleet report.",
+      "location": "raw/adyen/api-explorer/postfmapi/latest/post/getTerminalDetails/2026-09-15.md:7"
+    },
+    {
+      "text": "From January 1, 2025 POS Terminal Management API is deprecated and support stops on April 1, 2025. To automate the management of your terminal fleet, use our [Management API](https://docs.adyen.com/api-explorer/Management/latest/overview).",
+      "location": "raw/adyen/api-explorer/postfmapi/latest/post/getTerminalDetails/2026-09-15.md:9"
+    },
+    {
+      "text": "| terminal | string | Yes | The unique terminal ID in the format `[Device model]-[Serial number]`.  For example, **V400m-324689776**. |",
+      "location": "raw/adyen/api-explorer/postfmapi/latest/post/getTerminalDetails/2026-09-15.md:19"
+    },
+    {
+      "text": "| merchantInventory | boolean | No | Boolean that indicates if the terminal is assigned to the merchant inventory. This is returned when the terminal is assigned to a merchant account.  If **true**, this indicates that the terminal is in the merchant inventory. This also means that the terminal cannot be boarded.  If **false**, this indicates that the terminal is assigned to the merchant account as an in-store terminal. This means that the terminal is ready to be boarded, or is already boarded. |",
+      "location": "raw/adyen/api-explorer/postfmapi/latest/post/getTerminalDetails/2026-09-15.md:52"
+    },
+    {
+      "text": "| terminalStatus | string | No | The status of the terminal:  `OnlineToday`, `OnlineLast1Day`, `OnlineLast2Days` etcetera to `OnlineLast7Days`: Indicates when in the past week the terminal was last online.  `SwitchedOff`: Indicates it was more than a week ago that the terminal was last online.  `ReAssignToInventoryPending`, `ReAssignToStorePending`, `ReAssignToMerchantInventoryPending`: Indicates the terminal is scheduled to be reassigned. |",
+      "location": "raw/adyen/api-explorer/postfmapi/latest/post/getTerminalDetails/2026-09-15.md:71"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-getterminaldetails-terminal-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-postfmapi-latest-post-getterminaldetails]] \u2014 2026-09-15-captured deprecated POS Terminal Management v1 TEST detail lookup for terminal identity and assignment/boarding indicators; fleet fields do not prove payment readiness.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/postfmapi/latest/post/getTerminalDetails/2026-09-15.md",
+  "raw_sha256": "8c2bb343280e1aa830d05068cd1ed33ab63db2ba5c456c74d4eb4d05d6f879f5",
+  "status": "candidate_ready"
+}

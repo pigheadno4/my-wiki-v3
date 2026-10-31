@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-notificationconfiguration-latest-post-getnotificationconfiguration",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Notification Configuration API: POST /getNotificationConfiguration\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration\"\nraw_files:\n  - \"adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration/2026-09-15.md\"\ntags: [adyen, classic-platforms, notification-configuration, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer capture documents `POST /getNotificationConfiguration` on the listed TEST Notification v6 server. It retrieves the configuration of a notification subscription by its required integer `notificationId`; it is a configuration lookup, not a webhook delivery record. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- The 200 schema requires `configurationDetails`, with optional `active`, `apiVersion`, description, `eventConfigs`, HMAC key, notification ID, notify URL/username/password and SSL protocol fields inside it. `eventConfigs`, when present, has required event type and include mode within each item. `INCLUDE` selects that event; `EXCLUDE` selects all except excluded event types. `apiVersion` is the subscribed notification version, distinct from the listed v6 server version.\n- The schema describes optional `hmacSignatureKey` as a 32-byte hex-encoded key (64 hexadecimal characters) for `HmacSignature` and `Protocol` headers; omitting it precludes those headers. The separate Classic signing guide calls the key \u201c32bit hexadecimal\u201d (its raw line 29), while its own examples contain 64 hex characters (raw lines 54 and 115). That wording conflicts with the API schema's byte count; do not treat \u201c32bit\u201d as a compatible length rule. [[source-adyen-docs-classic-platforms-configure-notifications-signing-notifications-with-hmac]] Optional `notifyUsername`/`notifyPassword` are endpoint-access credentials, and `sslProtocol` permits `TLSv12` or `TLSv13`. These settings describe a subscription; their appearance does not prove a webhook was delivered, reached the URL, authenticated successfully, or passed signature verification.\n- The request example uses `notificationId: 21259`, while the 200 response example shows `configurationDetails.notificationId: 50054`. This mismatch prevents using the sample as proof that a response echoes the queried ID. The response example's `active: true`, `apiVersion: 5`, included event and URL are illustrative, not live runtime evidence.\n- Errors listed are 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation and 500 server processing. The page does not name a required role, describe a delivery attempt, or establish current production availability.\n\n## Detail locators\n\n- Operation, TEST v6 server, required ID and request example: raw lines 5\u201326.\n- 200 configuration schema, event modes, credential/HMAC/SSL options: raw lines 27\u201356.\n- Error response classes and schemas: raw lines 59\u2013121.\n- Illustrative 200 response and ID mismatch: raw lines 123\u2013146.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic notification configuration and outcome sources.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration/2026-09-15|Notification Configuration API Explorer lookup capture]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of the configuration of a notification subscription.",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration/2026-09-15.md:7"
+    },
+    {
+      "text": "| notificationId | integer | Yes | The ID of the notification subscription configuration whose details are to be retrieved. |",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration/2026-09-15.md:17"
+    },
+    {
+      "text": "| configurationDetails | object | Yes | Details of the notification subscription configuration. |",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration/2026-09-15.md:35"
+    },
+    {
+      "text": "|     - includeMode | string | Yes | Indicates whether the specified `eventType` is sent to your webhook endpoint. Possible values:  - **INCLUDE**: Send the specified `eventType`.  - **EXCLUDE**: Send all event types except the specified `eventType` and other event types with the `includeMode` set to **EXCLUDE**. |",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration/2026-09-15.md:41"
+    },
+    {
+      "text": "    \"notificationId\": 50054,",
+      "location": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration/2026-09-15.md:141"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-getnotificationconfiguration-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notificationconfiguration-latest-post-getnotificationconfiguration]] \u2014 2026-09-15-captured Notification v6 TEST configuration lookup by subscription ID, with event/HMAC/endpoint settings; request and response example IDs differ, and lookup does not prove delivery.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Request example ID 21259 differs from response example ID 50054; the sample cannot prove identity echo or a specific configuration lookup result."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration/2026-09-15.md",
+  "raw_sha256": "226990e9f5def579cf6f360f4a58c3e341d1b47058b7fbe2c796b1862003391b",
+  "status": "candidate_ready"
+}

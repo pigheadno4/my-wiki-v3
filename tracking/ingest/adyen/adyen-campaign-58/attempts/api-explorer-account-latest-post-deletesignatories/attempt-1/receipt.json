@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-account-latest-post-deletesignatories",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: POST /deleteSignatories\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/deleteSignatories\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/deleteSignatories/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, account-holder, signatories]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `POST /deleteSignatories`, a destructive operation that deletes signatories associated with a Classic Platforms account holder. The page lists the **test** Account API `/cal/services/Account/v6` server, despite `latest` in the canonical route. It selects a Classic `accountHolderCode` and signatory codes, not newer balance-platform identities. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The request-body table marks both `accountHolderCode` (string) and `signatoryCodes` (array of strings) as required properties. The former identifies the account holder **from which** to delete signatories; the latter identifies the signatories to delete. The page gives no request example or further cardinality/uniqueness condition for the array (raw lines 12\u201319).\n- The page labels 200 as succeeded and 202 as accepted for processing while processing is incomplete. Both response schemas list optional `invalidFields`, `pspReference`, and `resultCode`; `invalidFields` represents field validation errors that would prevent processing. In particular, a 202 or request reference does not establish that deletion has completed or that any downstream verification state has changed (raw lines 20\u201353).\n- Listed error categories are 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 request validation, and 500 server processing. The page names no specific credential role. Error body properties are optional in its tables; the 400 and 403 JSON bodies are illustrative examples (raw lines 56\u2013144).\n\n## Detail locators\n\n- Purpose and test v6 server: raw lines 5\u201310. Required request properties and deletion selectors: lines 12\u201319.\n- Success/accepted response descriptions and fields: raw lines 20\u201353. Error descriptions and schemas: lines 56\u2013118. Example error bodies: lines 120\u2013144.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic Platforms account-holder model and separation from newer balance-platform resources.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/deleteSignatories/2026-09-15|Account API deleteSignatories reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Deletes signatories associated with an account holder.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- https://cal-test.adyen.com/cal/services/Account/v6",
+      "location": "raw line 10"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The code of the account holder from which to delete the signatories. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| signatoryCodes | array of string | Yes | Array of codes of the signatories to be deleted. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw line 40"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-deletesignatories-classic-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-deletesignatories]] \u2014 2026-09-15-captured Classic Account API v6 test endpoint for deleting selected signatories from an account holder; 202 acceptance does not establish completed deletion.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/deleteSignatories/2026-09-15.md",
+  "raw_sha256": "7321407239cc89d758903e7a362e8239852943a10fcded8b93cc676be9287eec",
+  "status": "candidate_ready"
+}

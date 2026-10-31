@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-account-latest-post-updateaccountholder",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Account API v6: update an account holder\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolder\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/updateAccountHolder/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, account-holders]\n---\n\n## Overview\n\nCaptured Classic Platforms Account API v6 TEST reference for `POST /updateAccountHolder`. It updates an account holder's details or processing tier and can add bank accounts and shareholders. This is a Classic account-holder operation identified by `accountHolderCode`; its response does not itself establish completed KYC, payout eligibility, or a payment. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- `accountHolderCode` is required. `accountHolderDetails` is required if `processingTier` is absent, and `processingTier` is required if details are absent; the tier cannot be lowered through this request. Other request properties include optional `description`, `legalEntity`, `primaryCurrency`, and `verificationProfile`. The table's nested \u201cYes\u201d entries and conditional descriptions are not all top-level body requirements. See raw lines 32\u201344 and 135\u2013139.\n- Omitted `accountHolderDetails` parameters stay unchanged, except that sending `metadata` replaces the entire metadata object and deletes omitted existing key-value pairs. Metadata values over 80 characters are truncated. Changing any field in `address`, `fullPhoneNumber`, `bankAccountDetails.BankAccountDetail`, or `businessDetails.shareholders.ShareholderContact` requires all fields needed to validate that object; the page gives an address example. See raw lines 7\u201325 and 99\u2013100.\n- New bank accounts and shareholders are supplied without `bankAccountUUID` or `shareholderCode`. For bank accounts, a missing UUID with other details creates a new account; on update, an uncorrelated UUID fails the account-holder update, while a correlated UUID updates the existing bank account. The request table points to separate required-information guidance for country-specific bank fields; it does not enumerate a universal bank-field set here. See raw lines 25, 44\u201370.\n- The request table also describes conditional details: `legalEntity` Business/NonProfit calls for business details with at least one shareholder, while Individual calls for individual details; a supplied store split configuration requires `virtualAccount`; existing payout-method and store updates require their respective generated codes. Several business/individual detail descriptions explicitly say \u201cwhen creating,\u201d so do not generalize every nested creation rule to every partial update. See raw lines 72\u201398, 101\u2013132, 135\u2013138.\n- 200 is labeled request succeeded, but optional `invalidFields` identifies failed validation when the account holder has not been updated, so the HTTP label alone does not prove the requested holder update took effect. 202 explicitly means accepted for processing but incomplete. Response fields can include `accountHolderStatus`, `verification`, and a request-identifying `pspReference`. `payoutState.allowPayout` is an aggregate of conditions, whereas `payoutState.disabled` is the platform-controlled disable flag; `disabled: false` alone does not imply `allowPayout: true`. Sample Active/payout values are examples, not a status guarantee. See raw lines 269\u2013433, 436\u2013598 and 665\u2013902.\n- The reference lists 400 malformed/readability, 401 authentication, 403 permission, 422 validation, and 500 server responses, plus generic 400 and 403 examples. It does not state a propagation deadline or idempotency behavior. See raw lines 601\u2013663 and 904\u2013926.\n\n## Detail locators\n\n- Purpose, partial-update and validation rules: raw lines 5\u201325.\n- TEST server and request schema, including country-dependent bank details, legal arrangements, payout methods and store fields: raw lines 27\u2013139.\n- Four request examples (shareholder, bank, business, general): raw lines 141\u2013268.\n- 200 and 202 response schemas, payout/processing state and verification checks: raw lines 269\u2013598.\n- HTTP error schemas and response examples: raw lines 601\u2013926.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic Platforms context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/updateAccountHolder/2026-09-15|Account API v6 updateAccountHolder captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Updates the `accountHolderDetails` and `processingTier` of an account holder, and adds bank accounts and shareholders.",
+      "location": "raw line 7, purpose"
+    },
+    {
+      "text": "Updating the metadata replaces the entire object.",
+      "location": "raw line 11, metadata update exception"
+    },
+    {
+      "text": "When updating any field in the following objects, you must submit all the fields required for validation:",
+      "location": "raw lines 13\u201321, validation groups"
+    },
+    {
+      "text": "If, during an account holder update request, a UUID that is not correlated with an existing Bank Account is provided, the update of the account holder will fail.",
+      "location": "raw line 49, bankAccountUUID request field"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw lines 436\u2013437, 202 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-updateaccountholder-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-updateaccountholder]] \u2014 2026-09-15-captured Classic Account API v6 TEST reference for account-holder detail/tier updates and adding bank accounts or shareholders, including metadata replacement and 202 processing boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/updateAccountHolder/2026-09-15.md",
+  "raw_sha256": "0564c0df8920dd3ef080e842f4a734694957395d8da27e9b321ac9c9dc6700ec",
+  "status": "candidate_ready"
+}

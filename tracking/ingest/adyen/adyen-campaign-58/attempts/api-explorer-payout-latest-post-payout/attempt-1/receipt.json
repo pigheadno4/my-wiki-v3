@@ -1,0 +1,49 @@
+{
+  "job_id": "api-explorer-payout-latest-post-payout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout API v68: POST /payout instant card payout\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payout/latest/post/payout\"\nraw_files:\n  - \"adyen/api-explorer/Payout/latest/post/payout/2026-09-15.md\"\ntags: [adyen, payouts, cards, payout-api, deprecated]\n---\n\n## Overview\n\nThis captured Payout API reference describes `POST /payout` for instant payouts to a customer's Visa or Mastercard card. The endpoint is **deprecated and does not support new integrations**. Adyen directs new integrations to Transfers API `POST /transfers`, and existing Payout API users to their Adyen contact for migration. Its listed server is Payout v68 TEST, `https://pal-test.adyen.com/pal/servlet/Payout/v68`. The stated availability of funds within 30 minutes on the cardholder's bank account depends on issuer support; it is not a guaranteed receipt time.\n\n## Key takeaways\n\n- The request table marks `amount` (with required `currency` and minor-unit `value`), `merchantAccount` (the processing merchant account identifier), and `reference` required. The page recommends a unique reference per payment but explicitly says uniqueness is **not** required; this does not establish an idempotency guarantee. The generic amount description's zero-value BIN/card-verification instruction is not an instant-payout amount rule.\n- The top-level `card` container carries recipient card data; `fundSource`, when supplied, describes the person or entity funding the money and may itself contain a card. Do not exchange recipient and funding identities. The request table also contains generic payment/recurring fields, including a generic \u201ceither `bankAccount` or `card`\u201d sentence inside `card`; the endpoint's stated instant-payout scope is Visa/Mastercard **cards**, and this capture does not document a bank-payout request route.\n- Conditional request descriptions include `billingAddress` for 3DS2 browser/mobile transactions and cross-border payouts to/from Canada, with required nested address fields; `stateOrProvince` is required for US/Canada addresses. For recurring use, `shopperReference` is required, case-sensitive, at least three characters, and must exclude PII. The table also gives conditional Visa/JCB 3DS2 email/telephone alternatives, a stored-detail selector `selectedRecurringDetailReference` (including `LATEST`), and `shopperInteraction` channel values; these generic schema details should not expand the stated Visa/Mastercard payout support. See pinned raw for exact field conditions and formats.\n- The 200 schema uses payment-style `resultCode`, `pspReference`, `authCode`, and `refusalReason` descriptions. In particular, `Received` means Adyen received a payment for processing, `Pending` lacks final payment status, and `Authorised` is described as a final **payment authorisation** state. These descriptions do not prove payout settlement or cardholder bank receipt. The page lists 400, 401 (authentication), 403 (permissions), 422, and 500 responses. The TEST snapshot does not prove merchant enablement, live eligibility, a successful payout, or current availability.\n\n## Detail locators\n\n- Deprecation, migration, card scheme/timing qualification, and v68 TEST server: pinned raw lines 5\u201326.\n- Required amount, merchant account and reference; conditional address, card, funding source, recurring, shopper and channel fields: pinned raw lines 30\u201391.\n- Illustrative B2C and P2P request JSON, with distinct recipient and funding cards: pinned raw lines 93\u2013176.\n- 200 response metadata and payment-style result-code vocabulary: pinned raw lines 177\u2013200.\n- Error response schemas and illustrative 400 JSON: pinned raw lines 203\u2013284.\n\n## Related\n\n- [[adyen-card-payouts]] \u2014 legacy instant card-payout context and its migration boundary.\n- [[adyen-payouts]] \u2014 broader payout families, distinct from this legacy endpoint.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payout/latest/post/payout/2026-09-15|Payout API v68 POST /payout capture (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is **deprecated** and no longer supports new integrations.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Instant card payouts are only supported for Visa and Mastercard cards.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "| amount | object | Yes | The amount information for the transaction (in [minor units](https://docs.adyen.com/development-resources/currency-codes)). For [BIN or card verification](https://docs.adyen.com/payment-methods/cards/bin-data-and-card-verification) requests, set amount to 0 (zero). |",
+      "location": "raw line 33"
+    },
+    {
+      "text": "| merchantAccount | string | Yes | The merchant account identifier, with which you want to process the transaction. |",
+      "location": "raw line 76"
+    },
+    {
+      "text": "We recommend using a unique value per payment; however, it is not a requirement.",
+      "location": "raw line 83, reference description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-payout-post-card-route",
+        "target_path": "wiki/concepts/adyen-card-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payout-latest-post-payout]] \u2014 2026-09-15-captured, deprecated Payout API v68 TEST `POST /payout` instant Visa/Mastercard card-payout reference; issuer-dependent 30-minute availability and payment-style result codes do not prove cardholder receipt.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payout/latest/post/payout/2026-09-15.md",
+  "raw_sha256": "f6e97990e371edc139071c447c86eec0c513ee477cbb3b2cda274949909c3d58",
+  "status": "candidate_ready"
+}

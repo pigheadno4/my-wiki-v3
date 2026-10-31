@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-account-latest-post-deletebankaccounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: POST /deleteBankAccounts\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/deleteBankAccounts\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/deleteBankAccounts/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, bank-accounts]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer page documents `POST /deleteBankAccounts` on the Account API v6 TEST server (`https://cal-test.adyen.com/cal/services/Account/v6`). It deletes bank accounts associated with a Classic Platforms account holder. The request table marks `accountHolderCode` (the account holder whose bank accounts are targeted) and `bankAccountUUIDs` (an array of bank-account codes to delete) as required properties. The page does not separately specify request-body requiredness.\n\n## Key takeaways\n\n- This is a destructive bank-account deletion request for the identified account holder and listed bank-account UUIDs. The captured page does not establish effects on payouts, account-holder verification, existing transfers, or how to confirm that each deletion completed.\n- A 200 response says the request succeeded; a 202 says it was accepted for processing and processing has not completed. The optional success-response fields include `invalidFields`, `pspReference` (a request reference), and `resultCode`. Neither status alone establishes an eventual downstream payout or bank outcome.\n- The listed errors are 400 (request reading/understanding), 401 (authentication), 403 (insufficient permissions), 422 (request validation), and 500 (server processing). The example bodies are illustrative, not an exhaustive error-code catalog.\n- The TEST URL and captured `latest` page do not establish current live availability, merchant eligibility, or a live endpoint.\n\n## Detail locators\n\n- Request property descriptions and required flags: pinned raw, `## Parameters > ### Request body`, lines 12\u201318; example payload: `## Request examples > ### basic`, lines 20\u201330.\n- 200 and 202 status descriptions and optional result fields: `## Responses`, lines 31\u201364.\n- Error descriptions and response fields: `## Responses`, lines 67\u2013129; illustrative 400 and 403 JSON: `## Response examples`, lines 131\u2013155.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder and account context; keep this Account API v6 resource separate from newer balance-platform resources.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/deleteBankAccounts/2026-09-15|Account API v6 POST /deleteBankAccounts capture]]\n",
+  "quotes": [
+    {
+      "text": "Deletes bank accounts associated with an account holder.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The code of the Account Holder from which to delete the Bank Account(s). |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| bankAccountUUIDs | array of string | Yes | The code(s) of the Bank Accounts to be deleted. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw line 51"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 94"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-deletebankaccounts-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-deletebankaccounts]] \u2014 2026-09-15-captured Account API v6 TEST `POST /deleteBankAccounts` reference for deleting specified bank-account UUIDs from a Classic account holder; 202 indicates processing is incomplete.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/deleteBankAccounts/2026-09-15.md",
+  "raw_sha256": "5ac39193a4d41414536ec2d0f36dc6ffe6cd3ef2cfbb31033843f3e0eb5eaed1",
+  "status": "candidate_ready"
+}

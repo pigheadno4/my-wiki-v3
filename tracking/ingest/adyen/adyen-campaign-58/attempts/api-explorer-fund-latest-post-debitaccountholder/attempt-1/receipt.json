@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-fund-latest-post-debitaccountholder",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Fund API: POST /debitAccountHolder\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Fund/latest/post/debitAccountHolder\"\nraw_files:\n  - \"adyen/api-explorer/Fund/latest/post/debitAccountHolder/2026-09-15.md\"\ntags: [adyen, classic-platforms, fund-api, direct-debit, top-up]\n---\n\n## Overview\n\nThis 2026-09-15 Fund API Explorer capture documents `POST /debitAccountHolder` on the listed TEST Fund v6 server. It sends a direct debit request against an account holder's identified bank account; successful debit funds are settled to platform accounts specified in split instructions. Adyen says the debit result is sent in a `DIRECT_DEBIT_INITIATED` notification webhook. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- Required request fields are `accountHolderCode`, `amount` (`currency` and minor-unit integer `value`), `bankAccountUUID`, `merchantAccount`, and `splits` with at least one item. The account holder and bank account are the debit source; the split accounts are destinations. A split `type` is required, with conditional `account`, `amount`, and `reference` rules by integration and type. In Classic Platforms, split `amount` is required for every type and `reference` for `MarketPlace`; see raw lines 26\u201333 for the full matrix.\n- The page also includes Balance Platform-specific split-field descriptions. Its Classic type list spells `Marketplace` while the same schema's reference condition and its example use `MarketPlace`. Preserve that casing discrepancy; the sample does not settle which token the API accepts. The example's USD 6200 debit split into 6000 and 200 is illustrative, not evidence of a completed debit or settlement.\n- HTTP 200 says the request succeeded; HTTP 202 says accepted for processing but not complete. The response schema's `accountHolderCode`, `bankAccountUUID`, `merchantReferences`, `pspReference`, `resultCode`, and validation fields are optional. The 200 example includes `pspReference` and `submittedAsync` string `false`, but `submittedAsync` is absent from the listed response schema; neither receipt nor that example proves successful bank collection, final split credit, or receipt of funds. Follow the stated notification-result route for outcome.\n- Error classes listed are 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation, and 500 server processing. This endpoint page does not specify a named role, debit mandate/consent, bank eligibility, limits, a live server, or a successful real transaction. The linked Classic top-up guide is the separate route for operational prerequisites.\n\n## Detail locators\n\n- Purpose, webhook and TEST v6 server: raw lines 5\u201312.\n- Request requiredness, conditional split rules and Classic/Balance Platform distinctions: raw lines 14\u201333.\n- Illustrative request and `MarketPlace` spelling: raw lines 35\u201366.\n- 200/202 response semantics and schemas: raw lines 67\u2013106; errors: 109\u2013171; 200 response example: 173\u2013183.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 older platform account and Fund API routes.\n- [[source-adyen-docs-classic-platforms-top-up-accounts]] \u2014 linked Classic direct-debit top-up guide for separate operational context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Fund/latest/post/debitAccountHolder/2026-09-15|Fund API Explorer POST /debitAccountHolder capture]]\n",
+  "quotes": [
+    {
+      "text": "Sends a direct debit request to an account holder's bank account. If the direct debit is successful, the funds are settled in the accounts specified in the split instructions. Adyen sends the result of the direct debit in a [`DIRECT_DEBIT_INITIATED`](https://docs.adyen.com/api-explorer/#/NotificationService/latest/post/DIRECT_DEBIT_INITIATED) notification webhook.",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/debitAccountHolder/2026-09-15.md:7"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The code of the account holder. |",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/debitAccountHolder/2026-09-15.md:19"
+    },
+    {
+      "text": "| splits | array of object | Yes | Contains instructions on how to split the funds between the accounts in your platform. The request must have at least one split item. |",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/debitAccountHolder/2026-09-15.md:26"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/debitAccountHolder/2026-09-15.md:90"
+    },
+    {
+      "text": "  \"submittedAsync\": \"false\"",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/debitAccountHolder/2026-09-15.md:181"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-debitaccountholder-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-fund-latest-post-debitaccountholder]] \u2014 2026-09-15-captured Fund API TEST v6 direct-debit request reference for holder bank account and split destinations; result webhook and `MarketPlace`/`Marketplace` spelling discrepancy qualify the sample.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "The Classic split type list spells Marketplace, while the reference condition and request example use MarketPlace; do not infer accepted casing from this page alone."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Fund/latest/post/debitAccountHolder/2026-09-15.md",
+  "raw_sha256": "6f0478455beb8cd3183d8332fc6b203ceadfde7ea620e44c05bc4a3ebb5c51f2",
+  "status": "candidate_ready"
+}

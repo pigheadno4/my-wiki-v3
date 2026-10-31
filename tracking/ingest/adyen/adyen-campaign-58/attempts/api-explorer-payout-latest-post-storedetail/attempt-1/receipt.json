@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-payout-latest-post-storedetail",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout API v68: Store payout details\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payout/latest/post/storeDetail\"\nraw_files:\n  - \"adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15.md\"\ntags: [adyen, payouts, payout-api, recurring-details, deprecated]\n---\n\n## Overview\n\nThis 2026-09-15-captured `POST /storeDetail` reference is for the **deprecated Payout API v68 test endpoint** (`https://pal-test.adyen.com/pal/servlet/Payout/v68`). It stores bank or card payment details under a `PAYOUT` recurring contract for a **later, separate** `/submitThirdParty` payout request. The page says new integrations must use the Transfers API and existing Payout API users should contact Adyen about migration. This endpoint does not submit a payout. [[adyen-payouts]] [[adyen]]\n\n## Key takeaways\n\n- The request table marks `merchantAccount`, `entityType`, `nationality`, `shopperEmail`, `shopperReference`, `recurring`, and `dateOfBirth` required, while the `dateOfBirth` description says it is mandatory for **natural persons**. `recurring.contract` is not marked required as a nested row but the `recurring` description explicitly requires it to be `PAYOUT`. Treat those narrative conditions as part of this endpoint, without converting all other recurring enum values into valid contracts here. See [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|raw lines 60\u201376]].\n- `bank` and `card` are each marked optional in the table, but each description makes it mandatory when the other is absent. The page does not state whether both can be sent together. Bank fields include account/IBAN/BIC, country and owner identity. For `ownerName`, the page describes transliteration of some non-Latin characters and a post-replacement minimum of three alphanumeric characters including a Latin letter; bad format returns error 203. Card rows include number/expiry/CVC details; the CVC row says it is not stored and warns against posting card details to the server when using Client-Side Encryption. See [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|raw lines 33\u201343 and 51\u201359]].\n- `billingAddress` is conditional for cross-border payouts to and from Canada; its listed city, country, house number, postal code and street are required **inside the object**, while state/province is conditionally required for US/Canada. Optional `shopperName` has nested required first/last names, with company name in `lastName` when `entityType` is `Company`. The source also has a Paysafecard-specific `selectedBrand` value and date-of-birth note. See [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|raw lines 44\u201350, 60, 71\u201376]].\n- HTTP 200 returns required `pspReference` (this storage request's reference), `recurringDetailReference` (token for later payout submission), and `resultCode`; `Success` means the details were **stored**, not that a payout was submitted, approved or paid. The example contains those three fields. See [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|raw lines 80\u201391 and 163\u2013174]].\n- Errors list 400 unreadable request, 401 authentication, 403 insufficient permissions, 422 validation and 500 server failure, with a generic 400 example. The page names no specific role, live endpoint, current integration eligibility or successful card/bank payout. See [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|raw lines 94\u2013186]].\n\n## Detail locators\n\n- Deprecation, migration direction, separate later payout and v68 test server: [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|raw lines 5\u201326]].\n- Full request schema and conditional bank/card, address, identity and recurring-contract fields: [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|raw lines 30\u201378]].\n- Success/error schemas and examples: [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|raw lines 80\u2013186]].\n\n## Related\n\n- [[adyen-payouts]] \u2014 legacy Payout API context and separate Transfers API model.\n- [[adyen-card-payouts]] \u2014 card-specific legacy payout context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15|Store payout details API reference (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is **deprecated** and no longer supports new integrations.",
+      "location": "raw line 7, deprecation notice"
+    },
+    {
+      "text": "Stores payment details under the `PAYOUT` recurring contract.",
+      "location": "raw line 23, purpose paragraph"
+    },
+    {
+      "text": "This field is mandatory if `card` is not provided.",
+      "location": "raw line 34, bank request row"
+    },
+    {
+      "text": "The recurring.contract must be set to `PAYOUT`",
+      "location": "raw line 65, recurring request row"
+    },
+    {
+      "text": "`Success` indicates that the details were stored successfully.",
+      "location": "raw line 91, 200 resultCode row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-storedetail-payout-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payout-latest-post-storedetail]] \u2014 2026-09-15-captured deprecated Payout API v68 test-host `/storeDetail` reference for storing bank/card details under `PAYOUT` and returning a token for a separate later `/submitThirdParty`; `Success` is storage, not payout completion.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payout/latest/post/storeDetail/2026-09-15.md",
+  "raw_sha256": "44a8aa834cb695a337052735b0eeee6cec48384aa36d8783803671dbb8008bfe",
+  "status": "candidate_ready"
+}

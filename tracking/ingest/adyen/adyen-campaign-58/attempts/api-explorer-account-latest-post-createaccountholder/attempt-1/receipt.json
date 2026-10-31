@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-account-latest-post-createaccountholder",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Account API v6: create account holder\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/createAccountHolder\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/createAccountHolder/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, account-holders]\n---\n\n## Overview\n\nCaptured 2026-09-15 API Explorer reference for `POST /createAccountHolder` on the Classic Platforms Account API v6 test server (`https://cal-test.adyen.com/cal/services/Account/v6`). It creates a sub-merchant account holder in a platform; `accountHolderCode` identifies that holder, while an `accountCode` can identify a newly created account. This is a Classic account-holder/account contract, distinct from newer Platforms legal-entity and balance-account resources. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- The request table marks `accountHolderCode`, `accountHolderDetails`, its `address`, and `legalEntity` required; the address has a required country. The code must be unique, 3\u201350 characters, using letters, digits or hyphens. `legalEntity` is Business, Individual or NonProfit. Business/NonProfit requires `businessDetails` with at least one shareholder; Individual requires `individualDetails`. A `phoneNumber` is required if `fullPhoneNumber` is absent. Conditional address and other nested requirements remain in the raw table.\n- `createDefaultAccount` defaults to true, creating an account with default options unless changed. POS onboarding requires `storeDetails`. For a bank account supplied during creation, providing `bankAccountUUID` makes that bank-account creation fail while account-holder creation continues. Including `legalArrangementCode` in creation fails the request. These conditions make a successful holder response insufficient proof that every associated resource was created.\n- The 200 response can contain `accountHolderCode`, new `accountCode`, `accountHolderStatus`, `invalidFields`, `resultCode`, `pspReference`, and verification data. Payout permission is separately represented by `payoutState.allowPayout`, which aggregates conditions including KYC and disablement; an illustrative `Active`/`allowPayout: true` response does not establish approval or payout eligibility for another holder. The page documents 400, 401, 403, 422 and 500 responses; 403 means insufficient permissions. This snapshot and test server do not establish current live availability, actual verification approval or completed money movement.\n\n## Detail locators\n\n- Request identity, server, required and conditional fields: [[raw/adyen/api-explorer/Account/latest/post/createAccountHolder/2026-09-15|raw lines 5\u2013122]]. Bank UUID behavior: lines 26\u201331; legal-arrangement code: lines 71\u201380; POS and default account: lines 100\u2013119.\n- Business and individual request examples: raw lines 124\u2013177. Response schema, statuses, error bodies and examples: raw lines 178\u2013552. Examples illustrate payloads, not universal outcomes.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder model and source routes.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/createAccountHolder/2026-09-15|Account API v6 createAccountHolder captured raw]]\n",
+  "quotes": [
+    {
+      "text": "Creates an account holder that [represents the sub-merchant's entity](https://docs.adyen.com/classic-platforms/account-structure#your-platform) in your platform.",
+      "location": "raw lines 5\u20137, opening description"
+    },
+    {
+      "text": "If, during an account holder create request, a UUID is provided, the creation of the Bank Account will fail while the creation of the account holder will continue.",
+      "location": "raw line 31, request body bankAccountUUID"
+    },
+    {
+      "text": "If you include this field when creating an account holder, the request will fail.",
+      "location": "raw line 73, request body legalArrangementCode"
+    },
+    {
+      "text": "If set to **true**, an account with the default options is automatically created for the account holder. By default, this field is set to **true**.",
+      "location": "raw line 117, request body createDefaultAccount"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw lines 372\u2013373, 403 Client Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-create-holder-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-createaccountholder]] \u2014 2026-09-15-captured Classic Account API v6 test-server reference for creating a sub-merchant account holder, conditional entity details, default account creation and partial associated-bank-account failure.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/createAccountHolder/2026-09-15.md",
+  "raw_sha256": "8154f19081386400c1bfed7746761a1fc1f3d370d02ec96fccf892b6c5c832a2",
+  "status": "candidate_ready"
+}

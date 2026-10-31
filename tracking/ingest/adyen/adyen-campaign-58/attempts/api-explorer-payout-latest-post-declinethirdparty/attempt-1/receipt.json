@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-payout-latest-post-declinethirdparty",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout API v68: Decline a submitted third-party payout\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Payout/latest/post/declineThirdParty\"\nraw_files:\n  - \"adyen/api-explorer/Payout/latest/post/declineThirdParty/2026-09-15.md\"\ntags: [adyen, payouts, payout-api, cancellation, deprecated]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents POST `/declineThirdParty` on the displayed Payout v68 test server. It cancels a previously submitted payout in the legacy Payout API flow. The endpoint is deprecated and does not support new integrations; the page directs new integrations to Transfers API and existing Payout API users to their Adyen contact for migration. [[adyen]] [[adyen-payouts]]\n\n## Key takeaways\n\n- The request requires `merchantAccount` and `originalReference`, explicitly the PSP reference returned by `/submitThirdParty`; optional `additionalData` may be required for a particular payout request (raw lines 30\u201347). The original submission reference is distinct from the reference returned for this decline response.\n- The 200 response requires a `pspReference` associated with this response and a `response` string. The schema says success can be `payout-confirm-received` or `payout-decline-received`, although this endpoint is the decline operation. Its decline example puts brackets around `[payout-decline-received]`; preserve that schema/example discrepancy rather than treating either exact spelling as a universal value (raw lines 50\u201358, 130\u2013140).\n- A received decline response is acknowledgement of the request, not evidence of a final payout outcome, recipient credit or reversal of already moved funds. The page states cancellation of a previously submitted payout but gives no timing window, payout-state eligibility rule, final event or bank-receipt example (raw lines 23\u201325, 48\u201358).\n- Error headings list 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation and 500 server processing. The page names no specific permission role; the 400 code shown is a generic example (raw lines 61\u2013152).\n\n## Detail locators\n\n- Deprecation, migration routes, operation purpose, confirm counterpart and test server: raw lines 5\u201328.\n- Request fields and example: raw lines 30\u201347. Required 200 fields and success/error response wording: raw lines 48\u201358; bracketed decline example: raw lines 130\u2013140.\n- Error categories and response fields: raw lines 61\u2013128; generic 400 example: raw lines 142\u2013152.\n\n## Related\n\n- [[adyen-payouts]] \u2014 legacy Payout API versus newer Payout Service context and reciprocal route.\n- [[source-adyen-docs-online-payments-online-payouts-payouts-to-bank-accounts-and-wallets]] \u2014 separate staged-payout reviewer flow.\n- [[source-adyen-docs-online-payments-online-payouts-payout-webhook]] \u2014 separate payout lifecycle event guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Payout/latest/post/declineThirdParty/2026-09-15|Payout API Explorer POST declineThirdParty, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This endpoint is **deprecated** and no longer supports new integrations.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Cancels a previously submitted payout.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "The PSP reference received in the `/submitThirdParty` response.",
+      "location": "raw line 37, request-body table"
+    },
+    {
+      "text": "Adyen's 16-character string reference associated with the transaction.",
+      "location": "raw line 57, 200 response table"
+    },
+    {
+      "text": "\"response\": \"[payout-decline-received]\"",
+      "location": "raw line 138, 200 example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-declinethirdparty-payouts-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payout-latest-post-declinethirdparty]] \u2014 2026-09-15-captured deprecated Payout API v68 test-server decline reference for a previously submitted third-party payout, with original submission reference, request acknowledgement and a bracketed response-example discrepancy.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Payout/latest/post/declineThirdParty/2026-09-15.md",
+  "raw_sha256": "f583bbfa0ca690daf86a98cd5d926e355cb1becb6cd4b49e400207677d46b112",
+  "status": "candidate_ready"
+}

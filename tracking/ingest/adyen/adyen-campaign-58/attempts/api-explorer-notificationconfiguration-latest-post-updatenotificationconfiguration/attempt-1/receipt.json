@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-notificationconfiguration-latest-post-updatenotificationconfiguration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Notification API v6: Update a subscription configuration\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration\"\nraw_files:\n  - \"adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, webhooks, configuration]\n---\n\n## Overview\n\nThis 2026-09-15-captured Classic Notification API v6 reference describes `POST /updateNotificationConfiguration` at the listed test server (`https://cal-test.adyen.com/cal/services/Notification/v6`). It updates an **existing notification subscription**, identified by Adyen-generated `notificationId` within required `configurationDetails`. It configures event selection and delivery settings; a successful configuration response is not proof that a notification was delivered or acknowledged. [[adyen-classic-platforms]] [[adyen]]\n\n## Key takeaways\n\n- The opening warning says that when changing event types, supply **all** desired event types or the previous event-type configuration is overwritten. `eventConfigs` is optional as a request property, but each supplied entry requires `eventType` and `includeMode`; `INCLUDE` selects the specified type, while `EXCLUDE` sends all types except excluded entries. This does not state that omission of other configuration fields clears them. See [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|raw lines 5\u201323]].\n- `configurationDetails` is required. `notificationId` is marked No in the table yet its description expressly says it is **required when updating an existing configuration**; the example supplies it. Optional `active` indicates subscription activation and `apiVersion` names the subscribed notification version, with guidance to match the API version used by the integration. See [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|raw lines 17\u201325 and 31\u201356]].\n- Optional `notifyURL`, `notifyUsername` and `notifyPassword` set the endpoint and access credentials; optional `sslProtocol` permits `TLSv12` or `TLSv13`. The optional `hmacSignatureKey` description requires a 32-byte hex-encoded value if supplied and says omission precludes `HmacSignature` and `Protocol` headers. This is the captured API Explorer field rule, not proof of current security configuration. See [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|raw lines 24\u201329]].\n- HTTP 200 is labeled succeeded and returns required `configurationDetails`, plus optional validation `invalidFields`, request-identifying `pspReference` and `resultCode`. The response example has `active: false` and `INCLUDE`/`EXCLUDE` entries; it is an illustration, not evidence of active delivery. The page lists no 202 response, propagation interval or delivery confirmation. See [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|raw lines 57\u201386 and 153\u2013179]].\n- Errors list 400 unreadable request, 401 authentication, 403 insufficient permissions, 422 validation and 500 server failure. The page does not name a specific role or prove a live endpoint, successful webhook delivery, retry/acknowledgment behavior or a payment outcome. See [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|raw lines 89\u2013151]].\n\n## Detail locators\n\n- Overwrite warning, request field requiredness and event/endpoint/security options: [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|raw lines 5\u201329]].\n- Request example and 200 response schema: [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|raw lines 31\u201386]].\n- Error schemas and 200 example: [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|raw lines 89\u2013179]].\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic platform notification context.\n- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 separate setup, delivery, retry and test guide with versioned examples.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15|Update notification configuration API reference (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "If you are updating the event types, you must provide all event types, otherwise the previous event type configuration will be overwritten.",
+      "location": "raw line 7, opening warning"
+    },
+    {
+      "text": "Details of the notification subscription configuration to be updated.",
+      "location": "raw line 17, configurationDetails row"
+    },
+    {
+      "text": "Required when updating an existing configuration using",
+      "location": "raw line 25, notificationId row"
+    },
+    {
+      "text": "The omission of this field will preclude the provision of the `HmacSignature` and `Protocol` headers in notification(s).",
+      "location": "raw line 24, hmacSignatureKey row"
+    },
+    {
+      "text": "The request has succeeded.",
+      "location": "raw line 60, 200 Success section"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-updatenotificationconfiguration-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notificationconfiguration-latest-post-updatenotificationconfiguration]] \u2014 2026-09-15-captured Classic Notification API v6 test-host update reference for existing subscription IDs, full event-list replacement, HMAC/endpoint settings and a 200 configuration response distinct from actual delivery.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration/2026-09-15.md",
+  "raw_sha256": "9085a490ababaab00df9f22669f557ff02e6df5dadf383a56d8a65b279289dfa",
+  "status": "candidate_ready"
+}

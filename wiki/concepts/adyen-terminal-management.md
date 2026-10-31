@@ -15,6 +15,24 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-api-explorer-postfmapi-latest-post-getterminalsunderaccount]] — 2026-09-15-captured deprecated POS Terminal Management API v1 test-server list for company, merchant and store terminal assignments; in-store means ready to board or boarded, not operational readiness.
+
+
+- [[source-adyen-api-explorer-postfmapi-latest-post-getterminaldetails]] — 2026-09-15-captured deprecated POS Terminal Management v1 TEST detail lookup for terminal identity and assignment/boarding indicators; fleet fields do not prove payment readiness.
+
+
+- [[source-adyen-api-explorer-postfmapi-latest-post-getstoresunderaccount]] — 2026-09-15-captured deprecated POS Terminal Management API v1 TEST company/merchant store-list reference with store status and assigned-terminal IDs; it does not prove terminal readiness.
+
+
+- [[source-adyen-api-explorer-postfmapi-latest-post-findterminal]] — 2026-09-15-captured deprecated POS Terminal Management API v1 TEST assignment lookup for terminal company/merchant/store, with merchant-inventory boarding distinction and 2025 support-stop notice.
+
+
+- [[source-adyen-api-explorer-postfmapi-latest-post-assignterminals]] — 2026-09-15-captured, deprecated POS Terminal Management API v1 TEST assignment reference for merchant/store/company-inventory moves and per-terminal asynchronous results; use the separate Management API for current fleet automation.
+
+
+- [[source-adyen-api-explorer-postfmapi-latest-overview]] — 2026-09-15-captured deprecated POS Terminal Management API v1 catalog for terminal/store lookup and assignment, with legacy authentication, endpoint/version details and Management API migration direction.
+
+
 - [[source-adyen-api-explorer-management-latest-post-terminals-scheduleactions]] — 2026-09-15-captured Management API v3 TEST terminal-action scheduling reference for one action, at most 100 terminal IDs, store-assignment condition and per-terminal scheduling result; `totalScheduled` is not device-execution proof.
 
 

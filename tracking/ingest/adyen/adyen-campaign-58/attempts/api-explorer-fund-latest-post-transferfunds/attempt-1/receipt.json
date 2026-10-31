@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-fund-latest-post-transferfunds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Fund API v6 POST /transferFunds\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Fund/latest/post/transferFunds\"\nraw_files:\n  - \"adyen/api-explorer/Fund/latest/post/transferFunds/2026-09-15.md\"\ntags: [adyen, classic-platforms, fund-api, fund-transfers]\n---\n\n## Overview\n\nThis captured Classic Fund API v6 `POST /transferFunds` reference initiates a transfer that debits one platform account and credits another **within the same platform**. The accounts may belong to different account holders. It is a Classic account-to-account transfer, not an external bank payout or a newer Balance Platform transfer. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The body requires `amount` with three-character ISO `currency` and integer `value` in minor units, `sourceAccountCode`, `destinationAccountCode`, and `transferCode`; `merchantReference` is optional for linking transactions. The source account holder must be **Active** and allow payouts; the destination holder must be **Active**. The example's `TransferCode_1` and EUR 2000 minor units are illustrative, not universal defaults. See raw lines 14\u201338.\n- The overview says the platform should determine a transfer code in compliance with local regulations; this API table says permitted codes vary by platform account and are defined in its service level agreement. These are captured documentation conditions, not a current regulatory determination or a global code enum. See raw lines 5\u20137 and 20\u201323.\n- The companion [[source-adyen-docs-classic-platforms-fund-transfer]] adds setup and outcome conditions: Adyen Support enables fund transfers and defines codes, the destination holder must also allow processing, and the asynchronous result comes through `TRANSFER_FUNDS`. Its destination processing condition is **additional to** this operation table's Active-only wording; retain both scoped statements. See that guide's raw lines 30\u201348 and 68\u201381.\n- `200` is labeled request succeeded. `202` explicitly means accepted for processing but **not completed**. Both response tables mark `invalidFields`, `merchantReference`, `pspReference` and `resultCode` optional; `pspReference` identifies the request. Neither an HTTP receipt nor an optional reference proves the transfer reached the destination account. The companion guide says even `resultCode: Received` is receipt only and directs outcome tracking to the webhook. See raw lines 39\u201374 and the companion guide's raw lines 68\u201381.\n- `merchantReference` links transactions; this page does not describe it as an idempotency key. Error classes are 400, 401, 403, 422 and 500, with authentication required and insufficient-permission descriptions for 401/403. See raw lines 21, 77\u2013139.\n\n## Detail locators\n\n- Same-platform scope, historical transfer-code wording, TEST v6 server: raw lines 5\u201310.\n- Required request properties, account-holder gates and example: raw lines 14\u201338.\n- 200/202 result boundary and optional fields: raw lines 39\u201374.\n- Error classes and generic error-body schema: raw lines 77\u2013139.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account and money-flow context.\n- [[source-adyen-docs-classic-platforms-fund-transfer]] \u2014 Support setup, destination processing gate, asynchronous webhook result and reversal guide.\n- [[adyen-platforms]] \u2014 separate newer balance-platform model.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Fund/latest/post/transferFunds/2026-09-15|POST /transferFunds, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Both accounts must be in the same platform, but can have different account holders.",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/transferFunds/2026-09-15.md:7"
+    },
+    {
+      "text": "| destinationAccountCode | string | Yes | The code of the account to which the funds are to be credited.  The state of the Account Holder of this account must be Active. |",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/transferFunds/2026-09-15.md:20"
+    },
+    {
+      "text": "| sourceAccountCode | string | Yes | The code of the account from which the funds are to be debited.  The state of the Account Holder of this account must be Active and allow payouts. |",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/transferFunds/2026-09-15.md:22"
+    },
+    {
+      "text": "The permitted codes differ for each platform account and are defined in their service level agreement.",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/transferFunds/2026-09-15.md:23"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw/adyen/api-explorer/Fund/latest/post/transferFunds/2026-09-15.md:60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-fund-transferfunds-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-fund-latest-post-transferfunds]] \u2014 2026-09-15-captured Classic Fund API v6 TEST transfer reference for same-platform accounts, account-holder status gates, required amount/codes and 200/202 request response; companion fund-transfer guide adds destination processing and webhook outcome gates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The endpoint table requires destination holder Active; the separate Classic fund-transfer guide additionally says processing must be allowed. Preserve source-scoped conditions rather than flattening the difference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Fund/latest/post/transferFunds/2026-09-15.md",
+  "raw_sha256": "52cf80325929ea14161608db5881293c934d3ddceb8c0f9c114148da077dd094",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,46 @@
+{
+  "job_id": "api-explorer-account-latest-post-deletelegalarrangements",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: delete legal arrangements\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/deleteLegalArrangements\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/deleteLegalArrangements/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, legal-arrangements]\n---\n\n## Overview\n\nCaptured API Explorer reference for Classic Platforms Account API v6 `POST /deleteLegalArrangements` on the TEST server. It deletes legal arrangements associated with an account holder, or only specified entities within an arrangement. This is an account-holder/legal-arrangement operation, not a payout or balance-account deletion. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The request body marks `accountHolderCode` and `legalArrangements` as required; each listed object marks `legalArrangementCode` required. Optional `legalArrangementEntityCodes` limits deletion to the listed entities; without it, the described action deletes the legal arrangement. See raw lines 14\u201320 and the arrangement/entity request examples at lines 22\u201349.\n- Deletion is consequential: distinguish removing an entire legal arrangement from removing only listed legal arrangement entities. The captured page does not state verification reset, approval, propagation time, restoration, or idempotency behavior.\n- A 200 response says the request succeeded; 202 says accepted for processing and explicitly not completed. The response schema lists optional `invalidFields`, `pspReference`, and `resultCode`, with `pspReference` identifying the request. Do not read a 202 or the sample reference as proof of completed deletion. See raw lines 50\u201383 and 150\u2013168.\n- The page lists 400 request-reading, 401 authentication, 403 insufficient-permission, 422 validation, and 500 server errors. Its 400 examples include invalid arrangement and entity codes; these examples illustrate validation, not an exhaustive error contract. See raw lines 86\u2013149 and 170\u2013226.\n\n## Detail locators\n\n- TEST server and v6 path: raw lines 5\u201310.\n- Required request properties and conditional deletion scope: raw lines 14\u201320.\n- Arrangement and entity request shapes: raw lines 22\u201349.\n- Response schemas and HTTP meanings: raw lines 50\u2013149.\n- Success and error examples: raw lines 150\u2013226.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic Platforms context and other captured Account API references.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/deleteLegalArrangements/2026-09-15|Account API v6 deleteLegalArrangements captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Deletes legal arrangements and/or legal arrangement entities associated with an account holder.",
+      "location": "raw lines 5\u20137, opening purpose"
+    },
+    {
+      "text": "If you also send `legalArrangementEntityCodes`, only the entities listed will be deleted.",
+      "location": "raw line 19, request-body legalArrangementCode description"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw lines 69\u201370, 202 Success"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw lines 112\u2013113, 403 Client Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-deletelegalarrangements-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-deletelegalarrangements]] \u2014 2026-09-15-captured Classic Account API v6 TEST reference for deleting an account holder's legal arrangements or only listed entities; 202 means accepted, not completed.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/deleteLegalArrangements/2026-09-15.md",
+  "raw_sha256": "206f959b464071e98e96af09bc996da69bab45284824c507860728de743b6fb3",
+  "status": "candidate_ready"
+}

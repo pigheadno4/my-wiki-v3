@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-account-latest-post-updateaccountholderstate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: update account-holder payout or processing state\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/updateAccountHolderState\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/updateAccountHolderState/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, account-holder, payout-state, processing-state]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `POST /updateAccountHolderState` on the TEST Account API v6 server (`https://cal-test.adyen.com/cal/services/Account/v6`). It enables or disables an account holder's `Processing` or `Payout` state. The request does not set the holder's overall `Active`, `Inactive`, `Suspended`, or `Closed` status directly.\n\n## Key takeaways\n\n- The request requires `accountHolderCode`, `disable` (true to disable, false to enable), and `stateType` (`Processing` or `Payout`). `reason` is listed as optional in the table but is required when disabling the selected state. The example disables `Payout`; it does not limit the operation to payout state.\n- In the response schema, `accountHolderStatus.payoutState.disabled` is the platform-controlled payout disable flag across all of the holder's accounts. If true, `allowPayout` is false; if false, `allowPayout` can still be false due to other conditions, including KYC or Adyen restrictions. `allowPayout` is the aggregate payout status. `notAllowedReason` describes an Adyen-side payout restriction, and `payoutLimit` applies only when payouts are allowed but limited. Enabling the platform flag alone is therefore not a guarantee that payouts become allowed.\n- `accountHolderStatus.processingState` has separate disable/reason and tier-bound fields. The response also has optional scheduled `InactivateAccount` or `RefundNotPaidOutTransfers` events and a nested `status` enum; those response fields do not turn this endpoint into a full status-change operation.\n- A 200 says the request succeeded. A 202 says the request was accepted for processing but is not yet complete. The page lists 400, 401, 403, 422, and 500 errors. It gives no named credential role, success response example, final-state notification, propagation timing, or LIVE execution evidence.\n\n## Detail locators\n\n- Operation and TEST server: raw lines 5\u201310.\n- Required and conditionally required request fields; disabling example: raw lines 14\u201332.\n- 200/202 response schemas, aggregate payout conditions, limits, processing fields, status and events: raw lines 33\u2013108.\n- Error responses and examples: raw lines 111\u2013199.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-classic-platforms]] \u2014 older account-holder and account model; separate from newer balance-platform resources.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/updateAccountHolderState/2026-09-15|Account API v6 POST /updateAccountHolderState (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Disables or enables the processing or payout state of an account holder.",
+      "location": "raw lines 5\u20137, operation heading and opening description"
+    },
+    {
+      "text": "| reason | string | No | The reason that the state is being updated.  Required if the state is being disabled. |",
+      "location": "raw line 19, Request body table"
+    },
+    {
+      "text": "| stateType | string | Yes | The state to be updated.  Permitted values are: `Processing`, `Payout` |",
+      "location": "raw line 20, Request body table"
+    },
+    {
+      "text": "If this field is false, `allowPayout` may or may not be enabled, depending on other factors.",
+      "location": "raw line 50, 200 Success payoutState.disabled description; repeated at raw line 88 under 202"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw lines 73\u201374, 202 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-updateaccountholderstate-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-updateaccountholderstate]] \u2014 2026-09-15-captured Account API v6 TEST reference for enabling or disabling a holder's payout or processing state; payout allowance remains an aggregate of other conditions, and 202 is pending.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/updateAccountHolderState/2026-09-15.md",
+  "raw_sha256": "4bafbe6d5587bed211387a010053acc9ff942c07b51c9309b7e54f562f0353b5",
+  "status": "candidate_ready"
+}

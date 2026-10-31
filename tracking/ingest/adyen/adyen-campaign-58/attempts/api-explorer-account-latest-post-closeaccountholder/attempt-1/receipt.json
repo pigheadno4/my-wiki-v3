@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-account-latest-post-closeaccountholder",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: Close an account holder\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/closeAccountHolder\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/closeAccountHolder/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, account-holders, closure]\n---\n\n## Overview\n\nThis API Explorer snapshot, captured 2026-09-15 under `Account/latest`, documents POST `/closeAccountHolder` on the displayed Account v6 test server. It changes a Classic Platforms account holder to `Closed`, a final status. The request identifies the holder by `accountHolderCode`. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- Closure is final: the holder cannot process transactions, receive payouts, or reopen. The page says payments made to an account belonging to a `Closed` holder are sent to the platform's liable account (raw line 7). This is a consequential routing statement, not evidence of an actual payment or transfer.\n- The request-body table marks `accountHolderCode` required. The captured page does not document a separate permission name, a closure idempotency key, or a request-body precondition beyond that field (raw lines 12\u201325). A related Classic verification guide narrows closure of a `Suspended` holder: none of its verification checks may have `FAILED` status. See [[source-adyen-docs-classic-platforms-verification-process]] and its raw status table, line 144; do not apply this condition to every holder status.\n- HTTP 200 is described as a succeeded request; HTTP 202 is accepted for processing while processing is incomplete. Both response tables show an optional `accountHolderStatus` object with required `status` if that object is present, plus optional scheduled events, payout and processing state, `invalidFields`, `pspReference` and `resultCode` (raw lines 27\u2013100). A 202 receipt alone does not establish completed closure or any completed financial outcome.\n- The listed failures are 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation, and 500 server processing. The generic 400/403 example codes are examples, not an exhaustive error contract (raw lines 103\u2013191).\n\n## Detail locators\n\n- Endpoint, final-state effects and displayed test server: raw lines 5\u201310. Required holder code and request example: raw lines 12\u201325.\n- 200 and 202 response descriptions and field schema: raw lines 27\u2013100. In `accountHolderStatus.events`, the schema permits `InactivateAccount` and `RefundNotPaidOutTransfers`; the table describes these as scheduled events, not completed actions (raw lines 35\u201354 and 72\u201391).\n- Error categories, body fields and generic examples: raw lines 103\u2013191. The 400/403 error-body `pspReference` description says \"PSP reference of the payment\"; this endpoint is account-holder closure, so do not recast that schema wording as proof of a payment.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder context and reciprocal route.\n- [[source-adyen-docs-classic-platforms-verification-process]] \u2014 separate Classic status matrix and the condition on closing a suspended holder.\n- [[adyen-platforms]] \u2014 separate newer balance-platform resource model.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/closeAccountHolder/2026-09-15|Account API Explorer POST closeAccountHolder, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This state is final. If an account holder is closed, you can't process transactions, pay out funds, or reopen it.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "the payments are sent to your liable account.",
+      "location": "raw line 7, final sentence"
+    },
+    {
+      "text": "The code of the Account Holder to be closed.",
+      "location": "raw line 17, request-body table"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw line 67, 202 Success"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 130, 403 Client Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-closeaccountholder-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-closeaccountholder]] \u2014 2026-09-15-captured Account API v6 test-server reference for final Classic account-holder closure by code, including 200/202 response boundaries and liable-account routing for payments to a closed holder.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/closeAccountHolder/2026-09-15.md",
+  "raw_sha256": "ce1c86b92e00327aa6610062cb9a3d9c390ec156a7b80db3353445d297cfc3a7",
+  "status": "candidate_ready"
+}

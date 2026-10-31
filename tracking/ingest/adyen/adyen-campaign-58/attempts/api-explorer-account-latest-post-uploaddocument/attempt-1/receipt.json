@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-account-latest-post-uploaddocument",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6 POST /uploadDocument\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/uploadDocument\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/uploadDocument/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, documents, verification]\n---\n\n## Overview\n\nThis captured Classic Account API v6 `POST /uploadDocument` reference submits a document for an account holder for use during Adyen's verification process. Submission and an API response are distinct from a completed or approved KYC check. The listed server is `https://cal-test.adyen.com/cal/services/Account/v6`. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The request schema requires `documentContent` as a Base64-encoded string and a `documentDetail` object containing required `documentType`. `accountHolderCode`, `filename`, `description`, and the other link codes are marked optional in the table; do not infer that the sample's `accountHolderCode` makes it unconditionally required. See raw lines 14\u201342.\n- The document type enum covers bank statement, company registration screening (v5+), constitutional document, passport, and front/back ID card and driving licence types. ID-card front/back and driving-licence front/back are described as paired submissions for usability. The `DRIVING_LICENCE_BACK` description mistakenly repeats `DRIVING_LICENCE_FRONT` twice, while the front description names both sides; preserve that source inconsistency rather than applying its literal repetition as a rule. See raw line 22.\n- Link the document to the relevant Adyen-generated owner code where applicable. `bankAccountUUID` is required when a `BANK_STATEMENT` is submitted to verify a bank account. `shareholderCode` is required for a Business account holder's passport, ID-card or driving-licence document. `legalArrangementCode`, `legalArrangementEntityCode` and `signatoryCode` are listed as optional linkage fields, without additional conditional rules on this page. See raw lines 19\u201327.\n- This operation page does not give file-size or accepted-format limits; it points to verification requirements. The related Classic document requirements source gives category-specific format and size rules, including separate ID, organization/legal-arrangement, and bank-evidence limits. Use [[source-adyen-docs-classic-platforms-verification-process-document-requirements]] for those conditions, rather than treating the sample `passport.png` as the complete format contract.\n- `200` is labeled successful; `202` says processing was accepted but has **not completed**. Both response tables reuse an extensive account-holder schema with optional `verification`, `invalidFields`, `pspReference` and `resultCode`; they do not specify a document identifier or a re-upload/replace identity. A returned verification field or upload receipt is not a KYC approval guarantee. See raw lines 43\u2013372.\n- The page lists 400, 401, 403, 422 and 500 errors; 401 requires authentication and 403 indicates insufficient permissions. The 400/403 JSON examples are illustrative. See raw lines 375\u2013463.\n\n## Detail locators\n\n- Purpose, TEST server, request body and example: raw lines 5\u201342.\n- 200 response and account-holder/verification fields: raw lines 43\u2013207.\n- 202 incomplete-processing response and repeated fields: raw lines 210\u2013372.\n- Error tables and examples: raw lines 375\u2013463.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder context.\n- [[source-adyen-api-explorer-account-latest-overview]] \u2014 Account API v6 overview and authentication/version boundary.\n- [[source-adyen-docs-classic-platforms-verification-process-document-requirements]] \u2014 separate Classic file format, quality, page-count and size requirements.\n- [[source-adyen-docs-classic-platforms-verification-process-check-verification-results]] \u2014 verification result checks after submission.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/uploadDocument/2026-09-15|POST /uploadDocument, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Uploads a document for an account holder. Adyen uses the documents during the [verification process](https://docs.adyen.com/classic-platforms/verification-process).",
+      "location": "raw/adyen/api-explorer/Account/latest/post/uploadDocument/2026-09-15.md:7"
+    },
+    {
+      "text": "The content of the document, in Base64-encoded string format.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/uploadDocument/2026-09-15.md:17"
+    },
+    {
+      "text": "Required if the `documentType` is **BANK_STATEMENT**, where a document is being submitted in order to verify a bank account.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/uploadDocument/2026-09-15.md:20"
+    },
+    {
+      "text": "Required if the account holder has a `legalEntity` of type **Business** and the `documentType` is either **PASSPORT**, **ID_CARD_FRONT**, **ID_CARD_BACK**, **DRIVING_LICENCE_FRONT**, or **DRIVING_LICENCE_BACK**.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/uploadDocument/2026-09-15.md:26"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/uploadDocument/2026-09-15.md:211"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-account-uploaddocument-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-uploaddocument]] \u2014 2026-09-15-captured Classic Account API v6 document-upload reference for Base64 content, type and conditional owner links; 202 acceptance is incomplete processing, not KYC approval.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The operation's DRIVING_LICENCE_BACK description repeats FRONT twice; preserve the discrepancy and use the separate Classic document requirements for paired-side and file-limit guidance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/uploadDocument/2026-09-15.md",
+  "raw_sha256": "ae9a81598848893bba5db1e3cceb5347691adc4557b164c9112e645b4c382ee3",
+  "status": "candidate_ready"
+}

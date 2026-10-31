@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-account-latest-post-closeaccount",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API: POST /closeAccount\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/closeAccount\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/closeAccount/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, account-closure]\n---\n\n## Overview\n\nThis 2026-09-15 capture of the Adyen Account API Explorer documents `POST /closeAccount` against the listed TEST Account v6 server. It closes the Classic Platforms account identified by `accountCode`. This is an account operation, not an account-holder or newer balance-account operation. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- A closed account cannot process transactions, pay out its funds, or be reopened. Payments made to it are sent to the platform's liable account instead.\n- The request body lists `accountCode` (string) as required. The page does not state a balance-empty prerequisite, a closure reversal, or a live-environment endpoint.\n- HTTP 200 says the request succeeded; HTTP 202 says it was accepted for processing but processing was not complete. Do not treat a 202 as completed closure or proof of any payout or movement of funds. Both response schemas list `accountCode`, `invalidFields`, `pspReference`, `resultCode`, and `status` as optional; `status` permits `Active`, `Inactive`, `Suspended`, or `Closed`.\n- Listed error classes are 400 (request reading/understanding), 401 (authentication), 403 (permissions), 422 (validation), and 500 (server processing). The response examples show generic 400 and 403 payloads, not closure-specific recovery rules.\n\n## Detail locators\n\n- Endpoint, irreversible effects, liable-account routing: raw lines 5\u201310.\n- Required request field and example: raw lines 12\u201326.\n- 200 and 202 response meanings and optional fields: raw lines 27\u201364.\n- Error response classes and schemas: raw lines 67\u2013129; generic examples: lines 131\u2013155.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 older platform account model and source routes.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/closeAccount/2026-09-15|Account API Explorer POST /closeAccount capture]]\n",
+  "quotes": [
+    {
+      "text": "Closes an account. If an account is closed, you cannot process transactions, pay out its funds, or reopen it. If payments are made to a closed account, the payments are sent to your liable account.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/closeAccount/2026-09-15.md:7"
+    },
+    {
+      "text": "| accountCode | string | Yes | The code of account to be closed. |",
+      "location": "raw/adyen/api-explorer/Account/latest/post/closeAccount/2026-09-15.md:17"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/closeAccount/2026-09-15.md:49"
+    },
+    {
+      "text": "| status | string | No | The new status of the account.  Permitted values: `Active`, `Inactive`, `Suspended`, `Closed`. |",
+      "location": "raw/adyen/api-explorer/Account/latest/post/closeAccount/2026-09-15.md:45"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw/adyen/api-explorer/Account/latest/post/closeAccount/2026-09-15.md:94"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-closeaccount-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-closeaccount]] \u2014 2026-09-15-captured Account API Explorer TEST v6 `POST /closeAccount` reference for irreversible Classic account closure, liable-account routing of later payments, and 200 versus pending 202 responses.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/closeAccount/2026-09-15.md",
+  "raw_sha256": "577df1c48e9c59eab99cbb80f726f8135d83df3d582b62c93bf6841e9bb24e60",
+  "status": "candidate_ready"
+}

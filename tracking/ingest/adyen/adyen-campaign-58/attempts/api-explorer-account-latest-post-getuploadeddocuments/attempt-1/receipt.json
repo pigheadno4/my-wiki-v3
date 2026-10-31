@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-account-latest-post-getuploadeddocuments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: POST /getUploadedDocuments\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/getUploadedDocuments\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/getUploadedDocuments/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, verification, documents]\n---\n\n## Overview\n\nThis captured Account API page describes `POST /getUploadedDocuments`, which returns documents previously uploaded for an account holder; Adyen uses those documents during verification. The listed server is the Account v6 TEST endpoint, `https://cal-test.adyen.com/cal/services/Account/v6`. The request body requires `accountHolderCode`; `bankAccountUUID` and `shareholderCode` are optional selectors. The example includes an account-holder code and bank-account UUID, but does not make that selector mandatory.\n\n## Key takeaways\n\n- The optional 200-response `documentDetails` array describes linked document metadata: account-holder code, bank-account UUID, description, document type, filename, legal-arrangement and entity codes, shareholder code, and signatory code. Within each returned document-detail object, `documentType` is marked required; the table lists permitted types and their meanings. The response schema shown here does not include a document-content field or establish verification approval.\n- The response descriptions conditionally require a linked `bankAccountUUID` for a `BANK_STATEMENT` submitted to verify a bank account, and a linked `shareholderCode` for listed identity-document types when the account holder's `legalEntity` is **Business**. These are descriptions of document linkage in the response schema, not extra required request-body properties.\n- The `DRIVING_LICENCE_BACK` description says both `DRIVING_LICENCE_FRONT` and `DRIVING_LICENCE_FRONT` must be submitted, while the adjacent front entry names front and back. This is an internal wording conflict in the captured page; consult the linked verification-check guidance before relying on that pair requirement.\n- A 200 says the request succeeded and lists optional `invalidFields`, request `pspReference`, and `resultCode`. The page lists 400, 401 (authentication required), 403 (insufficient permissions), 422, and 500 responses. Retrieving uploaded document details does not, by itself, prove a successful verification decision, current live availability, or a payment or payout outcome.\n\n## Detail locators\n\n- Purpose, Account v6 TEST server, request fields, and illustrative request: pinned raw lines 5\u201329.\n- 200 response document details, conditional linkage descriptions, type list, and internal licence wording conflict: pinned raw lines 30\u201356.\n- Error response descriptions and fields: pinned raw lines 59\u2013121.\n- Illustrative 400 and 403 JSON responses: pinned raw lines 123\u2013147.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder and verification context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/getUploadedDocuments/2026-09-15|Account API v6 POST /getUploadedDocuments capture (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Returns documents that were previously uploaded for an account holder.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The code of the Account Holder for which to retrieve the documents. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| bankAccountUUID | string | No | The code of the Bank Account for which to retrieve the documents. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "Required if the `documentType` is **BANK_STATEMENT**, where a document is being submitted in order to verify a bank account.",
+      "location": "raw line 40, documentDetails.bankAccountUUID description"
+    },
+    {
+      "text": "Required if the account holder has a `legalEntity` of type **Business** and the `documentType` is either **PASSPORT**, **ID_CARD_FRONT**, **ID_CARD_BACK**, **DRIVING_LICENCE_FRONT**, or **DRIVING_LICENCE_BACK**.",
+      "location": "raw line 46, documentDetails.shareholderCode description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-getuploadeddocuments-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-getuploadeddocuments]] \u2014 2026-09-15-captured Account API v6 TEST reference for retrieving previously uploaded Classic account-holder document details; response metadata does not establish verification approval.",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Captured documentType description for DRIVING_LICENCE_BACK repeats DRIVING_LICENCE_FRONT where the adjacent front description names front and back; source entry preserves the conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/getUploadedDocuments/2026-09-15.md",
+  "raw_sha256": "aa28dd2a719518fd59a978fa49e13e7776bc82ed810a60709b067da701ab7561",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-account-latest-post-checkaccountholder",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Account API v6: POST /checkAccountHolder\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Account/latest/post/checkAccountHolder\"\nraw_files:\n  - \"adyen/api-explorer/Account/latest/post/checkAccountHolder/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-api, account-holder, verification]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer reference documents `POST /checkAccountHolder` for triggering verification of a Classic Platforms account holder before the checks are otherwise required by current processing volume. The page's listed server is the **test** Account API `/cal/services/Account/v6`, although the canonical route contains `latest`. The subject is a Classic `accountHolderCode`, not a newer balance-platform account-holder ID. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The request-body table marks `accountHolderCode` (string), `accountStateType` (string), and `tier` (integer) as required properties. `accountStateType` permits `Processing` or `Payout`; the page calls `tier` the required tier. The basic example gives `tier` as the JSON string `\"2\"` despite the table's integer type; use the table for the declared type and treat the example as illustrative (raw lines 14\u201330).\n- The page labels both 200 and 202 as success responses, but expressly says 202 is accepted for processing and processing is not complete. Their listed optional fields are `invalidFields`, `pspReference`, and `resultCode`; `invalidFields` contains field validation errors that would prevent processing. Neither status alone establishes completed verification, account-holder approval, payout eligibility or money movement (raw lines 31\u201364).\n- The listed errors are 400 request reading/understanding, 401 authentication, 403 insufficient permissions, 422 request validation, and 500 server processing. The page does not name a specific credential role. Error-body properties are optional in its tables, and the 400/403 JSON bodies are examples rather than a complete error catalog (raw lines 67\u2013155).\n\n## Detail locators\n\n- Endpoint purpose and listed test v6 server: raw lines 5\u201310. Request properties, allowed state values, and example: lines 12\u201330.\n- 200 and 202 descriptions and response field schemas: raw lines 31\u201364. Error descriptions and schemas: lines 67\u2013129. Example 400/403 bodies: lines 131\u2013155.\n\n## Related\n\n- [[source-adyen-docs-classic-platforms-onboard-users]] \u2014 Classic onboarding guide for the different `Payout` and `Processing` precheck consequences and notification-based verification outcomes.\n- [[adyen-classic-platforms]] \u2014 Classic Platforms context and separation from the newer balance-platform model.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Account/latest/post/checkAccountHolder/2026-09-15|Account API checkAccountHolder reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Triggers the verification of an account holder even if the checks are not yet required for the volume that they are currently processing.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- https://cal-test.adyen.com/cal/services/Account/v6",
+      "location": "raw line 10"
+    },
+    {
+      "text": "| accountStateType | string | Yes | The state required for the account holder.  Permitted values: `Processing`, `Payout`. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "The request has been accepted for processing, but the processing has not been completed.",
+      "location": "raw line 51"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 94"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-checkaccountholder-classic-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-account-latest-post-checkaccountholder]] \u2014 2026-09-15-captured Classic Account API v6 test endpoint for proactively triggering account-holder verification with `Processing` or `Payout` state and tier; 202 acceptance is not completed verification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Account/latest/post/checkAccountHolder/2026-09-15.md",
+  "raw_sha256": "4aea38ba1b80b7bea5a3856d9e4e31fa2613176ea47e64776b470844eb17da4e",
+  "status": "candidate_ready"
+}

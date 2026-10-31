@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-notificationconfiguration-latest-post-testnotificationconfiguration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Notification API v6: POST /testNotificationConfiguration\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/NotificationConfiguration/latest/post/testNotificationConfiguration\"\nraw_files:\n  - \"adyen/api-explorer/NotificationConfiguration/latest/post/testNotificationConfiguration/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, webhooks, testing]\n---\n\n## Overview\n\nThis captured Notification API page describes `POST /testNotificationConfiguration`, which tests an **existing notification subscription configuration**. For each specified event type it generates a test notification and sends it to that subscription's configured URL. The listed server is Notification v6 TEST, `https://cal-test.adyen.com/cal/services/Notification/v6`. The request requires the integer `notificationId` of the subscription configuration. Optional `eventTypes` narrows the test; omitting it tests all event types configured for that subscription.\n\n## Key takeaways\n\n- The request and 200-response tables list permitted Classic notification event types, including account-holder verification, payout, transfer and store-status events. The basic request example selects `ACCOUNT_HOLDER_VERIFICATION` with `notificationId` 25032. The ID identifies a **subscription configuration**, not a notification delivery or an account holder.\n- A 200 says the API request succeeded. Its response has a required `notificationId` and optional `errorMessages`, tested `eventTypes`, `exchangeMessages`, `invalidFields`, `okMessages`, request `pspReference`, and `resultCode`. Inspect these diagnostics for delivery outcome: the captured **200 example** contains \u201cThe server did not respond with HTTP 2XX\u201d and `ResponseCode: 404`. Thus HTTP 200 on the test API is not proof that the endpoint acknowledged the test notification.\n- The page lists 400, 401 (authentication required), 403 (insufficient permissions), 422, and 500 responses. A TEST configuration probe and its generated messages do not prove production subscription activation, real-event webhook delivery, downstream processing, or a payment/payout result. The captured page does not specify retry timing or persistent delivery state.\n\n## Detail locators\n\n- Test purpose, v6 TEST server, request selectors, permitted event types, and example: pinned raw lines 5\u201330.\n- 200 response diagnostic schema and required configuration ID: pinned raw lines 31\u201354.\n- Error response descriptions and fields: pinned raw lines 57\u2013119.\n- 200 example showing a non-2XX test-recipient response and HTTP 404: pinned raw lines 121\u2013152.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic notification and account-holder context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/NotificationConfiguration/latest/post/testNotificationConfiguration/2026-09-15|Notification API v6 POST /testNotificationConfiguration capture (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Tests an existing notification subscription configuration.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "If left blank, then all of the configured event types will be tested.",
+      "location": "raw line 17, eventTypes request description"
+    },
+    {
+      "text": "| notificationId | integer | Yes | The ID of the notification subscription configuration to be tested. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "| notificationId | integer | Yes | The ID of the notification subscription configuration. |",
+      "location": "raw line 51, 200 response"
+    },
+    {
+      "text": "The server did not respond with HTTP 2XX",
+      "location": "raw line 130, 200 response example errorMessages"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c58-testnotificationconfiguration-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notificationconfiguration-latest-post-testnotificationconfiguration]] \u2014 2026-09-15-captured Notification API v6 TEST reference for probing an existing Classic notification subscription by ID and event types; its 200 example reports a non-2XX recipient response.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/NotificationConfiguration/latest/post/testNotificationConfiguration/2026-09-15.md",
+  "raw_sha256": "5f79ce0e6c27bf317ddf9af3a1be2dbdb8c000f750fd107ae788b91f441e0b46",
+  "status": "candidate_ready"
+}
