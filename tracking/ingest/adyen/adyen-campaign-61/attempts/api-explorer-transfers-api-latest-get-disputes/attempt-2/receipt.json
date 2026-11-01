@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-transfers-api-latest-get-disputes",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Raise disputes API v4: GET /disputes (transfers-api URL)\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes\"\nraw_files:\n  - \"adyen/api-explorer/transfers-api/latest/get/disputes/2026-09-15.md\"\ntags: [adyen, issuing, disputes, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer reference documents `GET /disputes` at a `transfers-api` URL and the listed `/btl/api/v4` TEST and live bases. The separately captured [[source-adyen-api-explorer-transfers-api-latest-overview|companion overview]] identifies this route as part of **Raise disputes API v4**, an Issuing API for disputes on Adyen-issued-card transactions and fraud reports. The URL segment is retained exactly as captured; it does not make this a funds-movement Transfers API operation. This endpoint returns raised disputes matching query parameters. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The endpoint page says pagination is cursor based, with next and previous links when applicable, while also listing an optional `offset` query parameter; it does not explain their interaction. All six listed query parameters are optional: `limit` (default 100, maximum 500 items per page), `offset` (number of items to skip), ISO 8601 `createdSince`/`createdUntil` inclusive time bounds, `paymentInstrument` ID, and `status`. The listed status filter values are `draft`, `submitted`, `closed`, `won`, `chargeback`, and `secondPresentment`.\n- The 200 section says the request succeeded but supplies no success response-body fields or example. Do not infer dispute item identifiers, cursor token format, link syntax, or resolution outcomes from this page. A list read is not proof of a particular dispute outcome or financial result.\n- The page documents 401 for authentication required, 403 for insufficient permissions, and 422 for request validation error. Each error body table has optional top-level problem fields and optional `invalidFields`; if an `invalidFields` item is present, its `message`, `name`, and `value` are marked required.\n\n## Detail locators\n\n- Purpose, pagination statement and v4 TEST/live servers: assigned raw lines 5\u201317. The companion Raise disputes API identity and Issuing purpose are in [[source-adyen-api-explorer-transfers-api-latest-overview]], whose raw lines 5\u20137 and 49\u201361 list this GET route.\n- Query parameters, defaults, limits, time bounds and status enum: assigned raw `## Parameters` \u2192 `### Query parameters`, lines 19\u201329.\n- Success statement without response schema: assigned raw lines 31\u201335.\n- 401, 403 and 422 error descriptions and body tables: assigned raw lines 37\u201391.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issued-card dispute context.\n- [[source-adyen-api-explorer-transfers-api-latest-overview]] \u2014 companion Raise disputes API v4 catalog captured at the same `transfers-api` URL family.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/2026-09-15|Raise disputes API GET /disputes at transfers-api URL (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of raised disputes that match the query parameters.",
+      "location": "raw line 7, GET /disputes lead"
+    },
+    {
+      "text": "This endpoint supports cursor-based pagination. The response returns the first page of results, and returns links to the next page when applicable.",
+      "location": "raw line 9, pagination paragraph"
+    },
+    {
+      "text": "The number of items returned per page, maximum of 500 items. By default, the response returns 100 items per page.",
+      "location": "raw line 24, query parameter limit description"
+    },
+    {
+      "text": "The current status of the dispute.  Possible values: **draft**, **submitted**, **closed**, **won**, **chargeback**, **secondPresentment**.",
+      "location": "raw line 29, query parameter status description"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 57, 403 Client Error description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-raise-disputes-api-get-disputes-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-api-latest-get-disputes]] \u2014 2026-09-15-captured Issuing Raise disputes API v4 `GET /disputes` list reference at a `transfers-api` URL, with optional filters and pagination; 200 has no response-body schema and this is separate from funds-movement Transfers API.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers-api/latest/get/disputes/2026-09-15.md",
+  "raw_sha256": "aa3856b3d5932e80cf8c0d72bec8a0263799d3dad7fe85576e5410db978b2843",
+  "status": "candidate_ready"
+}

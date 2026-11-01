@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-capital-latest-get-grants",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital API v1: list an account holder's grants\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/get/grants\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/get/grants/2026-09-15.md\"\ntags: [adyen, capital, grants, api]\n---\n\n## Overview\n\nThis 2026-09-15-captured Capital API Explorer reference documents `GET /grants` on the Capital API v1 test and live servers. It returns a list of grants for the account holder identified by the required `counterpartyAccountHolderId` query parameter. This is grant readback, not an offer-selection or funding request.\n\n## Key takeaways\n\n- A 200 response requires a `grants` array. Each listed grant requires `balances`, `grantAccountId`, `grantOfferId`, `id`, and `status`. Within `balances`, `currency`, `fee`, `principal`, and `total` are required; `total` is described as fee plus principal, the amount the user must repay. These are schema fields for each returned grant, not proof of a current payout or repayment.\n- The optional `counterparty` object can identify the recipient account holder, balance account for disbursement, or transfer instrument for disbursement. The balance account must belong to the specified holder; a transfer instrument must belong to that holder's legal entity. The required grant `status.code` includes `Pending`, `Active`, `Repaid`, `WrittenOff`, `Failed`, `Revoked`, `Requested`, `Reviewing`, `Approved`, `Rejected`, and `Cancelled`; optional `status.actions` lists steps to proceed. A listed status is readback at the request time, not a guarantee of later transition.\n- The page specifies 404 for an entity not found and 422 for request validation. Their optional problem fields include `invalidFields`, whose individual `message`, `name`, and `value` are required when an invalid-field entry appears. No request/response example, response header or authorization-specific rule is shown in this captured page.\n\n## Detail locators\n\n- Purpose and Capital v1 test/live server URLs: raw lines 5\u201315.\n- Required query parameter: raw lines 17\u201322.\n- 200 grant list, identities, balances, recipient and status schema: raw lines 24\u201347.\n- 404 and 422 error schemas: raw lines 50\u201385.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-capital]] \u2014 Capital grant lifecycle and funding context.\n- [[source-adyen-api-explorer-transfers-latest-get-grants]] \u2014 separate Transfers API v4 grant-list contract with a different query shape.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/get/grants/2026-09-15|Capital API v1 GET /grants (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of all the grants of a specific account holder.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The unique identifier of the account holder that received the grants.",
+      "location": "raw line 22"
+    },
+    {
+      "text": "Contains a list of the grants that the account holder has received.",
+      "location": "raw line 32"
+    },
+    {
+      "text": "The total amount of the grant that the user must repay. It is the sum of the fee amount and the principal amount.",
+      "location": "raw line 37"
+    },
+    {
+      "text": "The balance account must belong to the specified account holder.",
+      "location": "raw line 40"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-capital-get-grants-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-get-grants]] \u2014 2026-09-15-captured Capital API v1 `GET /grants` reference for an account-holder-filtered grant list with grant, offer and grant-account IDs, balances, optional recipient and status/actions; readback is not funding or repayment proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/get/grants/2026-09-15.md",
+  "raw_sha256": "e61a220bf901b0da97cbcb40377521aaa7f24bd2b1c9eece22d47294099ffdba",
+  "status": "candidate_ready"
+}

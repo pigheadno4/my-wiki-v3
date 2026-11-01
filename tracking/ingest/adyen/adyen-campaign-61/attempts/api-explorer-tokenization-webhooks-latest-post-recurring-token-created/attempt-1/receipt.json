@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-tokenization-webhooks-latest-post-recurring-token-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Tokenization webhooks: recurring.token.created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created\"\nraw_files:\n  - \"adyen/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created/2026-09-15.md\"\ntags: [adyen, tokenization, webhooks, stored-payment-methods]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot describes Adyen's incoming `recurring.token.created` webhook when a token is created. It documents an event payload and receiver acceptance, not a token-creation request or payment authorization. [[adyen]] [[adyen-tokenization]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The body requires `createdAt` (ISO 8601 extended event time), `data`, `environment` (`test` or `live`), `eventId`, and outer `type`. `eventId` is described as the PSP reference of the event that triggered the webhook; outer `type` identifies the webhook. The entity `version` field is optional (raw lines 14\u201324).\n- Within required `data`, the table marks `merchantAccount`, `operation`, `shopperReference`, `storedPaymentMethodId`, and nested `type` required. `storedPaymentMethodId` is the token ID; `shopperReference` is the unique shopper reference associated with it; nested `type` is the payment-method type. `operation` is audit-purpose descriptive text, not a documented status enum (raw lines 15\u201320).\n- The sample shows `operation: \"created\"`, `environment: \"test\"`, and outer `type: \"recurring.token.created\"`; these are example values, not a rule about all events or payment success (raw lines 28\u201343).\n- The response section describes HTTP 200 success and says any `2xx` HTTP status accepts the webhook. Its `notificationResponse` response-body field is optional; no literal response-body value is required by this captured table (raw lines 44\u201352). Acceptance does not establish later token usability or a payment outcome. This page states no delivery order, retry, deduplication, signature, or token deletion/propagation rule.\n\n## Detail locators\n\n- Event purpose and required payload fields: raw lines 5\u201324.\n- Full request example: raw lines 26\u201343.\n- Receiver acknowledgment: raw lines 44\u201352.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored-method token lifecycle and reciprocal source route.\n- [[source-adyen-docs-online-payments-tokenization-managing-tokens]] \u2014 separate token management and lifecycle guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created/2026-09-15|Tokenization webhook recurring.token.created capture]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a token is created.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - shopperReference | string | Yes | Your unique shopper reference that is associated with the `storedPaymentMethodId`. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "|   - storedPaymentMethodId | string | Yes | The ID of the token. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| eventId | string | Yes | The PSP reference of the event that triggered the webhook. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 52"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-token-created-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-created]] \u2014 2026-09-15-captured incoming `recurring.token.created` event contract for stored-method token, shopper/merchant and event identifiers, with any-`2xx` receiver acceptance separate from later token use or payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created/2026-09-15.md",
+  "raw_sha256": "3d1cb85cb9417c1f04922a09deca46655304e6711109921625d354b5e10e1555",
+  "status": "candidate_ready"
+}

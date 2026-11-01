@@ -1,0 +1,4 @@
+# Fixed retrieval checks
+
+1. When does Adyen send the managed-risk reserve-waiver-applied event, and which holder identifier is required? Use [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-applied]] (https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.reserveWaiver.applied), raw lines 5-21.
+2. Does receiver HTTP 2xx acceptance or the sample `data.id` prove a payout or define a required event ID? Use [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-applied]] (https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.reserveWaiver.applied), comparing the request table at raw lines 11-21, example at 23-37, and response at 38-46.

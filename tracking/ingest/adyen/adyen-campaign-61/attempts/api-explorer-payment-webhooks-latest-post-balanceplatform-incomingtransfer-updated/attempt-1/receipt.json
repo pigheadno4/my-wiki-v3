@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen deprecated Payment webhook: incoming transfer updated\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated\"\nraw_files:\n  - \"adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated/2026-09-15.md\"\ntags: [adyen, platforms, payment-webhooks, incoming-transfers, deprecated]\n---\n\n## Overview\n\nThis `balancePlatform.incomingTransfer.updated` reference describes an incoming Adyen Payment webhook when funds were added to a balance account due to a refund or funds transfer. Its parent Payment webhooks v1 overview marks this family deprecated and directs use of accounting webhooks in the Transfer-webhooks API Explorer instead. This endpoint snapshot documents the legacy event, not the replacement Transfer webhook contract. [[adyen]] [[adyen-platforms]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The page says `data.id` tracks the original incoming-transfer resource from `balancePlatform.incomingTransfer.created`. The optional `paymentId` instead traces the original payment authorisation, refund, or funds-transfer request from `balancePlatform.payment.created`. These are different resource references. See raw lines 5\u201313, 40, 47.\n- For this event type, `data.status` is `Refunded` for refunds or `IncomingTransfer` for incoming fund transfers. The generic status table also lists values for other webhook types; do not assign those to this event. See raw lines 9\u201313 and 63.\n- The request table requires outer `data`, `environment`, and `type`. It marks `data.id`, `data.status`, `data.amount`, `data.balanceAccount`, and other details optional. If an optional `amount` or `originalAmount` object is present, its `currency` and minor-unit `value` are required within it. Positive and negative values indicate addition to and deduction from the balance account, respectively. See raw lines 17\u201372.\n- `modification` is optional and describes the amount and type of the modification triggering this notification; `paymentId`, platform-payment references, `reference`, and `referenceForBeneficiary` have separate meanings. Consult the request table at raw lines 39\u201363 before correlating resources.\n- The receiver can return any HTTP `2xx` status to accept the webhook. This receipt is separate from the event's funds-movement meaning. See raw lines 117\u2013125.\n\n## Detail locators\n\n- Event identity, trigger, statuses and resource correlation: raw lines 5\u201313.\n- Full request schema, requiredness and reference fields: raw lines 15\u201372.\n- Sample incoming-transfer payload: raw lines 74\u2013116.\n- Receiver response: raw lines 117\u2013125.\n- Family deprecation and replacement direction: [[source-adyen-api-explorer-payment-webhooks-latest-overview]], raw lines 5\u20137.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-webhooks]]\n- [[source-adyen-api-explorer-payment-webhooks-latest-overview]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated/2026-09-15|Incoming transfer updated endpoint snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when funds were added to the balance account. This could be due to a refund or a funds transfer. Use the `data.id` to track the original incoming transfer resource in the `balancePlatform.incomingTransfer.created` webhook.",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated/2026-09-15.md:7"
+    },
+    {
+      "text": "For refunds, the `status` is **Refunded**.",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated/2026-09-15.md:11"
+    },
+    {
+      "text": "For incoming fund transfers, the `status` is **IncomingTransfer**.",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated/2026-09-15.md:13"
+    },
+    {
+      "text": "|   - paymentId | string | No | The ID of the original payment authorisation, refund, or funds transfer request. Use this to trace the original request from the `balancePlatform.payment.created` webhook. |",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated/2026-09-15.md:47"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated/2026-09-15.md:125"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "legacy-incoming-transfer-updated-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-updated]] \u2014 2026-09-15-captured deprecated Payment webhooks v1 incoming-transfer update for funds added by refund or transfer, with `data.id` resource correlation, event-specific `Refunded`/`IncomingTransfer` status and separate 2xx receipt; use Transfer accounting webhooks for the replacement family.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Deprecation/replacement direction is from the separately read Payment webhooks overview, not this endpoint's raw."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated/2026-09-15.md",
+  "raw_sha256": "df05648890dad621f5a491f22175de583b41aa27d3ad8c4a32a5b2a5fe9114cf",
+  "status": "candidate_ready"
+}

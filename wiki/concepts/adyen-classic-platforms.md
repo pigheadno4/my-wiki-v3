@@ -15,6 +15,33 @@ The Classic overview explicitly directs a new implementation to a separate new-i
 
 ## Sources
 
+- [[source-adyen-api-explorer-notification-latest-post-account-updated]] — 2026-09-15-captured Classic `ACCOUNT_UPDATED` incoming notification reference for account identity, optional payout routing/schedule and error fields, and `[accepted]` receiver acknowledgement; sample success and error indicators coexist.
+
+
+- [[source-adyen-api-explorer-notification-latest-post-scheduled-refunds]] — 2026-09-15-captured Classic `SCHEDULED_REFUNDS` incoming notification reference for processed refund-not-paid-out-transfer requests and scheduled per-refund results; per-refund received-for-processing and HTTP acknowledgment do not establish completed refunds.
+
+
+- [[source-adyen-api-explorer-notification-latest-post-payment-failure]] — 2026-09-15-captured incoming Classic split-booking failure notification for capture or refund, with liable-account fallback for invalid account status or unknown `accountCode`; its sole example uses `TRANSFER_FUNDS` and differs from the request table.
+
+
+- [[source-adyen-api-explorer-notification-latest-post-transfer-funds]] — 2026-09-15-captured incoming Classic Notification `TRANSFER_FUNDS` payload reference for transfers between Accounts, with optional transfer detail, required event metadata and a separate `[accepted]` receipt acknowledgment.
+
+
+- [[source-adyen-api-explorer-notification-latest-post-report-available]] — 2026-09-15-captured Classic Notification REPORT_AVAILABLE incoming-event reference for generated report availability and optional remote access URL; its example instead shows TRANSFER_FUNDS data, and receiver acknowledgement does not prove download.
+
+
+- [[source-adyen-api-explorer-notification-latest-post-beneficiary-setup]] — 2026-09-15-captured Classic `BENEFICIARY_SETUP` incoming notification reference for benefactor/beneficiary account identities, `invalidFields` failure/success signal and `[accepted]` receipt response; event receipt is separate from setup outcome.
+
+
+- [[source-adyen-api-explorer-notification-latest-post-account-created]] — 2026-09-15-captured incoming Classic `ACCOUNT_CREATED` event reference for account/holder codes, optional result and error fields, and `[accepted]` receiver acknowledgement; the separate creation guide supplies the asynchronous business-logic gate.
+
+
+- [[source-adyen-api-explorer-notification-latest-post-account-closed]] — 2026-09-15-captured Classic `ACCOUNT_CLOSED` incoming notification reference for request/account identifiers, optional close-result fields and receiver `[accepted]` acknowledgment; separate from `POST /closeAccount` execution.
+
+
+- [[source-adyen-api-explorer-notification-latest-overview]] — 2026-09-15-captured Classic Platforms Notification API v6 event-path catalog; subscriptions are managed separately through the Notification Configuration API, and event payload details require endpoint references.
+
+
 - [[source-adyen-api-explorer-notificationconfiguration-latest-post-getnotificationconfiguration]] — 2026-09-15-captured Notification v6 TEST configuration lookup by subscription ID, with event/HMAC/endpoint settings; request and response example IDs differ, and lookup does not prove delivery.
 
 

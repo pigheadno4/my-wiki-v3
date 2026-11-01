@@ -1,0 +1,4 @@
+# Fixed retrieval queries — api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-removed
+
+1. What changes when Adyen sends `balancePlatform.managedRisk.reserveWaiver.removed`, and which account holder is identified? Expected route: [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-removed]]; raw lines 5–7, 14–18; canonical URL https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.reserveWaiver.removed.
+2. Which timestamps and environment fields does this webhook define, and does HTTP acceptance prove a payout result? Expected route: [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-removed]]; raw lines 17–21, 38–46; canonical URL https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.reserveWaiver.removed.

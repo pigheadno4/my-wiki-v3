@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-transfers-api-latest-get-disputes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API v4: GET /disputes\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes\"\nraw_files:\n  - \"adyen/api-explorer/transfers-api/latest/get/disputes/2026-09-15.md\"\ntags: [adyen, platforms, transfers-api, disputes]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer reference documents Transfers API `GET /disputes` on the listed `/btl/api/v4` TEST and live servers. It returns raised disputes matching query parameters. The page describes cursor-based pagination with next and previous links where applicable, while separately listing an optional `offset` query parameter; it does not explain their interaction. This is a platform Transfers API dispute-list read, distinct from money-transfer resource reads and from dispute-defense actions in another API family. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- All six listed query parameters are optional: `limit` (default 100, maximum 500 items per page), `offset` (number of items to skip), ISO 8601 `createdSince`/`createdUntil` inclusive time bounds, `paymentInstrument` ID, and `status`. The listed status filter values are `draft`, `submitted`, `closed`, `won`, `chargeback`, and `secondPresentment`.\n- The 200 section says the request succeeded but supplies no success response-body fields or example. Do not infer dispute item identifiers, cursor token format, link syntax, or resolution outcomes from this page. A retrieved status is a listed dispute state, not a defense or financial result for a particular case.\n- The page documents 401 for authentication required, 403 for insufficient permissions, and 422 for request validation error. Each error body table has optional top-level problem fields and optional `invalidFields`; if an `invalidFields` item is present, its `message`, `name`, and `value` are marked required.\n\n## Detail locators\n\n- Purpose, pagination statement and v4 TEST/live servers: raw lines 5\u201317.\n- Query parameters, defaults, limits, time bounds and status enum: raw `## Parameters` \u2192 `### Query parameters`, lines 19\u201329.\n- Success statement without response schema: raw lines 31\u201335.\n- 401, 403 and 422 error descriptions and body tables: raw lines 37\u201391.\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern platform context.\n- [[source-adyen-api-explorer-transfers-api-latest-overview]] \u2014 Transfers API catalog and family scope.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/2026-09-15|Transfers API GET /disputes (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of raised disputes that match the query parameters.",
+      "location": "raw line 7, GET /disputes lead"
+    },
+    {
+      "text": "This endpoint supports cursor-based pagination. The response returns the first page of results, and returns links to the next page when applicable.",
+      "location": "raw line 9, pagination paragraph"
+    },
+    {
+      "text": "The number of items returned per page, maximum of 500 items. By default, the response returns 100 items per page.",
+      "location": "raw line 24, query parameter limit description"
+    },
+    {
+      "text": "The current status of the dispute.  Possible values: **draft**, **submitted**, **closed**, **won**, **chargeback**, **secondPresentment**.",
+      "location": "raw line 29, query parameter status description"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 57, 403 Client Error description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-transfers-api-disputes-list-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-api-latest-get-disputes]] \u2014 2026-09-15-captured Transfers API v4 `GET /disputes` list reference for raised platform disputes, optional status/time/payment-instrument filters and pagination; the 200 section omits an item schema.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers-api/latest/get/disputes/2026-09-15.md",
+  "raw_sha256": "aa3856b3d5932e80cf8c0d72bec8a0263799d3dad7fe85576e5410db978b2843",
+  "status": "candidate_ready"
+}

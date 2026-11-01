@@ -1,0 +1,4 @@
+# Fixed retrieval queries — api-explorer-open-banking-latest-post-accountverification-routes
+
+1. What inputs select available Open Banking providers for an external individual's bank-account verification, and where is the individual redirected afterward? Expected route: [[source-adyen-api-explorer-open-banking-latest-post-accountverification-routes]]; raw lines 5–7 and 19–25; canonical URL https://docs.adyen.com/api-explorer/open-banking/latest/post/accountVerification/routes.
+2. What does a 200 `routes` response contain, and does it prove connection, consent or completed bank verification? Expected route: [[source-adyen-api-explorer-open-banking-latest-post-accountverification-routes]]; raw lines 5–7, 38–50 and 147–164; canonical URL https://docs.adyen.com/api-explorer/open-banking/latest/post/accountVerification/routes.

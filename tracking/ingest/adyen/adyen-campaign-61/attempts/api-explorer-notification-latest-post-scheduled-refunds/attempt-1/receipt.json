@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-notification-latest-post-scheduled-refunds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic SCHEDULED_REFUNDS notification\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Notification/latest/post/SCHEDULED_REFUNDS\"\nraw_files:\n  - \"adyen/api-explorer/Notification/latest/post/SCHEDULED_REFUNDS/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, refunds]\n---\n\n## Overview\n\nThis 2026-09-15-captured Notification API Explorer reference describes the incoming `POST /SCHEDULED_REFUNDS` notification. Adyen sends it when a request to refund transfers that have not yet been paid out has been processed and the associated refunds have been scheduled. It concerns Classic account-holder/account codes and the linked Fund API request, not a new merchant refund request or a modern balance-platform transfer event.\n\n## Key takeaways\n\n- The required outer notification fields are `eventDate`, `eventType`, `executingUserKey`, `live`, and `pspReference`. Here `pspReference` identifies the request from which the notification originates; `live` identifies the originating environment. The `content` and `error` objects are optional in this schema.\n- Optional `content` includes `accountCode`, `accountHolderCode`, validation `invalidFields`, `lastPayout`, and `refundResults`. The last-payout description places it before the transactions scheduled for refund. Each refund-result entry can include an `originalTransaction`, a refund `pspReference`, and a `response` indicating whether that refund was received for processing. These fields distinguish request identity from individual refund identity; their schema presence does not prove completed refunds or bank credit.\n- Optional `error` contains failure information when processing failed and has no value if no error occurred. The page's 200 response uses optional `notificationResponse` set to **[accepted]** to acknowledge receipt of Adyen's notification. Receiver acknowledgment is separate from the processing and financial state described by the event.\n\n## Detail locators\n\n- Event purpose and linked Fund request: raw lines 5\u20137.\n- Request-body schema, field requiredness, last-payout and refund-result descriptions: raw lines 9\u201349.\n- Illustrative request example, including Classic account codes and nested transaction fields: raw lines 51\u2013165.\n- HTTP 200 acknowledgment response: raw lines 166\u2013174.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-classic-platforms]] \u2014 Classic account-holder/account and notification context.\n- [[source-adyen-api-explorer-fund-latest-post-refundnotpaidouttransfers]] \u2014 request whose processing leads to this scheduled-refunds notification; its 202 response is still pending.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Notification/latest/post/SCHEDULED_REFUNDS/2026-09-15|Notification POST /SCHEDULED_REFUNDS (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this notification when a request to [refund transfers that are not yet paid out](https://docs.adyen.com/api-explorer/#/Fund/latest/refundNotPaidOutTransfers) is processed and the associated refunds are scheduled.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The most recent payout (after which all transactions were scheduled to be refunded).",
+      "location": "raw line 21"
+    },
+    {
+      "text": "A list of the refunds that have been scheduled and their results.",
+      "location": "raw line 38"
+    },
+    {
+      "text": "The response indicating if the refund has been received for processing.",
+      "location": "raw line 41"
+    },
+    {
+      "text": "Set this parameter to **[accepted]** to acknowledge that you received a notification from Adyen.",
+      "location": "raw line 174"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-scheduled-refunds-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notification-latest-post-scheduled-refunds]] \u2014 2026-09-15-captured Classic `SCHEDULED_REFUNDS` incoming notification reference for processed refund-not-paid-out-transfer requests and scheduled per-refund results; per-refund received-for-processing and HTTP acknowledgment do not establish completed refunds.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Notification/latest/post/SCHEDULED_REFUNDS/2026-09-15.md",
+  "raw_sha256": "948896776bf1581a5bdb16c9df94e5f24c75973a82135261cd81820c075e1461",
+  "status": "candidate_ready"
+}

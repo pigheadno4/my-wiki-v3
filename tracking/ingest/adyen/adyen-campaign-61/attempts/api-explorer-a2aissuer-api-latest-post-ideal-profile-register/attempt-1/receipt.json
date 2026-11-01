@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-a2aissuer-api-latest-post-ideal-profile-register",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen A2A Issuer iDEAL profile registration\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/a2aissuer-api/latest/post/ideal/profile/register\"\nraw_files:\n  - \"adyen/api-explorer/a2aissuer-api/latest/post/ideal/profile/register/2026-09-15.md\"\ntags: [adyen, business-accounts, ideal, a2a-issuer, api]\n---\n\n## Overview\n\nThis captured A2A Issuer API v1 `POST /ideal/profile/register` reference starts registration of a new iDEAL profile linked to the supplied account holder and payment instruments. The user **must be redirected** to the response URL to finish registration. A successful request or redirect URL is not completed profile registration, iDEAL payment authentication, or payment execution. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The request requires `accountHolderId` and an array of `paymentInstrumentIds`. The page lists distinct TEST and LIVE `/a2aissuer-api/v1` servers. Its example contains two instrument IDs, without stating a minimum or maximum.\n- The 200 response table marks the parent `redirectUrl` object optional, while `href` is required within it and is described as a short-lived URL for the iDEAL registration page. The introductory instruction to redirect the user remains important; the table does not guarantee `redirectUrl` in every 200 response.\n- The page documents 400 malformed-request, 422 validation, and 500 server-error responses. Illustrated 422 cases include an already registered profile (`1069_007`), missing or invalid request data (`29_001`), account holder not found (`30_012`), and payment instrument not found (`30_032`). Example 500 codes include `1069_001` and `1069_002`; these are examples rather than exhaustive outcomes. Optional problem fields are in the response tables, with required `name`, `value`, and `message` only within an `invalidFields` item.\n\n## Detail locators\n\n- Purpose, redirect requirement, servers and request schema: pinned raw lines 5\u201323.\n- Request example: lines 25\u201336.\n- Response schemas for 200/400/422/500: lines 37\u2013103.\n- Response examples and error codes: lines 105\u2013207.\n\n## Related\n\n- [[adyen-business-accounts]]\n- [[source-adyen-docs-business-accounts-send-funds-ideal-integration]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/a2aissuer-api/latest/post/ideal/profile/register/2026-09-15|A2A issuer iDEAL profile register API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Register a new iDEAL profile. The profile is linked to the account holder and payment instruments included in the request. The user must be redirected to the URL in the response to finish their IDEAL profile registration.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| accountHolderId | string | Yes | The unique identifier of the account holder. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| paymentInstrumentIds | array of string | Yes | The unique identifiers of the payment instruments to be associated with the iDEAL profile. |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "| redirectUrl | object | No | A short-lived URL that redirects the user to the iDEAL profile registration page. |",
+      "location": "raw line 45"
+    },
+    {
+      "text": "|   - href | string | Yes | The full URL for the redirection. |",
+      "location": "raw line 46"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "a2a-issuer-ideal-profile-register-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-register]] \u2014 2026-09-15-captured A2A Issuer API v1 iDEAL profile-registration request for an account holder and payment instruments; 200 returns a possible short-lived redirect, while the user must continue registration and no payment outcome is established.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/a2aissuer-api/latest/post/ideal/profile/register/2026-09-15.md",
+  "raw_sha256": "d19f182be291541aecd35f8671d0556bc9c9566bd777aecd183875d164e38cba",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Fixed query answers — SCHEDULED_REFUNDS
+
+## Q1
+
+The 2026-09-15 Notification `latest` page describes an incoming `POST /SCHEDULED_REFUNDS` notification produced by Adyen after a `refundNotPaidOutTransfers` request is processed and associated refunds are scheduled. It does not state a numeric Notification API version. Required outer fields are `eventDate`, `eventType`, `executingUserKey`, `live`, and `pspReference`; that last reference identifies the originating request. Optional `content` carries Classic `accountCode` and `accountHolderCode`, validation `invalidFields`, the `lastPayout` after which transactions were scheduled for refund, and `refundResults`. Each optional result entry can identify its original transaction and refund `pspReference`, with a `response` indicating whether that refund was received for processing. Optional `error` supplies failure information. The page states no numeric limit, reversal, deletion, or payout timing rule. See raw lines 5–49 in [[source-adyen-api-explorer-notification-latest-post-scheduled-refunds]] ([canonical URL](https://docs.adyen.com/api-explorer/Notification/latest/post/SCHEDULED_REFUNDS)).
+
+## Q2
+
+This event establishes processing of the request and scheduling of associated refunds; its per-refund response can indicate receipt for processing, not completed refund or bank credit. The 200 response table says optional `notificationResponse` is set to the literal `[accepted]` to acknowledge receipt of Adyen's notification. That receiver acknowledgment is distinct from refund outcome. This page does not define delivery ordering, retry, deduplication, signature validation, or later failure/reversal outcomes, and its example is not proof of execution. See raw lines 7, 38–49 and 166–174 in [[source-adyen-api-explorer-notification-latest-post-scheduled-refunds]] ([canonical URL](https://docs.adyen.com/api-explorer/Notification/latest/post/SCHEDULED_REFUNDS)).

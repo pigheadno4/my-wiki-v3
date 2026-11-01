@@ -1,0 +1,9 @@
+# Fixed query answers — iDEAL profile authenticate
+
+## Q1
+
+The 2026-09-15 A2A Issuer API v1 `POST /ideal/profile/authenticate` operation generates a redirect URL to finish iDEAL-requested profile authentication, using test or live A2A Issuer v1 servers. Before the call, the platform must ensure its user has completed multi-factor authentication. The request requires `accountHolderId` and an iDEAL-provided `payload` string. A 200 response lists optional `redirectUrl`, described as short-lived; when present, its `href` is required and is the full URL for redirecting the user to iDEAL's authentication page. The example payload is a URL-looking string, but the schema states string rather than a general URL-format constraint. No expiry duration, deletion or completed-authentication status is specified. See raw lines 5–43 and 102–113 in [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-authenticate]] ([canonical URL](https://docs.adyen.com/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate)).
+
+## Q2
+
+A 200 response means the request succeeded and can supply a redirect for the user's next step; it does not establish that profile authentication finished or that any merchant payment was authorised. The page documents 400 malformed request, 422 validation, and 500 server-error responses. Its 422 examples show missing registered profile (`1069_008`), expired authentication payload (`1069_009`) and missing account holder (`30_012`); examples do not exhaust possible errors. This operation specifies no webhook acknowledgment, delivery/order/retry/deduplication, signature, payment decision or financial finality rule. See raw lines 34–100 and 115–186 in [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-authenticate]] ([canonical URL](https://docs.adyen.com/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate)).

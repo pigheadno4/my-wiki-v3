@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-notification-latest-post-beneficiary-setup",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Notification latest: BENEFICIARY_SETUP\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Notification/latest/post/BENEFICIARY_SETUP\"\nraw_files:\n  - \"adyen/api-explorer/Notification/latest/post/BENEFICIARY_SETUP/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, beneficiary-setup]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the API Explorer `Notification/latest` `POST /BENEFICIARY_SETUP` reference describes an incoming Adyen notification for a Classic benefactor/beneficiary relationship setup. It says Adyen sends the notification when the relationship is created. The payload also supplies `content.invalidFields` to identify fields that caused the Setup Beneficiary request to fail; an empty list means that request succeeded. Read the event's fields rather than treating the heading alone as proof of a successful setup. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- Required top-level notification fields are `eventDate`, `eventType`, `executingUserKey`, `live`, and `pspReference`. `pspReference` identifies the request from which the notification originates; `live` distinguishes live from test origin. `content` and `error` are optional in this table.\n- Optional `content` fields identify source benefactor account and account holder, destination beneficiary account and account holder, merchant reference, `invalidFields`, and `transferDate`. The table describes `transferDate` as the date the beneficiary was set up and funds transferred; its presence in the example does not independently establish a completed transfer for another event.\n- The 200 response body documents optional `notificationResponse` set to `[accepted]` to acknowledge receipt. This receiver response is separate from whether the underlying Setup Beneficiary request succeeded. The example contains a nonempty `invalidFields` array and an `error` object, so it is not evidence of successful setup.\n\n## Detail locators\n\n- Request body and requiredness: raw `## Parameters` \u2192 `### Request body`, lines 9\u201332; account/holder identifiers and error detail, lines 14\u201327.\n- Illustrative `beneficiarySetup` JSON: raw `## Request examples`, lines 34\u201368.\n- Receiver response: raw `## Responses` \u2192 `### 200 Success`, lines 69\u201377.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account and holder context.\n- [[adyen-webhooks]] \u2014 general webhook context; this event's response is documented in the raw reference.\n- [[source-adyen-api-explorer-fund-latest-post-setupbeneficiary]] \u2014 separate Fund API setup request reference; its request/response contract is distinct from this incoming notification.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Notification/latest/post/BENEFICIARY_SETUP/2026-09-15|API Explorer BENEFICIARY_SETUP snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this notification when a [benefactor/beneficiary relationship is created](https://docs.adyen.com/api-explorer/#/Fund/latest/post/transferFunds).",
+      "location": "raw lines 5\u20137, POST /BENEFICIARY_SETUP heading and lead"
+    },
+    {
+      "text": "A listing of the invalid fields which have caused the Setup Beneficiary request to fail. If this is empty, the Setup Beneficiary request has succeeded.",
+      "location": "raw line 17, Request body content.invalidFields description"
+    },
+    {
+      "text": "The date on which the beneficiary was set up and funds transferred from benefactor to beneficiary.",
+      "location": "raw line 24, Request body content.transferDate description"
+    },
+    {
+      "text": "The PSP reference of the request from which the notification originates.",
+      "location": "raw line 32, Request body pspReference description"
+    },
+    {
+      "text": "Set this parameter to **[accepted]** to acknowledge that you received a notification from Adyen.",
+      "location": "raw line 77, 200 Success notificationResponse description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-beneficiary-setup-classic-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notification-latest-post-beneficiary-setup]] \u2014 2026-09-15-captured Classic `BENEFICIARY_SETUP` incoming notification reference for benefactor/beneficiary account identities, `invalidFields` failure/success signal and `[accepted]` receipt response; event receipt is separate from setup outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Notification/latest/post/BENEFICIARY_SETUP/2026-09-15.md",
+  "raw_sha256": "721e6aca0ecca8473f24309f63d55f2b417a73633c2d613ea97a6a4f0f353dad",
+  "status": "candidate_ready"
+}

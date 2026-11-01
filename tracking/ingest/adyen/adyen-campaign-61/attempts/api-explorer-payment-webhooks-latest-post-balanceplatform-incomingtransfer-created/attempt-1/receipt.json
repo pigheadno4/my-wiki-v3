@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payment webhooks: incomingTransfer.created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.created\"\nraw_files:\n  - \"adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.created/2026-09-15.md\"\ntags: [adyen, platforms, payment-webhooks, incoming-transfers, deprecated]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer reference describes the incoming `balancePlatform.incomingTransfer.created` webhook in the Payment webhooks family. Adyen sends it when incoming funds are due to a refund or funds transfer. Use `data.paymentId` to relate the event to the original refund or funds-transfer request and inspect the content to distinguish those cases: the refund includes the target payment instrument, while an incoming funds transfer includes only balance-account information. The separate [[source-adyen-api-explorer-payment-webhooks-latest-overview|Payment webhooks overview]] labels this v1 family deprecated and directs readers to accounting webhooks; its migration notice does not change the event contract captured here. [[adyen]] [[adyen-platforms]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- Required top-level fields are `data`, `environment` (`test` or `live`) and `type`. `timestamp` is optional and is when the event was queued. In `data`, account-holder, balance-account, counterparty, payment-instrument and related platform-payment objects, resource `id`, `paymentId`, `reference`, amounts and dates are listed as optional. If `amount` or `originalAmount` is supplied, its nested `currency` and minor-unit `value` fields are required by the table; the parent objects themselves are not required.\n- For `balancePlatform.incomingTransfer.created`, the status table lists `PendingIncomingTransfer`. It lists `Refunded` or `IncomingTransfer` for the separate updated event. The sample is a test `PendingIncomingTransfer` with a positive EUR amount, balance-account and counterparty balance-account IDs; it illustrates a pending state, not final credit or bank receipt. The amount description defines positive as added to the balance account and negative as deducted, but the sample is not execution evidence.\n- The response table says to send any HTTP `2xx` to accept the webhook. Receiver acceptance is distinct from the incoming transfer's later status. `valueDate`, if present, is an expected settlement date; it is not a settled-funds guarantee.\n\n## Detail locators\n\n- Trigger and refund-versus-transfer content distinction: raw lines 5\u201311.\n- Request-body requiredness, identities, amount signs and conditional nested amount fields: raw lines 13\u201360; event-specific status table, `valueDate`, environment and type: lines 61\u201370.\n- Test JSON example and its pending state: raw lines 72\u2013114.\n- Receiver response: raw `## Responses` \u2192 `### 200 Success`, lines 115\u2013123.\n\n## Related\n\n- [[source-adyen-api-explorer-payment-webhooks-latest-overview]] \u2014 separate v1 family deprecation and accounting-webhook migration notice.\n- [[source-adyen-api-explorer-transfer-webhooks-latest-overview]] \u2014 distinct Transfer webhooks v4 catalog; use its child event references for current transfer payloads and states.\n- [[adyen-platforms]] \u2014 modern balance-platform context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.created/2026-09-15|Payment webhook incomingTransfer.created (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when there are incoming funds due to a refund or a fund transfer. Use the `paymentId` to link to the original refund request or funds transfer request. Check the content of the webhook to differentiate the events.",
+      "location": "raw line 7, POST balancePlatform.incomingTransfer.created lead"
+    },
+    {
+      "text": "For refunds, the webhook includes the payment instrument to which funds will be refunded.",
+      "location": "raw line 9, refund content distinction"
+    },
+    {
+      "text": "For incoming fund transfers, the webhook only includes information about the balance account.",
+      "location": "raw line 11, transfer content distinction"
+    },
+    {
+      "text": "**PendingIncomingTransfer** for type `balancePlatform.incomingTransfer.created`",
+      "location": "raw line 61, data.status event-specific possible-values table row"
+    },
+    {
+      "text": "Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks).",
+      "location": "raw line 123, 200 Success notificationResponse description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-incoming-transfer-created-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-created]] \u2014 2026-09-15-captured deprecated Payment webhooks `incomingTransfer.created` reference for pending refund/funds-transfer incoming events, `paymentId` linkage and 2xx receiver acceptance; the separate family overview directs migration to accounting webhooks.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.created/2026-09-15.md",
+  "raw_sha256": "84efa31db40a5b79ddd5c4bba3e1de3497e49605937784f950d8eb41382fb3b9",
+  "status": "candidate_ready"
+}

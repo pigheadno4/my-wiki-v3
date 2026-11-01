@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-payment-webhooks-latest-post-balanceplatform-outgoingtransfer-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen legacy outgoing transfer updated webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.updated\"\nraw_files:\n  - \"adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.updated/2026-09-15.md\"\ntags: [adyen, platforms, payment-webhooks, outgoing-transfers, deprecated]\n---\n\n## Overview\n\nThis captured endpoint reference defines Adyen's incoming `balancePlatform.outgoingTransfer.updated` webhook. Adyen sends updated information after funds have been deducted from a balance account, including a possible transfer failure. Use `data.id` to track the original outgoing-transfer resource from `balancePlatform.outgoingTransfer.created`. See [[adyen]] and [[adyen-platforms]].\n\nThe **separate Payment webhooks v1 overview** labels this family deprecated and directs readers to accounting webhooks instead. Keep this legacy event contract separate from the newer Transfer and Transaction webhook families; their event schemas and states must be read from their own references. [[source-adyen-api-explorer-payment-webhooks-latest-overview]]\n\n## Key takeaways\n\n- Required top-level fields are `data`, `environment` (`test` or `live`), and `type`. The request-body table marks `data.counterparty` required; `data.id`, `status`, `amount`, `balanceAccount`, `accountHolder`, `paymentId`, `purposeCode`, `valueDate` and many other details optional. Currency and minor-unit value are required **within** optional `amount` or `originalAmount` objects.\n- For this specific `type`, the table lists `TransferConfirmed`, `TransferSentOut`, and `TransferFailed` status values. The `TransferFailed` example is illustrative, not a universal outcome. `paymentId` traces the original payment authorisation, refund or funds-transfer request from `balancePlatform.payment.created`; it is distinct from `data.id` for the outgoing-transfer resource.\n- The schema calls `valueDate` an expected settlement date. It identifies `payoutManual` for a one-off `/transfers` payout and `payoutSweep` for a scheduled sweep. Signed amount values describe addition to or deduction from the balance account, not bank credit.\n- The response section says any HTTP `2xx` accepts the webhook. Receiver acceptance does not prove the transfer's final state or bank receipt.\n\n## Detail locators\n\n- Purpose and ID correlation: pinned raw lines 5\u20139.\n- Request-body schema, including optional fields, references, statuses and timing: lines 11\u201385.\n- Illustrative failure payload: lines 87\u2013130.\n- Response acceptance: lines 131\u2013139.\n\n## Related\n\n- [[adyen-platforms]]\n- [[source-adyen-api-explorer-transfer-webhooks-latest-overview]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.updated/2026-09-15|Outgoing transfer updated endpoint capture]]\n\n## Related raw API references\n\n- [[raw/adyen/api-explorer/payment-webhooks/latest/overview/2026-09-15|Payment webhooks v1 family overview]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when there is updated information after funds have been deducted from a balance account. For example, if the fund transfer failed.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Use the `data.id` to track the original outgoing transfer resource from the `balancePlatform.outgoingTransfer.created` webhook.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "|   - counterparty | object | Yes | Contains information about the other party in the transaction. |",
+      "location": "raw line 29"
+    },
+    {
+      "text": "**TransferConfirmed**, **TransferSentOut**, or **TransferFailed** for type `balancePlatform.outgoingTransfer.updated`",
+      "location": "raw line 71"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 139"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "legacy-outgoing-transfer-updated-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-outgoingtransfer-updated]] \u2014 2026-09-15-captured deprecated Payment webhooks v1 outgoing-transfer update reference, with original resource `data.id`, confirmed/sent-out/failed statuses and HTTP 2xx receipt acceptance; distinguish newer Transfer/Transaction webhooks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.updated/2026-09-15.md",
+  "raw_sha256": "7219d149bf5eaebf7a49333bb61daf48c9a6499f41cdf464a1db051d94a103c2",
+  "status": "candidate_ready"
+}

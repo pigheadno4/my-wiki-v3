@@ -15,6 +15,21 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-disabled]] — 2026-09-15-captured `recurring.token.disabled` incoming token lifecycle event, with merchant/shopper/stored-method identity and 2xx receiver acceptance; disablement can follow stored-detail deletion or third-party action.
+
+
+- [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-updated]] — 2026-09-15-captured stored-token update webhook reference, including merchant/shopper/token and event identities, network-origin possibility and any-2xx receiver acceptance; it is not a payment-result contract.
+
+
+- [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-created]] — 2026-09-15-captured incoming `recurring.token.created` event contract for stored-method token, shopper/merchant and event identifiers, with any-`2xx` receiver acceptance separate from later token use or payment outcome.
+
+
+- [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-alreadyexisting]] — 2026-09-15-captured Tokenization webhook reference for an attempted create/update whose details match an existing token, including token/event identifiers and receiver acceptance.
+
+
+- [[source-adyen-api-explorer-tokenization-webhooks-latest-overview]] — 2026-09-15-captured Tokenization webhooks v1 endpoint directory for four token lifecycle event names; payload and delivery rules are outside this overview.
+
+
 - [[source-adyen-api-explorer-webhooks-latest-post-recurring-contract]] — 2026-09-15-captured `Webhooks/latest` RECURRING_CONTRACT creation event: Customer Area enablement, `originalPsp` for the initial payment versus token-valued `pspReference`, and HTTP receipt separate from later recurring payment outcome.
 
 

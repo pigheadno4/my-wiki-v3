@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-capital-latest-get-dynamicoffers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital GET /dynamicOffers \u2014 available dynamic offers\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/get/dynamicOffers\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/get/dynamicOffers/2026-09-15.md\"\ntags: [adyen, capital, dynamic-offers, business-financing]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer `latest` snapshot describes Capital `GET /dynamicOffers`, a read operation that returns available dynamic offers for the required `accountHolderId` query parameter. It is an offer lookup, not a grant request, accepted offer, disbursement or funding confirmation. See [[adyen]] and [[adyen-capital]].\n\n## Key takeaways\n\n- The page lists separate test and live Capital `/capital/v1` server bases. `accountHolderId` is the required query parameter. Optional `financingType` has the listed value `businessFinancing`; if omitted, the operation returns all available types. These are endpoint contract statements, not current eligibility for any particular account holder.\n- The `200 Success` body requires a `dynamicOffers` array. Each listed offer has required account-holder and offer IDs, `contractType` (`loan` or `cashAdvance`), `financingType` (`businessFinancing`), `startsAt` and `expiresAt` validity timestamps, and `minimumAmount`/`maximumAmount` objects with required ISO currency and integer minor-unit value. A required `repayment` object contains a required `term` object; this page does not expand that term's fields. An array schema does not assert that any offer is available for a particular holder.\n- The `422 Client Error` section describes request validation. Its problem fields, including `invalidFields`, are optional; `message`, `name` and `value` are marked required only within an `invalidFields` item when such an item is present. A successful offer lookup does not establish formal terms acceptance, grant creation, money transfer or repayment.\n\n## Detail locators\n\n- Purpose, test/live server bases and query parameters: raw lines 5\u201324. Complete 200 response schema, including offer range, validity, contract type and repayment term: raw lines 25\u201347.\n- 422 validation-error response schema and nested field requirements: raw lines 50\u201366. The pinned page gives no request or response JSON example or separate response-header contract.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-capital]] \u2014 Capital offer versus grant lifecycle.\n- [[source-adyen-docs-capital-get-grant-offers]] \u2014 separate offer-choice guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/get/dynamicOffers/2026-09-15|Adyen Capital latest GET /dynamicOffers, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of all [dynamic offers](https://docs.adyen.com/capital/get-grant-offers/dynamic-offers/) available for `accountHolderId` specified as a query parameter.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| financingType | string | No | The type of financing that the offer is for. If the value is not specified, returns all available types.  Possible values: **businessFinancing** |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| dynamicOffers | array of object | Yes | Contains a list of available dynamic offers for the specified account holder. |",
+      "location": "raw line 33"
+    },
+    {
+      "text": "|   - contractType | string | Yes | The contract type of the offer.  Possible values:  - **loan**  - **cashAdvance** |",
+      "location": "raw line 35"
+    },
+    {
+      "text": "| invalidFields | array of object | No | Array of fields with validation errors when applicable. |",
+      "location": "raw line 59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-capital-dynamic-offers-get-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-get-dynamicoffers]] \u2014 2026-09-15-captured Capital `/capital/v1` GET dynamic-offer list for a required account-holder ID, with optional financing-type filter, offer ranges and validity; lookup does not prove accepted terms or funding.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/get/dynamicOffers/2026-09-15.md",
+  "raw_sha256": "3bb22e821df4970a8313d843d3d5939fc2b52ec00643361d901d00f8016f5a03",
+  "status": "candidate_ready"
+}

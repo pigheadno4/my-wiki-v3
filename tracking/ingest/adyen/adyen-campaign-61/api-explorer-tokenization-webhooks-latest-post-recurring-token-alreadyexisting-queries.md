@@ -1,0 +1,9 @@
+# Fixed query answers — api-explorer-tokenization-webhooks-latest-post-recurring-token-alreadyexisting
+
+## Q1
+
+The 2026-09-15 capture is the incoming `POST recurring.token.alreadyExisting` Tokenization webhook reference. Adyen sends it after an attempted token create or update uses details matching an existing token. `data.storedPaymentMethodId` identifies the token; `eventId` is the PSP reference of the triggering event. Required top-level fields are `createdAt` (ISO 8601 event time), `data`, `environment` (`test` or `live`), `eventId` and `type`; `version` is optional. Within `data`, `merchantAccount`, audit-text `operation`, `shopperReference`, `storedPaymentMethodId` and payment-method `type` are required. The example uses `alreadyExisting` as the operation text but defines no enum, numeric limit, deletion or reversal rule. Raw lines 5–24 and 26–43. Canonical source: [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-alreadyexisting]]; [API Explorer URL](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.alreadyExisting).
+
+## Q2
+
+The response section shows `200 Success`; its optional `notificationResponse` field says any `2xx` HTTP status accepts the webhook. That acknowledges receipt of an event about an already existing token. It does not establish a new token, a successful attempted update, payment authorization, or a financial result. The page gives no delivery order, retry, deduplication, signature, failure recovery or later lifecycle rule; its `latest` URL and 2026-09-15 capture do not prove current version or merchant enablement. Raw lines 5–7, 11–24 and 44–52. Canonical source: [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-alreadyexisting]]; [API Explorer URL](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.alreadyExisting).

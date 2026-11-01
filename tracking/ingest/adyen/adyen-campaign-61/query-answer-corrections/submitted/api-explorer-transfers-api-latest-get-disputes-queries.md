@@ -1,0 +1,6 @@
+# C61 fixed retrieval queries: Issuing Raise disputes API GET /disputes
+
+Pinned raw: `raw/adyen/api-explorer/transfers-api/latest/get/disputes/2026-09-15.md`. Canonical route: [[source-adyen-api-explorer-transfers-api-latest-get-disputes]]; https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes. The companion [[source-adyen-api-explorer-transfers-api-latest-overview]] identifies the opaque `transfers-api` URL as the Issuing Raise disputes API v4 catalog.
+
+1. For the Issuing Raise disputes API v4 `GET /disputes`, which `/btl/api/v4` TEST/live servers, optional filters, `limit` default/maximum and dispute-status values are documented, and what does the page say about page links and `offset`? Answer from assigned raw lines 5–29 and companion overview raw lines 5–7, 41–61 through [[source-adyen-api-explorer-transfers-api-latest-get-disputes]] and the canonical URL above.
+2. What can be concluded from this Raise disputes list endpoint's 200 section, which success response fields are absent, and how do 401, 403 and 422 distinguish authentication, permission and validation failures? Keep dispute listing distinct from a particular chargeback or funds-transfer outcome. Answer from assigned raw lines 31–91 through [[source-adyen-api-explorer-transfers-api-latest-get-disputes]] and the canonical URL above.

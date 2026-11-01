@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-transfers-api-latest-post-disputes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API POST /disputes \u2014 raise an Issuing transaction dispute\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers-api/latest/post/disputes\"\nraw_files:\n  - \"adyen/api-explorer/transfers-api/latest/post/disputes/2026-09-15.md\"\ntags: [adyen, issuing, disputes, transfers-api]\n---\n\n## Overview\n\nThis 2026-09-15 Transfers API `latest` POST /disputes reference describes raising a dispute for an underlying transaction, with a reason type and disputed amount. It is an Issuing transaction-dispute resource, not the merchant acquiring dispute-defense API. The page describes a returned dispute ID for later detail updates, supporting documents, closure, chargeback submission and status lookup; creation alone is not a submitted chargeback or a won dispute. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The request requires `transactionId` and `type`. The listed types are `duplicate`, `fraud`, `notDelivered` and `other`, but the page explicitly says `other` is in beta testing and directs readers not to create or submit disputes of that type at this time. The reason-specific information objects are table-optional at the top level but required when their corresponding dispute type is used; their nested required and conditional fields are in raw lines 28\u201352. For `duplicate`, the duplicate transaction must have the same amount as the disputed transaction.\n- Optional `disputedAmount` cannot exceed the transaction amount; omitting it disputes the entire transaction amount. If supplied, its currency and integer minor-unit value are required. For `fraud`, optional `fraudInfo.reportOnly` defaults to `false`; setting it `true` reports fraud to Adyen without further action such as a chargeback request or fee reversal. A report-only record must not be read as a chargeback or fee-reversal outcome.\n- Optional `status` may be set only to `draft` on creation. `submitted` and `closed` are update states, although the schema also lists `won`, `chargeback` and `secondPresentment` as possible status values. A 200 response documents the dispute representation and marks `id` optional in the response table, while the introductory prose says raising a dispute returns an ID; retain that prose/table qualification rather than assuming every 200 body has an ID.\n- The response sections list 401 authentication-required, 403 insufficient-permissions and 422 request-validation errors. The repeated error-body tables make top-level problem fields optional; within an optional `invalidFields` array, `message`, `name` and `value` are required per item. These HTTP responses do not establish later chargeback or card-scheme outcome.\n\n## Detail locators\n\n- Purpose, follow-on uses of a dispute ID, and test/live `/btl/api/v4` server bases: raw lines 5\u201317. Full request schema: raw lines 19\u201355. The not-delivered branch has conditionally required location, return and lateness fields: raw lines 37\u201348.\n- 200 dispute representation, including optional ARN, ID and repeated reason-specific fields: raw lines 57\u201398. 401, 403 and 422 error response bodies: raw lines 101\u2013155. The pinned page contains no JSON request/response examples or separate header contract.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-issuing]] \u2014 Issuing dispute lifecycle context.\n- [[source-adyen-docs-issuing-raise-disputes]] \u2014 separate Issuing dispute guide; this endpoint is the creation contract.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers-api/latest/post/disputes/2026-09-15|Adyen Transfers API latest POST /disputes, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Raising a dispute returns a dispute ID, which you can use to update details about the dispute, provide supporting documentation, close the dispute, or submit the dispute for a chargeback.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "| disputedAmount | object | No | The amount for which you dispute the transaction. The disputed amount cannot be greater than the transaction amount. If you do not provide an amount, the entire transaction amount will be disputed. |",
+      "location": "raw line 25"
+    },
+    {
+      "text": "|   - reportOnly | boolean | No | Set to **true** to report fraud to Adyen with no further action, such as a request for a chargeback or fee reversal. The default value is **false**. |",
+      "location": "raw line 36"
+    },
+    {
+      "text": "| otherInfo | object | No | Additional information for raising a dispute of `type` **other**. Required for disputes of `type` **other**.  **Note:** The **other** dispute `type` is currently in beta testing. Do not create or submit any disputes for this dispute `type` at this time. |",
+      "location": "raw line 49"
+    },
+    {
+      "text": "| status | string | No | The current status of the dispute.  When you create a dispute, you can only set the `status` to **draft**. When you update a dispute, you can set the `status` to **submitted** or **closed**.  Possible values: **draft**, **submitted**, **closed**, **won**, **chargeback**, **secondPresentment**. |",
+      "location": "raw line 53"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-transfers-disputes-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-api-latest-post-disputes]] \u2014 2026-09-15-captured Transfers API v4 Issuing transaction-dispute creation contract: required transaction/type, conditional reason details, draft-only creation, full-amount default and fraud report-only path; `other` is beta with explicit do-not-create/submit warning.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The introductory prose says a dispute ID is returned, while the 200 response table marks id optional; preserve the distinction in answers."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers-api/latest/post/disputes/2026-09-15.md",
+  "raw_sha256": "b21891d96f334e9f36a921568872ca40ebfbef2cbb0af4f8571a190dd66cc693",
+  "status": "candidate_ready"
+}

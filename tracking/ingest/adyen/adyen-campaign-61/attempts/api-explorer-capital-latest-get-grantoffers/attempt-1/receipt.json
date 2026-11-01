@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-capital-latest-get-grantoffers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital API: list available static grant offers\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/get/grantOffers\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/get/grantOffers/2026-09-15.md\"\ntags: [adyen, capital, grant-offers, api]\n---\n\n## Overview\n\n`GET /grantOffers` on the Capital API v1 lists available static offers for the required query `accountHolderId`, including static offers created after a user selected a financing amount from dynamic offers. This is an offer-list read, distinct from accepting an offer, creating a grant, or disbursing financing. The captured reference lists test and live balance-platform Capital API hosts. [[adyen]] [[adyen-capital]]\n\n## Key takeaways\n\n- The request requires `accountHolderId` as a query parameter. A 200 response requires a `grantOffers` array; each offer entry requires `accountHolderId`, while amount, contract type, expiry, fee, offer ID, repayment, and validity start are marked optional at their respective levels. See raw lines 17\u201347.\n- If the optional `amount` object is supplied, its currency and minor-unit value are required within it. If optional `fee` is supplied, its `amount` is required within that object. If optional `repayment` is supplied, its `basisPoints` is required within it. Do not read nested required fields as requiring their optional parent objects. See raw lines 32\u201347.\n- The listed `contractType` values are `loan` and `cashAdvance`; `repayment.basisPoints` is the share of the user's incoming net volume deducted for repayment. `fee.aprBasisPoints` is optional and denominated in basis points. See raw lines 37\u201346.\n- The reference lists 404 for an entity not found and 422 for request validation error, each with optional problem fields and conditionally required fields inside optional `invalidFields` entries. It provides no worked request or response examples. See raw lines 49\u201385.\n\n## Detail locators\n\n- API hosts and version: raw lines 9\u201315.\n- Query parameter: raw lines 17\u201322.\n- Offer-list response fields: raw lines 24\u201347.\n- 404 and 422 error schemas: raw lines 49\u201385.\n\n## Related\n\n- [[adyen-capital]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/get/grantOffers/2026-09-15|Capital GET grantOffers snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of all [static offers](https://docs.adyen.com/capital/get-grant-offers/static-offers) available for `accountHolderId` specified as a query parameter. This also includes static offers created for financing amounts that the user selected from [dynamic offers](https://docs.adyen.com/capital/get-grant-offers/dynamic-offers/).",
+      "location": "raw/adyen/api-explorer/capital/latest/get/grantOffers/2026-09-15.md:7"
+    },
+    {
+      "text": "| accountHolderId | string | Yes | The unique identifier of the account holder for which you want to get the available static offers. |",
+      "location": "raw/adyen/api-explorer/capital/latest/get/grantOffers/2026-09-15.md:22"
+    },
+    {
+      "text": "| grantOffers | array of object | Yes | Contains a list of available offers for the specified account holder. |",
+      "location": "raw/adyen/api-explorer/capital/latest/get/grantOffers/2026-09-15.md:32"
+    },
+    {
+      "text": "|   - repayment | object | No | Contains information about the repayment configuration of the grant. |",
+      "location": "raw/adyen/api-explorer/capital/latest/get/grantOffers/2026-09-15.md:43"
+    },
+    {
+      "text": "### 422 Client Error",
+      "location": "raw/adyen/api-explorer/capital/latest/get/grantOffers/2026-09-15.md:69"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "capital-get-grantoffers-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-get-grantoffers]] \u2014 2026-09-15-captured Capital API v1 GET `/grantOffers` list for a required account-holder ID, including static offers derived from dynamic selections; offer readback is separate from grant acceptance or funding.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/get/grantOffers/2026-09-15.md",
+  "raw_sha256": "7960313457a7543a3cbd5284c94c9ca4a195b21b03596b1c2a534af0a87e4486",
+  "status": "candidate_ready"
+}

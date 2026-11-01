@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-notification-latest-post-account-closed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Notification API: ACCOUNT_CLOSED webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Notification/latest/post/ACCOUNT_CLOSED\"\nraw_files:\n  - \"adyen/api-explorer/Notification/latest/post/ACCOUNT_CLOSED/2026-09-15.md\"\ntags: [adyen, classic-platforms, notification-api, webhooks, account-closure]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot describes Adyen's incoming `POST /ACCOUNT_CLOSED` notification when a Classic Platforms account is closed. It is an event reference, not the account-closing API operation. The linked `POST /closeAccount` operation is documented separately. [[adyen]] [[adyen-classic-platforms]] [[adyen-webhooks]]\n\n## Key takeaways\n\n- The notification body requires `eventDate`, `eventType`, `executingUserKey`, `live`, and a top-level `pspReference`. The latter identifies the request from which the notification originates; `live` distinguishes live from test origin (raw lines 26\u201330).\n- `content` and its `accountCode`, `pspReference`, `resultCode`, and `status` fields are marked optional. `accountCode` is the code of the closed account; `status` is described as the new account status, with `Active`, `Inactive`, `Suspended`, and `Closed` permitted (raw lines 14\u201322). Do not treat optional `content` or `status` as guaranteed in every delivery.\n- An optional `error` object carries failed-request information and has no value if processing produced no error. Optional `content.invalidFields` carries validation errors that would prevent requests from being processed (raw lines 16\u201319, 23\u201325). The single request example includes an `error` object and `content.resultCode: \"Success\"` together; it does not define a general outcome rule (raw lines 34\u201362).\n- The response section lists HTTP 200 as a succeeded request and optional `notificationResponse`, which should be set to literal `[accepted]` to acknowledge receipt (raw lines 64\u201372). This receipt response is separate from account-close processing and account state. This page specifies no delivery timing, ordering, retry, deduplication, or signature rule.\n\n## Detail locators\n\n- Event purpose and linked closing operation: raw lines 5\u20137.\n- Full request body field table: raw lines 9\u201330; example: raw lines 32\u201363.\n- Receiver response and acknowledgment: raw lines 64\u201372.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account model and reciprocal source route.\n- [[source-adyen-api-explorer-account-latest-post-closeaccount]] \u2014 separate `POST /closeAccount` operation and its closure effects.\n- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 separate Classic notification setup and delivery guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Notification/latest/post/ACCOUNT_CLOSED/2026-09-15|Notification API Explorer ACCOUNT_CLOSED capture]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when [an account is closed](https://docs.adyen.com/api-explorer/#/Account/latest/post/closeAccount).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - accountCode | string | No | The account code of the account that is closed. |",
+      "location": "raw line 15"
+    },
+    {
+      "text": "|   - status | string | No | The new status of the account.  Permitted values: `Active`, `Inactive`, `Suspended`, `Closed`. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| pspReference | string | Yes | The PSP reference of the request from which the notification originates. |",
+      "location": "raw line 30"
+    },
+    {
+      "text": "| notificationResponse | string | No | Set this parameter to **[accepted]** to acknowledge that you received a notification from Adyen. |",
+      "location": "raw line 72"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-account-closed-classic-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notification-latest-post-account-closed]] \u2014 2026-09-15-captured Classic `ACCOUNT_CLOSED` incoming notification reference for request/account identifiers, optional close-result fields and receiver `[accepted]` acknowledgment; separate from `POST /closeAccount` execution.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Notification/latest/post/ACCOUNT_CLOSED/2026-09-15.md",
+  "raw_sha256": "c71bc8e0fe94848890b02310b8c6a123bc3c438b1e14f740c55dc9851ad1f862",
+  "status": "candidate_ready"
+}

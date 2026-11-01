@@ -1,0 +1,4 @@
+# Fixed retrieval checks
+
+1. In the legacy incomingTransfer.updated Payment webhook, what do `data.id`, `paymentId`, and `status` identify? Use [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-updated]] (https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated), raw lines 5–13, 40, 47, 63; keep resource and original request separate.
+2. Is this endpoint the current Transfer webhook contract, and does HTTP 2xx prove a refund or transfer outcome? Use [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-updated]] (https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated), raw lines 117–125, and separately [[source-adyen-api-explorer-payment-webhooks-latest-overview]] (https://docs.adyen.com/api-explorer/payment-webhooks/latest/overview), raw lines 5–7 for family deprecation.

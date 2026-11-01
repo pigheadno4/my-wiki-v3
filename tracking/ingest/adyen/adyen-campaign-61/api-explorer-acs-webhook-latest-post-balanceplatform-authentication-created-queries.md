@@ -1,0 +1,9 @@
+# Fixed-query check: balancePlatform.authentication.created
+
+## Q1
+
+This captured ACS webhook `latest` page describes Adyen's incoming event after a cardholder authentication finishes successfully, fails, or expires. Required event `data` has authentication `id`, `paymentInstrumentId`, `purchase`, `status`, and nested `authentication` details including ACS/DS/3DS Server transaction IDs, channel, challenge preference, 3DS message and transaction status, and frictionless/challenge type. `challenge` is optional and returned for challenge type. `data.status` permits `authenticated`, `rejected`, and `error`; the intro's expiry has no mapped `expired` literal. The event page does not state a numeric API version. See [[source-adyen-api-explorer-acs-webhook-latest-post-balanceplatform-authentication-created]], [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 5–41]], and [Adyen API Explorer](https://docs.adyen.com/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created).
+
+## Q2
+
+Any 2xx HTTP status accepts the outcome webhook; it is not the relayed ACS authentication decision, nor payment authorisation or capture. The examples show authenticated challenge/frictionless and rejected challenge only. A separate OOB guide describes a two-second relayed response and challenge finalization; a separate troubleshooting guide broadly says no webhook on failed 3DS, which must not override this authentication-specific failure event. The pinned page gives no delivery ordering, retry, deduplication, signature, or later payment-result rule. See [[source-adyen-api-explorer-acs-webhook-latest-post-balanceplatform-authentication-created]], [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 43–177]], and [Adyen API Explorer](https://docs.adyen.com/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created).

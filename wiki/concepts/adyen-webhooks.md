@@ -16,6 +16,15 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-outgoingtransfer-created]] — 2026-09-15-captured legacy Payment webhook event for a balance-account deduction caused by capture or funds transfer, with `paymentId` request correlation; the separate Platforms catalog deprecates Payment webhooks in favor of Transfer webhooks.
+
+
+- [[source-adyen-api-explorer-payment-webhooks-latest-overview]] — 2026-09-15-captured deprecated Payment webhooks v1 catalog for incoming/outgoing transfer and payment event paths; it directs readers to accounting webhooks at the Transfer Webhooks overview and gives no event payload or acknowledgement contract.
+
+
+- [[source-adyen-api-explorer-tokenization-webhooks-latest-overview]] — 2026-09-15-captured Tokenization webhooks v1 directory for four recurring-token lifecycle event routes; event schemas and delivery behavior require their own references.
+
+
 - [[source-adyen-api-explorer-onboarding-on-invite-webhooks-latest-overview]] — 2026-09-15-captured v1 on-invite webhook catalog for balance-platform account-holder onboarding; event payload, response and verification/capability details require separate evidence.
 
 

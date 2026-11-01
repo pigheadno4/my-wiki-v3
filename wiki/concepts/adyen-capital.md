@@ -15,6 +15,21 @@ The landing page lists supported regions with specific inclusions and exclusions
 
 ## Sources
 
+- [[source-adyen-api-explorer-capital-latest-post-grants]] — 2026-09-15-captured Capital API v1 grant request for a selected offer and grant account, with optional owned destination, grant/status response and 422 validation error; HTTP 200 is not disbursement or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-capital-latest-get-grants]] — 2026-09-15-captured Capital API v1 `GET /grants` reference for an account-holder-filtered grant list with grant, offer and grant-account IDs, balances, optional recipient and status/actions; readback is not funding or repayment proof.
+
+
+- [[source-adyen-api-explorer-capital-latest-get-grantoffers]] — 2026-09-15-captured Capital API v1 GET `/grantOffers` list for a required account-holder ID, including static offers derived from dynamic selections; offer readback is separate from grant acceptance or funding.
+
+
+- [[source-adyen-api-explorer-capital-latest-get-dynamicoffers]] — 2026-09-15-captured Capital `/capital/v1` GET dynamic-offer list for a required account-holder ID, with optional financing-type filter, offer ranges and validity; lookup does not prove accepted terms or funding.
+
+
+- [[source-adyen-api-explorer-capital-latest-overview]] — 2026-09-15-captured Capital API v1 endpoint catalog for offer, grant, grant-account and disbursement routes, with API-key/role and TEST/live-server prerequisites; the catalog does not establish grant funding.
+
+
 - [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-grants-updated]] — 2026-09-15-captured Capital incoming grant-updated webhook reference with grant balance, recipient and status fields; disbursement/repayment are illustrative triggers, while `2xx` acceptance is not funding or repayment proof.
 
 

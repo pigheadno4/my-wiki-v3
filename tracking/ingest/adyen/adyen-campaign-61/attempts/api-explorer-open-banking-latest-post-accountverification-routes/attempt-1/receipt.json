@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-open-banking-latest-post-accountverification-routes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Open Banking Gateway v1: account-verification routes\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/open-banking/latest/post/accountVerification/routes\"\nraw_files:\n  - \"adyen/api-explorer/open-banking/latest/post/accountVerification/routes/2026-09-15.md\"\ntags: [adyen, open-banking, account-verification, api]\n---\n\n## Overview\n\nThis 2026-09-15-captured Open Banking Gateway v1 reference documents `POST /accountVerification/routes` on test and live `obgateway` servers. It creates a list of available provider redirection routes for verifying an external third-party individual's bank account. A successful connection later generates a unique code used to request bank reports and verify identity. A route-list response alone is provider availability and flow entry, not a completed connection, consent or bank-account verification.\n\n## Key takeaways\n\n- The request requires `country`, where the individual's bank account is registered, and `redirectUrl`, where Adyen redirects the individual after the open-banking flow. Adyen uses the country to determine an available provider and configure the flow for that location. Optional `locale` controls UI language and defaults to `en-US`.\n- Optional `state` helps identify the request in callback handling; the page says a per-session value can protect against CSRF and must use URL-encodable characters. This is guidance and a value constraint, not proof that callback validation was performed.\n- A 200 response requires a `routes` array. Each listed route requires a `link` and `provider` object with `name` and `logoURL`; the link redirects the individual when selected. The example names Tink, but it does not guarantee Tink or any other provider for a given country or request.\n- The page describes 400 malformed request, 401 invalid or insufficient API credential, 422 validation, 429 rate limit and 500 server errors. It gives no error examples, rate limit threshold, connection result, report payload or identity-verification outcome here.\n\n## Detail locators\n\n- Purpose and Gateway v1 test/live servers: raw lines 5\u201315.\n- Request fields, country/provider selection, redirect, locale default and state guidance: raw lines 17\u201337.\n- 200 route/provider schema: raw lines 38\u201350.\n- 400/401/422/429/500 problem schemas: raw lines 53\u2013145.\n- Illustrative provider route response: raw lines 147\u2013164.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-business-accounts]] \u2014 existing Open Banking and external-individual verification source routes; this Gateway flow is separate from consented TPP access to a Business Account holder.\n- [[source-adyen-docs-business-accounts-verify-account-holder]] \u2014 separate guide for connection, report and identity-check stages.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/open-banking/latest/post/accountVerification/routes/2026-09-15|Open Banking Gateway v1 POST /accountVerification/routes (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Create a list of routes for verifying bank accounts of third-party individuals.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Successful connections generate a unique code used for requesting bank reports and verifying identity.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Adyen uses this information to determine an available open banking provider, and to configure the open banking flow for that respective location.",
+      "location": "raw line 22"
+    },
+    {
+      "text": "A value that helps you identify the request in callback handling.",
+      "location": "raw line 25"
+    },
+    {
+      "text": "This array lists available open banking redirection links, each with its associated provider metadata.",
+      "location": "raw line 46"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-open-banking-accountverification-routes-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-open-banking-latest-post-accountverification-routes]] \u2014 2026-09-15-captured Open Banking Gateway v1 provider-route creation for external individuals' bank-account verification; returned links are flow entry, while connection, report and verification are separate later stages.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/open-banking/latest/post/accountVerification/routes/2026-09-15.md",
+  "raw_sha256": "bb4110993120d7d33be2214930a1abf09c32665d009ae2069fff61a1c7cb11fc",
+  "status": "candidate_ready"
+}

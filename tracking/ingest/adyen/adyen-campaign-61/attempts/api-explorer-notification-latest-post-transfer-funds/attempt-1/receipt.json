@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-notification-latest-post-transfer-funds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Notification TRANSFER_FUNDS event\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Notification/latest/post/TRANSFER_FUNDS\"\nraw_files:\n  - \"adyen/api-explorer/Notification/latest/post/TRANSFER_FUNDS/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, fund-transfers]\n---\n\n## Overview\n\nThis captured API Explorer page specifies the incoming `POST /TRANSFER_FUNDS` notification that Adyen sends when funds are transferred between Classic Platforms accounts. It is a notification payload reference, not the Fund API request to initiate a transfer. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- The required top-level notification fields are `eventDate`, `eventType`, `executingUserKey`, `live`, and `pspReference`. The page defines `eventDate` as the time an event has been completed and `pspReference` as the reference of the request from which the notification originates.\n- `content` is optional at the top level. If supplied, its documented fields include transferred amount, source and destination Account codes, merchant reference, transfer code, status and invalid fields. Within the optional `amount` object, `currency` and minor-unit `value` are marked required. Do not read the example's `Success` status or error object as a universal outcome.\n- The `200 Success` response section describes an optional `notificationResponse` string set to `[accepted]` to acknowledge receipt. Receipt acknowledgment is separate from the transfer's business status and does not establish settlement or bank receipt.\n\n## Detail locators\n\n- Request body schema and requiredness: pinned raw lines 9\u201336.\n- Illustrative `transferFunds` JSON, including status and error fields: lines 38\u201381.\n- Response and acknowledgment: lines 82\u201390.\n\n## Related\n\n- [[adyen-classic-platforms]]\n- [[source-adyen-api-explorer-fund-latest-post-transferfunds]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Notification/latest/post/TRANSFER_FUNDS/2026-09-15|Notification TRANSFER_FUNDS API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this notification when [funds are transferred between accounts](https://docs.adyen.com/api-explorer/#/Fund/latest/post/transferFunds).",
+      "location": "raw lines 5\u20137"
+    },
+    {
+      "text": "| content | object | No | Details of the fund transfer. |",
+      "location": "raw line 14"
+    },
+    {
+      "text": "| eventDate | string | Yes | The date and time when an event has been completed. |",
+      "location": "raw line 32"
+    },
+    {
+      "text": "| pspReference | string | Yes | The PSP reference of the request from which the notification originates. |",
+      "location": "raw line 36"
+    },
+    {
+      "text": "| notificationResponse | string | No | Set this parameter to **[accepted]** to acknowledge that you received a notification from Adyen. |",
+      "location": "raw line 90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "classic-transfer-funds-notification-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notification-latest-post-transfer-funds]] \u2014 2026-09-15-captured incoming Classic Notification `TRANSFER_FUNDS` payload reference for transfers between Accounts, with optional transfer detail, required event metadata and a separate `[accepted]` receipt acknowledgment.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Notification/latest/post/TRANSFER_FUNDS/2026-09-15.md",
+  "raw_sha256": "6ced0595ddb9cf9fcdc27396df4d24df3b9732c9ec9d0a95a0012632765d2ab5",
+  "status": "candidate_ready"
+}

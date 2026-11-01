@@ -1,0 +1,4 @@
+# C61 fixed retrieval queries — Tokenization webhooks v1 overview
+
+- Q1: Which token lifecycle webhook event routes are listed in Adyen's captured Tokenization webhooks v1 overview? Answer from [[source-adyen-api-explorer-tokenization-webhooks-latest-overview]] and its pinned raw `raw/adyen/api-explorer/Tokenization-webhooks/latest/overview/2026-09-15.md:11-19`; canonical URL: https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/overview.
+- Q2: Does that overview specify event payloads, webhook delivery or acknowledgment rules, or payment outcomes? Answer from [[source-adyen-api-explorer-tokenization-webhooks-latest-overview]] and its pinned raw `raw/adyen/api-explorer/Tokenization-webhooks/latest/overview/2026-09-15.md:5-19`; canonical URL: https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/overview.

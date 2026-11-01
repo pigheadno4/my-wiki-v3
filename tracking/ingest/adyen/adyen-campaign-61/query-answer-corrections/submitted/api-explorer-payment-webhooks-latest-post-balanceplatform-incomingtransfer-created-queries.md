@@ -1,0 +1,6 @@
+# C61 fixed retrieval queries: Payment webhook incomingTransfer.created
+
+Pinned raw: `raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.created/2026-09-15.md`. Canonical route: [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-created]]; https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.created.
+
+1. What refund or funds-transfer situations trigger `balancePlatform.incomingTransfer.created`, how does `paymentId` relate to the originating request, how do refund and incoming-transfer payloads differ, and which top-level and nested amount fields are required? Answer from raw lines 5–11 and 13–70 through [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-created]] and the canonical URL above.
+2. What status is listed for this created event versus the updated event, what does the test example show, and what does a receiver's HTTP `2xx` establish? Keep the Payment webhooks v1 deprecation and separate accounting/Transfer webhook migration route distinct. Answer from raw lines 61–70 and 72–123, plus the separately linked family overview, through [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-created]] and the canonical URL above.

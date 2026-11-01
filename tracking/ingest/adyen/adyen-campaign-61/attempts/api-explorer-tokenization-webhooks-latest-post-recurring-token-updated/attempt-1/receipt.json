@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-tokenization-webhooks-latest-post-recurring-token-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Tokenization webhook: recurring.token.updated\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.updated\"\nraw_files:\n  - \"adyen/api-explorer/Tokenization-webhooks/latest/post/recurring.token.updated/2026-09-15.md\"\ntags: [adyen, tokenization, webhooks, recurring-tokens]\n---\n\n## Overview\n\nThis 2026-09-15-captured `Tokenization-webhooks/latest` API Explorer page describes the incoming `recurring.token.updated` webhook Adyen sends when a stored payment-method token is updated. Updating stored details is one example trigger; the page also says card networks can update tokens. This is a token lifecycle event, not a network-token provisioning event or a payment result. [[adyen]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- The request table marks `createdAt`, `data`, `environment`, `eventId` and outer `type` required. Inside required `data`, it marks `merchantAccount`, `operation`, `shopperReference`, `storedPaymentMethodId` and payment-method `type` required. The optional outer `version` is the version of this entity; the page does not identify an API release number.\n- `data.storedPaymentMethodId` is the token ID, associated with `data.shopperReference`; `eventId` is the PSP reference of the event that triggered the webhook. Keep these distinct. `data.operation` is described as audit text, while the sample's `\"updated\"` value is illustrative rather than an enumerated contract. `environment` lists `test` and `live`.\n- The response section says any `2xx` HTTP status accepts the webhook. Receiver acceptance does not establish a later payment, card-network update completion beyond the reported event, or delivery-order/retry/deduplication/signature behavior; this endpoint reference states none of those mechanics.\n\n## Detail locators\n\n- Trigger and possible card-network actor: pinned raw lines 5\u20137.\n- Full required-field table and ID meanings: `## Parameters > ### Request body`, lines 12\u201324.\n- Example event and its sample-only `operation` value: `## Request examples > ### recurring-token-updated`, lines 28\u201343.\n- Receiver acceptance: `## Responses > ### 200 Success`, lines 44\u201352.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored-method token lifecycle context.\n- [[adyen-webhooks]] \u2014 general receiver context, not an event-specific delivery contract.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Tokenization-webhooks/latest/post/recurring.token.updated/2026-09-15|recurring.token.updated reference captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a token is updated, for example, when you [update stored details](https://docs.adyen.com/online-payments/tokenization/managing-tokens/#update-stored-details). Tokens can also be updated by card networks.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - storedPaymentMethodId | string | Yes | The ID of the token. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| eventId | string | Yes | The PSP reference of the event that triggered the webhook. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "|   - operation | string | Yes | A text description that provides details about the operation, intended for audit purposes. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 52"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-recurring-token-updated-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-updated]] \u2014 2026-09-15-captured stored-token update webhook reference, including merchant/shopper/token and event identities, network-origin possibility and any-2xx receiver acceptance; it is not a payment-result contract.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Tokenization-webhooks/latest/post/recurring.token.updated/2026-09-15.md",
+  "raw_sha256": "bce95180ac5948928038b427de6ee628e5618bbdfdcdff91aedeec6c7111179a",
+  "status": "candidate_ready"
+}

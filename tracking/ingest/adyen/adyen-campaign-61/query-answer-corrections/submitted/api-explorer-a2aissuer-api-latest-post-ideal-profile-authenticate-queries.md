@@ -1,0 +1,4 @@
+# Fixed retrieval queries — api-explorer-a2aissuer-api-latest-post-ideal-profile-authenticate
+
+1. What must the platform ensure before calling the A2A Issuer API's iDEAL profile-authenticate endpoint, and who supplies its payload? Expected route: [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-authenticate]]; raw lines 5–7 and 19–23; canonical URL https://docs.adyen.com/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate.
+2. What does `redirectUrl.href` provide, and which documented errors distinguish a missing profile from an expired authentication payload? Expected route: [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-authenticate]]; raw lines 34–43 and 129–162; canonical URL https://docs.adyen.com/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate.

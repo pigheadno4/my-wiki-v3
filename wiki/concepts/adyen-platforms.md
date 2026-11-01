@@ -18,6 +18,48 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-payment-created]] — 2026-09-15-captured, deprecated Payment webhooks v1 request event for authorisation, refund or transfer initiation; actual movement belongs to subsequent transfer events, and `2xx` is only webhook acceptance.
+
+
+- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-payment-updated]] — 2026-09-15-captured deprecated Payment webhook reference for an authorisation update, including original-payment correlation, type-specific statuses and partial-modification examples; use the separate accounting-webhook route for current integrations.
+
+
+- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-outgoingtransfer-updated]] — 2026-09-15-captured deprecated Payment webhooks v1 outgoing-transfer update reference, with original resource `data.id`, confirmed/sent-out/failed statuses and HTTP 2xx receipt acceptance; distinguish newer Transfer/Transaction webhooks.
+
+
+- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-updated]] — 2026-09-15-captured deprecated Payment webhooks v1 incoming-transfer update for funds added by refund or transfer, with `data.id` resource correlation, event-specific `Refunded`/`IncomingTransfer` status and separate 2xx receipt; use Transfer accounting webhooks for the replacement family.
+
+
+- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-incomingtransfer-created]] — 2026-09-15-captured deprecated Payment webhooks `incomingTransfer.created` reference for pending refund/funds-transfer incoming events, `paymentId` linkage and 2xx receiver acceptance; the separate family overview directs migration to accounting webhooks.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-settlementdelay-updated]] — 2026-09-15-captured Managed Risk webhook for an account-holder payout settlement-delay update by payment method and reason; receiver 2xx acknowledgement does not prove fund availability or payout.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-settlementdelay-lifted]] — 2026-09-15-captured Managed Risk event for lifting an account holder's payout settlement delay, with reason and optional timing fields; webhook receipt does not prove payout execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-rollingreserve-updated]] — 2026-09-15-captured Managed Risk webhook reference for an account-holder rolling-reserve policy update affecting payouts, with percentage/holding-period fields and receiver acceptance.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-balance-block-released]] — 2026-09-15-captured Managed Risk webhook for release of previously blocked balance-account funds, with released amount and optional blocked-balance snapshots; receiver acceptance is distinct from payout or bank receipt.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-rollingreserve-lifted]] — 2026-09-15-captured managed-risk webhook for lifting a rolling reserve policy from an account holder's payouts; event receipt does not prove a payout or bank receipt.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-rollingreserve-applied]] — 2026-09-15-captured managed-risk webhook reference for an account-holder payout rolling-reserve policy, with required percentage/release-period fields and separate HTTP 2xx receipt acceptance.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-removed]] — 2026-09-15-captured Managed Risk webhook reference for a removed account-holder reserve waiver, after which reserves are withheld from payouts again; the event and receiver acknowledgment do not report a withheld amount or payout result.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-applied]] — 2026-09-15-captured managed-risk webhook for an account-holder reserve waiver that stops reserves being withheld from that holder's payouts; receiver 2xx accepts the event, not a payout result.
+
+
+- [[source-adyen-api-explorer-managed-risk-webhooks-latest-overview]] — 2026-09-15-captured Managed risk webhooks v1 catalog for Adyen adjustments to account-holder payout risk measures, naming settlement-delay, rolling-reserve and reserve-waiver event routes; endpoint payload and outcome details belong to child references.
+
+
 - [[source-adyen-api-explorer-onboarding-on-invite-webhooks-latest-post-balanceplatform-accountholder-onboarded]] — 2026-09-15-captured onboarding-on-invite account-holder-onboarded webhook reference for created resource IDs and optional capability state; receipt and onboarding do not prove verification or payment/payout completion.
 
 

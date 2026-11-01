@@ -1,0 +1,13 @@
+# Adyen C61 coordinator full-read audit
+
+**PASS** — three predetermined final-source audits, 2026-10-31. Final audited candidates have no material partial/fail; no expansion required.
+
+Coordinator personally read numbered, contiguous, model-visible complete raws: Notification overview1–37; Tokenization recurring.token.created1–52; transfers-api POST/disputes1–100,101–155. No omitted or truncated raw ranges. All schemas, tables, error bodies and available examples read. Final candidates, quotes/locators, fixed answers, independent approvals and reciprocal placements inspected; aggregate structural checks follow at close.
+
+- `api-explorer-notification-latest-overview` finalattempt1: Classic Platforms Notifications v6, subscription delivery versus Notification Configuration API ownership, new-integration direction and19-entry event catalog retained. No payload or delivery rules invented. Main Classic Platforms route approved.
+- `api-explorer-transfers-api-latest-post-disputes` finalattempt1: complete155lines; underlying Issuing transaction-dispute creation is explicit despite transfers-api path label, with Issuing concept route rather than funds-movement semantics. Request transaction/type requirements, per-type conditional reason objects and children, amount ceiling/default whole transaction, fraud reportOnly defaultfalse/nochargeback/no fee reversal, create-only draft and explicit beta other do-not-create/submit warning retained. 200 optional ID versus prose ID-return distinction and401/403/422 optional error parents/nested required children preserved. No request/response examples exist. Creation is not submission/win/funds proof.
+- `api-explorer-tokenization-webhooks-latest-post-recurring-token-created` finalattempt1: token creation event versus operation, token ID versus event PSP reference, shopper/merchant IDs and nestedtype versus outertype preserved. Required envelope/data fields and optionalversion, audit-text operation, TEST sample and any2xx receiver acceptance retained. No token-usability or payment-outcome inference. Tokenization route approved.
+
+All three canonical texts match accepted receipts; raw hashes, exact quote substrings and final independent approvals verified. Final fixed answers have located evidence and canonical retrieval routes. Existing concept/source context inspected through root/provider catalogs. Historical snapshots are not current provider/payment execution proof. Exhaustive50-page checks recorded in close validation.
+
+Final answer-only audit repaired25 prompt-only artifacts and independently checkedall100 answers acrosssix groups. Sourceaudittexts/quotes/pins remainedunchanged. Seequery-answer-corrections/validation.json.

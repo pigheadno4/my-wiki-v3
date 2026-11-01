@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-acs-webhook-latest-post-balanceplatform-authentication-relayed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ACS relayed OOB authentication webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.relayed\"\nraw_files:\n  - \"adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.relayed/2026-09-15.md\"\ntags: [adyen, issuing, acs, three-d-secure, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15-captured ACS API Explorer endpoint describes an incoming `balancePlatform.authentication.relayed` webhook when a cardholder must perform out-of-band authentication for an issued card. The receiving platform must return **HTTP 200 with `authenticationDecision` in the body within two seconds**; the page says authentication stops if Adyen does not receive the response in time. This is an authentication decision handoff, separate from later payment authorisation or financial outcome. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The request schema marks `environment` (`test` or `live`), challenge `id`, `paymentInstrumentId`, `purchase` and notification `type` required. Within `purchase`, date, merchant name and original amount are required, including three-character currency and minor-unit integer value. `threeDSRequestorAppURL` is optional; if absent, the 3DS Requestor App does not support auto-switching. `timestamp` is optional and denotes when the event was queued.\n- The 200 response schema requires `authenticationDecision` with required `status` of `refused` or `proceed`. A generic `2xx` receipt is not the stated decision contract here. The response example shows `proceed`, but neither that example nor an HTTP 200 proves the cardholder finished the later challenge or that the purchase was authorised.\n- **Schema/example mismatch:** the request example contains `id`, `paymentInstrumentId` and `purchase`, but omits schema-required `environment` and notification `type`. Treat it as illustrative, not a complete required-field template.\n- The reference lists 400, 401, 403, 422 and 500 error sections, each with optional `errorCode`, `errorType`, `message`, payment `pspReference` and HTTP `status` fields. It does not specify a retry, fallback, signature or general delivery policy for this webhook.\n\n## Detail locators\n\n- Trigger, mandatory HTTP 200 decision and two-second stop condition: pinned raw lines 5\u201311.\n- Full incoming request schema, optional app-switch URL and minor-unit amount: `## Parameters > ### Request body`, lines 15\u201329; incomplete request example: lines 31\u201347.\n- 200 decision body and `refused`/`proceed` values: `## Responses > ### 200 Success`, lines 48\u201357; example `proceed`: lines 124\u2013135.\n- Generic error response sections and optional fields: raw lines 60\u2013122.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuer-side card and OOB authentication context.\n- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-authenticate-cardholders]] \u2014 separate guide for SDK challenge and later ACS finalization; its ten-minute challenge window is distinct from this page's two-second decision deadline.\n- [[adyen-webhooks]] \u2014 general webhook context; this event has a specific response contract.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.relayed/2026-09-15|ACS relayed authentication reference captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a cardholder must perform [out-of-band authentication](https://docs.adyen.com/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "To complete the authentication process, respond to this webhook with an **HTTP 200** response. Include the `authenticationDecision` in the response body.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "If we do not receive the response within two seconds, the authentication process stops.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of the authentication.  Possible values:  **refused**  **proceed**  For more information, refer to [Authenticate cardholders using the Authentication SDK](https://docs.adyen.com/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/). |",
+      "location": "raw line 57"
+    },
+    {
+      "text": "| environment | string | Yes | The environment from which the webhook originated. Possible values: **test**, **live**. |",
+      "location": "raw line 18"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-acs-relayed-auth-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-acs-webhook-latest-post-balanceplatform-authentication-relayed]] \u2014 2026-09-15-captured ACS OOB authentication decision webhook: HTTP 200 plus required refused/proceed decision within two seconds, distinct from later cardholder challenge completion or payment authorisation; request example omits schema-required environment and type.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The endpoint's request example omits schema-required environment and type (raw lines 18, 29, 31\u201347)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.relayed/2026-09-15.md",
+  "raw_sha256": "215fcfc178c5ff81f927d5aac8d9b561cd8abd46cfcb85693ef94bf27e81ee4d",
+  "status": "candidate_ready"
+}

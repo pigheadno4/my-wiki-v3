@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-payment-webhooks-latest-post-balanceplatform-outgoingtransfer-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen legacy Payment webhook: outgoing transfer created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.created\"\nraw_files:\n  - \"adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.created/2026-09-15.md\"\ntags: [adyen, platforms, payment-webhooks, transfers, deprecated]\n---\n\n## Overview\n\nThis 2026-09-15-captured API Explorer page specifies the incoming `balancePlatform.outgoingTransfer.created` event in the legacy Payment webhooks family. Adyen sends it when funds were deducted from a balance account because of a capture or funds transfer. For captures the event's `status` is `Captured`; for outgoing fund transfers it is `OutgoingTransfer`. The `paymentId` links to the original payment authorisation or funds-transfer request. The separate [[source-adyen-docs-platforms-webhook-types|Platforms webhook-type catalog]] marks Payment webhooks deprecated in favor of Transfer webhooks; this endpoint's fields should not be substituted for a Transfer webhook contract.\n\n## Key takeaways\n\n- The request-body table requires outer `data`, `environment` (`test` or `live`), and `type`, plus `data.counterparty`. It marks `data.status`, `paymentId`, `amount`, `balanceAccount`, `accountHolder`, and other detail fields optional. A required parent object does not make its listed children required.\n- `data.amount` is in the balance account currency after conversion if needed; `data.originalAmount` is in the original transaction currency. For either, a negative value denotes a deduction and a positive value an addition. Where the optional amount object appears, its `currency` and minor-unit `value` children are required. The shown outgoing-transfer example has `-1500` EUR, `OutgoingTransfer` status, and `counterparty.balanceAccountId`; that illustration does not define every transfer's counterparty or amount.\n- The optional `platformPayment` fields provide related split and payment/modification references; optional `purposeCode` distinguishes manual `payoutManual` from scheduled `payoutSweep` triggers. Optional `merchantData` is included only for payment authorisation requests and captures. Other optional request details and allowed status values by event type are in the raw table.\n- The HTTP 200 response table instructs the receiver to use any `2xx` status to accept the webhook. Acceptance of this notification is distinct from a later transfer result or bank receipt. This page's `valueDate` is an expected settlement date, not a guaranteed settlement outcome.\n\n## Detail locators\n\n- Event meaning, correlation and capture-versus-transfer status: raw lines 5\u201313.\n- Requiredness, amounts, counterparty, references, conditional merchant data, purpose and status mapping: raw lines 15\u201389.\n- Illustrative outgoing-transfer payload: raw lines 91\u2013134.\n- Receiver acknowledgment: raw lines 135\u2013143.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-platforms]] \u2014 modern platform account and transfer context.\n- [[adyen-webhooks]] \u2014 webhook-family routing.\n- [[source-adyen-docs-platforms-webhook-types]] \u2014 separate evidence for Payment webhook deprecation and Transfer webhook migration.\n- [[source-adyen-api-explorer-transfer-webhooks-latest-post-balanceplatform-transfer-created]] \u2014 newer transfer-created event contract; compare its own resource and status semantics.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.created/2026-09-15|Payment webhook outgoingTransfer.created (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when funds were deducted from a balance account due to a capture or a funds transfer.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "For captures, the `status` will be **Captured**.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "For outgoing fund transfers, the `status` will be **OutgoingTransfer**.",
+      "location": "raw line 13"
+    },
+    {
+      "text": "The ID of the original payment authorisation, refund, or funds transfer request.",
+      "location": "raw line 53"
+    },
+    {
+      "text": "Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks).",
+      "location": "raw line 143"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-legacy-outgoing-transfer-created-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-outgoingtransfer-created]] \u2014 2026-09-15-captured legacy Payment webhook event for a balance-account deduction caused by capture or funds transfer, with `paymentId` request correlation; the separate Platforms catalog deprecates Payment webhooks in favor of Transfer webhooks.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The deprecation statement comes from the separate existing Platforms webhook-type catalog, not this endpoint raw."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.created/2026-09-15.md",
+  "raw_sha256": "9bd2ceadeae1d7942c223a5b881cb43562684ffc501cdb02b2e8ca9ea691b9d3",
+  "status": "candidate_ready"
+}

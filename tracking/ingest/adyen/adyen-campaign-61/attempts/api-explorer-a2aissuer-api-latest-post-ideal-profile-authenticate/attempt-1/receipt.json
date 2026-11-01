@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-a2aissuer-api-latest-post-ideal-profile-authenticate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen A2A Issuer API v1: authenticate iDEAL profile\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate\"\nraw_files:\n  - \"adyen/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate/2026-09-15.md\"\ntags: [adyen, business-accounts, a2a-issuer, ideal, authentication]\n---\n\n## Overview\n\nThis 2026-09-15-captured A2A Issuer API v1 reference documents `POST /ideal/profile/authenticate` on test and live balance-platform API servers. It generates a redirect URL to finish iDEAL-requested profile authentication. The caller must first ensure the user has completed multi-factor authentication. This issuer-side profile flow is separate from a merchant iDEAL payment authorization or final payment result.\n\n## Key takeaways\n\n- The request requires `accountHolderId` and the `payload` supplied by iDEAL for authentication. The sample payload is a URL string, but the schema calls it a string and does not define a general URL-format requirement.\n- A 200 response lists an optional `redirectUrl` object described as short-lived; if that object is present, its `href` child is required and contains the full URL to redirect the user to the iDEAL authentication page. The page gives no duration for this URL. Generating it does not itself prove that the user completed profile authentication.\n- The page defines 400 malformed-request, 422 validation and 500 server-error schemas. Illustrative 422 errors include no registered iDEAL profile (`1069_008`), an expired authentication payload (`1069_009`) and missing account holder (`30_012`). The 400 example is a body-mapping error; the 500 examples include an internal error and a payment-method error. Error examples do not establish the complete set of failure conditions.\n\n## Detail locators\n\n- Purpose, MFA prerequisite, and API v1 test/live servers: raw lines 5\u201315.\n- Required request body and illustrative payload: raw lines 17\u201333.\n- 200 redirect object and 400/422/500 response schemas: raw lines 34\u2013100.\n- Success and error examples: raw lines 102\u2013186.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-business-accounts]] \u2014 platform Business Accounts and A2A issuer context.\n- [[source-adyen-docs-business-accounts-send-funds-ideal-integration]] \u2014 separate integration guide for platform redirects and iDEAL payment flow.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate/2026-09-15|A2A Issuer API v1 POST /ideal/profile/authenticate (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Generates an redirection URL to finish the authentication flow when requested by iDEAL.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Before calling this endpoint, make sure that your user has completed multi-factor authentication.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "A payload provided by iDEAL to complete the authentication process.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "A short-lived URL that redirects the user to the iDEAL page that is required for authentication.",
+      "location": "raw line 42"
+    },
+    {
+      "text": "iDEAL authenticate payload has expired and is no longer available",
+      "location": "raw line 147"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-a2aissuer-ideal-profile-authenticate-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-authenticate]] \u2014 2026-09-15-captured A2A Issuer API v1 iDEAL profile-authentication reference requiring prior user MFA, account-holder ID and iDEAL payload; the short-lived redirect URL initiates user completion, not a payment result.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate/2026-09-15.md",
+  "raw_sha256": "318f996344c87ca1fae310d1e00f1d9860eccbea412ae15f3ae92226c6d0dc1b",
+  "status": "candidate_ready"
+}

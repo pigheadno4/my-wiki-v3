@@ -1,0 +1,9 @@
+# Fixed query answers — reserve waiver removed
+
+## Q1
+
+The 2026-09-15 Managed Risk webhook `latest` page describes Adyen's incoming `balancePlatform.managedRisk.reserveWaiver.removed` event. Adyen sends it when it removes a reserve waiver from an account holder, so reserves are withheld from that holder's payouts again. The page does not state a numeric family version. Required fields are `data`, `data.accountHolderId`, `data.eventDate`, outer `environment` (`test` or `live`) and `type`. Optional `data.balancePlatform`, `data.creationDate` (trigger time) and outer `timestamp` (queue time) carry context. The example's `data.id` is absent from the schema table and is not established as required. No amount, percentage, effective-date interval, reversal, deletion, or payout timing rule is specified. See raw lines 5–37 in [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-removed]] ([canonical URL](https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.reserveWaiver.removed)).
+
+## Q2
+
+The event says the waiver was removed and reserves will again be withheld from payouts for the identified holder. The response table instructs the receiver to return any `2xx` HTTP status to accept the webhook; this acknowledges receipt, not a particular reserve amount, an executed payout or bank credit. The page gives no delivery ordering, retry, deduplication, signature, later failure/reversal, or migration rule. It does not specify the actual amount withheld for a holder. See raw lines 7, 14–21 and 38–46 in [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-reservewaiver-removed]] ([canonical URL](https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.reserveWaiver.removed)).

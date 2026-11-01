@@ -1,0 +1,4 @@
+# Fixed queries — api-explorer-notification-latest-overview
+
+1. In the Classic Platforms Notifications v6 API Explorer overview, how are notification subscriptions related to the Notification Configuration API, and where are notifications sent? Answer from [[source-adyen-api-explorer-notification-latest-overview]] and raw lines 5–10 of [[raw/adyen/api-explorer/Notification/latest/overview/2026-09-15]]; canonical URL: https://docs.adyen.com/api-explorer/Notification/latest/overview
+2. Which Classic Notification API v6 POST paths represent a capture/refund booking failure and a funds transfer between accounts? Answer from [[source-adyen-api-explorer-notification-latest-overview]] and raw lines 33–37 of [[raw/adyen/api-explorer/Notification/latest/overview/2026-09-15]]; canonical URL: https://docs.adyen.com/api-explorer/Notification/latest/overview

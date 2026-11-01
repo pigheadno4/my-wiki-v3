@@ -15,6 +15,33 @@ The captured overview conditions eligibility on user entity type, supported oper
 
 ## Sources
 
+- [[source-adyen-api-explorer-open-banking-latest-post-accountverification-routes]] — 2026-09-15-captured Open Banking Gateway v1 provider-route creation for external individuals' bank-account verification; returned links are flow entry, while connection, report and verification are separate later stages.
+
+
+- [[source-adyen-api-explorer-open-banking-latest-overview]] — 2026-09-15-captured Open Banking API v1 catalog for AISP account-verification route creation and code-based report retrieval, with API key and EXTERNAL role; external individual verification is distinct from Business Account opening.
+
+
+- [[source-adyen-api-explorer-a2aissuer-api-latest-post-payments-details]] — 2026-09-15-captured A2A Issuer API v1 open-payment detail retrieval with required user display and confirm/cancel token; HTTP 200 is a read result, not SCA, payment confirmation or settlement.
+
+
+- [[source-adyen-api-explorer-a2aissuer-api-latest-post-payments-cancel]] — 2026-09-15-captured A2A Issuer API v1 cancellation request and redirect-link response for Business Account payments; the related iDEAL guide conditions cancellation completion on opening the returned cancel link.
+
+
+- [[source-adyen-api-explorer-a2aissuer-api-latest-post-payments-confirm]] — 2026-09-15-captured A2A Issuer API v1 `POST /payments/confirm` two-call SCA flow for a balance account and payment token, with optional header-table and success/cancel link branches; request/redirect response is separate from settlement or bank receipt.
+
+
+- [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-register]] — 2026-09-15-captured A2A Issuer API v1 iDEAL profile-registration request for an account holder and payment instruments; 200 returns a possible short-lived redirect, while the user must continue registration and no payment outcome is established.
+
+
+- [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-authenticate]] — 2026-09-15-captured A2A Issuer API v1 iDEAL profile-authentication reference requiring prior user MFA, account-holder ID and iDEAL payload; the short-lived redirect URL initiates user completion, not a payment result.
+
+
+- [[source-adyen-api-explorer-a2aissuer-api-latest-post-ideal-profile-auth-link]] — 2026-09-15-captured A2A Issuer API v1 route for a short-lived management link to an already registered account-holder iDEAL profile; link creation is separate from authentication and payment outcomes.
+
+
+- [[source-adyen-api-explorer-a2aissuer-api-latest-overview]] — 2026-09-15-captured A2A payments API v1 issuer catalog for Business-account users, listing iDEAL profile and payment detail, SCA confirm and pending-cancel routes with API-key/issuer-role requirements; route listing is not payment completion proof.
+
+
 - [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-paymentinstrument-updated]] — 2026-09-15-captured payment-instrument-updated webhook reference also covering `bankAccount` instruments; optional branch details and a resource update do not prove account funding or transfer completion.
 
 

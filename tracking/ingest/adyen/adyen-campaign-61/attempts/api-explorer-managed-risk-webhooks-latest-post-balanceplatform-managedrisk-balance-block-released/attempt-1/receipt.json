@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-balance-block-released",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Managed Risk webhook \u2014 blocked balance released\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.balance.block.released\"\nraw_files:\n  - \"adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.balance.block.released/2026-09-15.md\"\ntags: [adyen, managed-risk, webhooks, balance-platform]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer `latest` snapshot defines the incoming `balancePlatform.managedRisk.balance.block.released` webhook. Adyen sends it when previously blocked funds are released, making them available. It concerns Managed Risk blocked funds associated with a balance account; the webhook is not a merchant release API operation or a payout result. See [[adyen]], [[adyen-platforms]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request table requires top-level `data`, `environment` (`test` or `live`) and `type`; `timestamp` is optional and means when the event was queued. Within `data`, `accountHolder`, `amount` and `balanceAccount` are required objects. The released `amount` has required ISO currency and integer value in minor units. The account-holder and balance-account resource IDs and references are optional properties of their required parent objects.\n- Optional `balancePlatform` identifies the balance platform; optional `batchReference` identifies the released batch. `blockedBalanceBefore` and `blockedBalanceAfter` are optional amount objects, each with required currency and minor-unit value if present. `creationDate` is when the event was triggered, while `valueDate` is when the amount was released; both are optional and the page gives ISO 8601 extended-format examples.\n- The sample uses EUR 25000 released and negative blocked-balance values before and after. It illustrates one event and does not define a universal sign convention, payout, bank receipt or settlement result.\n- The response section shows `200 Success` and says to respond with any `2xx` HTTP status code to accept the webhook. That receiver acknowledgement is distinct from the release event.\n\n## Detail locators\n\n- Event identity and purpose: raw lines 5\u20137. Full request schema, including optional resource identifiers, amount units and distinct dates: raw lines 9\u201338.\n- Test-environment JSON example with account holder, balance account, released amount, batch reference and blocked-balance snapshots: raw lines 40\u201377. Receiver response: raw lines 78\u201386.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 balance-platform context.\n- [[adyen-webhooks]] \u2014 incoming webhook and acknowledgement context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.balance.block.released/2026-09-15|Adyen Managed Risk balance block released webhook, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when funds that were previously blocked are released, making them available.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - amount | object | Yes | The amount released. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "|   - blockedBalanceAfter | object | No | The new blocked balance after the funds were released. |",
+      "location": "raw line 28"
+    },
+    {
+      "text": "|   - valueDate | string | No | The date and time when the amount was released, in ISO 8601 extended format. For example, **2025-03-19T10:15:30+01:00**. |",
+      "location": "raw line 35"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 86"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-managed-risk-balance-block-released-platform-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-balance-block-released]] \u2014 2026-09-15-captured Managed Risk webhook for release of previously blocked balance-account funds, with released amount and optional blocked-balance snapshots; receiver acceptance is distinct from payout or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.balance.block.released/2026-09-15.md",
+  "raw_sha256": "9f437d6a339b6bed73dfea90adbe752002249d2303c597fa570d3b4078cd2ad3",
+  "status": "candidate_ready"
+}

@@ -15,6 +15,24 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-api-explorer-transfers-api-latest-get-disputes]] — 2026-09-15-captured Issuing Raise disputes API v4 `GET /disputes` list reference at a `transfers-api` URL, with optional filters and pagination; 200 has no response-body schema and this is separate from funds-movement Transfers API.
+
+
+- [[source-adyen-api-explorer-transfers-api-latest-post-disputes]] — 2026-09-15-captured Transfers API v4 Issuing transaction-dispute creation contract: required transaction/type, conditional reason details, draft-only creation, full-amount default and fraud report-only path; `other` is beta with explicit do-not-create/submit warning.
+
+
+- [[source-adyen-api-explorer-transfers-api-latest-overview]] — 2026-09-15-captured Raise disputes API v4 Issuing catalog at a `transfers-api` URL, listing dispute and attachment routes, credentials and TEST/LIVE bases; it is distinct from the funds-movement Transfers API.
+
+
+- [[source-adyen-api-explorer-acs-webhook-latest-post-balanceplatform-authentication-relayed]] — 2026-09-15-captured ACS OOB authentication decision webhook: HTTP 200 plus required refused/proceed decision within two seconds, distinct from later cardholder challenge completion or payment authorisation; request example omits schema-required environment and type.
+
+
+- [[source-adyen-api-explorer-acs-webhook-latest-post-balanceplatform-authentication-created]] — 2026-09-15-captured ACS `balancePlatform.authentication.created` outcome event for authenticated, rejected or error cardholder authentication; the introduction also mentions expiry without an `expired` status literal, and 2xx receipt is separate from payment authorisation.
+
+
+- [[source-adyen-api-explorer-acs-webhook-latest-overview]] — 2026-09-15-captured Authentication webhooks v1 catalog listing cardholder-authentication created and out-of-band relayed POST routes; payload, response and decision timing require child references.
+
+
 - [[source-adyen-api-explorer-relayed-authorisation-webhooks-latest-overview]] — 2026-09-15-captured Authorization webhooks v4 overview listing the relayed authorisation request route; payload, decision and timing rules require its endpoint reference.
 
 

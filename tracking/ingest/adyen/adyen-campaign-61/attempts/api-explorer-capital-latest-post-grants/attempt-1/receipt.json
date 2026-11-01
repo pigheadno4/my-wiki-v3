@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-capital-latest-post-grants",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital API v1 grant request\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/post/grants\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/post/grants/2026-09-15.md\"\ntags: [adyen, capital, grants, api]\n---\n\n## Overview\n\nThis captured Capital API v1 `POST /grants` reference lets a platform request a grant on behalf of an account holder using a selected offer and a grant account. It lists separate TEST and LIVE `/capital/v1` bases. This is grant-request and response documentation, not evidence that a specific offer was accepted, a grant was disbursed, or funds reached a recipient. See [[adyen]] and [[adyen-capital]].\n\n## Key takeaways\n\n- The request requires `grantAccountId` (the account that tracks the grant) and `grantOfferId` (the selected offer). The `counterparty` object is optional. If used, its optional `balanceAccountId` must belong to the specified account holder; its optional `transferInstrumentId` must belong to that account holder's legal entity.\n- The 200 response schema requires `balances` (`currency`, `fee`, `principal`, `total`), `grantAccountId`, `grantOfferId`, grant reference `id`, and `status`. `total` is fee plus principal. The status object's `code` is required and can include `Requested`, `Reviewing`, `Approved`, `Rejected`, `Pending`, `Active`, `Repaid`, `WrittenOff`, `Failed`, `Revoked` or `Cancelled`; optional actions carry required `actionCode` and `resolved` fields when present. A successful HTTP response does not itself identify which grant status was returned.\n- A 422 response is a request validation error. Its problem fields are optional at top level; within an `invalidFields` item, `message`, `name`, and `value` are marked required. The page provides no request/response example or authorization/disbursement timing.\n\n## Detail locators\n\n- Operation and TEST/LIVE servers: pinned raw lines 5\u201315.\n- Request body and destination ownership conditions: lines 17\u201326.\n- 200 grant response and status schema: lines 28\u201352.\n- 422 validation-error schema: lines 55\u201371.\n\n## Related\n\n- [[adyen-capital]]\n- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-grants-created]]\n- [[source-adyen-api-explorer-capital-webhooks-latest-post-balanceplatform-grants-updated]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/post/grants/2026-09-15|Capital POST grants API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Make a request for a grant on behalf of an account holder.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| grantAccountId | string | Yes | The unique identifier of the grant account that tracks this grant. |",
+      "location": "raw line 25"
+    },
+    {
+      "text": "| grantOfferId | string | Yes | The unique identifier of the selected offer. Adyen uses the details of the selected offer to create a grant. |",
+      "location": "raw line 26"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the grant reference. |",
+      "location": "raw line 47"
+    },
+    {
+      "text": "A request validation error.",
+      "location": "raw lines 55\u201356"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "capital-post-grants-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-post-grants]] \u2014 2026-09-15-captured Capital API v1 grant request for a selected offer and grant account, with optional owned destination, grant/status response and 422 validation error; HTTP 200 is not disbursement or bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/post/grants/2026-09-15.md",
+  "raw_sha256": "98729fa79c5892e98ba8a87961ce2731843b0ab3fdde6eb1c449b847cf2513ca",
+  "status": "candidate_ready"
+}

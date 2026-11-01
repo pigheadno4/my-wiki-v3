@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-notification-latest-post-payment-failure",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Notification POST /PAYMENT_FAILURE \u2014 Classic split booking failure\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Notification/latest/post/PAYMENT_FAILURE\"\nraw_files:\n  - \"adyen/api-explorer/Notification/latest/post/PAYMENT_FAILURE/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, split-payments]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of Adyen Notification `latest` POST /PAYMENT_FAILURE describes an incoming notification when booking a split payment for a capture or refund fails. It is a Classic Platforms notification, not a merchant payment or refund API call. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- The page says that when booking fails because an account has an invalid status or an `accountCode` is unknown, funds are credited or debited to or from the platform's liable account instead of the account in the split data. This describes allocation on the stated failure path, not whether an individual payment, capture, refund or subsequent reconciliation completed.\n- The request-body table marks top-level `eventDate`, `eventType`, `executingUserKey`, `live` and `pspReference` required. It marks `content` and `error` optional. Within `content`, the four payment/modification merchant and PSP references are optional and identify capture/refund versus original payment; use the table at raw lines 11\u201333 for exact names and descriptions.\n- The sole JSON example is labeled `paymentFailure` but sets `eventType` to `TRANSFER_FUNDS`; its `content` includes `invalidFields`, `amount`, account codes, `status` and `transferCode`, whereas the PAYMENT_FAILURE request table documents `errorFields`, `errorMessage` and payment/modification references. Treat this example as internally mismatched rather than a normative PAYMENT_FAILURE payload.\n- The response section shows `200 Success` and an optional `notificationResponse` string to set to `[accepted]` to acknowledge receipt. That receiver acknowledgement is distinct from the booking outcome.\n\n## Detail locators\n\n- Notification purpose and liable-account fallback: raw lines 5\u20137.\n- Complete request-body schema, including optional error fields and the live/test flag: raw lines 9\u201333. Optional parent objects do not make their child descriptions a required payload contract.\n- Mismatched `paymentFailure` JSON example: raw lines 35\u201378. Response table and receipt acknowledgement: raw lines 79\u201387.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-classic-platforms]] \u2014 Classic split-payment and liable-account context.\n- [[source-adyen-docs-classic-platforms-processing-payments]] \u2014 separate Classic split-processing guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Notification/latest/post/PAYMENT_FAILURE/2026-09-15|Adyen Notification latest POST /PAYMENT_FAILURE, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this notification when a [split payment](https://docs.adyen.com/classic-platforms/processing-payments#providing-split-information) booking for a capture or refund fails.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "When a booking fails due to an invalid account status or an unknown `accountCode`, the funds are credited or debited to or fromyour platform's liable account instead of the account specified in the split data.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| eventType | string | Yes | The event type of the notification. |",
+      "location": "raw line 30"
+    },
+    {
+      "text": "  \"eventType\": \"TRANSFER_FUNDS\",",
+      "location": "raw line 45"
+    },
+    {
+      "text": "| notificationResponse | string | No | Set this parameter to **[accepted]** to acknowledge that you received a notification from Adyen. |",
+      "location": "raw line 87"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-payment-failure-classic-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-notification-latest-post-payment-failure]] \u2014 2026-09-15-captured incoming Classic split-booking failure notification for capture or refund, with liable-account fallback for invalid account status or unknown `accountCode`; its sole example uses `TRANSFER_FUNDS` and differs from the request table.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The JSON example's eventType and content shape conflict with the PAYMENT_FAILURE heading/request table; do not use it as a normative event payload."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Notification/latest/post/PAYMENT_FAILURE/2026-09-15.md",
+  "raw_sha256": "412da534aacee735674cd1dd39e3d116f07f512308d854ebf26c4205949282bc",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Fixed-query check: balancePlatform.managedRisk.settlementDelay.updated
+
+## Q1
+
+This captured `managed-risk-webhooks/latest` reference says Adyen sends an incoming event when it updates an account holder's payout settlement delay because of risk level. The family overview identifies v1. The required event body has `data`, `environment`, and `type`; `data` requires `accountHolderId`, `configurations` (each with `paymentMethod` and integer `settlementDelay` in days until balance-account availability), and `reason`. Reasons are `paymentProcessingEnabled`, `settlementDelayChanged`, and `riskReviewPeriodPassed`. `balancePlatform`, event-trigger `creationDate`, and queued `timestamp` are optional. See [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-settlementdelay-updated]], [[raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.settlementDelay.updated/2026-09-15|raw lines 5–24]], and [Adyen API Explorer](https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.settlementDelay.updated).
+
+## Q2
+
+Any 2xx HTTP status accepts the webhook, but receiver acknowledgement is separate from actual balance availability, transfer, or payout. The example's five-day value is illustrative and its `data.id` has no field-table definition. The pinned page does not specify delivery ordering, retry, deduplication, signature, or an executed financial outcome. See [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-settlementdelay-updated]], [[raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.settlementDelay.updated/2026-09-15|raw lines 26–56]], and [Adyen API Explorer](https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.settlementDelay.updated).

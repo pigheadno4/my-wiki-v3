@@ -1,0 +1,9 @@
+# Fixed query answers — Capital GET /grants
+
+## Q1
+
+The 2026-09-15 Capital API v1 `GET /grants` operation lists grants for the account holder named by required query parameter `counterpartyAccountHolderId`. The page lists test and live Capital v1 servers. A 200 response requires a `grants` array; each grant requires `balances`, `grantAccountId`, `grantOfferId`, `id` and `status`. The required balances include currency, fee, principal and total (fee plus principal to repay). Optional `counterparty` can identify the recipient holder, balance account or transfer instrument, with ownership constraints on the latter two. Required `status.code` lists Pending, Active, Repaid, WrittenOff, Failed, Revoked, Requested, Reviewing, Approved, Rejected and Cancelled; `status.actions` is optional. This is grant readback, with no request body, example, pagination limit, deletion or transition timing stated. See raw lines 5–47 in [[source-adyen-api-explorer-capital-latest-get-grants]] ([canonical URL](https://docs.adyen.com/api-explorer/capital/latest/get/grants)).
+
+## Q2
+
+HTTP 200 establishes a successful list request and returned grant statuses, not that a specific grant was disbursed, paid into a recipient account, or repaid. HTTP 404 means an entity was not found; 422 means request validation failed. The optional error objects can include `invalidFields`, whose entry fields are required when an entry appears. This read operation specifies no webhook acknowledgment, delivery/order/retry/deduplication, signature, funding-transfer finality, or status-transition guarantee. It is distinct from the separate Transfers API v4 `GET /grants` contract. See raw lines 24–85 in [[source-adyen-api-explorer-capital-latest-get-grants]] ([canonical URL](https://docs.adyen.com/api-explorer/capital/latest/get/grants)).

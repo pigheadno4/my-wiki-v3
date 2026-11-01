@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-payment-webhooks-latest-post-balanceplatform-payment-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen deprecated Payment webhook: payment.created\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created\"\nraw_files:\n  - \"adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created/2026-09-15.md\"\ntags: [adyen, platforms, payment-webhooks, deprecated, authorisation, transfers]\n---\n\n## Overview\n\nCaptured incoming `balancePlatform.payment.created` reference in the Payment webhooks v1 family. Adyen sends it when a payment authorisation, refund, or funds transfer is initiated. It informs the recipient of a request and, for payments, the authorisation result; Adyen directs actual fund-movement tracking to subsequent outgoing or incoming transfer webhooks. The separately captured [[source-adyen-api-explorer-payment-webhooks-latest-overview|Payment webhooks family overview]] calls this family **deprecated** and directs readers to accounting webhooks; this endpoint's fields should not be applied by analogy to the newer Transfer or Transaction webhook families.\n\n## Key takeaways\n\n- Distinguish the request from its content: a payment has an authorisation result, processing-merchant information and a negative amount; a refund identifies the payment instrument and has a positive amount; an incoming or outgoing funds transfer has a direction-dependent signed amount and only balance-account information in the overview prose.\n- `data`, `environment` (`test` or `live`), and `type` are top-level required fields. Nested `data` properties are marked optional at the parent level; `currency` and minor-unit `value` are required **within** `amount` and `originalAmount` when those objects occur. The schema describes `amount` in the balance-account currency and `originalAmount` in the transaction currency. Do not infer that either optional amount is always present.\n- For this exact event type, `data.status` values are `Authorised`, `Refused`, or `Error`; the shared status row also lists values for other webhook types. An `Authorised` request is not a booked transfer or settled payout. The examples show authorised payment, funds-transfer and refund requests, plus a refused payment; their values are illustrations, not universal payload shapes.\n- The optional `merchantData` object is described as included only for payment authorisation requests and captures. The optional `modification` object reports the triggering modification, with examples such as partial cancellation or partial expiry. `platformPayment` contains separate payment and modification PSP/merchant references and split information; `reference` and `referenceForBeneficiary` have separate transfer-request and counterparty meanings.\n- The `200 Success` section says any HTTP `2xx` accepts the webhook; optional `notificationResponse` is shown. Acceptance does not prove booking, settlement, refund completion, bank receipt, or the later transfer result. This reference does not specify delivery order, retries, deduplication, or signatures.\n\n## Detail locators\n\n- Event purpose, request-versus-movement distinction, and signed-amount cases: raw lines 5\u201315.\n- Body table, including nested requiredness, identities, references, status by event type, validation/rule details, and optional timestamps: raw lines 17\u201387.\n- Authorised-payment example and validation results: raw lines 89\u2013191.\n- Funds-transfer and refund-request examples: raw lines 193\u2013272.\n- Refused-payment example and transaction-rule result: raw lines 274\u2013380.\n- Webhook response/acceptance: raw lines 381\u2013389.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[source-adyen-api-explorer-payment-webhooks-latest-overview]] \u2014 family-level deprecation and migration route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created/2026-09-15|Payment-created webhook reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a payment authorisation, a refund, or a funds transfer has been initiated. This webhook only informs your server of requests. For the actual fund movements, you'll get the information from the subsequent outgoing or incoming transfer webhooks.",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created/2026-09-15.md:7"
+    },
+    {
+      "text": "For payments, the webhook contains the authorisation result, information about the processing merchant, and shows a negative amount.",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created/2026-09-15.md:11"
+    },
+    {
+      "text": "For refunds, the webhook contains to which payment instrument the funds will be refunded, and shows a positive amount.",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created/2026-09-15.md:13"
+    },
+    {
+      "text": "The event status. The possible values depend on the `type`.",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created/2026-09-15.md:71"
+    },
+    {
+      "text": "Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks).",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created/2026-09-15.md:389"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-payment-created-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-payment-created]] \u2014 2026-09-15-captured, deprecated Payment webhooks v1 request event for authorisation, refund or transfer initiation; actual movement belongs to subsequent transfer events, and `2xx` is only webhook acceptance.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created/2026-09-15.md",
+  "raw_sha256": "4143b47ee9ff1f7f78d4834758b822a6680892c55ee3f9fac9d7e7c4c23a6cec",
+  "status": "candidate_ready"
+}

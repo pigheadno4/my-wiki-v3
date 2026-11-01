@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-31] ingest | Adyen API Explorer C61
+
+- Fifty independently approved API Explorer sources; first full-review approvals 46/50 and 3 targeted correction reviews. 7 concepts touched (0 new); source_count 2863 = 2547 General Docs + 300 API Explorer + 16 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-61/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-31] ingest | Adyen API Explorer C60
 
 - Fifty independently approved API Explorer sources; first full-review approvals 40/50 and 10 targeted correction reviews. 14 concepts touched (0 new); source_count 2813 = 2547 General Docs + 250 API Explorer + 16 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-60/`; details [[adyen-log]]. No commit/push.

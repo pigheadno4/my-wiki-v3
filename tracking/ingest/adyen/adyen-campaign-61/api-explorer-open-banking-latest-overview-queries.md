@@ -1,0 +1,7 @@
+## Q1
+
+The Open Banking API v1 overview describes third-party individual account verification in two steps: `POST /accountVerification/routes` creates a list of AISP routes, and a successful connection produces a unique code for `GET /accountVerification/reports/{code}`. The report provides identity-verification and bank-account details. The overview lists test/live `/obgateway/v1` hosts. It gives route purpose and endpoint names, not operation request/response schemas, report status fields, code lifetime, consent sequence, or a specific user's verification result. [[source-adyen-api-explorer-open-banking-latest-overview]] (https://docs.adyen.com/api-explorer/open-banking/latest/overview), raw lines 5–13, 34–48.
+
+## Q2
+
+The overview requires each Open Banking API request to use an API key in `X-API-Key` and states the API credential needs `Role for OpenBanking account verification use case: EXTERNAL`, set up through an Adyen contact. Those access prerequisites do not prove the role is enabled for a particular account. Creating routes is separate from successful user connection, code issuance, report retrieval, identity verification, and any Business Account opening or payment movement. The overview supplies no operation acceptance status, delivery/order/retry/deduplication, signature, failure/reversal, or deletion contract; consult the endpoint references for those details. [[source-adyen-api-explorer-open-banking-latest-overview]] (https://docs.adyen.com/api-explorer/open-banking/latest/overview), raw lines 9–48.

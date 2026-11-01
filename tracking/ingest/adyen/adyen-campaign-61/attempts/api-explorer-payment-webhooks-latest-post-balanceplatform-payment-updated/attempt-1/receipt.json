@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-payment-webhooks-latest-post-balanceplatform-payment-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen deprecated Payment webhook: balancePlatform.payment.updated\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated\"\nraw_files:\n  - \"adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated/2026-09-15.md\"\ntags: [adyen, platforms, payment-webhooks, deprecated, authorisation]\n---\n\n## Overview\n\nCaptured incoming `POST balancePlatform.payment.updated` reference for a payment authorisation that expired or was cancelled. The page says to use `data.id` to track the original authorisation from `balancePlatform.payment.created`; the parameter table nevertheless marks `data.id` optional. This is a legacy Payment webhook event, not a Transfer or Transaction webhook. [[adyen]] [[adyen-platforms]]\n\nThe separate [Payment webhooks v1 family overview](https://docs.adyen.com/api-explorer/payment-webhooks/latest/overview), captured 2026-09-15, explicitly marks this family deprecated and directs readers to accounting webhooks at the Transfer-webhooks overview. That migration statement comes from the family overview, not this endpoint's raw page.\n\n## Key takeaways\n\n- The request table requires top-level `data`, `environment` and `type`. Within `data`, its listed fields, including `id`, `status`, `modification`, account-holder and balance-account objects, are optional. For optional `amount` and `originalAmount` objects, `currency` and minor-unit `value` are required when the object is present. See raw lines 11\u201330 and 37\u201379.\n- The page's introductory trigger is expiry or cancellation. Its `data.status` row additionally lists `AuthAdjustmentAuthorised` and `AuthAdjustmentRefused` for this event type; the wider row also lists values for other event types. Preserve that type-specific distinction. See raw lines 5\u20137 and 63.\n- Optional `data.modification` describes the amount and type that triggered the notification, including partial cancellation or partial expiry. The converted `amount` and `modification.amount` descriptions define positive as added to the balance account and negative as deducted; `originalAmount` is in the transaction's original currency. See raw lines 19\u201321 and 37\u201342.\n- The three TEST request examples are labelled expired, partially cancelled and partially expired. All three show `data.status: \"Expired\"` and `modification.type: \"Expired\"`; the \u201cpartially cancelled\u201d label therefore does not by itself establish a `Cancelled` payload. Their `timestamp` precedes `creationDate` despite the table describing queue time and event-trigger time respectively, so these examples should not be used to infer an event-to-queue interval. See raw lines 83\u2013387, especially 88, 118, 136, 180, 190, 220, 238 and 282.\n- The response section shows `200 Success`; any `2xx` status accepts the webhook, with optional `notificationResponse`. Receipt does not show payment settlement, a balance-account booking, or a final funds outcome. See raw lines 388\u2013396.\n\n## Detail locators\n\n- Event purpose and `data.id` correlation to the created event: raw lines 5\u20137.\n- Full optional/required field table, identifiers, platform-payment references, relayed-authorisation fields, validation and status types: raw lines 11\u201379.\n- Expired, partially cancelled and partially expired TEST examples: raw lines 81\u2013387.\n- Receiver response and acceptance: raw lines 388\u2013396.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform payment and account context.\n- [[adyen-webhooks]] \u2014 general receiver context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated/2026-09-15|Payment updated webhook reference captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a payment authorisation has expired or has been cancelled. Use the `data.id` to track the original payment authorisation from the `balancePlatform.payment.created` webhook.",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated/2026-09-15.md:7"
+    },
+    {
+      "text": "|   - id | string | No | The ID of the resource. |",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated/2026-09-15.md:30"
+    },
+    {
+      "text": "|   - modification | object | No | Contains the amount and type of modification that triggered the notification. For example, this object contains the amount of a partial cancellation or partial expired authorisation. |",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated/2026-09-15.md:37"
+    },
+    {
+      "text": "|   - status | string | No | The event status. The possible values depend on the `type`.  **Authorised**, **Refused**, or **Error** for type `balancePlatform.payment.created`  **Expired** or **Cancelled** or **AuthAdjustmentAuthorised** or **AuthAdjustmentRefused** for type `balancePlatform.payment.updated`  **PendingIncomingTransfer** for type `balancePlatform.incomingTransfer.created`  **Refunded** or **IncomingTransfer** for type `balancePlatform.incomingTransfer.updated`  **Captured** or **OutgoingTransfer** for type `balancePlatform.outgoingTransfer.created`  **TransferConfirmed**, **TransferSentOut**, or **TransferFailed** for type `balancePlatform.outgoingTransfer.updated` |",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated/2026-09-15.md:63"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated/2026-09-15.md:396"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-payment-updated-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-payment-updated]] \u2014 2026-09-15-captured deprecated Payment webhook reference for an authorisation update, including original-payment correlation, type-specific statuses and partial-modification examples; use the separate accounting-webhook route for current integrations.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Deprecation and accounting-webhook migration are supported by the separate Payment webhooks v1 overview captured 2026-09-15, not the assigned endpoint raw."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated/2026-09-15.md",
+  "raw_sha256": "eceb561dbf6c44a754259a039fb415051917c44cb96924b5a6867779b9b41cf8",
+  "status": "candidate_ready"
+}

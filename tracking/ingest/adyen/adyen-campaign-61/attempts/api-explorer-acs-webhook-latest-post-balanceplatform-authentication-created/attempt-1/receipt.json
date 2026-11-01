@@ -1,0 +1,48 @@
+{
+  "job_id": "api-explorer-acs-webhook-latest-post-balanceplatform-authentication-created",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ACS webhook: Cardholder authentication finalized\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created\"\nraw_files:\n  - \"adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15.md\"\ntags: [adyen, issuing, acs, 3d-secure, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15-captured ACS webhook `latest` reference describes Adyen's incoming `balancePlatform.authentication.created` notification after cardholder authentication is finalized, whether successful, failed, or expired. Its `data.id` identifies the authentication and `paymentInstrumentId` identifies the card instrument. This is an Issuing-side 3D Secure authentication outcome, separate from payment authorisation, capture, or settlement. The pinned operation does not state a numeric ACS webhook API version. [[adyen-issuing]] [[adyen]]\n\n## Key takeaways\n\n- The required envelope is `data`, `environment` (`test` or `live`), and notification `type`; `timestamp` for queue time is optional. Required `data` fields are `authentication`, authentication `id`, `paymentInstrumentId`, `purchase`, and outcome `status`; `balancePlatform` is optional. Required purchase fields are `date`, `merchantName`, and `originalAmount` object. See [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 11\u201341]].\n- `authentication` requires distinct ACS, Directory Server, and 3DS Server transaction IDs (`acsTransId`, `dsTransID`, `threeDSServerTransID`), plus `challengeIndicator`, `createdAt`, `deviceChannel`, `inPSD2Scope`, `messageCategory`, `messageVersion`, `transStatus`, and authentication `type` (`frictionless` or `challenge`). `challenge` is optional and returned when authentication `type` is `challenge`; its sample `flow`, `lastInteraction`, phone, resend, and retry fields are not specified in this table. Optional `exemptionIndicator`, `riskScore`, and `transStatusReason` have separate meanings. See [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 15\u201330 and 45\u2013168]].\n- The `data.status` outcome allows `authenticated`, `rejected`, or `error`; `authentication.transStatus` separately uses 3D Secure values `Y`, `N`, `U`, `I`, or `R` with distinct descriptions. The introduction mentions expiration, but the status table does not list an `expired` literal or map expiration to one of these outcomes. The examples show authenticated challenge, authenticated frictionless, and rejected challenge; they do not define every possible outcome. See [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 5\u20137, 28\u201338 and 43\u2013168]].\n- The response section labels HTTP 200 success and says any 2xx HTTP status accepts the webhook, with optional `notificationResponse`. Acceptance acknowledges the notification; it is not an ACS decision response or a later payment result. The separate Issuing OOB Authentication SDK guide describes a relayed authentication request, a two-second response deadline, challenge finalization and this later outcome event; those timing/decision duties are not specified by this outcome-event page. See [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 169\u2013177]] and [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-authenticate-cardholders|OOB authentication guide]].\n\n## Cross-source warning\n\nThe separate [[source-adyen-docs-issuing-3d-secure-troubleshooting|Issuing troubleshooting guide]] broadly says a failed 3D Secure authentication has no webhook, while this event reference explicitly covers failure and gives a rejected example; the OOB guide also says this authentication outcome event is sent regardless of outcome. Keep the troubleshooting statement scoped to its authorisation/Payments-list discussion rather than using it to rule out this authentication-specific event. These snapshots do not establish a later authorisation or transfer event for every attempt.\n\n## Detail locators\n\n- Full field table, including nested requiredness and 3DS status meanings: [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 9\u201341]].\n- Authenticated challenge and frictionless examples: [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 43\u2013123]].\n- Rejected challenge example with `transStatus: N`: [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 125\u2013168]].\n- Receiver response: [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|raw lines 169\u2013177]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing payment-instrument and 3D Secure context.\n- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-authenticate-cardholders]] \u2014 separately sourced challenge and outcome flow.\n- [[source-adyen-docs-issuing-3d-secure-troubleshooting]] \u2014 broad no-webhook statement qualified above.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15|ACS authentication-created API Explorer reference (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when the process of cardholder authentication is finalized, whether it is completed successfully, fails, or expires.",
+      "location": "raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15.md:7"
+    },
+    {
+      "text": "|     - challenge | object | No | Information about Strong Customer Authentication (SCA). Returned when `type` is **challenge**. |",
+      "location": "raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15.md:17"
+    },
+    {
+      "text": "|   - status | string | Yes | Outcome of the authentication. Allowed values:  - authenticated  - rejected  - error |",
+      "location": "raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15.md:38"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15.md:177"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-acs-authentication-created-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-acs-webhook-latest-post-balanceplatform-authentication-created]] \u2014 2026-09-15-captured ACS `balancePlatform.authentication.created` outcome event for authenticated, rejected or error cardholder authentication; the introduction also mentions expiry without an `expired` status literal, and 2xx receipt is separate from payment authorisation.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "The Issuing troubleshooting guide's broad no-webhook statement for failed 3D Secure attempts conflicts with this authentication-specific failure outcome event; keep the cross-source qualification visible."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created/2026-09-15.md",
+  "raw_sha256": "694ac9e4f4a503a63398c106c496b8d6840942816573aabdc24e4c530c207f39",
+  "status": "candidate_ready"
+}

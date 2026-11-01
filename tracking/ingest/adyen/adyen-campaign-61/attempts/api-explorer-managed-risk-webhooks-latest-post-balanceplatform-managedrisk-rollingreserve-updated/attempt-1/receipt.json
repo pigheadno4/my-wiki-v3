@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-rollingreserve-updated",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen managed-risk rolling reserve updated webhook\"\ntype: source\ndate_ingested: 2026-10-31\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated\"\nraw_files:\n  - \"adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated/2026-09-15.md\"\ntags: [adyen, managed-risk, rolling-reserve, webhooks, platforms]\n---\n\n## Overview\n\nCaptured Managed Risk webhook reference for incoming `POST balancePlatform.managedRisk.rollingReserve.updated`. Adyen says it sends this event when it updates a rolling reserve policy applied to an account holder's payouts because of their risk level. This is a policy-change notification, not a payout, balance-account reserve transfer, or proof that withheld funds have been released. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Required `data.accountHolderId` identifies the account holder whose risk settings changed. The same nested data requires `rollingReservePercentage`, the percentage of the user's daily sales volume withheld from the settlement batch, and `withHoldingPeriodInDays`, the number of days after which that withheld percentage is released. The page gives no minimum, maximum or effective-date rule. See raw lines 14\u201319.\n- Nested `balancePlatform` and `creationDate` are optional; `creationDate` is the event-trigger time in ISO 8601 extended format. The top-level `environment` and `type` are required, while `timestamp` is optional and means queue time. See raw lines 16\u201322.\n- The test example contains `data.id`, which is absent from the request-body parameter table; the example alone does not make it a documented required field. See raw lines 11\u201322 and 24\u201340.\n- The response section shows `200 Success`; the optional `notificationResponse` row says any `2xx` HTTP status code accepts the webhook. That acceptance describes receiver handling, not settlement, payout execution or fund release. See raw lines 41\u201349.\n\n## Detail locators\n\n- Event trigger and policy scope: raw lines 5\u20137.\n- Request envelope, account-holder identity and reserve policy values: raw lines 11\u201322.\n- Illustrative test event, including example-only `data.id`: raw lines 24\u201340.\n- Receiver response and acceptance: raw lines 41\u201349.\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern account-holder and payout context.\n- [[adyen-webhooks]] \u2014 general receiver context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated/2026-09-15|Managed Risk rolling reserve updated reference captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when we update a rolling reserve policy applied to your account holder's payouts, because of their risk level.",
+      "location": "raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated/2026-09-15.md:7"
+    },
+    {
+      "text": "|   - accountHolderId | string | Yes | The unique identifier of the account holder whose risk settings changed. |",
+      "location": "raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated/2026-09-15.md:15"
+    },
+    {
+      "text": "|   - rollingReservePercentage | integer | Yes | The percentage of your user's daily sales volume that is withheld from the settlement batch as a rolling reserve. |",
+      "location": "raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated/2026-09-15.md:18"
+    },
+    {
+      "text": "|   - withHoldingPeriodInDays | integer | Yes | The number of days after which we release the withheld percentage of your user's daily sales volume. |",
+      "location": "raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated/2026-09-15.md:19"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated/2026-09-15.md:49"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c61-managedrisk-rollingreserve-updated-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-managed-risk-webhooks-latest-post-balanceplatform-managedrisk-rollingreserve-updated]] \u2014 2026-09-15-captured Managed Risk webhook reference for an account-holder rolling-reserve policy update affecting payouts, with percentage/holding-period fields and receiver acceptance.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated/2026-09-15.md",
+  "raw_sha256": "b3d1f72607c7967ba921cc65765792d1653b04ed2bbaf16f1cd9e9fa71bd1955",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,11 @@
+# C61 fixed retrieval answers: Capital API v1 overview
+
+Pinned raw: `raw/adyen/api-explorer/capital/latest/overview/2026-09-15.md`. Canonical source: [[source-adyen-api-explorer-capital-latest-overview]]; https://docs.adyen.com/api-explorer/capital/latest/overview.
+
+## Q1
+
+The captured page is the **Capital API v1** catalog for embedding Adyen Capital into a marketplace or platform. A user may receive business financing as a grant and must repay its amount over a specified term plus a fee. Adyen configures fixed or ranged offers, fee and repayment terms based on proactive risk analysis; after a user selects an offer, the platform can request a grant on the user's behalf. A grant account tracks grants across that marketplace or platform (raw lines 5–15). The twelve GET/POST/PATCH routes list dynamic-offer reads, preliminary calculation and static-offer creation; static-offer list/detail; grant-account read; grant list/request/detail; and disbursement list/detail/repayment-configuration update (raw lines 50–66). The path placeholders `{id}`, `{grantId}`, and `{disbursementId}` identify separate catalog resources; this overview does not define their operation schemas, request/response fields, limits, or funding lifecycle. An offer and grant request are not a disbursed grant. [[source-adyen-api-explorer-capital-latest-overview]]
+
+## Q2
+
+Each Capital API request needs an API key supplied in `X-API-Key`. The credential must have `Balance_Platform_Capital_Configuration_Role` and `Balance_Platform_Capital_Grant_Initiation_Role`, arranged through an Adyen contact. Going live requires a key generated in the live Customer Area. The listed v1 bases are `https://balanceplatform-api-test.adyen.com/capital/v1` and `https://balanceplatform-api-live.adyen.com/capital/v1` (raw lines 17–48). These prerequisites and route listings do not show a credential's actual roles, user eligibility, offer availability, grant approval, disbursement, receipt of funds, or repayment. No request acceptance, response status, error, timing, delivery/retry, signature beyond the API-key statement, or financial-finality contract is given for any individual endpoint in this overview; follow its operation reference. The `latest` path is a captured route whose heading says v1, not evidence of current enablement. [[source-adyen-api-explorer-capital-latest-overview]]

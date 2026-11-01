@@ -1,0 +1,9 @@
+# Transfers API dispute creation retrieval checks
+
+## Q1 — What amount, type and status can a new Issuing dispute use?
+
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-issuing.md` → `[[source-adyen-api-explorer-transfers-api-latest-post-disputes]]` ([canonical URL](https://docs.adyen.com/api-explorer/transfers-api/latest/post/disputes)). The pinned raw requires `transactionId` and `type` (lines 53–55). Optional `disputedAmount` cannot exceed the transaction amount and omission disputes the whole transaction (lines 25–27). Creation can set `status` only to `draft`; `submitted` and `closed` are update choices, even though more status enum values appear (line 53). The `other` type is listed but explicitly beta and must not be created or submitted at this time (lines 49–55). A 200 create response is not a submitted chargeback or outcome.
+
+## Q2 — What reason-specific detail and fraud report-only behavior apply?
+
+Route: `[[source-adyen-api-explorer-transfers-api-latest-post-disputes]]` ([canonical URL](https://docs.adyen.com/api-explorer/transfers-api/latest/post/disputes)) → pinned raw lines 28–52, 59–98, 101–155. `duplicateInfo`, `fraudInfo`, `notDeliveredInfo` and `otherInfo` are table-optional parent objects but required for their matching dispute types; their child and conditionally required fields are in lines 28–52. A duplicate transaction must match the disputed amount (line 29). `fraudInfo.reportOnly=true` reports fraud without chargeback request or fee reversal, and defaults to false (line 36). The 200 body marks `id` optional despite introductory prose saying raising a dispute returns an ID (lines 9, 79). Error statuses 401, 403 and 422 have optional problem fields and required fields only inside an `invalidFields` item if present (lines 101–155).
