@@ -1,0 +1,830 @@
+# Adyen API Explorer
+
+> Explore and test Adyen's payment APIs. Browse endpoints, view parameters, and see request/response examples for all Adyen API services.
+
+## Online Payments
+
+### Checkout
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/overview.md)
+- [POST /sessions](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/sessions.md): Create a payment session
+- [POST /paymentMethods](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/paymentMethods.md): Get a list of available payment methods
+- [POST /payments](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/payments.md): Start a transaction
+- [POST /payments/details](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/payments/details.md): Submit details for a payment
+- [POST /cardDetails](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/cardDetails.md): Get the brands and other details of a card
+- [GET /sessions/{sessionId}](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/get/sessions/(sessionId).md): Get the result of a payment session
+- [PATCH /sessions/{sessionId}](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/patch/sessions/(sessionId).md): Update a payment session
+- [POST /donationCampaigns](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/donationCampaigns.md): Get a list of donation campaigns.
+- [POST /donations](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/donations.md): Make a donation
+- [POST /paymentLinks](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/paymentLinks.md): Create a payment link
+- [GET /paymentLinks/{linkId}](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/get/paymentLinks/(linkId).md): Get a payment link
+- [PATCH /paymentLinks/{linkId}](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/patch/paymentLinks/(linkId).md): Update the status of a payment link
+- [POST /payments/{paymentPspReference}/captures](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/captures.md): Capture an authorised payment
+- [POST /payments/{paymentPspReference}/cancels](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/cancels.md): Cancel an authorised payment
+- [POST /cancels](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/cancels.md): Cancel an authorised payment
+- [POST /payments/{paymentPspReference}/refunds](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/refunds.md): Refund a captured payment
+- [POST /payments/{paymentPspReference}/reversals](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/reversals.md): Refund or cancel a payment
+- [POST /payments/{paymentPspReference}/amountUpdates](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/amountUpdates.md): Update an authorised amount
+- [POST /forward](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/forward.md): Forward stored payment details
+- [GET /storedPaymentMethods](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/get/storedPaymentMethods.md): Get tokens for stored payment details
+- [POST /storedPaymentMethods](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/storedPaymentMethods.md): Create a token to store payment details
+- [DELETE /storedPaymentMethods/{storedPaymentMethodId}](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/delete/storedPaymentMethods/(storedPaymentMethodId).md): Delete a token for stored payment details
+- [POST /paymentMethods/balance](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/paymentMethods/balance.md): Get the balance of a gift card
+- [POST /orders](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/orders.md): Create an order
+- [POST /orders/cancel](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/orders/cancel.md): Cancel an order
+- [POST /originKeys](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/originKeys.md): Create originKey values for domains
+- [POST /applePay/sessions](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/applePay/sessions.md): Get an Apple Pay session
+- [POST /paypal/updateOrder](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/paypal/updateOrder.md): Updates the order for PayPal Express Checkout
+- [POST /validateShopperId](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/validateShopperId.md): Validates shopper Id
+- [POST /verifyShopperTaxIdentification](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/verifyShopperTaxIdentification.md): Verify the shopper's tax identification.
+- [POST /calculateTax](https://docs.adyen.com/api-explorer/api-explorer/Checkout/latest/post/calculateTax.md): Calculate the tax for a transaction.
+
+### BinLookup
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/BinLookup/latest/overview.md)
+- [POST /get3dsAvailability](https://docs.adyen.com/api-explorer/api-explorer/BinLookup/latest/post/get3dsAvailability.md): Check if 3D Secure is available
+- [POST /getCostEstimate](https://docs.adyen.com/api-explorer/api-explorer/BinLookup/latest/post/getCostEstimate.md): Get a fees cost estimate
+
+### Defend Disputes
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Disputes/latest/overview.md)
+- [POST /acceptDispute](https://docs.adyen.com/api-explorer/api-explorer/Disputes/latest/post/acceptDispute.md): Accept a dispute
+- [POST /defendDispute](https://docs.adyen.com/api-explorer/api-explorer/Disputes/latest/post/defendDispute.md): Defend a dispute
+- [POST /deleteDisputeDefenseDocument](https://docs.adyen.com/api-explorer/api-explorer/Disputes/latest/post/deleteDisputeDefenseDocument.md): Delete a defense document
+- [POST /retrieveApplicableDefenseReasons](https://docs.adyen.com/api-explorer/api-explorer/Disputes/latest/post/retrieveApplicableDefenseReasons.md): Get applicable defense reasons
+- [POST /supplyDefenseDocument](https://docs.adyen.com/api-explorer/api-explorer/Disputes/latest/post/supplyDefenseDocument.md): Supply a defense document
+
+### Document Collector
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Document-Collector/latest/overview.md)
+- [POST /crossBorderInvoices](https://docs.adyen.com/api-explorer/api-explorer/Document-Collector/latest/post/crossBorderInvoices.md): Upload a document
+
+### Webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/overview.md)
+- [POST /AUTHORISATION](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/AUTHORISATION.md): Result of authorisation request
+- [POST /AUTHORISATION_ADJUSTMENT](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/AUTHORISATION_ADJUSTMENT.md): Result of payment authorisation adjustment request
+- [POST /CANCELLATION](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/CANCELLATION.md): Result of cancel request
+- [POST /CANCEL_OR_REFUND](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/CANCEL_OR_REFUND.md): Result of cancel or refund request
+- [POST /CAPTURE](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/CAPTURE.md): Result of capture request
+- [POST /CAPTURE_FAILED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/CAPTURE_FAILED.md): Capture request failed due to scheme rejection
+- [POST /EXPIRE](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/EXPIRE.md): Authorisation expired
+- [POST /ORDER_CLOSED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/ORDER_CLOSED.md): Result of last partial payment for order
+- [POST /ORDER_OPENED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/ORDER_OPENED.md): First partial payment request for order
+- [POST /REFUND](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/REFUND.md): Result of refund request
+- [POST /REFUNDED_REVERSED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/REFUNDED_REVERSED.md): Refunded amount reversed
+- [POST /REFUND_FAILED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/REFUND_FAILED.md): Refund failed due to scheme rejection
+- [POST /REFUND_NOT_CLEARED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/REFUND_NOT_CLEARED.md): Refund failed to clear
+- [POST /REFUND_WITH_DATA](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/REFUND_WITH_DATA.md): Result of refund request with data
+- [POST /REPORT_AVAILABLE](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/REPORT_AVAILABLE.md): Report available
+- [POST /REVERSAL](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/REVERSAL.md): Result of reversal request
+- [POST /SETTLED_REVERSED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/SETTLED_REVERSED.md): Capture settlement reversed
+- [POST /TECHNICAL_CANCEL](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/TECHNICAL_CANCEL.md): Result of technical cancel request
+- [POST /VOID_PENDING_REFUND](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/VOID_PENDING_REFUND.md): Result of request to cancel POS refund
+- [POST /CHARGEBACK](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/CHARGEBACK.md): Payment charged back
+- [POST /CHARGEBACK_REVERSED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/CHARGEBACK_REVERSED.md): Chargeback successfully defended
+- [POST /DISPUTE_DEFENSE_PERIOD_ENDED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/DISPUTE_DEFENSE_PERIOD_ENDED.md): Dispute defense period ended
+- [POST /INFORMATION_SUPPLIED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/INFORMATION_SUPPLIED.md): Defense documents uploaded or dispute auto-defended
+- [POST /ISSUER_COMMENTS](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/ISSUER_COMMENTS.md): Issuer included comments
+- [POST /ISSUER_RESPONSE_TIMEFRAME_EXPIRED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/ISSUER_RESPONSE_TIMEFRAME_EXPIRED.md): Issuer accepted defense or did not respond
+- [POST /NOTIFICATION_OF_CHARGEBACK](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/NOTIFICATION_OF_CHARGEBACK.md): Dispute process opened
+- [POST /NOTIFICATION_OF_FRAUD](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/NOTIFICATION_OF_FRAUD.md): Issuer sent fraud alert notification
+- [POST /PREARBITRATION_ACCEPTED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PREARBITRATION_ACCEPTED.md): The pre-arbitration case was accepted
+- [POST /PREARBITRATION_DECLINED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PREARBITRATION_DECLINED.md): The pre-arbitration case was declined
+- [POST /PREARBITRATION_ISSUER_WITHDRAWN](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PREARBITRATION_ISSUER_WITHDRAWN.md): The pre-arbitration case was withdrawn by the issuer
+- [POST /PREARBITRATION_LOST](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PREARBITRATION_LOST.md): Cardholder's bank declined pre-arbitration case
+- [POST /PREARBITRATION_OPEN](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PREARBITRATION_OPEN.md): Cardholder's bank opened the pre-arbitration case
+- [POST /PREARBITRATION_WON](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PREARBITRATION_WON.md): Cardholder's bank accepted pre-arbitration case
+- [POST /REQUEST_FOR_INFORMATION](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/REQUEST_FOR_INFORMATION.md): Issuer opened Request for Information (RFI)
+- [POST /SCHEME_ARBITRATION](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/SCHEME_ARBITRATION.md): The pre-arbitration case was escalated to scheme arbitration by the issuer
+- [POST /SCHEME_ARBITRATION_LOST](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/SCHEME_ARBITRATION_LOST.md): The scheme has ruled in favor of the issuer.
+- [POST /SCHEME_ARBITRATION_WON](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/SCHEME_ARBITRATION_WON.md): The scheme has ruled in your favor.
+- [POST /SECOND_CHARGEBACK](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/SECOND_CHARGEBACK.md): Issuing bank declined chargeback defense
+- [POST /PAIDOUT_REVERSED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PAIDOUT_REVERSED.md): Financial institution rejected payout
+- [POST /PAYOUT_DECLINE](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PAYOUT_DECLINE.md): Payout declined
+- [POST /PAYOUT_EXPIRE](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PAYOUT_EXPIRE.md): Payout expired
+- [POST /PAYOUT_THIRDPARTY](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/PAYOUT_THIRDPARTY.md): Result of payout request
+- [POST /AUTORESCUE](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/AUTORESCUE.md): Auto Rescue process ended
+- [POST /CANCEL_AUTORESCUE](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/CANCEL_AUTORESCUE.md): Auto Rescue process canceled
+- [POST /MANUAL_REVIEW_ACCEPT](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/MANUAL_REVIEW_ACCEPT.md): Manual review accepted
+- [POST /MANUAL_REVIEW_REJECT](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/MANUAL_REVIEW_REJECT.md): Manual review rejected
+- [POST /OFFER_CLOSED](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/OFFER_CLOSED.md): Offer expired
+- [POST /POSTPONED_REFUND](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/POSTPONED_REFUND.md): Refund postponed until after payment capture
+- [POST /RECURRING_CONTRACT](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT.md): Recurring contract created
+- [POST /ACH_NOTIFICATION_OF_CHANGE](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/ACH_NOTIFICATION_OF_CHANGE.md): ACH Notification of Change
+- [POST /DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION](https://docs.adyen.com/api-explorer/api-explorer/Webhooks/latest/post/DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION.md): Direct Debit Notice of Change Notification
+
+### Tokenization webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Tokenization-webhooks/latest/overview.md)
+- [POST recurring.token.alreadyExisting](https://docs.adyen.com/api-explorer/api-explorer/Tokenization-webhooks/latest/post/recurring.token.alreadyExisting.md): Token already exists
+- [POST recurring.token.created](https://docs.adyen.com/api-explorer/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created.md): Token created
+- [POST recurring.token.disabled](https://docs.adyen.com/api-explorer/api-explorer/Tokenization-webhooks/latest/post/recurring.token.disabled.md): Token disabled
+- [POST recurring.token.updated](https://docs.adyen.com/api-explorer/api-explorer/Tokenization-webhooks/latest/post/recurring.token.updated.md): Token updated
+
+### Forward API webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Forward-API-webhooks/latest/overview.md)
+- [POST forwardApi.notification](https://docs.adyen.com/api-explorer/api-explorer/Forward-API-webhooks/latest/post/forwardApi.notification.md): Forward API request completed
+
+### Payouts (deprecated)
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Payout/latest/overview.md)
+- [POST /storeDetailAndSubmitThirdParty](https://docs.adyen.com/api-explorer/api-explorer/Payout/latest/post/storeDetailAndSubmitThirdParty.md): Store details and submit a payout
+- [POST /storeDetail](https://docs.adyen.com/api-explorer/api-explorer/Payout/latest/post/storeDetail.md): Store payout details
+- [POST /submitThirdParty](https://docs.adyen.com/api-explorer/api-explorer/Payout/latest/post/submitThirdParty.md): Submit a payout
+- [POST /confirmThirdParty](https://docs.adyen.com/api-explorer/api-explorer/Payout/latest/post/confirmThirdParty.md): Confirm a payout
+- [POST /declineThirdParty](https://docs.adyen.com/api-explorer/api-explorer/Payout/latest/post/declineThirdParty.md): Cancel a payout
+- [POST /payout](https://docs.adyen.com/api-explorer/api-explorer/Payout/latest/post/payout.md): Make an instant card payout
+
+### Recurring
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Recurring/latest/overview.md)
+- [POST /createPermit](https://docs.adyen.com/api-explorer/api-explorer/Recurring/latest/post/createPermit.md): Create new permits linked to a recurring contract.
+- [POST /disable](https://docs.adyen.com/api-explorer/api-explorer/Recurring/latest/post/disable.md): Disable stored payment details
+- [POST /disablePermit](https://docs.adyen.com/api-explorer/api-explorer/Recurring/latest/post/disablePermit.md): Disable an existing permit.
+- [POST /listRecurringDetails](https://docs.adyen.com/api-explorer/api-explorer/Recurring/latest/post/listRecurringDetails.md): Get stored payment details
+- [POST /notifyShopper](https://docs.adyen.com/api-explorer/api-explorer/Recurring/latest/post/notifyShopper.md): Ask issuer to notify the shopper
+- [POST /scheduleAccountUpdater](https://docs.adyen.com/api-explorer/api-explorer/Recurring/latest/post/scheduleAccountUpdater.md): Schedule running the Account Updater
+
+## In-person payments
+
+### Terminal API
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/overview.md)
+- [POST /login](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/login.md): Login Request
+- [POST /logout](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/logout.md): Logout Request
+- [POST /enableservice](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/enableservice.md): EnableService Request
+- [POST /admin](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/admin.md): Admin Request
+- [POST /payment](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/payment.md): Payment Request
+- [POST /cardacquisition](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/cardacquisition.md): CardAcquisition Request
+- [POST /storedvalue](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/storedvalue.md): StoredValue Request
+- [POST /reversal](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/reversal.md): Reversal Request
+- [POST /reconciliation](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/reconciliation.md): Reconciliation Request
+- [POST /gettotals](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/gettotals.md): GetTotals Request
+- [POST /balanceinquiry](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/balanceinquiry.md): BalanceInquiry Request
+- [POST /transactionstatus](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/transactionstatus.md): TransactionStatus Request
+- [POST /abort](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/abort.md): Abort Request
+- [POST /diagnosis](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/diagnosis.md): Diagnosis Request
+- [POST /display](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/display.md): Display Request
+- [POST /input](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/input.md): Input Request
+- [POST /print](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/print.md): Print Request
+- [POST /cardreaderapdu](https://docs.adyen.com/api-explorer/api-explorer/terminal-api/latest/post/cardreaderapdu.md): CardReaderAPDU Request
+
+### Cloud device API
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/cloud-device-api/latest/overview.md)
+- [POST /merchants/{merchantAccount}/devices/{deviceId}/sync](https://docs.adyen.com/api-explorer/api-explorer/cloud-device-api/latest/post/merchants/(merchantAccount)/devices/(deviceId)/sync.md): Send a Terminal API request and receive a synchronous response
+- [POST /merchants/{merchantAccount}/devices/{deviceId}/async](https://docs.adyen.com/api-explorer/api-explorer/cloud-device-api/latest/post/merchants/(merchantAccount)/devices/(deviceId)/async.md): Send a Terminal API request and receive an asynchronous response
+- [GET /merchants/{merchantAccount}/devices/{deviceId}/status](https://docs.adyen.com/api-explorer/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status.md): Get the connection status of a device
+- [GET /merchants/{merchantAccount}/connectedDevices](https://docs.adyen.com/api-explorer/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/connectedDevices.md): Get a list of connected devices
+
+### SoftPOS - Mobile solutions
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/softpos-configuration-api/latest/overview.md)
+- [POST /auth/certificate](https://docs.adyen.com/api-explorer/api-explorer/softpos-configuration-api/latest/post/auth/certificate.md): Create a communication session
+
+### Payments app - Mobile solutions
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/payments-app/latest/overview.md)
+- [POST /merchants/{merchantId}/generatePaymentsAppBoardingToken](https://docs.adyen.com/api-explorer/api-explorer/payments-app/latest/post/merchants/(merchantId)/generatePaymentsAppBoardingToken.md): Create a boarding token - merchant level
+- [GET /merchants/{merchantId}/paymentsApps](https://docs.adyen.com/api-explorer/api-explorer/payments-app/latest/get/merchants/(merchantId)/paymentsApps.md): Get a list of Payments Apps - merchant level
+- [POST /merchants/{merchantId}/paymentsApps/{installationId}/revoke](https://docs.adyen.com/api-explorer/api-explorer/payments-app/latest/post/merchants/(merchantId)/paymentsApps/(installationId)/revoke.md): Revoke Payments App instance authentication
+- [POST /merchants/{merchantId}/stores/{storeId}/generatePaymentsAppBoardingToken](https://docs.adyen.com/api-explorer/api-explorer/payments-app/latest/post/merchants/(merchantId)/stores/(storeId)/generatePaymentsAppBoardingToken.md): Create a boarding token - store level
+- [GET /merchants/{merchantId}/stores/{storeId}/paymentsApps](https://docs.adyen.com/api-explorer/api-explorer/payments-app/latest/get/merchants/(merchantId)/stores/(storeId)/paymentsApps.md): Get a list of Payments Apps - store level
+
+### POS Mobile (deprecated)
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/possdk/latest/overview.md)
+- [POST /sessions](https://docs.adyen.com/api-explorer/api-explorer/possdk/latest/post/sessions.md): Create a communication session
+
+### Terminal management (deprecated)
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/postfmapi/latest/overview.md)
+- [POST /assignTerminals](https://docs.adyen.com/api-explorer/api-explorer/postfmapi/latest/post/assignTerminals.md): Assign terminals
+- [POST /findTerminal](https://docs.adyen.com/api-explorer/api-explorer/postfmapi/latest/post/findTerminal.md): Get the account or store of a terminal
+- [POST /getStoresUnderAccount](https://docs.adyen.com/api-explorer/api-explorer/postfmapi/latest/post/getStoresUnderAccount.md): Get the stores of an account
+- [POST /getTerminalDetails](https://docs.adyen.com/api-explorer/api-explorer/postfmapi/latest/post/getTerminalDetails.md): Get the details of a terminal
+- [POST /getTerminalsUnderAccount](https://docs.adyen.com/api-explorer/api-explorer/postfmapi/latest/post/getTerminalsUnderAccount.md): Get the list of terminals
+
+## Management
+
+### Management
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/overview.md)
+- [GET /companies](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies.md): Get a list of company accounts
+- [GET /companies/{companyId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId).md): Get a company account
+- [GET /companies/{companyId}/merchants](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/merchants.md): Get a list of merchant accounts
+- [POST /merchants](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants.md): Create a merchant account
+- [POST /merchants/{merchantId}/activate](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/activate.md): Request to activate a merchant account
+- [GET /merchants/{merchantId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId).md): Get a merchant account
+- [GET /merchants](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants.md): Get a list of merchant accounts
+- [GET /merchants/{merchantId}/stores](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/stores.md): Get a list of stores
+- [POST /merchants/{merchantId}/stores](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/stores.md): Create a store
+- [GET /merchants/{merchantId}/stores/{storeId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(storeId).md): Get a store
+- [PATCH /merchants/{merchantId}/stores/{storeId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(storeId).md): Update a store
+- [GET /stores](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/stores.md): Get a list of stores
+- [POST /stores](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/stores.md): Create a store
+- [GET /stores/{storeId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/stores/(storeId).md): Get a store
+- [PATCH /stores/{storeId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/stores/(storeId).md): Update a store
+- [POST /merchants/{merchantId}/payoutSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/payoutSettings.md): Add a payout setting
+- [PATCH /merchants/{merchantId}/payoutSettings/{payoutSettingsId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/payoutSettings/(payoutSettingsId).md): Update a payout setting
+- [GET /merchants/{merchantId}/payoutSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/payoutSettings.md): Get a list of payout settings
+- [GET /merchants/{merchantId}/payoutSettings/{payoutSettingsId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/payoutSettings/(payoutSettingsId).md): Get a payout setting
+- [DELETE /merchants/{merchantId}/payoutSettings/{payoutSettingsId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/merchants/(merchantId)/payoutSettings/(payoutSettingsId).md): Delete a payout setting
+- [GET /companies/{companyId}/users](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/users.md): Get a list of users
+- [POST /companies/{companyId}/users](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/users.md): Create a new user
+- [GET /companies/{companyId}/users/{userId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/users/(userId).md): Get user details
+- [PATCH /companies/{companyId}/users/{userId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/users/(userId).md): Update user details
+- [GET /merchants/{merchantId}/users](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/users.md): Get a list of users
+- [POST /merchants/{merchantId}/users](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/users.md): Create a new user
+- [GET /merchants/{merchantId}/users/{userId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/users/(userId).md): Get user details
+- [PATCH /merchants/{merchantId}/users/{userId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/users/(userId).md): Update a user
+- [GET /me](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/me.md): Get API credential details
+- [GET /me/allowedOrigins](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/me/allowedOrigins.md): Get allowed origins
+- [POST /me/allowedOrigins](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/me/allowedOrigins.md): Add allowed origin
+- [GET /me/allowedOrigins/{originId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/me/allowedOrigins/(originId).md): Get allowed origin details
+- [DELETE /me/allowedOrigins/{originId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/me/allowedOrigins/(originId).md): Remove allowed origin
+- [POST /me/generateClientKey](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/me/generateClientKey.md): Generate a client key
+- [GET /companies/{companyId}/apiCredentials](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials.md): Get a list of API credentials
+- [POST /companies/{companyId}/apiCredentials](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials.md): Create an API credential.
+- [GET /companies/{companyId}/apiCredentials/{apiCredentialId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId).md): Get an API credential
+- [PATCH /companies/{companyId}/apiCredentials/{apiCredentialId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/apiCredentials/(apiCredentialId).md): Update an API credential.
+- [GET /merchants/{merchantId}/apiCredentials](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials.md): Get a list of API credentials
+- [POST /merchants/{merchantId}/apiCredentials](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials.md): Create an API credential
+- [GET /merchants/{merchantId}/apiCredentials/{apiCredentialId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId).md): Get an API credential
+- [PATCH /merchants/{merchantId}/apiCredentials/{apiCredentialId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/apiCredentials/(apiCredentialId).md): Update an API credential
+- [POST /companies/{companyId}/apiCredentials/{apiCredentialId}/generateApiKey](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/generateApiKey.md): Generate new API key
+- [POST /merchants/{merchantId}/apiCredentials/{apiCredentialId}/generateApiKey](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/generateApiKey.md): Generate new API key
+- [POST /companies/{companyId}/apiCredentials/{apiCredentialId}/generateClientKey](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/generateClientKey.md): Generate new client key
+- [POST /merchants/{merchantId}/apiCredentials/{apiCredentialId}/generateClientKey](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/generateClientKey.md): Generate new client key
+- [GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins.md): Get a list of allowed origins
+- [POST /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins.md): Create an allowed origin
+- [GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/(originId).md): Get an allowed origin
+- [DELETE /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/(originId).md): Delete an allowed origin
+- [GET /merchants/{merchantId}/apiCredentials/{apiCredentialId}/allowedOrigins](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId)/allowedOrigins.md): Get a list of allowed origins
+- [POST /merchants/{merchantId}/apiCredentials/{apiCredentialId}/allowedOrigins](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/allowedOrigins.md): Create an allowed origin
+- [GET /merchants/{merchantId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId)/allowedOrigins/(originId).md): Get an allowed origin
+- [DELETE /merchants/{merchantId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/merchants/(merchantId)/apiCredentials/(apiCredentialId)/allowedOrigins/(originId).md): Delete an allowed origin
+- [POST /companies/{companyId}/webhooks](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/webhooks.md): Set up a webhook
+- [GET /companies/{companyId}/webhooks](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/webhooks.md): List all webhooks
+- [GET /companies/{companyId}/webhooks/{webhookId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/webhooks/(webhookId).md): Get a webhook
+- [PATCH /companies/{companyId}/webhooks/{webhookId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/webhooks/(webhookId).md): Update a webhook
+- [DELETE /companies/{companyId}/webhooks/{webhookId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/companies/(companyId)/webhooks/(webhookId).md): Remove a webhook
+- [POST /companies/{companyId}/webhooks/{webhookId}/generateHmac](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/webhooks/(webhookId)/generateHmac.md): Generate an HMAC key
+- [POST /companies/{companyId}/webhooks/{webhookId}/test](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/webhooks/(webhookId)/test.md): Test a webhook
+- [POST /merchants/{merchantId}/webhooks](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks.md): Set up a webhook
+- [GET /merchants/{merchantId}/webhooks](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks.md): List all webhooks
+- [GET /merchants/{merchantId}/webhooks/{webhookId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks/(webhookId).md): Get a webhook
+- [PATCH /merchants/{merchantId}/webhooks/{webhookId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/webhooks/(webhookId).md): Update a webhook
+- [DELETE /merchants/{merchantId}/webhooks/{webhookId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/merchants/(merchantId)/webhooks/(webhookId).md): Remove a webhook
+- [POST /merchants/{merchantId}/webhooks/{webhookId}/generateHmac](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/generateHmac.md): Generate an HMAC key
+- [POST /merchants/{merchantId}/webhooks/{webhookId}/test](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/test.md): Test a webhook
+- [POST /merchants/{merchantId}/paymentMethodSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings.md): Request a payment method
+- [GET /merchants/{merchantId}/paymentMethodSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings.md): Get all payment methods
+- [GET /merchants/{merchantId}/paymentMethodSettings/{paymentMethodId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId).md): Get payment method details
+- [PATCH /merchants/{merchantId}/paymentMethodSettings/{paymentMethodId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId).md): Update a payment method
+- [POST /merchants/{merchantId}/paymentMethodSettings/{paymentMethodId}/addApplePayDomains](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/addApplePayDomains.md): Add an Apple Pay domain
+- [GET /merchants/{merchantId}/paymentMethodSettings/{paymentMethodId}/getApplePayDomains](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/getApplePayDomains.md): Get Apple Pay domains
+- [GET /terminals](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/terminals.md): Get a list of terminals
+- [POST /terminals/{terminalId}/reassign](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/terminals/(terminalId)/reassign.md): Reassign a terminal
+- [GET /companies/{companyId}/terminalActions](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalActions.md): Get a list of terminal actions
+- [GET /companies/{companyId}/terminalActions/{actionId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalActions/(actionId).md): Get terminal action
+- [POST /terminals/scheduleActions](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/terminals/scheduleActions.md): Create a terminal action
+- [GET /companies/{companyId}/terminalModels](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalModels.md): Get a list of terminal models
+- [GET /companies/{companyId}/terminalProducts](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalProducts.md): Get a list of terminal products
+- [GET /companies/{companyId}/billingEntities](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/billingEntities.md): Get a list of billing entities
+- [GET /companies/{companyId}/shippingLocations](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/shippingLocations.md): Get a list of shipping locations
+- [POST /companies/{companyId}/shippingLocations](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/shippingLocations.md): Create a shipping location
+- [POST /companies/{companyId}/terminalOrders](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/terminalOrders.md): Create an order
+- [GET /companies/{companyId}/terminalOrders](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalOrders.md): Get a list of orders
+- [GET /companies/{companyId}/terminalOrders/{orderId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalOrders/(orderId).md): Get an order
+- [PATCH /companies/{companyId}/terminalOrders/{orderId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/terminalOrders/(orderId).md): Update an order
+- [POST /companies/{companyId}/terminalOrders/{orderId}/cancel](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/terminalOrders/(orderId)/cancel.md): Cancel an order
+- [GET /merchants/{merchantId}/terminalModels](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/terminalModels.md): Get a list of terminal models
+- [GET /merchants/{merchantId}/terminalProducts](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/terminalProducts.md): Get a list of terminal products
+- [GET /merchants/{merchantId}/billingEntities](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/billingEntities.md): Get a list of billing entities
+- [GET /merchants/{merchantId}/shippingLocations](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/shippingLocations.md): Get a list of shipping locations
+- [POST /merchants/{merchantId}/shippingLocations](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/shippingLocations.md): Create a shipping location
+- [POST /merchants/{merchantId}/terminalOrders](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/terminalOrders.md): Create an order
+- [GET /merchants/{merchantId}/terminalOrders](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/terminalOrders.md): Get a list of orders
+- [GET /merchants/{merchantId}/terminalOrders/{orderId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/terminalOrders/(orderId).md): Get an order
+- [PATCH /merchants/{merchantId}/terminalOrders/{orderId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalOrders/(orderId).md): Update an order
+- [POST /merchants/{merchantId}/terminalOrders/{orderId}/cancel](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/terminalOrders/(orderId)/cancel.md): Cancel an order
+- [GET /companies/{companyId}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalSettings.md): Get terminal settings
+- [GET /companies/{companyId}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalLogos.md): Get the terminal logo
+- [PATCH /companies/{companyId}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/terminalSettings.md): Update terminal settings
+- [PATCH /companies/{companyId}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/terminalLogos.md): Update the terminal logo
+- [GET /merchants/{merchantId}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/terminalSettings.md): Get terminal settings
+- [GET /merchants/{merchantId}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/terminalLogos.md): Get the terminal logo
+- [PATCH /merchants/{merchantId}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalSettings.md): Update terminal settings
+- [PATCH /merchants/{merchantId}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalLogos.md): Update the terminal logo
+- [GET /merchants/{merchantId}/stores/{reference}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(reference)/terminalSettings.md): Get terminal settings
+- [GET /merchants/{merchantId}/stores/{reference}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(reference)/terminalLogos.md): Get the terminal logo
+- [PATCH /merchants/{merchantId}/stores/{reference}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(reference)/terminalSettings.md): Update terminal settings
+- [PATCH /merchants/{merchantId}/stores/{reference}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(reference)/terminalLogos.md): Update the terminal logo
+- [GET /stores/{storeId}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/stores/(storeId)/terminalLogos.md): Get the terminal logo
+- [PATCH /stores/{storeId}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/stores/(storeId)/terminalLogos.md): Update the terminal logo
+- [GET /stores/{storeId}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/stores/(storeId)/terminalSettings.md): Get terminal settings
+- [PATCH /stores/{storeId}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/stores/(storeId)/terminalSettings.md): Update terminal settings
+- [GET /terminals/{terminalId}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/terminals/(terminalId)/terminalSettings.md): Get terminal settings
+- [GET /terminals/{terminalId}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/terminals/(terminalId)/terminalLogos.md): Get the terminal logo
+- [PATCH /terminals/{terminalId}/terminalSettings](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/terminals/(terminalId)/terminalSettings.md): Update terminal settings
+- [PATCH /terminals/{terminalId}/terminalLogos](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/terminals/(terminalId)/terminalLogos.md): Update the logo
+- [GET /companies/{companyId}/androidApps](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/androidApps.md): Get a list of Android apps
+- [GET /companies/{companyId}/androidCertificates](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/androidCertificates.md): Get a list of Android certificates
+- [GET /companies/{companyId}/androidApps/{id}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/androidApps/(id).md): Get Android app
+- [POST /companies/{companyId}/androidApps](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/androidApps.md): Upload Android App
+- [POST /companies/{companyId}/androidCertificates](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/androidCertificates.md): Upload Android certificate
+- [PATCH /companies/{companyId}/androidApps/{id}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/androidApps/(id).md): Reprocess Android App
+- [POST /merchants/{merchantId}/splitConfigurations](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/splitConfigurations.md): Create a split configuration profile
+- [POST /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/splitConfigurations/(splitConfigurationId).md): Create a rule
+- [GET /merchants/{merchantId}/splitConfigurations](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations.md): Get a list of split configuration profiles
+- [GET /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/(splitConfigurationId).md): Get a split configuration profile
+- [PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId).md): Update the description of the split configuration profile
+- [PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId).md): Update the split conditions
+- [PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId}/splitLogic/{splitLogicId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId)/splitLogic/(splitLogicId).md): Update the split logic
+- [DELETE /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/merchants/(merchantId)/splitConfigurations/(splitConfigurationId).md): Delete a split configuration profile
+- [DELETE /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId).md): Delete a rule
+- [GET /companies/{companyId}/clientCertificates](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/clientCertificates.md): Retrieve all valid client certificates for this company
+
+- [POST /companies/{companyId}/clientCertificates](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/clientCertificates.md): Generate a client certificate
+
+- [POST /companies/{companyId}/campaignManagement](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement.md): Create a donation campaign
+- [GET /companies/{companyId}/campaignManagement/accountHolders/{accountHolderId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/campaignManagement/accountHolders/(accountHolderId).md): Get the donation campaigns for an account holder
+- [DELETE /companies/{companyId}/campaignManagement/{donationCampaignId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/companies/(companyId)/campaignManagement/(donationCampaignId).md): Delete a donation campaign
+- [PATCH /companies/{companyId}/campaignManagement/{donationCampaignId}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/campaignManagement/(donationCampaignId).md): Update a donation campaign
+- [POST /companies/{companyId}/campaignManagement/{donationCampaignId}/status/{status}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/(donationCampaignId)/status/(status).md): Activate or end a donation campaign
+- [POST /companies/{companyId}/nonprofits](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/nonprofits.md): Get a list of nonprofits
+- [GET /companies/{companyId}/terminalThemes](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes.md): List terminal themes
+- [GET /companies/{companyId}/terminalThemes/{id}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/(id).md): Get a terminal theme
+- [POST /companies/{companyId}/terminalThemes](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes.md): Create a terminal theme
+- [POST /companies/{companyId}/terminalThemes/{id}/assets](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets.md): Add an asset to a terminal theme
+- [POST /companies/{companyId}/terminalThemes/{id}/assets/replace](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/replace.md): Replace a theme asset
+- [DELETE /companies/{companyId}/terminalThemes/{id}/assets](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/companies/(companyId)/terminalThemes/(id)/assets.md): Delete an asset from a terminal theme
+- [PATCH /companies/{companyId}/terminalThemes/{id}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/companies/(companyId)/terminalThemes/(id).md): Update the metadata of a terminal theme
+- [POST /companies/{companyId}/terminalThemes/{id}/apply](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/apply.md): Apply a terminal theme
+- [POST /companies/{companyId}/terminalThemes/unapply](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/unapply.md): Unapply a terminal theme
+- [DELETE /companies/{companyId}/terminalThemes/{id}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/companies/(companyId)/terminalThemes/(id).md): Delete a terminal theme
+- [GET /merchants/{merchantId}/terminalThemes](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes.md): List terminal themes
+- [GET /merchants/{merchantId}/terminalThemes/{id}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/(id).md): Get a terminal theme
+- [POST /merchants/{merchantId}/terminalThemes](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes.md): Create a terminal theme
+- [POST /merchants/{merchantId}/terminalThemes/{id}/assets](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets.md): Add an asset to a terminal theme
+- [POST /merchants/{merchantId}/terminalThemes/{id}/assets/replace](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace.md): Replace a theme asset
+- [DELETE /merchants/{merchantId}/terminalThemes/{id}/assets](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/merchants/(merchantId)/terminalThemes/(id)/assets.md): Delete an asset from a terminal theme
+- [PATCH /merchants/{merchantId}/terminalThemes/{id}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalThemes/(id).md): Update the metadata of a terminal theme
+- [POST /merchants/{merchantId}/terminalThemes/{id}/apply](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/apply.md): Apply a terminal theme
+- [POST /merchants/{merchantId}/terminalThemes/unapply](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/unapply.md): Unapply a terminal theme
+- [DELETE /merchants/{merchantId}/terminalThemes/{id}](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/delete/merchants/(merchantId)/terminalThemes/(id).md): Delete a terminal theme
+- [POST /stores/{storeId}/terminalThemes/{id}/apply](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/stores/(storeId)/terminalThemes/(id)/apply.md): Apply a terminal theme
+- [POST /stores/{storeId}/terminalThemes/unapply](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/stores/(storeId)/terminalThemes/unapply.md): Unapply a terminal theme
+- [POST /terminals/{terminalId}/terminalThemes/{id}/apply](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/terminals/(terminalId)/terminalThemes/(id)/apply.md): Apply a terminal theme
+- [POST /terminals/{terminalId}/terminalThemes/unapply](https://docs.adyen.com/api-explorer/api-explorer/Management/latest/post/terminals/(terminalId)/terminalThemes/unapply.md): Unapply a terminal theme
+
+### Webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/overview.md)
+- [POST merchant.created](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/post/merchant.created.md): Merchant account created
+- [POST merchant.updated](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/post/merchant.updated.md): Merchant account capability updated
+- [POST paymentMethod.created](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/post/paymentMethod.created.md): Payment method created
+- [POST paymentMethodRequest.scheduledForRemoval](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.scheduledForRemoval.md): Payment method request scheduled for removal
+- [POST paymentMethodRequest.removed](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/post/paymentMethodRequest.removed.md): Payment method request removed
+- [POST terminalSettings.modified](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/post/terminalSettings.modified.md): Terminal settings updated
+- [POST terminalBoarding.triggered](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/post/terminalBoarding.triggered.md): Result of terminal boarding
+- [POST terminalAssignment.completed](https://docs.adyen.com/api-explorer/api-explorer/ManagementNotification/latest/post/terminalAssignment.completed.md): Terminal assignment completed
+
+### Balance (deprecated)
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/BalanceControlv1/latest/overview.md)
+- [POST /balanceTransfer](https://docs.adyen.com/api-explorer/api-explorer/BalanceControlv1/latest/post/balanceTransfer.md): Start a balance transfer
+
+### Balance control
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/BalanceControl/latest/overview.md)
+- [GET /balanceOverview/companies/{companyAccountCode}/balances](https://docs.adyen.com/api-explorer/api-explorer/BalanceControl/latest/get/balanceOverview/companies/(companyAccountCode)/balances.md): View the available balances for all merchant accounts under your company.
+- [GET /balanceOverview/merchants/{merchantAccountCode}/balances](https://docs.adyen.com/api-explorer/api-explorer/BalanceControl/latest/get/balanceOverview/merchants/(merchantAccountCode)/balances.md): View all balances available for your merchant account.
+- [POST /balanceTransfers](https://docs.adyen.com/api-explorer/api-explorer/BalanceControl/latest/post/balanceTransfers.md): Performs a balance transfer
+
+## Foreign Exchange
+
+### Foreign exchange
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/foreignexchange/latest/overview.md)
+- [POST /rates/calculate](https://docs.adyen.com/api-explorer/api-explorer/foreignexchange/latest/post/rates/calculate.md): Calculate amount in a different currency
+
+## Platforms and financial products
+
+### Legal Entity Management
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/overview.md)
+- [POST /legalEntities](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities.md): Create a legal entity
+- [GET /legalEntities/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/legalEntities/(id).md): Get a legal entity
+- [PATCH /legalEntities/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/patch/legalEntities/(id).md): Update a legal entity
+- [GET /legalEntities/{id}/businessLines](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/legalEntities/(id)/businessLines.md): Get all business lines under a legal entity
+- [POST /legalEntities/{id}/checkVerificationErrors](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/checkVerificationErrors.md): Check a legal entity's verification errors
+- [POST /legalEntities/{id}/confirmDataReview](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/confirmDataReview.md): Confirm data review
+- [POST /legalEntities/{id}/requestPeriodicReview](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/requestPeriodicReview.md): Request periodic data review.
+- [POST /transferInstruments](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/transferInstruments.md): Create a transfer instrument
+- [GET /transferInstruments/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/transferInstruments/(id).md): Get a transfer instrument
+- [PATCH /transferInstruments/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/patch/transferInstruments/(id).md): Update a transfer instrument
+- [DELETE /transferInstruments/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/delete/transferInstruments/(id).md): Delete a transfer instrument
+- [POST /businessLines](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/businessLines.md): Create a business line
+- [GET /businessLines/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/businessLines/(id).md): Get a business line
+- [DELETE /businessLines/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/delete/businessLines/(id).md): Delete a business line
+- [PATCH /businessLines/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/patch/businessLines/(id).md): Update a business line
+- [POST /documents](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/documents.md): Upload a document for verification checks
+- [GET /documents/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/documents/(id).md): Get a document
+- [PATCH /documents/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/patch/documents/(id).md): Update a document
+- [DELETE /documents/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/delete/documents/(id).md): Delete a document
+- [POST /legalEntities/{id}/termsOfService](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/termsOfService.md): Get Terms of Service document
+- [PATCH /legalEntities/{id}/termsOfService/{termsofservicedocumentid}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/patch/legalEntities/(id)/termsOfService/(termsofservicedocumentid).md): Accept Terms of Service
+- [GET /legalEntities/{id}/termsOfServiceAcceptanceInfos](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/legalEntities/(id)/termsOfServiceAcceptanceInfos.md): Get Terms of Service information for a legal entity
+- [GET /legalEntities/{id}/acceptedTermsOfServiceDocument/{termsofserviceacceptancereference}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/legalEntities/(id)/acceptedTermsOfServiceDocument/(termsofserviceacceptancereference).md): Get accepted Terms of Service document
+- [GET /legalEntities/{id}/termsOfServiceStatus](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/legalEntities/(id)/termsOfServiceStatus.md): Get Terms of Service status
+- [POST /legalEntities/{id}/pciQuestionnaires/generatePciTemplates](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/generatePciTemplates.md): Generate PCI questionnaire
+- [POST /legalEntities/{id}/pciQuestionnaires/signPciTemplates](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/signPciTemplates.md): Sign PCI questionnaire
+- [GET /legalEntities/{id}/pciQuestionnaires](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/legalEntities/(id)/pciQuestionnaires.md): Get PCI questionnaire details
+- [GET /legalEntities/{id}/pciQuestionnaires/{pciid}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/legalEntities/(id)/pciQuestionnaires/(pciid).md): Get PCI questionnaire
+- [POST /legalEntities/{id}/pciQuestionnaires/signingRequired](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/signingRequired.md): Calculate PCI status of a legal entity
+- [POST /legalEntities/{id}/setTaxElectronicDeliveryConsent](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/setTaxElectronicDeliveryConsent.md): Set the consent status for electronic delivery of tax forms
+- [POST /legalEntities/{id}/checkTaxElectronicDeliveryConsent](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/checkTaxElectronicDeliveryConsent.md): Check the status of consent for electronic delivery of tax forms
+- [POST /legalEntities/{id}/onboardingLinks](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/post/legalEntities/(id)/onboardingLinks.md): Get a link to an Adyen-hosted onboarding page
+- [GET /themes](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/themes.md): Get a list of hosted onboarding page themes
+- [GET /themes/{id}](https://docs.adyen.com/api-explorer/api-explorer/legalentity/latest/get/themes/(id).md): Get an onboarding link theme
+
+### Configuration
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/overview.md)
+- [GET /balancePlatforms/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(id).md): Get a balance platform
+- [GET /balancePlatforms/{id}/accountHolders](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/accountHolders.md): Get all account holders under a balance platform
+- [GET /balancePlatforms/{id}/transactionRules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transactionRules.md): Get all transaction rules for a balance platform
+- [POST /accountHolders](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/accountHolders.md): Create an account holder
+- [PATCH /accountHolders/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/accountHolders/(id).md): Update an account holder
+- [GET /accountHolders/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/accountHolders/(id).md): Get an account holder
+- [GET /accountHolders/{id}/balanceAccounts](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/accountHolders/(id)/balanceAccounts.md): Get all balance accounts of an account holder
+- [GET /accountHolders/{id}/taxForms](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/accountHolders/(id)/taxForms.md): Get a tax form
+- [GET /accountHolders/{id}/taxFormSummary](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/accountHolders/(id)/taxFormSummary.md): Get summary of tax forms for an account holder
+- [GET /accountHolders/{id}/transactionRules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/accountHolders/(id)/transactionRules.md): Get all transaction rules for an account holder
+- [POST /balanceAccounts](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/balanceAccounts.md): Create a balance account
+- [PATCH /balanceAccounts/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/balanceAccounts/(id).md): Update a balance account
+- [GET /balanceAccounts/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(id).md): Get a balance account
+- [GET /balanceAccounts/{id}/paymentInstruments](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/paymentInstruments.md): Get payment instruments linked to a balance account
+- [GET /balanceAccounts/{id}/transactionRules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transactionRules.md): Get all transaction rules for a balance account
+- [POST /balancePlatforms/{balancePlatformId}/webhooks/{webhookId}/settings](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings.md): Create a balance webhook setting
+- [PATCH /balancePlatforms/{balancePlatformId}/webhooks/{webhookId}/settings/{settingId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId).md): Update a balance webhook setting by id
+- [GET /balancePlatforms/{balancePlatformId}/webhooks/{webhookId}/settings/{settingId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId).md): Get a balance webhook setting by id
+- [GET /balancePlatforms/{balancePlatformId}/webhooks/{webhookId}/settings](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings.md): Get all balance webhook settings
+- [DELETE /balancePlatforms/{balancePlatformId}/webhooks/{webhookId}/settings/{settingId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId).md): Delete a balance webhook setting by id
+- [GET /balancePlatforms/{balancePlatformId}/payoutSchedules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules.md): Get all managed payout schedules on your balance platform
+- [GET /balancePlatforms/{balancePlatformId}/payoutSchedules/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules/(id).md): Get a specific managed payout schedule on your balance platform
+- [POST /balanceAccounts/{balanceAccountId}/payoutSchedules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/payoutSchedules.md): Apply a managed payout schedule to a balance account
+- [GET /balanceAccounts/{balanceAccountId}/payoutSchedules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/payoutSchedules.md): Get all managed payout schedules on a balance account
+- [GET /balanceAccounts/{balanceAccountId}/payoutSchedules/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/payoutSchedules/(id).md): Get a specific managed payout schedule on a balance account
+- [PATCH /balanceAccounts/{balanceAccountId}/payoutSchedules/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/payoutSchedules/(id).md): Update a managed payout schedule on a balance account
+- [DELETE /balanceAccounts/{balanceAccountId}/payoutSchedules/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/balanceAccounts/(balanceAccountId)/payoutSchedules/(id).md): Delete a managed payout schedule on a balance account
+- [GET /balanceAccounts/{balanceAccountId}/payoutSchedules/{id}/executions](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/payoutSchedules/(id)/executions.md): View executions of a managed payout schedule
+- [POST /balanceAccounts/{balanceAccountId}/sweeps](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/sweeps.md): Create a sweep
+- [PATCH /balanceAccounts/{balanceAccountId}/sweeps/{sweepId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/sweeps/(sweepId).md): Update a sweep
+- [GET /balanceAccounts/{balanceAccountId}/sweeps](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps.md): Get all sweeps for a balance account
+- [GET /balanceAccounts/{balanceAccountId}/sweeps/{sweepId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId).md): Get a sweep
+- [DELETE /balanceAccounts/{balanceAccountId}/sweeps/{sweepId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/balanceAccounts/(balanceAccountId)/sweeps/(sweepId).md): Delete a sweep
+- [GET /balanceAccounts/{balanceAccountId}/sweeps/{sweepId}/executions](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/executions.md): View executions of a custom payout schedule
+- [POST /paymentInstruments/{paymentInstrumentId}/authorisedCardUsers](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/paymentInstruments/(paymentInstrumentId)/authorisedCardUsers.md): Create authorized users for a card.
+- [GET /paymentInstruments/{paymentInstrumentId}/authorisedCardUsers](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/paymentInstruments/(paymentInstrumentId)/authorisedCardUsers.md): Get authorized users for a card.
+- [PATCH /paymentInstruments/{paymentInstrumentId}/authorisedCardUsers](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/paymentInstruments/(paymentInstrumentId)/authorisedCardUsers.md): Update the authorized users for a card.
+- [DELETE /paymentInstruments/{paymentInstrumentId}/authorisedCardUsers](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/paymentInstruments/(paymentInstrumentId)/authorisedCardUsers.md): Delete the authorized users for a card.
+- [POST /balanceAccounts/{balanceAccountId}/recurringTopUps](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/recurringTopUps.md): Create recurring top up
+- [GET /balanceAccounts/{balanceAccountId}/recurringTopUps](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/recurringTopUps.md): Get recurring top ups for a specific balanceAccountId
+- [PATCH /balanceAccounts/{balanceAccountId}/recurringTopUps/{topUpId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/recurringTopUps/(topUpId).md): Update a RecurringTopUp
+- [DELETE /balanceAccounts/{balanceAccountId}/recurringTopUps/{topUpId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/balanceAccounts/(balanceAccountId)/recurringTopUps/(topUpId).md): Delete a recurring top up
+- [POST /paymentInstruments](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/paymentInstruments.md): Create a payment instrument
+- [PATCH /paymentInstruments/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/paymentInstruments/(id).md): Update a payment instrument
+- [GET /paymentInstruments/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/paymentInstruments/(id).md): Get a payment instrument
+- [POST /paymentInstruments/reveal](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/paymentInstruments/reveal.md): Reveal the data of a payment instrument
+- [GET /paymentInstruments/{id}/reveal](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal.md): Get the PAN of a payment instrument
+- [GET /paymentInstruments/{id}/networkTokens](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/networkTokens.md): List network tokens
+- [GET /paymentInstruments/{id}/transactionRules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/transactionRules.md): Get all transaction rules for a payment instrument
+- [GET /paymentInstruments/{id}/networkTokenActivationData](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/networkTokenActivationData.md): Get network token activation data
+- [POST /paymentInstruments/{id}/networkTokenActivationData](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/paymentInstruments/(id)/networkTokenActivationData.md): Create network token provisioning data
+- [POST /paymentInstrumentGroups](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/paymentInstrumentGroups.md): Create a payment instrument group
+- [GET /paymentInstrumentGroups/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/paymentInstrumentGroups/(id).md): Get a payment instrument group
+- [GET /paymentInstrumentGroups/{id}/transactionRules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/paymentInstrumentGroups/(id)/transactionRules.md): Get all transaction rules for a payment instrument group
+- [POST /transactionRules](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/transactionRules.md): Create a transaction rule
+- [GET /transactionRules/{transactionRuleId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/transactionRules/(transactionRuleId).md): Get a transaction rule
+- [PATCH /transactionRules/{transactionRuleId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/transactionRules/(transactionRuleId).md): Update a transaction rule
+- [DELETE /transactionRules/{transactionRuleId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/transactionRules/(transactionRuleId).md): Delete a transaction rule
+- [POST /validateBankAccountIdentification](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/validateBankAccountIdentification.md): Validate a bank account
+- [GET /networkTokens/{networkTokenId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/networkTokens/(networkTokenId).md): Get a network token
+- [PATCH /networkTokens/{networkTokenId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/networkTokens/(networkTokenId).md): Update a network token
+- [GET /grantAccounts/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/grantAccounts/(id).md): Get a grant account
+- [GET /grantOffers](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/grantOffers.md): Get all available grant offers
+- [GET /grantOffers/{grantOfferId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/grantOffers/(grantOfferId).md): Get a grant offer
+- [GET /cardorders](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/cardorders.md): Get a list of card orders
+- [GET /cardorders/{id}/items](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/cardorders/(id)/items.md): Get card order items
+- [GET /mandates](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/mandates.md): Get a list of mandates
+- [GET /mandates/{mandateId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/mandates/(mandateId).md): Get a specific mandate
+- [PATCH /mandates/{mandateId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/mandates/(mandateId).md): Amend a mandate
+- [POST /mandates/{mandateId}/cancel](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/mandates/(mandateId)/cancel.md): Cancel a mandate
+- [POST /pins/change](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/pins/change.md): Change a card PIN
+- [POST /pins/reveal](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/pins/reveal.md): Reveal a card PIN
+- [GET /publicKey](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/publicKey.md): Get an RSA public key
+- [POST /transferRoutes/calculate](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/transferRoutes/calculate.md): Calculate transfer routes
+- [POST /scaDevices](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/scaDevices.md): Begin SCA device registration
+- [DELETE /scaDevices/{deviceId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/scaDevices/(deviceId).md): Delete an SCA device
+- [PATCH /scaDevices/{deviceId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/scaDevices/(deviceId).md): Finish registration process for a SCA device
+- [POST /scaDevices/{deviceId}/scaAssociations](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/scaDevices/(deviceId)/scaAssociations.md): Create a new SCA association for a device
+- [POST /balanceAccounts/{id}/transferLimits](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/balanceAccounts/(id)/transferLimits.md): Create a transfer limit
+- [POST /balanceAccounts/{id}/transferLimits/approve](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/balanceAccounts/(id)/transferLimits/approve.md): Approve pending transfer limits
+- [GET /balanceAccounts/{id}/transferLimits/current](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/current.md): Get all current transfer limits
+- [GET /balanceAccounts/{id}/transferLimits](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits.md): Filter and view the transfer limits
+- [GET /balanceAccounts/{id}/transferLimits/{transferLimitId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/(transferLimitId).md): Get the details of a transfer limit
+- [DELETE /balanceAccounts/{id}/transferLimits/{transferLimitId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/balanceAccounts/(id)/transferLimits/(transferLimitId).md): Delete a scheduled or pending transfer limit
+- [POST /balancePlatforms/{id}/transferLimits](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/balancePlatforms/(id)/transferLimits.md): Create a transfer limit
+- [GET /balancePlatforms/{id}/transferLimits](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits.md): Filter and view the transfer limits
+- [GET /balancePlatforms/{id}/transferLimits/{transferLimitId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/(transferLimitId).md): Get the details of a transfer limit
+- [DELETE /balancePlatforms/{id}/transferLimits/{transferLimitId}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/balancePlatforms/(id)/transferLimits/(transferLimitId).md): Delete a scheduled or pending transfer limit
+- [POST /registeredDevices](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/registeredDevices.md): Initiate the registration of an SCA device
+- [PATCH /registeredDevices/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/registeredDevices/(id).md): Complete the registration of an SCA device
+- [GET /registeredDevices](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/registeredDevices.md): Get a list of registered SCA devices
+- [POST /registeredDevices/{deviceId}/associations](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/post/registeredDevices/(deviceId)/associations.md): Initiate an association between an SCA device and a resource
+- [PATCH /registeredDevices/{deviceId}/associations](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/registeredDevices/(deviceId)/associations.md): Complete an association between an SCA device and a resource
+- [DELETE /registeredDevices/{id}](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/registeredDevices/(id).md): Delete a registration of an SCA device
+- [GET /scaAssociations](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/get/scaAssociations.md): Get a list of devices associated with an entity
+- [DELETE /scaAssociations](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/delete/scaAssociations.md): Delete association to devices
+- [PATCH /scaAssociations](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform/latest/patch/scaAssociations.md): Approve a pending approval association
+
+### Session authentication
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/sessionauthentication/latest/overview.md)
+- [POST /sessions](https://docs.adyen.com/api-explorer/api-explorer/sessionauthentication/latest/post/sessions.md): Create a session token
+
+### Transfers
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/overview.md)
+- [POST /transfers](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/post/transfers.md): Transfer funds
+- [POST /transfers/approve](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/post/transfers/approve.md): Approve initiated transfers
+- [POST /transfers/cancel](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/post/transfers/cancel.md): Cancel initiated transfers
+- [POST /transfers/{transferId}/returns](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/post/transfers/(transferId)/returns.md): Return a transfer
+- [GET /transfers](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/get/transfers.md): Get all transfers
+- [GET /transfers/{id}](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/get/transfers/(id).md): Get a transfer
+- [GET /transactions](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/get/transactions.md): Get all transactions
+- [GET /transactions/{id}](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/get/transactions/(id).md): Get a transaction
+- [POST /grants](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/post/grants.md): Request a grant payout
+- [GET /grants](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/get/grants.md): Get a capital account
+- [GET /grants/{id}](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/get/grants/(id).md): Get grant reference details
+- [POST /cashouts](https://docs.adyen.com/api-explorer/api-explorer/transfers/latest/post/cashouts.md): Initiate a cashout
+
+### Account to Account payments
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/a2aissuer-api/latest/overview.md)
+- [POST /payments/details](https://docs.adyen.com/api-explorer/api-explorer/a2aissuer-api/latest/post/payments/details.md): Retrieve payment details
+- [POST /payments/confirm](https://docs.adyen.com/api-explorer/api-explorer/a2aissuer-api/latest/post/payments/confirm.md): Confirm payment
+- [POST /payments/cancel](https://docs.adyen.com/api-explorer/api-explorer/a2aissuer-api/latest/post/payments/cancel.md): Cancel payment
+- [POST /ideal/profile/register](https://docs.adyen.com/api-explorer/api-explorer/a2aissuer-api/latest/post/ideal/profile/register.md): Register an iDEAL profile
+- [POST /ideal/profile/auth-link](https://docs.adyen.com/api-explorer/api-explorer/a2aissuer-api/latest/post/ideal/profile/auth-link.md): Manage an iDEAL profile
+- [POST /ideal/profile/authenticate](https://docs.adyen.com/api-explorer/api-explorer/a2aissuer-api/latest/post/ideal/profile/authenticate.md): Authenticate iDEAL profile
+
+### Raise Disputes
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/overview.md)
+- [GET /disputes/{disputeId}/attachments](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments.md): Get all attachments linked to a raised dispute
+- [POST /disputes/{disputeId}/attachments](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/post/disputes/(disputeId)/attachments.md): Add an attachment to a dispute
+- [GET /disputes/{disputeId}/attachments/{attachmentId}](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId).md): Get an attachment
+- [DELETE /disputes/{disputeId}/attachments/{attachmentId}](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/delete/disputes/(disputeId)/attachments/(attachmentId).md): Delete attachment from a dispute
+- [GET /disputes](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/get/disputes.md): Get a list of raised disputes
+- [POST /disputes](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/post/disputes.md): Raise a dispute
+- [GET /disputes/{id}](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/get/disputes/(id).md): Get dispute by ID
+- [PATCH /disputes/{id}](https://docs.adyen.com/api-explorer/api-explorer/transfers-api/latest/patch/disputes/(id).md): Update a raised dispute
+
+### Capital
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/overview.md)
+- [GET /dynamicOffers](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/get/dynamicOffers.md): Get all available dynamic offers
+- [POST /dynamicOffers/{id}/calculate](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/post/dynamicOffers/(id)/calculate.md): Calculate a preliminary offer for a selected financing amount
+- [POST /dynamicOffers/{id}/grantOffer](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/post/dynamicOffers/(id)/grantOffer.md): Create a static offer for a selected financing amount
+- [GET /grantOffers](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/get/grantOffers.md): Get all available static offers
+- [GET /grantOffers/{id}](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/get/grantOffers/(id).md): Get the details of a static offer
+- [POST /grants](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/post/grants.md): Make a request for a grant
+- [GET /grants](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/get/grants.md): Get all the grants of an account holder
+- [GET /grants/{grantId}](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/get/grants/(grantId).md): Get the details of a grant
+- [GET /grants/{grantId}/disbursements](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/get/grants/(grantId)/disbursements.md): Get all the disbursements of a grant
+- [GET /grants/{grantId}/disbursements/{disbursementId}](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/get/grants/(grantId)/disbursements/(disbursementId).md): Get disbursement details
+- [PATCH /grants/{grantId}/disbursements/{disbursementId}](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/patch/grants/(grantId)/disbursements/(disbursementId).md): Update the repayment configuration of a disbursement
+- [GET /grantAccounts/{id}](https://docs.adyen.com/api-explorer/api-explorer/capital/latest/get/grantAccounts/(id).md): Get the information of your grant account
+
+### Open banking
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/open-banking/latest/overview.md)
+- [POST /accountVerification/routes](https://docs.adyen.com/api-explorer/api-explorer/open-banking/latest/post/accountVerification/routes.md): Create routes for account verification
+- [GET /accountVerification/reports/{code}](https://docs.adyen.com/api-explorer/api-explorer/open-banking/latest/get/accountVerification/reports/(code).md): Get account verification report
+
+### Configuration webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/overview.md)
+- [POST balancePlatform.accountHolder.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.accountHolder.created.md): Account holder created
+- [POST balancePlatform.accountHolder.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.accountHolder.updated.md): Account holder updated
+- [POST balancePlatform.balanceAccount.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.created.md): Balance account created
+- [POST balancePlatform.balanceAccount.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.updated.md): Balance account updated
+- [POST balancePlatform.balanceAccountSweep.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.created.md): Sweep created
+- [POST balancePlatform.balanceAccountSweep.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.updated.md): Sweep updated
+- [POST balancePlatform.balanceAccountSweep.deleted](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweep.deleted.md): Sweep deleted
+- [POST balancePlatform.balanceAccountSweepExecution.succeeded](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.succeeded.md): Sweep execution succeeded
+- [POST balancePlatform.balanceAccountSweepExecution.failed](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.failed.md): Sweep execution failed
+- [POST balancePlatform.balanceAccountSweepExecution.skipped](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.skipped.md): Sweep skipped
+- [POST balancePlatform.paymentInstrument.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.created.md): Payment instrument created
+- [POST balancePlatform.paymentInstrument.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.paymentInstrument.updated.md): Payment instrument updated
+- [POST balancePlatform.cardorder.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.created.md): Card order created
+- [POST balancePlatform.cardorder.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.cardorder.updated.md): Card order updated
+- [POST balancePlatform.mandate.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.mandate.created.md): Mandate created
+- [POST balancePlatform.mandate.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.mandate.updated.md): Mandate updated
+- [POST balancePlatform.networkToken.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.created.md): Network token created
+- [POST balancePlatform.networkToken.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.updated.md): Network token updated
+- [POST balancePlatform.balanceAccount.recurringTopUp.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.recurringTopUp.created.md): Recurring top-up created
+- [POST balancePlatform.balanceAccount.recurringTopUp.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.recurringTopUp.updated.md): Recurring top-up updated
+- [POST balancePlatform.balanceAccount.recurringTopUp.deleted](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccount.recurringTopUp.deleted.md): Recurring top-up deleted
+- [POST balancePlatform.balanceAccountPayoutSchedule.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutSchedule.created.md): Managed payout schedule created on a balance account
+- [POST balancePlatform.balanceAccountPayoutSchedule.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutSchedule.updated.md): Managed payout schedule updated on a balance account
+- [POST balancePlatform.balanceAccountPayoutSchedule.deleted](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutSchedule.deleted.md): Managed payout schedule deleted from a balance account
+- [POST balancePlatform.balancePlatformPayoutSchedule.created](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.created.md): Managed payout schedule created on your balance platform
+- [POST balancePlatform.balancePlatformPayoutSchedule.updated](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.updated.md): Managed payout schedule updated on your balance platform
+- [POST balancePlatform.balancePlatformPayoutSchedule.deleted](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balancePlatformPayoutSchedule.deleted.md): Managed payout schedule deleted from your balance platform
+- [POST balancePlatform.balanceAccountPayoutScheduleAutoApplication.failed](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleAutoApplication.failed.md): Automatic application of a managed payout schedule failed
+- [POST balancePlatform.balanceAccountPayoutScheduleExecution.succeeded](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.succeeded.md): Payout schedule execution succeeded
+- [POST balancePlatform.balanceAccountPayoutScheduleExecution.skipped](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.skipped.md): Payout schedule execution skipped
+- [POST balancePlatform.balanceAccountPayoutScheduleExecution.failed](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountPayoutScheduleExecution.failed.md): Payout schedule execution failed
+- [POST balancePlatform.score.triggered](https://docs.adyen.com/api-explorer/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.score.triggered.md): Score signal triggered
+
+### Onboarding on invite webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/onboarding-on-invite-webhooks/latest/overview.md)
+- [POST balancePlatform.accountHolder.onboarded](https://docs.adyen.com/api-explorer/api-explorer/onboarding-on-invite-webhooks/latest/post/balancePlatform.accountHolder.onboarded.md): Account holder onboarded
+
+### Transfer webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/transfer-webhooks/latest/overview.md)
+- [POST balancePlatform.transfer.created](https://docs.adyen.com/api-explorer/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created.md): Transfer created
+- [POST balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated.md): Transfer updated
+
+### Transaction webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/transaction-webhooks/latest/overview.md)
+- [POST balancePlatform.transaction.created](https://docs.adyen.com/api-explorer/api-explorer/transaction-webhooks/latest/post/balancePlatform.transaction.created.md): Transaction created
+
+### Dispute webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/dispute-webhooks/latest/overview.md)
+- [POST balancePlatform.dispute.created](https://docs.adyen.com/api-explorer/api-explorer/dispute-webhooks/latest/post/balancePlatform.dispute.created.md): Dispute created
+- [POST balancePlatform.dispute.updated](https://docs.adyen.com/api-explorer/api-explorer/dispute-webhooks/latest/post/balancePlatform.dispute.updated.md): Dispute updated
+
+### Managed Risk webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/overview.md)
+- [POST balancePlatform.managedRisk.balance.block.released](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.balance.block.released.md): Blocked funds released
+- [POST balancePlatform.managedRisk.reserveWaiver.applied](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.reserveWaiver.applied.md): Reserve waiver applied
+- [POST balancePlatform.managedRisk.reserveWaiver.removed](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.reserveWaiver.removed.md): Reserve waiver removed
+- [POST balancePlatform.managedRisk.rollingReserve.applied](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.applied.md): Rolling reserve applied
+- [POST balancePlatform.managedRisk.rollingReserve.lifted](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.lifted.md): Rolling reserve lifted
+- [POST balancePlatform.managedRisk.rollingReserve.updated](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.rollingReserve.updated.md): Rolling reserve updated
+- [POST balancePlatform.managedRisk.settlementDelay.lifted](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.settlementDelay.lifted.md): Settlement delay lifted
+- [POST balancePlatform.managedRisk.settlementDelay.updated](https://docs.adyen.com/api-explorer/api-explorer/managed-risk-webhooks/latest/post/balancePlatform.managedRisk.settlementDelay.updated.md): Settlement delay updated
+
+### Capital webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/capital-webhooks/latest/overview.md)
+- [POST balancePlatform.capital.dynamicOffer.created](https://docs.adyen.com/api-explorer/api-explorer/capital-webhooks/latest/post/balancePlatform.capital.dynamicOffer.created.md): Dynamic offer created
+- [POST balancePlatform.balanceAccountHolder.capitalOffer.created](https://docs.adyen.com/api-explorer/api-explorer/capital-webhooks/latest/post/balancePlatform.balanceAccountHolder.capitalOffer.created.md): Static offer created
+- [POST balancePlatform.grants.created](https://docs.adyen.com/api-explorer/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.created.md): Grant created
+- [POST balancePlatform.grants.updated](https://docs.adyen.com/api-explorer/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.updated.md): Grant updated
+
+### Balance webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/balance-webhooks/latest/overview.md)
+- [POST balancePlatform.balanceAccount.balance.block.released](https://docs.adyen.com/api-explorer/api-explorer/balance-webhooks/latest/post/balancePlatform.balanceAccount.balance.block.released.md): Blocked funds released
+- [POST balancePlatform.balanceAccount.balance.updated](https://docs.adyen.com/api-explorer/api-explorer/balance-webhooks/latest/post/balancePlatform.balanceAccount.balance.updated.md): Balance updated
+
+### Negative balance warning webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/negative-balance-compensation-warning-webhooks/latest/overview.md)
+- [POST balancePlatform.negativeBalanceCompensationWarning.scheduled](https://docs.adyen.com/api-explorer/api-explorer/negative-balance-compensation-warning-webhooks/latest/post/balancePlatform.negativeBalanceCompensationWarning.scheduled.md): Negative balance compensation scheduled
+
+### Payment webhooks (deprecated)
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/payment-webhooks/latest/overview.md)
+- [POST balancePlatform.payment.created](https://docs.adyen.com/api-explorer/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.created.md): Payment authorisation, refund, or funds transfer initiated
+- [POST balancePlatform.payment.updated](https://docs.adyen.com/api-explorer/api-explorer/payment-webhooks/latest/post/balancePlatform.payment.updated.md): Payment authorisation expired or cancelled
+- [POST balancePlatform.outgoingTransfer.created](https://docs.adyen.com/api-explorer/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.created.md): Outgoing transfer created
+- [POST balancePlatform.outgoingTransfer.updated](https://docs.adyen.com/api-explorer/api-explorer/payment-webhooks/latest/post/balancePlatform.outgoingTransfer.updated.md): Outgoing transfer updated
+- [POST balancePlatform.incomingTransfer.created](https://docs.adyen.com/api-explorer/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.created.md): Incoming transfer created
+- [POST balancePlatform.incomingTransfer.updated](https://docs.adyen.com/api-explorer/api-explorer/payment-webhooks/latest/post/balancePlatform.incomingTransfer.updated.md): Incoming transfer updated
+
+### Report webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/report-webhooks/latest/overview.md)
+- [POST balancePlatform.report.created](https://docs.adyen.com/api-explorer/api-explorer/report-webhooks/latest/post/balancePlatform.report.created.md): Report generated
+
+### Authentication webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/acs-webhook/latest/overview.md)
+- [POST balancePlatform.authentication.created](https://docs.adyen.com/api-explorer/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created.md): Cardholder authenticated
+- [POST balancePlatform.authentication.relayed](https://docs.adyen.com/api-explorer/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.relayed.md): Out-of-band authentication requested
+
+### Relayed authorization webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/relayed-authorisation-webhooks/latest/overview.md)
+- [POST balancePlatform.authorisation.relayed](https://docs.adyen.com/api-explorer/api-explorer/relayed-authorisation-webhooks/latest/post/balancePlatform.authorisation.relayed.md): Relayed authorization requested
+
+## Classic Payments
+
+### Classic Payments integration
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/overview.md)
+- [POST /authorise](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/authorise.md): Create an authorisation
+- [POST /authorise3d](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/authorise3d.md): Complete a 3DS authorisation
+- [POST /authorise3ds2](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/authorise3ds2.md): Complete a 3DS2 authorisation
+- [POST /getAuthenticationResult](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/getAuthenticationResult.md): Get the 3DS authentication result
+- [POST /retrieve3ds2Result](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/retrieve3ds2Result.md): Get the 3DS2 authentication result
+- [POST /capture](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/capture.md): Capture an authorisation
+- [POST /cancel](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/cancel.md): Cancel an authorisation
+- [POST /refund](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/refund.md): Refund a captured payment
+- [POST /cancelOrRefund](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/cancelOrRefund.md): Cancel or refund a payment
+- [POST /technicalCancel](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/technicalCancel.md): Cancel an authorisation using your reference
+- [POST /adjustAuthorisation](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/adjustAuthorisation.md): Change the authorised amount
+- [POST /donate](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/donate.md): Create a donation
+- [POST /voidPendingRefund](https://docs.adyen.com/api-explorer/api-explorer/Payment/latest/post/voidPendingRefund.md): Cancel an in-person refund
+
+## Classic Platforms
+
+### Account
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/overview.md)
+- [POST /createAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/createAccountHolder.md): Create an account holder
+- [POST /getAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/getAccountHolder.md): Get an account holder
+- [POST /updateAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/updateAccountHolder.md): Update an account holder
+- [POST /updateAccountHolderState](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/updateAccountHolderState.md): Update payout or processing state
+- [POST /suspendAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/suspendAccountHolder.md): Suspend an account holder
+- [POST /unSuspendAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/unSuspendAccountHolder.md): Unsuspend an account holder
+- [POST /closeAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/closeAccountHolder.md): Close an account holder
+- [POST /getTaxForm](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/getTaxForm.md): Get a tax form
+- [POST /closeStores](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/closeStores.md): Close stores
+- [POST /createAccount](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/createAccount.md): Create an account
+- [POST /updateAccount](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/updateAccount.md): Update an account
+- [POST /closeAccount](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/closeAccount.md): Close an account
+- [POST /uploadDocument](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/uploadDocument.md): Upload a document
+- [POST /getUploadedDocuments](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/getUploadedDocuments.md): Get documents
+- [POST /checkAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/checkAccountHolder.md): Trigger verification
+- [POST /deleteBankAccounts](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/deleteBankAccounts.md): Delete bank accounts
+- [POST /deletePayoutMethods](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/deletePayoutMethods.md): Delete payout methods
+- [POST /deleteLegalArrangements](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/deleteLegalArrangements.md): Delete legal arrangements
+- [POST /deleteShareholders](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/deleteShareholders.md): Delete shareholders
+- [POST /deleteSignatories](https://docs.adyen.com/api-explorer/api-explorer/Account/latest/post/deleteSignatories.md): Delete signatories
+
+### Fund
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/overview.md)
+- [POST /accountHolderBalance](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/post/accountHolderBalance.md): Get the balances of an account holder
+- [POST /accountHolderTransactionList](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/post/accountHolderTransactionList.md): Get a list of transactions
+- [POST /payoutAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/post/payoutAccountHolder.md): Pay out from an account to the account holder
+- [POST /transferFunds](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/post/transferFunds.md): Transfer funds between platform accounts
+- [POST /refundFundsTransfer](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/post/refundFundsTransfer.md): Refund a funds transfer
+- [POST /setupBeneficiary](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/post/setupBeneficiary.md): Designate a beneficiary account and transfer the benefactor's current balance
+- [POST /refundNotPaidOutTransfers](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/post/refundNotPaidOutTransfers.md): Refund all transactions of an account since the most recent payout
+- [POST /debitAccountHolder](https://docs.adyen.com/api-explorer/api-explorer/Fund/latest/post/debitAccountHolder.md): Send a direct debit request
+
+### Hosted onboarding (classic)
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Hop/latest/overview.md)
+- [POST /getOnboardingUrl](https://docs.adyen.com/api-explorer/api-explorer/Hop/latest/post/getOnboardingUrl.md): Get a link to a Adyen-hosted onboarding page
+- [POST /getPciQuestionnaireUrl](https://docs.adyen.com/api-explorer/api-explorer/Hop/latest/post/getPciQuestionnaireUrl.md): Get a link to a PCI compliance questionnaire
+
+### Notification configuration
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/NotificationConfiguration/latest/overview.md)
+- [POST /createNotificationConfiguration](https://docs.adyen.com/api-explorer/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration.md): Subscribe to notifications
+- [POST /getNotificationConfiguration](https://docs.adyen.com/api-explorer/api-explorer/NotificationConfiguration/latest/post/getNotificationConfiguration.md): Get a notification subscription configuration
+- [POST /getNotificationConfigurationList](https://docs.adyen.com/api-explorer/api-explorer/NotificationConfiguration/latest/post/getNotificationConfigurationList.md): Get a list of notification subscription configurations
+- [POST /testNotificationConfiguration](https://docs.adyen.com/api-explorer/api-explorer/NotificationConfiguration/latest/post/testNotificationConfiguration.md): Test a notification configuration
+- [POST /updateNotificationConfiguration](https://docs.adyen.com/api-explorer/api-explorer/NotificationConfiguration/latest/post/updateNotificationConfiguration.md): Update a notification subscription configuration
+- [POST /deleteNotificationConfigurations](https://docs.adyen.com/api-explorer/api-explorer/NotificationConfiguration/latest/post/deleteNotificationConfigurations.md): Delete a notification subscription configuration
+
+### Webhooks
+
+- [Overview](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/overview.md)
+- [POST /ACCOUNT_HOLDER_CREATED](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_CREATED.md): Account holder created
+- [POST /ACCOUNT_HOLDER_UPDATED](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_UPDATED.md): Account holder updated
+- [POST /ACCOUNT_HOLDER_VERIFICATION](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_VERIFICATION.md): Verification results received
+- [POST /ACCOUNT_HOLDER_STATUS_CHANGE](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_STATUS_CHANGE.md): Account holder status changed
+- [POST /ACCOUNT_HOLDER_STORE_STATUS_CHANGE](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_STORE_STATUS_CHANGE.md): Store status changed
+- [POST /ACCOUNT_HOLDER_UPCOMING_DEADLINE](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_UPCOMING_DEADLINE.md): Upcoming deadline
+- [POST /ACCOUNT_CREATED](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_CREATED.md): Account created
+- [POST /ACCOUNT_UPDATED](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_UPDATED.md): Account updated
+- [POST /ACCOUNT_CLOSED](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_CLOSED.md): Account closed
+- [POST /ACCOUNT_HOLDER_PAYOUT](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_PAYOUT.md): Paid out to account holder
+- [POST /TRANSFER_FUNDS](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/TRANSFER_FUNDS.md): Funds transferred between accounts
+- [POST /BENEFICIARY_SETUP](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/BENEFICIARY_SETUP.md): Beneficiary defined
+- [POST /SCHEDULED_REFUNDS](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/SCHEDULED_REFUNDS.md): 'Refund Transfers Not Paid Out' call processed and refunds scheduled
+- [POST /COMPENSATE_NEGATIVE_BALANCE](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/COMPENSATE_NEGATIVE_BALANCE.md): Negative account balances compensated
+- [POST /REFUND_FUNDS_TRANSFER](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/REFUND_FUNDS_TRANSFER.md): Funds transfer between accounts refunded
+- [POST /ACCOUNT_FUNDS_BELOW_THRESHOLD](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/ACCOUNT_FUNDS_BELOW_THRESHOLD.md): Liable account's funds are below configured threshold
+- [POST /DIRECT_DEBIT_INITIATED](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/DIRECT_DEBIT_INITIATED.md): Automated direct debit initiated
+- [POST /PAYMENT_FAILURE](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/PAYMENT_FAILURE.md): Booking for a capture or refund failed
+- [POST /REPORT_AVAILABLE](https://docs.adyen.com/api-explorer/api-explorer/Notification/latest/post/REPORT_AVAILABLE.md): Report available
