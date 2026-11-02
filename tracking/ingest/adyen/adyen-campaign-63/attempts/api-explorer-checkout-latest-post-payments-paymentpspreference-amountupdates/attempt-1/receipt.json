@@ -1,0 +1,64 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-payments-paymentpspreference-amountupdates",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API: POST /payments/{paymentPspReference}/amountUpdates\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/amountUpdates\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/amountUpdates/2026-11-02.md\"\ntags: [adyen, checkout-api, authorization-adjustment, payments]\n---\n\n## Overview\n\nThis 2026-11-02 capture of the Checkout API `latest` page lists the TEST server as `https://checkout-test.adyen.com/v72`. `POST /payments/{paymentPspReference}/amountUpdates` increases or decreases the authorised amount of a payment and returns a distinct reference for the amount-update request. The requested `amount` is the updated total, not an increment. The page says only authorised amounts not yet captured can be updated. The outcome is delivered in an `AUTHORISATION_ADJUSTMENT` webhook for the asynchronous path; the captured page does not establish current live availability, merchant eligibility, issuer acceptance, or a successful adjustment.\n\n## Key takeaways\n\n- The path `paymentPspReference` identifies the original payment's `pspReference`; the 201 response's `paymentPspReference` identifies that payment, while its `pspReference` is Adyen's 16-character reference for this amount-update request. `reference` is the merchant's amount-update reference, with an 80-character maximum in the request.\n- The request-body table marks `merchantAccount` and the `amount` object required, with `amount.currency` and `amount.value` required inside it. Currency must match the original authorisation; value is in minor units. Optional `adjustAuthorisationData` is the blob passed from the payment response or webhook for a synchronous adjustment. Optional `mpiData` is described as required for cardholder-initiated adjustments; nested and platform-split conditions remain in the raw schema.\n- The optional `Idempotency-Key` header is a unique message identifier, at most 64 characters; the page recommends a UUID. This captured schema does not state duplicate-request behavior.\n- A 201 response contains `amount`, `merchantAccount`, `paymentPspReference`, the distinct update `pspReference`, `reference`, and `status` as required response fields. With `adjustAuthorisationData` in the request, `status` may be `authorised` or `refused`; otherwise it is `received`. The response can include a new `adjustAuthorisationData` blob when using the synchronous flow. A `received` state is request receipt, not the later adjustment outcome, capture, settlement, or transfer of funds.\n\n> [!warning] Contradiction: adjustment after partial capture\n> This API page says only authorised amounts that have not yet been captured can be updated (raw line 9). The separately captured Adyen pre-authorisation guide describes a Support-enabled multiple-partial-capture sequence with an adjustment after the first partial capture (guide raw lines 1032-1040). These statements have different scope and remain unresolved; do not infer from this endpoint page alone that every post-partial-capture update is allowed, or from the guide that an arbitrary captured payment is adjustable.\n\n> [!warning] Request/response schema qualifications\n> The request table marks merchant `reference` optional (raw line 104), while the 201 response marks it required (raw line 170); the page does not explain how an omitted request reference is populated. The `lineItems` description on this amount-update page refers to refunded items and partial-refund requirements (raw lines 63 and 140). Preserve that wording as a schema locator rather than treating it as a general amount-update rule.\n\n## Detail locators\n\n- Purpose, uncaptured restriction, updated-total semantics, TEST v72 server: raw lines 5-16.\n- Path and optional idempotency header: raw lines 18-29.\n- Request schema, including nested application, line-item, MPI and platform split fields, conditional requirements, defaults and split-type values: raw lines 32-112.\n- Request example: raw lines 114-126.\n- 201 response fields and status meanings: raw lines 127-179; successful response example: raw lines 251-268.\n- Documented 400/401/403/422/500 error categories and optional error-body fields: raw lines 182-249; examples: raw lines 270-330. The 401 describes authentication required and 403 insufficient permissions; this page does not specify a credential type or role.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-authorization-adjustment]]\n- General integration context: [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/amountUpdates/2026-11-02|Checkout API amount-update endpoint, 2026-11-02 capture]]",
+  "quotes": [
+    {
+      "text": "Increases or decreases the authorised payment amount and returns a unique reference for this request.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "You can only update authorised amounts that have not yet been",
+      "location": "raw line 9"
+    },
+    {
+      "text": "The updated amount. The `currency` must match the currency used in authorisation.",
+      "location": "raw line 37"
+    },
+    {
+      "text": "Price and product information of the refunded items, required for [partial refunds]",
+      "location": "raw line 63"
+    },
+    {
+      "text": "If you included `adjustAuthorisationData` in your request, possible values are the following:  **authorised**  **refused**  Otherwise, the value is **received**.",
+      "location": "raw line 179"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c63-amountupdates-contradiction",
+        "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Card lifecycle",
+        "proposed_markdown": "> [!warning] Contradiction: partial capture and amount-update eligibility\n> The 2026-11-02 Checkout API v72 `POST /payments/{paymentPspReference}/amountUpdates` page says only authorised amounts not yet captured can be updated (raw line 9). The 2026-09-15 pre-authorisation guide permits an adjustment after the first partial capture when Support has enabled multiple partial captures (guide raw lines 1032-1040). Keep this endpoint-level restriction and the conditional guide exception distinct; the documents do not resolve their overlap. [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-amountupdates]]",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": [
+          "Add reciprocal contradiction warning to this existing concept; the source page contains its counterpart. Guide support at raw/adyen/docs/online-payments/adjust-authorisation/adjust-with-preauth/2026-09-15.md lines 1032-1040."
+        ]
+      },
+      {
+        "update_id": "c63-amountupdates-source-route",
+        "target_path": "wiki/concepts/adyen-authorization-adjustment.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-amountupdates]] \u2014 2026-11-02 Checkout API v72 TEST amount-update endpoint for original-payment versus update-request references, updated-total request and synchronous/received response states; see the source's partial-capture contradiction warning.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/amountUpdates/2026-11-02.md",
+  "raw_sha256": "cd42a877e1e466e6cbe93d64848ae445c3bed512e8acfbeb694f407f89e32ef8",
+  "status": "candidate_ready"
+}

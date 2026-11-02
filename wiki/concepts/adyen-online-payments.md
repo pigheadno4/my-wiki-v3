@@ -21,6 +21,18 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-reversals]] — 2026-11-02-captured Checkout API v72 test-server full-amount reversal endpoint: distinct reversal-request reference, `received` acknowledgement and asynchronous `CANCEL_OR_REFUND` outcome. The endpoint excludes multiple partial captures; the linked 2026-09-15 reversal guide also excludes payment-request or Adyen for Platforms capture-request split data (guide raw lines 35–36).
+
+
+- [[source-adyen-api-explorer-checkout-latest-patch-sessions-sessionid]] — 2026-11-02-captured Checkout API v72 TEST `PATCH /sessions/{sessionId}` reference for amount and payable updates before the session becomes payable, with `200` update acknowledgement and no payment outcome schema.
+
+
+- [[source-adyen-api-explorer-checkout-latest-get-sessions-sessionid]] — 2026-11-02-captured Checkout TEST v72 GET session-result reference for required session ID/query result, response states, and the non-updating status warning.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-cancels]] — 2026-11-02-captured Checkout API v72 TEST reference for cancelling an uncaptured authorization by original payment PSP reference; the 201 `received` response identifies the request, while `CANCELLATION` reports its outcome.
+
+
 - [[source-adyen-api-explorer-forward-api-webhooks-latest-post-forwardapi-notification]] — 2026-09-15-captured Forward API webhook schema with Adyen request reference, third-party service/status fields, and separate 2xx acceptance.
 
 

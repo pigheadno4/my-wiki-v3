@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-payments-paymentpspreference-reversals",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Checkout API POST /payments/{paymentPspReference}/reversals\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/reversals\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/reversals/2026-11-02.md\"\ntags: [adyen, checkout, online-payments, reversal, refund, cancel]\n---\n\n## Overview\n\nThis [[adyen]] Checkout API v72 endpoint reference, captured 2026-11-02, describes a test-server reversal request for an existing payment. It refunds a captured payment or cancels an uncaptured one, for the full payment amount. The outcome arrives later through a `CANCEL_OR_REFUND` webhook. The page says not to use this request for payments with multiple partial captures. Separately, the linked 2026-09-15 [[source-adyen-docs-online-payments-reversal|reversal guide]] excludes payments with split data in the payment request or an Adyen for Platforms capture request; for those cases it says to check capture state and use separate cancellation or refund (guide raw lines 35\u201336). That split-data restriction is guide context, not a field or condition stated in this endpoint schema. This is an endpoint contract, not proof of an account's live availability or a completed reversal. See [[adyen-online-payments]] for the integration route.\n\n## Key takeaways\n\n- Call `POST /payments/{paymentPspReference}/reversals` with the **original payment's** `pspReference` in the required path parameter and `merchantAccount` in the request body. The body table marks `merchantAccount` required; `reference` (maximum 80 characters) and `applicationInfo` are optional. The optional `Idempotency-Key` header has a maximum of 64 characters; the reference recommends a UUID. The reference does not specify a default or an amount field for a partial reversal.\n- A 201 response has required `merchantAccount`, original `paymentPspReference`, distinct 16-character reversal-request `pspReference`, and `status: received`; the merchant `reference` is optional. `received` identifies request receipt, not confirmed cancellation, completed refund, settlement, or final financial outcome. Use the asynchronous `CANCEL_OR_REFUND` outcome route rather than treating the response as finality.\n- The captured server is `https://checkout-test.adyen.com/v72`. The listed error responses are 400 (request parsing/understanding), 401 (authentication required), 403 (insufficient permissions), 422 (validation), and 500 (server unable to process). Their response fields are optional in the table; example error codes and messages do not define universal conditions.\n\n## Detail locators\n\n- `# POST /payments/{paymentPspReference}/reversals - Refund or cancel a payment`, raw lines 5\u201313 \u2014 operation, full amount, multiple-partial-capture exclusion, asynchronous outcome.\n- `## Servers` and `## Parameters`, raw lines 15\u201358 \u2014 v72 test server, required original-payment path reference and merchant account, optional header/body fields and length limits; `applicationInfo` nested fields.\n- `## Request examples`, raw lines 60\u201368 \u2014 illustrative request.\n- `### 201 Success`, raw lines 69\u201381; `## Response examples`, raw lines 153\u2013166 \u2014 response contract, distinct references, `received` example.\n- `### 400 Client Error` through `### 500 Server Error`, raw lines 84\u2013151; `## Response examples`, raw lines 168\u2013228 \u2014 error descriptions, optional error fields and illustrative payloads.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-online-payments]] \u2014 online-payments integration and source routes.\n- [[source-adyen-docs-online-payments-reversal]] \u2014 companion guide: split-data restriction (guide raw lines 35\u201336), reversal selection, lifecycle and webhook context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/reversals/2026-11-02|Checkout reversal endpoint (2026-11-02 snapshot)]]",
+  "quotes": [
+    {
+      "text": "Returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**CANCEL_OR_REFUND** webhook](https://docs.adyen.com/online-payments/reversal/#cancel-or-refund-webhook).",
+      "location": "raw lines 7"
+    },
+    {
+      "text": "The reversed amount is always the full payment amount.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "Do not use this request for payments that involve multiple partial captures.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| merchantAccount | string | Yes | The merchant account that is used to process the payment. |",
+      "location": "raw line 57"
+    },
+    {
+      "text": "| status | string | Yes | The status of your request. This will always have the value **received**. |",
+      "location": "raw line 81"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c63-reversals-online-payments-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-reversals]] \u2014 2026-11-02-captured Checkout API v72 test-server full-amount reversal endpoint: distinct reversal-request reference, `received` acknowledgement and asynchronous `CANCEL_OR_REFUND` outcome. The endpoint excludes multiple partial captures; the linked 2026-09-15 reversal guide also excludes payment-request or Adyen for Platforms capture-request split data (guide raw lines 35\u201336).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The split-data exclusion comes from the linked 2026-09-15 reversal guide, not the 2026-11-02 endpoint schema."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/reversals/2026-11-02.md",
+  "raw_sha256": "be29efb0f2b8c446bf84e4447441a55ecf627cf88413173de721c77f42548f38",
+  "status": "candidate_ready"
+}

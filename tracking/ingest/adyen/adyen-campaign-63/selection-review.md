@@ -1,6 +1,6 @@
 # Adyen C63 recovered Checkout API selection
 
-Status: **PREPARED ONLY — awaiting exact ingestion approval**. Prepared 2026-11-02.
+Status: **COMPLETE — all 10 sources approved and validated**. Prepared 2026-11-02.
 
 Approved recovery collection completed for all37 gap items: **10 Checkout complete-body pages recovered**, **27 stub retries still title-only and excluded**, zero HTTP/network failures. A successful HTTP response is not evidence of substantive documentation: the27 HTTP200 stub responses remain ineligible. [Collection manifest](../../../collections/adyen/c63-recovery-2026-11-02/manifest.md), [collection summary](../../../collections/adyen/c63-recovery-2026-11-02/summary.json). Original preparation/collection scope is retained in [recovery-selection-review.md](recovery-selection-review.md).
 
@@ -24,3 +24,7 @@ Fixed coordinator audit jobs: `api-explorer-checkout-latest-get-paymentlinks-lin
 | 8 | GET `/sessions/{sessionId}` | 633 | 57 |
 | 9 | PATCH `/sessions/{sessionId}` | 273 | 39 |
 | 10 | DELETE `/storedPaymentMethods/{storedPaymentMethodId}` | 173 | 33 |
+
+User approved exact C63 ingestion on 2026-11-02. Runtime activated after hash/count reconciliation; historical preparation statements above describe pre-approval state. No commit/push.
+
+C63 closed: 2909 total sources; 346 API Explorer sources. Remaining 27 API raw pages are excluded title-only stubs. No commit/push.

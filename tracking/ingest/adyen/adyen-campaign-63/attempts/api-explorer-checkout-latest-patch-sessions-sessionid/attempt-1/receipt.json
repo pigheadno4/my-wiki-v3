@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-checkout-latest-patch-sessions-sessionid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API PATCH /sessions/{sessionId} \u2014 Update a payment session\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/patch/sessions/(sessionId)\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/patch/sessions/(sessionId)/2026-11-02.md\"\ntags: [adyen, checkout, sessions, api-explorer]\n---\n\n## Overview\n\nThis 2026-11-02 API Explorer snapshot documents Checkout API `PATCH /sessions/{sessionId}` on the displayed test server `https://checkout-test.adyen.com/v72`. It updates an existing payment session's amount and payable state before the session is payable. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The path requires the existing `sessionId`. The request table marks `amount` and its `currency` (three-character ISO code) and `value` (integer in minor units) required; it also marks `sessionData` required, sourced from the Web Drop-in or Component `beforeSubmit` callback. These are table-level property marks; this snapshot does not separately declare request-body requiredness.\n- Optional `payable` indicates whether the shopper can submit the payment. Set it to `true` once the amount is final; the session can then no longer be updated. If set to `false`, another update setting it to `true` is needed before the shopper can submit. The page does not state a default when the field is omitted.\n- HTTP `200 Success` says the request succeeded, with an optional `sessionData` response field. This update response does not document a payment result or financial finality. The captured page does not specify authentication, idempotency, error responses, or an asynchronous outcome; use the corresponding integration and payment-result references for those separate questions. Its `latest` URL is a captured label, not proof of a current version or live availability.\n\n## Detail locators\n\n- Operation, update gate and displayed test server: raw lines 5\u201312.\n- Path parameter and complete request table: raw lines 14\u201329.\n- HTTP success and complete response table: raw lines 31\u201339.\n\n## Related\n\n- [[source-adyen-api-explorer-checkout-latest-post-sessions]] \u2014 separate session creation contract.\n- [[source-adyen-docs-online-payments-build-your-integration-sessions-flow]] \u2014 separate integration flow and amount-update procedure.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/patch/sessions/(sessionId)/2026-11-02|Checkout API PATCH /sessions/{sessionId} snapshot (2026-11-02)]]",
+  "quotes": [
+    {
+      "text": "The session can only be updated if it is not yet payable.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "https://checkout-test.adyen.com/v72",
+      "location": "raw line 12"
+    },
+    {
+      "text": "The encoded payment session data from the `beforeSubmit` callback",
+      "location": "raw line 29"
+    },
+    {
+      "text": "When you set this to **true**, you can no longer update the session.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "The request has succeeded.",
+      "location": "raw line 34"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c63-patch-session-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-patch-sessions-sessionid]] \u2014 2026-11-02-captured Checkout API v72 TEST `PATCH /sessions/{sessionId}` reference for amount and payable updates before the session becomes payable, with `200` update acknowledgement and no payment outcome schema.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/patch/sessions/(sessionId)/2026-11-02.md",
+  "raw_sha256": "c01a5662ef1e94675fba2d6554c08246f030024a34b76fcf843574a1da7f0016",
+  "status": "candidate_ready"
+}

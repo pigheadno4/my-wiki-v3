@@ -3079,6 +3079,19 @@ Operations history: [[adyen-log]]
 - [[source-adyen-api-explorer-softpos-configuration-api-latest-overview]] — Adyen SoftPOS configuration API v3 overview (webpage, 2026-11-02)
 - [[source-adyen-api-explorer-softpos-configuration-api-latest-post-auth-certificate]] — Adyen SoftPOS configuration API v3: create a communication session (webpage, 2026-11-02)
 
+### API Explorer documentation — Campaign 63
+
+- [[source-adyen-api-explorer-checkout-latest-get-paymentlinks-linkid]] — Adyen Checkout API v72: Get a payment link (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-patch-paymentlinks-linkid]] — Checkout API PATCH /paymentLinks/{linkId}: expire a payment link (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-amountupdates]] — Adyen Checkout API: POST /payments/{paymentPspReference}/amountUpdates (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-cancels]] — Adyen Checkout API: Cancel an authorised payment by PSP reference (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-captures]] — Adyen Checkout API POST /payments/{paymentPspReference}/captures (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-refunds]] — Adyen Checkout API v72 refund a captured payment (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-reversals]] — Adyen Checkout API POST /payments/{paymentPspReference}/reversals (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-get-sessions-sessionid]] — Adyen Checkout API: GET /sessions/{sessionId} (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-patch-sessions-sessionid]] — Adyen Checkout API PATCH /sessions/{sessionId} — Update a payment session (webpage, 2026-11-02)
+- [[source-adyen-api-explorer-checkout-latest-delete-storedpaymentmethods-storedpaymentmethodid]] — Adyen Checkout API DELETE /storedPaymentMethods/{storedPaymentMethodId} (webpage, 2026-11-02)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-pos-mobile-ios-test]] - independent TEST-only `AdyenPOS@3.22.0`, shared SwiftUI/UIKit flow, configuration and incomplete-registration boundaries (github-repo, 2026-10-30)

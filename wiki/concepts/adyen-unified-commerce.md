@@ -15,6 +15,12 @@ The 2026-09-15 snapshot is an overview with a 2021 last-modified date. It does n
 
 ## Sources
 
+- [[source-adyen-api-explorer-checkout-latest-patch-paymentlinks-linkid]] — 2026-11-02-captured Checkout API v72 TEST `PATCH /paymentLinks/{linkId}` reference for forced link expiry, required status request, returned link state and error schemas; link expiry is separate from payment reversal.
+
+
+- [[source-adyen-api-explorer-checkout-latest-get-paymentlinks-linkid]] — 2026-11-02-captured Checkout API Explorer TEST v72 `GET /paymentLinks/{linkId}` reference for retrieving a payment link by ID, its response status and schema; payment outcome and availability boundaries remain in the source.
+
+
 - [[source-adyen-api-explorer-checkout-latest-post-paymentlinks]] — 2026-09-15 Checkout API v72 POST /paymentLinks reference for link creation request/response, expiry, reuse, status and error schemas; source flags returnUrl requiredness tension.
 
 

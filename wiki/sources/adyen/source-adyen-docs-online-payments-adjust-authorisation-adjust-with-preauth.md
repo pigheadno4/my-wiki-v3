@@ -35,6 +35,9 @@ The snapshot does not prove current availability, issuer approval, Merchant Cate
 > [!warning] Final-capture sequencing and enabled partial captures
 > For the normal final-capture sequence, finish all intended adjustments before capture and do not infer adjustability from an unresolved asynchronous capture. A separate card exception exists when Adyen Support has enabled multiple partial captures: the guide permits partial capture followed by authorization adjustment, but the issuer controls how many partial captures are possible and may reject a capture after treating the pattern as fraud risk.
 
+> [!warning] Contradiction: post-partial-capture amount updates
+> This guide describes a sequence with an authorization adjustment after the first partial capture when Adyen Support has enabled multiple partial captures (guide raw line 56 and raw lines 1032-1040). The 2026-11-02 Checkout API v72 `POST /payments/{paymentPspReference}/amountUpdates` page says only authorised amounts that have not yet been captured can be updated (endpoint raw line 9). Their overlap is unresolved; this conditional guide sequence does not establish general eligibility to update a captured payment. [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-amountupdates]]
+
 ## Detail locators
 
 - Scope, webhook reliance and merchant-owned decision/amount logic: opening guidance, raw lines 26-34.

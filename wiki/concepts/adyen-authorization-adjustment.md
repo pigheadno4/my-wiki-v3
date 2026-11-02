@@ -12,6 +12,10 @@ Adyen authorization adjustment changes the reserved amount on an eligible pre-au
 
 ## Card lifecycle
 
+> [!warning] Contradiction: partial capture and amount-update eligibility
+> The 2026-11-02 Checkout API v72 `POST /payments/{paymentPspReference}/amountUpdates` page says only authorised amounts not yet captured can be updated (raw line 9). The 2026-09-15 pre-authorisation guide permits an adjustment after the first partial capture when Support has enabled multiple partial captures (guide raw line 56 for Support enablement and raw lines 1032-1040 for the sequence). Keep this endpoint-level restriction and the conditional guide exception distinct; the documents do not resolve their overlap. [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-amountupdates]]
+
+
 In the standard card sequence, the merchant pre-authorizes the payment, submits amount updates against the original payment PSP reference, and manually captures after the final intended adjustment. Asynchronous adjustment and capture outcomes are established through webhook events; a request response with a received state is not final outcome evidence. Synchronous card adjustment requires account enablement and successive use of the latest `adjustAuthorisationData` blob.
 
 When Adyen Support has enabled multiple partial captures, a documented card exception permits a partial capture followed by an adjustment of the authorized amount. The issuer determines how many partial captures are possible and can flag multiple partial captures as fraud risk, causing capture failure. This exception does not make an unresolved asynchronous final capture evidence that another adjustment is safe.
@@ -30,6 +34,9 @@ These limits and scheme-specific extension statements are documented in the card
 Klarna is pre-authorized by default and supports only asynchronous authorization adjustment. An authorization can be adjusted while it has not been cancelled, expired or fully captured. After a partial capture, the adjusted amount cannot be below the already captured amount. Increasing the amount triggers another risk assessment or credit lookup; if that rejects the transaction, the customer must place a new order while the original authorization remains valid.
 
 ## Sources
+
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-amountupdates]] — 2026-11-02 Checkout API v72 TEST amount-update endpoint for original-payment versus update-request references, updated-total request and synchronous/received response states; see the source's partial-capture contradiction warning.
+
 
 - [[source-adyen-api-explorer-payment-latest-post-adjustauthorisation]] — 2026-09-15 Classic Payment API v68 POST /adjustAuthorisation reference for new-total request, original PSP identity, received-state response and inactive/new-build migration boundary.
 

@@ -1,0 +1,9 @@
+# C63 fixed queries — PATCH /sessions/{sessionId}
+
+## Q1
+
+The 2026-11-02-captured Checkout API Explorer page documents `PATCH /sessions/{sessionId}` to update an existing payment session on the displayed TEST v72 server, `https://checkout-test.adyen.com/v72`. The required path `sessionId` identifies that session. Its request table marks `amount` (with required three-character ISO `currency` and integer minor-unit `value`) and encoded `sessionData` from the Web Drop-in or Component `beforeSubmit` callback required; `payable` is optional. It states no default for omitted `payable` and no other numeric limit. A `200 Success` response has an optional `sessionData` field. The table gives property-level required marks without a separate request-body requiredness declaration. [[source-adyen-api-explorer-checkout-latest-patch-sessions-sessionid]]; https://docs.adyen.com/api-explorer/Checkout/latest/patch/sessions/(sessionId); pinned raw lines 1–2, 5–12, 14–39.
+
+## Q2
+
+The page permits an update only before the session is payable. Setting `payable: true` when the amount is final lets the shopper proceed to submit payment and prevents further session updates; setting it to `false` requires another update to `true` before submission. Its `200 Success` establishes only that the PATCH request succeeded, and the only listed response field is optional `sessionData`; it does not establish authorization, capture, settlement, reversal, or a final payment outcome. This captured operation page specifies no authentication or idempotency rule, async outcome, deletion or propagation behavior, or error schema, so those cannot be inferred from it. The `latest` URL and TEST server are snapshot evidence, not current-version, live-availability, or real-payment proof. [[source-adyen-api-explorer-checkout-latest-patch-sessions-sessionid]]; https://docs.adyen.com/api-explorer/Checkout/latest/patch/sessions/(sessionId); pinned raw lines 1–2, 5–12, 22–39.

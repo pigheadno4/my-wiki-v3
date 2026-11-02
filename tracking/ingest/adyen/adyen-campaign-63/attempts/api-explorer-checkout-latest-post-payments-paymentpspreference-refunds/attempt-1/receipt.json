@@ -1,0 +1,49 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-payments-paymentpspreference-refunds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72 refund a captured payment\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/refunds\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/refunds/2026-11-02.md\"\ntags: [adyen, checkout-api, refunds, online-payments, webhooks]\n---\n\n## Overview\n\nThis 2026-11-02 API Explorer snapshot documents Checkout API v72 `POST /payments/{paymentPspReference}/refunds` at the listed test server. It requests a full or partial refund of a captured payment and returns a separate reference for the refund request. The `REFUND` webhook provides the asynchronous request outcome; the captured reference alone does not demonstrate current availability, live processing, or completed repayment.\n\n## Key takeaways\n\n- The path `paymentPspReference` identifies the original payment, while response `pspReference` identifies the refund request. The response also returns `paymentPspReference`, `merchantAccount`, and `amount` (currency and minor-unit value). A 201 response sets `status` to lowercase `received`; it is request receipt, not final financial success.\n- The table marks `amount` and `merchantAccount` required in the request body, with `amount.currency` and `amount.value` required inside the amount object. Currency must match the authorization currency. The amount field says value is at most the authorized amount, while the overview says the sum of multiple partial refunds cannot exceed the captured amount. Some payment methods do not support partial refunds.\n- Optional `Idempotency-Key` is a unique message identifier of at most 64 characters; the page recommends a UUID. Optional request `reference` has an 80-character maximum. `capturePspReference` is available only for PayPal refunds and identifies the particular capture.\n- `lineItems` is table-optional but required for partial refunds with 3x 4x Oney, Affirm, Afterpay, Atome, Clearpay, Klarna, Ratepay, Walley, and Zip. Optional `splits` has integration- and type-dependent required child fields; `store` must match the configured Customer Area store name or the refund fails.\n- If capture status is uncertain, the page directs the caller to the separate reversal endpoint. Its 400, 401, 403, 422, and 500 cases represent request, authentication, permission, validation, or server errors; the error body fields are optional in the schema.\n\n> [!warning] Contradiction\n> In this snapshot, the overview caps cumulative partial refunds at the captured amount (raw line 9), while the `amount` field says its value must be at most the authorized amount (raw line 37). These are differently stated limits; this entry does not treat authorization amount as permission to refund more than was captured.\n\n## Detail locators\n\n- `## Servers` and `## Parameters` \u2014 test endpoint `https://checkout-test.adyen.com/v72`, original-payment path reference, optional idempotency header, and refund request schema (raw lines 17\u2013167). The body table includes optional application information, enhanced scheme data, reason values, line items, and platform split rules; nested \u201cYes\u201d markings apply within their objects.\n- `## Request examples` \u2014 one illustrative EUR 25.00 request with reference and merchant account; it does not expand the field rules (raw lines 169\u2013181).\n- `## Responses` \u2014 201 success schema, separate refund and payment references, `received` status, optional response fields, and 400/401/403/422/500 error schemas (raw lines 182\u2013305).\n- `## Response examples` \u2014 illustrative 201 and generic error JSON, including example error codes and types rather than a complete error taxonomy (raw lines 307\u2013386).\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-refunds]]\n- Background refund guide: [[source-adyen-docs-online-payments-refund]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/refunds/2026-11-02|2026-11-02 Checkout API v72 refund endpoint snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Refunds a payment that has been [captured](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/%7BpaymentPspReference%7D/captures), and returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**REFUND** webhook](https://docs.adyen.com/online-payments/refund#refund-webhook).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "You can also perform multiple partial refunds, as long as their sum doesn't exceed the captured amount.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "The amount that you want to refund. The `currency` must match the currency used in authorisation, the `value` must be smaller than or equal to the authorised amount.",
+      "location": "raw line 37"
+    },
+    {
+      "text": "This field is required for partial refunds with 3x 4x Oney, Affirm, Afterpay, Atome, Clearpay, Klarna, Ratepay, Walley, and Zip.",
+      "location": "raw line 129"
+    },
+    {
+      "text": "The status of your request. This will always have the value **received**.",
+      "location": "raw line 234"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c63-refunds-reciprocal",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-refunds]] \u2014 2026-11-02-captured Checkout API v72 test-server reference for captured-payment refund requests, required and conditional fields, separate request PSP reference, and asynchronous `received` boundary.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/refunds/2026-11-02.md",
+  "raw_sha256": "77f36cfcce69b0b454cfd025ef6bcaa45cc1e7cde983732dee7757e08eae012b",
+  "status": "candidate_ready"
+}

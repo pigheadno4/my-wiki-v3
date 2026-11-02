@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-payments-paymentpspreference-captures",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API POST /payments/{paymentPspReference}/captures\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/captures\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/captures/2026-11-02.md\"\ntags: [adyen, checkout-api, capture, online-payments]\n---\n\n## Overview\n\nThe 2026-11-02 snapshot of the Checkout API `latest` reference documents `POST /payments/{paymentPspReference}/captures` on the listed `https://checkout-test.adyen.com/v72` server. It submits a full or partial capture of an authorised payment and returns a distinct capture-request reference. The path `paymentPspReference` identifies the payment; response `pspReference` identifies the capture request. This TEST v72 snapshot does not establish current or live availability. [[adyen]] [[adyen-payment-capture]]\n\n## Key takeaways\n\n- Required inputs are the original payment's `paymentPspReference` path parameter and body `amount` (`currency` and `value`) plus `merchantAccount`. Currency must match authorisation; value is in minor units and cannot exceed the authorised amount. The optional `Idempotency-Key` header is a unique message identifier of at most 64 characters; the page recommends a UUID but does not specify retry semantics. Optional capture `reference` has an 80-character maximum. See raw lines 20\u201337 and 153\u2013159.\n- By default, unclaimed authorisation after a partial capture is cancelled. The exception requires both account enablement for multiple partial captures and a payment method that supports them. Automatic capture is the default for most methods, for which manual capture requests are unnecessary; the page says a request against an automatically captured payment does not double charge. See raw lines 7\u201313.\n- The `201 Success` response has `status: received`, the captured `amount`, `merchantAccount`, original `paymentPspReference`, and capture-request `pspReference`; `reference` is optional. `received` acknowledges this request, while the outcome arrives asynchronously in a `CAPTURE` webhook. It does not prove capture or settlement finality. See raw lines 271\u2013325 and response example at 416\u2013433.\n\n> [!warning] Schema wording in this capture endpoint's optional `lineItems` request and response rows describes \"refunded items\" and says they are required for certain partial refunds. Those rows refer to refunds despite this page's capture operation. Do not convert that wording into a capture requirement without separate endpoint-specific evidence. See raw lines 126\u2013152 and 282\u2013308.\n\n## Detail locators\n\n- Optional `enhancedSchemeData` structures, including conditional nested required fields and per-field limits: raw lines 60\u2013125. Optional `applicationInfo`: lines 38\u201359.\n- Optional `splits` and `platformChargebackLogic`: raw lines 154\u2013166. Split `type` is required within an included split; `account`, `amount`, and `reference` have integration- and type-specific conditions. Balance Platform and Classic Platforms types differ. Their request examples are at lines 201\u2013270; response fields are at 311\u2013344.\n- Optional `subMerchants` contains fields whose prose adds registered-payment-facilitator conditions, with required nested address and amount fields when those objects apply: raw lines 167\u2013185; response lines 326\u2013344.\n- HTTP error sections: raw lines 347\u2013414 for 400, 401, 403, 422, and 500 with optional error fields; example payloads at lines 512\u2013573. These examples do not establish a capture-specific failure lifecycle.\n- Request examples: raw lines 187\u2013270. Response examples: lines 416\u2013510.\n\n## Related\n\n- [[adyen-payment-capture]] \u2014 capture modes and asynchronous outcome boundary.\n- [[source-adyen-docs-online-payments-capture]] \u2014 separate capture guide; apply its claims only from its own dated source.\n- [[source-adyen-api-explorer-webhooks-latest-post-capture]] \u2014 separate `CAPTURE` notification reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/captures/2026-11-02|Checkout API capture endpoint raw snapshot (2026-11-02)]]\n",
+  "quotes": [
+    {
+      "text": "Captures an authorised payment and returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**CAPTURE** webhook](https://docs.adyen.com/online-payments/capture#capture-notification).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "By default, any unclaimed amount after a partial capture gets cancelled. This does not apply if you enabled multiple partial captures on your account and the payment method supports multiple partial captures.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "| amount | object | Yes | The amount that you want to capture. The `currency` must match the currency used in authorisation, the `value` must be smaller than or equal to the authorised amount. |",
+      "location": "raw line 35"
+    },
+    {
+      "text": "| pspReference | string | Yes | Adyen's 16-character reference associated with the capture request. |",
+      "location": "raw line 315"
+    },
+    {
+      "text": "| status | string | Yes | The status of your request. This will always have the value **received**. |",
+      "location": "raw line 325"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c63-captures-capture-route",
+        "target_path": "wiki/concepts/adyen-payment-capture.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-captures]] \u2014 2026-11-02 Checkout API v72 TEST endpoint reference for full or partial capture requests, payment versus capture references, required amount and merchant account, conditional split data, and asynchronous `received` boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/captures/2026-11-02.md",
+  "raw_sha256": "71adcf931a095f99c744b9304982848deb78e38d94fb621bff63643167f51888",
+  "status": "candidate_ready"
+}

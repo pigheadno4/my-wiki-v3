@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-payments-paymentpspreference-cancels",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API: Cancel an authorised payment by PSP reference\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/cancels\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/cancels/2026-11-02.md\"\ntags: [adyen, checkout-api, online-payments, cancellation, webhooks]\n---\n\n## Overview\n\nThis [[adyen]] Checkout API v72 TEST reference, captured on 2026-11-02, describes `POST /payments/{paymentPspReference}/cancels` for cancelling an authorised [[adyen-online-payments|online payment]] that has not yet been captured. It returns a unique reference for the cancellation request; the outcome arrives asynchronously in a `CANCELLATION` webhook. The captured API reference is a contract snapshot, not proof of live availability or a completed cancellation.\n\n## Key takeaways\n\n- The required path parameter `paymentPspReference` is the original payment's `pspReference`. The required body property `merchantAccount` identifies the merchant account used to process that payment. The raw request body table does not separately state whether the body container is required. `reference` is an optional merchant reference for the cancellation request, limited to 80 characters.\n- The optional `Idempotency-Key` header is a unique message identifier with a 64-character maximum; the page recommends a UUID. This reference does not describe replay behavior or an idempotency guarantee.\n- A 201 response contains `merchantAccount`, the original `paymentPspReference`, a distinct 16-character cancellation-request `pspReference`, and `status: received`; `reference` is optional. `received` acknowledges the request, not the cancellation outcome.\n- If the original payment's `pspReference` is unavailable, this page routes to `POST /cancels`. If capture status is uncertain, it routes to `POST /payments/{paymentPspReference}/reversals`. Those are separate operations, not alternate schemas for this request.\n- The listed 400, 401, 403, 422 and 500 responses cover request, authentication, permission, validation and server errors. Their shared optional error fields include `additionalData`, `errorCode`, `errorType`, `message`, `pspReference` and integer HTTP `status`. The 422 generic example mentions a missing return URL; it does not establish a return-URL input for this cancellation schema.\n\n> [!warning] Cancellation outcome\n> Use the `CANCELLATION` webhook to learn whether the cancellation succeeded. A 201 response with `status: received` and a cancellation-request PSP reference does not establish that the original authorization was cancelled, that funds were released, or that any post-capture action succeeded.\n\n## Detail locators\n\n- **Servers; Parameters \u2192 Path parameters, Header parameters, Request body** \u2014 v72 TEST host, original-payment reference, optional idempotency header, required and optional body properties, and nested optional `applicationInfo` metadata.\n- **Request examples \u2192 cancel-with-psp-reference** \u2014 illustrative merchant account and merchant cancellation reference.\n- **Responses \u2192 201 Success; Response examples \u2192 201 Success** \u2014 cancellation-request response fields and `received` example.\n- **Responses \u2192 400/401/403/422/500; Response examples** \u2014 listed errors and generic examples; example values do not add request requirements.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-online-payments-cancel]] \u2014 online-payment cancellation guide; distinct guide snapshot.\n\n## Related raw API references\n\n- `POST /cancels` \u2014 merchant-payment-reference cancellation when the PSP reference is unavailable (linked from the raw introduction; not read for this entry).\n- `POST /payments/{paymentPspReference}/reversals` \u2014 route when capture status is uncertain (linked from the raw introduction; not read for this entry).\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/cancels/2026-11-02|Adyen Checkout API cancellation by PSP reference (2026-11-02)]]",
+  "quotes": [
+    {
+      "text": "Cancels the authorisation on a payment that has not yet been [captured](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/%7BpaymentPspReference%7D/captures), and returns a unique reference for this request. You get the outcome of the request asynchronously, in a [**CANCELLATION** webhook](https://docs.adyen.com/online-payments/cancel#cancellation-webhook).",
+      "location": "raw line 7, introduction"
+    },
+    {
+      "text": "If you want to cancel a payment but are not sure whether it has been captured, use the [`/payments/{paymentPspReference}/reversals`](https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/payments/%7BpaymentPspReference%7D/reversals) endpoint instead.",
+      "location": "raw line 11, introduction"
+    },
+    {
+      "text": "| paymentPspReference | string | Yes | The [`pspReference`](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-pspReference) of the payment that you want to cancel. |",
+      "location": "raw line 23, Parameters > Path parameters"
+    },
+    {
+      "text": "| merchantAccount | string | Yes | The merchant account that is used to process the payment. |",
+      "location": "raw line 57, Parameters > Request body"
+    },
+    {
+      "text": "| status | string | Yes | The status of your request. This will always have the value **received**. |",
+      "location": "raw line 81, Responses > 201 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c63-cancels-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-cancels]] \u2014 2026-11-02-captured Checkout API v72 TEST reference for cancelling an uncaptured authorization by original payment PSP reference; the 201 `received` response identifies the request, while `CANCELLATION` reports its outcome.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/payments/(paymentPspReference)/cancels/2026-11-02.md",
+  "raw_sha256": "47769a8dd8a2fe576152af9d8192dd3215db304a5da924b0acf5588b38160965",
+  "status": "candidate_ready"
+}

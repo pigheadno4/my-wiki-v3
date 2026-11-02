@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-checkout-latest-get-sessions-sessionid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API: GET /sessions/{sessionId}\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/get/sessions/(sessionId)\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/get/sessions/(sessionId)/2026-11-02.md\"\ntags: [adyen, checkout, sessions, api]\n---\n\n## Overview\n\nThe 2026-11-02 capture of the Checkout API Explorer GET /sessions/{sessionId} reference describes retrieving a payment session result. Its listed server is Checkout TEST v72. Supply the unique session ID as a path parameter and the Drop-in or Component's sessionResult as a required query parameter. The returned status is a session status; payment entries, if present, describe authorised payments for the session. [[adyen]] [[adyen-online-payments]]\n\n> [!warning] Contradiction\n> The introductory sentence says both sessionId and sessionResult are \"specified in the path,\" but the parameter tables place sessionId in the path and sessionResult in the query. Follow the explicit parameter tables when reading this captured reference; this source does not establish runtime behavior.\n\n## Key takeaways\n\n- The response fields additionalData, id, payments, reference and status are all marked optional. additionalData can depend on Customer Area Additional data settings. The payment list is described as all authorised payments for this session, while its optional resultCode field also lists Received and Pending. Preserve that schema/description tension; do not infer that every list item is finally authorised.\n- A payment entry may include an authorised amount (currency and minor-unit value required within that amount object), paymentMethod, pspReference and resultCode. paymentMethod is only returned for resultCode Authorised; brand is only returned for scheme. The merchant-provided reference comes from the original /sessions request, whereas pspReference is Adyen's transaction/request reference.\n- Payment resultCode values listed here are Authorised, Received and Pending. Authorised is described as final authorisation; Received is initial receipt and Pending lacks a final payment status. These do not establish capture or settlement.\n- Session status values are completed, paymentPending, refused, canceled and expired. The reference explicitly says the returned session status does not get updated and warns against repeating this request for payment status updates. Refused follows too many refused attempts; canceled is shopper cancellation; expired blocks further completion. The default expiry is one hour after session creation.\n- This captured endpoint provides no authentication header, idempotency contract, error response schema, deletion behavior, payment modification or reversal contract. The single success example shows id CS12345678 and completed; it does not establish broader outcomes or live availability.\n\n## Detail locators\n\n- Server and required inputs: raw lines 9\u201323.\n- Response fields and nested requiredness: raw lines 25\u201345.\n- Payment and session enum meanings, immutable status warning and default expiry: raw lines 43\u201345.\n- Success example: raw lines 47\u201356.\n\n## Related\n\n- [[source-adyen-api-explorer-checkout-latest-post-sessions]] \u2014 session creation, distinct operation.\n- [[adyen-online-payments]] \u2014 main concept and source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/get/sessions/(sessionId)/2026-11-02|2026-11-02 Checkout API Explorer GET session result]]\n",
+  "quotes": [
+    {
+      "text": "Returns the status of the payment session with the `sessionId` and `sessionResult` specified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "| sessionResult | string | Yes | The `sessionResult` value from the Drop-in or Component. |",
+      "location": "line 23, Query parameters"
+    },
+    {
+      "text": "| payments | array of object | No | A list of all authorised payments done for this session. |",
+      "location": "line 35"
+    },
+    {
+      "text": "The status included in the response doesn't get updated. Don't make the request again to check for payment status updates.",
+      "location": "line 45, status row"
+    },
+    {
+      "text": "By default, the session expires one hour after it is created.",
+      "location": "line 45, status row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c63-get-session-result-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-get-sessions-sessionid]] \u2014 2026-11-02-captured Checkout TEST v72 GET session-result reference for required session ID/query result, response states, and the non-updating status warning.\n",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/get/sessions/(sessionId)/2026-11-02.md",
+  "raw_sha256": "2f1a6f3529630c1f4c1c7eedff80c98f359566232c4418b0c2c6b530e58ceb07",
+  "status": "candidate_ready"
+}

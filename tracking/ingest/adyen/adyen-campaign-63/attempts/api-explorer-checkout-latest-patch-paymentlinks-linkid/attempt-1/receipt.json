@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-checkout-latest-patch-paymentlinks-linkid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Checkout API PATCH /paymentLinks/{linkId}: expire a payment link\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/patch/paymentLinks/(linkId)\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/patch/paymentLinks/(linkId)/2026-11-02.md\"\ntags: [adyen, checkout-api, pay-by-link, payment-links]\n---\n\n## Overview\n\nThis 2026-11-02-captured Checkout API reference documents `PATCH /paymentLinks/{linkId}` on the listed TEST v72 server, `https://checkout-test.adyen.com/v72`. It changes a particular payment link's status to `expired`, forcing its expiry. The path `linkId` identifies the link; it is separate from the payment `reference` returned in the link details and any payment `pspReference` in a generic error body. See [[adyen]] and [[adyen-unified-commerce]].\n\n## Key takeaways\n\n- **Request:** `linkId` is a required path string. The request body requires `status`; `expired` is its only listed value. The basic request example contains only `{\"status\":\"expired\"}` (raw lines 12\u201332). The page does not define a request idempotency key/header or another update operation.\n- **Success:** HTTP 200 is described as a successful request and returns the payment-link object. Its required response fields are `amount` (with required `currency` and minor-unit `value`), `id`, `merchantAccount`, `reference`, `status`, and `url` (raw lines 35\u201344, 156, 191, 199, 226, 243). The response status vocabulary includes `active`, `expired`, `completed`, and `paymentPending`; the latter describes a shopper still making a payment in an asynchronous flow. The sample response has `status: \"expired\"` and `expiresAt` (raw lines 315\u2013336). The linked [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links-api|Pay by Link API guide]] says forced expiry also sets `expiresAt` to the current date/time and illustrates both updated fields (its raw lines 3644\u20133648, 3839\u20133858).\n- **Response detail, not PATCH inputs:** The large 200 schema describes link attributes, not additional request-body fields. It lists optional `expiresAt` with a 24-hour creation default and a 70-day maximum, optional `reusable` defaulting to `false` (one successful payment), and optional `updatedAt` (raw lines 87, 202, 242). These defaults and limits describe the link, not an ability to set them with this PATCH. Other response-only payment, shopper, split, tokenization and method fields, including nested or conditional requirements, are in raw lines 41\u2013242.\n- **Errors and boundary:** The page lists 400 malformed/understood request, 401 authentication required, 403 insufficient permission, 422 validation and 500 server error, with generic error fields and examples (raw lines 246\u2013398). The 422 example says `Return URL is missing.`, but this PATCH request schema does not list `returnUrl`; do not infer a PATCH `returnUrl` requirement from that generic example. The page gives no authentication mechanism, idempotency contract or final payment/capture/refund outcome. An expired link is no longer usable for new payments; it does not establish reversal of an existing payment.\n\n## Detail locators\n\n- Purpose, TEST v72 server, path/body and request example: raw lines 5\u201332.\n- Successful response schema, required/optional and conditional nested attributes: raw lines 33\u2013243.\n- Error schema and examples: raw lines 246\u2013398.\n- Successful example with link identity, status and expiry: raw lines 315\u2013336.\n\n## Related\n\n- [[adyen]]\n- [[adyen-unified-commerce]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-unified-commerce-pay-by-link-create-payment-links-api]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/patch/paymentLinks/(linkId)/2026-11-02|Checkout API PATCH payment link status, captured 2026-11-02]]\n",
+  "quotes": [
+    {
+      "text": "Updates the status of a payment link. Use this endpoint to",
+      "location": "raw line 7, immediately under PATCH /paymentLinks/{linkId} heading"
+    },
+    {
+      "text": "| status | string | Yes | Status of the payment link. Possible values:  - **expired** |",
+      "location": "raw line 23, Request body table"
+    },
+    {
+      "text": "| linkId | string | Yes | Unique identifier of the payment link. |",
+      "location": "raw line 17, Path parameters table"
+    },
+    {
+      "text": "| status | string | Yes | Status of the payment link. Possible values:  - **active**:",
+      "location": "raw line 226, 200 Success response body table"
+    },
+    {
+      "text": "| reusable | boolean | No | Indicates whether the payment link can be reused for multiple payments. If not provided, this defaults to **false**",
+      "location": "raw line 202, 200 Success response body table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c63-patch-paymentlink-expiry-unified-commerce-route",
+        "target_path": "wiki/concepts/adyen-unified-commerce.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-patch-paymentlinks-linkid]] \u2014 2026-11-02-captured Checkout API v72 TEST `PATCH /paymentLinks/{linkId}` reference for forced link expiry, required status request, returned link state and error schemas; link expiry is separate from payment reversal.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/patch/paymentLinks/(linkId)/2026-11-02.md",
+  "raw_sha256": "03b90577ce74421a6fc95664f1d1eddf24fd2d9f76f3141203b898d202351736",
+  "status": "candidate_ready"
+}

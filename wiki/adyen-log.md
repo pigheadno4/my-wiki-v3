@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-02] ingest | Adyen API Explorer C63
+
+- All 10 exact-manifest complete-body API Explorer sources independently approved and promoted: GET/PATCH payment links, amount update/cancel/capture/refund/reversal, GET/PATCH payment sessions and stored-payment-method deletion. First full-review approvals 8/10; 2 targeted correction reviews. Full raw reads, 3–5 located quotes and coordinator-only approved concept-before-source promotion.
+- 6 concepts touched (0 new). Captured Checkout v72 TEST version/environment and link/payment/session/token/modification identities retained; request acceptance, asynchronous outcome, authorization and settlement remain separate. Snapshot/schema conflicts retain scoped warnings. No provider/account/security/device/payment operations or collection.
+- Source_count 2909 = 2547 General Docs + 346 API Explorer + 16 GitHub. All 10 raw hashes unchanged; 20 actual fixed query answers independently checked and three coordinator full-read exemplars pass. All complete-body pages in the local API Explorer corpus now referenced; remaining 27 raw pages are excluded title-only stubs. No upstream completeness claim.
+- Close evidence: `tracking/ingest/adyen/adyen-campaign-63/close-validation.md`. No commit/push; unrelated work preserved.
+
 ## [2026-11-02] ingest | Adyen API Explorer C62
 
 - All 36 exact-manifest complete-body API Explorer sources independently approved and promoted: Terminal API 19, Hop 3, BalanceControl 2, BalanceControlv1 2, Document-Collector 2, cloud-device-api 1, payments-app 1, possdk 2, sessionauthentication 2 and softpos-configuration-api 2. First full-review approvals 28/36; 8 targeted correction reviews. Full raw reads, 3–5 located quotes and coordinator-only approved concept-before-source promotion.

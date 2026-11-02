@@ -15,6 +15,9 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-api-explorer-checkout-latest-delete-storedpaymentmethods-storedpaymentmethodid]] — 2026-11-02-captured Checkout API v72 test-server reference for deleting one stored-payment-method token by ID, with merchant/shopper query identity, required credential role and HTTP `204` request status.
+
+
 - [[source-adyen-api-explorer-tokenization-webhooks-latest-post-recurring-token-disabled]] — 2026-09-15-captured `recurring.token.disabled` incoming token lifecycle event, with merchant/shopper/stored-method identity and 2xx receiver acceptance; disablement can follow stored-detail deletion or third-party action.
 
 

@@ -18,6 +18,9 @@ Refund processing is asynchronous. A `REFUND` webhook reports validation success
 
 ## Sources
 
+- [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-refunds]] — 2026-11-02-captured Checkout API v72 test-server reference for captured-payment refund requests, required and conditional fields, separate request PSP reference, and asynchronous `received` boundary.
+
+
 - [[source-adyen-api-explorer-webhooks-latest-post-refund-failed]] — 2026-09-15-captured refund-failure event; API Explorer's scheme-rejection heading coexists with a BLIK example. See [[source-adyen-docs-online-payments-refund]] for original-payment versus refund-request PSP reference mapping.
 
 
