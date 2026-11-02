@@ -13,6 +13,9 @@ tags: [adyen, classic-platforms, partners, ecommerce, stores, pci]
 
 This 2023-modified Classic guide, captured 2026-09-15, applies **only** to a partner arrangement for Adyen for Platforms. Unlike the ordinary platform model, the partner platform cannot process payments on behalf of its sub-merchants; Adyen establishes a direct sub-merchant relationship with card schemes. The platform onboards each sub-merchant, collects ecommerce SAQ A evidence, creates a store, and routes payments through that store. Integrations built after 2022-08-01 are directed to a separate newer guide. [[adyen]] [[adyen-classic-platforms]]
 
+> [!warning] Contradiction
+> The September 2026 API Explorer contract [[source-adyen-api-explorer-hop-latest-post-getpciquestionnaireurl]] says its one-time `redirectUrl` must be used within **30 seconds** (raw line 47); the separately captured Classic guide [[source-adyen-docs-classic-platforms-platforms-for-partners]] says **15 seconds** (guide raw lines 98–121). Keep these link-use windows source-qualified. The guide's subsequent 30-minute session is a different limit; these snapshots do not resolve the operational link window.
+
 ## Key takeaways
 
 - For ecommerce, each sub-merchant needs SAQ A and an online store to establish the direct scheme connection. POS sub-merchants also need stores but the guide says they do **not** complete SAQ A because the POS terminals establish the card-network connection and PCI requirements (raw lines 19–30). The platform must arrange store creation with Adyen Support, supplying countries, currencies, MCCs and payment methods (raw lines 40–56). This dated source does not independently establish current PCI compliance.

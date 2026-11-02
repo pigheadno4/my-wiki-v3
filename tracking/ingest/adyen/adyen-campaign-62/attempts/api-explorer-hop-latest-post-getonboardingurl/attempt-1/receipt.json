@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-hop-latest-post-getonboardingurl",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic HOP v6 getOnboardingUrl\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Hop/latest/post/getOnboardingUrl\"\nraw_files:\n  - \"adyen/api-explorer/Hop/latest/post/getOnboardingUrl/2026-09-15.md\"\ntags: [adyen, classic-platforms, hosted-onboarding, api-explorer]\n---\n\n## Overview\n\nCaptured Classic Hosted Onboarding Page (HOP) `POST /getOnboardingUrl` contract, served under the listed **Hop/v6** test base URL. A platform requests a link for an existing Classic account holder to provide onboarding information on an Adyen-hosted page. This is a URL issuance step, separate from the holder's session, verification outcome, payment processing or payout. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- The request body requires `accountHolderCode`, the code supplied when the platform created the Classic account holder. `collectInformation` is optional; by default HOP collects information for all KYC checks applicable to the holder's legal entity type, and its six optional check flags default to true (the PCI questionnaire applies only to partner platforms). `showPages` is optional; its page flags mostly default true, while `checksOverviewPage` and `welcomePage` default false. These controls select collection/presentation, not verification approval.\n- Optional `editMode` permits editing checks after they have all passed. `returnUrl` redirects on completion or session timeout, is limited to 500 characters, and otherwise falls back to the platform default. `shopperLocale` falls back to browser language and then `en-US` if unsupported. `mobileOAuthCallbackUrl` is for bank OAuth through Trustly/PayMyBank.\n- The 200 response table marks `invalidFields`, `pspReference`, `redirectUrl` and `resultCode` optional. `pspReference` identifies the request; it does not establish an onboarding or financial result. The table says a returned `redirectUrl` must be used once within **30 seconds**. The response example shows a successful test URL, but does not make every optional field guaranteed.\n- **Conflicting retained evidence:** the separately captured [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page]] says the one-time redirect URL must be used within **15 seconds** and that the hosted session then lasts 30 minutes (companion raw lines 87\u2013110). This API Explorer contract says **30 seconds** for use of `redirectUrl` (this raw line 66) and does not state session duration. Preserve this discrepancy; do not treat either number as a universal safe window.\n- The page lists 400 parsing, 401 authentication, 403 permission, 422 validation and 500 server error responses. It does not specify an authentication mechanism or required role. Its generic error-body `pspReference` description says \u201cpayment,\u201d which does not change this operation's HOP URL purpose.\n\n## Detail locators\n\n- Purpose and Hop/v6 test server: raw lines 5\u201310.\n- Required account-holder identity, KYC collection flags/defaults, edit, OAuth callback, return URL, locale and page visibility: raw lines 12\u201339.\n- Request example: raw lines 41\u201349.\n- 200 response, optional fields, request reference and one-time 30-second redirect URL: raw lines 50\u201367; example at 134\u2013146.\n- Error statuses and optional error-body fields: raw lines 70\u2013132.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder and hosted-onboarding route.\n- [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page]] \u2014 separate HOP guide with conflicting 15-second URL instruction and 30-minute session guidance.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Hop/latest/post/getOnboardingUrl/2026-09-15|Hop v6 getOnboardingUrl API Explorer page, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returns a link to an Adyen-hosted onboarding page (HOP) that you can send to your account holder. For more information on how to use HOP, refer to [Hosted onboarding](https://docs.adyen.com/classic-platforms/onboard-users/hosted-onboarding-page).",
+      "location": "raw/adyen/api-explorer/Hop/latest/post/getOnboardingUrl/2026-09-15.md:7"
+    },
+    {
+      "text": "| accountHolderCode | string | Yes | The account holder code you provided when you created the account holder. |",
+      "location": "raw/adyen/api-explorer/Hop/latest/post/getOnboardingUrl/2026-09-15.md:17"
+    },
+    {
+      "text": "| returnUrl | string | No | The URL where the account holder will be redirected back to after they complete the onboarding, or if their session times out. Maximum length of 500 characters. If you don't provide this, the account holder will be redirected back to the default return URL configured in your platform account. |",
+      "location": "raw/adyen/api-explorer/Hop/latest/post/getOnboardingUrl/2026-09-15.md:28"
+    },
+    {
+      "text": "| redirectUrl | string | No | The URL to the Hosted Onboarding Page where you should redirect your sub-merchant. This URL must be used within 30 seconds and can only be used once. |",
+      "location": "raw/adyen/api-explorer/Hop/latest/post/getOnboardingUrl/2026-09-15.md:66"
+    },
+    {
+      "text": "### 401 Client Error",
+      "location": "raw/adyen/api-explorer/Hop/latest/post/getOnboardingUrl/2026-09-15.md:83"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-hop-url-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-hop-latest-post-getonboardingurl]] \u2014 Classic Hop/v6 API Explorer URL-issuance contract (captured 2026-09-15) for account-holder identity, collection/page options, response fields and one-time link; its 30-second use window conflicts with the separate hosted-onboarding guide's 15 seconds.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The 2026-09-15 API Explorer raw line 66 says redirectUrl is usable once within 30 seconds; existing source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page and its raw lines 87-110 say redirect within 15 seconds. Preserve source attribution and consider a reciprocal conflict note in the existing hosted-onboarding source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Hop/latest/post/getOnboardingUrl/2026-09-15.md",
+  "raw_sha256": "8e7ae073f61533f5edc01467a8b7dbc7bf3d540667e1839107ad85b6f5c1b1f3",
+  "status": "candidate_ready"
+}

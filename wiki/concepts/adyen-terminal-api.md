@@ -89,6 +89,63 @@ Terminal API defines terminal messages. Adyen's Cloud Device API, represented se
 
 ## Related
 
+- [[source-adyen-api-explorer-cloud-device-api-latest-overview]] — 2026-09-15 Cloud device API v1 overview of Terminal API cloud transport, sync/async response routing, connection checks and region-specific endpoints; transport/connection state is separate from payment outcome.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-transactionstatus]] — captured Terminal API latest TransactionStatus request/response schema for last/current transaction inquiry, prior-message reference, status processing result and optional repeated response (2026-09-15 snapshot).
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-payment]] — captured Terminal API `POST /payment` request/response schema with sale and POI transaction identities, payment result fields, and cloud test Device API v1/local server routes (2026-09-15 snapshot).
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-storedvalue]] — captured `latest` Terminal API Explorer `POST /storedvalue` request/response schema for stored-value transaction types, sale/POI identities, conditional account fields and qualified result/balance data (2026-09-15 snapshot).
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-reversal]] — 2026-09-15 Terminal API Explorer POST /reversal request/response contract for payment or loyalty reversal, original-transaction fields, amount default and result envelope.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-logout]] — 2026-09-15 API Explorer `POST /logout` Logout Request/Response snapshot with optional post-session maintenance indication and processing result.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-print]] — 2026-09-15 API Explorer Print request/response body reference for conditional output payloads, response modes, and the integrated-print immediate-response exception.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-reconciliation]] — 2026-09-15 API Explorer latest Reconciliation request/response field reference for Sale-to-POI period identifiers, conditional transaction totals, and message-result boundaries; not financial settlement proof.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-login]] — 2026-09-15 API Explorer `latest` POST /login request/response schema for Sale/POI session identity, training and operator/group fields, conditional Login result errors, and optional POI status; operator authentication remains a separate boundary.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-gettotals]] — 2026-09-15 API Explorer GetTotals request and Reconciliation Response field reference for Sale-to-POI period totals; distinct from settlement reporting.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-display]] — captured `latest` Terminal API Explorer `POST /display` request and response schema for terminal display content, device/qualifier pairing, conditional output formats, and optional response (2026-09-15 snapshot).
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-diagnosis]] — 2026-09-15 Terminal API Explorer POST /diagnosis contract for optional POI/host request selectors, response Result versus HTTP 200, and conditional terminal/host status fields.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-cardacquisition]] — 2026-09-15 API Explorer CardAcquisition request/response body reference for Sale and POI transaction IDs, optional card/loyalty data, and acquisition-result limits; separate from payment authorization.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-enableservice]] — captured Terminal API latest EnableService request/response reference for swipe-ahead start or abort, conditional services and display fields, and processing result (2026-09-15 snapshot).
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-cardreaderapdu]] — 2026-09-15 API Explorer latest CardReaderAPDU request/response field reference for chip APDU exchange, TEST cloud/local server routes, and message-result versus card-status boundaries.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-balanceinquiry]] — captured Terminal API `POST /balanceinquiry` API Explorer request/response schema, test cloud Device API v1 sync/async paths and local placeholder (2026-09-15 snapshot).
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-admin]] — 2026-09-15 API Explorer `POST /admin` Custom Admin Request/Response snapshot: optional service identification and processing result for listed test cloud/local transports.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-post-abort]] — 2026-09-15 API Explorer `latest` POST /abort body reference: required message reference and abort reason, optional display payload, test transport URLs, and bodyless HTTP 200; transaction outcome remains a separate question.
+
+
+- [[source-adyen-api-explorer-terminal-api-latest-overview]] — API Explorer Terminal API v1 overview (captured 2026-09-15): nexo JSON message envelope, local/cloud delivery, Cloud device API endpoints and legacy migration guidance.
+
+
 - [[source-adyen-api-explorer-payment-latest-post-voidpendingrefund]] — 2026-09-15 Payment API v68 test reference for requesting cancellation of a pending POS unreferenced refund; identifies original-refund selector routes, flags reused `originalReference` wording, and distinguishes request receipt from cancellation outcome.
 
 

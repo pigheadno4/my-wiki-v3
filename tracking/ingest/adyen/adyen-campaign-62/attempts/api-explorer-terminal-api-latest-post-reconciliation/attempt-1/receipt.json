@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API latest Reconciliation request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/reconciliation\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/reconciliation/2026-09-15.md\"\ntags: [adyen, terminal-api, api-explorer, reconciliation, transaction-totals]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer **Terminal API latest** `POST /reconciliation` snapshot describes a Reconciliation request from the Sale System and a response about a reconciliation transaction processed by the POI System. The listed cloud endpoints are TEST `/v1/merchants/{merchantAccount}/devices/{deviceId}/sync` and `/async`; local hosting is represented only by `<local-terminal-IP-address>`. The page does not pin a numbered Terminal API schema version. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The request-body table requires `ReconciliationType`: `SaleReconciliation`, `AcquirerSynchronisation`, `AcquirerReconciliation`, or `PreviousReconciliation`. Optional `AcquirerID` is an integer array allowed only for the two Acquirer types. Optional integer `POIReconciliationID` is absent unless the type is `PreviousReconciliation`. The table does not define the actions or period transition performed by each type; see raw lines 23\u201328.\n- The response-body table requires `Response`, its `Result` (`Success`, `Failure`, or `Partial`), and `ReconciliationType`. The prose says `ErrorCondition` is absent or unused for `Success` and must be present otherwise, while the table marks that field \u201cNo.\u201d The `200 Success` heading therefore does not guarantee a successful message result. Optional response `POIReconciliationID` is absent for `AcquirerReconciliation`; see raw lines 30\u201344.\n- Optional `TransactionTotals` is described as the Sale-to-POI reconciliation result if `Response.Result` is `Success`. Within each present item, `PaymentInstrumentType` is required; acquirer, host-period, card-brand, terminal, sale, operator, shift, totals-group, currency, and `PaymentTotals` fields are optional or conditional. The response describes `POIID`, `SaleID`, `OperatorID`, `ShiftNumber`, and `TotalsGroupID` as sent if requested, but the captured request-body table shows no corresponding selector fields. If a `PaymentTotals` item is present, its `TransactionType`, `TransactionCount`, and `TransactionAmount` are required; the `PaymentTotals` description says it is present if both count and amount are nonzero. See raw lines 45\u201359.\n- This operation describes POI reconciliation processing and aggregate transaction totals. It provides no full Terminal API message envelope, caller credential or role, request correlation rule, session lifetime, timeout, retry or reversal procedure, asynchronous delivery contract, or evidence of payment authorization, capture, financial settlement, or bank receipt.\n\n## Detail locators\n\n- TEST cloud and local-hosting server labels: raw lines 10\u201319.\n- Request types and conditional identifiers: raw lines 21\u201328.\n- Response status and period ID: raw lines 30\u201344.\n- Transaction totals, nested required properties, and conditional fields: raw lines 45\u201359.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 provider concept and reciprocal source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/reconciliation/2026-09-15|Adyen API Explorer Reconciliation raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "It conveys Information related to the Reconciliation requested by the Sale System.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/reconciliation/2026-09-15.md:8"
+    },
+    {
+      "text": "AcquirerID | array of integer | No | Identification of the Acquirer. Could be present only if ReconciliationType is AcquirerReconciliation or AcquirerSynchronisation.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/reconciliation/2026-09-15.md:27"
+    },
+    {
+      "text": "POIReconciliationID | integer | No | Identification of the reconciliation period between Sale and POI. Absent if ReconciliationType is not PreviousReconciliation.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/reconciliation/2026-09-15.md:28"
+    },
+    {
+      "text": "If Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present and can refine the processing of the message response.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/reconciliation/2026-09-15.md:39"
+    },
+    {
+      "text": "TransactionTotals | array of object | No | Result of the Sale to POI Reconciliation processing. If `Response.Result` is Success.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/reconciliation/2026-09-15.md:45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-reconciliation-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-reconciliation]] \u2014 2026-09-15 API Explorer latest Reconciliation request/response field reference for Sale-to-POI period identifiers, conditional transaction totals, and message-result boundaries; not financial settlement proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/reconciliation/2026-09-15.md",
+  "raw_sha256": "aa6efaf0258af5115c2cd2ec4d205e798b8178483dd42c5e4b46af55d0118cee",
+  "status": "candidate_ready"
+}

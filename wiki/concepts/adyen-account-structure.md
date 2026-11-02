@@ -30,6 +30,21 @@ This is a 2023-last-modified Adyen page captured 2026-09-15. It does not identif
 
 ## Sources
 
+- [[source-adyen-api-explorer-document-collector-latest-post-crossborderinvoices]] — captured Document Collector v1 merchant-account PDF upload reference for `paCbInvoice` and `{pspReference}.pdf`; upload success does not establish invoice reconciliation or payment state (2026-09-15 snapshot).
+
+
+- [[source-adyen-api-explorer-balancecontrol-latest-post-balancetransfers]] — 2026-09-15 Balance Control API v2 merchant-account transfer reference: same company/legal entity, common currency and source funds, sequential same-pair requests, and 200 transfer reference. Its live server path conflicts with the Going live paragraph in [[source-adyen-api-explorer-balancecontrol-latest-overview]]; neither snapshot resolves the base URL.
+
+
+- [[source-adyen-api-explorer-balancecontrolv1-latest-post-balancetransfer]] — 2026-09-15 Balance Control v1 TEST API reference for same-company/legal-entity merchant-account balance-transfer requests and their returned status, distinct from platform balance-account transfers.
+
+
+- [[source-adyen-api-explorer-balancecontrolv1-latest-overview]] — 2026-09-15 Balance Control API v1 overview for same-company/same-legal-entity merchant-account transfers, authentication choices, TEST v1 URL, and the balanceTransfer operation; no transfer-outcome schema.
+
+
+- [[source-adyen-api-explorer-balancecontrol-latest-overview]] — 2026-09-15 Balance Control API v2 overview for company/merchant balance views and balance-transfer endpoint; its live base-path statements conflict.
+
+
 - [[source-adyen-api-explorer-managementnotification-latest-post-merchant-updated]] — 2026-09-15-captured merchant-account capability and verification update webhook; capability verification is separate from merchant status, and the valid-capability example remains `PreActive`.
 
 

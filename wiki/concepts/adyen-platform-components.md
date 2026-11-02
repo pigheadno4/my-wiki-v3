@@ -15,6 +15,12 @@ Component availability depends on product, region, user role, and each child gui
 
 ## Sources
 
+- [[source-adyen-api-explorer-sessionauthentication-latest-post-sessions]] — 2026-09-15 Session Authentication API v1 component-token request/response: live HTTPS origin, product-specific legal-entity or account-holder policy scope, token output and 400/401/403 boundary; separate from Checkout payment sessions.
+
+
+- [[source-adyen-api-explorer-sessionauthentication-latest-overview]] — Session authentication API v1 overview for component JWTs, API-key and test/live endpoint orientation, and `POST /sessions` navigation (2026-09-15 snapshot).
+
+
 - [[source-adyen-docs-marketplaces-components-overview-during-payment]] — 2026-09-15 short Marketplace-path during-payment navigation page linking Checkout components and the component library; no implementation or outcome proof.
 
 

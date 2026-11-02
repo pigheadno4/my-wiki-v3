@@ -11,6 +11,9 @@ Adyen's Mobile POS documentation covers in-person payment solutions using a merc
 
 ## Evidence boundary
 
+The 2026-09-15 API Explorer overview labels **POS Mobile API v68** deprecated and points to the SoftPOS configuration API. Its Android/iOS SDK mutual-authentication and `POST /sessions` summary do not establish that every POS Mobile SDK version or payment route is deprecated, nor do they provide a session schema or successful payment outcome. [[source-adyen-api-explorer-possdk-latest-overview]]
+
+
 The Android overview sends readers to separate requirements, security, checklist, build, management and error guides. It does not state device/OS or regional support, SDK/API versions, account eligibility, go-live approval, or successful payment execution. Keep this mobile-device route distinct from [[adyen-android-terminals]] (apps on Adyen payment terminals), [[adyen-android-sdk]] (native online checkout), and the device-specific [[adyen-mobile-card-readers]] concept. An iOS Mobile POS overview can contribute a separate source route after its own evidence review.
 
 ## iOS Repository Baseline: `AdyenPOS@3.22.0`
@@ -36,6 +39,21 @@ This TEST snapshot adds an important configuration distinction: its SwiftUI targ
 Release announcements and stale 3.21.0 README documentation links are preserved separately for this exact TEST release. TEST-only metadata is not live-environment enablement evidence.
 
 ## Sources
+
+- [[source-adyen-api-explorer-possdk-latest-post-sessions]] — 2026-09-15 POS Mobile SDK `v68` test `POST /sessions` contract for mobile in-person communication-session creation and SDK response-authentication data.
+
+
+- [[source-adyen-api-explorer-softpos-configuration-api-latest-post-auth-certificate]] — 2026-09-15 SoftPOS configuration API v3 session-creation contract for Mobile SDK setup-token exchange, installation identity, SDK response-authentication data and conditional facilitator fields.
+
+
+- [[source-adyen-api-explorer-softpos-configuration-api-latest-overview]] — 2026-09-15 SoftPOS configuration API v3 overview for Android/iOS Mobile SDK mutual-authentication sessions, API/client-key setup and regional TEST/live endpoints; operation list is not payment outcome evidence.
+
+
+- [[source-adyen-api-explorer-possdk-latest-overview]] — 2026-09-15 deprecated POS Mobile API v68 overview for Android/iOS SDK mutual authentication, API/client key setup, test/live URL versioning and a /sessions navigation route; no session or payment-result schema.
+
+
+- [[source-adyen-api-explorer-payments-app-latest-overview]] — Payments App API v1 endpoint index (captured 2026-09-15) for Android app boarding-token, listing and installation-authentication revocation routes at merchant/store scope.
+
 
 - [[source-github-adyen-pos-mobile-ios-test]] - independent TEST-only 3.22.0 binary distribution and sample/build-setting baseline.
 - [[changelog-github-adyen-pos-mobile-ios-test]] - repository-qualified TEST release history, separate from the main distribution.

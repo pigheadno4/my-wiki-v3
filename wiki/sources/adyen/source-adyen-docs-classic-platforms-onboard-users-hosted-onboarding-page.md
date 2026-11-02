@@ -13,6 +13,9 @@ tags: [adyen, classic-platforms, onboarding, account-holders, verification]
 
 This 2021-modified Classic Adyen for Platforms guide, captured 2026-09-15, describes sending an existing account holder to Adyen's Hosted Onboarding Page (HOP) to supply verification information. It calls HOP the recommended lower-effort route and directs new implementations to a separate newer integration guide. This is a Classic account-holder workflow, not a current balance-platform API flow. [[adyen]] [[adyen-classic-platforms]]
 
+> [!warning] Contradiction
+> The September 2026 API Explorer contract [[source-adyen-api-explorer-hop-latest-post-getonboardingurl]] says its one-time `redirectUrl` must be used within **30 seconds** (raw line 66); the separately captured Classic guide [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page]] says **15 seconds** (guide raw lines 87–110). Keep these link-use windows source-qualified. The guide's subsequent 30-minute session is a different limit; these snapshots do not resolve the operational link window.
+
 ## Key takeaways
 
 - Hosted onboarding must be enabled for the platform through Adyen Support, which also receives a default return URL. The platform chooses upfront or staggered collection: the guide says upfront aims to collect data for all payment-processing and payout tiers once, while staggered requires another HOP URL when processed funds exceed the current tier (raw lines 47–57). Neither choice proves verification approval or payout execution.

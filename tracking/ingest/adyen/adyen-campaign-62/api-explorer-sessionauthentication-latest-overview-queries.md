@@ -1,0 +1,13 @@
+# C62 fixed-query answers: Session authentication API overview
+
+Canonical source: [[source-adyen-api-explorer-sessionauthentication-latest-overview]] — https://docs.adyen.com/api-explorer/sessionauthentication/latest/overview
+
+## Q1
+
+The captured page explicitly identifies **Session authentication API v1**. It says the API creates and manages JWTs needed for integrating components and lists `POST /sessions` as “Create a session token.” The API caller uses a credential: Adyen recommends an API key and instructs the caller to add it in `X-API-Key`. For live access, platform or marketplace setups generate a key in the **live Customer Area**, while Issuing integrations generate a key in **Balance Platform Customer Area**; the page then directs requests to `https://authe-live.adyen.com/authe/api/v1`. The test base URL is `https://test.adyen.com/authe/api/v1`. This is API v1, while `latest` is only the documentation path segment. The page does not identify a terminal or device, user, legal entity, account holder, policy resource, session ID, or a token subject in an actual request/response. Raw lines 5–18, 24–41. See [[source-adyen-api-explorer-sessionauthentication-latest-overview]] (https://docs.adyen.com/api-explorer/sessionauthentication/latest/overview).
+
+The stated token-creation prerequisites vary by component type, with Onboarding and Platform Experience guides linked for detail. This overview has no `POST /sessions` request/response schema, so it establishes no required body fields, token claims, role names, allow-origin constraint, rate/size limit, token lifetime, refresh/revocation lifecycle, failure or reversal code, or timing guarantee. Raw lines 20–22 and 36–41.
+
+## Q2
+
+The endpoint table establishes that `POST /sessions` is the named route for creating a session token; it does not report an accepted command, issued token, HTTP response, authenticated end user, or component authorization result. `X-API-Key` is the documented connection header, and live use calls for a live key; the page does not show account-specific permissions or prove that a given credential has the component-dependent requirements. It does not provide a token/session identifier to correlate, callback or asynchronous contract, response status or errors, version-deprecation policy, or credential-rotation procedure. A JWT for components would be an authentication/session artifact, not evidence of payment authorization, capture, balance movement, settlement or bank receipt. Raw lines 5–7, 9–26 and 28–41. See [[source-adyen-api-explorer-sessionauthentication-latest-overview]] (https://docs.adyen.com/api-explorer/sessionauthentication/latest/overview).

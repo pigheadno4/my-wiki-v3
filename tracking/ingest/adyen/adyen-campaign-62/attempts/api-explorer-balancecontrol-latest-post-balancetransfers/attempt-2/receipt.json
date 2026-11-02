@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balancecontrol-latest-post-balancetransfers",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Balance Control API v2 balance transfer | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/BalanceControl/latest/post/balanceTransfers\"\nraw_files:\n  - \"adyen/api-explorer/BalanceControl/latest/post/balanceTransfers/2026-09-15.md\"\ntags: [adyen, balance-control, balance-transfers, merchant-accounts, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents Balance Control API `POST /balanceTransfers` for moving balances between **merchant accounts**. Its Test and Live Servers list uses `/balance-control/api/v2`; the `latest` documentation label does not make this the separate BalanceControlV1 or Balance Platform Transfers API. The separately captured [[source-adyen-api-explorer-balancecontrol-latest-overview|Balance Control API v2 overview]] has an internal live-base conflict: its Going live paragraph gives `https://balance-control-live.adyen.com/api/v2`, while its Servers list and this operation page give `https://balance-control-live.adyen.com/balance-control/api/v2`. Neither capture resolves which live base to use. The request identifies source and destination merchant accounts, not platform balance accounts, payment terminals, devices, or sessions.\n\n## Key takeaways\n\n- A successful transfer requires source and destination merchant accounts under the same company account and legal entity, sufficient funds in the source, and at least one common processing currency. For multiple requests using the same source/destination pair, the page instructs sequential sending: parallel requests may go unprocessed. This is a processing warning, not an idempotency or retry rule.\n- The body table requires `amount.currency` (three-character ISO code) and integer `amount.value` in minor units, `fromMerchant`, `toMerchant`, and `type`. Allowed `type` values are `tax`, `fee`, `terminalSale`, `credit`, `debit`, and `adjustment`. Optional `reference` is limited to 80 characters. The EUR 3000-minor-unit `adjustment` request is an example, not a currency or transfer-type default.\n- The `200 Success` description says the request succeeded. Its response body requires `createdAt`, described as the date the transfer was performed, and a 16-character `pspReference`; the example caption calls it \u201cbalance transfer created.\u201d Preserve that wording distinction: the page supplies no separate status transitions, balance-ledger entries, reconciliation event, payout, or bank-receipt proof.\n- `401 Unauthorized` and `422` validation error responses are documented with optional problem fields, including `requestId` and conditional `invalidFields` entries. The page does not specify the authentication mechanism, credential role, retry behavior, reversal endpoint, asynchronous outcome, settlement timing, or deprecation rule. The optional client `reference`, error `requestId`, and success `pspReference` have distinct stated roles.\n\n## Detail locators\n\n- Eligibility, currency overlap, same-pair sequencing, and v2 Test/Live server bases: raw lines 5\u201322.\n- Required body fields, type enum, optional reference length, and illustrative request: raw lines 24\u201351.\n- Success wording, `createdAt` and `pspReference`: raw lines 52\u201362 and 101\u2013111.\n- Unauthorized/validation error schemas, including optional request correlation: raw lines 64\u201399.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-account-structure]] \u2014 merchant/company hierarchy and merchant-balance context.\n- [[source-adyen-api-explorer-balancecontrol-latest-overview]] \u2014 v2 overview with conflicting captured live-base URLs; verify the applicable path before implementation.\n- [[source-adyen-docs-account-manage-your-balances]] \u2014 separately sourced role, allocation, and balance-management guidance; this API Explorer page alone does not establish those rules.\n- [[adyen-platform-internal-transfers]] \u2014 different balance-account transfer family; do not apply its status model to this merchant-account API.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/BalanceControl/latest/post/balanceTransfers/2026-09-15|Adyen API Explorer Balance Control v2 balance transfer (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The source and destination merchant accounts must be under the same company account and legal entity.",
+      "location": "raw/adyen/api-explorer/BalanceControl/latest/post/balanceTransfers/2026-09-15.md:9"
+    },
+    {
+      "text": "The source merchant account must have sufficient funds.",
+      "location": "raw/adyen/api-explorer/BalanceControl/latest/post/balanceTransfers/2026-09-15.md:11"
+    },
+    {
+      "text": "Some requests may not be processed if the requests are sent in parallel.",
+      "location": "raw/adyen/api-explorer/BalanceControl/latest/post/balanceTransfers/2026-09-15.md:14"
+    },
+    {
+      "text": "The date when the balance transfer was performed.",
+      "location": "raw/adyen/api-explorer/BalanceControl/latest/post/balanceTransfers/2026-09-15.md:60"
+    },
+    {
+      "text": "Response code 200: balance transfer created.",
+      "location": "raw/adyen/api-explorer/BalanceControl/latest/post/balanceTransfers/2026-09-15.md:105"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-balancecontrol-transfer-account-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balancecontrol-latest-post-balancetransfers]] \u2014 2026-09-15 Balance Control API v2 merchant-account transfer reference: same company/legal entity, common currency and source funds, sequential same-pair requests, and 200 transfer reference. Its live server path conflicts with the Going live paragraph in [[source-adyen-api-explorer-balancecontrol-latest-overview]]; neither snapshot resolves the base URL.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The overview's Going live paragraph gives https://balance-control-live.adyen.com/api/v2, while its Servers list and this operation page give https://balance-control-live.adyen.com/balance-control/api/v2. Do not select a live base from these captures alone."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/BalanceControl/latest/post/balanceTransfers/2026-09-15.md",
+  "raw_sha256": "3915e503ab8c1589f923f42e1da3f1424c55a8564959590c8c31f44dc3b7d484",
+  "status": "candidate_ready"
+}

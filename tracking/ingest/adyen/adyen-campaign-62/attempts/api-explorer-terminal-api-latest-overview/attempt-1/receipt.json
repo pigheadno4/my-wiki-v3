@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API v1 overview\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/overview\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/overview/2026-09-15.md\"\ntags: [adyen, terminal-api, api-explorer, point-of-sale]\n---\n\n## Overview\n\nCaptured API Explorer overview for **Adyen Terminal API v1**, a nexo Sale to POI based JSON message interface for payments, refunds, shopper information and other interactions through Adyen-supplied payment terminals; the page also says Terminal API is used for Adyen Mobile solution transactions. It describes POS-to-terminal communication and cloud routing, not a complete operation schema. See [[adyen]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- A request has a `SaleToPOIRequest` with `MessageHeader` and an operation-specific body. The header identifies transaction type, terminal or Mobile SDK instance and unique transaction identifiers. The `SaletoPOIResponse` header echoes request values except `MessageType=Response`, with an operation-specific response body. The overview does not state field-level requiredness, identifier formats or cardinality; follow the linked operation references for those.\n- Local communication sends from the POS to the terminal IP over a local network and receives a synchronous result. Cloud communication sends from POS to an Adyen endpoint for forwarding to a terminal; the POS can wait for a synchronous response or close the connection and receive an asynchronous event notification. A cloud `/sync` or `/async` routing choice therefore does not itself establish a transaction's authorization, capture or settlement result.\n- Cloud device API uses POST paths identifying a merchant and `deviceId`: test examples use `{merchantAccount}`; the listed regional live examples use `{merchantId}` and require selection of the geographically closest data center in live Customer Area. Each cloud request requires an API key with **Cloud Device API role** in `X-API-Key`; generate a new key in the live Customer Area for go-live. The page points to separate local communication protection guidance without giving its security procedure.\n- Legacy `terminal-api` cloud endpoints remain supported but receive no future development; the overview strongly recommends migrating to Cloud device API for logs, versioning, routing and future features. This is migration guidance, not a statement that old endpoints are already unavailable.\n\n## Detail locators\n\n- Purpose, nexo basis and JSON envelope: raw lines 5\u201323.\n- Local versus cloud delivery, `/sync` and `/async` choice: raw lines 25\u201343.\n- Test and regional live cloud URLs, with different merchant placeholders and live data-center selection: raw lines 45\u201377.\n- Legacy endpoints and migration rationale: raw lines 79\u2013109.\n- Cloud API-key role/header and live key: raw lines 111\u2013115.\n- Operation directory: raw lines 117\u2013152 lists POST Login, Logout, EnableService, Admin, Payment, CardAcquisition, StoredValue, Reversal, Reconciliation, GetTotals, BalanceInquiry, TransactionStatus, Abort, Diagnosis, Display, Input, Print and CardReaderAPDU. These are navigation entries; this overview supplies no operation request/response field schemas, limits, failure/reversal rules or timing guarantees.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 principal concept route for Terminal API message and integration boundaries.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/overview/2026-09-15|Adyen Terminal API v1 overview, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The architecture of Terminal API is determined by the [nexo Sale to POI Protocol Specifications](https://www.nexo-standards.org/standards/nexo-retailer-protocol).",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/overview/2026-09-15.md:11"
+    },
+    {
+      "text": "A Terminal API request is a JSON message consisting of a `SaleToPOIRequest` object with:",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/overview/2026-09-15.md:13"
+    },
+    {
+      "text": "- [Cloud communications](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/): using the internet to access the cloud, your POS system sends the request to an Adyen endpoint, and Adyen forwards the request to the terminal. Your POS system either keeps the connection open and receives the response synchronously, or closes the connection and receives the response asynchronously in an event notification.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/overview/2026-09-15.md:31"
+    },
+    {
+      "text": "There will be no future development on the old endpoints, but we continue to support them.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/overview/2026-09-15.md:89"
+    },
+    {
+      "text": "Each request to a **Cloud device API** endpoint must be signed with an API key that has the **Cloud Device API role**. [Generate your API Key](https://docs.adyen.com/development-resources/api-credentials#generate-api-key) in the Customer Area and set this key to the `X-API-Key` header value of the Cloud device API request.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/overview/2026-09-15.md:113"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-terminal-api-overview-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-overview]] \u2014 API Explorer Terminal API v1 overview (captured 2026-09-15): nexo JSON message envelope, local/cloud delivery, Cloud device API endpoints and legacy migration guidance.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/overview/2026-09-15.md",
+  "raw_sha256": "aa6f4c87e41b1ab346f1cb23ccca9e5bb0219910dcfd2991cbcdc1abdbe60793",
+  "status": "candidate_ready"
+}

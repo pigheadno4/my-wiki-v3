@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-diagnosis",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API: POST /diagnosis diagnosis request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/diagnosis\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/diagnosis/2026-09-15.md\"\ntags: [adyen, terminal-api, diagnosis, point-of-interaction, api]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer capture describes Terminal API `POST /diagnosis` as a Sale-to-POI diagnosis request for a target point of interaction (POI). It lists test cloud device sync and async URLs under `/v1/merchants/{merchantAccount}/devices/{deviceId}/` and a local terminal IP server. The `latest` page path and cloud `v1` transport URLs do not identify a numbered Terminal API protocol version. See [[adyen]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The request-body table marks `POIID`, `HostDiagnosisFlag`, and `AcquirerID` all **No**. `POIID` identifies a POI system or terminal for the Sale-to-POI protocol and refers to `MessageHeader.POIID`; `HostDiagnosisFlag` asks for host diagnosis; the integer `AcquirerID` array is present when requesting only those hosts. The page does not state a default for the flag, a body-level mandatory selector, or caller authentication requirements.\n- Under `200 Success`, the response body requires a `Response` object with required `Result` (`Success`, `Failure`, or `Partial`). Its description says `ErrorCondition` is absent or unused for Success and must be present otherwise. Optional `AdditionalResponse` provides processing information for logging, without real-time involvement. HTTP 200 alone therefore does not establish `Response.Result: Success`.\n- Optional `POIStatus` reports terminal-component availability; if present, its `GlobalStatus` is required and may be `OK`, `Busy`, `Maintenance`, or `Unreachable`. Its security, PED, card-reader and communication flags, printer status, and fraud-suspicion flag are conditional or optional as described in the raw table. The optional `HostStatus` array describes hosts; each host object requires `AcquirerID`, while `IsReachableFlag` is optional.\n- This diagnosis contract reports request processing and observed terminal/host condition. It does not describe a payment authorization, capture, reversal, reconciliation, settlement, bank receipt, resource creation, asynchronous result correlation, retry window, or endpoint rate limit. The separate [[source-adyen-docs-point-of-sale-diagnostics-request-diagnosis|diagnosis guide]] adds operational examples and Mobile SDK behavior; those are separate website evidence, not fields supplied by this API Explorer page.\n\n## Detail locators\n\n- Purpose and listed cloud sync/async test and local servers: raw lines 5\u201319.\n- Request-body field types, requiredness and host-selector condition: lines 21\u201328.\n- HTTP 200 response envelope, Result and ErrorCondition semantics: lines 30\u201342.\n- POI and host status fields, condition text and enums: lines 43\u201353.\n\n## Related\n\n- [[adyen]] \u2014 provider route.\n- [[adyen-terminal-api]] \u2014 Terminal API concept.\n- [[source-adyen-docs-point-of-sale-diagnostics-request-diagnosis]] \u2014 separate POS diagnosis guide with operational examples and Mobile SDK qualifications.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/diagnosis/2026-09-15|POST /diagnosis API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "It conveys Information related to the target POI for which the diagnosis is requested.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Present if requesting the diagnosis of these hosts only.",
+      "location": "raw line 28, AcquirerID request-body row"
+    },
+    {
+      "text": "If Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present",
+      "location": "raw line 39, Response row"
+    },
+    {
+      "text": "The data element is absent if the component is not part of the POI Terminal.",
+      "location": "raw line 43, POIStatus row"
+    },
+    {
+      "text": "State of a Host.",
+      "location": "raw line 51, HostStatus row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-diagnosis-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-diagnosis]] \u2014 2026-09-15 Terminal API Explorer POST /diagnosis contract for optional POI/host request selectors, response Result versus HTTP 200, and conditional terminal/host status fields.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/diagnosis/2026-09-15.md",
+  "raw_sha256": "9d30731c5240d58111dc977a01f926547bd08d78ef9db88797a0520e3fa50434",
+  "status": "candidate_ready"
+}

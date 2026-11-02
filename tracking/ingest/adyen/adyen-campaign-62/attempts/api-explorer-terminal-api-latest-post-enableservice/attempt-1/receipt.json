@@ -1,0 +1,46 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-enableservice",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API POST /enableservice \u2014 EnableService Request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/enableservice\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/enableservice/2026-09-15.md\"\ntags: [adyen, terminal-api, pos, enable-service]\n---\n\n## Overview\n\nThis captured **Terminal API latest** API Explorer page describes `POST /enableservice`: an EnableService request conveying services to enable on a POI terminal before a Sale System service request, optionally inviting the customer to start. It lists cloud test device endpoints (synchronous and asynchronous) and a local terminal IP server; it does not supply a numeric Terminal API protocol version. The cloud path identifies `merchantAccount` and `deviceId`; the page does not define a message header, `POIID`, sale/session identifier, or authentication scheme. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- `TransactionAction` is required and is `StartTransaction` or `AbortTransaction`. The page describes starting a swipe-ahead transaction with enabled services, or aborting a swipe-ahead or CardAcquisition-started transaction that has not been followed by a Sale System service request to complete it. `ServicesEnabled` is mandatory for `StartTransaction`, absent otherwise, and can list `CardAcquisition`, `Loyalty`, or `Payment`. See raw lines 23\u201327.\n- Optional `DisplayOutput` has required nested `Device`, `InfoQualify`, and `OutputContent` when present; `OutputContent.OutputFormat` is required. The page gives format-specific content rules and excludes `ResponseRequiredFlag` and `MinimumDisplayTime` for EnableService. See raw lines 28\u201346.\n- The documented `200 Success` response conveys **Enable Service processing**, with required `Response.Result` values `Success`, `Failure`, or `Partial`. For a non-success result, `ErrorCondition` must be present; `AdditionalResponse`, if present, is logged by the POI. This does not establish payment authorization, capture, settlement, or bank receipt. See raw lines 48\u201360.\n\n## Detail locators\n\n- Captured request purpose and test/local server forms: raw lines 5\u201319.\n- Full request-body field and enum table, including display and menu branches: raw lines 23\u201346.\n- Response structure, result/error values, and logging description: raw lines 48\u201360.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 Terminal API concept and related POS guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/enableservice/2026-09-15|Captured EnableService API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "It conveys the services that will be enabled for the POI Terminal without the request of the Sale System, and a possible invitation for the Customer to start the services.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/enableservice/2026-09-15.md:7"
+    },
+    {
+      "text": "Mandatory if `TransactionAction` is `StartTransaction`, absent if not.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/enableservice/2026-09-15.md:27"
+    },
+    {
+      "text": "For the Input Devices, Diagnosis and `EnableService`, `ResponseRequiredFlag`, and `MinimumDisplayTime` shall be absent.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/enableservice/2026-09-15.md:28"
+    },
+    {
+      "text": "If Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/enableservice/2026-09-15.md:57"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-enableservice-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-enableservice]] \u2014 captured Terminal API latest EnableService request/response reference for swipe-ahead start or abort, conditional services and display fields, and processing result (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/enableservice/2026-09-15.md",
+  "raw_sha256": "7b20a4f32be70a25c08339427a9357253cad8024c0cabff30df8e495126569cc",
+  "status": "candidate_ready"
+}

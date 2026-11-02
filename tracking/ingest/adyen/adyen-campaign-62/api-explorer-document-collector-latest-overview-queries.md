@@ -1,0 +1,9 @@
+# Fixed query answers — api-explorer-document-collector-latest-overview
+
+## Q1
+
+The captured `Document-Collector/latest/overview` identifies Document Collector API v1, for merchants to upload supporting documentation for payment processing. Its stated current scope is PDF cross-border invoices for transactions processed in INR under RBI cross-border payment guidelines. The page shows `/v1` test and live base URLs and a `vXX` endpoint-version pattern. It names merchants as users of the API and says Adyen contact provides credentials; it does not identify a document resource ID, device, session, or transaction correlation ID. It lists one endpoint, `POST /crossBorderInvoices` (`Upload a document`), without request schema, required upload fields, file limits, acceptance/review lifecycle, failure or reversal behavior, or timing. [[source-adyen-api-explorer-document-collector-latest-overview]]; canonical URL: https://docs.adyen.com/api-explorer/Document-Collector/latest/overview ; raw lines 5–7, 25–50.
+
+## Q2
+
+This overview establishes that the API offers a document-upload operation, not that a submitted document is accepted, reviewed, or approved, or that a payment is authorized, captured, settled, or paid to a bank. Authentication can use `X-API-Key` or basic username/password; the examples show `multipart/form-data`. The live section says an Adyen contact provides a live credential and describes username/password requests to the live base URL. The overview contains no response schema, status semantics, asynchronous outcome or correlation mechanism, deprecation rule, or current merchant eligibility. `latest` is the explorer route, while the captured API title and URLs specify v1. The operation page is needed for request and response details. [[source-adyen-api-explorer-document-collector-latest-overview]]; canonical URL: https://docs.adyen.com/api-explorer/Document-Collector/latest/overview ; raw lines 9–23, 25–50.

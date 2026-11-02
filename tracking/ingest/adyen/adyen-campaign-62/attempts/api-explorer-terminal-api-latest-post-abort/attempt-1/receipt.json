@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-abort",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API POST /abort \u2014 Abort Request body\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/abort\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/abort/2026-09-15.md\"\ntags: [adyen, terminal-api, point-of-sale, abort]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer `latest` POST /abort page describes the body of a Sale-to-POI Abort Request for identifying the message request carrying a transaction to abort. It lists test cloud sync and async Device API URLs and a local-terminal-IP placeholder. The page does not state a numbered Terminal API message version; `/v1` appears in the listed cloud transport URLs. See [[adyen]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- `MessageReference` and `AbortReason` are required request-body fields. `MessageReference` identifies a previous POI transaction/message header; its listed child fields (`MessageCategory`, `ServiceID`, `DeviceID`, `SaleID`, and `POIID`) are each marked optional in this body table. `SaleID` and `POIID` have defaults from `MessageHeader`; the full header/envelope is not specified here.\n- `DisplayOutput` is optional. If supplied, its table marks `Device`, `InfoQualify`, and `OutputContent` required, with `OutputContent.OutputFormat` required. The content fields depend on that format: `OutputText` for Text, `OutputXHTML` for XHTML, and `OutputBarcode` for Barcode. For the named Input Devices, Diagnosis, and `EnableService` cases, the page says `ResponseRequiredFlag` and `MinimumDisplayTime` must be absent. See the raw table for the exact nested conditions and values.\n- A successful `AbortRequest` is documented as HTTP 200 OK with no body. This page supplies no original-payment response, terminal transaction result, authorization or reversal result, or later status confirmation. It does not establish that an HTTP 200 alone proves the transaction was aborted.\n- The pinned page gives no authentication/header contract, error-response schema, live cloud URL, retry window, or deprecation notice. The listed async transport URL alone does not define callback delivery or a final asynchronous outcome.\n\n## Detail locators\n\n- Request purpose and captured test cloud sync/async and local-hosting server entries: raw lines 5\u201319.\n- Required body fields, reference child optionality/defaults, optional display structure and conditional content: raw lines 21\u201351.\n- Bodyless HTTP 200 response: raw lines 53\u201356.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 Terminal API message and POS cancellation context.\n- [[source-adyen-docs-point-of-sale-basic-tapi-integration-cancel-a-transaction]] \u2014 separate POS cancellation guide for the wider transaction flow.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/abort/2026-09-15|Adyen Terminal API latest POST /abort, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "It conveys Information requested for identification of the message request carrying the transaction to abort.",
+      "location": "raw line 8"
+    },
+    {
+      "text": "Identification of a previous POI transaction.",
+      "location": "raw line 26"
+    },
+    {
+      "text": "| AbortReason | string | Yes | Reason of aborting a transaction. |",
+      "location": "raw line 32"
+    },
+    {
+      "text": "For the Input Devices, Diagnosis and `EnableService`, `ResponseRequiredFlag`, and `MinimumDisplayTime` shall be absent.",
+      "location": "raw line 33"
+    },
+    {
+      "text": "A successful `AbortRequest` returns a response with a **200 OK** HTTP status code and no body.",
+      "location": "raw line 56"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-abort-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-abort]] \u2014 2026-09-15 API Explorer `latest` POST /abort body reference: required message reference and abort reason, optional display payload, test transport URLs, and bodyless HTTP 200; transaction outcome remains a separate question.",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/abort/2026-09-15.md",
+  "raw_sha256": "ceb909bd245fb465e086be47618d97fa6df2dfcb5006630cf4042caf13868531",
+  "status": "candidate_ready"
+}

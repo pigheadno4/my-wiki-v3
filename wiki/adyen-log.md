@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-02] ingest | Adyen API Explorer C62
+
+- All 36 exact-manifest complete-body API Explorer sources independently approved and promoted: Terminal API 19, Hop 3, BalanceControl 2, BalanceControlv1 2, Document-Collector 2, cloud-device-api 1, payments-app 1, possdk 2, sessionauthentication 2 and softpos-configuration-api 2. First full-review approvals 28/36; 8 targeted correction reviews. Full raw reads, 3–5 located quotes and coordinator-only approved concept-before-source promotion.
+- 7 concepts touched (0 new). Captured API/protocol/version/environment and terminal/device/session/transaction identities retained; HTTP acceptance, command result, authorization and settlement remain separate. Snapshot/schema conflicts retain scoped warnings. No provider/account/security/device/payment operations or collection.
+- Source_count 2899 = 2547 General Docs + 336 API Explorer + 16 GitHub. All 36 raw hashes unchanged; 72 actual fixed query answers independently checked and three coordinator full-read exemplars pass. All complete-body pages in the local API Explorer corpus now referenced; remaining 27 raw pages are excluded title-only stubs. No upstream completeness claim.
+- Close evidence: `tracking/ingest/adyen/adyen-campaign-62/close-validation.md`. No commit/push; unrelated work preserved.
+
 ## [2026-10-31] ingest | Adyen API Explorer C61
 
 - All 50 exact-manifest API Explorer sources independently approved and promoted: Classic Notification 9, Tokenization webhooks 5, managed-risk webhooks 9, payment webhooks 7, ACS webhooks 3, Capital 5, A2A issuer 7, transfers-api 3 and open-banking 2. First full-review approvals 46/50; 3 targeted correction reviews. Full pinned raw reads, 3–5 located quotes, independent first reviews and coordinator-only concept-before-source promotion.

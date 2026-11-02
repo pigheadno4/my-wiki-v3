@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-balanceinquiry",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API POST /balanceinquiry (API Explorer snapshot)\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/balanceinquiry\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/balanceinquiry/2026-09-15.md\"\ntags: [adyen, terminal-api, api-explorer, point-of-sale, balance-inquiry]\n---\n\n## Overview\n\nCaptured Adyen API Explorer reference for Terminal API `POST /balanceinquiry`, describing a BalanceInquiry request for account information and a response carrying the balance and identity of an associated payment, loyalty, or stored-value account. The captured server list has cloud **test** sync and async Device API v1 paths scoped by `{merchantAccount}` and `{deviceId}`, plus a local terminal IP placeholder. `latest` is the documentation URL segment; this page does not give a Nexo protocol version, live endpoint, or merchant-specific enablement. See [[adyen]], [[adyen-terminal-api]], and the separate [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-query-the-balance|gift-card implementation guide]] for message-header details absent here.\n\n## Key takeaways\n\n- **Request identity and optional parents.** The request-body table lists optional `PaymentAccountReq` and `LoyaltyAccountReq`. Within an included `CardAcquisitionReference`, both `TransactionID` and `TimeStamp` are marked required; the timestamp describes transaction/event time and uniqueness, not an expiry or retry window. Within included payment-instrument data, `PaymentInstrumentType` is required. Within an included `LoyaltyAccountID`, `EntryMode`, `IdentificationType`, and `LoyaltyID` are required. These child requirements do not make either top-level account object mandatory. The page does not expose a request MessageHeader, `SaleID`, `ServiceID`, `POIID`, or full envelope. See raw lines 21\u201346.\n- **Response result and conditional balance.** Under `200 Success`, `Response` and its `Result` are marked required, yet `Result` can be `Success`, `Failure`, or `Partial`; `ErrorCondition` is absent or unused for success and must be present in other cases. `PaymentAccountStatus` is optional and its description says it applies when `BalanceInquiryRequest. PaymentAccount` is present, while the request table names `PaymentAccountReq`. Do not silently equate those names. `CurrentBalance` and `Currency` are optional fields within `PaymentAccountStatus`; HTTP 200 or a success result alone is not a promise that both appear. See raw lines 48\u201370.\n- **Other optional response detail.** `PaymentAcquirerData` and `PaymentReceipt` are optional. The former has required `MerchantID` and `AcquirerPOIID` only when that object appears; the latter has required `DocumentQualifier` and `OutputContent` per included receipt, with `OutputFormat` required inside the content. `OutputText` and `OutputXHTML` have format-specific mandatory/forbidden conditions. These receipt entries are display/print content, not evidence of bank receipt or settlement. See raw lines 71\u201387.\n- **Outcome boundary.** This operation reports account balance information and request-processing status. Its `Failure`/`Partial` results and listed error conditions include `InProgress`, but this page gives no recovery, reversal, retry, expiry, or asynchronous callback procedure. The async cloud URL is a transport option, not proof of a final outcome at request acceptance. Optional CMS-protected card data is a field description, not a complete authentication or credential contract. The page does not establish payment authorization, capture, reconciliation, settlement, or a later usable balance. See raw lines 12\u201319, 31\u201334, 48\u201364 and 69\u201387.\n\n## Detail locators\n\n- Raw `## Servers` (lines 10\u201319): captured cloud test sync/async Device API v1 URLs and local IP placeholder.\n- Raw `## Parameters` (lines 21\u201346): optional request parents and conditionally required transaction, payment-instrument, and loyalty-ID children.\n- Raw `## Responses` (lines 48\u201387): HTTP 200 section, result/error semantics, optional account status/balance/acquirer data and receipt output conditions.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 Terminal API concept and transport context.\n- [[adyen]] \u2014 provider context.\n- [[source-adyen-docs-point-of-sale-alternative-payment-methods-gift-cards-terminal-api-query-the-balance]] \u2014 separate gift-card guide with a full request/response example.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/balanceinquiry/2026-09-15|Terminal API POST /balanceinquiry, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "It conveys Information related to the account for which a Balance Inquiry is requested.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/balanceinquiry/2026-09-15.md:7"
+    },
+    {
+      "text": "| PaymentAccountReq | object | No | Data related to the account pointed by the payment card. |",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/balanceinquiry/2026-09-15.md:26"
+    },
+    {
+      "text": "| LoyaltyAccountReq | object | No | Data related to a requested Loyalty program or account. |",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/balanceinquiry/2026-09-15.md:38"
+    },
+    {
+      "text": "It conveys the balance and the identification of the associated payment, loyalty or stored value account.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/balanceinquiry/2026-09-15.md:52"
+    },
+    {
+      "text": "|   - Result | string | Yes | Possible values:  - **Success**  - **Failure**  - **Partial** |",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/balanceinquiry/2026-09-15.md:58"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-balanceinquiry-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-balanceinquiry]] \u2014 captured Terminal API `POST /balanceinquiry` API Explorer request/response schema, test cloud Device API v1 sync/async paths and local placeholder (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/balanceinquiry/2026-09-15.md",
+  "raw_sha256": "a22a4cd274dfd77f35aff308fc140eb4500f0ba99a99a484591215387c23269c",
+  "status": "candidate_ready"
+}

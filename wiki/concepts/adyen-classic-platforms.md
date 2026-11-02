@@ -11,9 +11,21 @@ Adyen Classic Platforms is the older Adyen for Platforms integration for marketp
 
 ## Evidence boundary
 
+For Classic partner-platform PCI questionnaire onboarding, the 2026-09-15 Hop v6 API Explorer page says its one-time `redirectUrl` must be used within 30 seconds, while the separately captured Classic partner guide says redirect within 15 seconds and describes a 30-minute session after redirect. These are conflicting link-window statements, not interchangeable limits; neither link issuance nor session entry proves PCI verification. [[source-adyen-api-explorer-hop-latest-post-getpciquestionnaireurl]] [[source-adyen-docs-classic-platforms-platforms-for-partners]]
+
+
 The Classic overview explicitly directs a new implementation to a separate new-integration guide. Keep Classic account-holder/account and workflow terminology separate from the current [[adyen-platforms]] balance-platform/API model; this overview does not establish that their resources or endpoints are interchangeable. Its country list and point-of-sale country condition are dated snapshot guidance, not current eligibility. Descriptions of immediate acceptance after signup, held funds, transfers and payout options do not prove verification approval, an executed split, payment capture, settlement, payout or bank receipt for a particular sub-merchant.
 
 ## Sources
+
+- [[source-adyen-api-explorer-hop-latest-post-getpciquestionnaireurl]] — 2026-09-15 Classic HOP v6 test API reference for partner-only account-holder PCI questionnaire link requests; its one-time 30-second URL rule conflicts with the Classic partner guide's 15-second redirect rule, and link issuance is not PCI verification.
+
+
+- [[source-adyen-api-explorer-hop-latest-post-getonboardingurl]] — Classic Hop/v6 API Explorer URL-issuance contract (captured 2026-09-15) for account-holder identity, collection/page options, response fields and one-time link; its 30-second use window conflicts with the separate hosted-onboarding guide's 15 seconds.
+
+
+- [[source-adyen-api-explorer-hop-latest-overview]] — 2026-09-15 API Explorer Hosted onboarding API v6 Classic overview for hosted onboarding/PCI links, authentication and versioned test endpoints; new implementations are directed elsewhere.
+
 
 - [[source-adyen-api-explorer-notification-latest-post-account-updated]] — 2026-09-15-captured Classic `ACCOUNT_UPDATED` incoming notification reference for account identity, optional payout routing/schedule and error fields, and `[accepted]` receiver acknowledgement; sample success and error indicators coexist.
 

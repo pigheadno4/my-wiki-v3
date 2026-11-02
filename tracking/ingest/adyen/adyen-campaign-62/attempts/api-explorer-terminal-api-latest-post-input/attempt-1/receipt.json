@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-input",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API v1 POST /input\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/input\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/input/2026-09-15.md\"\ntags: [adyen, terminal-api, api-explorer, shopper-input]\n---\n\n## Overview\n\nCaptured Terminal API **POST /input** schema for `InputRequest`: a POS-side request to present content on an input device and collect or process cashier/customer input through a terminal or local-hosted device route. The schema describes an input command and optional display operation. See [[adyen]], [[adyen-terminal-api]] and [[adyen-pos-shopper-engagement]].\n\n## Key takeaways\n\n- The request body table marks `InputData` required. Within it, `Device`, `InfoQualify` and `InputCommand` are required; `InputCommand` permits GetAnyKey, GetConfirmation, SiteManager, TextString, DigitString, DecimalString, GetFunctionKey, GetMenuEntry and Password. Optional controls include `MaxInputTime` in seconds, length bounds, masking/default/layout/correction/cancel flags and `ImmediateResponseFlag`, which requests a response before command completion. The page provides no numeric defaults or permitted ranges for these controls.\n- `DisplayOutput` is optional; when provided, its `Device`, `InfoQualify` and `OutputContent` are marked required, and `OutputContent.OutputFormat` is required. `OutputText` is mandatory only for Text format, `OutputXHTML` only for XHTML, and `OutputBarcode` only for the barcode format; the other format variants disallow those fields as specified in the table. `MenuEntry` is an optional input-command menu, and the page says `ResponseRequiredFlag` and `MinimumDisplayTime` must be absent for Input Devices, Diagnosis and EnableService.\n- The 200 response table marks `InputResult` required, with `Device`, `InfoQualify` and `Response` required inside it; `Response.Result` is Success, Failure or Partial. `ErrorCondition` is absent or unused on Success and must be present otherwise. `InputResult.Input` is optional and carries command-dependent fields such as confirmation, function key, text, digits, password or menu selection. `OutputResult` is optional if an output result was required. Thus the HTTP 200 section and any immediate response do not alone prove a completed user entry.\n- The page lists test cloud `/sync` and `/async` device endpoints using `merchantAccount` and `deviceId`, plus a local terminal IP. It does not supply authentication headers, full nexo message envelope/correlation fields, asynchronous event structure or financial authorization/capture/settlement behavior. A user input result is separate from any payment or consent decision.\n\n## Detail locators\n\n- InputRequest purpose and three server routes: raw lines 5\u201318.\n- `DisplayOutput`, output format and conditional content fields: raw lines 20\u201343.\n- Required `InputData`, commands, optional timeout/length/flag and menu controls: raw lines 44\u201365.\n- HTTP 200 result, optional `OutputResult`, required `InputResult`, Success/Failure/Partial and `ErrorCondition`: raw lines 67\u201389.\n- Optional command-specific `InputResult.Input` and selected menu indexes (1 to n, -1 parent, 0 root): raw lines 90\u201397.\n\n## Related\n\n- [[adyen-pos-shopper-engagement]] \u2014 terminal shopper and cashier interaction route.\n- [[adyen-terminal-api]] \u2014 Terminal API messaging and transport boundaries.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/input/2026-09-15|Terminal API v1 POST /input, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Content of the `InputRequest` message. It conveys the data to display and how to process it. In addition to the display on the Input Device, it might contain an operation (the `DisplayOutput` element) per Display Device type.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/input/2026-09-15.md:7"
+    },
+    {
+      "text": "| InputData | object | Yes | Information related to an Input request. It conveys the target input logical device, the type of input command, and possible minimum and maximum length of the input. In addition, if the requestor might require to receive an Event Notification if a card is inserted in a card reader, with the `NotifyCardInputFlag`. |",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/input/2026-09-15.md:44"
+    },
+    {
+      "text": "|   - ImmediateResponseFlag | boolean | No | Indicates whether to request an Immediate response to the message without waiting for the completion of the command. |",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/input/2026-09-15.md:50"
+    },
+    {
+      "text": "It conveys the result of the input or the result of the outputs, parallel to the message request, except if response not required and absent.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/input/2026-09-15.md:70"
+    },
+    {
+      "text": "| InputResult | object | Yes | Contains the result and the content of the input. |",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/input/2026-09-15.md:83"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-input-operation-route",
+        "target_path": "wiki/concepts/adyen-pos-shopper-engagement.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-input]] \u2014 API Explorer Terminal API v1 POST /input schema (captured 2026-09-15) for InputData/DisplayOutput fields, command controls and input/output result shapes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/input/2026-09-15.md",
+  "raw_sha256": "dbf32d6d28585564cbee9ba68d11d84d1bdee2b399e204d73b044e896be32c2d",
+  "status": "candidate_ready"
+}

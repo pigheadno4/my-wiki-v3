@@ -15,6 +15,9 @@ The overview is navigation, not an implementation contract. It does not specify 
 
 ## Sources
 
+- [[source-adyen-api-explorer-terminal-api-latest-post-input]] — API Explorer Terminal API v1 POST /input schema (captured 2026-09-15) for InputData/DisplayOutput fields, command controls and input/output result shapes.
+
+
 - [[source-adyen-docs-point-of-sale-shopper-engagement-display-data]] — 2026-09-15 captured Display overview for out-of-payment terminal QR, virtual-receipt, image and idle-screen child-guide routes; request/response detail remains in child sources.
 
 

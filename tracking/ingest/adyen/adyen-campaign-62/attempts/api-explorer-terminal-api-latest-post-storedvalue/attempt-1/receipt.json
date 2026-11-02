@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-storedvalue",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API POST /storedvalue \u2014 StoredValue Request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/storedvalue\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/storedvalue/2026-09-15.md\"\ntags: [adyen, terminal-api, api-explorer, stored-value]\n---\n\n## Overview\n\nCaptured API Explorer contract for `POST /storedvalue`, a Terminal API request carrying information for a stored-value transaction. The request can specify `Reserve`, `Activate`, `Load`, `Unload`, `Reverse`, or `Duplicate`; the page does not describe these as interchangeable with a payment reversal. The URL uses `latest` and does not pin a numbered Terminal API schema version. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The captured server forms are cloud test `/sync` and `/async` routes at `device-api-test.adyen.com/v1/merchants/{merchantAccount}/devices/{deviceId}`, plus a local terminal IP. This operation page does not identify the caller, session, authentication method, or a message header. The `SaleData` and `OriginalPOITransaction` field descriptions mention Sale System and NEXO Sale-to-POI identities, but do not supply a complete header contract. See raw lines 10\u201319, 26\u201332, 54\u201362.\n- Request `SaleData` and `StoredValueData` are required. `SaleData.SaleTransactionID` requires `TransactionID` and `TimeStamp`. Each `StoredValueData` item requires `StoredValueTransactionType`; `StoredValueAccountID` is optional, but when present it requires `StoredValueAccountType`, `EntryMode`, `IdentificationType`, and `StoredValueID`. Provider identity, original POI transaction reference, item amount, and currency are conditional/optional in this table. See raw lines 23\u201366 for all nested fields and enum values.\n- The `200 Success` response body requires `Response`, `SaleData`, and `POIData`. `Response.Result` can be `Success`, `Failure`, or `Partial`; non-success requires `ErrorCondition`. `POIData.POITransactionID` requires its own transaction ID and timestamp. `StoredValueResult` is optional, and described for successful or partial loading/activation with one entry per requested stored-value item loaded or activated. Its account status and `CurrentBalance` are optional; balance is supplied only if relevant and known. Receipts are also optional. See raw lines 68\u2013124. HTTP 200 alone does not prove a successful stored-value operation or a known balance.\n\n## Detail locators\n\n- Test cloud and local route forms: raw lines 10\u201319.\n- Sale reference, required sale transaction identity, optional token/order/acquirer fields: raw lines 23\u201342.\n- Stored-value transaction types, account ID conditions, optional original POI reference, amount and currency: raw lines 43\u201366.\n- Message result/error, separate POI transaction identity, optional reconciliation ID, stored-value results/account status and receipt output: raw lines 68\u2013124. The `POIReconciliationID` condition says only `If Result is Success`; this is not settlement or bank receipt evidence.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 provider concept and integration context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/storedvalue/2026-09-15|POST /storedvalue captured API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "It conveys Information related to the Stored Value transaction to process.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/storedvalue/2026-09-15.md:7"
+    },
+    {
+      "text": "SaleTransactionID | object | Yes | Identification of a transaction for the Sale System or the POI System.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/storedvalue/2026-09-15.md:30"
+    },
+    {
+      "text": "StoredValueTransactionType | string | Yes | Possible values:  - **Reserve**  - **Activate**  - **Load**  - **Unload**  - **Reverse**  - **Duplicate**",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/storedvalue/2026-09-15.md:45"
+    },
+    {
+      "text": "In the other cases, the `ErrorCondition` has to be present",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/storedvalue/2026-09-15.md:77"
+    },
+    {
+      "text": "If StoredValueResponse.Result is Success or Partial, one entry per StoredValueRequest.StoredValueData loaded or activated.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/storedvalue/2026-09-15.md:103"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "storedvalue-api-explorer-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-storedvalue]] \u2014 captured `latest` Terminal API Explorer `POST /storedvalue` request/response schema for stored-value transaction types, sale/POI identities, conditional account fields and qualified result/balance data (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/storedvalue/2026-09-15.md",
+  "raw_sha256": "2f337ee257dc185d56594ed9fa8a80684f2e30a3492ea49c1e5a7ba1da82f258",
+  "status": "candidate_ready"
+}

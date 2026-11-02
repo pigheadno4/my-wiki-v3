@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-sessionauthentication-latest-post-sessions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Session Authentication API v1 component session token | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/sessionauthentication/latest/post/sessions\"\nraw_files:\n  - \"adyen/api-explorer/sessionauthentication/latest/post/sessions/2026-09-15.md\"\ntags: [adyen, session-authentication, platforms, components, api-explorer]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents Session Authentication `POST /sessions` to create a token for Adyen for Platforms **Onboarding** or **Platform Experience** UI components. It lists Test `https://test.adyen.com/authe/api/v1` and Live `https://authe-live.adyen.com/authe/api/v1` server bases. The component front end uses the returned session data to make component-related server calls. This is a component authorization session, distinct from the Checkout API `POST /sessions` payment-session contract.\n\n## Key takeaways\n\n- The request-body table requires `allowOrigin`, `policy`, and `product`. `allowOrigin` is the URL where the component appears; in live, the page requires an SSL-protected `https://` URL. `product` is `onboarding` for Onboarding components or `platform` for Platform Experience components. The page says requirements vary by component type and routes to their guides.\n- `policy` describes allowed resources and roles. Its `resources` and `roles` arrays, and resource `type`, are marked **No** in the table; do not rewrite those marks as universal schema-required fields. The prose says the relevant resource has a type and corresponding unique identifier. For Onboarding, use the legal entity with a contractual platform relationship (the individual owner's legal entity for sole proprietorships); for Platform Experience, use the account holder associated with the balance account shown. Examples pair `legalEntity`/`legalEntityId` and `accountHolder`/`accountHolderId` with component roles. The ID keys are visible in examples but absent from the table's listed property rows.\n- HTTP `200 Success` is a successful token-creation operation. The response body lists `id` (session identifier) and `token` as **not required** properties, while both success examples contain them. Introductory prose describes encrypted session data in the response. Token/session creation alone does not establish completed onboarding, legal-entity verification, a payment, transfer, payout, or bank receipt.\n- The page documents `400` bad request, `401` unauthorized, and `403` forbidden error bodies. The 400 example reports invalid `product`; the 403 example says the user lacks access to all token-policy resources. Error bodies have optional `requestId` and conditional `invalidFields` data. The table marks `invalidFields.value` required inside an item, but the 400 example's item omits it; treat that example/schema mismatch as unresolved. The page gives no token expiry, renewal/revocation, authentication header, idempotency, async outcome, reversal, deprecation, or current component-version rule.\n\n## Detail locators\n\n- Component-token purpose, server bases, and component-specific prerequisite route: raw lines 5\u201319.\n- Request `allowOrigin`, product/policy resource types and examples: raw lines 21\u201373.\n- 200 token response properties and 400/401/403 error schemas: raw lines 74\u2013140.\n- Success and error examples, including missing `invalidFields.value` and policy-access denial: raw lines 142\u2013206.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platform-components]] \u2014 embedded Platforms component context and outcome boundary.\n- [[source-adyen-api-explorer-checkout-latest-post-sessions]] \u2014 separate Checkout API payment-session operation; same path name does not mean the same product contract.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/sessionauthentication/latest/post/sessions/2026-09-15|Adyen API Explorer Session Authentication POST /sessions (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Creates a session token that is required to integrate",
+      "location": "raw/adyen/api-explorer/sessionauthentication/latest/post/sessions/2026-09-15.md:7"
+    },
+    {
+      "text": "In your live environment, you must protect the URL with an SSL certificate and ensure that it starts with `https://`.",
+      "location": "raw/adyen/api-explorer/sessionauthentication/latest/post/sessions/2026-09-15.md:26"
+    },
+    {
+      "text": "For sole proprietorships, use the ID of the legal entity of the individual owner.",
+      "location": "raw/adyen/api-explorer/sessionauthentication/latest/post/sessions/2026-09-15.md:28"
+    },
+    {
+      "text": "You must also include the corresponding unique identifier of the resource.",
+      "location": "raw/adyen/api-explorer/sessionauthentication/latest/post/sessions/2026-09-15.md:29"
+    },
+    {
+      "text": "User doesn't have access to all token policy resources",
+      "location": "raw/adyen/api-explorer/sessionauthentication/latest/post/sessions/2026-09-15.md:202"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-sessionauthentication-component-route",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-sessionauthentication-latest-post-sessions]] \u2014 2026-09-15 Session Authentication API v1 component-token request/response: live HTTPS origin, product-specific legal-entity or account-holder policy scope, token output and 400/401/403 boundary; separate from Checkout payment sessions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/sessionauthentication/latest/post/sessions/2026-09-15.md",
+  "raw_sha256": "82ae7d1fb183163125b8ead81a7911dc2753e50b50951ffbbcf9bbdd5dbfa50a",
+  "status": "candidate_ready"
+}

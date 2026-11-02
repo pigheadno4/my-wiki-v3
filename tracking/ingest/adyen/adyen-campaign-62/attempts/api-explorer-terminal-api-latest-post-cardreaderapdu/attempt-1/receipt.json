@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-cardreaderapdu",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API latest CardReaderAPDU request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/cardreaderapdu\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/cardreaderapdu/2026-09-15.md\"\ntags: [adyen, terminal-api, api-explorer, card-reader, apdu]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of the Adyen API Explorer **Terminal API latest** `POST /cardreaderapdu` entry describes a CardReaderAPDU request sent to a card chip and its response. It mentions a possible invitation on the CashierInterface or CustomerInterface, but the captured request-body table provides no invitation field. The documented cloud server URLs are TEST `/v1/merchants/{merchantAccount}/devices/{deviceId}/sync` and `/async`; local hosting is shown only as `<local-terminal-IP-address>`. The snapshot does not pin a numbered Terminal API schema version. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The request-body table marks `APDUClass` (CLA), `APDUInstruction` (INS), `APDUPar1` (P1), and `APDUPar2` (P2) required, all as strings. `APDUData` (Lc + Data) and `APDUExpectedLength` (Le) are optional strings. For a specific card such as a synchronous card, the `APDUClass` description calls for a private value in the ISO 7816-4 D0\u2013FE range. See raw lines 23\u201331.\n- Under `200 Success`, the response-body table requires `Response` and its `Result` (`Success`, `Failure`, or `Partial`), plus `CardStatusWords` (SW1\u2013SW2). `APDUData` and `AdditionalResponse` are optional. The prose says `ErrorCondition` is absent or unused for `Success`, and must be present otherwise, although its table column says \u201cNo\u201d; see raw lines 33\u201347. An HTTP 200 heading therefore does not itself mean the message result succeeded.\n- The captured page provides no full Terminal API message envelope, specific caller credential or role, request/response correlation identifier, session rule, length bound, timeout, retry, reversal, or payment outcome. Its cloud URL identifies a merchant account and device path, but the body table supplies no `merchantAccount`, `deviceId`, or `POIID` field. The response concerns APDU message processing and chip status, not payment authorization, capture, reconciliation, settlement, or bank receipt.\n\n## Detail locators\n\n- Servers and environment: raw lines 10\u201319.\n- Request properties and requiredness: raw lines 21\u201331.\n- Response result, error-condition enum, and smartcard status words: raw lines 33\u201347.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 provider concept and reciprocal source route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/cardreaderapdu/2026-09-15|Adyen API Explorer CardReaderAPDU raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "It contains the APDU request to send to the chip of the card, and a possible invitation message to display on the CashierInterface or the CustomerInterface.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardreaderapdu/2026-09-15.md:7"
+    },
+    {
+      "text": "https://device-api-test.adyen.com/v1/merchants/{merchantAccount}/devices/{deviceId}/sync",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardreaderapdu/2026-09-15.md:13"
+    },
+    {
+      "text": "Class field of the APDU command (CLA). APDU request for Card Reader device request. For specific card like synchronous card, a private value should be used in accordance to ISO 7816- 4 (private range D0-FE).",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardreaderapdu/2026-09-15.md:26"
+    },
+    {
+      "text": "If Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present and can refine the processing of the message response.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardreaderapdu/2026-09-15.md:42"
+    },
+    {
+      "text": "Status of a smartcard response to a command (SW1-SW2).",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardreaderapdu/2026-09-15.md:47"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-cardreaderapdu-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-cardreaderapdu]] \u2014 2026-09-15 API Explorer latest CardReaderAPDU request/response field reference for chip APDU exchange, TEST cloud/local server routes, and message-result versus card-status boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/cardreaderapdu/2026-09-15.md",
+  "raw_sha256": "a945b422a0d8284c51bbcd6cdac7dce9a8266efc73ee37bd3843a6a97f71bbd6",
+  "status": "candidate_ready"
+}

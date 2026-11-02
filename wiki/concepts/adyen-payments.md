@@ -15,6 +15,9 @@ This landing page is navigation. Online website/mobile integrations, POS termina
 
 ## Sources
 
+- [[source-adyen-api-explorer-document-collector-latest-overview]] — 2026-09-15-captured Document Collector API v1 overview for merchant upload of PDF cross-border invoices for INR transactions, with authentication and test/live server routes; upload and payment outcomes are outside the overview.
+
+
 - [[source-adyen-docs-release-notes]] — 2022-modified, 2026-09-15-captured directory routing to six Adyen release-note areas; it contains no release-specific facts or child-page behavior.
 
 

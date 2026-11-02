@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-print",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Terminal API Print request and response | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/print\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/print/2026-09-15.md\"\ntags: [adyen, terminal-api, print, api-explorer, point-of-sale]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot describes `POST /print` as a Print Request carrying the data to print and instructions for processing it, plus a Print Response. It lists test cloud Device API `/v1/merchants/{merchantAccount}/devices/{deviceId}/sync` and `/async` server addresses and a local terminal-IP placeholder. Those paths identify a merchant account and device for cloud transport; this page does not provide a Terminal API protocol version, message header, terminal `POIID`, sale/session identity, authentication scheme, or production endpoint. The `latest` documentation label is not a pinned protocol version.\n\n## Key takeaways\n\n- The request-body table requires `PrintOutput` with `DocumentQualifier`, `ResponseMode`, and `OutputContent.OutputFormat`. Qualifiers include sale, cashier and customer receipts, document, voucher, and journal; response modes are `NotRequired`, `Immediate`, `PrintEnd`, and `SoundEnd`. Output formats are `MessageRef`, `Text`, `XHTML`, and `BarCode`. The table makes `OutputText` mandatory only for Text, `OutputXHTML` only for XHTML, and `OutputBarcode` only for barcode output, disallowing each outside its format. See the raw for the exact names and types.\n- Optional `IntegratedPrintFlag` allows print integration with another print or separate printing. When integrated, the response is always immediate even if `ResponseMode` is `PrintEnd`; an immediate response therefore must not be read as proof that printing has ended. Optional `RequiredSignatureFlag` indicates a physical customer signature requirement for a cardholder payment receipt.\n- The 200 response description says a print response can be absent when a response is not required. When present, its body table requires `DocumentQualifier` and `Response.Result`, with `Success`, `Failure`, or `Partial` results. The `Response` description says `ErrorCondition` is absent or unused on Success and must be present otherwise; `AdditionalResponse` is optional logging detail. A successful Print response concerns print processing, not payment authorization, capture, settlement, or bank receipt.\n- The page supplies no payload-wide content-size or image/barcode limits, device-printer compatibility guarantee, retry/idempotency, timeout, reversal, deprecation, asynchronous callback, or payment lifecycle rule. Separate POS print guidance carries any such detail.\n\n## Detail locators\n\n- Operation purpose and captured test cloud/local server addresses: raw lines 5\u201319.\n- Request required and conditional output fields, response modes, and integrated-print timing exception: raw lines 21\u201336.\n- Print response absence, required fields, results, errors, and logging field: raw lines 38\u201351.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 Terminal API concept and integration boundaries.\n- [[source-adyen-docs-point-of-sale-shopper-engagement-print-data]] \u2014 separate POS guide for print examples, hardware and payload qualifications; those details are not asserted by this API Explorer page.\n- [[source-adyen-docs-point-of-sale-basic-tapi-integration-generate-receipts]] \u2014 separate receipt guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/print/2026-09-15|Adyen API Explorer Print request/response (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "It conveys the complete data to print and how to process the print.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/print/2026-09-15.md:8"
+    },
+    {
+      "text": "If the printing is integrated, the response is always immediate, even if the `ResponseMode` is set to `PrintEnd`.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/print/2026-09-15.md:29"
+    },
+    {
+      "text": "Mandatory, if `OutputFormat` is Text, not allowed otherwise.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/print/2026-09-15.md:34"
+    },
+    {
+      "text": "It conveys the result of the print, parallel to the message request, except if response not required and absent.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/print/2026-09-15.md:41"
+    },
+    {
+      "text": "In the other cases, the `ErrorCondition` has to be present",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/print/2026-09-15.md:48"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-print-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-print]] \u2014 2026-09-15 API Explorer Print request/response body reference for conditional output payloads, response modes, and the integrated-print immediate-response exception.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/print/2026-09-15.md",
+  "raw_sha256": "f462d917eb70df892d86fd54affc112fd1d13d9371d87834b1d6d8b10951bb26",
+  "status": "candidate_ready"
+}

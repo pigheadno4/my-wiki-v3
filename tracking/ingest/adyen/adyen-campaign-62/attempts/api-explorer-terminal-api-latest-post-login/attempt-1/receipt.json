@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-login",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API POST /login \u2014 Login Request and Response\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/login\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/login/2026-09-15.md\"\ntags: [adyen, terminal-api, point-of-sale, login, session]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer `latest` POST /login page describes a Sale-to-POI `LoginRequest` and `LoginResponse` for a session defined here as the period between Login and the following Logout. It lists test cloud sync and async Device API URLs and a local-terminal-IP placeholder. The page does not state a numbered Terminal API message version; `/v1` appears in the cloud transport URLs. See [[adyen]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The Sale System supplies required `DateTime`, `SaleSoftware` (with required manufacturer, application, software-version and certification identifiers), and `OperatorLanguage` in the request body. Optional `OperatorID` and `ShiftNumber` identify the cashier/operator and shift; the page lists conditions for sending `OperatorID`. Optional `SaleTerminalData` is sent if a Sale Terminal is involved, and its optional `TotalsGroupID` can group POI transactions for reconciliation or another Sale System purpose. The body table does not give a complete message-header contract or length/format constraints for these fields.\n- Optional `TrainingModeFlag` tells the POI that the entire session is for system test or operator training rather than real transactions. Optional `TokenRequestedType` asks for a transaction or customer token; optional `CustomerOrderReq` selects open/closed order information; `POISerialNumber` has a stated condition. See the raw table for exact field conditions and values.\n- The HTTP 200 section includes a required `Response` object with required `Result` values `Success`, `Failure`, or `Partial`. For results other than Success, the page says `ErrorCondition` must be present, even though its table marks it optional in general. A 200 transport status therefore does not itself mean Login succeeded.\n- `POISystemData` is table-optional and described as returned when `Result` is Success. If present, it contains required POI `DateTime` and `POISoftware`; optional `POIStatus` describes component availability, with required `GlobalStatus` inside that object. Login success and terminal readiness are distinct signals. Optional `TokenRequestStatus` reports token-request status if the POI manages tokens.\n- This page gives no operator credential or authentication exchange, access grant, payment authorization/capture, transaction totals, reconciliation result, settlement, bank receipt, callback contract, live cloud URL, or deprecation notice. The separate POS login/logout guide explicitly says Login does not authenticate an operator; its operational lifecycle and message-header details are separately sourced.\n\n## Detail locators\n\n- Session purpose and captured test cloud sync/async and local-hosting server entries: raw lines 5\u201319.\n- Complete request-body schema, including Sale/POI identity, operator/group/shift attribution, training mode and token/order options: raw lines 21\u201340.\n- HTTP 200 Login Response schema, `Result` and conditional `ErrorCondition`, POI software/status and token-status fields: raw lines 42\u201370.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 Terminal API message and POS session context.\n- [[source-adyen-docs-point-of-sale-reconciling-totals-log-in-and-log-out]] \u2014 separate POS guide for operational login/logout use, header example and explicit non-authentication boundary.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/login/2026-09-15|Adyen Terminal API latest POST /login, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "It conveys information related to the session (period between a Login and the following Logout) to process.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Information related to the software of the Sale System which manages the NEXO Sale to POI protocol.",
+      "location": "raw line 27"
+    },
+    {
+      "text": "This flag indicates to the POI that the entire session will be not used to make real transaction, but is used for test of system or operator training.",
+      "location": "raw line 34"
+    },
+    {
+      "text": "If Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present and can refine the processing of the message response.",
+      "location": "raw line 51"
+    },
+    {
+      "text": "Returned if the response result is Success.",
+      "location": "raw line 55"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-login-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-login]] \u2014 2026-09-15 API Explorer `latest` POST /login request/response schema for Sale/POI session identity, training and operator/group fields, conditional Login result errors, and optional POI status; operator authentication remains a separate boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/login/2026-09-15.md",
+  "raw_sha256": "d8076e58cedd88f691d87632de5e36213d0deb1e41981f3419a20d04969353a1",
+  "status": "candidate_ready"
+}

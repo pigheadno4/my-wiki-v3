@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balancecontrolv1-latest-post-balancetransfer",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Control v1: POST /balanceTransfer\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/BalanceControlv1/latest/post/balanceTransfer\"\nraw_files:\n  - \"adyen/api-explorer/BalanceControlv1/latest/post/balanceTransfer/2026-09-15.md\"\ntags: [adyen, balance-control, merchant-accounts, balance-transfer, api]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer capture documents Balance Control **v1** `POST /balanceTransfer`, which starts a balance-transfer request between merchant accounts. The listed server is the TEST `https://pal-test.adyen.com/pal/servlet/BalanceControl/v1`. The source and destination merchant accounts must share a company account and legal entity, the source must have sufficient funds, and both must share at least one processing currency. This is a merchant-account balance operation, separate from Adyen for Platforms balance-account transfers. See [[adyen]] and [[adyen-account-structure]].\n\n## Key takeaways\n\n- The request body requires `amount` with required ISO three-character `currency` and integer `value` in minor units, `fromMerchant`, `toMerchant`, and a `type` of `tax`, `fee`, `terminalSale`, `credit`, `debit`, or `adjustment`. The merchant IDs identify the source and destination accounts; the page names no device, session, shopper, or end beneficiary.\n- `reference` is optional, up to 80 characters; Adyen generates a unique reference if omitted. The optional human-readable `description` accepts alphanumeric characters and hyphens; the page recommends at most 140 characters because longer text may be truncated. For multiple requests involving the same source/destination merchant pair, send them sequentially: the page warns that parallel requests may not be processed.\n- The `200 Success` section says the **request** succeeded. Its response requires `amount`, `createdAt` (date the transfer was **requested**), `fromMerchant`, `toMerchant`, `type`, a 16-character Adyen `pspReference`, and `status`. The status can be `transferred`, `failed`, `error`, or `notEnoughBalance`; therefore HTTP 200 and a PSP reference alone do not establish that funds transferred. `reference` and `description` are optional response fields. The single example shows `status: transferred` and is not a guarantee for other calls.\n- The page gives no separate authentication role, idempotency or retry contract, asynchronous webhook or polling lifecycle, timing for completion, transfer reversal, settlement schedule, payout, or bank-receipt evidence. `createdAt` marks request time, not a bank or settlement event. It does not establish capabilities of Balance Control v2 or the Balance Platform Transfers API.\n\n## Detail locators\n\n- Purpose, eligibility conditions and same-pair sequential-request warning: raw lines 5\u201315.\n- TEST Balance Control v1 server: lines 17\u201318.\n- Required request amount, merchant IDs and type; optional reference/description constraints: lines 20\u201332.\n- Illustrative request without a reference: lines 34\u201348.\n- HTTP 200 request wording, required response identifiers and status enum: lines 49\u201367.\n- Illustrative `transferred` response and generated-looking reference: lines 69\u201389.\n\n## Related\n\n- [[adyen]] \u2014 provider route.\n- [[adyen-account-structure]] \u2014 company and merchant-account identity.\n- [[source-adyen-docs-account-manage-your-balances]] \u2014 separate merchant-account balance management guide; its permissions and operational paths are distinct evidence.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/BalanceControlv1/latest/post/balanceTransfer/2026-09-15|POST /balanceTransfer API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Starts a balance transfer request between merchant accounts.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The source and destination merchant accounts must be under the same company account and legal entity.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "Some requests may not be processed if the requests are sent in parallel.",
+      "location": "raw line 15"
+    },
+    {
+      "text": "If you don't provide this in the request, Adyen generates a unique reference. Maximum length: 80 characters.",
+      "location": "raw line 30, request reference row"
+    },
+    {
+      "text": "Possible values: **transferred**, **failed**, **error**, and **notEnoughBalance**.",
+      "location": "raw line 65, response status row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-balancecontrolv1-transfer-account-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balancecontrolv1-latest-post-balancetransfer]] \u2014 2026-09-15 Balance Control v1 TEST API reference for same-company/legal-entity merchant-account balance-transfer requests and their returned status, distinct from platform balance-account transfers.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/BalanceControlv1/latest/post/balanceTransfer/2026-09-15.md",
+  "raw_sha256": "113ff80c0aff3d02f1ffa5598ab782e39292a7029d92802566b6241c245b8fe5",
+  "status": "candidate_ready"
+}

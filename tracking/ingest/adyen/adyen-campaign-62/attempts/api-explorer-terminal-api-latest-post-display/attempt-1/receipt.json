@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-display",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API POST /display \u2014 Display Request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/display\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/display/2026-09-15.md\"\ntags: [adyen, terminal-api, api-explorer, display]\n---\n\n## Overview\n\nCaptured API Explorer contract for `POST /display`, the Terminal API Display Request. It conveys complete content to display and processing instructions, with at most one `DisplayOutput` for each `Device`/`InfoQualify` pair. The path says `latest`; the captured page does not give a numbered protocol or schema version. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The captured servers are two test cloud integration routes, `/sync` and `/async`, under `device-api-test.adyen.com/v1/merchants/{merchantAccount}/devices/{deviceId}`, plus a local terminal IP address. The page names no caller or session identifier; `{merchantAccount}` and `{deviceId}` identify cloud route parameters. See raw lines 10\u201319.\n- The request table marks `DisplayOutput` required. Each item requires `Device`, `InfoQualify`, and `OutputContent`; `OutputContent` requires `OutputFormat`. `OutputText` is mandatory only for `Text` and disallowed otherwise; `OutputXHTML` and `OutputBarcode` have analogous format conditions. `ResponseRequiredFlag`, `MinimumDisplayTime` (seconds), `MenuEntry`, and `OutputSignature` are optional in the displayed table. See raw lines 23\u201344 for nested fields, enum values, and conditional wording.\n- A `200 Success` response describes display processing results, except that the response can be absent when it is not required. When present, `OutputResult` is required, with one item per request `DisplayOutput` in the same order. Each result contains `Device`, `InfoQualify`, and `Response.Result` (`Success`, `Failure`, or `Partial`). For non-success results, `ErrorCondition` must be present; `AdditionalResponse` is logging information. See raw lines 46\u201361. An HTTP 200 heading alone does not establish a successful display result.\n\n## Detail locators\n\n- Cloud test and local server forms: raw lines 10\u201319.\n- Request schema, device/qualifier and output-format enums, conditional content, and display minimum time: raw lines 23\u201344. The enum spells `BarCode`, while the conditional `OutputBarcode` description says `Barcode`; preserve the captured difference when implementing.\n- Response schema and error-condition enum: raw lines 46\u201361.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 provider concept and integration context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/display/2026-09-15|POST /display captured API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "It conveys the data to display and the way to process the display. It contains the complete content to display.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/display/2026-09-15.md:7"
+    },
+    {
+      "text": "At most one DisplayOutput per Device/ InfoQualify pair.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/display/2026-09-15.md:26"
+    },
+    {
+      "text": "Mandatory, if `OutputFormat` is Text, not allowed otherwise.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/display/2026-09-15.md:34"
+    },
+    {
+      "text": "It conveys the result of the display, parallel to the message request, except if response not required and absent.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/display/2026-09-15.md:49"
+    },
+    {
+      "text": "One per DisplayOutput item of the request, and in the same order.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/display/2026-09-15.md:55"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "display-api-explorer-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-display]] \u2014 captured `latest` Terminal API Explorer `POST /display` request and response schema for terminal display content, device/qualifier pairing, conditional output formats, and optional response (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/display/2026-09-15.md",
+  "raw_sha256": "8bf0acf212061e33b89cf07f1faa8379a048ce280366399b2f4ba29449181742",
+  "status": "candidate_ready"
+}

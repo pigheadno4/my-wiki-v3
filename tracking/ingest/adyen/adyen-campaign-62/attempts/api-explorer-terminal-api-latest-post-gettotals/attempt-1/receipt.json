@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-gettotals",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API POST /gettotals \u2014 GetTotals Request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/gettotals\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15.md\"\ntags: [adyen, terminal-api, api-explorer, reconciliation, totals]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot documents the Terminal API `POST /gettotals` GetTotals request: the Sale System specifies the scope and format of totals for the POI System to compute. It lists test cloud Device API sync and async endpoints with `{merchantAccount}` and `{deviceId}`, plus a local-terminal-IP route; it gives no separate numeric Terminal API protocol or software version. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The request body table marks `TotalDetails` and `TotalFilter` optional. `TotalDetails` selects a totals hierarchy from `OperatorID`, `POIID`, `SaleID`, `ShiftNumber`, and `TotalsGroupID`; `TotalFilter` can restrict the computation by those optional values. These identify cashier/operator, POI or sale system/terminal, shift, and totals group; the cloud URL's merchant account and device ID identify the transport target.\n- The documented `200 Success` body is a Reconciliation Response about POI processing. It requires `Response` with `Result` (`Success`, `Failure`, or `Partial`) and `POIReconciliationID`, the Sale-to-POI reconciliation-period identifier. The `Response` description makes `ErrorCondition` present in non-success cases; `AdditionalResponse` is optional logging detail.\n- `TransactionTotals` is optional and described for `Response.Result=Success`. Its `PaymentInstrumentType` is required within an item. `PaymentTotals` is optional within an item and described when both count and amount are nonzero; its entries require `TransactionType`, `TransactionCount`, and `TransactionAmount`. The listed transaction types include debit, credit, reversals, reservations, declined, and failed transactions. These are period totals, not proof of capture, settlement, payout, or bank receipt.\n- This page does not specify request-body envelope/header fields, authentication, credential handling, response correlation, async delivery timing, retry rules, period rollover effects, numeric limits, or defaults. The sync/async endpoint labels alone do not establish a final financial outcome.\n\n## Detail locators\n\n- Servers and routing: [[raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15#L10|raw lines 10\u201319]].\n- Request fields and optional filters: [[raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15#L21|raw lines 21\u201332]].\n- Response result, error conditions, period ID, and totals nesting: [[raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15#L34|raw lines 34\u201362]].\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 in-person Terminal API architecture and reconciliation routes.\n- [[source-adyen-docs-point-of-sale-reconciling-totals-retrieve-totals-from-the-terminal]] \u2014 separate website procedure for retrieving terminal totals.\n- [[adyen]] \u2014 provider overview.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15|Adyen Terminal API GetTotals API Explorer capture, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "It conveys information from the Sale System related to the scope and the format of the totals to be computed by the POI System.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15.md:7"
+    },
+    {
+      "text": "| TotalDetails | array of string | No | Indicates the hierarchical structure of the reconciliation result of the Sale to POI reconciliation.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15.md:26"
+    },
+    {
+      "text": "If Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15.md:43"
+    },
+    {
+      "text": "| POIReconciliationID | integer | Yes | Identification of the reconciliation period between Sale and POI. |",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15.md:47"
+    },
+    {
+      "text": "|   - PaymentTotals | array of object | No | Totals of the payment transaction during the reconciliation period. If both `TransactionCount` and `TransactionAmount` are not equal to zero. |",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15.md:59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-gettotals-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-gettotals]] \u2014 2026-09-15 API Explorer GetTotals request and Reconciliation Response field reference for Sale-to-POI period totals; distinct from settlement reporting.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/gettotals/2026-09-15.md",
+  "raw_sha256": "55e102abf5f0e3fb4249bc6ac0c37e22a24ea6b7cd7283c6e1458ac139b44f67",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-reversal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API: POST /reversal reversal request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/reversal\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/reversal/2026-09-15.md\"\ntags: [adyen, terminal-api, reversal, point-of-sale, api]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer capture describes Terminal API `POST /reversal` for reversing a previous payment or loyalty transaction. It lists cloud device **test** sync and async servers under `/v1/merchants/{merchantAccount}/devices/{deviceId}/` and a local terminal IP server. The `latest` Explorer path and cloud `v1` transport path do not specify a numbered Terminal API protocol version. See [[adyen]] and [[adyen-terminal-api]].\n\n## Key takeaways\n\n- The request table requires `OriginalPOITransaction` and `ReversalReason`; valid reason values are `CustCancel`, `MerchantCancel`, `Malfunction`, and `Unable2Compl`. Within the required original-transaction object, `SaleID`, terminal `POIID` (when the original transaction is from another POI), `POITransactionID`, `AcquirerID`, `HostTransactionID`, and other listed fields are marked optional. `TransactionID` and `TimeStamp` are required **within** either supplied nested transaction-ID object. The schema does not itself make `OriginalPOITransaction.POITransactionID` mandatory.\n- `ReversedAmount` is optional and, when omitted, is implicitly the `AuthorizedAmount`. This is the reversal amount rule in the reference; the page gives no currency field or amount cap. Optional `SaleData` holds sale-side data; its `SaleTransactionID` is required only within a supplied `SaleData` object, with required nested `TransactionID` and `TimeStamp`. Other sale/operator, token, order, terminal, and acquirer fields remain in the raw table.\n- The `200 Success` response table requires a `Response` object and its `Result` (`Success`, `Failure`, or `Partial`). `ErrorCondition` is absent or unused for Success and must be present otherwise. Optional `POIData` contains a required `POITransactionID` if that object appears; `POIReconciliationID` is optional and described for Success. `OriginalPOITransaction`, copied `ReversedAmount`, and `PaymentReceipt` are optional response fields. Receipt content/format conditions are detailed in raw lines 91\u2013100.\n- The reference calls this information about a reversal processed by the POI system. HTTP 200, a `Response.Result`, a reconciliation-period identifier, or a receipt should not be expanded into proof of completed refund, settlement, or bank receipt. The separately captured [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-referenced|referenced POS refund guide]] says a successful ReversalResponse acknowledges **receipt of a refund request**, with asynchronous outcome reported later by `CANCEL_OR_REFUND`; that operational rule belongs to the guide, not this schema table.\n- This page does not state authentication/security steps, a request-correlation or callback contract for the listed async transport, deprecation, retry timing, reversal completion timing, or account-specific eligibility. A payment reversal and a loyalty reversal share this operation's stated scope; the table alone does not select a particular merchant refund route.\n\n## Detail locators\n\n- Purpose and cloud test sync/async plus local server list: raw lines 5\u201319.\n- `SaleData` parent and nested requiredness; sale/operator/acquirer fields: lines 21\u201342.\n- Original-transaction identifiers, conditional other-POI field, amount default and reason enum: lines 43\u201357.\n- HTTP 200 response result/error semantics and conditional POI identifiers: lines 59\u201390.\n- Optional receipt and conditional output content formats: lines 91\u2013100.\n\n## Related\n\n- [[adyen]] \u2014 provider route.\n- [[adyen-terminal-api]] \u2014 Terminal API concept.\n- [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-referenced]] \u2014 separate guide for a referenced POS refund's original reference, asynchronous outcome, and special offline/ecommerce forms.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/reversal/2026-09-15|POST /reversal API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "It conveys Information related to the reversal of a previous payment or a loyalty transaction.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| OriginalPOITransaction | object | Yes | Identification of a previous POI transaction.",
+      "location": "raw line 43, OriginalPOITransaction request row"
+    },
+    {
+      "text": "ReversedAmount is implicitly equal to the AuthorizedAmount if absent.",
+      "location": "raw line 56, ReversedAmount request row"
+    },
+    {
+      "text": "| ReversalReason | string | Yes | Reason of the payment or loyalty reversal.",
+      "location": "raw line 57, ReversalReason request row"
+    },
+    {
+      "text": "In the other cases, the `ErrorCondition` has to be present",
+      "location": "raw line 68, Response row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-reversal-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-reversal]] \u2014 2026-09-15 Terminal API Explorer POST /reversal request/response contract for payment or loyalty reversal, original-transaction fields, amount default and result envelope.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/reversal/2026-09-15.md",
+  "raw_sha256": "c7cac9adb729349ae4ca522eb0a34e9135bdc7335b06075a96578fd77a7724a7",
+  "status": "candidate_ready"
+}

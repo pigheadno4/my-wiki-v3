@@ -1,0 +1,47 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-transactionstatus",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Terminal API POST /transactionstatus \u2014 TransactionStatus Request\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/transactionstatus\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/transactionstatus/2026-09-15.md\"\ntags: [adyen, terminal-api, pos, transaction-status]\n---\n\n## Overview\n\nThis captured **Terminal API latest** API Explorer page describes `POST /transactionstatus`, which requests information about the last or current Payment, Loyalty, or Reversal transaction. Its listed servers are cloud **test** device sync and async endpoints with `merchantAccount` and `deviceId`, and a local terminal IP address. The page does not state a numeric Terminal API version or authentication scheme. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The request body's `MessageReference` is optional in this table; it identifies the prior request message header for an in-progress abort or a status check when no response was received. Its `MessageCategory`, `ServiceID`, `DeviceID`, `SaleID`, and `POIID` are each marked optional. `SaleID` and `POIID` default to the corresponding `MessageHeader` values. Optional `ReceiptReprintFlag` requests receipt reprinting; `DocumentQualifier` selects document/recipient qualifications. See raw lines 23\u201333. The page gives no numeric field limits or retry deadline.\n- A documented `200 Success` response carries required `Response.Result` with `Success`, `Failure`, or `Partial`. For results other than `Success`, `ErrorCondition` must be present; optional `AdditionalResponse` is logged by the POI. See raw lines 35\u201347.\n- The response can include `MessageReference` and, if processing completed with `Result=Success`, optional `RepeatedMessageResponse` containing the requested message's header and body. Its header has required class, category, type, `SaleID`, and `POIID`; `ServiceID` and `DeviceID` have conditional descriptions, while `ProtocolVersion` is described for Login or Diagnosis. Body variants include Loyalty, Payment, Reversal, StoredValue, CardAcquisition, and CardReaderAPDU responses; this page does not expand their outcome schemas. See raw lines 48\u201370.\n- A successful **status-request processing** result and presence of a repeated message are separate from the original transaction's financial outcome. Inspect the relevant repeated response and its own result before inferring authorization or reversal. This page does not establish capture, reconciliation, settlement, or bank receipt.\n\n## Detail locators\n\n- Purpose and transport URL forms: raw lines 5\u201319.\n- Request reference/default and receipt-printing fields: raw lines 23\u201333.\n- Status response result/error fields and repeated response structure: raw lines 35\u201370.\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 Terminal API concept, including missing-result recovery.\n- [[source-adyen-docs-point-of-sale-basic-tapi-integration-verify-transaction-status]] \u2014 separate website guide for POS status recovery; do not substitute its flow for this API Explorer schema.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/transactionstatus/2026-09-15|Captured TransactionStatus API Explorer page]]\n",
+  "quotes": [
+    {
+      "text": "It conveys Information requested for status of the last or current Payment, Loyalty or Reversal transaction.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/transactionstatus/2026-09-15.md:8"
+    },
+    {
+      "text": "To abort a transaction in progress or to request the status of a transaction from which no response has been received.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/transactionstatus/2026-09-15.md:26"
+    },
+    {
+      "text": "In the other cases, the `ErrorCondition` has to be present",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/transactionstatus/2026-09-15.md:44"
+    },
+    {
+      "text": "Content of the requested Message Response. If Result is Success (process completed).",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/transactionstatus/2026-09-15.md:54"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-transactionstatus-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-transactionstatus]] \u2014 captured Terminal API latest TransactionStatus request/response schema for last/current transaction inquiry, prior-message reference, status processing result and optional repeated response (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/transactionstatus/2026-09-15.md",
+  "raw_sha256": "84e65707d36c7a0441cc5e509bb6f2a1f85985ebb7add4562abfe43c41a6ae42",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,47 @@
+{
+  "job_id": "api-explorer-terminal-api-latest-post-cardacquisition",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Terminal API CardAcquisition request and response | Adyen API Explorer\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/terminal-api/latest/post/cardacquisition\"\nraw_files:\n  - \"adyen/api-explorer/terminal-api/latest/post/cardacquisition/2026-09-15.md\"\ntags: [adyen, terminal-api, card-acquisition, api-explorer, point-of-sale]\n---\n\n## Overview\n\nThis 2026-09-15 API Explorer snapshot describes a POST `/cardacquisition` CardAcquisition message pair: the Sale System asks the POI to read and analyse payment or loyalty card information, usually before a separate payment or loyalty message pair refers to it. It lists test cloud Device API `/v1/merchants/{merchantAccount}/devices/{deviceId}/sync` and `/async` server addresses and a local terminal-IP placeholder. The `latest` URL is a moving documentation label; this captured page does not identify a Terminal API protocol version, message-header fields, production endpoint, authentication method, or a complete HTTP envelope.\n\n## Key takeaways\n\n- The request-body table marks `SaleData` and `CardAcquisitionTransaction` required. Within `SaleData`, `SaleTransactionID.TransactionID` and `TimeStamp` are required; `TransactionID` identifies the Sale or POI transaction, and the timestamp supports uniqueness. The optional `CardAcquisitionTransaction.TotalAmount` allows contactless-card processing. Optional selectors include allowed payment/loyalty brands, loyalty handling, entry modes, customer selection, payment type, and a token request type. These are body-table requirements, not a complete top-level message schema.\n- The 200 response table marks `Response`, `SaleData`, and `POIData` required, including `Response.Result`, `SaleData.SaleTransactionID`, and `POIData.POITransactionID` with their nested transaction IDs and timestamps. `Result` may be `Success`, `Failure`, or `Partial`. On non-success, the `Response` description says `ErrorCondition` must be present; on success it is absent or unused. `AdditionalResponse` is optional processing/logging detail. An HTTP 200 section and a successful acquisition result do not establish a subsequent payment authorization, capture, reconciliation, settlement, or bank receipt.\n- Optional `PaymentBrand`, `PaymentInstrumentData`, and `LoyaltyAccount` data may appear. `PaymentInstrumentData.CardData.PaymentBrand` can support cashier selection among applications or co-brands; for that case the description says `CardAcquisitionRequest.ForceCustomerSelectionFlag` must be `False`. The page also describes masked PAN, PAR, tokens, and CMS-protected card data, but does not supply a blanket promise that any particular identifier is returned or usable for payment.\n- The page gives no service-ID or request-header correlation rule, async delivery/result workflow, timeout, retry/reversal, cancellation, expiry, or deprecation rule. Consult separate Terminal API flow guidance for those behaviors; do not infer them from the two listed cloud transport paths or this body schema.\n\n## Detail locators\n\n- Operation purpose and captured server addresses: raw lines 5\u201319.\n- Request body, parent and nested required fields, optional selectors, and contactless amount: raw lines 21\u201352.\n- Response result, error and Sale/POI transaction identities: raw lines 54\u201388.\n- Optional brand and payment-instrument data, sensitive-data protection, and loyalty-account fields: raw lines 89\u2013131.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 Terminal API concept and integration boundaries.\n- [[source-adyen-docs-point-of-sale-card-acquisition]] \u2014 separate Adyen POS flow guide for later payment referencing and abort/cancellation; its behavior is not supplied by this API Explorer page.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/terminal-api/latest/post/cardacquisition/2026-09-15|Adyen API Explorer CardAcquisition request/response (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "This message pair is usually followed by a message pair (e.g. payment or loyalty) which refers to this Card Acquisition message pair.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardacquisition/2026-09-15.md:7"
+    },
+    {
+      "text": "In the Card Acquisition Request message, it allows the processing of a contactless card.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardacquisition/2026-09-15.md:50"
+    },
+    {
+      "text": "If Result is Success, `ErrorCondition` is absent or not used in the processing of the message. In the other cases, the `ErrorCondition` has to be present",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardacquisition/2026-09-15.md:63"
+    },
+    {
+      "text": "Sent in the CardAcquisitionResponse, to leave the Cashier to choose between several applications in a smartcard, or several brand in a co-branded card. In this case, the CardAcquisitionRequest.ForceCustomerSelectionFlag must contain the value False.",
+      "location": "raw/adyen/api-explorer/terminal-api/latest/post/cardacquisition/2026-09-15.md:94"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-cardacquisition-terminal-api-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-terminal-api-latest-post-cardacquisition]] \u2014 2026-09-15 API Explorer CardAcquisition request/response body reference for Sale and POI transaction IDs, optional card/loyalty data, and acquisition-result limits; separate from payment authorization.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/terminal-api/latest/post/cardacquisition/2026-09-15.md",
+  "raw_sha256": "378a1631d1a4f78076069da0e79ef2250155c3ccfb9e62a70159f889b8f6c8c5",
+  "status": "candidate_ready"
+}

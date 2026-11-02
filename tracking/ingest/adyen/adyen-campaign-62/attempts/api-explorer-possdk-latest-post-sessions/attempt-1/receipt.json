@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-possdk-latest-post-sessions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS Mobile SDK POST /sessions communication session\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/possdk/latest/post/sessions\"\nraw_files:\n  - \"adyen/api-explorer/possdk/latest/post/sessions/2026-09-15.md\"\ntags: [adyen, mobile-pos, pos-mobile-sdk, api-explorer, sessions]\n---\n\n## Overview\n\nThis 2026-09-15 `POST /sessions` API Explorer snapshot describes establishing a mutually authenticated communication session between the **POS Mobile SDK** and Adyen payments platform. It applies to mobile in-person transactions; the page expressly excludes creating online payments sessions. This is the POS SDK `v68` test route, not an online Checkout Sessions contract. See [[adyen]] and [[adyen-mobile-pos]].\n\n## Key takeaways\n\n- The sole listed server is `https://checkout-test.adyen.com/checkout/possdk/v68`. The `latest` page path does not establish a later API version or a live endpoint. The page does not identify the HTTP caller or prescribe a backend architecture, though it conditionally addresses backend-built Terminal API transaction requests.\n- The request-body table marks string `merchantAccount` and string `setupToken` required, and string `store` optional. The setup token is supplied by the POS Mobile SDK and identifies the SDK and device. The table specifies Android `AuthenticationService.authenticate(setupToken)` and iOS `PaymentServiceDelegate.register(with:)` callback routes to obtain it; the example includes optional `store`. The page does not separately label the request body itself required.\n- The documented `201 Success` says the request was fulfilled and one or more resources created. Every **listed response property** is marked `No` in the table: `id` (session identifier), `installationId` (SDK-installation identifier), `merchantAccount`, `sdkData`, and `store`. The example shows all five, but it is not a required-field guarantee. If the Terminal API transaction request is created on a backend, the page directs using `installationId` as `MessageHeader.POIID`. It directs passing `sdkData` to the POS app so the SDK can authenticate platform responses.\n- The prose calls the returned material a 'session token', while the schema lists `id` and `sdkData`, without a field literally named `sessionToken`. Do not infer which response property the prose means. A created communication session and response-authentication data are not a completed payment, payment authorization, capture, reconciliation, settlement or bank receipt.\n- This page provides no session expiration, renewal, retry, failure/error response, revocation, correlation, asynchronous outcome or live enablement rule.\n\n## Detail locators\n\n- Purpose, mutual authentication and mobile in-person scope: raw lines 5\u201310.\n- Test server and request fields/callbacks: raw lines 12\u201333.\n- `201` meaning, response field requiredness and conditional POIID guidance: raw lines 34\u201361.\n\n## Related\n\n- [[adyen]]\n- [[adyen-mobile-pos]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/possdk/latest/post/sessions/2026-09-15|Adyen POS Mobile SDK POST /sessions snapshot, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Establishes a secure communications session between the POS Mobile SDK and the Adyen payments platform, through mutual authentication.",
+      "location": "raw/adyen/api-explorer/possdk/latest/post/sessions/2026-09-15.md:7"
+    },
+    {
+      "text": "You cannot use this request to create online payments sessions.",
+      "location": "raw/adyen/api-explorer/possdk/latest/post/sessions/2026-09-15.md:10"
+    },
+    {
+      "text": "| setupToken | string | Yes | The setup token provided by the POS Mobile SDK.",
+      "location": "raw/adyen/api-explorer/possdk/latest/post/sessions/2026-09-15.md:21"
+    },
+    {
+      "text": "| installationId | string | No | The unique identifier of the SDK installation. If you create the [Terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/) transaction request on your backend, use this as the `POIID` in the `MessageHeader` of the request. |",
+      "location": "raw/adyen/api-explorer/possdk/latest/post/sessions/2026-09-15.md:43"
+    },
+    {
+      "text": "| sdkData | string | No | The data that the SDK uses to authenticate responses from the Adyen payments platform. Pass this value to your POS app. |",
+      "location": "raw/adyen/api-explorer/possdk/latest/post/sessions/2026-09-15.md:45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-possdk-sessions-mobile-pos-route",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-possdk-latest-post-sessions]] \u2014 2026-09-15 POS Mobile SDK `v68` test `POST /sessions` contract for mobile in-person communication-session creation and SDK response-authentication data.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/possdk/latest/post/sessions/2026-09-15.md",
+  "raw_sha256": "0661f3b012629b6792b0fcae71d19fbed62b6afdf3e583201efc57807703d670",
+  "status": "candidate_ready"
+}

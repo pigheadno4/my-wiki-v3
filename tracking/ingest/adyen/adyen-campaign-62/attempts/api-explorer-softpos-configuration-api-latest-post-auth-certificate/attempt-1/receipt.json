@@ -1,0 +1,55 @@
+{
+  "job_id": "api-explorer-softpos-configuration-api-latest-post-auth-certificate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SoftPOS configuration API v3: create a communication session\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/softpos-configuration-api/latest/post/auth/certificate\"\nraw_files:\n  - \"adyen/api-explorer/softpos-configuration-api/latest/post/auth/certificate/2026-09-15.md\"\ntags: [adyen, softpos, mobile-pos, mobile-sdk, communication-session, api]\n---\n\n## Overview\n\nThis 2026-09-15 SoftPOS configuration API **v3** reference describes `POST /auth/certificate` creating a secure communication session between the Mobile SDK and Adyen payments platform through mutual authentication. The setup token identifies the SDK and device; returned SDK data supports authenticating platform responses. The page lists a TEST server and distinct live regional servers for Australia, Asia Pacific South East, Europe, North East Asia, and the United States. See [[adyen]] and [[adyen-mobile-pos]].\n\n## Key takeaways\n\n- The request body requires `merchantAccount` and the Mobile SDK-provided `setupToken`. The page names Android `MerchantAuthenticationService.authenticate(setupToken)` and iOS `PaymentServiceDelegate.register(with:)` callbacks as token routes. Optional `store` identifies the processing store, but must be omitted when merchant accounts are used as stores or the merchant is a registered payment facilitator.\n- `subMerchantData` is marked optional in the table but its description makes it **required for a registered payment facilitator** and prohibited otherwise. Within a supplied object, `displayName`, `id`, `mcc`, and `name` are required. `email` and `phoneNumber` become required for American Express; `taxId` is required only in Brazil and for Cartes Bancaires in France, with country-specific format/length rules. The remaining address and contact fields are in raw lines 44\u201355.\n- The header table marks `X-API-Key` **No** while describing it as the API key used to authenticate API requests. This is a schema requiredness versus security-description tension, not proof unauthenticated requests work. The `401` response explicitly says authentication is required.\n- A `201 Success` means the session request succeeded. The response table marks all listed fields optional: communication-session `id`, SDK `installationId`, `merchantAccount`, `sdkData`, and `store`. If a backend creates a Terminal API transaction request, the page says to use `installationId` as `MessageHeader.POIID`; pass `sdkData` to the POS app for SDK response authentication. The introductory prose calls the return a \u201csession token,\u201d but the response schema does **not** expose a field by that name; it lists `sdkData` and `id` separately.\n- Errors are `400` validation failure, `401` authentication required, `422` session request not processed, and `500` internal server error. Their problem-body fields are optional, with required `message`, `name`, and `value` only within a supplied `invalidFields` entry. The examples show placeholder identifiers and generic error codes; they do not prove a live session, transaction authorization, capture, settlement, or bank receipt. This page states no session expiry, renewal/revocation, retry timing, asynchronous outcome, or payment-result contract.\n\n## Detail locators\n\n- Purpose, token direction and server environments: raw lines 5\u201327.\n- API-key header and request fields, SDK callback routes and conditional facilitator/store data: lines 29\u201355.\n- Illustrative request: lines 57\u201366.\n- 201 response fields and Terminal API installation-ID relationship: lines 67\u201379.\n- Error meanings and problem schemas: lines 82\u2013155.\n- Illustrative 201 and 400/401/422/500 bodies: lines 157\u2013218.\n\n## Related\n\n- [[adyen]] \u2014 provider route.\n- [[adyen-mobile-pos]] \u2014 Mobile POS SDK and merchant-app context.\n- [[adyen-pos-payment-facilitators]] \u2014 separate POS facilitator context for conditional sub-merchant data.\n- [[source-adyen-docs-point-of-sale-mobile-ios-understand]] \u2014 separate iOS Mobile session guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/softpos-configuration-api/latest/post/auth/certificate/2026-09-15|POST /auth/certificate API Explorer capture]]\n",
+  "quotes": [
+    {
+      "text": "Establishes a secure communication session between the Mobile SDK and the Adyen payments platform, through mutual authentication.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| X-API-Key | string | No | The API key to authenticate API requests. |",
+      "location": "raw line 34"
+    },
+    {
+      "text": "Required if you are a registered payment facilitator. Do not include this parameter if you are not a payment facilitator.",
+      "location": "raw line 43, subMerchantData row"
+    },
+    {
+      "text": "If you create the [Terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/) transaction request on your backend, use this as the `POIID` in the `MessageHeader` of the request.",
+      "location": "raw line 76, installationId row"
+    },
+    {
+      "text": "The data that the SDK uses to authenticate responses from the Adyen payments platform. Pass this value to your POS app.",
+      "location": "raw line 78, sdkData row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c62-softpos-auth-certificate-mobile-route",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-softpos-configuration-api-latest-post-auth-certificate]] \u2014 2026-09-15 SoftPOS configuration API v3 session-creation contract for Mobile SDK setup-token exchange, installation identity, SDK response-authentication data and conditional facilitator fields.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The API Explorer header table marks X-API-Key not required although it calls the key authentication material and lists 401; source preserves this tension.",
+          "Introductory session-token wording does not map to an identically named response-schema field."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/softpos-configuration-api/latest/post/auth/certificate/2026-09-15.md",
+  "raw_sha256": "8ccebf26cd662c41ce6190ef7dc1486159f311a9d1ecb2003360e78c5ee0c514",
+  "status": "candidate_ready"
+}
