@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-10-24
+date_updated: 2026-11-02
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-11-02-03cb21a/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-24-21435c2/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json"
@@ -31,6 +32,24 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `03cb21a` (2026-10-23 UTC)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/react-paypal-js` | `10.6.0` | `10.6.1` | `03cb21a40d22c7685690a1fdc28015c505700a1b` | Delta |
+
+Package-qualified release `@paypal/react-paypal-js@10.6.1` was collected and ingested November 2 as approved serial item `github-e7a6adbcbec9036c4367`. Core remains independently `11.3.0`, already ingested October 24; no new core release is part of this item.
+
+**Impact:** React raises its core dependency from `^11.2.1` to `^11.3.0`; its own version/changelog change, while all 117 retained React implementation files, package exports and peer ranges remain unchanged. The old range already allowed `11.3.0`, so this raises a minimum rather than pinning a particular installed version or guaranteeing new behavior for every existing installation.
+
+**Inherited behavior and migration:** the retained core files match the ingested `11.3.0` checkpoint: missing-load-event recovery, 60-second per-attempt loader wait, v6 namespace filtering and token-replacement typing remain core findings. Verify dependency resolution/lockfiles and retain loading-error handling; no new React JSX/callback migration, automatic token renewal or saved-payment editing wrapper is introduced. Hosted SDK behavior, merchant eligibility and permanent vault storage remain separate evidence boundaries.
+
+**Updated knowledge:** [[paypal-checkout]] first; additive React `10.6.1` source section and grounding, latest package status, company/provider catalog and logs. All older source/changelog sections, warning callouts and raw references retained; source_count unchanged, no new concept or cross-company comparison.
+
+**Reading boundary:** complete cumulative wiki history, changed retained source/metadata, release notes, comparison patch, affected prior code and the prior assigned HTML harness read. Generated manifests/inventories and unchanged raw changelog history verified mechanically under the approved focused scope. All 485 prior/current/core-checkpoint file sizes/SHA-256/Git blob IDs pass. Eight modified retained paths, 153 unchanged; old core changelog and harness not selected now, not proof of deletion. No recorded gaps/unclassified changes or upstream build/browser/payment execution.
+
+Evidence: [snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-11-02-03cb21a/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.6.1/2026-11-02/manifest.json), [notes](../../../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.6.1/2026-11-02/release-notes.md), [comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.6.0--10.6.1/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-js/comparisons/react-paypal-js/10.6.0--10.6.1/diff.patch), [package metadata](../../../../raw/github/paypal/paypal-js/snapshots/2026-11-02-03cb21a/files/packages/react-paypal-js/package.json) and [core declaration](../../../../raw/github/paypal/paypal-js/snapshots/2026-11-02-03cb21a/files/packages/paypal-js/types/v6/index.d.ts).
 
 ## Repository change set: `21435c2` (2026-10-20 UTC)
 

@@ -17,6 +17,8 @@ Standard e-commerce integration that renders PayPal, Venmo, and Debit/Credit Car
 
 ### PayPal JS SDK
 
+React `10.6.1` (October 23 release, November 2 ingest) raises its core dependency from `^11.2.1` to `^11.3.0`. Retained React implementation, exports and peer ranges are unchanged; core remains the independently ingested `11.3.0`. This guarantees a higher allowed minimum, not an exact installed version or new behavior for installations already resolving core `11.3.0`. It adds no automatic refresh or React saved-payment editing wrapper. All prior package-qualified knowledge remains in [[source-github-paypal-js]] and [[changelog-github-paypal-js]].
+
 Core `11.3.0` (October 20 release, October 24 ingest) adds the v6 `updateClientToken(): void` declaration for same-client/merchant token replacement without recreating the instance, raises per-attempt loader timeout to 60 seconds and excludes non-v6 namespaces from successful-load detection. Token propagation/validation is hosted-runtime contract evidence, not implementation in this repo or automatic refresh. React stays `10.6.0`; its core range permits this minor release but installed resolution must be checked. No new React saved-payment editing wrapper. All earlier knowledge remains in [[source-github-paypal-js]] and [[changelog-github-paypal-js]].
 
 Core `11.2.2` (release record October 9 UTC) resolves loading at timeout if the requested namespace is available despite a missing load event. This does not add payment APIs or independently verify namespace version/authenticity. React remains `10.6.0`; its core `^11.2.1` range allows this patch, but installed resolution requires lockfile evidence. Ingested 2026-10-12 after the shared-SHA update below; see [[source-github-paypal-js]] and [[changelog-github-paypal-js]].
@@ -321,8 +323,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-paypal-javascript-sdk-performance]] — JS SDK performance: instant vs delayed render, pre-caching, hidden container pattern
 - [[source-paypal-javascript-sdk-best-practices]] — JS SDK best practices: CSP domains + nonce vs unsafe-inline, COOP same-origin-allow-popups
 - [[source-paypal-react-paypal-js-readme]] — @paypal/react-paypal-js v8.x README: PayPalScriptProvider, all components, hooks, Card Fields vs Hosted Fields
-- [[source-github-paypal-js]] — cumulative GitHub evidence through core `11.3.0` and React `10.6.0`: token-replacement typing, 60-second loader wait and v6 namespace check; preserved v8 onward history and contradictions
-- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js ledger through core `11.3.0` and React `10.6.0`, with impact, migration, contradictions and immutable evidence
+- [[source-github-paypal-js]] — cumulative GitHub evidence through core `11.3.0` and React `10.6.1`: raised core dependency minimum, token-replacement typing, 60-second loader wait and v6 namespace check; preserved v8 onward history and contradictions
+- [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js ledger through core `11.3.0` and React `10.6.1`, with dependency, migration, contradictions and immutable evidence
 - [[source-github-paypal-checkout-components]] — cumulative checkout runtime through `5.0.438`: experiment-gated tools permission and Webpack development range, with documentation/bundle limits and preserved monitoring/accessibility history
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.438`
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` baseline through `5.0.583` component bill of materials and release/deployment workflow

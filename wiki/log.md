@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-02] ingest | PayPal React `10.6.1`
+
+- Approved focused-reading delta: raises core dependency minimum to `^11.3.0` with unchanged React implementation; core `11.3.0` knowledge already ingested. Older source/changelog history and warnings retained; checkout concept first, company/catalog/logs updated, source_count unchanged. Details [[paypal-log]], [[source-github-paypal-js]], [[changelog-github-paypal-js]]. No build, browser, payment execution, commit or push.
+
 ## [2026-11-02] ingest | Adyen API Explorer C62
 
 - All 36 remaining complete-body local API Explorer sources independently approved; 7 concepts touched (0 new). Source_count 2899 = 2547 General Docs + 336 API Explorer + 16 GitHub. Remaining 27 title-only stubs excluded; raw unchanged. 72 actual query answers, three full-read exemplars and validation: `tracking/ingest/adyen/adyen-campaign-62/`; details [[adyen-log]]. No commit/push.

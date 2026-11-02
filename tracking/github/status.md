@@ -6116,6 +6116,31 @@
   Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/7.0.0/2026-10-16/manifest.json)
   Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.12.0--7.0.0/comparison.json)
 
+## `github-e7a6adbcbec9036c4367`
+
+- Repository: `paypal/paypal-js`
+- SHA: `03cb21a40d22c7685690a1fdc28015c505700a1b`
+- Collection date: `2026-11-02`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-11-02-03cb21a/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-e7a6adbcbec9036c4367/packet.md)
+- Review priority: `normal`
+- Required reading: `19` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/react-paypal-js@10.6.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.6.1/2026-11-02/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.6.0--10.6.1/comparison.json)
+
 ## `github-e7df3a4d7b67eb7c108b`
 
 - Repository: `stripe/stripe-android`

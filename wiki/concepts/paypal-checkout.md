@@ -126,6 +126,12 @@ The loader increases its per-attempt timeout from 30 to 60 seconds. Timeouts sti
 
 React stays `10.6.0` with core range `^11.2.1`, which permits `11.3.0` but does not prove an installed upgrade or introduce a React token-refresh wrapper. Source and exact evidence: [[source-github-paypal-js]]; timeline: [[changelog-github-paypal-js]]. No package build, browser or payment execution was performed.
 
+### React 10.6.1 Dependency Boundary
+
+At `03cb21a` (released October 23, 2026; ingested November 2), `@paypal/react-paypal-js@10.6.1` raises its core dependency from `^11.2.1` to `^11.3.0`. All 117 retained React implementation files are unchanged from `10.6.0`; its export map and peer ranges are unchanged too. This raises the minimum allowed core version rather than pinning an exact installed version. The earlier range already permitted `11.3.0`, so an installation that already resolved it need not gain new loader behavior from this React patch. Verify the actual dependency tree and lockfile.
+
+The minimum dependency now includes the already-ingested core token-replacement declaration, 60-second per-attempt loader timeout and v6 namespace check. Those remain core features, not newly implemented React components, automatic token renewal, a new saved-payment editing wrapper or proof of hosted SDK support. Historical package-qualified behavior and contradictions above remain intact. Source: [[source-github-paypal-js]]; timeline: [[changelog-github-paypal-js]]. No package, browser or payment execution was performed.
+
 ### Historical v6 sample baseline at `b5f2df2`
 
 The `paypal-examples/v6-web-sdk-sample-integration` baseline combines static JavaScript, React/TypeScript, and Node.js examples. The standard PayPal flow fetches a server-owned client ID, checks PayPal, Pay Later, and Credit eligibility separately, starts the selected session with an unresolved create-order promise to preserve browser transient activation, and captures on approval.
