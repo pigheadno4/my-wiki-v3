@@ -1,0 +1,488 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-checkout-components`
+- Work item: `github-7eb03c30a9c79e1870cd`
+- Snapshot: `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+- Ref: `default-branch@dcd6abf` (`main`)
+- Transition: `294b50a11d61ccb458877776e5ba8d481781014b` -> `dcd6abfc340371666a0428d7292a2cab32c2bbca`
+- Author date: `2026-10-28T15:58:52-04:00`
+- Commit date: `2026-10-28T15:58:52-04:00`
+
+## Required reading
+
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/CHANGELOG.md`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/LICENSE`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/README.md`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/dist/button.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/package.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/connect/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/connect/interface.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/constants/api.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/constants/button.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/constants/class.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/constants/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/constants/misc.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/declarations.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/applepay/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/applepay/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/applepay/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/applepay/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/bancontact/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/bancontact/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/blik/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/blik/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/boleto/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/boleto/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/amex/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/amex/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/discover/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/discover/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/elo/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/elo/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/hiper/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/hiper/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/jcb/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/jcb/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/mastercard/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/mastercard/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/visa/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/card/visa/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/common.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/content.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/credit/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/credit/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/credit/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/eps/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/eps/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/funding.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/giropay/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/giropay/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/ideal/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/ideal/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/itau/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/itau/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/mercadopago/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/mercadopago/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/multibanco/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/multibanco/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/mybank/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/mybank/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/oxxo/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/oxxo/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/p24/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/p24/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paidy/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paidy/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paylater/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paylater/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paylater/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paypal/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paypal/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paypal/monogramMark.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paypal/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/paypal/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/payu/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/payu/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/satispay/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/satispay/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/sepa/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/sepa/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/sofort/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/sofort/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/trustly/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/trustly/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/util.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/venmo/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/venmo/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/venmo/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/venmo/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/wechatpay/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/funding/wechatpay/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/hosted-buttons/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/hosted-buttons/types.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/hosted-buttons/utils.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/interface/button.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/interface/card-fields.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/interface/fields.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/interface/hosted-buttons.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/interface/marks.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/interface/payment-fields.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/interface/saved-payment-methods.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/interface/wallet.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/lib/api.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/lib/appSwitchResume.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/lib/errors.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/lib/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/lib/isRTLLanguage.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/lib/perceived-latency-instrumentation.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/lib/security.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/lib/session.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/marks/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/marks/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/marks/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/marks/templateRebrand.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/shopper-insights/interface.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/shopper-insights/shopperSession.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/three-domain-secure/api.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/three-domain-secure/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/three-domain-secure/interface.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/three-domain-secure/types.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/three-domain-secure/utils.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/types.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/button.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/buttons.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/content.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/menu-button/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/menu-button/menu-button.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/menu-button/menu-button.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/message.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/poweredBy.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/script.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/spinner.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/style.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/styles/base.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/styles/button.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/styles/color.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/styles/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/styles/labels.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/styles/page.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/styles/responsive.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/styles/styleUtils.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/tagline.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/buttons/util.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/chevron.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/loading.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/overlay/paypal-app-switch/index.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/overlay/paypal-app-switch/overlay.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/overlay/paypal-app-switch/style.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/overlay/three-domain-secure/index.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/overlay/three-domain-secure/overlay.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/overlay/three-domain-secure/style.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/saved-payment-methods/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/saved-payment-methods/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/text/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/text/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/text/text.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/ui/tracking.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/buttons/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/buttons/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/buttons/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/buttons/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/buttons/util.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/card-fields/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/card-fields/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/card-fields/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/card-form/component.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/card-form/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/checkout/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/checkout/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/checkout/hacks.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/checkout/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/checkout/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/content.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/installments/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/installments/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/installments/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/menu/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/menu/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/menu/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/modal/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/modal/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/modal/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/payment-fields/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/payment-fields/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/payment-fields/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/payment-fields/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/payment-fields/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/pixel/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/pixel/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/pixel/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/qr-code/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/qr-code/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/qr-code/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/qr-code/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/qr-code/types.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/saved-payment-methods/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/saved-payment-methods/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/saved-payment-methods/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/saved-payment-methods/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/saved-payment-methods/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/saved-payment-methods/util.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/venmo/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/venmo/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/venmo/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/wallet/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/wallet/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/wallet/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/wallet/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/wallet/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/LICENSE`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/README.md`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/package.json`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/connect/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/connect/interface.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/constants/api.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/constants/button.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/constants/class.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/constants/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/constants/misc.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/declarations.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/applepay/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/applepay/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/applepay/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/applepay/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/bancontact/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/bancontact/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/blik/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/blik/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/boleto/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/boleto/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/amex/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/amex/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/discover/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/discover/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/elo/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/elo/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/hiper/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/hiper/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/jcb/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/jcb/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/mastercard/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/mastercard/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/visa/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/card/visa/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/common.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/content.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/credit/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/credit/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/credit/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/eps/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/eps/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/funding.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/giropay/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/giropay/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/ideal/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/ideal/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/itau/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/itau/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/mercadopago/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/mercadopago/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/multibanco/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/multibanco/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/mybank/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/mybank/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/oxxo/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/oxxo/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/p24/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/p24/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paidy/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paidy/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paylater/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paylater/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paylater/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paypal/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paypal/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paypal/monogramMark.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paypal/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/paypal/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/payu/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/payu/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/satispay/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/satispay/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/sepa/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/sepa/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/sofort/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/sofort/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/trustly/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/trustly/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/util.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/venmo/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/venmo/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/venmo/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/venmo/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/wechatpay/config.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/funding/wechatpay/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/hosted-buttons/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/hosted-buttons/types.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/hosted-buttons/utils.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/interface/button.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/interface/card-fields.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/interface/fields.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/interface/hosted-buttons.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/interface/marks.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/interface/payment-fields.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/interface/saved-payment-methods.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/interface/wallet.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/api.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/appSwitchResume.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/errors.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/fpti-ip-masking.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/isRTLLanguage.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/perceived-latency-instrumentation.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/security.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/session.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/marks/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/marks/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/marks/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/marks/templateRebrand.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/shopper-insights/interface.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/shopper-insights/shopperSession.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/three-domain-secure/api.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/three-domain-secure/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/three-domain-secure/interface.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/three-domain-secure/types.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/three-domain-secure/utils.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/types.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/button.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/buttons.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/content.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/menu-button/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/menu-button/menu-button.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/menu-button/menu-button.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/message.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/poweredBy.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/script.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/spinner.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/style.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/styles/base.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/styles/button.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/styles/color.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/styles/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/styles/labels.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/styles/page.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/styles/responsive.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/styles/styleUtils.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/tagline.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/buttons/util.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/chevron.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/loading.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/overlay/paypal-app-switch/index.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/overlay/paypal-app-switch/overlay.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/overlay/paypal-app-switch/style.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/overlay/three-domain-secure/index.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/overlay/three-domain-secure/overlay.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/overlay/three-domain-secure/style.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/saved-payment-methods/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/saved-payment-methods/template.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/text/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/text/style.scoped.scss`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/text/text.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/ui/tracking.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/buttons/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/buttons/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/buttons/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/buttons/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/buttons/util.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/card-fields/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/card-fields/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/card-fields/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/card-form/component.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/card-form/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/checkout/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/checkout/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/checkout/hacks.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/checkout/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/checkout/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/content.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/installments/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/installments/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/installments/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/menu/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/menu/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/menu/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/modal/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/modal/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/modal/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/payment-fields/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/payment-fields/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/payment-fields/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/payment-fields/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/payment-fields/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/pixel/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/pixel/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/pixel/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/qr-code/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/qr-code/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/qr-code/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/qr-code/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/qr-code/types.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/saved-payment-methods/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/saved-payment-methods/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/saved-payment-methods/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/saved-payment-methods/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/saved-payment-methods/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/saved-payment-methods/util.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/venmo/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/venmo/config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/venmo/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/wallet/component.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/wallet/container.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/wallet/index.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/wallet/prerender.jsx`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/wallet/props.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/vite.config.js`
+- `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json`
+- `tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/comparison.json`
+- `tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/comparison.md`
+- `tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/diff.patch`
+- `wiki/companies/paypal.md`
+- `wiki/log.md`
+- `wiki/paypal-index.md`
+- `wiki/paypal-log.md`
+- `wiki/sources/paypal/github/changelog-github-paypal-checkout-components.md`
+- `wiki/sources/paypal/github/source-github-paypal-checkout-components.md`
+
+## Selected changes
+
+- `removed` `CHANGELOG.md`
+- `removed` `dist/button.js`
+- `added` `src/lib/fpti-ip-masking.js`
+- `modified` `src/lib/index.js`
+- `modified` `src/zoid/buttons/component.jsx`
+- `modified` `src/zoid/card-fields/component.jsx`
+- `modified` `src/zoid/card-form/component.js`
+- `modified` `src/zoid/checkout/component.jsx`
+- `modified` `src/zoid/installments/component.jsx`
+- `modified` `src/zoid/menu/component.jsx`
+- `modified` `src/zoid/modal/component.jsx`
+- `modified` `src/zoid/payment-fields/component.jsx`
+- `modified` `src/zoid/pixel/component.jsx`
+- `modified` `src/zoid/qr-code/component.jsx`
+- `modified` `src/zoid/saved-payment-methods/component.jsx`
+- `modified` `src/zoid/venmo/component.jsx`
+- `modified` `src/zoid/wallet/component.jsx`
+- `added` `vite.config.js`
+
+## Excluded changes
+
+- `modified` `src/hosted-buttons/utils.test.js`: excluded-category:tests
+- `added` `src/lib/fpti-ip-masking.test.js`: excluded-category:tests
+- `modified` `src/three-domain-secure/component.test.js`: excluded-category:tests
+- `modified` `src/three-domain-secure/interface.test.js`: excluded-category:tests
+- `modified` `src/zoid/buttons/component.test.js`: excluded-category:tests
+- `modified` `src/zoid/buttons/util.test.js`: excluded-category:tests
+- `added` `src/zoid/card-fields/component.test.js`: excluded-category:tests
+- `modified` `src/zoid/checkout/component.test.js`: excluded-category:tests
+- `modified` `src/zoid/qr-code/component.test.js`: excluded-category:tests
+- `added` `src/zoid/saved-payment-methods/component.test.js`: excluded-category:tests

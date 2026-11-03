@@ -51,6 +51,11 @@ python3 scripts/collect_github_repos.py collect-ref --repo <owner/repo> --from <
 
 `collect-ref` is the exception for a reviewed untagged boundary. It records default-branch evidence independently of package release history. The generated index may show this boundary as current queue activity, but an accepted ref boundary must not replace the repository's last accepted package release identity.
 
+For `npm-tracked-source-v1`, this command supports exactly one focus package.
+It keeps the versions declared in the two Git trees unchanged; the ending SHA
+is an unreleased ref identity, not a fabricated package release. Multi-package
+npm boundaries require separate reviewed support.
+
 ## Collection procedure
 
 1. Discover configured releases and recheck retained tag SHAs and release-note hashes.

@@ -1400,6 +1400,54 @@ class ExactRefBoundaryCollectionTests(unittest.TestCase):
             len(load_work_items(self.root / "tracking/github/work-items.json")),
         )
 
+    def test_npm_exact_boundary_preserves_package_version_without_release_records(self):
+        self.before_sha = commit_files(
+            self.remote,
+            {
+                "package.json": package_manifest("example-messages", "1.2.3"),
+                "src/index.ts": "export const enabled = false;\n",
+            },
+            "npm released baseline",
+        )
+        self.after_sha = commit_files(
+            self.remote,
+            {"src/index.ts": "export const enabled = true;\n"},
+            "unreleased npm implementation change",
+        )
+        self.config = replace(
+            self.config,
+            capsules=(replace(
+                self.config.capsules[0],
+                adapter="npm-tracked-source-v1",
+                dependency_scope="internal-runtime-closure",
+            ),),
+        )
+
+        result = self.collect()
+
+        self.assertEqual("awaiting_approval", result.state)
+        items = load_work_items(self.root / "tracking/github/work-items.json")
+        self.assertEqual(1, len(items))
+        self.assertEqual((), items[0].package_changes)
+        self.assertEqual(self.before_sha, items[0].ref_changes[0].from_sha)
+        self.assertEqual(self.after_sha, items[0].ref_changes[0].to_sha)
+        self.assertFalse((self.root / "raw/github/alpha/example/releases").exists())
+        self.assertFalse((self.root / "wiki").exists())
+        for manifest_path in result.snapshot_paths:
+            snapshot = self.root / manifest_path
+            package = json.loads(
+                (snapshot.parent / "files/package.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("1.2.3", package["version"])
+        packet = json.loads(
+            (self.root / items[0].ingest_packet).read_text(encoding="utf-8")
+        )
+        self.assertEqual([], packet["evidence_gaps"])
+        self.assertEqual([], packet["unclassified_changes"])
+        second = self.collect()
+        self.assertEqual("unchanged", second.state)
+        self.assertEqual(1, len(load_work_items(self.root / "tracking/github/work-items.json")))
+
     def test_dry_run_and_disabled_policy_publish_nothing(self):
         dry = self.collect(dry_run=True)
         self.assertEqual("discovered", dry.state)
@@ -1426,6 +1474,21 @@ class ExactRefBoundaryCollectionTests(unittest.TestCase):
                 clone_source=self.remote,
                 collection_date="2026-08-13",
             )
+
+    def test_npm_boundary_rejects_multiple_focus_packages_before_publishing(self):
+        self.config = replace(
+            self.config,
+            capsules=(replace(
+                self.config.capsules[0],
+                adapter="npm-tracked-source-v1",
+                dependency_scope="internal-runtime-closure",
+                focus_packages=("example-messages", "another-package"),
+            ),),
+        )
+        with self.assertRaisesRegex(CollectionUsageError, "one focus package"):
+            self.collect()
+        self.assertFalse((self.root / "raw").exists())
+        self.assertFalse((self.root / "tracking").exists())
 
     def test_rejects_invalid_identical_and_non_ancestor_boundaries(self):
         with self.assertRaisesRegex(CollectionUsageError, "full lowercase Git SHA"):

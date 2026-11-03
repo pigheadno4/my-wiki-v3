@@ -334,10 +334,16 @@ def build_ref_ingest_packet(
     if config.capsules[0].adapter not in (
         COMMIT_TREE_ADAPTER,
         TAGGED_TREE_ADAPTER,
+        NPM_CAPSULE_ADAPTER,
     ):
         raise PacketBuildError(
-            "ref packet requires commit-tree-v1 or tagged-tree-v1"
+            "ref packet requires a supported source capsule"
         )
+    if (
+        config.capsules[0].adapter == NPM_CAPSULE_ADAPTER
+        and len(config.capsules[0].focus_packages) != 1
+    ):
+        raise PacketBuildError("npm ref packet requires one focus package")
     if packet_kind not in ("queued", "ad-hoc"):
         raise PacketBuildError("packet kind must be queued or ad-hoc")
     if packet_kind == "queued":

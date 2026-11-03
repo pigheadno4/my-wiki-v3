@@ -582,7 +582,7 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(1, len(repo.capsules))
         capsule = repo.capsules[0]
         self.assertEqual(3_000_000, capsule.max_capsule_utf8_bytes)
-        self.assertEqual(380, capsule.max_packet_files)
+        self.assertEqual(450, capsule.max_packet_files)
         self.assertEqual(4_500_000, capsule.max_packet_utf8_bytes)
 
     def test_paypal_messages_ios_uses_the_reviewed_release_capsule(self):

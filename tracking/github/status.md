@@ -3046,6 +3046,33 @@
   Release: [manifest](../../raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/5.8.0/2026-08-31/manifest.json)
   Comparison: Not applicable
 
+## `github-7eb03c30a9c79e1870cd`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `dcd6abfc340371666a0428d7292a2cab32c2bbca`
+- Collection date: `2026-11-02`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-7eb03c30a9c79e1870cd/packet.md)
+- Review priority: `high`
+- Required reading: `439` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@dcd6abf` (recommended `full`)
+  Ref: `main`
+  From SHA: `294b50a11d61ccb458877776e5ba8d481781014b`
+  To SHA: `dcd6abfc340371666a0428d7292a2cab32c2bbca`
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/comparison.json)
+
 ## `github-7ecc6c2199897656ffe3`
 
 - Repository: `stripe/stripe-ios`

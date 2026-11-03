@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-03] ingest | Checkout Components unreleased `dcd6abf`
+
+- Approved full additive ingest with focused reading: pre-interaction masking metadata and flush-before-interaction relay across component instances; not proof of server masking, deployed behavior, compliance or new merchant APIs. Exact SHA checkpoint remains separate from accepted release `5.0.438`. Earlier history/raw preserved; concept first, company/catalog/logs updated, source_count unchanged. Details [[paypal-log]], [[source-github-paypal-checkout-components]], [[changelog-github-paypal-checkout-components]]. No upstream build/browser/payment execution, commit or push.
+
 ## [2026-11-02] ingest | Adyen API Explorer C64
 
 - All 50 remaining complete-body local API Explorer sources independently approved; 4 concepts touched (0 new). Source_count 2959 = 2547 General Docs + 396 API Explorer + 16 GitHub. Remaining 27 title-only stubs excluded; raw unchanged. 100 actual query answers, three full-read exemplars and validation: `tracking/ingest/adyen/adyen-campaign-64/`; details [[adyen-log]]. No commit/push.

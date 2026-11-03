@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-10-24
+date_updated: 2026-11-03
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json"
@@ -26,6 +27,24 @@ tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-checkout-components`. Cumulative implementation knowledge belongs in [[source-github-paypal-checkout-components]] and the linked immutable snapshots.
+
+## Unreleased `default-branch@dcd6abf` (2026-10-28)
+
+| Boundary | From SHA | To SHA | Ingest mode |
+| --- | --- | --- | --- |
+| Released `5.0.438` to main | `294b50a11d61ccb458877776e5ba8d481781014b` | `dcd6abfc340371666a0428d7292a2cab32c2bbca` | Full additive, approved focused reading |
+
+**Findings:** adds a module-level logger metadata builder returning `{ maskIP: true }` before interaction. The first notification sets a flushing guard and calls `immediateFlush()`; only fulfillment marks interaction and relays `hasInteracted: true` through live instances of 13 component factories. Each factory adds an optional Boolean query prop; Card Fields children inherit parent state. Buttons, Card Fields and Saved Payment Methods supply `onUserInteraction`. Vitest switches to a one-to-four-worker fork pool to address upstream-described CI memory pressure.
+
+**Impact and limits:** internal logging/interaction propagation, not a new React/payment API, saved-payment editing flow or merchant integration recipe. Flags are module-local with no per-order reset. Failed instance updates are swallowed without retry; the flush has no local rejection catch/reset. External logger rejection behavior, child-side DOM event sources and server masking enforcement remain outside the capsule; no reproduced failure, privacy-compliance, delivery or deployment guarantee. See the reciprocal limits in [[source-github-paypal-checkout-components]] and [[paypal-checkout]]. No net fallback-transport addition is present in this boundary.
+
+**Release distinction:** unchanged package metadata still declares `5.0.438`; dependencies and retained public interfaces are unchanged. The unreleased code must not be attributed to the published `@paypal/checkout-components@5.0.438` release or to independent `paypal-js`/assembly versions. No merchant API migration is established.
+
+**Evidence and reading:** collected November 2; ingested November 3, 2026 as `github-7eb03c30a9c79e1870cd`. All 16 changed retained files fully read, plus affected prior code, complete cumulative wiki history and comparison. Under the approved focused-reading exception, unchanged files, generated inventories and old generated/changelog content checked mechanically. All 428 prior/current file hashes/sizes/Git blob IDs pass; 198 common files are identical. Current 214-file capsule has 14 modifications and two newly retained paths. Prior changelog/generated bundle omissions are capsule-selection differences, not upstream deletions; all older evidence and release sections remain. All 26 upstream changes accounted for (16 retained, 10 excluded tests). Packet has 439 paths within the reviewed 450-file / 4.5 MB budget, with no gaps/unclassified changes. No upstream build/test, browser, privacy/network or payment execution.
+
+**Updated areas:** existing Checkout concept first; additive source/changelog, company, provider index and logs. No new source/concept/comparison; source_count unchanged at 177. Latest accepted package release remains `5.0.438`.
+
+**Evidence:** [current snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json), [prior snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json), [helper](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/fpti-ip-masking.js), [comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/diff.patch) and [review receipt](../../../../tracking/github/repos/paypal/paypal-checkout-components/ingest-review-7eb03c30-2026-11-03.md).
 
 ## `@paypal/checkout-components@5.0.438` (2026-10-19)
 

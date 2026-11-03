@@ -17,6 +17,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 from github_canonical import canonical_json_bytes, safe_policy_path
 from github_capsule_policy import (
     COMMIT_TREE_ADAPTER,
+    NPM_CAPSULE_ADAPTER,
     TAGGED_TREE_ADAPTER,
     CapsuleConfig,
 )
@@ -43,10 +44,13 @@ class PilotStoreError(ValueError):
 def _ref_evidence_owner(capsule: CapsuleConfig) -> str:
     if capsule.adapter == COMMIT_TREE_ADAPTER:
         return capsule.source_id
-    if capsule.adapter == TAGGED_TREE_ADAPTER and len(capsule.focus_packages) == 1:
+    if (
+        capsule.adapter in (TAGGED_TREE_ADAPTER, NPM_CAPSULE_ADAPTER)
+        and len(capsule.focus_packages) == 1
+    ):
         return capsule.focus_packages[0]
     raise PilotStoreError(
-        "ref comparison requires commit-tree-v1 or tagged-tree-v1"
+        "ref comparison requires a commit capsule or one focus package"
     )
 
 

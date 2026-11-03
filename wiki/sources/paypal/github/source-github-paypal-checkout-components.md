@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-10-24
+date_updated: 2026-11-03
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json"
@@ -29,6 +30,8 @@ tags: [paypal, checkout, javascript-sdk, github-repository, venmo, pay-later]
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
 
+Newest ingested unreleased ref: `default-branch@dcd6abf` at `dcd6abfc340371666a0428d7292a2cab32c2bbca`, committed October 28, collected November 2 and full additively ingested November 3, 2026 with focused reading. This adds pre-interaction masking metadata and cross-component interaction-state relay, plus Vitest fork-pool configuration. It is separate from the release history: the accepted package release remains `@paypal/checkout-components@5.0.438`, and the unchanged package version at this later SHA does not make the new code part of that published release.
+
 Newest ingested release: `@paypal/checkout-components@5.0.438` at `294b50a11d61ccb458877776e5ba8d481781014b`, dated October 19 and collected/ingested October 24, 2026. The authored Buttons code adds experiment-gated `tools *` iframe permission; the package adds a Webpack development range. The new changelog omits the permission change and the retained bundle does not independently substantiate it. All earlier sections and raw evidence remain below.
 
 Prior October 15 checkpoint: `@paypal/checkout-components@5.0.437` at `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9`, dated October 9 and collected/ingested October 15, 2026. This additive delta delegates the payment Permissions Policy feature to an explicit PayPal domain in Buttons and Checkout iframe configuration. The prior overview and version sections remain historical evidence, not an assertion that `5.0.436` is still the latest ingested version.
@@ -47,6 +50,12 @@ Prior October 15 checkpoint: `@paypal/checkout-components@5.0.437` at `7e1f97d5f
 - The exact `5.0.431` release has the same release-only shape as `5.0.430` and likewise carries forward `5.0.429` behavior.
 
 ## Grounding excerpts
+
+- `getLogger().addMetaBuilder(() => (hasInteracted ? {} : { maskIP: true }));` - `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/fpti-ip-masking.js:32`.
+- `if (hasInteracted || isFlushing) {` - same helper, line 43.
+- `.immediateFlush()` - same helper, line 49; the fulfillment handler begins at line 50.
+- `hasInteracted = true;` - same helper, line 51, after the flush fulfills.
+- `instance.updateProps({ hasInteracted: true }).catch(() => {` - same helper, line 56.
 
 - `isWebMCPEnabled?: boolean,` - `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/types.js:74`.
 - `iframe: props.experiment?.isWebMCPEnabled` - same snapshot, `files/src/zoid/buttons/component.jsx:252`.
@@ -375,6 +384,35 @@ The existing `experiment` prop has `value: getButtonExperiments`. The retained [
 
 **Reading boundary:** approved item-specific focused reading: complete authored Buttons component (1,477 lines), complete changed types/package, new changelog entry, authored comparison/test sections, affected prior attributes and complete cumulative wiki source/changelog. Generated bundle/diff, manifests, inventories and unchanged changelog history checked mechanically. Both 214-file snapshots pass all 428 file size/SHA-256/Git blob-ID checks; five retained changes, 209 unchanged, no retained additions/removals. All seven upstream paths have dispositions (five retained, two test exclusions); old raw changelog is an identical suffix. Release/packet/comparison hashes pass; separate upstream release notes remain unavailable. No build, upstream test suite, browser, accessibility, payment or hosted-deployment test was run.
 
+## Unreleased ref `default-branch@dcd6abf`: interaction-state logging
+
+**Exact boundary:** released `5.0.438` SHA `294b50a11d61ccb458877776e5ba8d481781014b` to main SHA `dcd6abfc340371666a0428d7292a2cab32c2bbca`; approved full additive ingest `github-7eb03c30a9c79e1870cd`, completed November 3, 2026. The package manifest is byte-identical and still declares `5.0.438`. This is an unreleased SHA-qualified checkpoint, not a new package release or a revision of the published release's behavior.
+
+### Masking metadata and flush ordering
+
+The complete [new helper](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/fpti-ip-masking.js) registers a logger metadata builder at module evaluation. Initially `hasInteracted` and `isFlushing` are false; the builder returns `{ maskIP: true }`. After the interaction state becomes true, this builder returns `{}` rather than an explicit `maskIP: false`:
+
+```js
+getLogger().addMetaBuilder(() => (hasInteracted ? {} : { maskIP: true }));
+```
+
+The first notification sets `isFlushing = true`, calls `getLogger().immediateFlush()`, and changes `hasInteracted` only inside its fulfillment handler. It then walks each registered factory's live `.instances` and calls `updateProps({ hasInteracted: true })`. Calls while flushing or after interaction return immediately. There is no per-order/session reset in this helper; these are module-local flags, not newly stored consent or payment state. The flush-before-transition ordering is implementation evidence, not independent verification of the external logger's transport or metadata timing.
+
+### Component propagation
+
+Thirteen factories register: Buttons, Card Fields, Card Form, Checkout, Installments, Menu, Modal, Payment Fields, Pixel, QR Code, Saved Payment Methods, Venmo and Wallet. Each gains optional Boolean `hasInteracted` with `queryParam: true`; Card Fields also passes the parent value into its child fields. Buttons, Card Fields and Saved Payment Methods supply an optional `onUserInteraction` function whose configured value is `notifyUserInteraction`. The retained changes supply the callback, not the child-side DOM event emitters or a supported merchant API for manually signaling consent.
+
+Relay errors are isolated: a rejected per-instance `updateProps()` is caught without retry, and an exception constructing/walking one factory is caught so others can proceed. The flush itself has no local rejection catch or guard reset. If that external promise rejects, this helper's fulfillment handler would not run and `isFlushing` would remain true; whether the external SDK-client logger actually rejects, recovers or guarantees delivery is outside this evidence. Do not present this conditional limitation as a reproduced production failure.
+
+> [!warning] Evidence boundary - metadata is not masking proof
+> `{ maskIP: true }` requests behavior through logging metadata; this repository does not establish actual IP anonymization, server enforcement, regulatory compliance, complete interaction detection or hosted rollout. External `@paypal/sdk-client`, Zoid instance behavior and hosted child implementations are not included as independent implementation evidence. No browser, privacy/network, payment or upstream runtime tests were run. These limits are also recorded in [[paypal-checkout]] and [[changelog-github-paypal-checkout-components]].
+
+### Tooling, scope and preserved history
+
+The complete retained [Vitest configuration](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/vite.config.js) changes the test pool to `forks`, with `minForks: 1` and `maxForks: 4`. Its comment describes CI memory pressure as the motivation; no benchmark or upstream test run independently verifies that outcome. The exact comparison has no net fallback-transport addition. Package version, dependency ranges and retained public interface files are unchanged. Internal helper exports and component props change, but no new merchant payment method, React wrapper, v6 returning-buyer editing integration or merchant API migration is established. Independent `paypal-js` and SDK assembly histories are not promoted by this ref ingest.
+
+**Reading and integrity:** all 16 changed retained files (5,914 lines) read fully, with affected prior code, complete cumulative source/changelog and comparison; unchanged evidence, generated manifests/inventories and historical generated/changelog content checked mechanically under the explicit focused-reading approval. All 428 prior/current files pass size, SHA-256 and Git blob-ID checks; 198 common paths are byte-equal. Current snapshot: 214 files / 665,938 bytes; 14 modified and two newly retained paths (the helper and Vitest configuration). Prior `CHANGELOG.md` and `dist/button.js` are no longer selected, not upstream deletions; their immutable prior evidence and all historical wiki knowledge remain. All 26 upstream file changes have dispositions: 16 retained and 10 excluded tests. Packet rebuild and comparison hashes pass, with no evidence gaps/unclassified changes. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-7eb03c30-2026-11-03.md`.
+
 ## Public and security boundary
 
 The browser-facing `Buttons` component is public on merchant pages. Lower-level checkout controls remain PayPal-domain-only. The iframe helper is therefore not a merchant escape hatch for forcing an unsupported presentation mode.
@@ -392,6 +430,9 @@ The exact snapshot also shows that layout, platform, remembered funding, and ser
 - [[source-paypal-pay-with-venmo]] — current product documentation for mobile app switch and desktop QR
 
 ## Raw sources
+
+- [Unreleased dcd6abf snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json), complete [masking helper](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/fpti-ip-masking.js), [Card Fields propagation](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/card-fields/component.jsx) and [Vitest configuration](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/vite.config.js)
+- [Exact released-SHA to main comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/comparison.json), [authored patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/diff.patch) and [full-mode review packet](../../../../tracking/github/repos/paypal/paypal-checkout-components/ingest-packets/github-7eb03c30a9c79e1870cd/packet.md); manifest inventories mechanically verified under focused-reading approval
 
 - [Snapshot 5.0.438](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json), [release record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.438/2026-10-24/manifest.json) and [empty separate-notes record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.438/2026-10-24/release-notes.md)
 - [Comparison 5.0.437 to 5.0.438](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.437--5.0.438/comparison.json) and [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.437--5.0.438/diff.patch); generated sections verified mechanically

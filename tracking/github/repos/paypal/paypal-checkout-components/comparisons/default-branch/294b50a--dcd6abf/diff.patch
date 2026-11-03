@@ -1,0 +1,619 @@
+diff --git a/src/lib/fpti-ip-masking.js b/src/lib/fpti-ip-masking.js
+new file mode 100644
+index 00000000..d2490b21
+--- /dev/null
++++ b/src/lib/fpti-ip-masking.js
+@@ -0,0 +1,67 @@
++/* @flow */
++
++import { getLogger } from "@paypal/sdk-client/src";
++import { type ZalgoPromise } from "@krakenjs/zalgo-promise/src";
++
++// Every rendered surface is its own cross-origin iframe with its own logger,
++// so unmasking one does not unmask the rest. Each component registers its
++// own factory getter here once, at module load. When any surface reports
++// buyer interaction, the unmask signal is pushed to every other live
++// instance across all registered components.
++//
++// Per-instance tracking is NOT reimplemented here - zoid's own component
++// factories already maintain a live `.instances` array (added/removed on
++// render/destroy). This module only tracks which factory getters exist, so
++// it knows which `.instances` arrays to walk; it never imports those zoid
++// factories directly to avoid a circular import back to this file.
++//
++// Deliberately inexact: a registered getter's real return type (a zoid
++// ZoidComponent/ZoidComponentInstance) has many more properties than these -
++// this type only names the ones the relay actually uses.
++/* eslint-disable flowtype/require-exact-type */
++type ComponentGetter = () => {
++  instances: $ReadOnlyArray<{ updateProps: (mixed) => ZalgoPromise<void> }>,
++};
++/* eslint-enable flowtype/require-exact-type */
++
++const maskedComponentGetters: Array<ComponentGetter> = [];
++
++let hasInteracted = false;
++let isFlushing = false;
++
++getLogger().addMetaBuilder(() => (hasInteracted ? {} : { maskIP: true }));
++
++export function registerMaskedComponent(getComponent: ComponentGetter) {
++  maskedComponentGetters.push(getComponent);
++}
++
++export function hasUserInteracted(): boolean {
++  return hasInteracted;
++}
++
++export function notifyUserInteraction() {
++  if (hasInteracted || isFlushing) {
++    return;
++  }
++  isFlushing = true;
++
++  getLogger()
++    .immediateFlush()
++    .then(() => {
++      hasInteracted = true;
++
++      maskedComponentGetters.forEach((getComponent) => {
++        try {
++          getComponent().instances.forEach((instance) => {
++            instance.updateProps({ hasInteracted: true }).catch(() => {
++              // instance was destroyed between interaction and relay; nothing to update
++            });
++          });
++        } catch {
++          // one component failing to construct must not block the relay to
++          // every other registered component
++        }
++      });
++    });
++}
++
+diff --git a/src/lib/index.js b/src/lib/index.js
+index d8573ecc..69d9adfb 100644
+--- a/src/lib/index.js
++++ b/src/lib/index.js
+@@ -7,3 +7,4 @@ export * from "./security";
+ export * from "./session";
+ export * from "./appSwitchResume";
+ export * from "./perceived-latency-instrumentation";
++export * from "./fpti-ip-masking";
+diff --git a/src/zoid/buttons/component.jsx b/src/zoid/buttons/component.jsx
+index ecfac546..8717e944 100644
+--- a/src/zoid/buttons/component.jsx
++++ b/src/zoid/buttons/component.jsx
+@@ -80,6 +80,9 @@ import {
+   prepareInstrumentationPayload,
+   isAppSwitchResumeFlow,
+   getAppSwitchResumeParams,
++  registerMaskedComponent,
++  hasUserInteracted,
++  notifyUserInteraction,
+ } from "../../lib";
+ import {
+   normalizeButtonStyle,
+@@ -1284,6 +1287,19 @@ export const getButtonsComponent: () => ButtonsComponent = memoize(() => {
+         value: getSDKMeta,
+       },
+ 
++      hasInteracted: {
++        type: "boolean",
++        queryParam: true,
++        required: false,
++        value: () => hasUserInteracted(),
++      },
++
++      onUserInteraction: {
++        type: "function",
++        required: false,
++        value: () => notifyUserInteraction,
++      },
++
+       sdkToken: {
+         type: "string",
+         required: false,
+@@ -1475,3 +1491,8 @@ export const getButtonsComponent: () => ButtonsComponent = memoize(() => {
+     },
+   });
+ });
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getButtonsComponent);
+diff --git a/src/zoid/card-fields/component.jsx b/src/zoid/card-fields/component.jsx
+index 2308eb8e..997782fe 100644
+--- a/src/zoid/card-fields/component.jsx
++++ b/src/zoid/card-fields/component.jsx
+@@ -34,7 +34,13 @@ import {
+   type FundingEligibilityType,
+ } from "@paypal/sdk-constants/src";
+ 
+-import { getSessionID, ValidationError } from "../../lib";
++import {
++  getSessionID,
++  ValidationError,
++  registerMaskedComponent,
++  hasUserInteracted,
++  notifyUserInteraction,
++} from "../../lib";
+ 
+ import { CardPrerender } from "./prerender";
+ 
+@@ -73,6 +79,7 @@ type CardFieldsProps = {|
+   cardFieldsSessionID: string,
+   debug: boolean,
+   sdkMeta: string,
++  hasInteracted?: boolean,
+   fundingEligibility: FundingEligibilityType,
+   disableCard?: $ReadOnlyArray<$Values<typeof CARD>>,
+   currency: $Values<typeof CURRENCY>,
+@@ -342,6 +349,13 @@ export const getCardFieldsComponent: () => CardFieldsComponent = memoize(
+             value: ({ props }) => props.parent.props.sdkMeta,
+           },
+ 
++          hasInteracted: {
++            type: "boolean",
++            queryParam: true,
++            required: false,
++            value: ({ props }) => props.parent.props.hasInteracted,
++          },
++
+           style: {
+             type: "object",
+             required: false,
+@@ -683,6 +697,19 @@ export const getCardFieldsComponent: () => CardFieldsComponent = memoize(
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
++        onUserInteraction: {
++          type: "function",
++          required: false,
++          value: () => notifyUserInteraction,
++        },
++
+         style: {
+           type: "object",
+           required: false,
+@@ -796,3 +823,8 @@ export const getCardFieldsComponent: () => CardFieldsComponent = memoize(
+     return CardFields;
+   },
+ );
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getCardFieldsComponent);
+diff --git a/src/zoid/card-form/component.js b/src/zoid/card-form/component.js
+index f84b120b..722b45ba 100644
+--- a/src/zoid/card-form/component.js
++++ b/src/zoid/card-form/component.js
+@@ -17,7 +17,7 @@ import {
+   getClientMetadataID,
+ } from "@paypal/sdk-client/src";
+ 
+-import { getSessionID } from "../../lib";
++import { getSessionID, registerMaskedComponent, hasUserInteracted } from "../../lib";
+ import type {
+   OnShippingOptionsChange,
+   OnShippingAddressChange,
+@@ -186,6 +186,13 @@ export function getCardFormComponent(): CardFormComponent {
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
+         style: {
+           type: "object",
+           required: false,
+@@ -211,3 +218,8 @@ export function getCardFormComponent(): CardFormComponent {
+     });
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getCardFormComponent);
+diff --git a/src/zoid/checkout/component.jsx b/src/zoid/checkout/component.jsx
+index eaba55d5..b776a2cb 100644
+--- a/src/zoid/checkout/component.jsx
++++ b/src/zoid/checkout/component.jsx
+@@ -34,7 +34,7 @@ import {
+   VenmoOverlay,
+ } from "@paypal/common-components/src";
+ 
+-import { getSessionID } from "../../lib";
++import { getSessionID, registerMaskedComponent, hasUserInteracted } from "../../lib";
+ import { containerContent } from "../content";
+ 
+ import type { CheckoutPropsType } from "./props";
+@@ -217,6 +217,13 @@ export function getCheckoutComponent(): CheckoutComponent {
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
+         nonce: {
+           type: "string",
+           required: false,
+@@ -448,3 +455,8 @@ export function getCheckoutComponent(): CheckoutComponent {
+     return component;
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getCheckoutComponent);
+diff --git a/src/zoid/installments/component.jsx b/src/zoid/installments/component.jsx
+index 6f073f49..3a93becf 100644
+--- a/src/zoid/installments/component.jsx
++++ b/src/zoid/installments/component.jsx
+@@ -15,6 +15,8 @@ import { create, type ZoidComponent } from "@krakenjs/zoid/src";
+ import { inlineMemoize } from "@krakenjs/belter/src";
+ import { Overlay, SpinnerPage } from "@paypal/common-components/src";
+ 
++import { registerMaskedComponent, hasUserInteracted } from "../../lib";
++
+ import { type InstallmentsProps } from "./props";
+ 
+ export type InstallmentsComponent = ZoidComponent<InstallmentsProps>;
+@@ -85,6 +87,13 @@ export function getInstallmentsComponent(): InstallmentsComponent {
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
+         clientID: {
+           type: "string",
+           queryParam: true,
+@@ -104,3 +113,8 @@ export function getInstallmentsComponent(): InstallmentsComponent {
+     });
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getInstallmentsComponent);
+diff --git a/src/zoid/menu/component.jsx b/src/zoid/menu/component.jsx
+index 2905bfb8..09f73ed0 100644
+--- a/src/zoid/menu/component.jsx
++++ b/src/zoid/menu/component.jsx
+@@ -11,6 +11,8 @@ import {
+ import { create, type ZoidComponent } from "@krakenjs/zoid/src";
+ import { inlineMemoize } from "@krakenjs/belter/src";
+ 
++import { registerMaskedComponent, hasUserInteracted } from "../../lib";
++
+ import { type MenuProps } from "./props";
+ 
+ export type MenuComponent = ZoidComponent<MenuProps>;
+@@ -59,6 +61,13 @@ export function getMenuComponent(): MenuComponent {
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
+         clientID: {
+           type: "string",
+           queryParam: true,
+@@ -67,3 +76,8 @@ export function getMenuComponent(): MenuComponent {
+     });
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getMenuComponent);
+diff --git a/src/zoid/modal/component.jsx b/src/zoid/modal/component.jsx
+index ac1ac4a1..ec15dbbe 100644
+--- a/src/zoid/modal/component.jsx
++++ b/src/zoid/modal/component.jsx
+@@ -12,6 +12,8 @@ import { create, EVENT, type ZoidComponent } from "@krakenjs/zoid/src";
+ import { inlineMemoize, destroyElement, toCSS } from "@krakenjs/belter/src";
+ import { node, dom } from "@krakenjs/jsx-pragmatic/src";
+ 
++import { registerMaskedComponent, hasUserInteracted } from "../../lib";
++
+ import { type ModalProps } from "./props";
+ 
+ const CLASS = {
+@@ -138,6 +140,13 @@ export function getModalComponent(): ModalComponent {
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
+         clientID: {
+           type: "string",
+           queryParam: true,
+@@ -156,3 +165,8 @@ export function getModalComponent(): ModalComponent {
+     });
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getModalComponent);
+diff --git a/src/zoid/payment-fields/component.jsx b/src/zoid/payment-fields/component.jsx
+index d6a5b8a8..c5f2eb95 100644
+--- a/src/zoid/payment-fields/component.jsx
++++ b/src/zoid/payment-fields/component.jsx
+@@ -19,7 +19,7 @@ import {
+ import { create, type ZoidComponent } from "@krakenjs/zoid/src";
+ import { inlineMemoize, uniqueID } from "@krakenjs/belter/src";
+ 
+-import { storageState, sessionState } from "../../lib";
++import { storageState, sessionState, registerMaskedComponent, hasUserInteracted } from "../../lib";
+ 
+ import { type PaymentFieldsProps } from "./props";
+ import { PaymentFieldsPrerender } from "./prerender";
+@@ -110,6 +110,13 @@ export function getPaymentFieldsComponent(): PaymentFieldsComponent {
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
+         clientID: {
+           type: "string",
+           queryParam: true,
+@@ -228,3 +235,8 @@ export function getPaymentFieldsComponent(): PaymentFieldsComponent {
+     });
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getPaymentFieldsComponent);
+diff --git a/src/zoid/pixel/component.jsx b/src/zoid/pixel/component.jsx
+index fafacc5c..c4b3a5a8 100644
+--- a/src/zoid/pixel/component.jsx
++++ b/src/zoid/pixel/component.jsx
+@@ -45,7 +45,7 @@ import {
+ } from "@krakenjs/belter/src";
+ import { FUNDING_BRAND_LABEL, SDK_SETTINGS } from "@paypal/sdk-constants/src";
+ 
+-import { storageState, sessionState, isAppSwitchResumeFlow } from "../../lib";
++import { storageState, sessionState, isAppSwitchResumeFlow, registerMaskedComponent, hasUserInteracted } from "../../lib";
+ import { isSupportedNativeBrowser } from "../buttons/util";
+ 
+ import type { PixelComponentProps } from "./props";
+@@ -257,6 +257,13 @@ export const getPixelComponent: () => PixelComponent = memoize(() => {
+         value: getLocale,
+       },
+ 
++      hasInteracted: {
++        type: "boolean",
++        queryParam: true,
++        required: false,
++        value: () => hasUserInteracted(),
++      },
++
+       merchantID: {
+         type: "array",
+         queryParam: true,
+@@ -422,3 +429,8 @@ export const getPixelComponent: () => PixelComponent = memoize(() => {
+   });
+   return component;
+ });
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getPixelComponent);
+diff --git a/src/zoid/qr-code/component.jsx b/src/zoid/qr-code/component.jsx
+index d5e7cd7e..d9d89de8 100644
+--- a/src/zoid/qr-code/component.jsx
++++ b/src/zoid/qr-code/component.jsx
+@@ -18,6 +18,8 @@ import {
+   getBuyerCountry,
+ } from "@paypal/sdk-client/src";
+ 
++import { registerMaskedComponent, hasUserInteracted } from "../../lib";
++
+ import { containerTemplate } from "./container";
+ import { prerenderTemplate } from "./prerender";
+ import { type QRCodeProps } from "./types";
+@@ -91,6 +93,12 @@ export function getQRCodeComponent(): QRCodeComponent {
+           sendToChild: false,
+           value: getSDKMeta,
+         },
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
+         env: {
+           type: "string",
+           queryParam: true,
+@@ -142,3 +150,8 @@ export function getQRCodeComponent(): QRCodeComponent {
+     });
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getQRCodeComponent);
+diff --git a/src/zoid/saved-payment-methods/component.jsx b/src/zoid/saved-payment-methods/component.jsx
+index f5a66643..faa7883f 100644
+--- a/src/zoid/saved-payment-methods/component.jsx
++++ b/src/zoid/saved-payment-methods/component.jsx
+@@ -59,6 +59,9 @@ import {
+   prepareInstrumentationPayload,
+   sessionState,
+   storageState,
++  registerMaskedComponent,
++  hasUserInteracted,
++  notifyUserInteraction,
+ } from "../../lib";
+ import {
+   getButtonExperiments,
+@@ -674,6 +677,19 @@ export const getSavedPaymentMethodsComponent: () => SavedPaymentMethodsComponent
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
++        onUserInteraction: {
++          type: "function",
++          required: false,
++          value: () => notifyUserInteraction,
++        },
++
+         sdkToken: {
+           type: "string",
+           required: false,
+@@ -796,3 +812,8 @@ export const getSavedPaymentMethodsComponent: () => SavedPaymentMethodsComponent
+       },
+     });
+   });
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getSavedPaymentMethodsComponent);
+diff --git a/src/zoid/venmo/component.jsx b/src/zoid/venmo/component.jsx
+index 4d28784f..92294f3b 100644
+--- a/src/zoid/venmo/component.jsx
++++ b/src/zoid/venmo/component.jsx
+@@ -29,7 +29,7 @@ import {
+ import { FUNDING } from "@paypal/sdk-constants/src";
+ import { SpinnerPage, VenmoOverlay } from "@paypal/common-components/src";
+ 
+-import { getSessionID } from "../../lib";
++import { getSessionID, registerMaskedComponent, hasUserInteracted } from "../../lib";
+ import { containerContent } from "../content";
+ import type { CheckoutPropsType } from "../checkout/props";
+ 
+@@ -127,6 +127,13 @@ export function getVenmoCheckoutComponent(): VenmoCheckoutComponent {
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
+         nonce: {
+           type: "string",
+           required: false,
+@@ -365,3 +372,8 @@ export function getVenmoCheckoutComponent(): VenmoCheckoutComponent {
+     return component;
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getVenmoCheckoutComponent);
+diff --git a/src/zoid/wallet/component.jsx b/src/zoid/wallet/component.jsx
+index 6f99e82f..2c000d12 100644
+--- a/src/zoid/wallet/component.jsx
++++ b/src/zoid/wallet/component.jsx
+@@ -39,6 +39,8 @@ import {
+   rememberFunding,
+ } from "@paypal/funding-components/src";
+ 
++import { registerMaskedComponent, hasUserInteracted } from "../../lib";
++
+ import { type WalletProps } from "./props";
+ import { WalletPrerender } from "./prerender";
+ import { WalletContainer } from "./container";
+@@ -108,6 +110,13 @@ export function getWalletComponent(): WalletComponent {
+           value: getSDKMeta,
+         },
+ 
++        hasInteracted: {
++          type: "boolean",
++          queryParam: true,
++          required: false,
++          value: () => hasUserInteracted(),
++        },
++
+         clientID: {
+           type: "string",
+           queryParam: true,
+@@ -312,3 +321,8 @@ export function getWalletComponent(): WalletComponent {
+     });
+   });
+ }
++
++// $FlowFixMe - the relay is intentionally duck-typed across every
++// zoid component's differently-shaped instance type
++// $FlowFixMe
++registerMaskedComponent(getWalletComponent);
+diff --git a/vite.config.js b/vite.config.js
+index 6266717f..da7523b4 100644
+--- a/vite.config.js
++++ b/vite.config.js
+@@ -53,6 +53,17 @@ export default defineConfig({
+     setupFiles: ["vitestSetup.js"],
+     include: ["**/src/**/*.test.{js,jsx}"],
+     globals: true,
++    // Default thread pool keeps all jsdom environments alive in long-running
++    // worker threads, so memory accumulates across the ~140+ test files
++    // until the worker OOMs in memory-constrained CI runners. Forks give
++    // each a real OS process the kernel reclaims in full between runs.
++    pool: "forks",
++    poolOptions: {
++      forks: {
++        minForks: 1,
++        maxForks: 4,
++      },
++    },
+     coverage: {
+       // exclude untested files
+       all: false,

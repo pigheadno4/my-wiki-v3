@@ -14,6 +14,7 @@ from urllib.error import URLError
 from github_canonical import safe_policy_path
 from github_capsule_policy import (
     COMMIT_TREE_ADAPTER,
+    NPM_CAPSULE_ADAPTER,
     TAGGED_TREE_ADAPTER,
     CapsuleConfig,
 )
@@ -284,10 +285,16 @@ def collect_ref_boundary(
     if readiness_errors:
         raise CollectionUsageError(config.id + ": " + readiness_errors[0])
     capsule = _one_capsule(config)
-    if capsule.adapter not in (COMMIT_TREE_ADAPTER, TAGGED_TREE_ADAPTER):
+    if capsule.adapter not in (
+        COMMIT_TREE_ADAPTER,
+        TAGGED_TREE_ADAPTER,
+        NPM_CAPSULE_ADAPTER,
+    ):
         raise CollectionUsageError(
-            "exact-ref collection requires commit-tree-v1 or tagged-tree-v1"
+            "exact-ref collection requires a supported source capsule"
         )
+    if capsule.adapter == NPM_CAPSULE_ADAPTER and len(capsule.focus_packages) != 1:
+        raise CollectionUsageError("npm exact-ref collection requires one focus package")
 
     root = Path(root).resolve()
     collected = collection_date or date.today().isoformat()
