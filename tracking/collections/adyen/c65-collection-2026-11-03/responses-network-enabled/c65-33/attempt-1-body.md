@@ -1,0 +1,292 @@
+# POST /legalEntities/{id}/checkVerificationErrors - Check a legal entity's verification errors
+
+Returns the verification errors for a legal entity and its supporting entities.
+
+Requests to this endpoint are subject to rate limits:
+
+Live environments: 700 requests per 5 seconds.
+
+Test environments: 200 requests per 5 seconds.
+
+Failed requests are subject to a limit of 5 failures per 10 seconds.
+
+## Servers
+- https://kyc-test.adyen.com/lem/v4
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | The unique identifier of the legal entity. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| problems | array of object | No | List of the verification errors. |
+|   - entity | object | No |  |
+|     - documents | array of string | No | List of document IDs corresponding to the verification errors from capabilities. |
+|     - id | string | No |  |
+|     - owner | object | No |  |
+|     - type | string | No |  |
+|   - verificationErrors | array of object | No |  |
+|     - capabilities | array of string | No | Contains key-value pairs that specify the actions that the legal entity can do in your platform. The key is a capability required for your integration. For example, **issueCard** for Issuing.The value is an object containing the settings for the capability. |
+|     - code | string | No | The general error code. |
+|     - message | string | No | The general error message. |
+|     - remediatingActions | array of object | No | An object containing possible solutions to fix a verification error. |
+|     - subErrors | array of object | No | An array containing more granular information about the cause of the verification error. |
+|     - type | string | No | The type of error.  Possible values:  - **invalidInput**  - **dataMissing**  - **pendingStatus**  - **rejected**  - **dataReview** |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+## Response examples
+
+### 200 Success
+
+**checkVerificationErrors**
+```json
+{
+  "problems": [
+    {
+      "entity": {
+        "id": "LE00000000000000000000001",
+        "type": "LegalEntity"
+      },
+      "verificationErrors": [
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8179",
+          "message": "'vatNumber' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_158",
+              "message": "Add 'organization.vatNumber' to legal entity."
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8067",
+          "message": "'Signatory' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_124",
+              "message": "Add 'organization.entityAssociations' of type 'signatory' to legal entity"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8189",
+          "message": "'UBO through control' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_151",
+              "message": "Add 'organization.entityAssociations' of type 'uboThroughControl' to legal entity"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments"
+          ],
+          "code": "2_8190",
+          "message": "'businessLine' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_136",
+              "message": "Add business line"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8021",
+          "message": "'individual.residentialAddress.postalCode' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_108",
+              "message": "Add 'individual.residentialAddress.postalCode' to legal entity"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8064",
+          "message": "'UBO through ownership' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_123",
+              "message": "Add 'organization.entityAssociations' of type 'uboThroughOwnership' to legal entity"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8141",
+          "message": "'Registration document' was missing.",
+          "remediatingActions": [
+            {
+              "code": "1_501",
+              "message": "Upload a registration document"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8019",
+          "message": "'individual.residentialAddress.street' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_106",
+              "message": "Add 'individual.residentialAddress.street' to legal entity"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8020",
+          "message": "'individual.residentialAddress.city' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_107",
+              "message": "Add 'individual.residentialAddress.city' to legal entity"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8045",
+          "message": "'organization.taxId' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_118",
+              "message": "Add 'organization.taxId' to legal entity"
+            }
+          ],
+          "type": "dataMissing"
+        },
+        {
+          "capabilities": [
+            "receivePayments",
+            "sendToTransferInstrument"
+          ],
+          "code": "2_8043",
+          "message": "'organization.registrationNumber' was missing.",
+          "remediatingActions": [
+            {
+              "code": "2_117",
+              "message": "Add 'organization.registrationNumber' to legal entity"
+            }
+          ],
+          "type": "dataMissing"
+        }
+      ]
+    }
+  ]
+}
+```

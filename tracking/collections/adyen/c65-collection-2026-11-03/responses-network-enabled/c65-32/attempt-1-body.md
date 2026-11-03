@@ -1,0 +1,169 @@
+# GET /legalEntities/{id}/businessLines - Get all business lines under a legal entity
+
+Returns the business lines owned by a legal entity.
+
+Requests to this endpoint are subject to rate limits:
+
+Live environments: 700 requests per 5 seconds.
+
+Test environments: 200 requests per 5 seconds.
+
+Failed requests are subject to a limit of 5 failures per 10 seconds.
+
+## Servers
+- https://kyc-test.adyen.com/lem/v4
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | The unique identifier of the legal entity. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| businessLines | array of object | Yes | List of business lines. |
+|   - id | string | Yes | The unique identifier of the business line. |
+|   - industryCode | string | Yes | A code that represents the industry of the legal entity for [marketplaces](https://docs.adyen.com/marketplaces/verification-requirements/reference-additional-products/#list-industry-codes) or [platforms](https://docs.adyen.com/platforms/verification-requirements/reference-additional-products/#list-industry-codes). For example, **4431A** for computer software stores. |
+|   - industryCodeDescription | string | No | The description of the industry code. |
+|   - legalEntityId | string | Yes | Unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/legalEntities__resParam_id) that owns the business line. |
+|   - problems | array of object | No | The verification errors related to capabilities for this supporting entity. |
+|     - entity | object | No |  |
+|     - verificationErrors | array of object | No |  |
+|   - salesChannels | array of string | No | A list of channels where goods or services are sold.  Possible values: **pos**, **posMoto**, **eCommerce**, **ecomMoto**, **payByLink**.  Required only in combination with the `service` **paymentProcessing**. |
+|   - service | string | Yes | The service for which you are creating the business line.  Possible values:  - **paymentProcessing**  - **issuing**  - **banking** |
+|   - sourceOfFunds | object | No | Contains information about the source of your user's funds. Required only if the `service` is **banking** or **issuing**. |
+|     - adyenProcessedFunds | boolean | Yes | Indicates whether the funds are coming from transactions processed by Adyen. If **false**, the `type` is required. |
+|     - amount | object | No | Required if `type` is **business**, **assetSale**, **gamblingWinnings** or **inheritance**.  For `type` **business**, provide the annual turn over of the business. For `type` **assetSale**, **gamblingWinnings** or **inheritance**, provide the amount of the funds. |
+|     - assetMonthsHeld | integer | No | The number of months that the asset has been in possession of the user.  For example, if the source of funds is of type **cryptocurrencyIncome** then `assetMonthsHeld` is the number of months the user has owned the cryptocurrency. |
+|     - cryptocurrencyExchange | string | No | Required if `type` is **cryptocurrencyIncome**. The cryptocurrency exchange where the funds were acquired. |
+|     - dateOfFundsReceived | string | No | Required if `type` is **donations** or **inheritance**. The date the funds were received, in YYYY-MM-DD format. |
+|     - dateOfSourceEvent | string | No | Required if `type` is **assetSale** or **gamblingWinnings**. The date the funds were received, in YYYY-MM-DD format.  For example, if the source of funds is of type **assetSale**, the dateOfSourceEvent is the date of the sale. If the source of funds is of type **gamblingWinnings**, the dateOfSourceEvent is the date of winnings. |
+|     - description | string | No | Required if `type` is **business** or **assetSale**. A description for the source of funds.  For example, for `type` **business**, provide a description of where the business transactions come from, such as payments through bank transfer. For `type` **assetSale**, provide a description of the asset. For example, the address of a residential property if it is a property sale. |
+|     - financiers | array of object | No | Required if `type` is **thirdPartyFunding**. Information about the financiers. |
+|     - originatorLegalEntityId | string | No | Required if `type` is **donations** or **inheritance**. The legal entity ID representing the originator of the source of funds.  For example, if the source of funds is **inheritance**, then `originatorOfFundsReference` should be the legal entity reference of the benefactor. |
+|     - purpose | string | No | Required if `type` is **donations**. The reason for receiving the funds. |
+|     - relationship | string | No | Required if `type` is **donations** or **inheritance**. The relationship of the originator of the funds to the recipient. |
+|     - type | string | No | The type of the source of funds.  Possible values:  - **business**  - **employment**  - **donations**  - **inheritance**  - **financialAid**  - **rentalIncome**  - **dividendIncome**  - **royaltyIncome**  - **thirdPartyFunding**  - **pensionIncome**  - **insuranceSettlement**  - **cryptocurrencyIncome**  - **assetSale**  - **loans**  - **gamblingWinnings** |
+|     - website | string | No | Required if `type` is **gamblingWinnings**. The location of the gambling site for the winnings.  For example, if the source of funds is online gambling, provide the website of the gambling company. |
+|   - webData | array of object | No | List of website URLs where your user's goods or services are sold. When this is required for a service but your user does not have an online presence, provide the reason in the `webDataExemption` object. |
+|     - webAddress | string | No | The URL of the website or the app store URL. |
+|     - webAddressId | string | No | The unique identifier of the web address. |
+|   - webDataExemption | object | No | The reason why the web data is not provided. |
+|     - reason | string | No | The reason why the web data was not provided. Possible value: **noOnlinePresence**. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+## Response examples
+
+### 200 Success
+
+**success**
+```json
+{
+  "businessLines": [
+    {
+      "service": "banking",
+      "industryCode": "55",
+      "legalEntityId": "LE00000000000000000000001",
+      "sourceOfFunds": {
+        "adyenProcessedFunds": false,
+        "description": "Funds from my flower shop business",
+        "type": "business"
+      },
+      "webData": [
+        {
+          "webAddress": "https://www.adyen.com",
+          "webAddressId": "SE577HA334222K5H8V87B3BPU"
+        }
+      ],
+      "id": "SE322JV223222F5GVGMLNB83F"
+    },
+    {
+      "service": "paymentProcessing",
+      "industryCode": "339E",
+      "legalEntityId": "LE00000000000000000000001",
+      "salesChannels": [
+        "eCommerce",
+        "ecomMoto"
+      ],
+      "webData": [
+        {
+          "webAddress": "https://yoururl.com",
+          "webAddressId": "SE908HJ723222F5GVGPNR55YH"
+        }
+      ],
+      "id": "SE322JV223222F5GVGPNRB9GJ"
+    }
+  ]
+}
+```

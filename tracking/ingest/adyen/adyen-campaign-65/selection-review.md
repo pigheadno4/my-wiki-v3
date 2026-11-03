@@ -1,74 +1,66 @@
-# Adyen C65 API Explorer collection-first preparation
+# Adyen C65 collected API Explorer ingestion selection
 
-Status: **AWAITING EXACT COLLECTION APPROVAL — no ingestion-ready manifest**. Prepared 2026-11-03 after C64 publication `ab427db2bf81e4f7715ed949fd80f6f37123953c`.
+Status: **PREPARED ONLY — awaiting exact ingestion approval**. Prepared 2026-11-03.
 
-C64 ingested all 50 newly collected pages: Checkout 2 and Balance Platform 48. Current totals: **2,959 sources = 2,547 General Docs + 396 API Explorer + 16 GitHub**. All locally collected complete-body API Explorer pages are ingested. The only 27 unreferenced local raw pages are excluded title-only stubs, retried in C63 and still title-only. No repeated stub retries proposed here.
+Approved collection completed for all50 exact URLs: **50 HTTP200 substantive Markdown pages**, no failed, title-only or mismatched documents. Families: **Balance Platform29 + Legal Entity21**. Every response body is preserved byte-for-byte after collection metadata in a new dated2026-11-03 raw file. All prior Adyen raw/wiki hashes are unchanged; concurrent unrelated PayPal work is recorded separately. These title/body/byte checks are collection screening, not full semantic reads. The 515-byte periodic-review reference contains a server, required path ID and 204 response; it is substantive, not a title-only stub. [Collection manifest](../../../collections/adyen/c65-collection-2026-11-03/manifest.md), [summary](../../../collections/adyen/c65-collection-2026-11-03/summary.json). Original proposal retained in [collection-selection-review.md](collection-selection-review.md).
 
-## Pinned catalog reconciliation
+Exact proposed ingestion: **50 source units**, **100 fixed answers**, **three predetermined distinct full-read audits**. All hashes, URL/target uniqueness, absent canonical targets and unreferenced pins verified. Size: **93,304 whitespace words, 9,214 raw lines, 592,191 bytes**. Source generation begins only after separate exact ingestion approval.
 
-The official API Explorer catalog captured 2026-11-02 contains **670 distinct normalized documentation URLs** (623 operation references and 47 overview references). Exact-URL reconciliation on 2026-11-03 finds 423 local raw URLs: 396 with ingested raw and 27 excluded title-only stubs. **247 catalog URLs have no local raw**. All 423 local URLs occur in the pinned catalog. [Complete reconciliation](catalog-reconciliation.json) retains its SHA256 and all missing URLs.
+Current baseline **2,959 = 2,547 General Docs +396 API Explorer +16 GitHub**. Successful ingestion of all50 gives **3,009 = 2,547 General Docs +446 API Explorer +16 GitHub**. API Explorer now has473 local raw pages:396 ingested substantive pages,50 newly collected and27 excluded title-only stubs. Unreferenced local raw would decline77→27 after successful ingestion. The captured670-URL catalog has **197 URLs still without local raw**; the27 stub exclusions remain separate. This is captured-catalog coverage, not a current upstream completeness claim.
 
-This is reconciliation against an immutable captured catalog, not a refreshed upstream inventory or a claim about present page availability. No network requests or semantic reads of the proposed pages were made. Titles and paths identify navigation scope only.
+[Proposed provider authorization](dispatch-contract.md) retains ten shared rolling child slots, medium gpt-6-sol workers/different high initial reviewers, full numbered reads of every schema/example,3–5locatedquotes, concept audit first, max3attempts, coordinator-only serial approved concept-before-source promotion and aggregate close once. [100 original fixed prompts](proposed-queries.md) require actual independently checked answers. Full raw reads apply equally to the largest Legal Entity schema and minimal 204 references.
 
-## Exact next collection proposal
+Fixed coordinator audit jobs: `api-explorer-balanceplatform-latest-get-transactionrules-transactionruleid`, `api-explorer-legalentity-latest-patch-legalentities-id`, `api-explorer-legalentity-latest-get-documents-id`. Material partial/fail expands to all50. No ingestion runtime, dispatch, canonical wiki source generation, commit or push. Await separate exact C65 ingestion approval.
 
-Propose **50 exact official Markdown URLs**: the remaining 29 Balance Platform references and the first 21 uncollected Legal Entity references in captured catalog order. Metadata scope includes resource rules and tokens, grants, mandates, devices and transfer limits, followed by legal entities, transfer instruments, business lines, documents, terms and one PCI-template reference. No behavior is inferred from these names. Every selected URL has a pinned catalog-line locator; the documented duplicated API Explorer prefix is collapsed, retaining official case and parenthesized parameters. Every raw directory and provisional source target is absent and all URLs/targets are unique. [Exact 50-target proposal](collection-proposal.json).
-
-Approval authorizes documentation collection for these 50 URLs only. Stage each response, retain status/headers/body/hash and final URL, omit server-set cookies from published metadata, and classify substantive/failed/title-only results separately. Preserve substantive body bytes verbatim in new dated immutable raw snapshots. No whole-corpus refresh, code/rule/validator changes, General Docs, GitHub, stub retries, provider/account/security/device/payment operations, automatic ingestion or further publication. Endpoint action names describe documentation targets, not authorized API calls.
-
-After all 50 selected URLs reach recorded outcomes, reconcile results and prepare an exact ingestion manifest only from recovered complete-body evidence: raw SHA256 pins, actual fixed query prompts, three distinct audit samples and explicit provider review authorization. Obtain separate ingestion approval per rules/psp-collection.md. Do not pad failed or incomplete results or waive body/schema presence. If all 50 collect successfully, 197 captured-catalog URLs would still lack raw; source counts rise only after approved ingestion.
-
-C65 is **PREPARED ONLY / awaiting approval**. No runtime, dispatch, candidates, raw collection or canonical sources created. Publishing this proposal does not authorize execution.
-
-| Item | Family | Catalog label | Exact Markdown URL |
-| --- | --- | --- | --- |
-| c65-01 | balanceplatform | GET /paymentInstrumentGroups/{id}/transactionRules | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/paymentInstrumentGroups/(id)/transactionRules.md` |
-| c65-02 | balanceplatform | GET /transactionRules/{transactionRuleId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/transactionRules/(transactionRuleId).md` |
-| c65-03 | balanceplatform | PATCH /transactionRules/{transactionRuleId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/transactionRules/(transactionRuleId).md` |
-| c65-04 | balanceplatform | DELETE /transactionRules/{transactionRuleId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/transactionRules/(transactionRuleId).md` |
-| c65-05 | balanceplatform | GET /networkTokens/{networkTokenId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/networkTokens/(networkTokenId).md` |
-| c65-06 | balanceplatform | PATCH /networkTokens/{networkTokenId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/networkTokens/(networkTokenId).md` |
-| c65-07 | balanceplatform | GET /grantAccounts/{id} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/grantAccounts/(id).md` |
-| c65-08 | balanceplatform | GET /grantOffers/{grantOfferId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/grantOffers/(grantOfferId).md` |
-| c65-09 | balanceplatform | GET /cardorders/{id}/items | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/cardorders/(id)/items.md` |
-| c65-10 | balanceplatform | GET /mandates/{mandateId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/mandates/(mandateId).md` |
-| c65-11 | balanceplatform | PATCH /mandates/{mandateId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/mandates/(mandateId).md` |
-| c65-12 | balanceplatform | POST /mandates/{mandateId}/cancel | `https://docs.adyen.com/api-explorer/balanceplatform/latest/post/mandates/(mandateId)/cancel.md` |
-| c65-13 | balanceplatform | DELETE /scaDevices/{deviceId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/scaDevices/(deviceId).md` |
-| c65-14 | balanceplatform | PATCH /scaDevices/{deviceId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/scaDevices/(deviceId).md` |
-| c65-15 | balanceplatform | POST /scaDevices/{deviceId}/scaAssociations | `https://docs.adyen.com/api-explorer/balanceplatform/latest/post/scaDevices/(deviceId)/scaAssociations.md` |
-| c65-16 | balanceplatform | POST /balanceAccounts/{id}/transferLimits | `https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts/(id)/transferLimits.md` |
-| c65-17 | balanceplatform | POST /balanceAccounts/{id}/transferLimits/approve | `https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts/(id)/transferLimits/approve.md` |
-| c65-18 | balanceplatform | GET /balanceAccounts/{id}/transferLimits/current | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/current.md` |
-| c65-19 | balanceplatform | GET /balanceAccounts/{id}/transferLimits | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits.md` |
-| c65-20 | balanceplatform | GET /balanceAccounts/{id}/transferLimits/{transferLimitId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/(transferLimitId).md` |
-| c65-21 | balanceplatform | DELETE /balanceAccounts/{id}/transferLimits/{transferLimitId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/balanceAccounts/(id)/transferLimits/(transferLimitId).md` |
-| c65-22 | balanceplatform | POST /balancePlatforms/{id}/transferLimits | `https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balancePlatforms/(id)/transferLimits.md` |
-| c65-23 | balanceplatform | GET /balancePlatforms/{id}/transferLimits | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits.md` |
-| c65-24 | balanceplatform | GET /balancePlatforms/{id}/transferLimits/{transferLimitId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/(transferLimitId).md` |
-| c65-25 | balanceplatform | DELETE /balancePlatforms/{id}/transferLimits/{transferLimitId} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/balancePlatforms/(id)/transferLimits/(transferLimitId).md` |
-| c65-26 | balanceplatform | PATCH /registeredDevices/{id} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/registeredDevices/(id).md` |
-| c65-27 | balanceplatform | POST /registeredDevices/{deviceId}/associations | `https://docs.adyen.com/api-explorer/balanceplatform/latest/post/registeredDevices/(deviceId)/associations.md` |
-| c65-28 | balanceplatform | PATCH /registeredDevices/{deviceId}/associations | `https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/registeredDevices/(deviceId)/associations.md` |
-| c65-29 | balanceplatform | DELETE /registeredDevices/{id} | `https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/registeredDevices/(id).md` |
-| c65-30 | legalentity | GET /legalEntities/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id).md` |
-| c65-31 | legalentity | PATCH /legalEntities/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/patch/legalEntities/(id).md` |
-| c65-32 | legalentity | GET /legalEntities/{id}/businessLines | `https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)/businessLines.md` |
-| c65-33 | legalentity | POST /legalEntities/{id}/checkVerificationErrors | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/checkVerificationErrors.md` |
-| c65-34 | legalentity | POST /legalEntities/{id}/confirmDataReview | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/confirmDataReview.md` |
-| c65-35 | legalentity | POST /legalEntities/{id}/requestPeriodicReview | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/requestPeriodicReview.md` |
-| c65-36 | legalentity | GET /transferInstruments/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/get/transferInstruments/(id).md` |
-| c65-37 | legalentity | PATCH /transferInstruments/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/patch/transferInstruments/(id).md` |
-| c65-38 | legalentity | DELETE /transferInstruments/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/delete/transferInstruments/(id).md` |
-| c65-39 | legalentity | GET /businessLines/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/get/businessLines/(id).md` |
-| c65-40 | legalentity | DELETE /businessLines/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/delete/businessLines/(id).md` |
-| c65-41 | legalentity | PATCH /businessLines/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/patch/businessLines/(id).md` |
-| c65-42 | legalentity | GET /documents/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/get/documents/(id).md` |
-| c65-43 | legalentity | PATCH /documents/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/patch/documents/(id).md` |
-| c65-44 | legalentity | DELETE /documents/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/delete/documents/(id).md` |
-| c65-45 | legalentity | POST /legalEntities/{id}/termsOfService | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/termsOfService.md` |
-| c65-46 | legalentity | PATCH /legalEntities/{id}/termsOfService/{termsofservicedocumentid} | `https://docs.adyen.com/api-explorer/legalentity/latest/patch/legalEntities/(id)/termsOfService/(termsofservicedocumentid).md` |
-| c65-47 | legalentity | GET /legalEntities/{id}/termsOfServiceAcceptanceInfos | `https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)/termsOfServiceAcceptanceInfos.md` |
-| c65-48 | legalentity | GET /legalEntities/{id}/acceptedTermsOfServiceDocument/{termsofserviceacceptancereference} | `https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)/acceptedTermsOfServiceDocument/(termsofserviceacceptancereference).md` |
-| c65-49 | legalentity | GET /legalEntities/{id}/termsOfServiceStatus | `https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)/termsOfServiceStatus.md` |
-| c65-50 | legalentity | POST /legalEntities/{id}/pciQuestionnaires/generatePciTemplates | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/generatePciTemplates.md` |
+| # | Family | Operation | Words | Raw lines |
+| --- | --- | --- | ---: | ---: |
+| 1 | balanceplatform | GET /paymentInstrumentGroups/{id}/transactionRules | 3,288 | 317 |
+| 2 | balanceplatform | GET /transactionRules/{transactionRuleId} | 3,198 | 279 |
+| 3 | balanceplatform | PATCH /transactionRules/{transactionRuleId} | 6,974 | 469 |
+| 4 | balanceplatform | DELETE /transactionRules/{transactionRuleId} | 4,122 | 332 |
+| 5 | balanceplatform | GET /networkTokens/{networkTokenId} | 1,395 | 177 |
+| 6 | balanceplatform | PATCH /networkTokens/{networkTokenId} | 1,097 | 164 |
+| 7 | balanceplatform | GET /grantAccounts/{id} | 1,476 | 206 |
+| 8 | balanceplatform | GET /grantOffers/{grantOfferId} | 1,637 | 214 |
+| 9 | balanceplatform | GET /cardorders/{id}/items | 1,482 | 209 |
+| 10 | balanceplatform | GET /mandates/{mandateId} | 1,312 | 133 |
+| 11 | balanceplatform | PATCH /mandates/{mandateId} | 1,090 | 123 |
+| 12 | balanceplatform | POST /mandates/{mandateId}/cancel | 1,058 | 117 |
+| 13 | balanceplatform | DELETE /scaDevices/{deviceId} | 1,262 | 136 |
+| 14 | balanceplatform | PATCH /scaDevices/{deviceId} | 1,458 | 173 |
+| 15 | balanceplatform | POST /scaDevices/{deviceId}/scaAssociations | 1,569 | 184 |
+| 16 | balanceplatform | POST /balanceAccounts/{id}/transferLimits | 1,762 | 161 |
+| 17 | balanceplatform | POST /balanceAccounts/{id}/transferLimits/approve | 761 | 102 |
+| 18 | balanceplatform | GET /balanceAccounts/{id}/transferLimits/current | 1,188 | 114 |
+| 19 | balanceplatform | GET /balanceAccounts/{id}/transferLimits | 1,280 | 132 |
+| 20 | balanceplatform | GET /balanceAccounts/{id}/transferLimits/{transferLimitId} | 1,054 | 103 |
+| 21 | balanceplatform | DELETE /balanceAccounts/{id}/transferLimits/{transferLimitId} | 498 | 61 |
+| 22 | balanceplatform | POST /balancePlatforms/{id}/transferLimits | 1,526 | 136 |
+| 23 | balanceplatform | GET /balancePlatforms/{id}/transferLimits | 1,280 | 132 |
+| 24 | balanceplatform | GET /balancePlatforms/{id}/transferLimits/{transferLimitId} | 1,054 | 103 |
+| 25 | balanceplatform | DELETE /balancePlatforms/{id}/transferLimits/{transferLimitId} | 498 | 61 |
+| 26 | balanceplatform | PATCH /registeredDevices/{id} | 1,475 | 205 |
+| 27 | balanceplatform | POST /registeredDevices/{deviceId}/associations | 1,427 | 203 |
+| 28 | balanceplatform | PATCH /registeredDevices/{deviceId}/associations | 1,530 | 209 |
+| 29 | balanceplatform | DELETE /registeredDevices/{id} | 1,344 | 197 |
+| 30 | legalentity | GET /legalEntities/{id} | 8,626 | 454 |
+| 31 | legalentity | PATCH /legalEntities/{id} | 15,468 | 893 |
+| 32 | legalentity | GET /legalEntities/{id}/businessLines | 1,484 | 173 |
+| 33 | legalentity | POST /legalEntities/{id}/checkVerificationErrors | 1,152 | 296 |
+| 34 | legalentity | POST /legalEntities/{id}/confirmDataReview | 633 | 111 |
+| 35 | legalentity | POST /legalEntities/{id}/requestPeriodicReview | 88 | 22 |
+| 36 | legalentity | GET /transferInstruments/{id} | 1,322 | 157 |
+| 37 | legalentity | PATCH /transferInstruments/{id} | 1,527 | 190 |
+| 38 | legalentity | DELETE /transferInstruments/{id} | 566 | 95 |
+| 39 | legalentity | GET /businessLines/{id} | 1,723 | 168 |
+| 40 | legalentity | DELETE /businessLines/{id} | 599 | 97 |
+| 41 | legalentity | PATCH /businessLines/{id} | 2,532 | 212 |
+| 42 | legalentity | GET /documents/{id} | 1,257 | 153 |
+| 43 | legalentity | PATCH /documents/{id} | 1,901 | 191 |
+| 44 | legalentity | DELETE /documents/{id} | 563 | 95 |
+| 45 | legalentity | POST /legalEntities/{id}/termsOfService | 907 | 138 |
+| 46 | legalentity | PATCH /legalEntities/{id}/termsOfService/{termsofservicedocumentid} | 920 | 136 |
+| 47 | legalentity | GET /legalEntities/{id}/termsOfServiceAcceptanceInfos | 797 | 125 |
+| 48 | legalentity | GET /legalEntities/{id}/acceptedTermsOfServiceDocument/{termsofserviceacceptancereference} | 722 | 110 |
+| 49 | legalentity | GET /legalEntities/{id}/termsOfServiceStatus | 651 | 113 |
+| 50 | legalentity | POST /legalEntities/{id}/pciQuestionnaires/generatePciTemplates | 771 | 133 |
