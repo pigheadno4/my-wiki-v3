@@ -1,74 +1,66 @@
-# Adyen C66 API Explorer collection-first preparation
+# Adyen C66 collected API Explorer ingestion selection
 
-Status: **AWAITING EXACT COLLECTION APPROVAL — no ingestion-ready manifest**. Prepared 2026-11-03 after C65 publication `7c15ef604868cf04a9af6d8fc7449fa3d096494a`.
+Status: **PREPARED ONLY — awaiting exact ingestion approval**. Prepared 2026-11-03.
 
-C65 ingested all 50 pages: Balance Platform 29 and Legal Entity 21. Current totals: **3,009 sources = 2,547 General Docs + 446 API Explorer + 16 GitHub**. All locally collected complete-body API Explorer pages are ingested. The only 27 unreferenced local raw pages are excluded title-only stubs, retried in C63 and still title-only. No repeated stub retries proposed here.
+Approved collection completed for all50 exact URLs: **50 HTTP200 substantive Markdown pages**, no failed, title-only or mismatched documents. Families: **Legal Entity8 + Management42**. Every response body is preserved byte-for-byte after collection metadata in a new dated2026-11-03 raw file. All prior Adyen raw/wiki hashes are unchanged; any unrelated concurrent changes are recorded separately. These title/body/byte checks are collection screening, not full semantic reads. [Collection manifest](../../../collections/adyen/c66-collection-2026-11-03/manifest.md), [summary](../../../collections/adyen/c66-collection-2026-11-03/summary.json). Original proposal retained in [collection-selection-review.md](collection-selection-review.md).
 
-## Pinned catalog reconciliation
+Exact proposed ingestion: **50 source units**, **100 fixed answers**, **three predetermined distinct full-read audits**. All hashes, URL/target uniqueness, absent canonical targets and unreferenced pins verified. Size: **78,831 whitespace words, 9,602 raw lines, 498,723 bytes**. Source generation begins only after separate exact ingestion approval.
 
-The official API Explorer catalog captured 2026-11-02 contains **670 distinct normalized documentation URLs** (623 operation references and 47 overview references). Exact-URL reconciliation on 2026-11-03 finds 473 local raw URLs: 446 with ingested raw and 27 excluded title-only stubs. **197 catalog URLs have no local raw**. All 473 local URLs occur in the pinned catalog. [Complete reconciliation](catalog-reconciliation.json) retains its SHA256 and all missing URLs.
+Current baseline **3,009 = 2,547 General Docs +446 API Explorer +16 GitHub**. Successful ingestion of all50 gives **3,059 = 2,547 General Docs +496 API Explorer +16 GitHub**. API Explorer now has523 local raw pages:446 ingested substantive pages,50 newly collected and27 excluded title-only stubs. Unreferenced local raw would decline77→27 after successful ingestion. The captured670-URL catalog has **147 URLs still without local raw**; the27 stub exclusions remain separate. This is captured-catalog coverage, not a current upstream completeness claim.
 
-This is reconciliation against an immutable captured catalog, not a refreshed upstream inventory or a claim about present page availability. No network requests or semantic reads of the proposed pages were made. Titles and paths identify navigation scope only.
+[Proposed provider authorization](dispatch-contract.md) retains ten shared rolling child slots, medium gpt-6-sol workers/different high initial reviewers, full numbered reads of every schema/example,3–5locatedquotes, concept audit first, max3attempts, coordinator-only serial approved concept-before-source promotion and aggregate close once. [100 original fixed prompts](proposed-queries.md) require actual independently checked answers. Full raw reads apply to every captured schema, authentication/security qualification and example, including minimal references.
 
-## Exact next collection proposal
+Fixed coordinator audit jobs: `api-explorer-management-latest-get-companies-companyid`, `api-explorer-management-latest-patch-merchants-merchantid-stores-storeid`, `api-explorer-legalentity-latest-get-legalentities-id-pciquestionnaires-pciid`. Material partial/fail expands to all50. No ingestion runtime, dispatch, canonical wiki source generation, commit or push. Await separate exact C66 ingestion approval.
 
-Propose **50 exact official Markdown URLs**: the remaining 8 Legal Entity references and the first 42 uncollected Management references in captured catalog order. Metadata scope spans the remaining Legal Entity references and the next Management references. All navigation labels are listed below for inspection. No behavior is inferred from these names. Every selected URL has a pinned catalog-line locator; the documented duplicated API Explorer prefix is collapsed, retaining official case and parenthesized parameters. Every raw directory and provisional source target is absent and all URLs/targets are unique. [Exact 50-target proposal](collection-proposal.json).
-
-Approval authorizes documentation collection for these 50 URLs only. Stage each response, retain status/headers/body/hash and final URL, omit server-set cookies from published metadata, and classify substantive/failed/title-only results separately. Preserve substantive body bytes verbatim in new dated immutable raw snapshots. No whole-corpus refresh, code/rule/validator changes, General Docs, GitHub, stub retries, provider/account/security/device/payment operations, automatic ingestion or further publication. Endpoint action names describe documentation targets, not authorized API calls.
-
-After all 50 selected URLs reach recorded outcomes, reconcile results and prepare an exact ingestion manifest only from recovered complete-body evidence: raw SHA256 pins, actual fixed query prompts, three distinct audit samples and explicit provider review authorization. Obtain separate ingestion approval per rules/psp-collection.md. Do not pad failed or incomplete results or waive body/schema presence. If all 50 collect successfully, 147 captured-catalog URLs would still lack raw; source counts rise only after approved ingestion.
-
-C66 is **PREPARED ONLY / awaiting approval**. No runtime, dispatch, candidates, raw collection or canonical sources created. Publishing this proposal does not authorize execution.
-
-| Item | Family | Catalog label | Exact Markdown URL |
-| --- | --- | --- | --- |
-| c66-01 | legalentity | POST /legalEntities/{id}/pciQuestionnaires/signPciTemplates | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/signPciTemplates.md` |
-| c66-02 | legalentity | GET /legalEntities/{id}/pciQuestionnaires | `https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)/pciQuestionnaires.md` |
-| c66-03 | legalentity | GET /legalEntities/{id}/pciQuestionnaires/{pciid} | `https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)/pciQuestionnaires/(pciid).md` |
-| c66-04 | legalentity | POST /legalEntities/{id}/pciQuestionnaires/signingRequired | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/signingRequired.md` |
-| c66-05 | legalentity | POST /legalEntities/{id}/setTaxElectronicDeliveryConsent | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/setTaxElectronicDeliveryConsent.md` |
-| c66-06 | legalentity | POST /legalEntities/{id}/checkTaxElectronicDeliveryConsent | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/checkTaxElectronicDeliveryConsent.md` |
-| c66-07 | legalentity | POST /legalEntities/{id}/onboardingLinks | `https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/onboardingLinks.md` |
-| c66-08 | legalentity | GET /themes/{id} | `https://docs.adyen.com/api-explorer/legalentity/latest/get/themes/(id).md` |
-| c66-09 | Management | GET /companies/{companyId} | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId).md` |
-| c66-10 | Management | GET /companies/{companyId}/merchants | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/merchants.md` |
-| c66-11 | Management | POST /merchants/{merchantId}/activate | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/activate.md` |
-| c66-12 | Management | GET /merchants/{merchantId} | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId).md` |
-| c66-13 | Management | GET /merchants/{merchantId}/stores | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/stores.md` |
-| c66-14 | Management | POST /merchants/{merchantId}/stores | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/stores.md` |
-| c66-15 | Management | GET /merchants/{merchantId}/stores/{storeId} | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(storeId).md` |
-| c66-16 | Management | PATCH /merchants/{merchantId}/stores/{storeId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(storeId).md` |
-| c66-17 | Management | GET /stores/{storeId} | `https://docs.adyen.com/api-explorer/Management/latest/get/stores/(storeId).md` |
-| c66-18 | Management | PATCH /stores/{storeId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/stores/(storeId).md` |
-| c66-19 | Management | POST /merchants/{merchantId}/payoutSettings | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/payoutSettings.md` |
-| c66-20 | Management | PATCH /merchants/{merchantId}/payoutSettings/{payoutSettingsId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/payoutSettings/(payoutSettingsId).md` |
-| c66-21 | Management | GET /merchants/{merchantId}/payoutSettings | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/payoutSettings.md` |
-| c66-22 | Management | GET /merchants/{merchantId}/payoutSettings/{payoutSettingsId} | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/payoutSettings/(payoutSettingsId).md` |
-| c66-23 | Management | DELETE /merchants/{merchantId}/payoutSettings/{payoutSettingsId} | `https://docs.adyen.com/api-explorer/Management/latest/delete/merchants/(merchantId)/payoutSettings/(payoutSettingsId).md` |
-| c66-24 | Management | GET /companies/{companyId}/users | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/users.md` |
-| c66-25 | Management | POST /companies/{companyId}/users | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/users.md` |
-| c66-26 | Management | GET /companies/{companyId}/users/{userId} | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/users/(userId).md` |
-| c66-27 | Management | PATCH /companies/{companyId}/users/{userId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/users/(userId).md` |
-| c66-28 | Management | GET /merchants/{merchantId}/users | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/users.md` |
-| c66-29 | Management | POST /merchants/{merchantId}/users | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/users.md` |
-| c66-30 | Management | GET /merchants/{merchantId}/users/{userId} | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/users/(userId).md` |
-| c66-31 | Management | PATCH /merchants/{merchantId}/users/{userId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/users/(userId).md` |
-| c66-32 | Management | GET /me/allowedOrigins/{originId} | `https://docs.adyen.com/api-explorer/Management/latest/get/me/allowedOrigins/(originId).md` |
-| c66-33 | Management | DELETE /me/allowedOrigins/{originId} | `https://docs.adyen.com/api-explorer/Management/latest/delete/me/allowedOrigins/(originId).md` |
-| c66-34 | Management | GET /companies/{companyId}/apiCredentials | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials.md` |
-| c66-35 | Management | POST /companies/{companyId}/apiCredentials | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials.md` |
-| c66-36 | Management | GET /companies/{companyId}/apiCredentials/{apiCredentialId} | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId).md` |
-| c66-37 | Management | PATCH /companies/{companyId}/apiCredentials/{apiCredentialId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/apiCredentials/(apiCredentialId).md` |
-| c66-38 | Management | GET /merchants/{merchantId}/apiCredentials | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials.md` |
-| c66-39 | Management | POST /merchants/{merchantId}/apiCredentials | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials.md` |
-| c66-40 | Management | GET /merchants/{merchantId}/apiCredentials/{apiCredentialId} | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId).md` |
-| c66-41 | Management | PATCH /merchants/{merchantId}/apiCredentials/{apiCredentialId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/apiCredentials/(apiCredentialId).md` |
-| c66-42 | Management | POST /companies/{companyId}/apiCredentials/{apiCredentialId}/generateApiKey | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/generateApiKey.md` |
-| c66-43 | Management | POST /merchants/{merchantId}/apiCredentials/{apiCredentialId}/generateApiKey | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/generateApiKey.md` |
-| c66-44 | Management | POST /companies/{companyId}/apiCredentials/{apiCredentialId}/generateClientKey | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/generateClientKey.md` |
-| c66-45 | Management | POST /merchants/{merchantId}/apiCredentials/{apiCredentialId}/generateClientKey | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/generateClientKey.md` |
-| c66-46 | Management | GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins.md` |
-| c66-47 | Management | POST /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins.md` |
-| c66-48 | Management | GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId} | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/(originId).md` |
-| c66-49 | Management | DELETE /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId} | `https://docs.adyen.com/api-explorer/Management/latest/delete/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/(originId).md` |
-| c66-50 | Management | GET /merchants/{merchantId}/apiCredentials/{apiCredentialId}/allowedOrigins | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId)/allowedOrigins.md` |
+| # | Family | Operation | Words | Raw lines |
+| --- | --- | --- | ---: | ---: |
+| 1 | legalentity | POST /legalEntities/{id}/pciQuestionnaires/signPciTemplates | 697 | 134 |
+| 2 | legalentity | GET /legalEntities/{id}/pciQuestionnaires | 683 | 125 |
+| 3 | legalentity | GET /legalEntities/{id}/pciQuestionnaires/{pciid} | 682 | 118 |
+| 4 | legalentity | POST /legalEntities/{id}/pciQuestionnaires/signingRequired | 677 | 106 |
+| 5 | legalentity | POST /legalEntities/{id}/setTaxElectronicDeliveryConsent | 625 | 101 |
+| 6 | legalentity | POST /legalEntities/{id}/checkTaxElectronicDeliveryConsent | 617 | 100 |
+| 7 | legalentity | POST /legalEntities/{id}/onboardingLinks | 1,387 | 147 |
+| 8 | legalentity | GET /themes/{id} | 687 | 128 |
+| 9 | Management | GET /companies/{companyId} | 1,585 | 180 |
+| 10 | Management | GET /companies/{companyId}/merchants | 2,455 | 434 |
+| 11 | Management | POST /merchants/{merchantId}/activate | 1,278 | 140 |
+| 12 | Management | GET /merchants/{merchantId} | 1,852 | 190 |
+| 13 | Management | GET /merchants/{merchantId}/stores | 2,347 | 260 |
+| 14 | Management | POST /merchants/{merchantId}/stores | 2,780 | 250 |
+| 15 | Management | GET /merchants/{merchantId}/stores/{storeId} | 2,066 | 200 |
+| 16 | Management | PATCH /merchants/{merchantId}/stores/{storeId} | 2,817 | 324 |
+| 17 | Management | GET /stores/{storeId} | 2,038 | 196 |
+| 18 | Management | PATCH /stores/{storeId} | 2,729 | 289 |
+| 19 | Management | POST /merchants/{merchantId}/payoutSettings | 1,747 | 153 |
+| 20 | Management | PATCH /merchants/{merchantId}/payoutSettings/{payoutSettingsId} | 1,607 | 150 |
+| 21 | Management | GET /merchants/{merchantId}/payoutSettings | 1,566 | 144 |
+| 22 | Management | GET /merchants/{merchantId}/payoutSettings/{payoutSettingsId} | 1,551 | 144 |
+| 23 | Management | DELETE /merchants/{merchantId}/payoutSettings/{payoutSettingsId} | 1,208 | 129 |
+| 24 | Management | GET /companies/{companyId}/users | 1,648 | 166 |
+| 25 | Management | POST /companies/{companyId}/users | 1,753 | 254 |
+| 26 | Management | GET /companies/{companyId}/users/{userId} | 1,414 | 146 |
+| 27 | Management | PATCH /companies/{companyId}/users/{userId} | 1,604 | 161 |
+| 28 | Management | GET /merchants/{merchantId}/users | 1,642 | 169 |
+| 29 | Management | POST /merchants/{merchantId}/users | 1,704 | 240 |
+| 30 | Management | GET /merchants/{merchantId}/users/{userId} | 1,407 | 149 |
+| 31 | Management | PATCH /merchants/{merchantId}/users/{userId} | 1,583 | 163 |
+| 32 | Management | GET /me/allowedOrigins/{originId} | 1,248 | 134 |
+| 33 | Management | DELETE /me/allowedOrigins/{originId} | 1,174 | 125 |
+| 34 | Management | GET /companies/{companyId}/apiCredentials | 2,505 | 522 |
+| 35 | Management | POST /companies/{companyId}/apiCredentials | 2,001 | 251 |
+| 36 | Management | GET /companies/{companyId}/apiCredentials/{apiCredentialId} | 1,801 | 216 |
+| 37 | Management | PATCH /companies/{companyId}/apiCredentials/{apiCredentialId} | 2,000 | 225 |
+| 38 | Management | GET /merchants/{merchantId}/apiCredentials | 2,627 | 549 |
+| 39 | Management | POST /merchants/{merchantId}/apiCredentials | 1,950 | 243 |
+| 40 | Management | GET /merchants/{merchantId}/apiCredentials/{apiCredentialId} | 1,731 | 196 |
+| 41 | Management | PATCH /merchants/{merchantId}/apiCredentials/{apiCredentialId} | 1,897 | 226 |
+| 42 | Management | POST /companies/{companyId}/apiCredentials/{apiCredentialId}/generateApiKey | 1,227 | 132 |
+| 43 | Management | POST /merchants/{merchantId}/apiCredentials/{apiCredentialId}/generateApiKey | 1,242 | 136 |
+| 44 | Management | POST /companies/{companyId}/apiCredentials/{apiCredentialId}/generateClientKey | 1,230 | 132 |
+| 45 | Management | POST /merchants/{merchantId}/apiCredentials/{apiCredentialId}/generateClientKey | 1,245 | 136 |
+| 46 | Management | GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins | 1,312 | 166 |
+| 47 | Management | POST /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins | 1,372 | 171 |
+| 48 | Management | GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId} | 1,291 | 154 |
+| 49 | Management | DELETE /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId} | 1,215 | 128 |
+| 50 | Management | GET /merchants/{merchantId}/apiCredentials/{apiCredentialId}/allowedOrigins | 1,327 | 170 |

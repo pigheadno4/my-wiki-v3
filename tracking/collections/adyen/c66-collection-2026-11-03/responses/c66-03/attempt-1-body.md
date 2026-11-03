@@ -1,0 +1,114 @@
+# GET /legalEntities/{id}/pciQuestionnaires/{pciid} - Get PCI questionnaire
+
+Returns the signed PCI questionnaire.
+
+Requests to this endpoint are subject to rate limits:
+
+Live environments: 700 requests per 5 seconds.
+
+Test environments: 200 requests per 5 seconds.
+
+Failed requests are subject to a limit of 5 failures per 10 seconds.
+
+## Servers
+- https://kyc-test.adyen.com/lem/v4
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| pciid | string | Yes | The unique identifier of the signed PCI questionnaire. |
+| id | string | Yes | The legal entity ID of the individual who signed the PCI questionnaire. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| content | string | No | The generated questionnaire in a base64 encoded format. |
+| createdAt | string | No | The date the questionnaire was created, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00 |
+| id | string | No | The unique identifier of the signed questionnaire. |
+| validUntil | string | No | The expiration date of the questionnaire, in ISO 8601 extended format. For example, 2022-12-18T10:15:30+01:00 |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | No | The error code mapped to the error message. |
+| errorType | string | No | The category of the error. |
+| message | string | No | A short explanation of the issue. |
+| pspReference | string | No | The PSP reference of the payment. |
+| status | integer | No | The HTTP response status. |
+
+## Response examples
+
+### 200 Success
+
+**success**
+```json
+{
+  "content": "JVBERi0xLjQKJcOkw7zDtsOfCjIgMCBv+f/ub0j6JPRX+E3EmC==",
+  "createdAt": "2023-03-02T17:54:19.538365Z",
+  "id": "PCID422GZ22322565HHMH48CW63CPH",
+  "validUntil": "2024-03-01T17:54:19.538365Z"
+}
+```
