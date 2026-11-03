@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-messaging-components"
 type: source
 date_ingested: 2026-08-29
-date_updated: 2026-10-25
+date_updated: 2026-11-03
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json"
   - "github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/manifest.json"
@@ -21,6 +22,14 @@ tags: [paypal, pay-later, paypal-credit, messaging, changelog, github-repository
 ## Overview
 
 Package-qualified release history for `paypal/paypal-messaging-components`. Durable implementation behavior belongs in [[source-github-paypal-messaging-components]]; this page records version transitions and their evidence.
+
+## Unreleased `default-branch@b0a201e` (ingested 2026-11-03)
+
+- **Transition:** released `1.101.0` SHA `f1092bb9c89377399bed184a786fde81bfa8b901` -> `develop` SHA `b0a201e92d95a384c2af1ceb9ab25583a0fc4df9`; work item `github-35bb69190c7798090909`, approved focused-reading delta. Six retained files modified, 720 unchanged; 58 changed upstream tests explicitly excluded under existing policy.
+- **Changes:** ShortTerm/LongTerm forward server-provided `payerId` into the existing prequalification redirect as `payer_id`, alongside offer and xprops amount. ShortTerm guards empty schedules and optional timestamps; both FR variants remove schedule arrays while keeping payment instructions. US Credit content updates its new-account date, terms-link host and punctuation, not numeric APR/fee wording.
+- **Impact/migration:** internal context and modal presentation/content; no new public prop, checkout/React API or demonstrated eligibility/repayment-rule change. Package metadata and cumulative raw changelog are unchanged at `1.101.0`; no new release, hosted rollout or browser/accessibility/payment result is established.
+- **Updated:** concept-first Pay Later facts, additive source and this separate ref ledger, company/catalog/logs; all release history and contradiction warnings preserved. The approved exclusion-inventory repair changes packet dispositions only, not raw evidence, reading selectors or collection policy.
+- **Evidence:** [snapshot](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/manifest.json), [comparison](../../../../tracking/github/repos/paypal/paypal-messaging-components/comparisons/default-branch/f1092bb--b0a201e/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-messaging-components/comparisons/default-branch/f1092bb--b0a201e/diff.patch), [repair receipt](../../../../tracking/github/repos/paypal/paypal-messaging-components/packet-repairs/github-35bb69190c7798090909/2026-11-03-exclusion-inventory/repair-receipt.json). See [[source-github-paypal-messaging-components]].
 
 ## `@paypal/messaging-components@1.101.0` (2026-10-22)
 

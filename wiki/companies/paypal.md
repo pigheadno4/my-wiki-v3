@@ -107,6 +107,8 @@ The Android counterpart, `paypal-messages-android@1.3.0`, provides a native mess
 
 The subsequent untagged Android `develop@aede075` commit enlarges demo containers for CCD2 disclaimers: Compose 40dp to 100dp, XML 80dp to 100dp. Only demos change; library implementation and documentation remain unchanged from `0424354`, with no new release or demonstrated Compose compatibility fix. See [[source-github-paypal-messages-android]] and [[changelog-github-paypal-messages-android]].
 
+The separate unreleased web Messaging checkpoint `default-branch@b0a201e` (delta ingested November 3, 2026) forwards server-provided `payerId` as `payer_id` in existing prequalification redirects, omits empty ShortTerm schedule rows and removes both FR schedule arrays while retaining payment instructions. US Credit content changes its new-account date and terms-link host. Package metadata/changelog remain at `1.101.0`; this is not a released feature, financing-rule change, new merchant/React API or hosted-rollout proof. All earlier web Messaging history remains in [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]].
+
 ### Braintree PayPal v6
 
 Braintree merchants use a separate React provider backed by Braintree's `paypalCheckoutV6` module and a server-generated Braintree client token. React 9.3.0 provides one-time, billing-agreement, and checkout-with-vault flows; React 10.1.0 adds eligibility-gated Pay Later with a prebuilt button and custom hook; React 10.2.0 adds promotional and BNPL Messages with asynchronous instance creation and content fetching. Approval flows are tokenized into a Braintree payment-method nonce and completed with a Braintree server SDK, not PayPal's Orders API. See [[paypal-braintree-integration]].
@@ -335,8 +337,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[changelog-github-paypal-checkout-components]] — package-qualified release ledger through `5.0.438`, plus independently qualified unreleased `dcd6abf` checkpoint
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` baseline through `5.0.585`: Messaging pin `1.101.0`, version-only latest delta and preserved assembly history
 - [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger
-- [[source-github-paypal-messaging-components]] — web messaging through `1.101.0`: regional/campaign content, inline-handler tracking and TikTok InfoSection; earlier releases preserved
-- [[changelog-github-paypal-messaging-components]] — package-qualified Messaging Components ledger from `1.95.1` through `1.101.0`
+- [[source-github-paypal-messaging-components]] — released `1.101.0` plus unreleased `b0a201e`: prequalification context and modal presentment; earlier releases preserved
+- [[changelog-github-paypal-messaging-components]] — package-qualified `1.95.1` through `1.101.0` ledger plus separate unreleased `b0a201e` checkpoint
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

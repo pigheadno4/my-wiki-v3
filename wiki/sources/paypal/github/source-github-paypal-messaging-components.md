@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-messaging-components"
 type: source
 date_ingested: 2026-08-29
-date_updated: 2026-10-25
+date_updated: 2026-11-03
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json"
   - "github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/manifest.json"
@@ -23,6 +24,8 @@ tags: [paypal, pay-later, paypal-credit, messaging, javascript, github-repositor
 `paypal/paypal-messaging-components` implements PayPal Credit and Pay Later promotional messaging for merchant websites. This cumulative page begins with package-qualified baseline `@paypal/messaging-components@1.95.1` at exact SHA `2bdaf940cdb0dcd29a8a3bc992eea975798d6d00`.
 
 The latest locally ingested release here is `@paypal/messaging-components@1.101.0`, released October 22, 2026, at `f1092bb9c89377399bed184a786fde81bfa8b901`. It adds TikTok PayLater information sections, with an approved exact-SHA component/style supplement. The `1.95.1` baseline and all intervening release history below remain preserved. This is not a live upstream-latest or hosted-rollout assertion.
+
+Separately, the unreleased `develop` checkpoint `default-branch@b0a201e`, exact SHA `b0a201e92d95a384c2af1ceb9ab25583a0fc4df9`, was delta ingested on November 3, 2026. It forwards prequalification payer context and changes modal presentment/content; unchanged package metadata and changelog do not establish a new release.
 
 Repository: <https://github.com/paypal/paypal-messaging-components>
 
@@ -343,6 +346,34 @@ Grounding: supplemented `InfoSection.jsx` contains `<h2 className="info-section_
 
 Evidence: [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json), [release](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.101.0/2026-10-25/manifest.json), [notes](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.101.0/2026-10-25/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/comparison.json), [details](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/comparison.md), [patch](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/diff.patch), [supplement](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json), [attachment](tracking/github/repos/paypal/paypal-messaging-components/evidence-attachments/github-68fe35a7162ca6bf6502/attachment.json). Earlier version knowledge and raw evidence remain intact; no upstream build/browser/visual/screen-reader/payment test or hosted rollout was verified.
 
+## Unreleased `default-branch@b0a201e`: Prequalification And Modal Presentment
+
+**Boundary:** released `1.101.0` SHA `f1092bb9c89377399bed184a786fde81bfa8b901` -> untagged `develop` SHA `b0a201e92d95a384c2af1ceb9ab25583a0fc4df9`. Approved delta with focused reading; six retained files modified, 720 unchanged. All six changed files were read fully, including three content JSON files beyond the packet's source selectors. The 58 upstream test changes have explicit policy-excluded dispositions. Package metadata and cumulative raw changelog are byte-identical; `1.101.0` remains the latest locally ingested released package, not a name for this later tree.
+
+### Prequalification Context
+
+Both LongTerm and ShortTerm read `payerId` from `useServerData()` and pass it with `offer: product` and xprops `amount` to the existing prequalification hook. The helper now maps it to snake-case `payer_id` in the redirect query. Existing URL encoding, token creation, click callback and `window.location.assign` behavior remain unchanged; undefined, null and empty-string values are omitted, while numeric zero is retained. This extends the existing prequalification path, not every modal click. The earlier content-fetch helper already used `payer_id`; this is not its first use anywhere in the repository.
+
+```js
+const { offer, amount, payerId } = params;
+const query = Object.entries({ offer, amount, payer_id: payerId })
+    .filter(([, val]) => typeof val !== 'undefined' && val !== null && val !== '')
+    .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+    .join('&');
+```
+
+This is internal server-provided context, not a newly documented merchant prop or proof of buyer-identity semantics, authentication, qualification rules, React-wrapper support or checkout execution. Amount continues to come from xprops rather than calculator-local state.
+
+### Schedule Rendering And Content
+
+- The shared ShortTerm fallback becomes `donutTimestamps ?? []`, and the donut row renders only when `elements.length > 0`. Timestamp fallback uses `donutTimestamps?.[index]`. Supplied nonempty schedules still render; this is not a blanket malformed-data validator or a country-coded FR-only branch.
+- Both FR short-term JSON variants remove only `donutTimestamps` and `estimatedInstallments`. Remaining copy still describes four payments, including 25% today and subsequent automatic debits. The resulting absence of the schedule graphic is presentation evidence, not a change to contractual repayment terms.
+- US `v2_ppc_ni.json` changes its new-account date from `11/1/2025` to `10/1/2026`, moves the terms URL from `www.synchronycredit.com` to `www.synchronybankterms.com` with the same `/syfterms/html/PayPalCreditApplyTerms_combo.html` path, and changes adjacent punctuation. Numeric APR/fee wording is otherwise unchanged. These are versioned authored contents, not verified current financial terms or eligibility guidance.
+
+Grounding in the current snapshot: `utils.js:157` contains `const { offer, amount, payerId } = params;`; line 160 contains `const query = Object.entries({ offer, amount, payer_id: payerId })`; ShortTerm `Content.jsx:159` contains `const elements = hasInstallments ? estimatedInstallments?.items : donutTimestamps ?? [];`, and line 174 contains `{elements.length > 0 && (`. US content line 56 contains `"https://www.synchronybankterms.com/syfterms/html/PayPalCreditApplyTerms_combo.html",`.
+
+Evidence: [snapshot](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/manifest.json), [comparison](../../../../tracking/github/repos/paypal/paypal-messaging-components/comparisons/default-branch/f1092bb--b0a201e/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-messaging-components/comparisons/default-branch/f1092bb--b0a201e/diff.patch). Older release sections and existing contradiction warnings remain intact. No build, browser, screen-reader, payment or hosted-rollout result was established; older supplements remain evidence only for their own SHAs.
+
 ## Version-Qualified Use
 
 Use this source and [[changelog-github-paypal-messaging-components]] for the `1.95.1` baseline and exact `1.96.0` through `1.101.0` changes. Earlier behavior remains version-qualified rather than overwritten by the newer release. Use official Pay Later documentation for current eligibility and product availability, [[source-github-paypal-js]] for loader and React contracts, and [[source-github-paypal-sdk-release]] for the version assembled into a particular combined SDK release.
@@ -356,6 +387,9 @@ Use this source and [[changelog-github-paypal-messaging-components]] for the `1.
 - Combined SDK bill of materials: [[source-github-paypal-sdk-release]]
 
 ## Raw Sources
+
+- Unreleased `b0a201e`: [manifest](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/manifest.json), [prequalification helper](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/files/src/components/modal/v2/lib/utils.js), [LongTerm](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/files/src/components/modal/v2/parts/views/LongTerm/Content.jsx), [ShortTerm](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/files/src/components/modal/v2/parts/views/ShortTerm/Content.jsx).
+- Unreleased content: [FR](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/files/content/modals/FR/short_term.json), [FR English](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/files/content/modals/FR/short_term_en.json), [US Credit](../../../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/files/content/modals/US/v2_ppc_ni.json).
 
 - `1.101.0`: [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json), [ShortTerm](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/files/src/components/modal/v2/parts/views/ShortTerm/Content.jsx), [TikTok content](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/files/content/modals/US/PLHub/tiktok_paypal_pay_later_short_term_us.json).
 - `1.101.0` supplement: [manifest](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json), [InfoSection](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/files/src/components/modal/v2/parts/InfoSection.jsx), [component style](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/files/src/components/modal/v2/styles/components/_info-section.scss), [style entry](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/files/src/components/modal/v2/styles/index.scss), [attachment](tracking/github/repos/paypal/paypal-messaging-components/evidence-attachments/github-68fe35a7162ca6bf6502/attachment.json).

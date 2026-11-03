@@ -6,6 +6,12 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-03] ingest | Messaging unreleased `default-branch@b0a201e`
+
+- Approved focused-reading delta `github-35bb69190c7798090909`, from released `1.101.0` (`f1092bb`) to exact `develop` SHA `b0a201e92d95a384c2af1ceb9ab25583a0fc4df9`. All six changed retained files, affected prior code and cumulative source/changelog read; five located grounding excerpts before concept-first edits. Generated/unchanged evidence checked mechanically; no whole-repository read claim.
+- Prequalification server context adds `payer_id`; shared ShortTerm schedule guard and both FR schedule-array removals change presentment; US Credit copy changes date/terms host. Package metadata and raw changelog unchanged. No released/hosted feature, new merchant/React API, eligibility or repayment-term assertion.
+- Repaired packet explicitly disposes 58 changed tests as policy-excluded; original packet archived. Raw evidence and collection policy unchanged. Additive source/ref ledger, concept, company/catalog updated; source_count remains 177, all older history and contradiction warnings retained. No upstream execution, commit or push.
+
 ## [2026-11-03] ingest | SDK release assembly `5.0.585`
 
 - Approved serial delta `github-5c62552d1219036b904a`, SHA `84f436cecece9367c3e87a3c172e4b37c6920ffc`, claimed only after `5.0.584` completed. Complete assigned delta raw and cumulative history read; four exact package excerpts before concept-first edits. Retained package version only; twelve direct pins and ten other retained files unchanged, Messaging stays `1.101.0`, Checkout `5.0.438`. No whole-repository, deployment or untagged Checkout inclusion claim.

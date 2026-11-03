@@ -97,6 +97,8 @@ At `@paypal/messaging-components@1.100.0` (October 22, 2026), inline click/apply
 
 At `@paypal/messaging-components@1.101.0` (October 22, 2026), TikTok PayLater short-term modal content adds spending-power and autopay-method information. The ShortTerm view conditionally renders those objects through `InfoSection`, whose exact-SHA supplement renders an H2 and HTML paragraphs with wired spacing, typography and dark-mode styles. The component does not sanitize paragraph HTML locally; upstream trust and runtime safety were not tested. Spending power is described as an estimate, not a guaranteed credit line; repayment-method updates occur within the buyer's PayPal account, not a new merchant editing API. All earlier history remains valid for its versions; see [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]].
 
+At the separate, unreleased Messaging Components checkpoint `default-branch@b0a201e` (delta ingested November 3, 2026), short-/long-term prequalification forwards server-provided `payerId` as URL parameter `payer_id`, alongside the existing offer and xprops amount. The shared ShortTerm renderer omits its donut row when no schedule entries exist; French-language and English-language FR content remove both schedule arrays, while retaining four-payment instructions. This is not evidence of changed repayment terms. US Credit modal content updates its new-account date and terms-link host. Package metadata and raw changelog remain at `1.101.0`; this checkpoint does not prove a released/hosted feature, new merchant prop, buyer identity contract, eligibility or checkout/React API. See [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]].
+
 ### Native iOS Messages
 
 The independent `paypal-messages-ios@1.2.0` package renders Pay Later and PayPal Credit promotion in UIKit or through a SwiftUI wrapper. It accepts client ID, environment, amount, placement, preferred offer, buyer country, language/locale, and style context; PayPal's response can still select a generic message. Buyer-country override requires PayPal approval.
@@ -141,8 +143,8 @@ Pay Later offerings differ by country — Australia, France, Germany, Italy, Spa
 
 - [[source-paypal-pay-later]] — Pay Later by country (US, AU, CA, FR, DE): product tables, purchase ranges, eligibility, bilingual support (CA)
 - [[source-github-paypal-js]] — package-qualified React v10.1.2 Messages typing and v10.2.0 Braintree Messages hook behavior
-- [[source-github-paypal-messaging-components]] — web messaging through `1.101.0`: versioned regional/campaign content, inline-handler tracking and TikTok InfoSection; earlier evidence preserved
-- [[changelog-github-paypal-messaging-components]] — package-qualified web Messaging Components release ledger from `1.95.1` through `1.101.0`
+- [[source-github-paypal-messaging-components]] — web messaging through released `1.101.0` plus unreleased `b0a201e`: prequalification context and modal presentment; earlier evidence preserved
+- [[changelog-github-paypal-messaging-components]] — package-qualified `1.95.1` through `1.101.0` ledger plus separate unreleased `b0a201e` checkpoint
 - [[source-github-paypal-messages-ios]] — native iOS Pay Later and PayPal Credit message configuration, rendering, modal, and lifecycle
 - [[source-github-paypal-messages-android]] — native Android message view, modal, callbacks, caching, analytics, availability warning, and `1.3.0` source risks
 - [[changelog-github-paypal-messages-android]] — managed Android `1.3.0` release plus cumulative earlier stable context

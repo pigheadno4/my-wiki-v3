@@ -1,0 +1,178 @@
+diff --git a/content/modals/FR/short_term.json b/content/modals/FR/short_term.json
+index 960c1473..868083e8 100644
+--- a/content/modals/FR/short_term.json
++++ b/content/modals/FR/short_term.json
+@@ -30,15 +30,6 @@
+ 
+         "subheadline": "Disponible pour les achats de <span>{formattedMinAmount} à {formattedMaxAmount}.</span> Pas de frais de dossier ni de frais de retard. Cette information est fournie par PayPal.",
+         "qualifyingSubheadline": "Payez votre achat de {formattedTransactionAmount} en 4 fois sans frais de dossier ni frais de retard.",
+-        "donutTimestamps": ["Aujourd'hui", "1 mois", "2 mois", "3 mois"],
+-        "estimatedInstallments": {
+-            "items": [
+-                { "total_payment:": "{formattedPeriodicPayment}", "payment_date": "Aujourd'hui" },
+-                { "total_payment:": "{formattedPeriodicPayment}", "payment_date": "1 mois" },
+-                { "total_payment:": "{formattedPeriodicPayment}", "payment_date": "2 mois" },
+-                { "total_payment:": "{formattedPeriodicPayment}", "payment_date": "3 mois" }
+-            ]
+-        },
+ 
+         "instructions": [
+             "Choisissez PayPal au moment du paiement pour bénéficier du Paiement en 4X.",
+diff --git a/content/modals/FR/short_term_en.json b/content/modals/FR/short_term_en.json
+index 37ad8dd3..d6f53818 100644
+--- a/content/modals/FR/short_term_en.json
++++ b/content/modals/FR/short_term_en.json
+@@ -30,15 +30,6 @@
+ 
+         "subheadline": "Available for purchases from <span>{formattedMinAmount} to {formattedMaxAmount}.</span> No administration fees or late fees. This information is provided by PayPal.",
+         "qualifyingSubheadline": "Pay for your purchase of {formattedTransactionAmount} in 4 instalments without administration fees or late fees.",
+-        "donutTimestamps": ["Today", "1 month", "2 months", "3 months"],
+-        "estimatedInstallments": {
+-            "items": [
+-                { "total_payment:": "{formattedPeriodicPayment}", "payment_date": "Today" },
+-                { "total_payment:": "{formattedPeriodicPayment}", "payment_date": "1 month" },
+-                { "total_payment:": "{formattedPeriodicPayment}", "payment_date": "2 months" },
+-                { "total_payment:": "{formattedPeriodicPayment}", "payment_date": "3 months" }
+-            ]
+-        },
+ 
+         "instructions": [
+             "Choose PayPal at checkout to benefit from Pay in 4X. ",
+diff --git a/content/modals/US/v2_ppc_ni.json b/content/modals/US/v2_ppc_ni.json
+index bb6e69dd..319e4551 100644
+--- a/content/modals/US/v2_ppc_ni.json
++++ b/content/modals/US/v2_ppc_ni.json
+@@ -50,10 +50,10 @@
+             "All PayPal Credit Card and PayPal Credit purchases",
+             [
+                 [
+-                    "New Accounts as of 11/1/2025: Variable Purchase and Cash APR 29.89%. Variable Penalty APR 34.49%. APRs will vary with the market based on the Prime Rate. Min interest charge $2. PayPal Credit Mastercard: Cash Advance Fee 5% ($10 min). Foreign Trans Fee 3%. For current APRs, see account",
++                    "New Accounts as of 10/1/2026: Variable Purchase and Cash APR 29.89%. Variable Penalty APR 34.49%. APRs will vary with the market based on the Prime Rate. Min interest charge $2. PayPal Credit Mastercard: Cash Advance Fee 5% ($10 min), Foreign Trans Fee 3%. For current APRs, see account",
+                     [
+                         "Terms and Conditions",
+-                        "https://www.synchronycredit.com/syfterms/html/PayPalCreditApplyTerms_combo.html",
++                        "https://www.synchronybankterms.com/syfterms/html/PayPalCreditApplyTerms_combo.html",
+                         "."
+                     ]
+                 ]
+diff --git a/src/components/modal/v2/lib/utils.js b/src/components/modal/v2/lib/utils.js
+index dd6fdfa4..f0bf7fcd 100644
+--- a/src/components/modal/v2/lib/utils.js
++++ b/src/components/modal/v2/lib/utils.js
+@@ -154,10 +154,10 @@ export function createPrequalToken() {
+  * @param {Object} params - query parameters to append to the URL
+  */
+ export function openPrequalification(params = {}) {
+-    const { offer, amount } = params;
++    const { offer, amount, payerId } = params;
+     const token = createPrequalToken();
+     const baseUrl = getGlobalUrl('PREQUALIFICATION');
+-    const query = Object.entries({ offer, amount })
++    const query = Object.entries({ offer, amount, payer_id: payerId })
+         .filter(([, val]) => typeof val !== 'undefined' && val !== null && val !== '')
+         // Encode values to keep URL valid; keys are expected to be safe identifiers.
+         .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+diff --git a/src/components/modal/v2/parts/views/LongTerm/Content.jsx b/src/components/modal/v2/parts/views/LongTerm/Content.jsx
+index b0ab9e61..708d00c9 100644
+--- a/src/components/modal/v2/parts/views/LongTerm/Content.jsx
++++ b/src/components/modal/v2/parts/views/LongTerm/Content.jsx
+@@ -96,11 +96,12 @@ export const LongTerm = ({
+ }) => {
+     const [expandedState, setExpandedState] = useState(false);
+     const { amount, onClick, onClose } = useXProps();
+-    const { views, country } = useServerData();
++    const { views, country, payerId } = useServerData();
+     const spendingPowerClickTitle = 'Check Spending Power';
+     const handlePrequalification = usePrequalification(spendingPowerClickTitle, onClick, {
+         offer: product,
+-        amount
++        amount,
++        payerId
+     });
+     const { offers } = views.find(view => view.offers);
+     const { minAmount, maxAmount } = getComputedVariables(offers);
+diff --git a/src/components/modal/v2/parts/views/ShortTerm/Content.jsx b/src/components/modal/v2/parts/views/ShortTerm/Content.jsx
+index cd2f8259..0313bef2 100644
+--- a/src/components/modal/v2/parts/views/ShortTerm/Content.jsx
++++ b/src/components/modal/v2/parts/views/ShortTerm/Content.jsx
+@@ -49,12 +49,13 @@ export const ShortTerm = ({
+     use5Dot1Design,
+     useDarkMode
+ }) => {
+-    const { views, country } = useServerData();
++    const { views, country, payerId } = useServerData();
+     const { amount, onClick, onClose } = useXProps();
+     const spendingPowerClickTitle = 'Check Spending Power';
+     const handlePrequalification = usePrequalification(spendingPowerClickTitle, onClick, {
+         offer: product,
+-        amount
++        amount,
++        payerId
+     });
+ 
+     const isQualifying = qualifying === 'true';
+@@ -155,7 +156,7 @@ export const ShortTerm = ({
+     };
+ 
+     const hasInstallments = Object.keys(estimatedInstallments?.items ?? {}).length;
+-    const elements = hasInstallments ? estimatedInstallments?.items : donutTimestamps;
++    const elements = hasInstallments ? estimatedInstallments?.items : donutTimestamps ?? [];
+ 
+     // regex replaces EUR with the euro symbol €
+     const localeFormattedPayment = periodicPayment.replace(/(\s?EUR)/g, ' €');
+@@ -170,30 +171,32 @@ export const ShortTerm = ({
+                     } ${countryClassName}`}
+                 >
+                     <div className="content__col">
+-                        <div className={`content__row donuts ${useNewCheckoutDesign === 'true' ? 'checkout' : ''}`}>
+-                            <div className="donuts__container">
+-                                {elements.map((installment, index) => (
+-                                    <Donut
+-                                        key={index}
+-                                        useV4Design={useV4Design}
+-                                        useV5Design={useV5Design}
+-                                        use5Dot1Design={use5Dot1Design}
+-                                        useNewCheckoutDesign={useNewCheckoutDesign}
+-                                        useDarkMode={useDarkMode}
+-                                        qualifying={qualifying}
+-                                        // regex replaces EUR with the euro symbol €
+-                                        periodicPayment={
+-                                            installment?.total_payment
+-                                                ? installment.total_payment.replace(/(\s?EUR)/g, ' €')
+-                                                : localeFormattedPayment
+-                                        }
+-                                        currentNum={index + 1}
+-                                        timeStamp={installment?.payment_date ?? donutTimestamps[index]}
+-                                        numOfPayments={elements.length}
+-                                    />
+-                                ))}
++                        {elements.length > 0 && (
++                            <div className={`content__row donuts ${useNewCheckoutDesign === 'true' ? 'checkout' : ''}`}>
++                                <div className="donuts__container">
++                                    {elements.map((installment, index) => (
++                                        <Donut
++                                            key={index}
++                                            useV4Design={useV4Design}
++                                            useV5Design={useV5Design}
++                                            use5Dot1Design={use5Dot1Design}
++                                            useNewCheckoutDesign={useNewCheckoutDesign}
++                                            useDarkMode={useDarkMode}
++                                            qualifying={qualifying}
++                                            // regex replaces EUR with the euro symbol €
++                                            periodicPayment={
++                                                installment?.total_payment
++                                                    ? installment.total_payment.replace(/(\s?EUR)/g, ' €')
++                                                    : localeFormattedPayment
++                                            }
++                                            currentNum={index + 1}
++                                            timeStamp={installment?.payment_date ?? donutTimestamps?.[index]}
++                                            numOfPayments={elements.length}
++                                        />
++                                    ))}
++                                </div>
+                             </div>
+-                        </div>
++                        )}
+                         {showPreapprovalContent && (
+                             <PreapprovalDisclaimer
+                                 preapprovalDisclaimerBody={preapprovalDisclaimerBody}

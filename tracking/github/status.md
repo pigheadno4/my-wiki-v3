@@ -1290,6 +1290,33 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.20.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.19.0--23.20.0/comparison.json)
 
+## `github-35bb69190c7798090909`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `b0a201e92d95a384c2af1ceb9ab25583a0fc4df9`
+- Collection date: `2026-11-03`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-11-03-b0a201e/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-35bb69190c7798090909/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@b0a201e` (recommended `delta`)
+  Ref: `develop`
+  From SHA: `f1092bb9c89377399bed184a786fde81bfa8b901`
+  To SHA: `b0a201e92d95a384c2af1ceb9ab25583a0fc4df9`
+  Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/default-branch/f1092bb--b0a201e/comparison.json)
+
 ## `github-3630ef97f4ea4cfafb7b`
 
 - Repository: `stripe/stripe-android`
