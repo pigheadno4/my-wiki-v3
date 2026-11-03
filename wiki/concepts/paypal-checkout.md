@@ -261,6 +261,16 @@ Resolution after the assembly checkpoint (2026-10-15): Messaging `1.99.0` is now
 
 The October 19, 2026 assembly (delta ingested October 25) advances Checkout Components `5.0.437` -> `5.0.438`, Common Components `1.0.62` -> `1.0.63`, Messaging Components `1.99.0` -> `1.99.1`, and SDK Client `4.0.204` -> `4.0.205`. Eight other direct pins and ten other retained files remain unchanged. Only retained `package.json` changes; wrapper/workflows, scripts and engine requirements do not. These pins establish composition, not hosted rollout, eligibility or a merchant migration. Consult independent component evidence before assigning behavior; assembly numbering does not update the PayPal JS loader or React wrapper. Prior assembly history remains above. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
 
+### SDK release assembly update: `@paypal/sdk-release@5.0.584`
+
+At exact SHA `3d4fd1acbe48ca5fffb6900d4f02f20aa96fafb0` (delta ingested November 3, 2026), Messaging Components advances `1.99.1` -> `1.101.0`; the other eleven direct pins remain unchanged, including Checkout `5.0.438`, Common `1.0.63` and SDK Client `4.0.205`. Only retained `package.json` changes; wrapper, workflows and scripts remain unchanged. Component behavior remains independently owned by [[source-github-paypal-messaging-components]], not inferred from the assembly pin.
+
+This manifest does not establish that the unreleased Checkout Components `default-branch@dcd6abf` interaction/masking changes are included. Neither matching package text nor assembly numbering proves inclusion of a later untagged SHA. Excluded lockfile/CDN artifacts, hosted traffic and eligibility remain unverified; earlier assembly and activation-documentation warnings stay intact. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
+### SDK release assembly update: `@paypal/sdk-release@5.0.585`
+
+At SHA `84f436cecece9367c3e87a3c172e4b37c6920ffc` (delta ingested November 3, 2026, after `5.0.584`), only the retained package version changes. All twelve direct component pins and ten other retained files are unchanged; Messaging remains `1.101.0` and Checkout remains `5.0.438`. This is not proof that excluded lockfile/CDN contents, deployed traffic or component behavior are unchanged, and does not establish inclusion of untagged Checkout `dcd6abf`. No PayPal JS/React API or merchant migration follows from this version-only retained change. Earlier assembly knowledge stays above. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
 
 

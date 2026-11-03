@@ -2,9 +2,11 @@
 title: "GitHub changelog: paypal/paypal-sdk-release"
 type: source
 date_ingested: 2026-08-21
-date_updated: 2026-10-25
+date_updated: 2026-11-03
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-sdk-release/snapshots/2026-11-03-84f436c/manifest.json"
+  - "github/paypal/paypal-sdk-release/snapshots/2026-11-03-3d4fd1a/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-15-9e81e2b/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-15-d37489b/manifest.json"
@@ -26,6 +28,22 @@ tags: [paypal, javascript-sdk, release-automation, changelog, github-repository]
 ## Overview
 
 Package-qualified release history for `paypal/paypal-sdk-release`. Durable assembly and release behavior belongs in [[source-github-paypal-sdk-release]]; this page records version transitions and their evidence.
+
+## `@paypal/sdk-release@5.0.585` (2026-11-03 Asia/Shanghai)
+
+- **Transition:** `@paypal/sdk-release@5.0.584` -> `@paypal/sdk-release@5.0.585`; SHA `84f436cecece9367c3e87a3c172e4b37c6920ffc`; serial delta ingest 2026-11-03 after `5.0.584` completed, item `github-5c62552d1219036b904a`. Raw release timestamp `2026-11-02T20:15:27Z`.
+- **Changes:** retained package version only. All twelve direct pins unchanged, including Messaging `1.101.0`, Checkout `5.0.438`, Common `1.0.63`, SDK Client `4.0.205`; all other package fields and ten other retained files unchanged.
+- **Impact/migration:** no new retained API/tooling behavior or merchant migration established. No proof of unreleased Checkout `dcd6abf` inclusion or automatic PayPal JS/React update. Excluded lockfile/CDN contents and deployment can change independently; unchanged pins are not a whole-repository or deployed-artifact equivalence claim. Notes unavailable; historical activation warning retained.
+- **Reading/validation:** complete assigned delta evidence and cumulative wiki history read; four exact excerpts extracted. Twenty-two prior/current size/SHA-256/Git blob checks; ten files byte-equal. All 220 upstream paths disposed (one retained, 219 excluded), no gaps/unclassified changes. Concept first, additive source/changelog, company/catalog/logs; source_count 177 unchanged. No upstream build/browser/payment execution.
+- **Evidence:** [snapshot](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-03-84f436c/manifest.json), [package](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-03-84f436c/files/package.json), [release](../../../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.585/2026-11-03/manifest.json), [comparison](../../../../tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.584--5.0.585/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.584--5.0.585/diff.patch).
+
+## `@paypal/sdk-release@5.0.584` (2026-10-27 Asia/Shanghai)
+
+- **Transition:** `@paypal/sdk-release@5.0.583` -> `@paypal/sdk-release@5.0.584`; SHA `3d4fd1acbe48ca5fffb6900d4f02f20aa96fafb0`; approved serial delta ingest 2026-11-03, item `github-edf0e43e5de93cafa1bb`. Raw release timestamp `2026-10-26T20:19:53Z`.
+- **Changes:** Messaging Components `1.99.1` -> `1.101.0`; the other eleven direct pins remain unchanged. Checkout stays `5.0.438`, Common `1.0.63`, SDK Client `4.0.205`. Only retained `package.json` changes; ten other retained files, scripts and engine requirements unchanged. The packet's empty dependency-change array does not override the direct manifest edit.
+- **Impact/migration:** composition only. Independent Messaging implementation remains in its own source/changelog. No evidence that unreleased Checkout `dcd6abf` code is included, no automatic PayPal JS/React version update, and no merchant migration or hosted deployment established. Excluded lockfile/CDN contents and transitive behavior remain outside scope; notes unavailable.
+- **Reading/validation:** complete assigned delta evidence and cumulative wiki history read, four exact excerpts extracted, 22 prior/current file sizes/SHA-256/Git blob IDs verified; ten unchanged files byte-equal. All 220 upstream paths disposed (one retained, 219 excluded). Concept first, additive source/changelog, company/catalog/logs; source_count 177 unchanged. No upstream build/browser/payment execution.
+- **Evidence:** [snapshot](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-03-3d4fd1a/manifest.json), [package](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-03-3d4fd1a/files/package.json), [release](../../../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.584/2026-11-03/manifest.json), [comparison](../../../../tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.583--5.0.584/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.583--5.0.584/diff.patch).
 
 ## `@paypal/sdk-release@5.0.583` (2026-10-19)
 

@@ -6,6 +6,19 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-03] ingest | SDK release assembly `5.0.585`
+
+- Approved serial delta `github-5c62552d1219036b904a`, SHA `84f436cecece9367c3e87a3c172e4b37c6920ffc`, claimed only after `5.0.584` completed. Complete assigned delta raw and cumulative history read; four exact package excerpts before concept-first edits. Retained package version only; twelve direct pins and ten other retained files unchanged, Messaging stays `1.101.0`, Checkout `5.0.438`. No whole-repository, deployment or untagged Checkout inclusion claim.
+- Twenty-two snapshot size/SHA-256/Git blob checks, ten unchanged files byte-equal, all 220 upstream paths disposed (one retained, 219 excluded). Earlier raw/version/activation warning preserved. Source/changelog, concept, company/catalog/logs updated; source_count 177 unchanged. Review: `tracking/github/repos/paypal/paypal-sdk-release/ingest-review-2026-11-03.md`. No upstream build/browser/payment execution, commit or push.
+- Serial close: both versions validated and completed one by one; four typed pages, whitespace, exact packet rebuilds, historical raw/body preservation, local evidence links and catalog uniqueness pass. Latest accepted assembly `5.0.585`; zero pending items. Next: report per-version findings and await scoped commit/push approval.
+- Post-completion global validation: same 13 unrelated historical errors, no SDK release errors, zero pending items. Documentation-only ingest; no new full unit-suite run.
+
+## [2026-11-03] ingest | SDK release assembly `5.0.584`
+
+- Approved serial delta `github-edf0e43e5de93cafa1bb`, SHA `3d4fd1acbe48ca5fffb6900d4f02f20aa96fafb0`, after `5.0.583`. Complete assigned changed package, manifests/release/comparison and cumulative wiki source/changelog read; four package excerpts located before concept-first edits. Messaging pin rises `1.99.1` -> `1.101.0`; eleven other direct pins unchanged. Packet dependency-change array is empty despite the direct manifest edit; not treated as exhaustive.
+- One modified retained file, ten unchanged, 22 file size/SHA-256/Git blob checks; all 220 upstream paths disposed (one retained, 219 excluded lockfile/CDN paths). Package/workflows/engines otherwise unchanged; no component behavior, hosted rollout or inclusion of unreleased Checkout `dcd6abf` inferred. Existing activation warning and history retained; source_count 177 unchanged. No upstream build/browser/payment test, commit or push. Validate and close before `5.0.585`.
+- Serial close: four typed pages, whitespace, history-preservation and exact packet/Markdown rebuild checks pass; item marked `ingested` before claiming `5.0.585`.
+
 ## [2026-11-03] ingest | Checkout Components unreleased `dcd6abf`
 
 - Approved full additive ingest with focused reading, `github-7eb03c30a9c79e1870cd`: exact released `5.0.438` SHA `294b50a11d61ccb458877776e5ba8d481781014b` to main `dcd6abfc340371666a0428d7292a2cab32c2bbca`. All 16 changed retained files (5,914 lines), affected prior code, comparison and complete cumulative wiki source/changelog read. Five exact helper excerpts extracted before concept-first edits; unchanged/generated inventories and old generated/changelog content checked mechanically under the explicit approval.

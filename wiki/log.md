@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-11-03] ingest | PayPal SDK release `5.0.585`
+
+- Approved serial delta after completed `5.0.584`: package version only, all twelve direct pins and ten other retained files unchanged. Messaging stays `1.101.0`, Checkout `5.0.438`; excluded artifacts/deployment and unreleased Checkout inclusion remain unverified. Prior history preserved; details [[paypal-log]], [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]]. No upstream execution, commit or push.
+
+## [2026-11-03] ingest | PayPal SDK release `5.0.584`
+
+- Approved serial delta: Messaging component pin `1.99.1` -> `1.101.0`, other eleven direct pins unchanged; Checkout remains `5.0.438`, not evidence of unreleased `dcd6abf` inclusion. Earlier history preserved; Checkout concept, company/catalog/logs updated, source_count unchanged. Details [[paypal-log]], [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]]. No upstream execution, commit or push.
+
 ## [2026-11-03] ingest | Checkout Components unreleased `dcd6abf`
 
 - Approved full additive ingest with focused reading: pre-interaction masking metadata and flush-before-interaction relay across component instances; not proof of server masking, deployed behavior, compliance or new merchant APIs. Exact SHA checkpoint remains separate from accepted release `5.0.438`. Earlier history/raw preserved; concept first, company/catalog/logs updated, source_count unchanged. Details [[paypal-log]], [[source-github-paypal-checkout-components]], [[changelog-github-paypal-checkout-components]]. No upstream build/browser/payment execution, commit or push.
