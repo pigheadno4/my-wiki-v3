@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-current",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GET /balanceAccounts/{id}/transferLimits/current \u2014 Current transfer-limit lookup | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/current\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/current/2026-11-03.md\"\ntags: [adyen, balance-platform, business-accounts, transfer-limits, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `GET /balanceAccounts/{id}/transferLimits/current` to read transfer limits described as currently applying to a balance account. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` is in the URL, while the server path identifies v2. See [[adyen-business-accounts]] for transfer-limit context. [Raw: lines 5\u201310]\n\n## Key takeaways\n\n- The required string path `id` identifies the balance account. Optional query filters are `transferType` (`instant` priority or `all` priorities) and `scope` (`perTransaction` or `perDay`). The page lists no request body, caller-role name, filter defaults, pagination, list limit or GET idempotency contract. [Raw: lines 12\u201324]\n- A 200 means the request succeeded and requires a `transferLimits` array. In each returned limit, the table requires `amount` with three-character ISO currency and integer minor-unit value, limit `id`, `limitStatus`, `scope`, `startsAt` and `transferType`. Optional fields include `endsAt`, reference and `scaInformation`; if `scaInformation` is present, its `status` is required. Scope determines whether the maximum is per transfer or per day. See the raw table for exact status, SCA and exemption enums and date formats. [Raw: lines 26\u201347]\n\n> [!warning] Contradiction\n> The purpose says this route gets limits that currently apply [Raw: line 7], but the returned `limitStatus` enum also includes `inactive`, `pendingSCA` and `scheduled` [Raw: line 40]. The snapshot does not resolve whether such rows are actually returned by this `current` route. Do not treat route naming or a listed row alone as proof that every limit is active.\n\n- `limitStatus` distinguishes active, inactive, pending SCA and future-scheduled states. `scaInformation.status` distinguishes not performed, pending and performed; `notPerformed` can mean failed authentication or an exemption. `endsAt` can make a limit inactive; absent an end date, the description says it stays active until overridden. These response fields describe limit state, not whether a transfer was approved, booked or received. [Raw: lines 38\u201346]\n- The 200 example shows one active per-day instant EUR limit with `initialLimit` exemption and `notPerformed` SCA status. It illustrates one record, not a real account's current limits or a compliance determination. Documented errors are 404, described as one transfer limit not found, and 422 validation; this page lists no 401/403 response, role, approval action, activation event, version/conflict behavior or transfer outcome. [Raw: lines 50\u2013113]\n\n## Detail locators\n\n- Purpose, TEST v2 server, balance-account ID and optional filters: pinned raw lines 5\u201324.\n- 200 amount, scope, state, SCA fields and dates: lines 26\u201347; sample: lines 87\u2013113.\n- Error responses and their optional problem-body fields: lines 50\u201385.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts transfer-limit context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/current/2026-11-03|Current balance-account transfer limits \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Get all transfer limits that currently apply to a balance account using the unique `id` of the balance account.",
+      "location": "line 7"
+    },
+    {
+      "text": "| transferType | string | No | The type of transfer to which the limit applies.",
+      "location": "line 23"
+    },
+    {
+      "text": "| transferLimits | array of object | Yes | List of available transfer limits. |",
+      "location": "line 34"
+    },
+    {
+      "text": "- **inactive**: the limit is currently inactive.  - **pendingSCA**: the limit is pending until your user performs SCA.  - **scheduled**: the limit is scheduled to become active at a future date.",
+      "location": "line 40"
+    },
+    {
+      "text": "- **notPerformed**: the requester was unable to successfully authenticate the request using SCA, or has an SCA exemption.",
+      "location": "line 44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-current-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-current]] \u2014 2026-11-03-captured Balance Platform API v2 TEST GET for balance-account transfer-limit readback by optional transfer type and scope; returned limit/SCA state is not a transfer outcome.\n\n> [!warning] Contradiction\n> The source describes limits that currently apply, while its response status enum also allows inactive, pending-SCA and scheduled values. It does not say whether such rows appear on this `current` route. [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-current]]",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "The route purpose says currently applying limits, while the response status enum includes inactive, pendingSCA and scheduled."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/current/2026-11-03.md",
+  "raw_sha256": "304a082b9742969a6e0b8c3825ce41bdff885fb6eec05ea5a967842d718a024c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-balanceplatforms-id-transferlimits",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Create a platform transfer limit\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balancePlatforms/(id)/transferLimits\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/balancePlatforms/(id)/transferLimits/2026-11-03.md\"\ntags: [adyen, balance-platform, business-accounts, transfer-limits, sca, api-reference]\n---\n\n## Overview\n\nThe 2026-11-03-captured Balance Platform API v2 TEST reference describes `POST /balancePlatforms/{id}/transferLimits` to create a transfer limit for the balance platform identified by the required path `id`. The platform ID is distinct from the returned transfer-limit `id`. This is a configuration-resource creation route; a `200` response does not by itself mean that the limit is active, that SCA is complete, or that any transfer was executed. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The required body fields are `amount` (required `currency` and integer `value` in minor units), `scope` (`perTransaction` or `perDay`) and `transferType` (`instant` or `all`). The amount is the maximum per transfer or per day according to scope. Optional `reference`, `startsAt`, `endsAt` and `scaInformation` have separate roles; a future `startsAt` schedules the limit, and the page says that without `endsAt` it stays active until overridden by a new limit.\n- Optional `scaInformation.exemption` lists `lowerLimit`, `notRegulated`, `setByPlatform`, `initialLimit` and `alreadyPerformed`. Optional `scaOnApproval=true` allows initiating SCA later during approval for all pending transfer limits; `false` is the stated default and means initiating SCA immediately after submitting the request. These request choices are not proof of an exemption, authentication or approval outcome.\n- `200` returns required `amount`, transfer-limit `id`, `limitStatus`, `scope`, `startsAt` and `transferType`; `endsAt`, `reference` and `scaInformation` are optional. When `scaInformation` is returned, its nested `status` is marked required with `notPerformed`, `pending` and `performed` values. `limitStatus` can be `active`, `inactive`, `pendingSCA` or `scheduled`. The example returns `pendingSCA` with SCA `pending`, illustrating that successful creation need not mean active enforcement.\n- The request example gives `endsAt` as `2026-08-14T00:00:00+01:00`, while the `200` response example gives `2026-08-13T23:00:00+01:00`. Both print `+01:00`; the snapshot does not explain the difference, so do not infer a timestamp-conversion or duration rule from the example.\n- The captured server is TEST `/bcl/v2`. This endpoint lists `404` (one of the transfer limits could not be found) and `422` (request validation error), but no operation-specific authentication, idempotency, conflict, approval-completion or propagation guarantee. The separate [[source-adyen-docs-business-accounts-use-transfer-limits-balance-platform|balance-platform transfer-limits guide]] specifies an Adyen for Platforms Business Accounts integration, Configuration API Balance platform base role, and Transfer and Transaction webhook subscriptions. It scopes transfer limits to outgoing external transfers, excluding internal and incoming external transfers (guide raw lines 15\u201332). These guide prerequisites are not stated in this API endpoint table.\n- The same guide says only pending or scheduled platform limits can be deleted and an active limit must be overridden by creating a new limit (guide raw lines 246\u2013250). This POST reference itself does not define deletion. Neither source establishes transfer authorization, booking, settlement or bank receipt.\n\n> [!warning] Contradiction\n> This API request table marks the parent `scaInformation` and its nested `exemption` optional and lists five possible exemptions (API raw lines 28\u201330). The balance-platform guide's POST setup table marks `scaInformation.exemption` required and instructs `setByPlatform` (guide raw lines 44\u201360). The guide's how-it-works steps say creation is `scheduled` (guide raw lines 34\u201340), while this API response schema allows `active`, `inactive`, `pendingSCA` and `scheduled`, and its example returns `pendingSCA` (API raw lines 66\u201374, 125\u2013134). Do not treat either guide statement as an unconditional API guarantee; check the applicable integration requirements and returned status.\n\n## Detail locators\n\n- Raw lines 5\u201333: operation, TEST server, required path and body schema, optional scheduling and SCA controls.\n- Raw lines 35\u201353: request example, including its `endsAt` timestamp.\n- Raw lines 54\u201374: `200` response fields, requiredness and status meanings.\n- Raw lines 77\u2013112: `404` and `422` problem-response schemas.\n- Raw lines 114\u2013135: `200` example with `pendingSCA` and differing `endsAt`.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts transfer-limit concept.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-platform]] \u2014 separate platform-limit setup, scope, credential role, webhook and deletion guide; see the contradiction above.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/balancePlatforms/(id)/transferLimits/2026-11-03|Create platform transfer limit API reference (2026-11-03)]]",
+  "quotes": [
+    {
+      "text": "Create a transfer limit for your balance platform using the unique `id` of your balance platform.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The amount for the transfer limit. This is the maximum amount allowed per transfer or per day based on the `scope` of the limit.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "**false** (default): you initiate SCA immediately after submitting the transfer limit request.",
+      "location": "raw line 30"
+    },
+    {
+      "text": "**pendingSCA**: the limit is pending until your user performs SCA.",
+      "location": "raw line 67"
+    },
+    {
+      "text": "\"endsAt\": \"2026-08-13T23:00:00+01:00\"",
+      "location": "raw line 125"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-post-platform-transfer-limit-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceplatforms-id-transferlimits]] \u2014 2026-11-03-captured Balance Platform API v2 TEST POST to create a platform transfer-limit configuration by platform ID, with amount/scope/type, optional SCA timing and scheduled or pending status; `200` is not transfer or SCA-completion proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/balancePlatforms/(id)/transferLimits/2026-11-03.md",
+  "raw_sha256": "f61a39fadfc688c05591a90c2b8f1634b8cd63043cb4f163aca52a35c7ecf2aa",
+  "status": "candidate_ready"
+}

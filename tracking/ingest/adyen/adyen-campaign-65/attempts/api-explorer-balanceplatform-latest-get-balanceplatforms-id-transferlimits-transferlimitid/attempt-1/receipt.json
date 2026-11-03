@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceplatforms-id-transferlimits-transferlimitid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GET /balancePlatforms/{id}/transferLimits/{transferLimitId} \u2014 Get a transfer limit | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/(transferLimitId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/(transferLimitId)/2026-11-03.md\"\ntags: [adyen, balance-platform-api, transfer-limits, business-accounts, api-reference]\n---\n\n## Overview\n\nThis 2026-11-03-captured Balance Platform API `/bcl/v2` reference retrieves the details of one transfer limit under a balance platform. The listed server is TEST-only `https://balanceplatform-api-test.adyen.com/bcl/v2`; the capture does not establish a live endpoint or account-specific eligibility. [[adyen]] [[adyen-business-accounts]]\n\n## Key takeaways\n\n- `GET /balancePlatforms/{id}/transferLimits/{transferLimitId}` requires two string path IDs: `id` identifies the balance platform, while `transferLimitId` identifies the transfer limit. The page lists no query parameters, body, caller role, endpoint-specific idempotency key, or request default.\n- A `200` response reports required `amount` (`currency` and integer `value` in minor units), limit `id`, `limitStatus`, `scope`, `startsAt`, and `transferType`. `scope` is `perTransaction` or `perDay`; `transferType` is `instant` or `all`. The amount is the maximum per transfer or per day according to `scope`. Optional fields are `endsAt`, `reference`, and `scaInformation`.\n- `limitStatus` can be `active`, `inactive`, `pendingSCA`, or `scheduled`. `startsAt` describes activation time, and a future start schedules activation; the page says a limit without an end date stays active until overridden by a new limit. `endsAt`, when present, is the time it becomes inactive.\n- Within optional `scaInformation`, `exemption` is optional and `status` is required if that object appears. `status=notPerformed` can mean unsuccessful SCA **or an exemption**, `pending` means pending authentication, and `performed` means successful authentication. The exemption enum includes `lowerLimit`, `notRegulated`, `setByPlatform`, `initialLimit`, and `alreadyPerformed`; the raw definitions govern their exact scope. Do not read `notPerformed` alone as an authentication failure.\n- The listed error responses are `404` (limit not found) and `422` (request validation), with optional top-level problem-detail fields. This GET readback does not create, approve, or enforce a limit; it does not prove a user completed SCA or that any transfer was authorized, booked, settled, or received by a bank.\n\n## Detail locators\n\n- Purpose, TEST server, and separate required path IDs: raw lines 5\u201318.\n- `200` schema, amount units, status, scope, dates, transfer type, SCA and exemption definitions: raw lines 20\u201340.\n- `404` and `422` error schemas: raw lines 43\u201378. Illustrative `200` response: raw lines 80\u2013102.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts transfer-limit context.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-platform]] \u2014 separate platform-wide limit guide.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-id-transferlimits-approve]] \u2014 separate balance-account limit approval endpoint.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/(transferLimitId)/2026-11-03|GET platform transfer limit captured 2026-11-03]]\n",
+  "quotes": [
+    {
+      "text": "Get the details of a transfer limit using its unique `transferLimitId`.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the balance platform. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "| amount | object | Yes | The amount for the transfer limit. This is the maximum amount allowed per transfer or per day based on the `scope` of the limit. |",
+      "location": "raw line 28"
+    },
+    {
+      "text": "| limitStatus | string | Yes | The status of the transfer limit. Possible values:  - **active**: the limit is currently active.  - **inactive**: the limit is currently inactive.  - **pendingSCA**: the limit is pending until your user performs SCA.  - **scheduled**: the limit is scheduled to become active at a future date. |",
+      "location": "raw line 33"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of Strong Customer Authentication (SCA). Possible values:  - **notPerformed**: the requester was unable to successfully authenticate the request using SCA, or has an SCA exemption.  - **pending**: the request is pending SCA authentication.  - **performed**: the request is successfully authenticated using SCA. |",
+      "location": "raw line 37"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "business-accounts-platform-transfer-limit-get-v2-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-transferlimits-transferlimitid]] \u2014 2026-11-03-captured Balance Platform API v2 TEST GET for one platform transfer limit, its scope, amount, timing and SCA/limit statuses; readback is not enforcement, SCA completion or transfer proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/(transferLimitId)/2026-11-03.md",
+  "raw_sha256": "616deead3d3fb75d4c94fb0eb2d455fc200a44b021387d4ef82ab72a864e044e",
+  "status": "candidate_ready"
+}

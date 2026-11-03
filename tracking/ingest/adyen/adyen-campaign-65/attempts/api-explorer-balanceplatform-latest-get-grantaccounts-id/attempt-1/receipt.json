@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-grantaccounts-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GET /grantAccounts/{id} \u2014 Get a grant account | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/grantAccounts/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/grantAccounts/(id)/2026-11-03.md\"\ntags: [adyen, balance-platform-api, capital, grant-account, api-reference]\n---\n\n## Overview\n\nThis captured Balance Platform API `/bcl/v2` reference documents `GET /grantAccounts/{id}`, a lookup of one Capital grant account by its grant-account identifier. The page lists the TEST server `https://balanceplatform-api-test.adyen.com/bcl/v2`. It does not list a live server or state account-specific availability. [[adyen]] [[adyen-capital]]\n\n## Key takeaways\n\n- The required string path parameter `id` is the unique grant-account identifier. The captured operation specifies no query parameters or request body; it does not name a caller role, idempotency key, or endpoint-specific default.\n- A `200 Success` says the request succeeded and may return `balances`, `fundingBalanceAccountId`, grant-account `id`, and `limits`. These top-level response fields are marked optional in the captured schema. Within a returned `balances` item, `currency`, `fee`, `principal`, and `total` are marked required, and `total` is described as principal plus fee. Within a returned limit `amount`, `currency` and integer `value` are marked required; `value` is in minor units. Nested requiredness does not make the optional parent array or object mandatory.\n- The response is grant-account detail, not a grant request, accepted offer, disbursement confirmation, repayment completion, payment authorization, settlement, or bank receipt. This reference does not provide a grant status, lifecycle transition, propagation timing, or financial outcome guarantee.\n- The page lists `400` malformed-request, `401` authentication, `403` permission, `422` validation, and `500` server errors with a problem-detail body. The generic `422` and `500` examples describe payment-instrument operations; they are not grant-account-specific behavior or constraints.\n\n## Detail locators\n\n- Endpoint purpose, TEST server and path parameter: raw lines 5\u201317.\n- `200` response and optional versus nested-required fields: raw lines 19\u201337.\n- Error schemas: raw lines 40\u2013137. Generic examples and their unrelated payment-instrument wording: raw lines 139\u2013205.\n\n## Related\n\n- [[adyen-capital]] \u2014 Capital product and grant lifecycle context.\n- [[source-adyen-docs-capital-get-grant-balances]] \u2014 separate Capital guide for grant and grant-account balance lookup.\n- [[source-adyen-api-explorer-capital-latest-get-grants]] \u2014 separate Capital API grant-list response; a grant ID is distinct from this endpoint's grant-account ID.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/grantAccounts/(id)/2026-11-03|GET /grantAccounts/{id} captured 2026-11-03]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of the [grant account](https://docs.adyen.com/platforms/capital#grant-account).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- https://balanceplatform-api-test.adyen.com/bcl/v2",
+      "location": "raw line 10"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the grant account. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "|   - total | integer | Yes | Total amount. A sum of principal amount and fee amount. |",
+      "location": "raw line 31"
+    },
+    {
+      "text": "\"detail\": \"The balanceAccountId can only be changed when the status is Inactive or Requested\"",
+      "location": "raw line 188"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "capital-grant-account-get-v2-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-grantaccounts-id]] \u2014 2026-11-03-captured Balance Platform API v2 TEST GET grant-account detail, including optional balances, funding balance-account ID and limits; readback is not grant disbursement or repayment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/grantAccounts/(id)/2026-11-03.md",
+  "raw_sha256": "12f90d1dd6777c00296a830e62f658696d06156aee6d93c75f7e3ed7922219b3",
+  "status": "candidate_ready"
+}

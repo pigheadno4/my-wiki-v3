@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-legalentity-latest-post-legalentities-id-checkverificationerrors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /legalEntities/{id}/checkVerificationErrors \u2014 Check verification errors | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/checkVerificationErrors\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/checkVerificationErrors/2026-11-03.md\"\ntags: [adyen, legal-entity-management, verification, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Legal Entity Management API Explorer snapshot documents `POST /legalEntities/{id}/checkVerificationErrors`, which returns verification errors for a legal entity and its supporting entities. The captured server is TEST `https://kyc-test.adyen.com/lem/v4`; the URL says `latest` while the server path identifies `v4`. See [[adyen-platforms]] for platform onboarding and verification context.\n\n## Key takeaways\n\n- Required string path `id` identifies the legal entity. The page lists no query parameters, request body, caller role or idempotency key. It specifies rate limits of 700 requests per five seconds in live environments, 200 per five seconds in test, and five failed requests per ten seconds. The only listed server is TEST, despite the separate live rate-limit statement. [Raw: lines 5\u201325]\n- A 200 says the request succeeded. Its `problems` array is response-optional, as are the nested `entity` and `verificationErrors` fields. An included problem can identify an entity and documents, plus general error code/message, error type (`invalidInput`, `dataMissing`, `pendingStatus`, `rejected`, `dataReview`), capability names, suberrors and possible remediating actions. The table does not require any of these nested fields. [Raw: lines 27\u201347]\n\n> [!warning] Contradiction\n> The `capabilities` field is typed as an array of strings [Raw: line 42] and the example shows string capability names [Raw: lines 129\u2013132], but the same field description calls it key-value pairs whose value is an object. This snapshot does not reconcile the field description with its type and example; do not treat the description as a confirmed object shape.\n\n- The sample shows `dataMissing` problems for a legal entity, including VAT number, signatory, UBO, business line, addresses and documents, with remediation examples. These are illustrative error records, not a universal checklist or proof that any remediation has been submitted or approved. [Raw: lines 114\u2013295]\n- Errors listed are 400 request-reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation and 500 server processing. Their problem bodies mark `errorCode`, `errorType`, `message`, `pspReference` and `status` optional; this generic `pspReference` field does not turn the endpoint into a payment-status check. [Raw: lines 50\u2013112]\n- A returned error list reports detected issues at read time. A 200, absent `problems`, or suggested remediation does not establish completed legal-entity verification, enabled capabilities, account eligibility, compliance, payment acceptance, payout or bank receipt. This dated TEST v4 capture also does not establish current live behavior. [Raw: lines 5\u201347, 114\u2013295]\n\n## Detail locators\n\n- Purpose, rate limits, TEST v4 server and required legal-entity ID: pinned raw lines 5\u201325.\n- 200 optional problem/entity/error fields and error types: lines 27\u201347.\n- HTTP error schemas: lines 50\u2013112; illustrative verification-error response: lines 114\u2013295.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform onboarding and legal-entity context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/checkVerificationErrors/2026-11-03|POST check legal-entity verification errors \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Returns the verification errors for a legal entity and its supporting entities.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "Live environments: 700 requests per 5 seconds.",
+      "location": "pinned raw line 11"
+    },
+    {
+      "text": "Failed requests are subject to a limit of 5 failures per 10 seconds.",
+      "location": "pinned raw line 15"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the legal entity. |",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "|     - capabilities | array of string | No | Contains key-value pairs that specify the actions that the legal entity can do in your platform. The key is a capability required for your integration. For example, **issueCard** for Issuing.The value is an object containing the settings for the capability. |",
+      "location": "pinned raw line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-api-explorer-legalentity-latest-post-legalentities-id-checkverificationerrors-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-checkverificationerrors]] \u2014 2026-11-03-captured LEM API v4 TEST POST for legal-entity and supporting-entity verification errors, with distinct live/test/failed-request rate limits; returned problems or remediation suggestions are not verification approval.\n\n> [!warning] Contradiction\n> The source table types `capabilities` as an array of strings and the example uses strings, while the same field description calls them key-value pairs with object values. The snapshot does not reconcile the shape. [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-checkverificationerrors]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source response table types capabilities as an array of strings but describes key-value pairs with object values; its example uses strings. Retain the contradiction warning in the source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/checkVerificationErrors/2026-11-03.md",
+  "raw_sha256": "73ae767c948e1f15d5849bfa29774d9addf51a5ca3033bf3c0b3f128cfe08022",
+  "status": "candidate_ready"
+}

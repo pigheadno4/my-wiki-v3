@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-transactionrules-transactionruleid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: PATCH /transactionRules/{transactionRuleId}\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/transactionRules/(transactionRuleId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/transactionRules/(transactionRuleId)/2026-11-03.md\"\ntags: [adyen, balance-platform, issuing, transaction-rules, api]\n---\n\n## Overview\n\nThis 2026-11-03 snapshot of the Balance Platform API reference describes `PATCH /transactionRules/{transactionRuleId}` for updating an existing transaction rule. It shows the v2 TEST server `https://balanceplatform-api-test.adyen.com/bcl/v2`; the `latest` URL does not establish live access or a current deployed version. A rule can apply to a balance platform, payment-instrument group, account holder, balance account or payment instrument, and `requestType` also includes bank transfers. See [[adyen]], [[adyen-issuing]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- `transactionRuleId` is the required path identifier of the rule being updated. To change only `status`, send only `status`; unspecified parameters stay unchanged. For any other update, the page says to send all existing resource parameters, because omitted parameters are removed. This special status-only instruction must be read alongside the request table's required-property labels; the page does not separately state whole-body requiredness.\n- The request table marks `description`, `entityKey`, `interval`, `reference`, `ruleRestrictions` and `type` required. The `entityKey` object scopes the rule and its `entityReference` and `entityType` children are individually labeled optional. Within `interval`, `type` is required; each present restriction object marks `operation` required while its `value` is labeled optional. Consult the raw table for the individual restriction operations and values.\n- Rule types are `blockList`, `maxUsage`, `velocity` and `bypass`. For `bypass`, provide the overridden rule `id` in `overridesRule` and leave `ruleRestrictions` empty, qualifying the general description that it contains conditions. `aggregationLevel` applies to `velocity` and `maxUsage`, must be at or below `entityKey` in the hierarchy, and defaults to `paymentInstrument`.\n- `requestType` defaults to `authorization` and can be `authentication`, `tokenization` or `bankTransfer`. `outcomeType` defaults to `hardBlock`; `scoreBased` needs `score` between -100 and 100 and is unavailable for `bankTransfer`; `enforceSCA` is limited to `authentication`. Rolling/sliding intervals require `duration`, capped at 90 days or equivalent; minutes/hours are allowed only for sliding. The fixed-reset descriptions use CET while `timeZone` defaults to UTC, so do not infer one universal reset instant.\n- `startDate`, `endDate` and `status` describe rule evaluation timing/state. The page says a provided `startDate` makes a rule active and otherwise evaluation can continue until `status` becomes inactive when no `endDate` is supplied. The 200 response is a returned rule configuration with optional `id` and `status`; 400, 401, 403, 422 and 500 are documented failures. The 422 and 500 generic JSON examples describe payment-instrument operations, so they do not define a transaction-rule-specific failure. A 200 update or the inactive sample does not establish a particular rule evaluation, authorization, authentication, transfer, booking or settlement.\n\n## Detail locators\n\n- Endpoint purpose, replacement behavior, TEST base and path ID: pinned raw lines 5\u201321.\n- Request properties, scope, intervals, outcomes and defaults: `## Parameters > ### Request body`, lines 24\u201347 and 123\u2013126.\n- All restriction objects, their operations and conditional velocity prerequisites: same request-body table, lines 48\u2013122.\n- Illustrative request, which includes fields beyond `status`: `## Request examples > ### updateTransactionRuleStatus`, lines 128\u2013153. This does not negate the status-only instruction or prescribe every update payload.\n- Success response and rule fields: `## Responses > ### 200 Success`, lines 154\u2013262. Error schemas: lines 265\u2013362; illustrative success and generic failure payloads: `## Response examples`, lines 364\u2013468.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuing and transaction-rule context.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-transactionrules]] \u2014 separately captured create operation.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules]] \u2014 separate conceptual guide.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] \u2014 separate lifecycle guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/transactionRules/(transactionRuleId)/2026-11-03|PATCH transaction rule, 2026-11-03 capture]]",
+  "quotes": [
+    {
+      "text": "To update only the status of a transaction rule, send only the `status` parameter. All other parameters not provided in the request are left unchanged.",
+      "location": "raw lines 9; introduction"
+    },
+    {
+      "text": "When updating any other parameter, you need to send all existing resource parameters. If you omit a parameter in the request, that parameter is removed from the resource.",
+      "location": "raw line 11; introduction"
+    },
+    {
+      "text": "| transactionRuleId | string | Yes | The unique identifier of the transaction rule. |",
+      "location": "raw line 21; Parameters > Path parameters"
+    },
+    {
+      "text": "Required when the `type` is **rolling** or **sliding**.",
+      "location": "raw line 36; Parameters > Request body > interval.duration"
+    },
+    {
+      "text": "You must provide the `id` of the rule to bypass in `overridesRule` and leave the `ruleRestrictions` object empty.",
+      "location": "raw line 126; Parameters > Request body > type"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-patch-transactionrules-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-transactionrules-transactionruleid]] \u2014 2026-11-03-captured Balance Platform API v2 TEST PATCH reference for an existing transaction rule; status-only changes retain other fields, while other updates remove omitted parameters. A 200 response is configuration readback, not transaction-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/transactionRules/(transactionRuleId)/2026-11-03.md",
+  "raw_sha256": "c3ea75d5e9a9ebd3eb963371930869902c14f045808c9fadc461ee4e7d3fc970",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,7 @@
+## Q1
+
+The 2026-11-03 Legal Entity Management API v4 capture describes `POST /legalEntities/{id}/requestPeriodicReview` on the TEST server `https://kyc-test.adyen.com/lem/v4`. Its purpose is to request periodic data review for the user legal entity identified by required string path `id`. The page names no specific caller role, request body, query or conditional input, default, rate limit or idempotency key. Its sole response is bodyless 204. The `latest` URL is not evidence of live availability. [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-requestperiodicreview]] — https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/requestPeriodicReview — verified pinned raw lines 5–22.
+
+## Q2
+
+The documented 204 means the periodic-review request was successfully processed, with no additional response content. It does not report completed review, valid verification, capability permission or a financial outcome. This short page specifies no error responses, credential method or role, idempotent repeat behavior, review deadline, asynchronous result, approval/activation, retry/reversal, version/conflict or propagation timing. Those details cannot be inferred from this capture, and TEST documentation alone does not establish current account eligibility or compliance. [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-requestperiodicreview]] — https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/requestPeriodicReview — verified pinned raw lines 5–22.

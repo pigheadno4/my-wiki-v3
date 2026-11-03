@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-legalentity-latest-get-legalentities-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: GET /legalEntities/{id}\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/2026-11-03.md\"\ntags: [adyen, legal-entity, platforms, verification, api]\n---\n\n## Overview\n\nThis 2026-11-03-captured Legal Entity Management API v4 reference describes `GET /legalEntities/{id}`, which returns one legal entity named by required path `id`. The listed server is TEST `https://kyc-test.adyen.com/lem/v4`; the page separately states Live and Test request rate limits. The `latest` route and this readback are not proof of a caller's current live access or a user's approval. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The only documented request input is required string path `id`; no query or request body is specified. The page states 700 requests per 5 seconds in Live, 200 per 5 seconds in Test, and 5 failed requests per 10 seconds. These are the captured endpoint limits, not a guaranteed throughput for a particular credential.\n- A 200 returns a legal-entity resource. The response table marks root `id` required and `reference` optional (maximum 150 characters); optional branches include `individual`, `organization`, `soleProprietorship`, `trust`, and `unincorporatedPartnership`, with prose that makes the corresponding branch required when its `type` applies. The root `type` value list names only individual, organization, sole proprietorship and trust, while the table separately says `unincorporatedPartnership` is required when `type` is that value. Treat that as a schema tension, not proof that the branch is unavailable.\n- Optional `capabilities` is keyed by capability. `requested` records a request; `allowed` says whether permitted; `verificationStatus` can be pending, invalid, valid or rejected. Requested and allowed levels/settings are separate. Transfer-instrument supporting-entity capability statuses can differ from the parent entity, and the table explicitly permits an allowed supporting entity even when the parent is not allowed because other supporting entities failed verification. The 200 example depicts requested-but-not-allowed, pending capabilities; it is illustrative, not approval.\n- The response can also include entity associations (with required associated `legalEntityId` and relationship `type` within each item), document IDs/details, transfer instruments with masked identifiers, verification problems and deadlines. `verificationDeadlines` names capabilities that will be disallowed if unresolved by the deadline. Conditional field requirements in entity/address branches are **response-schema descriptions**, not GET request inputs. Readback does not create an entity, complete verification, grant a capability, execute a transfer or prove settlement.\n- The page lists 400, 401, 403, 422 and 500 errors. Its generic error schema includes optional `pspReference` labeled as a payment reference; this does not make the legal-entity GET a payment operation. No endpoint-specific idempotency, update, approval, reversal, or version/conflict semantics are supplied.\n\n## Detail locators\n\n- Purpose, rate limits, TEST server, path and 200: pinned raw lines 5\u201335.\n- Capability requested/allowed/verification and supporting-entity distinctions: response schema lines 35\u201357; illustrative pending example lines 380\u2013453.\n- Associations, document branches and individual details: lines 58\u2013120. Organization, problem and sole-proprietorship branches: lines 121\u2013237. Transfer instruments, trust, unincorporated partnership, root type and deadlines: lines 238\u2013313.\n- Generic error schemas: lines 316\u2013378.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform legal-entity and verification context.\n- [[source-adyen-api-explorer-legalentity-latest-post-legalentities]] \u2014 separate creation reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/2026-11-03|Legal Entity GET snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns a legal entity.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Live environments: 700 requests per 5 seconds.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "Test environments: 200 requests per 5 seconds.",
+      "location": "raw line 13"
+    },
+    {
+      "text": "|   - requested | boolean | No | Indicates whether the capability is requested. To check whether the legal entity is permitted to use the capability, refer to the `allowed` field. |",
+      "location": "raw line 44"
+    },
+    {
+      "text": "| unincorporatedPartnership | object | No | Information about the unincorporated partnership. Required if `type` is **unincorporatedPartnership**. |",
+      "location": "raw line 278"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-c65-get-legalentity",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id]] \u2014 2026-11-03-captured Legal Entity Management API v4 TEST GET readback by legal-entity ID, including requested versus allowed capabilities and verification status; a 200 is not capability approval or payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The response type value list omits unincorporatedPartnership while the same schema documents a conditional unincorporatedPartnership branch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/2026-11-03.md",
+  "raw_sha256": "723f997e9c36851000120e9fad65b25fdef93616909be92a9f8578fd0e320e6e",
+  "status": "candidate_ready"
+}

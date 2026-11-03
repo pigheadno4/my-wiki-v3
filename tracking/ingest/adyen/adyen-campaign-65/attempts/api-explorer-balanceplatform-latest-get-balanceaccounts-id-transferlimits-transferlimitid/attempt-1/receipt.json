@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-transferlimitid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET /balanceAccounts/{id}/transferLimits/{transferLimitId}\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/(transferLimitId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/(transferLimitId)/2026-11-03.md\"\ntags: [adyen, balance-platform, business-accounts, transfer-limits, api]\n---\n\n## Overview\n\nThis 2026-11-03 Balance Platform API reference describes `GET /balanceAccounts/{id}/transferLimits/{transferLimitId}`, a read of one transfer limit by its balance-account and transfer-limit identifiers. The only displayed server is the v2 TEST base `https://balanceplatform-api-test.adyen.com/bcl/v2`. The `latest` URL and this captured read do not establish LIVE access or eligibility. See [[adyen]], [[adyen-business-accounts]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- Both path parameters are required: `id` identifies the balance account, and `transferLimitId` identifies the transfer limit. No query parameters or request body appear in this captured endpoint reference.\n- A 200 returns `amount` (required currency and integer value in minor units), limit `id`, `limitStatus`, `scope`, `startsAt` and `transferType` as required response fields. `scope` is `perTransaction` or `perDay`; `transferType` is `instant` or `all`, where `all` covers transfers regardless of priority. The amount is the maximum per transfer or per day according to scope.\n- `limitStatus` may be `active`, `inactive`, `pendingSCA` or `scheduled`. `startsAt` is the stated activation date/time, including a future scheduled limit; optional `endsAt` gives inactivation time, and the table says a limit without an end date stays active until overridden by a new limit. Optional `reference` is the caller's reference.\n- Optional `scaInformation` describes Strong Customer Authentication; its nested `status` is marked required when the object is present and can be `notPerformed`, `pending` or `performed`. The table says `notPerformed` can mean unsuccessful authentication **or** an exemption, so it cannot be read as a single outcome. The optional exemption enum includes `lowerLimit`, `notRegulated`, `setByPlatform`, `initialLimit` and `alreadyPerformed`; a returned exemption label alone does not prove an account-specific regulatory exemption or completed SCA.\n- The endpoint documents 404 when a transfer limit cannot be found and 422 for request validation errors. Its illustrative 200 body shows `active` with `initialLimit` and `notPerformed`; example timestamps and states do not prove current activity, enforcement, available transfer capacity, approval, booked funds or bank receipt.\n\n## Detail locators\n\n- Purpose, TEST server and required path IDs: pinned raw lines 5\u201318.\n- Complete success fields, amount units, scope, transfer type and lifecycle/SCA enums: `## Responses > ### 200 Success`, lines 20\u201340.\n- 404 and 422 error descriptions and response schemas: `## Responses`, lines 43\u201378.\n- Illustrative 200 transfer-limit body: `## Response examples > ### 200 Success`, lines 80\u2013103; it is not a current account-specific state or successful transfer.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts financial-product context.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]] \u2014 separate balance-account transfer-limit guide.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-platform]] \u2014 separate platform-scope limit guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/(transferLimitId)/2026-11-03|GET balance-account transfer limit, 2026-11-03 capture]]",
+  "quotes": [
+    {
+      "text": "Get the details of a transfer limit using its unique `transferLimitId`.",
+      "location": "raw line 7; introduction"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the balance account. |",
+      "location": "raw line 18; Parameters > Path parameters"
+    },
+    {
+      "text": "The amount for the transfer limit. This is the maximum amount allowed per transfer or per day based on the `scope` of the limit.",
+      "location": "raw line 28; Responses > 200 Success > amount"
+    },
+    {
+      "text": "**pendingSCA**: the limit is pending until your user performs SCA.",
+      "location": "raw line 33; Responses > 200 Success > limitStatus"
+    },
+    {
+      "text": "**notPerformed**: the requester was unable to successfully authenticate the request using SCA, or has an SCA exemption.",
+      "location": "raw line 37; Responses > 200 Success > scaInformation.status"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-get-balanceaccount-transferlimit-business-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-transferlimitid]] \u2014 2026-11-03-captured Balance Platform API v2 TEST readback of one balance-account transfer limit, including amount, scope, status and SCA state; readback does not prove transfer execution or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transferLimits/(transferLimitId)/2026-11-03.md",
+  "raw_sha256": "4951c15e80762309eedc25a6e73acf521f4569e542370e8fcb8ee7f768062a8e",
+  "status": "candidate_ready"
+}

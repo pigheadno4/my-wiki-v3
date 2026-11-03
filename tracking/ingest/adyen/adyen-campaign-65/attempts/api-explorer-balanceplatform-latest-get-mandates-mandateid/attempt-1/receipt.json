@@ -1,0 +1,46 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-mandates-mandateid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: get a specific mandate\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/mandates/(mandateId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/mandates/(mandateId)/2026-11-03.md\"\ntags: [adyen, balance-platform, business-accounts, direct-debit, mandates, api]\n---\n\n## Overview\n\nThis 2026-11-03 API Explorer capture documents `GET /mandates/{mandateId}` on the Balance Platform API v2 **TEST** server (`https://balanceplatform-api-test.adyen.com/bcl/v2`). It returns details of the specified direct debit mandate. The `latest` URL segment does not prove current version or live availability. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The sole documented input is required path parameter `mandateId`, the mandate's unique identifier. This GET reference lists no query parameter or request body. It does not name a credential role, idempotency mechanism, default, or rate limit.\n- A `200` response is a successful read. Its top-level fields are marked optional: `id` (mandate), `balanceAccountId` (balance account linked to the payment instrument), `paymentInstrumentId`, `counterparty`, `createdAt`, `updatedAt`, `status`, and `type`. The listed statuses are `pending`, `approved`, and `cancelled`; the listed type is `bacs`. Inside an included `counterparty`, `accountHolder` and `accountIdentification` are marked required, and `accountIdentification.type` is marked required. Other required bank-identification fields depend on bank-account country and transfer currency. These are response-schema markings, not request inputs.\n- Readback reports a mandate record and its reported status. It does not create, approve or cancel the mandate, prove current eligibility or approval, authorize or execute a debit, or establish a booking, settlement or bank receipt. The capture does not define status-transition timing, propagation, reversal or deletion behavior. See the separate [[source-adyen-docs-business-accounts-accept-direct-debits-uk|UK direct-debit guide]] for its own dated product context.\n- Documented errors are `401` authentication required, `403` insufficient permissions, `404` mandate not found, `422` request validation error, and `500` server processing failure. Their response schemas list optional problem details and an optional `invalidFields` array whose present entries require `message`, `name`, and `value`.\n\n## Detail locators\n\n- Endpoint purpose, TEST base URL, and path input: raw lines 5\u201317.\n- `200` response fields, nested counterparty markings, status and type: raw lines 19\u201338.\n- Error meanings and problem-field schemas: raw lines 41\u2013133.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product and mandate context.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-mandates]] \u2014 separate mandate list reference.\n- [[source-adyen-docs-business-accounts-accept-direct-debits-uk]] \u2014 separate UK Bacs guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/mandates/(mandateId)/2026-11-03|GET /mandates/{mandateId} API Explorer capture]]",
+  "quotes": [
+    {
+      "text": "Returns the details of the specified [direct debit mandate](https://docs.adyen.com/business-accounts/accept-direct-debits-uk).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| mandateId | string | Yes | The unique identifier of the mandate. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| status | string | No | The status of the mandate.  Possible values: **pending**, **approved**, **cancelled**. |",
+      "location": "raw line 36"
+    },
+    {
+      "text": "The mandate was not found.",
+      "location": "raw line 80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-get-mandate-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-mandates-mandateid]] \u2014 2026-11-03-captured Balance Platform API v2 TEST readback for one direct debit mandate by ID, including optional linked account/instrument IDs and reported status; the read does not change the mandate or prove a debit outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/mandates/(mandateId)/2026-11-03.md",
+  "raw_sha256": "23ff16057d0f380ccf94d48d6138c63a91671326d1c2d7dea6166ffb8a185e6a",
+  "status": "candidate_ready"
+}

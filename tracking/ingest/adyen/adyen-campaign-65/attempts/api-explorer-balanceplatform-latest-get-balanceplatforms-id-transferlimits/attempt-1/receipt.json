@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceplatforms-id-transferlimits",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: list balance-platform transfer limits\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/2026-11-03.md\"\ntags: [adyen, balance-platform, business-accounts, transfer-limits, api]\n---\n\n## Overview\n\nThis 2026-11-03 Balance Platform API reference documents `GET /balancePlatforms/{id}/transferLimits` for filtering and viewing transfer limits configured for a balance platform. Its captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` is a documentation route, not proof of current live availability or caller eligibility. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The required string path `id` is the balance-platform identifier. Optional query filters are `status` (`active`, `inactive`, `pendingSCA`, `scheduled`), `transferType` (`instant` or `all` priorities), and `scope` (`perTransaction` or `perDay`). `pendingSCA` is pending user SCA; `scheduled` denotes a future activation date. The page lists no request body, defaults, pagination, query limits, or idempotency field.\n- The `200` response requires a `transferLimits` array. For each listed limit, the schema requires `amount.currency` (three-character ISO currency code), `amount.value` (integer minor units), `id`, `limitStatus`, `scope`, `startsAt`, and `transferType`. `endsAt`, `reference`, and `scaInformation` are optional. Within a supplied `scaInformation` object, `status` is required and `exemption` optional. `notPerformed` can mean unsuccessful SCA **or** an exemption; it cannot alone prove failed authentication. A future `startsAt` schedules a limit; the `endsAt` description says an omitted end date leaves the limit active until overridden.\n- This GET reports configured limit records and their reported states; it does not create, approve, delete, enforce, or execute a transfer. An `active` entry or `performed` SCA status is not proof of any transfer's authorization, booking, settlement, or bank receipt. The page documents 404 (one transfer limit not found) and 422 (validation error), but gives no authentication role, 401/403 schema, asynchronous approval timing, failure/reversal process, or version/conflict behavior for this read. The two-limit response example is illustrative, not proof of current configuration or transfer capacity.\n\n## Detail locators\n\n- Purpose, TEST server, balance-platform path ID and optional filters: pinned raw lines 5\u201325.\n- `200` array and nested field schema, units, lifecycle status and SCA semantics: pinned raw lines 27\u201348.\n- Error descriptions and schemas: pinned raw lines 51\u201386; illustrative list example: lines 88\u2013132.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 transfer-limit context for Business Accounts.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-platform]] \u2014 separate captured guide to balance-platform transfer-limit management.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/2026-11-03|Balance Platform GET transfer limits snapshot]]",
+  "quotes": [
+    {
+      "text": "Filter and view the transfer limits configured for your balance platform using the balance platform's unique `id` and the available query parameters.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| status | string | No | The status of the transfer limit. Possible values:  - **active**: the limit is currently active.  - **inactive**: the limit is currently inactive.  - **pendingSCA**: the limit is pending until your user performs SCA.  - **scheduled**: the limit is scheduled to become active at a future date. |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "| transferLimits | array of object | Yes | List of available transfer limits. |",
+      "location": "raw line 35"
+    },
+    {
+      "text": "|     - value | integer | Yes | The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units). |",
+      "location": "raw line 38"
+    },
+    {
+      "text": "|     - status | string | Yes | The status of Strong Customer Authentication (SCA). Possible values:  - **notPerformed**: the requester was unable to successfully authenticate the request using SCA, or has an SCA exemption.  - **pending**: the request is pending SCA authentication.  - **performed**: the request is successfully authenticated using SCA. |",
+      "location": "raw line 45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-platform-transferlimits-list-business-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-transferlimits]] \u2014 2026-11-03-captured Balance Platform API v2 TEST GET reference for filtered balance-platform transfer-limit readback, including status, scope, amount and SCA state; listing does not approve a limit or prove a funds-transfer outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transferLimits/2026-11-03.md",
+  "raw_sha256": "3a07955478acd74b222a353b6c5ba096b5adf5c9a051631ed6c27b423e11a94b",
+  "status": "candidate_ready"
+}

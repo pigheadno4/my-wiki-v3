@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-legalentity-latest-get-legalentities-id-termsofservicestatus",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: GET /legalEntities/{id}/termsOfServiceStatus\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)/termsOfServiceStatus\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/termsOfServiceStatus/2026-11-03.md\"\ntags: [adyen, legal-entity, platforms, terms-of-service, api]\n---\n\n## Overview\n\nThis 2026-11-03 Legal Entity Management API v4 reference describes `GET /legalEntities/{id}/termsOfServiceStatus`, which returns the types of Terms of Service a legal entity still needs to accept. The only displayed server is TEST `https://kyc-test.adyen.com/lem/v4`; the `latest` URL and a type-list read do not establish live access or a particular entity's accepted terms. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The required path `id` identifies the legal entity. For a sole proprietorship, the page says to use the individual legal-entity ID of its owner; for an organization, use the organization's ID. No query parameter or request body is listed.\n- HTTP 200 has one response-body property, optional `termsOfServiceTypes`, an array of types that the legal entity needs to accept. The table says an **empty array** means no Terms of Service needs to be accepted; it does not say an omitted property has that meaning. The 200 JSON sample contains `adyenIssuing`, which is an example rather than an exhaustive type catalog or evidence of a particular entity's obligation.\n- The endpoint is a status lookup. It neither submits acceptance nor proves signed documents, Adyen review, verification, capability approval or payment/funds outcomes. The page specifies no acceptance timing or status-propagation contract.\n- The introduction states rate limits of 700 requests per five seconds LIVE, 200 per five seconds TEST, and five failed requests per ten seconds. These LIVE limits do not supply a LIVE base URL or prove account eligibility.\n- Listed failures are 400 request, 401 authentication, 403 permissions, 422 validation and 500 server errors. The generic error body's optional `pspReference` is labeled a payment reference, but this lookup is not a payment operation; no endpoint-specific credential role or version-conflict behavior is given.\n\n## Detail locators\n\n- Purpose, rate limits and TEST base: pinned raw lines 5\u201318.\n- Legal-entity path identity and sole-proprietor/organization distinction: `## Parameters > ### Path parameters`, lines 20\u201325.\n- Success response and optional-versus-empty `termsOfServiceTypes`: `## Responses > ### 200 Success`, lines 27\u201335.\n- Error schemas: lines 38\u2013100; illustrative `adyenIssuing` response: `## Response examples`, lines 102\u2013113.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform onboarding context.\n- [[source-adyen-docs-platforms-onboard-users-terms-of-service]] \u2014 separate Terms of Service acceptance guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/termsOfServiceStatus/2026-11-03|GET legal-entity Terms of Service status, 2026-11-03 capture]]",
+  "quotes": [
+    {
+      "text": "Returns the required types of Terms of Service that need to be accepted by a legal entity.",
+      "location": "raw line 7; introduction"
+    },
+    {
+      "text": "For sole proprietorships, this is the individual legal entity ID of the owner.",
+      "location": "raw line 25; Parameters > Path parameters"
+    },
+    {
+      "text": "For organizations, this is the ID of the organization.",
+      "location": "raw line 25; Parameters > Path parameters"
+    },
+    {
+      "text": "If empty, no Terms of Service needs to be accepted.",
+      "location": "raw line 35; Responses > 200 Success"
+    },
+    {
+      "text": "Failed requests are subject to a limit of 5 failures per 10 seconds.",
+      "location": "raw line 15; rate limits"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-get-tos-status-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-termsofservicestatus]] \u2014 2026-11-03-captured Legal Entity Management API v4 TEST lookup of Terms of Service types still required for a legal entity; an empty returned array means none needed, while readback is not acceptance or capability approval.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/termsOfServiceStatus/2026-11-03.md",
+  "raw_sha256": "c283551d91bbbd10bfdc39bd29eae351bf579eebd4f0dfc84c3560d8df4fd32e",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-networktokens-networktokenid",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: PATCH network-token status\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/networkTokens/(networkTokenId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/networkTokens/(networkTokenId)/2026-11-03.md\"\ntags: [adyen, balance-platform, issuing, network-tokens, api]\n---\n\n## Overview\n\nThis 2026-11-03 Balance Platform API reference documents `PATCH /networkTokens/{networkTokenId}` to update a network token's status. Its captured server is the TEST endpoint `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` is the documentation route, not evidence of current live availability or account eligibility. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The required string path parameter `networkTokenId` identifies the network token, not a payment instrument or transaction. The request-body table marks `status` optional and lists `active`, `suspended`, and `closed`; `closed` is final and cannot be changed. The snapshot shows no other body field, conditional input, default, limit, query parameter, or idempotency contract.\n- The API page labels `202 Success` and says to check the actual response code for request status; it gives no success body or completion timing. The separate [[source-adyen-docs-issuing-manage-network-tokens|Issuing management guide]] says HTTP 202 means accepted for asynchronous processing and directs the caller to webhooks for the final result (guide raw lines 332\u2013334). Acceptance alone does not prove the requested status took effect, token usability, or card authorization, capture, booking, settlement or receipt. The API page specifies no rollback or reversal path; closing is explicitly final.\n- Documented errors are 401 authentication required, 403 insufficient permissions, 422 request validation error, and 500 server processing failure. Their shared problem schema includes required `detail`, `errorCode`, `status`, `title`, and `type`, with optional `instance`, `invalidFields`, `requestId`, and `response`. The generic 422 and 500 JSON examples mention changing a payment instrument's balance account and creating a payment instrument; they are not network-token transition examples. No specific role, authentication method, approval or activation workflow is given in this API reference.\n\n> [!warning] Contradiction\n> This API reference marks request-body `status` optional (pinned raw line 23), while [[source-adyen-docs-issuing-manage-network-tokens|the Issuing guide]] marks it required for PATCH (guide raw lines 304\u2013316). This API operation is `/networkTokens/{networkTokenId}` (pinned raw line 5), matching the guide's linked operation (guide raw line 306), but the guide's curl sample uses `/paymentInstruments/{id}/networkTokens/{networkTokenId}` (guide raw lines 320\u2013329). These sources do not resolve the requiredness or sample-path discrepancies.\n\n## Detail locators\n\n- Purpose, TEST server, path ID and request-body status values: pinned raw lines 5\u201323.\n- `202` wording and error response schemas: pinned raw lines 25\u2013108; separate guide's asynchronous-result instructions: guide raw lines 332\u2013334.\n- Generic error examples and their payment-instrument wording: pinned raw lines 110\u2013164.\n- Guide PATCH requiredness and path conflict: guide raw lines 304\u2013329.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issued-card and network-token context.\n- [[source-adyen-docs-issuing-manage-network-tokens]] \u2014 separate Issuing guide for status transitions and asynchronous webhook confirmation; see contradiction above.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-networktokens]] \u2014 separate captured API reference for listing a payment instrument's network tokens.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/networkTokens/(networkTokenId)/2026-11-03|Balance Platform PATCH network-token snapshot]]",
+  "quotes": [
+    {
+      "text": "Updates the status of the network token.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- https://balanceplatform-api-test.adyen.com/bcl/v2",
+      "location": "raw line 10"
+    },
+    {
+      "text": "| networkTokenId | string | Yes | The unique identifier of the network token. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| status | string | No | The new status of the network token. Possible values: **active**, **suspended**, **closed**. The **closed** status is final and cannot be changed. |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "Look at the actual response code for the status of the request.",
+      "location": "raw line 28"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-networktoken-patch-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-networktokens-networktokenid]] \u2014 2026-11-03-captured Balance Platform API v2 TEST PATCH reference for network-token status updates (`active`, `suspended`, or irreversible `closed`); its optional `status` table conflicts with the Issuing guide's required instruction, and the guide's curl path differs from the API operation. Its `202` entry gives no success body or completion timing.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the API-versus-guide status requiredness conflict and the guide operation-versus-curl path mismatch; the guide separately attributes asynchronous completion to webhooks."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/networkTokens/(networkTokenId)/2026-11-03.md",
+  "raw_sha256": "fbc1f609f9a2db5253285a695e9703909c0aac442ad0a616b929fad00ec9a75a",
+  "status": "candidate_ready"
+}

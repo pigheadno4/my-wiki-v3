@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-balanceaccounts-id-transferlimits-approve",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: approve pending balance-account transfer limits\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts/(id)/transferLimits/approve\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(id)/transferLimits/approve/2026-11-03.md\"\ntags: [adyen, balance-platform, business-accounts, transfer-limits, sca, api]\n---\n\n## Overview\n\nThis 2026-11-03 API Explorer capture describes `POST /balanceAccounts/{id}/transferLimits/approve` on the Balance Platform API v2 **TEST** server (`https://balanceplatform-api-test.adyen.com/bcl/v2`). Its stated purpose is to approve transfer limits pending Strong Customer Authentication (SCA). The `latest` URL segment does not prove current version or live availability. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- Required path `id` identifies the balance account. The header table lists optional `WWW-Authenticate` for SCA authentication. The request-body table marks `transferLimitIds`, an array of IDs of pending transfer limits to approve, as required; the page does not separately state whole-body requiredness, an array size, or a batch atomicity rule. Its two-ID JSON example illustrates the shape, not a limit.\n- `204` says the request succeeded and documents no response body or returned limit state. `401` requires SCA and says the client must resolve the provided challenge; the capture does not specify the challenge exchange, credential role, or an idempotency contract. `404` means one of the transfer limits could not be found; `422` denotes request validation error. The error schemas list optional problem fields and optional `invalidFields` entries whose present objects require `message`, `name`, and `value`.\n- A successful approval request does not itself show when a limit becomes active or enforced, which limit IDs succeeded individually, or whether any transfer was approved, booked, settled or received by a bank. This endpoint capture gives no propagation, reversal, deletion, conflict/version or failure-retry rule. Consult the separate [[source-adyen-docs-business-accounts-use-transfer-limits|transfer-limits guide]] for broader dated context.\n\n## Detail locators\n\n- Purpose, TEST base URL, path and header parameters: raw lines 5\u201323.\n- Request-body table and illustrative JSON: raw lines 26\u201341.\n- `204` and `401`, `404`, `422` error meanings and schemas: raw lines 42\u2013102.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product context.\n- [[source-adyen-docs-business-accounts-use-transfer-limits]] \u2014 broader transfer-limit guide.\n- [[source-adyen-docs-business-accounts-how-sca-works]] \u2014 separate SCA guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(id)/transferLimits/approve/2026-11-03|Transfer-limit approval API Explorer capture]]",
+  "quotes": [
+    {
+      "text": "Approve transfer limits that are pending SCA authentication.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the balance account. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| transferLimitIds | array of string | Yes | A list that includes the `transferLimitId` of all the pending transfer limits you want to approve. |",
+      "location": "raw line 29"
+    },
+    {
+      "text": "Authentication required via Strong Customer Authentication (SCA). The client must resolve the provided challenge.",
+      "location": "raw line 49"
+    },
+    {
+      "text": "One of the transfer limits could not be found.",
+      "location": "raw line 68"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-approve-transfer-limits-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-id-transferlimits-approve]] \u2014 2026-11-03-captured Balance Platform API v2 TEST POST for approving pending SCA transfer limits on a balance account by submitted limit IDs; 204 has no returned state and does not prove limit enforcement or a funds-transfer outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(id)/transferLimits/approve/2026-11-03.md",
+  "raw_sha256": "a529ffdc9b6888152a9ac734c595e2ffa810cc1147054dfe7ef533f1191455f9",
+  "status": "candidate_ready"
+}

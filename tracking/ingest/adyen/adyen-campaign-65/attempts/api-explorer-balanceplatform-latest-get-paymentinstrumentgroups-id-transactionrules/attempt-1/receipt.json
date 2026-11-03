@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-paymentinstrumentgroups-id-transactionrules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GET /paymentInstrumentGroups/{id}/transactionRules \u2014 List payment-instrument-group rules | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/paymentInstrumentGroups/(id)/transactionRules\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/paymentInstrumentGroups/(id)/transactionRules/2026-11-03.md\"\ntags: [adyen, balance-platform, issuing, payment-instrument-groups, transaction-rules, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `GET /paymentInstrumentGroups/{id}/transactionRules`: it returns a list of transaction rules associated with a payment instrument group. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL uses `latest`, while the server path identifies v2. This is rule-configuration readback, not a transaction decision. See [[adyen-issuing]] for Issuing context. [Raw: lines 5\u201310]\n\n## Key takeaways\n\n- The only listed input is required string path `id`, the payment instrument group identifier. No query parameter, request body, GET-specific idempotency contract, pagination or list limit is documented here. The 200 response marks the request successful, but its top-level `transactionRules` array is marked optional. [Raw: lines 12\u201327]\n- An included rule may carry its own rule `id` and `entityKey` resource type/reference; these are distinct from the GET path group ID. The rule table marks `description`, `entityKey`, `interval`, `reference`, `ruleRestrictions` and rule `type` required within a returned rule object, while the rule ID, `status`, dates and many configuration fields are marked optional. `entityKey.entityType` can identify a balance platform, account holder, balance account, payment instrument group or payment instrument. Required nested fields do not make the top-level array required. [Raw: lines 25\u201347, 73\u201376]\n- Rule types are `blockList`, `maxUsage`, `velocity` and `bypass`. `requestType` defaults to `authorization` when omitted; its listed alternatives are `authentication`, `tokenization` and `bankTransfer`. `hardBlock` is the default outcome; `scoreBased` is disallowed for bank transfers and needs a score between -100 and 100, while `enforceSCA` is allowed only for authentication requests. For velocity/maxUsage, `aggregationLevel` defaults to payment-instrument level and must not be higher in hierarchy than `entityKey`. Rolling/sliding intervals require `duration`, capped at 90 days or equivalent. See the field table for condition operations and interval defaults. [Raw: lines 28\u201376]\n\n> [!warning] Contradiction\n> The response table says `ruleRestrictions` contains one or more condition objects [Raw: line 47], but the `bypass` rule description says to leave `ruleRestrictions` empty and provide `overridesRule` [Raw: line 76]. This GET snapshot does not reconcile those instructions; do not infer a valid bypass payload from either statement alone.\n\n- The success example shows two `inactive` velocity rules with `paymentInstrumentGroup` entity keys and payment-instrument aggregation. These are illustrative records, not proof of current rule activation, evaluation, a decline, or any card or funds outcome. The example's descriptions and restriction bodies should not be treated as a guarantee for a real group. [Raw: lines 178\u2013250]\n- Listed failures are 400 request-understanding, 401 authentication, 403 permission, 422 validation and 500 processing errors. The generic 422/500 samples mention payment-instrument changes/creation, not this GET's rule-list result. The page gives no caller-role name, rule creation/update/deletion action, propagation timing, asynchronous review/approval/activation signal, reversal, or current eligibility evidence. [Raw: lines 79\u2013176, 252\u2013316]\n\n## Detail locators\n\n- Purpose, TEST v2 server, and path parameter: pinned raw lines 5\u201317.\n- 200 list schema, rule scopes, intervals, outcomes, defaults and limits: lines 19\u201376; example: lines 178\u2013250.\n- Error headings, schemas and illustrative samples: lines 79\u2013176, 252\u2013316.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing and transaction-rule context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstrumentGroups/(id)/transactionRules/2026-11-03|GET payment-instrument-group transaction rules \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Returns a list of all the transaction rules associated with a payment instrument group.",
+      "location": "line 7"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the payment instrument group. |",
+      "location": "line 17"
+    },
+    {
+      "text": "| transactionRules | array of object | No | List of transaction rules. |",
+      "location": "line 27"
+    },
+    {
+      "text": "Each object must have a value and an operation which determines how the values must be evaluated.",
+      "location": "line 47"
+    },
+    {
+      "text": "You must provide the `id` of the rule to bypass in `overridesRule` and leave the `ruleRestrictions` object empty.",
+      "location": "line 76"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-api-explorer-balanceplatform-latest-get-paymentinstrumentgroups-id-transactionrules-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstrumentgroups-id-transactionrules]] \u2014 2026-11-03-captured Balance Platform API v2 TEST GET for rules associated with a payment instrument group; returned configuration and status do not prove rule evaluation or transaction outcome.\n\n> [!warning] Contradiction\n> This source's response table describes `ruleRestrictions` as containing one or more condition objects, while its `bypass` description instructs an empty object with `overridesRule`. The GET reference does not resolve valid bypass input. [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstrumentgroups-id-transactionrules]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The ruleRestrictions one-or-more condition description conflicts with the bypass empty-object instruction in the same raw response table."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstrumentGroups/(id)/transactionRules/2026-11-03.md",
+  "raw_sha256": "e744c638f82faefcf4ac4185ac2b57f3bf6856027935bf6f8219acf1f4fe223d",
+  "status": "candidate_ready"
+}

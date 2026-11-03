@@ -1,0 +1,66 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-registereddevices-deviceid-associations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PATCH /registeredDevices/{deviceId}/associations \u2014 Complete an SCA device association | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/registeredDevices/(deviceId)/associations\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/registeredDevices/(deviceId)/associations/2026-11-03.md\"\ntags: [adyen, balance-platform, sca, registered-devices, issuing, business-accounts, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `PATCH /registeredDevices/{deviceId}/associations` to complete an association between a user's registered SCA device and an Adyen resource. It validates the registered device's authentication data. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL says `latest` while the server path identifies `v2`. The page gives additional Business Accounts and Adyen-issued cards as examples; see [[adyen-business-accounts]] and [[adyen-issuing]] for those contexts.\n\n## Key takeaways\n\n- Required string path `deviceId` identifies the SCA device. The request table requires `ids`, an array of resource identifiers capped at five strings; `strongCustomerAuthentication`, whose required `sdkOutput` is base64-encoded authentication SDK data; and `type`, whose only listed value is `PaymentInstrument`. The page lists no query parameters, request defaults or idempotency key. [Raw: lines 14\u201328]\n- The 200 response is labeled request success. Its body requires `type`, while `deviceId` and the associated resource `ids` are optional fields. Although the endpoint is described as completing an association, this response does not report a separate association status or a later SCA challenge result. [Raw: lines 5\u20139, 30\u201340]\n- Errors listed are 400 request-reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation and 500 server processing. No exact credential role, duplicate-association behavior, prior-association replacement rule, propagation timing, deletion or reversal path is specified here. The generic 422 and 500 examples concern payment-instrument update/creation, not this association's result. [Raw: lines 43\u2013208]\n- Completing a device-resource association is distinct from authenticating a later transaction, activating a card, approving a transfer, booking funds or proving compliance. The dated TEST v2 snapshot does not establish current live availability or eligibility for any particular user or resource. [Raw: lines 5\u201340]\n\n## Detail locators\n\n- Purpose, authentication-data validation and TEST v2 server: pinned raw lines 5\u201312.\n- Path ID, required request fields and five-ID maximum: lines 14\u201328.\n- 200 response shape: lines 30\u201340.\n- Errors and generic examples: lines 43\u2013208.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts SCA device context.\n- [[adyen-issuing]] \u2014 issued-card SCA device context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/registeredDevices/(deviceId)/associations/2026-11-03|PATCH registered-device associations \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Completes an association between a user's registered SCA device and an Adyen resource.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "To complete the association, this endpoint validates the authentication data of the registered device.",
+      "location": "pinned raw line 9"
+    },
+    {
+      "text": "The list of unique identifiers of the resources that you are associating with the SCA device.  Maximum: 5 strings.",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "A base64-encoded block with the data required to authenticate the request. You obtain this information by using our authentication SDK.",
+      "location": "pinned raw line 27"
+    },
+    {
+      "text": "| type | string | Yes | The type of resource that you are associating with the SCA device.  Possible value: **PaymentInstrument** |",
+      "location": "pinned raw line 28"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-api-explorer-balanceplatform-latest-patch-registereddevices-deviceid-associations-business-accounts-source",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-registereddevices-deviceid-associations]] \u2014 2026-11-03-captured Balance Platform API v2 TEST PATCH to complete registered-SCA-device association with up to five payment-instrument IDs using authentication SDK output; association is not a later SCA or transfer outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c65-api-explorer-balanceplatform-latest-patch-registereddevices-deviceid-associations-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-registereddevices-deviceid-associations]] \u2014 2026-11-03-captured Balance Platform API v2 TEST PATCH to complete a registered SCA device's association with payment instruments using SDK authentication data; no later card authentication or transaction outcome is established.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/registeredDevices/(deviceId)/associations/2026-11-03.md",
+  "raw_sha256": "efb164d912b575062363fec5250b25b5241611e35cd58797177478026f5b7364",
+  "status": "candidate_ready"
+}

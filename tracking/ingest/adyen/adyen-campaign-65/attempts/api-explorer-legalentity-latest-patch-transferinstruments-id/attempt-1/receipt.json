@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-legalentity-latest-patch-transferinstruments-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PATCH /transferInstruments/{id} \u2014 Update a transfer instrument | Adyen Legal Entity Management API\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/patch/transferInstruments/(id)\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/patch/transferInstruments/(id)/2026-11-03.md\"\ntags: [adyen, legal-entity-management-api, transfer-instrument, bank-account, api-reference]\n---\n\n## Overview\n\nThis 2026-11-03-captured Legal Entity Management API `/lem/v4` reference updates a transfer instrument identified by path `id`. It lists the TEST server `https://kyc-test.adyen.com/lem/v4`, and separately states live and test request-rate limits; the capture does not give a live server URL or establish account-specific access. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The required path `id` is the transfer-instrument ID. The request table marks `bankAccount`, `legalEntityId` (the owning legal entity), and `type=bankAccount` required. Within `bankAccount`, `accountIdentification`, `accountType`, `bankName`, and `countryCode` are optional in this table. The example supplies IBAN identification, but does not make IBAN mandatory or establish accepted identification variants. No query parameter or endpoint-specific idempotency key is listed.\n- The optional `x-requested-verification-code` header can use `0_0001` to resolve suberrors associated with the transfer instrument, and requested verification codes are TEST-only. The page states 700 requests per 5 seconds in live, 200 per 5 seconds in test, and 5 failed requests per 10 seconds.\n- A `200` means the update request succeeded and returns required `bankAccount`, `id`, `legalEntityId`, and `type`. Optional response material includes `bankAccount.trustedSource`, `capabilities`, `documentDetails`, and `problems`. Capability fields are for supporting entities: `allowed`, `requested`, and `verificationStatus` are distinct, and the response defines `pending`, `invalid`, `valid`, and `rejected` verification states. The schema says an allowed supporting entity may be usable even if the parent legal entity is not allowed because other supporting entities failed verification; that does not imply every capability or instrument is approved.\n- The listed error classes are `400`, `401`, `403`, `422`, and `500`, with optional fields in their error bodies. A successful update or returned bank-account data is not independent proof of verification approval, capability enablement, transfer execution, payout, settlement, or bank receipt. The reference gives no update propagation timing or version/conflict rule.\n\n## Detail locators\n\n- Purpose, rate limits and TEST server: raw lines 5\u201318.\n- Path, optional TEST-only header, required body and IBAN example: raw lines 20\u201359.\n- `200` response, bank-account metadata, supporting-entity capabilities, documents and problems: raw lines 60\u2013105.\n- Error classes/bodies and response example: raw lines 108\u2013189.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform resource and verification context.\n- [[source-adyen-docs-platforms-manage-transfer-instruments]] \u2014 separate management guide for transfer-instrument lifecycle.\n- [[source-adyen-docs-platforms-verification-overview-capabilities]] \u2014 separate capability and verification context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/patch/transferInstruments/(id)/2026-11-03|PATCH transfer instrument captured 2026-11-03]]\n",
+  "quotes": [
+    {
+      "text": "Live environments: 700 requests per 5 seconds.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "Failed requests are subject to a limit of 5 failures per 10 seconds.",
+      "location": "raw line 15"
+    },
+    {
+      "text": "| x-requested-verification-code | string | No | Use the requested verification code 0_0001 to resolve any suberrors associated with the transfer instrument. Requested verification codes can only be used in your test environment. |",
+      "location": "raw line 31"
+    },
+    {
+      "text": "| bankAccount | object | Yes | Contains information about the legal entity's bank account. |",
+      "location": "raw line 37"
+    },
+    {
+      "text": "| legalEntityId | string | Yes | The unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id) that owns the transfer instrument. |",
+      "location": "raw line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platforms-transfer-instrument-patch-lemv4-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-patch-transferinstruments-id]] \u2014 2026-11-03-captured LEM v4 TEST PATCH for a legal-entity-owned bank-account transfer instrument, with required body, TEST-only verification-code header and rate limits; update success is separate from verification or payout proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/patch/transferInstruments/(id)/2026-11-03.md",
+  "raw_sha256": "a94eb9e6b685c69cfd2520190f85e51581bd5e8548d11c59345abe1fe801033c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-legalentity-latest-post-legalentities-id-confirmdatareview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: POST /legalEntities/{id}/confirmDataReview\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/confirmDataReview\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/confirmDataReview/2026-11-03.md\"\ntags: [adyen, legal-entity, platforms, verification, data-review, api]\n---\n\n## Overview\n\nThis 2026-11-03 Legal Entity Management API reference describes `POST /legalEntities/{id}/confirmDataReview`. It informs Adyen that the platform's user reviewed and verified that the specified legal entity's data is up to date; the response reports when Adyen received the request. The shown server is TEST `https://kyc-test.adyen.com/lem/v4`. The endpoint is a user-review confirmation, not an Adyen verification or capability decision. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The required path `id` identifies the legal entity whose data the user reviewed. This captured endpoint lists no query parameters or request body, and it does not identify a credential role or describe a user-authentication workflow. The platform should not infer from a 200 alone that the user actually reviewed data; the endpoint is the mechanism for reporting that review to Adyen.\n- The success response is HTTP 200. Its only response-body property, `dataReviewedAt`, is marked optional and described as the confirmation date; the introduction calls it the timestamp when Adyen received the request. The sample date is illustrative, not proof of a particular legal entity's current review or subsequent verification outcome.\n- The introduction gives rate limits of 700 requests per five seconds in LIVE, 200 per five seconds in TEST, and five failed requests per ten seconds. These stated LIVE limits do not supply a LIVE server URL or prove account access.\n- The page lists 400 request error, 401 authentication required, 403 insufficient permissions, 422 validation error and 500 server failure. Its generic error schema includes an optional `pspReference` described as a payment reference; that label does not turn this legal-entity confirmation into a payment operation. The page gives no idempotency/retry or downstream review timing contract.\n\n## Detail locators\n\n- Purpose, rate limits and TEST server: pinned raw lines 5\u201318.\n- Required legal-entity path ID: `## Parameters > ### Path parameters`, lines 20\u201325.\n- Success response and optional `dataReviewedAt`: `## Responses > ### 200 Success`, lines 27\u201335.\n- Error descriptions and generic fields: `## Responses`, lines 38\u2013100.\n- Illustrative 200 timestamp: `## Response examples > ### 200 Success`, lines 102\u2013111.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform onboarding and verification context.\n- [[source-adyen-docs-platforms-verification-overview-data-review-process]] \u2014 separate periodic data-review guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/confirmDataReview/2026-11-03|Confirm legal-entity data review, 2026-11-03 capture]]",
+  "quotes": [
+    {
+      "text": "Call this endpoint to inform Adyen that your user reviewed and verified that the data is up-to-date.",
+      "location": "raw line 7; introduction"
+    },
+    {
+      "text": "The endpoint returns the timestamp of when Adyen received the request.",
+      "location": "raw line 7; introduction"
+    },
+    {
+      "text": "Live environments: 700 requests per 5 seconds.",
+      "location": "raw line 11; rate limits"
+    },
+    {
+      "text": "Test environments: 200 requests per 5 seconds.",
+      "location": "raw line 13; rate limits"
+    },
+    {
+      "text": "| dataReviewedAt | string | No | Date when data review was confirmed. |",
+      "location": "raw line 35; Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-confirm-data-review-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-confirmdatareview]] \u2014 2026-11-03-captured Legal Entity Management API v4 TEST POST for reporting a user's legal-entity data-review confirmation; the optional receipt timestamp is not Adyen verification or capability approval.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/confirmDataReview/2026-11-03.md",
+  "raw_sha256": "e68c035077d4159867c42502f2d98a19b70da92d30707c3e8269b582f2b2b841",
+  "status": "candidate_ready"
+}

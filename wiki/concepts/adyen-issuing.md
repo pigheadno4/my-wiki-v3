@@ -15,6 +15,45 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-registereddevices-id]] — 2026-11-03-captured Balance Platform API v2 TEST DELETE of an SCA-device registration for a specified payment instrument, with required device and instrument IDs; bodyless 204 does not document wider association propagation or authentication outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-registereddevices-deviceid-associations]] — 2026-11-03-captured Balance Platform API v2 TEST PATCH to complete a registered SCA device's association with payment instruments using SDK authentication data; no later card authentication or transaction outcome is established.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices-deviceid-associations]] — 2026-11-03-captured Balance Platform API v2 TEST POST initiating association of a registered SCA device with up to five payment-instrument IDs; optional SDK input continues the flow, so 200 is not completed association or authentication.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-registereddevices-id]] — 2026-11-03-captured Balance Platform API v2 TEST PATCH SCA-device-registration completion reference also applicable to Adyen-issued cards; the optional `success` field is worded as initiation, and the Issuing guide uses an explicit `success: true` check.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-networktokens-networktokenid]] — 2026-11-03-captured Balance Platform API v2 TEST PATCH reference for network-token status updates (`active`, `suspended`, or irreversible `closed`); its optional `status` table conflicts with the Issuing guide's required instruction, and the guide's curl path differs from the API operation. Its `202` entry gives no success body or completion timing.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-scadevices-deviceid]] — 2026-11-03-captured Balance Platform API v2 TEST DELETE reference for one SCA device by `deviceId`; bodyless 204 reports deletion, without documenting association propagation or authentication outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-networktokens-networktokenid]] — 2026-11-03-captured Balance Platform API v2 TEST GET for one network token by token ID, with optional status and payment-instrument link, and conditional short-lived role-gated device phone; readback is not provisioning, activation or payment proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-transactionrules-transactionruleid]] — 2026-11-03-captured Balance Platform API v2 TEST PATCH reference for an existing transaction rule; status-only changes retain other fields, while other updates remove omitted parameters. A 200 response is configuration readback, not transaction-outcome proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-cardorders-id-items]] — 2026-11-03-captured Balance Platform API v2 TEST GET reference for one card order’s paginated items, optional delivery fields and card/PIN label mismatch; readback is not delivery or transaction-outcome proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstrumentgroups-id-transactionrules]] — 2026-11-03-captured Balance Platform API v2 TEST GET for rules associated with a payment instrument group; returned configuration and status do not prove rule evaluation or transaction outcome.
+
+> [!warning] Contradiction
+> This source's response table describes `ruleRestrictions` as containing one or more condition objects, while its `bypass` description instructs an empty object with `overridesRule`. The GET reference does not resolve valid bypass input. [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstrumentgroups-id-transactionrules]]
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-transactionrules-transactionruleid]] — 2026-11-03-captured Balance Platform API v2 TEST DELETE reference for one transaction rule by path ID; 200 includes a rule representation, while propagation, future rule evaluation and payment outcomes are not established.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-transactionrules-transactionruleid]] — 2026-11-03-captured Balance Platform API v2 TEST GET for one transaction rule's configuration; the bypass restriction wording conflicts within the schema, and readback does not prove rule evaluation or a transaction outcome.
+
+
 - [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstrumentgroups-id]] — 2026-11-02-captured Balance Platform API v2 TEST GET readback for one payment instrument group and its platform/transaction variant; readback does not establish instrument activation or transaction outcome.
 
 

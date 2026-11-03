@@ -20,6 +20,9 @@ This 2026-09-15 snapshot of an Adyen Issuing guide covers network tokens created
 - The guide lists inactive → active after phone-call authentication, active → suspended, suspended → active, and active/suspended → closed. PATCH requests supply `status`; closed is final. HTTP 202 means accepted for asynchronous processing, with webhooks supplying the final result, not a completed status change. The PATCH operation label and sample curl likewise show different URL shapes.
 - To limit usage, the guide illustrates POST `/transactionRules` for a card-scoped active-token-count rule and a separate rule blocking token-processed transactions greater than EUR 50. These are example rule configurations, not proof that token provisioning or any transaction was actually blocked.
 
+> [!warning] Contradiction
+> This 2026-09-15 Issuing guide marks PATCH request-body `status` required (guide raw lines 304–316), while the [[source-adyen-api-explorer-balanceplatform-latest-patch-networktokens-networktokenid|2026-11-03 Balance Platform API v2 TEST reference]] marks it optional (API raw line 23). The guide links to `PATCH /networkTokens/{networkTokenId}` (guide raw line 306), matching the API operation (API raw line 5), but its curl example uses `/paymentInstruments/{id}/networkTokens/{networkTokenId}` (guide raw lines 320–329). The sources do not resolve either requiredness or sample-path discrepancy; the sample URL is not a verified replacement for the API operation.
+
 ## Detail locators
 
 - Requirements and account-scoped role: raw lines 29–36. List and single-token operations, response fields and status values: raw lines 38–294. The list's `type` table names `applePay`/`googlePay` at line 192, while the single-token `type` table names `wallet`/`cof` at line 261; do not silently reconcile these differing descriptions.

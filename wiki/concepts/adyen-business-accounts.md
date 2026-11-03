@@ -15,6 +15,63 @@ The captured overview conditions eligibility on user entity type, supported oper
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-transferlimits]] — 2026-11-03-captured Balance Platform API v2 TEST GET reference for filtered balance-platform transfer-limit readback, including status, scope, amount and SCA state; listing does not approve a limit or prove a funds-transfer outcome.
+
+> [!warning] Contradiction
+> The API reference requires `transferLimits` and shows that key (assigned raw lines 29–35, 88–131), while the linked Business Accounts balance-platform guide's same-route example shows `transfer` (guide raw lines 119–123, 154–197). Verify the actual response contract before client parsing.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceplatforms-id-transferlimits]] — 2026-11-03-captured Balance Platform API v2 TEST POST to create a platform transfer-limit configuration by platform ID, with amount/scope/type, optional SCA timing and scheduled or pending status; `200` is not transfer or SCA-completion proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-registereddevices-deviceid-associations]] — 2026-11-03-captured Balance Platform API v2 TEST PATCH to complete registered-SCA-device association with up to five payment-instrument IDs using authentication SDK output; association is not a later SCA or transfer outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices-deviceid-associations]] — 2026-11-03-captured Balance Platform API v2 TEST POST initiating association of a registered SCA device with up to five payment-instrument IDs; optional SDK input continues the flow, so 200 is not completed association or authentication.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-registereddevices-id]] — 2026-11-03-captured Balance Platform API v2 TEST PATCH reference for finalizing SCA-device registration with a prior POST device ID, payment-instrument ID and SDK output; its optional `success` description says initiation despite the completion heading, while the Business Accounts guide checks for `success: true`.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-balanceplatforms-id-transferlimits-transferlimitid]] — 2026-11-03-captured Balance Platform API v2 TEST delete reference for a pending or scheduled platform-level transfer limit by platform and limit IDs; active limits cannot be deleted, and 204 is not a transfer outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-transferlimits-transferlimitid]] — 2026-11-03-captured Balance Platform API v2 TEST GET for one platform transfer limit, its scope, amount, timing and SCA/limit statuses; readback is not enforcement, SCA completion or transfer proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-balanceaccounts-id-transferlimits-transferlimitid]] — 2026-11-03-captured Balance Platform API v2 TEST DELETE for a scheduled or pending balance-account transfer limit by two path IDs; active limits are excluded and bodyless 204 does not establish funds movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-transferlimitid]] — 2026-11-03-captured Balance Platform API v2 TEST readback of one balance-account transfer limit, including amount, scope, status and SCA state; readback does not prove transfer execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits]] — 2026-11-03-captured Balance Platform API v2 TEST GET for configured balance-account transfer limits, with optional filters, amount units and distinct limit/SCA statuses; readback does not prove transfer approval or funds delivery.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-current]] — 2026-11-03-captured Balance Platform API v2 TEST GET for balance-account transfer-limit readback by optional transfer type and scope; returned limit/SCA state is not a transfer outcome.
+
+> [!warning] Contradiction
+> The source describes limits that currently apply, while its response status enum also allows inactive, pending-SCA and scheduled values. It does not say whether such rows appear on this `current` route. [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transferlimits-current]]
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-id-transferlimits]] — 2026-11-03-captured Balance Platform API v2 TEST reference for creating a balance-account transfer limit, including scope/type, SCA initiation choice and returned pending/scheduled/active/inactive states; creation is not transfer execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-id-transferlimits-approve]] — 2026-11-03-captured Balance Platform API v2 TEST POST for approving pending SCA transfer limits on a balance account by submitted limit IDs; 204 has no returned state and does not prove limit enforcement or a funds-transfer outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-scadevices-deviceid-scaassociations]] — 2026-11-03-captured Balance Platform API v2 TEST POST for associating an SCA device with account-holder, legal-entity or payment-instrument IDs; creation can return pending approval, while conditional single-device replacement activates the new association and removes the old one.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-mandates-mandateid-cancel]] — 2026-11-03-captured Balance Platform API v2 TEST POST to request direct-debit mandate cancellation by mandate ID; 202 means accepted, with no completion status or funds outcome documented.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-mandates-mandateid]] — 2026-11-03-captured Balance Platform API v2 TEST PATCH for a direct debit mandate's optional linked payment-instrument ID; 202 accepts the amendment request without confirming changed mandate state or a collected debit.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-mandates-mandateid]] — 2026-11-03-captured Balance Platform API v2 TEST readback for one direct debit mandate by ID, including optional linked account/instrument IDs and reported status; the read does not change the mandate or prove a debit outcome.
+
+
 - [[source-adyen-api-explorer-open-banking-latest-post-accountverification-routes]] — 2026-09-15-captured Open Banking Gateway v1 provider-route creation for external individuals' bank-account verification; returned links are flow entry, while connection, report and verification are separate later stages.
 
 

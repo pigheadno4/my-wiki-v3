@@ -18,6 +18,84 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-termsofservice]] — 2026-11-03-captured LEM v4 TEST POST for a legal entity’s typed, language-specific Terms document; the stated JSON default conflicts with a JSON-labeled example whose decoded document begins `%PDF-1.4`. Retrieval is not acceptance or onboarding proof.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-pciquestionnaires-generatepcitemplates]] — 2026-11-03-captured Legal Entity Management API v4 TEST POST for sales-channel-based PCI questionnaire template generation; references/content do not establish signing or PCI compliance.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-acceptedtermsofservicedocument-termsofserviceacceptancereference]] — 2026-11-03-captured LEM API v4 TEST GET for an accepted Terms of Service document by legal-entity ID and Adyen acceptance reference; optional Base64 document readback is not a new acceptance, signatory check or onboarding approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-termsofservicestatus]] — 2026-11-03-captured Legal Entity Management API v4 TEST lookup of Terms of Service types still required for a legal entity; an empty returned array means none needed, while readback is not acceptance or capability approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-termsofserviceacceptanceinfos]] — 2026-11-03-captured Legal Entity Management API v4 TEST GET for legal-entity Terms of Service acceptance records and signer/subject/reference identities; readback does not prove present validity, verification approval or product enablement.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-patch-legalentities-id-termsofservice-termsofservicedocumentid]] — 2026-11-03-captured Legal Entity Management API v4 TEST PATCH for recording Terms acceptance by a specified individual legal entity against a specified legal entity/document; returned acceptance details are not verification or capability approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-delete-documents-id]] — 2026-11-03-captured Legal Entity Management API v4 TEST DELETE reference for a document ID and `204` response; it does not state the effect on verification or capability decisions.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-patch-documents-id]] — 2026-11-03-captured LEM API v4 TEST document PATCH by document ID, with required description/type, optional Base64 attachments, photo-ID side/page limits and TEST-only suberror header; `200` is update evidence, not verification approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-patch-transferinstruments-id]] — 2026-11-03-captured LEM v4 TEST PATCH for a legal-entity-owned bank-account transfer instrument, with request-body table marking bankAccount, legalEntityId and type required (whole-body requiredness unstated), TEST-only verification-code header and rate limits; update success is separate from verification or payout proof.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-documents-id]] — 2026-11-03-captured Legal Entity Management API v4 TEST GET document readback by ID with optional `skipContent`; a returned document is not verification or compliance approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-patch-businesslines-id]] — 2026-11-03-captured Legal Entity Management API v4 TEST PATCH for a business line, including service-conditional sales-channel and source-of-funds fields; 200 readback does not prove verification or capability approval.
+
+> [!warning] Contradiction
+> The PATCH table requires `sourceOfFunds.amount` for `type: business`, while its banking/business 200 example omits that amount. The example does not resolve the conditional requirement. [[source-adyen-api-explorer-legalentity-latest-patch-businesslines-id]]
+
+
+- [[source-adyen-api-explorer-legalentity-latest-delete-businesslines-id]] — 2026-11-03-captured LEM API v4 TEST DELETE for a business line; removal spans all linked merchant accounts and can affect linked payment-method use, with no propagation timing specified.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-businesslines-id]] — 2026-11-03-captured Legal Entity Management API v4 TEST GET for one business line's legal-entity owner, industry, service and conditional source-of-funds detail; readback does not prove verification approval.
+
+> [!warning] Contradiction
+> This source requires `sourceOfFunds.amount` when `type` is `business`, but its banking business-line example omits it. The example does not resolve the conditional requirement. [[source-adyen-api-explorer-legalentity-latest-get-businesslines-id]]
+
+
+- [[source-adyen-api-explorer-legalentity-latest-delete-transferinstruments-id]] — 2026-11-03-captured Legal Entity Management API v4 TEST DELETE reference for a transfer-instrument ID, with 204 success and distinct live/test/failed-request limits; the separate Platforms guide says deletion is irreversible and future payouts using the deleted ID fail.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-transferinstruments-id]] — 2026-11-03-captured Legal Entity Management API v4 TEST GET reference for a legal-entity-owned transfer instrument and optional capability/verification details; readback is not payout or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-checkverificationerrors]] — 2026-11-03-captured LEM API v4 TEST POST for legal-entity and supporting-entity verification errors, with distinct live/test/failed-request rate limits; returned problems or remediation suggestions are not verification approval.
+
+> [!warning] Contradiction
+> The source table types `capabilities` as an array of strings and the example uses strings, while the same field description calls them key-value pairs with object values. The snapshot does not reconcile the shape. [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-checkverificationerrors]]
+
+
+- [[source-adyen-api-explorer-legalentity-latest-patch-legalentities-id]] — 2026-11-03-captured LEM API v4 TEST legal-entity PATCH: type-only change requests and whole-array association replacement, with separate requested/allowed verification states; the top-level type enum omits its conditional unincorporated-partnership branch, and `200`/ID is not approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-requestperiodicreview]] — 2026-11-03-captured Legal Entity Management API v4 TEST POST for requesting a user's legal-entity periodic review; bodyless 204 does not report the review outcome or capability approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-confirmdatareview]] — 2026-11-03-captured Legal Entity Management API v4 TEST POST for reporting a user's legal-entity data-review confirmation; the optional receipt timestamp is not Adyen verification or capability approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-businesslines]] — 2026-11-03-captured Legal Entity Management API v4 TEST GET for a legal entity's business lines, service, industry and conditional source-of-funds fields; readback does not confirm verification or capability approval.
+
+> [!warning] Contradiction
+> The source table requires `sourceOfFunds.amount` for `type: business`, but its sample banking business line omits it. The example does not resolve the conditional requirement. [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-businesslines]]
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id]] — 2026-11-03-captured Legal Entity Management API v4 TEST GET readback by legal-entity ID, including requested versus allowed capabilities and verification status; a 200 is not capability approval or payment proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-scadevices-deviceid]] — 2026-11-03-captured Balance Platform API v2 TEST PATCH reference for finishing Authentication SDK-based SCA device registration; its `200` registration result is distinct from resource association or a completed authentication.
+
+
 - [[source-adyen-api-explorer-balanceplatform-latest-post-balanceplatforms-balanceplatformid-webhooks-webhookid-settings]] — 2026-11-02-captured Balance Platform API v2 TEST reference for creating hierarchical balance-webhook threshold settings by currency and target; a 200 configuration response is not webhook delivery or financial movement.
 
 

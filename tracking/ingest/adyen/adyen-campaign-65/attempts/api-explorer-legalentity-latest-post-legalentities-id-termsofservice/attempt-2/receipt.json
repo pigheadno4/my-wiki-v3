@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-legalentity-latest-post-legalentities-id-termsofservice",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"POST /legalEntities/{id}/termsOfService \u2014 Get Terms of Service document | Adyen Legal Entity Management API\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/termsOfService\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/termsOfService/2026-11-03.md\"\ntags: [adyen, legal-entity-management-api, terms-of-service, legal-entity, api-reference]\n---\n\n## Overview\n\nThis captured Legal Entity Management API `/lem/v4` POST returns a Terms of Service document for a legal entity. Its listed server is TEST `https://kyc-test.adyen.com/lem/v4`; the page separately states live and test rate limits but does not list a live server URL. Document retrieval is separate from presentation to, or acceptance by, an authorized person. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The required path `id` is the individual's legal-entity ID for a sole proprietorship or the organization's legal-entity ID for an organization. The body requires `language` (`en` or `fr`) and Terms `type`; optional `termsOfServiceDocumentFormat` defaults to `JSON` and permits `JSON`, `PDF`, or `TXT`. The raw lists twelve type values, including Platforms, Issuing, Capital, account, card, and direct-debit variants; use the raw enum rather than treating the `adyenIssuing` example as universal.\n> [!warning] Contradiction\n> The request table says `JSON` is the default format (raw line 32). In the `200` example, `termsOfServiceDocumentFormat` is `JSON` (line 136), but the Base64 `document` (line 134) decodes to a `%PDF-1.4` signature. The example is internally inconsistent; do not infer the returned document's content format from it.\n\n- A `200` means the document request succeeded. All listed response fields are optional: Base64-encoded `document`, legal-entity `id`, `language`, `termsOfServiceDocumentFormat`, `termsOfServiceDocumentId`, and `type`. French is available only for some integration types in certain countries/regions; the response description directs readers to an Adyen contact for details.\n- Rate limits are 700 requests per 5 seconds in live, 200 per 5 seconds in test, and 5 failed requests per 10 seconds. The page lists `400`, `401`, `403`, `422`, and `500` errors with optional error-body fields. It states no caller role, idempotency rule, acceptance action, consent status, approval timing, or version/conflict behavior.\n- A returned document or document ID does not prove that the correct signer viewed or accepted the Terms, that a requirement was satisfied, or that onboarding, verification, capability activation, grant funding, payment, or payout occurred.\n\n## Detail locators\n\n- Purpose, limits, TEST server and legal-entity path identity: raw lines 5\u201325.\n- Body language, format/default, complete type enum and example: raw lines 28\u201343.\n- `200` optional response fields and French qualification: raw lines 44\u201357.\n- Error responses and illustrative document response: raw lines 60\u2013137.\n\n## Related\n\n- [[adyen-platforms]] \u2014 onboarding and legal-entity context.\n- [[source-adyen-docs-platforms-onboard-users-terms-of-service]] \u2014 separate guide for Terms presentation and acceptance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/termsOfService/2026-11-03|POST Terms document captured 2026-11-03]]\n",
+  "quotes": [
+    {
+      "text": "Returns the Terms of Service document for a legal entity.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the legal entity. For sole proprietorships, this is the individual legal entity ID of the owner. For organizations, this is the ID of the organization. |",
+      "location": "raw line 25"
+    },
+    {
+      "text": "| language | string | Yes | The language to be used for the Terms of Service document, specified by the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code. Possible values: **en** for English or **fr** for French. |",
+      "location": "raw line 31"
+    },
+    {
+      "text": "| termsOfServiceDocumentFormat | string | No | The requested format for the Terms of Service document. Default value: JSON. Possible values: **JSON**, **PDF**, or **TXT**. |",
+      "location": "raw line 32"
+    },
+    {
+      "text": "| document | string | No | The Terms of Service document in Base64-encoded format. |",
+      "location": "raw line 52"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platforms-lemv4-terms-document-post-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-termsofservice]] \u2014 2026-11-03-captured LEM v4 TEST POST for a legal entity\u2019s typed, language-specific Terms document; the stated JSON default conflicts with a JSON-labeled example whose decoded document begins `%PDF-1.4`. Retrieval is not acceptance or onboarding proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Contradiction: request default JSON (raw line 32) and example label JSON (line 136) conflict with example Base64 document decoding to a %PDF-1.4 signature (line 134); do not infer content format from the example."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/termsOfService/2026-11-03.md",
+  "raw_sha256": "06fcec12c2dd87031905cab245e674fc71db565803c4cf3fcf252354f5db3f77",
+  "status": "candidate_ready"
+}

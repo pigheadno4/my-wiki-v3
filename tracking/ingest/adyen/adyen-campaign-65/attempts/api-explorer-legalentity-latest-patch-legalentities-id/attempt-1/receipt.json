@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-legalentity-latest-patch-legalentities-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: Update a legal entity\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/patch/legalEntities/(id)\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/patch/legalEntities/(id)/2026-11-03.md\"\ntags: [adyen, legal-entity-management, platforms, onboarding, verification, api-reference]\n---\n\n## Overview\n\nThe 2026-11-03-captured Legal Entity Management API v4 TEST reference describes `PATCH /legalEntities/{id}` to update the legal entity identified by required path `id`. A legal-entity type change must be sent with only the new `type`; other information needs a separate request. If `entityAssociations` is updated, the submitted array replaces the entire association array, so omitted entries are removed. This is a legal-entity data update, not verification approval, capability enablement or a payment/payout result. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The only listed server is `https://kyc-test.adyen.com/lem/v4`. The reference states live rate limits of 700 requests per five seconds, test limits of 200 per five seconds and a failed-request limit of five failures per ten seconds. The optional `x-requested-verification-code` header can use `0_0001` to resolve legal-entity suberrors only in TEST; it is not a live remediation route.\n- The request body lists optional top-level `capabilities`, `entityAssociations`, `individual`, `organization`, `reference`, `soleProprietorship`, `trust`, `type`, `unincorporatedPartnership` and `verificationPlan`. Optional parents contain required nested properties when their branch is supplied. The prose requires `individual`, `organization`, `soleProprietorship`, `trust` or `unincorporatedPartnership` for its matching `type`; association entries require `legalEntityId` and association `type`. `reference` has a 150-character maximum; `verificationPlan=upfront` is named for marketplace upfront verification. Exact per-field/country validation remains in the raw schema.\n- The conditional branch detail matters: individual name and residential address, organization legal name and registered address, sole-proprietorship name and registered address, trust governing-law country/name/registered address/trust subtype, and unincorporated-partnership governing-law country/name/registered address have nested requirements. Address and identification subfields have further country- and presence-based conditions; optional parent fields are not globally required for every PATCH.\n- A `200` response requires legal-entity `id` but does not by itself indicate completed verification. Optional `capabilities` entries separate `requested` and `requestedLevel/Settings` from `allowed` and `allowedLevel/Settings`; the schema says to check `allowed` for permission and says Adyen sets it true after successful verification. `verificationStatus` can be `pending`, `invalid`, `valid` or `rejected` at capability and supporting-transfer-instrument levels. The schema expressly allows an individually `allowed` supporting transfer instrument even if the parent capability is not allowed because other supporting entities failed. Optional `problems` and `verificationDeadlines` expose errors and future capability-disallowance deadlines, not proof of present approval.\n\n> [!warning] Contradiction\n> The request and response top-level `type` rows list only `individual`, `organization`, `soleProprietorship` and `trust`, while both schemas contain an `unincorporatedPartnership` branch expressly required when `type` is `unincorporatedPartnership`. The pinned page does not reconcile the enum with the branch; do not infer that the unlisted value is accepted or rejected.\n\n- The labeled `updateLegalEntitySoleProp` example sends only an association but shows a response with top-level `type: individual`; example labels and returned fields do not prove a type transition. The `200` samples include IDs and entity details but no demonstrated `allowed=true` or completed verification.\n- Listed errors are `400` malformed/unclear request, `401` authentication required, `403` insufficient permission, `422` validation error and `500` server processing failure. The reference states no idempotency key, concurrency/version-conflict behavior or verification-completion timing. The dated TEST snapshot does not establish current live eligibility, accepted legal status, capability permission, payment authorization, transfer, settlement or bank receipt.\n\n## Detail locators\n\n- Raw lines 5\u201335: operation rules, whole-array replacement, rate limits, TEST v4 server, path and TEST-only verification-code header.\n- Raw lines 38\u2013252: full request schema, type-conditioned entity branches, country/address rules, association identities and verification plan.\n- Raw lines 254\u2013328: six request examples, including isolated type change and association updates.\n- Raw lines 329\u2013615: complete `200` schema, response ID, requested/allowed/verification fields, supporting entities, problems, instruments and deadlines.\n- Raw lines 618\u2013680: `400`, `401`, `403`, `422` and `500` error schemas.\n- Raw lines 682\u2013892: six `200` examples; the sole-proprietorship label/individual response and other example values are illustrative.\n\n## Related\n\n- [[adyen-platforms]] \u2014 Platforms onboarding and verification concept; this v4 API reference governs this PATCH.\n- [[source-adyen-api-explorer-legalentity-latest-post-legalentities]] \u2014 separate legal-entity creation reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/patch/legalEntities/(id)/2026-11-03|Update legal entity API reference (2026-11-03)]]",
+  "quotes": [
+    {
+      "text": "To change the legal entity type, include only the new `type` in your request.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "To update the `entityAssociations` array, you need to replace the entire array.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "Requested verification codes can only be used in your test environment.",
+      "location": "raw line 35"
+    },
+    {
+      "text": "Possible values: **individual**, **organization**, **soleProprietorship**, or **trust**.",
+      "location": "raw line 221"
+    },
+    {
+      "text": "Required if `type` is **unincorporatedPartnership**.",
+      "location": "raw line 222"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-patch-legalentity-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-patch-legalentities-id]] \u2014 2026-11-03-captured LEM API v4 TEST legal-entity PATCH: type-only change requests and whole-array association replacement, with separate requested/allowed verification states; the top-level type enum omits its conditional unincorporated-partnership branch, and `200`/ID is not approval.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The assigned PATCH raw conflicts internally: its top-level type enum omits unincorporatedPartnership while its conditional branch requires that type; retain the source warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/patch/legalEntities/(id)/2026-11-03.md",
+  "raw_sha256": "c4803af6e0be219c06a630a34b9eea6bc9ae84d3e22af4576ffaa54a3f053ceb",
+  "status": "candidate_ready"
+}

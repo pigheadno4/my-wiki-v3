@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-cardorders-id-items",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Get card order items\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/cardorders/(id)/items\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/cardorders/(id)/items/2026-11-03.md\"\ntags: [adyen, issuing, balance-platform, card-orders, api]\n---\n\n## Overview\n\nCaptured Balance Platform API v2 TEST reference for `GET /cardorders/{id}/items`. It reads the item list for one card order identified by the required path `id`; it does not place an order or create a card. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- Optional query `limit` is the number of items per page (default 10); optional `offset` starts the returned item list at a position (default 0). No maximum or explicit ordering is stated. The offset description also calls 0 the value that returns all elements, which should not override the separately documented default limit of 10.\n- A 200 response requires `data` (array of card order items), `hasNext`, and `hasPrevious`. Item fields are optional and include balance-platform, card-order-item, resource and payment-instrument IDs; creation date; card and PIN delivery objects; and shipping method. The card/PIN objects can include status, tracking number and error message. The `card` parent is described as card-delivery status with listed values `created`, `rejected`, `processing`, `produced`, `shipped`, `delivered`, `notApplicable`, `unknown`, but its nested `status` and `trackingNumber` descriptions say PIN delivery. Treat this label mismatch as unresolved rather than reassigning their meaning.\n- A successful GET reports the returned snapshot and pagination flags, not subsequent production, shipping, receipt, card activation, transaction authorization, capture or settlement. The example's `shipped` card and `produced` PIN values are illustrative, not a guarantee for another order.\n- The reference lists 401 authentication required, 403 insufficient permission, 422 validation error and 500 server error. Its generic 422 and 500 examples concern payment-instrument changes/creation and cannot establish card-order-item-specific failure rules. It states no named role, idempotency key, live host, eligibility rule, propagation timing or asynchronous approval semantics for this GET.\n\n## Detail locators\n\n- Test server, required path ID and optional pagination defaults: pinned raw, `## Servers` and `## Parameters`, lines 9\u201324.\n- 200 fields, delivery labels, statuses and page indicators: `## Responses` \u2192 `### 200 Success`, lines 28\u201350.\n- Authentication, permission, validation and server-error schemas: `## Responses`, lines 53\u2013130.\n- Illustrative success and generic error payloads: `## Response examples`, lines 132\u2013209.\n\n## Related\n\n- [[adyen-issuing]] \u2014 card-program context.\n- [[adyen-platforms]] \u2014 balance-platform context.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-cardorders]] \u2014 list of card orders, separate from this order's items.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/cardorders/(id)/items/2026-11-03|Captured GET /cardorders/{id}/items API Explorer reference (2026-11-03)]]",
+  "quotes": [
+    {
+      "text": "Returns the item list of a specific card order.",
+      "location": "line 7"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the card order. |",
+      "location": "line 17"
+    },
+    {
+      "text": "| limit | integer | No | The number of card order items returned per page. **Default:** 10. |",
+      "location": "line 23"
+    },
+    {
+      "text": "| data | array of object | Yes | List of card order items in the card order batch. |",
+      "location": "line 34"
+    },
+    {
+      "text": "|     - status | string | No | The status of the PIN delivery. |",
+      "location": "line 38 (also repeated at line 46)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-card-order-items-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-cardorders-id-items]] \u2014 2026-11-03-captured Balance Platform API v2 TEST GET reference for one card order\u2019s paginated items, optional delivery fields and card/PIN label mismatch; readback is not delivery or transaction-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The card object's nested status/tracking labels say PIN delivery; preserve this ambiguity in the source route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/cardorders/(id)/items/2026-11-03.md",
+  "raw_sha256": "bb8a592a33a8f12801253de71e540983607fcd2a71a329bb3c201f6af35a11e8",
+  "status": "candidate_ready"
+}

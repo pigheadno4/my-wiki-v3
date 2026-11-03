@@ -1,0 +1,70 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-registereddevices-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Complete SCA device registration\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/registeredDevices/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/registeredDevices/(id)/2026-11-03.md\"\ntags: [adyen, balance-platform, sca, device-registration, api]\n---\n\n## Overview\n\nCaptured Balance Platform API v2 TEST reference for `PATCH /registeredDevices/{id}`. The operation validates device authentication data to complete SCA-device registration for a Business Account or an Adyen-issued card. It follows an earlier `POST /registeredDevices`, whose response supplies the device `id`. See [[adyen]], [[adyen-business-accounts]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- Path `id` is the required SCA-device identifier. The request-body table marks `paymentInstrumentId` and `strongCustomerAuthentication` required, with required nested `sdkOutput` from the authentication SDK; it does not separately state whole-body requiredness. Optional `name` identifies the device to users, and Adyen generates one if omitted. The reference gives no query parameters, limits or idempotency contract.\n- The 200 response has an optional `success` boolean. The API field description says it specifies whether registration was initiated successfully, while the operation heading and description call this completion. The [[source-adyen-docs-business-accounts-register-sca-devices|Business Accounts]] and [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-register-devices|Issuing]] guides separately instruct the server to check for `success: true` after PATCH before treating registration as complete; a bare 200 or omitted `success` should not be promoted to that confirmation.\n- Errors listed are 400 request problem, 401 authentication required, 403 insufficient permissions, 422 request validation and 500 server failure. The generic 422 and 500 examples describe payment-instrument changes/creation, not SCA-device-registration conditions. The page gives no named credential role, association-propagation time, later authentication outcome, card activation, payment or funds result.\n\n> [!warning] Contradiction\n> This API reference calls PATCH a registration-completion operation (pinned raw lines 5\u20137), but its optional `success` field describes successful initiation (line 36). The two product guides require `success: true` for completion (Business Accounts guide raw lines 690\u2013692; Issuing registration guide raw lines 658\u2013660). Preserve this wording mismatch and use the guide's explicit success check for that guide's flow; the API response alone does not document a separate subsequent state transition.\n\n## Detail locators\n\n- Purpose, TEST server, prior POST-derived device ID and request fields: pinned raw lines 5\u201326.\n- 200 optional `success` field and listed errors: pinned raw lines 28\u2013136.\n- Generic error examples, including unrelated 422 and 500 wording: pinned raw lines 138\u2013205.\n- Product-guide finalization: Business Accounts registration guide raw lines 451\u2013461 and 690\u2013694; Issuing device-registration guide raw lines 419\u2013445 and 658\u2013660.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Account SCA context.\n- [[adyen-issuing]] \u2014 Adyen-issued card SCA context.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices]] \u2014 earlier registration initiation and device ID.\n- [[source-adyen-docs-business-accounts-register-sca-devices]] \u2014 Business Accounts SDK and server finalization flow.\n- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-register-devices]] \u2014 Issuing SDK and server finalization flow.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/registeredDevices/(id)/2026-11-03|Captured PATCH /registeredDevices/{id} API reference (2026-11-03)]]",
+  "quotes": [
+    {
+      "text": "Completes the registration of an SCA device by validating the authentication data of the device.",
+      "location": "line 7"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the SCA device. You obtain this `id` in the response of a POST [/registeredDevices](https://docs.adyen.com/api-explorer/balanceplatform/2/post/registeredDevices#responses-200-id) request. |",
+      "location": "line 17"
+    },
+    {
+      "text": "| paymentInstrumentId | string | Yes | The unique identifier of the payment instrument for which you are registering the SCA device. |",
+      "location": "line 24"
+    },
+    {
+      "text": "|   - sdkOutput | string | Yes | A base64-encoded block with the data required to register the SCA device. You obtain this information by using our authentication SDK. |",
+      "location": "line 26"
+    },
+    {
+      "text": "| success | boolean | No | Specifies if the registration was initiated successfully. |",
+      "location": "line 36"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-registered-device-patch-business-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-registereddevices-id]] \u2014 2026-11-03-captured Balance Platform API v2 TEST PATCH reference for finalizing SCA-device registration with a prior POST device ID, payment-instrument ID and SDK output; its optional `success` description says initiation despite the completion heading, while the Business Accounts guide checks for `success: true`.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The API completion wording and response field's initiation wording differ; preserve the qualification."
+        ]
+      },
+      {
+        "update_id": "c65-registered-device-patch-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-registereddevices-id]] \u2014 2026-11-03-captured Balance Platform API v2 TEST PATCH SCA-device-registration completion reference also applicable to Adyen-issued cards; the optional `success` field is worded as initiation, and the Issuing guide uses an explicit `success: true` check.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat bare 200 or omitted success as completed registration or a later card authentication outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/registeredDevices/(id)/2026-11-03.md",
+  "raw_sha256": "2e9d154e5db485912899e1e11f4873071cb2123f00183e5578f2744ec113fc99",
+  "status": "candidate_ready"
+}

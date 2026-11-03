@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-networktokens-networktokenid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Get a network token\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/networkTokens/(networkTokenId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/networkTokens/(networkTokenId)/2026-11-03.md\"\ntags: [adyen, balance-platform, issuing, network-tokens, api-reference]\n---\n\n## Overview\n\nThe 2026-11-03-captured Balance Platform API v2 TEST reference describes `GET /networkTokens/{networkTokenId}` for retrieving one network token's details. The required path value is the network token's unique ID, distinct from the returned `paymentInstrumentId` identifying the associated payment instrument. This is a readback of a token resource, not a provisioning, activation, status-change or card-payment operation. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The captured server is `https://balanceplatform-api-test.adyen.com/bcl/v2`; no live server or specific credential role for this GET is stated. A `200` response requires the `token` object, while its listed child fields, including `id`, `paymentInstrumentId`, `status`, `type`, `tokenRequestor` and `device`, are response-optional. The listed status values are `active`, `inactive`, `suspended` and `closed`.\n- `device.phone` is conditionally returned for up to 24 hours after the provisioning request and requires a specific user role that the reference does not name; the reader is directed to an Adyen representative for permission. Do not treat its absence as evidence that no device or phone exists.\n- `401` denotes required authentication, `403` insufficient permission, `422` request validation failure and `500` a server processing failure. The generic `422` and `500` response examples refer to changing a payment instrument's balance account and creating a payment instrument, respectively; they do not establish mutations or these failure causes for this GET.\n- The page describes no request body, query parameters, idempotency key, default, limit, asynchronous confirmation, or token lifecycle transition for this operation. A successful resource read does not prove token provisioning completion, usable card status, authorization, capture, settlement or current account eligibility.\n\n## Detail locators\n\n- Raw lines 5\u201317: purpose, TEST v2 server and required `networkTokenId` path parameter.\n- Raw lines 19\u201341: `200` response schema; required parent versus optional children, timestamp, device, token identity, associated payment instrument, status, token requestor and type.\n- Raw lines 44\u2013121: `401`, `403`, `422` and `500` error schemas.\n- Raw lines 123\u2013176: generic response examples; the `422`/`500` descriptions are about payment-instrument operations rather than this GET.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing card and network-token context; this API reference controls its own GET contract.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-networktokens]] \u2014 separate list operation by payment-instrument ID.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/networkTokens/(networkTokenId)/2026-11-03|GET network token API reference (2026-11-03)]]",
+  "quotes": [
+    {
+      "text": "Returns the details of a network token.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| networkTokenId | string | Yes | The unique identifier of the network token. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "This object is conditionally returned and is available for up to 24 hours after the provisioning request (access to this field requires a specific user role, please contact your Adyen representative to request permission).",
+      "location": "raw line 33"
+    },
+    {
+      "text": "Possible values: **active**, **inactive**, **suspended**, **closed**.",
+      "location": "raw line 36"
+    },
+    {
+      "text": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+      "location": "raw line 159"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-get-networktoken-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-networktokens-networktokenid]] \u2014 2026-11-03-captured Balance Platform API v2 TEST GET for one network token by token ID, with optional status and payment-instrument link, and conditional short-lived role-gated device phone; readback is not provisioning, activation or payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/networkTokens/(networkTokenId)/2026-11-03.md",
+  "raw_sha256": "65a709c2f586cc933969d300742764f5ab89c8c46dbc9cc3bd1b32b7ff5765ab",
+  "status": "candidate_ready"
+}

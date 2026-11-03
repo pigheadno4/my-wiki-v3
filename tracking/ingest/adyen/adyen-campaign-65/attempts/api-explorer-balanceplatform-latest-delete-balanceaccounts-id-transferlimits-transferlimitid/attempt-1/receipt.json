@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-delete-balanceaccounts-id-transferlimits-transferlimitid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: DELETE /balanceAccounts/{id}/transferLimits/{transferLimitId}\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/balanceAccounts/(id)/transferLimits/(transferLimitId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/delete/balanceAccounts/(id)/transferLimits/(transferLimitId)/2026-11-03.md\"\ntags: [adyen, balance-platform, business-accounts, transfer-limits, api]\n---\n\n## Overview\n\nThis 2026-11-03-captured Balance Platform API v2 reference documents deletion of a scheduled or pending transfer limit for a balance account. An active limit cannot be deleted through this endpoint. The captured server is the TEST base `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` is a documentation route, not proof of live availability or caller eligibility. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- `DELETE /balanceAccounts/{id}/transferLimits/{transferLimitId}` requires two string path IDs: `id` identifies the balance account and `transferLimitId` identifies its transfer limit. The page documents no body, query fields, idempotency key, caller role, conditional input, default or numeric limit.\n- The 204 response says the request succeeded and has no documented response body. The endpoint's own prose confines deletion to scheduled or pending limits and explicitly excludes active limits. The page does not identify a specific error status for an attempted active-limit deletion.\n- The documented failures are 404 when one of the transfer limits could not be found and 422 for a request validation error. Their top-level response fields are optional; the three `invalidFields` child properties are required within each validation item if that optional array appears.\n- The capture specifies no authentication mechanism, retry/reversal behavior, asynchronous confirmation, propagation time or version/conflict rules. A successful configuration deletion does not prove a transfer was cancelled, funds returned, a bank received money, or a specific account remains eligible.\n\n## Detail locators\n\n- Endpoint scope, TEST server, both required path IDs and bodyless 204: pinned raw lines 5\u201323.\n- 404 and 422 descriptions and error-body schemas: `## Responses`, lines 26\u201361. The capture has no response examples.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Account transfer-limit context.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]] \u2014 separate guide for balance-account limits and lifecycle.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/delete/balanceAccounts/(id)/transferLimits/(transferLimitId)/2026-11-03|Balance Platform DELETE balance-account transfer limit snapshot]]",
+  "quotes": [
+    {
+      "text": "Delete a scheduled or pending transfer limit using its unique `transferLimitId`. You cannot delete an active limit.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| transferLimitId | string | Yes | The unique identifier of the transfer limit. |",
+      "location": "raw line 17"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the balance account. |",
+      "location": "raw line 18"
+    },
+    {
+      "text": "The request has succeeded.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "One of the transfer limits could not be found.",
+      "location": "raw line 27"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-business-accounts-c65-delete-transfer-limit",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-delete-balanceaccounts-id-transferlimits-transferlimitid]] \u2014 2026-11-03-captured Balance Platform API v2 TEST DELETE for a scheduled or pending balance-account transfer limit by two path IDs; active limits are excluded and bodyless 204 does not establish funds movement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/delete/balanceAccounts/(id)/transferLimits/(transferLimitId)/2026-11-03.md",
+  "raw_sha256": "c1bf837b9bb722c29f2467750013c89e92482e6b6c055d88daffb606e2defd3c",
+  "status": "candidate_ready"
+}

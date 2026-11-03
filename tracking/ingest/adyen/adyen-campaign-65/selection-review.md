@@ -1,6 +1,6 @@
 # Adyen C65 collected API Explorer ingestion selection
 
-Status: **PREPARED ONLY — awaiting exact ingestion approval**. Prepared 2026-11-03.
+Status: **COMPLETE — all 50 sources approved and validated**. Prepared 2026-11-03.
 
 Approved collection completed for all50 exact URLs: **50 HTTP200 substantive Markdown pages**, no failed, title-only or mismatched documents. Families: **Balance Platform29 + Legal Entity21**. Every response body is preserved byte-for-byte after collection metadata in a new dated2026-11-03 raw file. All prior Adyen raw/wiki hashes are unchanged; concurrent unrelated PayPal work is recorded separately. These title/body/byte checks are collection screening, not full semantic reads. The 515-byte periodic-review reference contains a server, required path ID and 204 response; it is substantive, not a title-only stub. [Collection manifest](../../../collections/adyen/c65-collection-2026-11-03/manifest.md), [summary](../../../collections/adyen/c65-collection-2026-11-03/summary.json). Original proposal retained in [collection-selection-review.md](collection-selection-review.md).
 
@@ -64,3 +64,7 @@ Fixed coordinator audit jobs: `api-explorer-balanceplatform-latest-get-transacti
 | 48 | legalentity | GET /legalEntities/{id}/acceptedTermsOfServiceDocument/{termsofserviceacceptancereference} | 722 | 110 |
 | 49 | legalentity | GET /legalEntities/{id}/termsOfServiceStatus | 651 | 113 |
 | 50 | legalentity | POST /legalEntities/{id}/pciQuestionnaires/generatePciTemplates | 771 | 133 |
+
+User approved exact C65 ingestion on2026-11-03 after50hash/count checks. Historical preparation statements above retain their pre-approval meaning. No commit/push.
+
+C65 closed: 3009 total sources; 446 API Explorer sources. Remaining 27 API raw pages are excluded title-only stubs. No commit/push.

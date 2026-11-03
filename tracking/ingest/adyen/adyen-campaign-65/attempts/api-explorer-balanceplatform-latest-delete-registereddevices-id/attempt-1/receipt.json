@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-delete-registereddevices-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: DELETE /registeredDevices/{id}\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/delete/registeredDevices/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/delete/registeredDevices/(id)/2026-11-03.md\"\ntags: [adyen, balance-platform, issuing, sca, registered-devices, api]\n---\n\n## Overview\n\nThis 2026-11-03 Balance Platform API reference describes `DELETE /registeredDevices/{id}`: removing an SCA device from the registered-device list of a specific payment instrument. The shown server is the v2 TEST base `https://balanceplatform-api-test.adyen.com/bcl/v2`; this `latest` documentation URL does not establish live access or current eligibility. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The required path `id` is the unique SCA-device identifier. The required `paymentInstrumentId` query parameter identifies the payment instrument linked to that device. The captured operation lists no request body. This route's device-registration scope should not be confused with deleting a payment instrument or with the separately documented `/scaDevices/{deviceId}` route.\n- The success entry is HTTP 204 and says to use the actual response code for request status; it supplies no success-body schema. A 204 establishes success of this registration deletion request in the captured API contract, but the page gives no separate confirmation of global device removal, association propagation, future SCA behavior, card status, authorization or payment outcome.\n- The page lists 400 for a request problem, 401 for required authentication, 403 for insufficient permissions, 422 for validation error and 500 for a server processing failure. It gives generic error-body schemas, but no credential-role detail, not-found status, retry/idempotency rule or deletion-timing contract.\n- Generic 422 and 500 JSON examples describe payment-instrument change/creation errors rather than this deregistration operation. Do not treat those example details as endpoint-specific failure conditions.\n\n## Detail locators\n\n- Operation purpose, TEST base, required path and query identifiers: pinned raw lines 5\u201323.\n- Bodyless 204 success and all error schemas: `## Responses`, lines 25\u2013128.\n- Generic illustrative error payloads: `## Response examples`, lines 130\u2013197; the 422/500 examples concern payment-instrument operations.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing card and SCA context.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-registereddevices]] \u2014 separate registered-device list read.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices]] \u2014 separate registration initiation.\n- [[source-adyen-api-explorer-balanceplatform-latest-delete-scadevices-deviceid]] \u2014 separate SCA-device deletion route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/delete/registeredDevices/(id)/2026-11-03|DELETE registered device, 2026-11-03 capture]]",
+  "quotes": [
+    {
+      "text": "Deletes an SCA device from the list of registered devices of a specific payment instrument.",
+      "location": "raw line 7; introduction"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the SCA device. |",
+      "location": "raw line 17; Parameters > Path parameters"
+    },
+    {
+      "text": "| paymentInstrumentId | string | Yes | The unique identifier of the payment instrument linked to the SCA device. |",
+      "location": "raw line 23; Parameters > Query parameters"
+    },
+    {
+      "text": "Look at the actual response code for the status of the request.",
+      "location": "raw line 28; Responses > 204 Success"
+    },
+    {
+      "text": "Insufficient permissions to process the request.",
+      "location": "raw line 72; Responses > 403 Client Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-delete-registereddevice-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-delete-registereddevices-id]] \u2014 2026-11-03-captured Balance Platform API v2 TEST DELETE of an SCA-device registration for a specified payment instrument, with required device and instrument IDs; bodyless 204 does not document wider association propagation or authentication outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/delete/registeredDevices/(id)/2026-11-03.md",
+  "raw_sha256": "5af7ea68a0563856451cbca33fcebd261439ec10db05eae0c454bcf183358dbe",
+  "status": "candidate_ready"
+}

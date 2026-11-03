@@ -15,6 +15,12 @@ The landing page lists supported regions with specific inclusions and exclusions
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-latest-get-grantoffers-grantofferid]] — 2026-11-03-captured Balance Platform API v2 test-server reference for one grant offer by offer ID, with account-holder identity, optional amount/fee/repayment terms and validity; lookup is not acceptance, funding or repayment proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-grantaccounts-id]] — 2026-11-03-captured Balance Platform API v2 TEST GET grant-account detail, including optional balances, funding balance-account ID and limits; readback is not grant disbursement or repayment proof.
+
+
 - [[source-adyen-api-explorer-capital-latest-post-grants]] — 2026-09-15-captured Capital API v1 grant request for a selected offer and grant account, with optional owned destination, grant/status response and 422 validation error; HTTP 200 is not disbursement or bank-receipt proof.
 
 

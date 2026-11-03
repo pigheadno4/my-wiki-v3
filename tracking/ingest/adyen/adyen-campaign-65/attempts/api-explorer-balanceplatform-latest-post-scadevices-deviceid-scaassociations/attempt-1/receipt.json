@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-scadevices-deviceid-scaassociations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /scaDevices/{deviceId}/scaAssociations \u2014 Create SCA device associations | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/scaDevices/(deviceId)/scaAssociations\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/scaDevices/(deviceId)/scaAssociations/2026-11-03.md\"\ntags: [adyen, balance-platform-api, sca, device-association, api-reference]\n---\n\n## Overview\n\nThis 2026-11-03-captured Balance Platform API `/bcl/v2` reference creates associations between an SCA-enabled device and specified entities. It lists the TEST server `https://balanceplatform-api-test.adyen.com/bcl/v2`; it does not list a live server or prove account-specific access. [[adyen]] [[adyen-business-accounts]] [[adyen-issuing]]\n\n## Key takeaways\n\n- `POST /scaDevices/{deviceId}/scaAssociations` requires the string path `deviceId`, the SCA device being associated. The request body requires an `entities` array; each entity object requires an `id` and a `type` of `accountHolder`, `legalEntity`, or `paymentInstrument`. The example uses one account-holder ID, but does not set a cardinality limit for the array.\n- `201 Success` says association created and returns required `scaAssociations` array entries with `entityId`, `entityType`, `scaDeviceId`, and `status` (`active` or `pendingApproval`). A created association may be `pendingApproval` when the account holder has existing devices, so creation does not guarantee immediate readiness for use.\n- When the entity allows only one associated device **and** single-device replacement is enabled for the account, the new association immediately replaces the existing one: the new status is `active`, and the prior device is no longer associated. The captured reference does not specify the approval procedure or timing for a pending association, nor does it establish device registration completion, an authenticated user action, payment authorization, or a transfer outcome.\n- The operation lists `400` invalid input, `401` authentication, `403` permissions, `404` device not found, `422` validation, and `500` server errors. Their error-body fields are mostly optional in the captured table. The page specifies no endpoint-specific idempotency, version/conflict, reversal, or default behavior.\n\n## Detail locators\n\n- Purpose and conditional association/replacement status: raw lines 5\u201310.\n- Required path and body fields, allowed entity types, and one-entity request example: raw lines 12\u201339.\n- `201` response fields and status values: raw lines 40\u201352; example `pendingApproval` response: raw lines 168\u2013183.\n- Error response classes and optional error-body fields: raw lines 55\u2013166.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 SCA device context for Business Accounts.\n- [[adyen-issuing]] \u2014 separate issued-card SCA device context.\n- [[source-adyen-api-explorer-balanceplatform-latest-delete-scaassociations]] \u2014 separate association deletion reference; deleting an association is distinct from device deregistration.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/scaDevices/(deviceId)/scaAssociations/2026-11-03|POST SCA device associations captured 2026-11-03]]\n",
+  "quotes": [
+    {
+      "text": "Creates an association between an SCA-enabled device and an entity, such as an account holder. This action does not guarantee the association is immediately ready for use; its status may be `pendingApproval` if the account holder has existing devices.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "If the entity is configured to allow only a single associated device and single-device replacement is enabled for your account, the new association immediately replaces the existing one: its status is `active` and the previously associated device is no longer associated.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| entities | array of object | Yes | The list of entities to be associated. |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "|   - type | string | Yes | The type of the entity that you are associating with the SCA device.  Possible values: **accountHolder**, **legalEntity** or **paymentInstrument**. |",
+      "location": "raw line 25"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of the association.  Possible values: **active** or **pendingApproval**. |",
+      "location": "raw line 52"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "business-accounts-sca-association-post-v2-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-scadevices-deviceid-scaassociations]] \u2014 2026-11-03-captured Balance Platform API v2 TEST POST for associating an SCA device with account-holder, legal-entity or payment-instrument IDs; creation can return pending approval, while conditional single-device replacement activates the new association and removes the old one.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/scaDevices/(deviceId)/scaAssociations/2026-11-03.md",
+  "raw_sha256": "3c296bcf55bf64efb203285f9576063094aba7aea6e2b180dddcfeeff81a8685",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-legalentity-latest-patch-businesslines-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: PATCH /businessLines/{id}\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/patch/businessLines/(id)\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/patch/businessLines/(id)/2026-11-03.md\"\ntags: [adyen, legal-entity, business-line, platforms, verification, api]\n---\n\n## Overview\n\nThis 2026-11-03 Legal Entity Management API reference describes `PATCH /businessLines/{id}` to update a business line. The required path `id` is the business-line ID, distinct from the response's owning `legalEntityId`. The shown server is TEST `https://kyc-test.adyen.com/lem/v4`; the `latest` URL does not establish live access. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request table marks top-level `industryCode`, `salesChannels`, `sourceOfFunds`, `webData` and `webDataExemption` optional; the page does not separately state whole-body requiredness or omitted-field PATCH behavior. `salesChannels` is required in combination with `service: paymentProcessing`; `sourceOfFunds` is required when the service is `banking` or `issuing`. The response lists `service` as required and permits `paymentProcessing`, `issuing` or `banking`, but this PATCH request table has no `service` field.\n- When `sourceOfFunds` is present, its `adyenProcessedFunds` child is marked required; if false, `type` is required by prose. Other conditionally required source-of-funds fields vary by `type`: `amount` for business/asset sale/gambling winnings/inheritance; `financiers` for third-party funding, with required child amount, first and last name, and location; cryptocurrency exchange, dates, originator legal-entity ID, purpose, relationship, description or gambling website for their stated cases. Consult the raw rows for exact combinations, units and date format.\n- `webData` lists sales website or app-store URLs. When it is required for a service but the user has no online presence, the page directs a reason in `webDataExemption`; its listed reason is `noOnlinePresence`. The request example updates industry code and web data only and does not establish a universal request shape.\n- HTTP 200 returns the business-line `id`, `industryCode`, owning `legalEntityId` and `service` as required fields. Optional fields include sales channels, source-of-funds, web data and `problems` with verification errors. A returned business-line representation or error list does not prove verification completion, enabled capabilities or payment/funds outcomes.\n- The page states limits of 700 requests per five seconds LIVE, 200 per five seconds TEST, and five failed requests per ten seconds. It documents 400, 401, 403, 422 and 500 errors. The generic error schema's optional `pspReference` is labeled as a payment reference; this is still a business-line update, not a payment operation.\n\n> [!warning] Contradiction\n> The request/response tables say `sourceOfFunds.amount` is required when `type` is `business`, but the 200 banking/business example omits `amount`. The example does not remove that stated condition. The `originatorLegalEntityId` row also refers to `originatorOfFundsReference` in its example prose; preserve the table field name without treating the prose spelling as a second API field.\n\n## Detail locators\n\n- Purpose, rate limits, TEST base and path ID: pinned raw lines 5\u201325.\n- Complete PATCH request table, conditional source-of-funds fields and web-data exemption: `## Parameters > ### Request body`, lines 28\u201356.\n- Illustrative update request: `## Request examples`, lines 58\u201370.\n- Full 200 response schema, verification-error shape and owner/service IDs: `## Responses > ### 200 Success`, lines 71\u2013122.\n- Error schemas: lines 125\u2013187; 200 banking/business example with omitted `amount`: `## Response examples`, lines 189\u2013212.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform onboarding and verification context.\n- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-businesslines]] \u2014 separate business-line list readback, with a related amount/example conflict.\n- [[source-adyen-docs-platforms-account-structure-resources-legal-entity-management]] \u2014 separate business-line resource guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/patch/businessLines/(id)/2026-11-03|PATCH business line, 2026-11-03 capture]]",
+  "quotes": [
+    {
+      "text": "| id | string | Yes | The unique identifier of the business line. |",
+      "location": "raw line 25; Parameters > Path parameters"
+    },
+    {
+      "text": "Required only in combination with the `service` **paymentProcessing**.",
+      "location": "raw line 32; Parameters > Request body > salesChannels"
+    },
+    {
+      "text": "Required only if the `service` is **banking** or **issuing**.",
+      "location": "raw line 33; Parameters > Request body > sourceOfFunds"
+    },
+    {
+      "text": "Required if `type` is **business**, **assetSale**, **gamblingWinnings** or **inheritance**.",
+      "location": "raw line 35; Parameters > Request body > sourceOfFunds.amount"
+    },
+    {
+      "text": "| legalEntityId | string | Yes | Unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/legalEntities__resParam_id) that owns the business line. |",
+      "location": "raw line 82; Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-patch-businessline-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-patch-businesslines-id]] \u2014 2026-11-03-captured Legal Entity Management API v4 TEST PATCH for a business line, including service-conditional sales-channel and source-of-funds fields; 200 readback does not prove verification or capability approval.\n\n> [!warning] Contradiction\n> The PATCH table requires `sourceOfFunds.amount` for `type: business`, while its banking/business 200 example omits that amount. The example does not resolve the conditional requirement. [[source-adyen-api-explorer-legalentity-latest-patch-businesslines-id]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Request/response amount condition conflicts with illustrative banking/business response example."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/patch/businessLines/(id)/2026-11-03.md",
+  "raw_sha256": "6074351f2c5a5aa8b848546a15a5304a38f4a15b5d3ddc8dbc0934691a9579e6",
+  "status": "candidate_ready"
+}

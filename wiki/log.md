@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-03] ingest | Adyen API Explorer C65
+
+- All 50 remaining complete-body local API Explorer sources independently approved; 4 concepts touched (0 new). Source_count 3009 = 2547 General Docs + 446 API Explorer + 16 GitHub. Remaining 27 title-only stubs excluded; raw unchanged. 100 actual query answers, three full-read exemplars and validation: `tracking/ingest/adyen/adyen-campaign-65/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-11-03] ingest | PayPal SDK release `5.0.585`
 
 - Approved serial delta after completed `5.0.584`: package version only, all twelve direct pins and ten other retained files unchanged. Messaging stays `1.101.0`, Checkout `5.0.438`; excluded artifacts/deployment and unreleased Checkout inclusion remain unverified. Prior history preserved; details [[paypal-log]], [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]]. No upstream execution, commit or push.

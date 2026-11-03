@@ -1,0 +1,65 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-registereddevices-deviceid-associations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /registeredDevices/{deviceId}/associations \u2014 Initiate SCA device associations | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/registeredDevices/(deviceId)/associations\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/registeredDevices/(deviceId)/associations/2026-11-03.md\"\ntags: [adyen, balance-platform, business-accounts, issuing, sca, device-associations, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `POST /registeredDevices/{deviceId}/associations` to initiate association of a user's registered SCA device with Adyen resources. The page gives Business Accounts and Adyen-issued cards as examples; its request schema specifically allows `PaymentInstrument` as `type`. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL says `latest`, while the server path identifies v2. See [[adyen-business-accounts]] and [[adyen-issuing]] for the respective product contexts. [Raw: lines 5\u201310, 20\u201324]\n\n## Key takeaways\n\n- Required string path `deviceId` identifies the SCA device. The request-body table marks `ids`, an array of up to five resource ID strings, and `type` required; the only listed `type` value is `PaymentInstrument`. The page does not separately mark the whole body required or specify an array minimum, duplicate-ID behavior, a caller-role name or an idempotency contract. Do not read the Business Accounts example as permission to send another resource type in this captured schema. [Raw: lines 12\u201324]\n- A 200 says the request succeeded. The sole response-body field is optional string `sdkInput`, described as data to pass to the authentication SDK to continue the association process. The page does not say that 200 or an `sdkInput` completes association, user authentication, card activation, Business Account access, a payment or a transfer. It provides no final association status, callback, propagation timing or replacement/deletion behavior. [Raw: lines 26\u201334]\n- Documented failures are 400 request-reading/understanding, 401 authentication, 403 permission, 422 validation and 500 server processing. The generic 422 and 500 examples refer to changing or creating a payment instrument, not this association result. No response example demonstrates successful SDK continuation. [Raw: lines 37\u2013202]\n\n## Detail locators\n\n- Purpose, product examples, TEST v2 server, path and request IDs/type: pinned raw lines 5\u201324.\n- 200 response and SDK continuation field: lines 26\u201334.\n- Error headings/schemas and generic examples: lines 37\u2013202.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Account SCA device context.\n- [[adyen-issuing]] \u2014 issued-card SCA device context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/registeredDevices/(deviceId)/associations/2026-11-03|Initiate registered-device associations \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Initiates an association between a user's registered SCA device and an Adyen resource.",
+      "location": "line 7"
+    },
+    {
+      "text": "| deviceId | string | Yes | The unique identifier of the SCA device that you are associating with a resource. |",
+      "location": "line 17"
+    },
+    {
+      "text": "| ids | array of string | Yes | The list of unique identifiers of the resources that you are associating with the SCA device.  Maximum: 5 strings. |",
+      "location": "line 23"
+    },
+    {
+      "text": "| type | string | Yes | The type of resource that you are associating with the SCA device.  Possible value: **PaymentInstrument** |",
+      "location": "line 24"
+    },
+    {
+      "text": "| sdkInput | string | No | A string that you must pass to the authentication SDK to continue with the association process. |",
+      "location": "line 34"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c65-api-explorer-balanceplatform-latest-post-registereddevices-deviceid-associations-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices-deviceid-associations]] \u2014 2026-11-03-captured Balance Platform API v2 TEST POST initiating association of a registered SCA device with up to five payment-instrument IDs; optional SDK input continues the flow, so 200 is not completed association or authentication.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c65-api-explorer-balanceplatform-latest-post-registereddevices-deviceid-associations-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-registereddevices-deviceid-associations]] \u2014 2026-11-03-captured Balance Platform API v2 TEST POST initiating association of a registered SCA device with up to five payment-instrument IDs; optional SDK input continues the flow, so 200 is not completed association or authentication.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/registeredDevices/(deviceId)/associations/2026-11-03.md",
+  "raw_sha256": "40f34c367ea38b21d874e09e7d7394eb913b877ebf4b04f71903fdde3dfddb56",
+  "status": "candidate_ready"
+}
