@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-apicredentials",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /merchants/{merchantId}/apiCredentials \u2014 Create an API credential | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, authentication, access-control]\n---\n\n## Overview\n\nThis 2026-11-03 Management API reference describes `POST /merchants/{merchantId}/apiCredentials` on the listed `https://management-test.adyen.com/v3` server. Its required path `merchantId` identifies a merchant account. It creates an API credential with optional requested roles and allowed origins; the calling credential needs `Management API\u2014API credentials read and write`. The response schema describes an API key for server API authentication, a public client key for client-side authentication, and username/password for Basic authentication. These are credential identities and secrets, not payment or account-approval outcomes. See [[adyen]] and [[adyen-api-access]].\n\n> [!warning] Contradiction\n> The introduction says the endpoint creates a credential for the \u201ccompany account identified in the path,\u201d but the path table defines required `merchantId` as a merchant-account ID. The `200` example also shows company-scoped `/v1/companies/.../apiCredentials` links alongside a merchant link, while the listed server is `/v3`. This snapshot does not reconcile the account-scope wording or establish which versioned resource route applies to later calls.\n\n## Key takeaways\n\n- The request-body table lists only optional `allowedOrigins`, `description` and `roles`; it does not separately state whole-body requiredness or defaults. Only roles assigned to `ws@Company.<CompanyName>` can be assigned to other API credentials. The request example supplies a role and allowed origin, but does not establish actual permission or origin validation for a live account.\n- The `200` schema marks `active`, `allowedIpAddresses`, `apiKey`, `clientKey`, `id`, `password`, `roles` and `username` required as response properties. `active` must be true for integration use. An empty allowed-IP list allows requests from any IP; a nonempty list rejects a request from an unlisted IP with a security error. The response also has optional allowed origins and resource links. A separate `204` success has no additional content.\n- The page instructs secure storage of the API key because it cannot be retrieved later; a lost or compromised key needs generation of a new key. The `generateApiKey` and `generateClientKey` link descriptions say an existing key remains valid for 24 hours when a new one is generated. Those descriptions concern later rotation, not a guarantee that this creation request authenticated successfully.\n- Listed errors are `400`, `401` authentication required, `403` insufficient permissions, `422` validation and `500`. The reference gives no idempotency contract, propagation timing, or activation/approval workflow for the newly created credential. The TEST example uses placeholder secrets and does not show live credential use.\n\n## Detail locators\n\n- Purpose, secret handling, role and TEST v3 server: raw lines 5\u201326.\n- Required path ID, optional request fields and illustrative request: raw lines 28\u201355.\n- `200` credential/link fields, key/IP semantics and `204`: raw lines 56\u201395.\n- Error statuses and repeated response schemas: raw lines 98\u2013195.\n- Illustrative `200` payload, company/merchant links, v1 paths and placeholder keys: raw lines 197\u2013242.\n\n## Related\n\n- [[source-adyen-docs-development-resources-api-credentials]] \u2014 General credential/account-scope guidance.\n- [[source-adyen-docs-development-resources-api-authentication]] \u2014 API authentication guidance.\n- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateapikey]] \u2014 Separate key-generation reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/2026-11-03|Pinned Adyen merchant API-credential creation reference (2026-11-03)]]\n",
+  "quotes": [
+    {
+      "text": "Creates an [API credential](https://docs.adyen.com/development-resources/api-credentials) for the company account identified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "You won't be able to retrieve it later.",
+      "location": "line 17"
+    },
+    {
+      "text": "Management API\u2014API credentials read and write",
+      "location": "line 23"
+    },
+    {
+      "text": "Only roles assigned to 'ws@Company.<CompanyName>' can be assigned to other API credentials.",
+      "location": "line 41, Request body > roles"
+    },
+    {
+      "text": "The unique identifier of the merchant account.",
+      "location": "line 33, Path parameters > merchantId"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-api-explorer-management-latest-post-merchants-merchantid-apicredentials-api-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials]] \u2014 2026-11-03-captured Management API v3 TEST merchant-path API credential creation, optional roles/origins and secret/IP response fields; account-scope wording and /v1 example links conflict with the path and server, while creation does not prove live authentication.\n\n> [!warning] Contradiction\n> The pinned POST /merchants/{merchantId}/apiCredentials introduction calls the path a company account, while its path table defines merchantId as a merchant-account ID. The listed TEST server is /v3, but the 200 example includes company-scoped /v1/companies/.../apiCredentials links alongside a merchant link. The snapshot does not reconcile account scope or the versioned route for later calls. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Introduction company-account scope conflicts with merchantId path; example company /v1 credential links conflict with listed /v3 server. Retain formal source/concept warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/2026-11-03.md",
+  "raw_sha256": "04d4037ebfb54507f215b02beaf91d77b43af0bd9be0f94191e8d0f2cf0ed9e2",
+  "status": "candidate_ready"
+}

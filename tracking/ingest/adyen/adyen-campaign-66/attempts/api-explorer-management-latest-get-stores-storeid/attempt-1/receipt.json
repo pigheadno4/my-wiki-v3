@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-management-latest-get-stores-storeid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: get a store\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/stores/(storeId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/stores/(storeId)/2026-11-03.md\"\ntags: [adyen, management-api, pos, stores]\n---\n\n## Overview\n\nThis 2026-11-03-captured Management API reference documents `GET /stores/{storeId}`, a role-gated read of the store identified by the required path `storeId`. The listed TEST server is `https://management-test.adyen.com/v3`; the API credential needs **Management API\u2014Stores read** or **Management API\u2014Stores read and write**. It notes live rate limits without stating values. See [[adyen]] and [[adyen-pos-store-management]].\n\n## Key takeaways\n\n- A `200` response can return the Adyen-generated store `id`, owning merchant-account `merchantId`, human-readable `reference` (store code), `address`, `businessLineIds`, `externalReferenceId`, localized/shopper statements, `splitConfiguration`, `subMerchantData`, and `_links`. The response table marks top-level fields optional; nested fields marked required apply within their objects. Conditions in the response descriptions, such as multiple merchant business lines, country/state requirements, Brazil CNPJ and Japan scripts, do not add request parameters to this GET.\n- `splitConfiguration.balanceAccountId` identifies a balance account to which a split amount must be booked depending on separate split logic; `splitConfigurationId` identifies the profile. These are configuration references, not evidence that a payment was split or booked. `subMerchantData` is scoped to registered payment facilitators transacting on standalone terminals.\n- Optional `status` can be `active`, `inactive` or `closed`. The page says active is assigned on store creation; inactive blocks terminals under the store from new transactions while outstanding captures remain possible; closed is irreversible and reassigns those terminals to merchant inventory. A readback does not change status or establish terminal assignment, boarding, payment-method availability, payment execution or financial finality.\n- The reference lists `400`, `401` authentication, `403` permissions, `422` validation and `500` server errors with problem-body fields. It does not state idempotency, mutation/propagation or asynchronous approval semantics for this read.\n\n> [!warning] Contradiction\n> The listed TEST server is `/v3`, but the `200` example's `_links.self.href` points to `/v1/stores/...`. The example does not establish the v3 route's returned link shape; use the listed server and endpoint contract, and treat that link as illustrative.\n\n## Detail locators\n\n- Raw lines 5\u201325: purpose, credential roles, live-limit note, v3 TEST server and required store ID.\n- Raw lines 27\u201366: response identity, merchant/business-line associations, conditional descriptions, split/sub-merchant fields and status effects.\n- Raw lines 69\u2013166: errors and problem response schema; lines 168\u2013195: illustrative `200` example and `/v1` self-link conflict.\n\n## Related\n\n- [[adyen-pos-store-management]] \u2014 store administration and lifecycle context.\n- [[source-adyen-api-explorer-management-latest-get-stores]] \u2014 paged store list reference.\n- [[source-adyen-docs-point-of-sale-design-your-integration-determine-account-structure-automate-store-management]] \u2014 broader automation guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/stores/(storeId)/2026-11-03|2026-11-03 GET store reference]]",
+  "quotes": [
+    {
+      "text": "Returns the details of the store identified in the path.",
+      "location": "line 7, under endpoint heading"
+    },
+    {
+      "text": "- Management API\u2014Stores read and write",
+      "location": "line 13, credential roles"
+    },
+    {
+      "text": "| storeId | string | Yes | The unique identifier of the store. |",
+      "location": "line 25, Path parameters"
+    },
+    {
+      "text": "This status is irreversible. The terminals under the store are reassigned to the merchant inventory.",
+      "location": "line 61, status response row"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/stores/ST322LJ223223K5F4SQNR9XL5\"",
+      "location": "line 192, 200 response example self link"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-get-store-pos-route",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-stores-storeid]] \u2014 2026-11-03-captured Management API v3 TEST store lookup by store ID, with merchant/business-line, split and status readback; status is not terminal or payment readiness, and the example self-link uses `/v1` despite the listed `/v3` server.\n\n> [!warning] Contradiction\n> The captured `GET /stores/{storeId}` reference lists the TEST `/v3` server, but its response example links to `/v1/stores/...`; the example does not resolve the route-version mismatch. [[source-adyen-api-explorer-management-latest-get-stores-storeid]]\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The example self-link uses /v1 while the endpoint lists the /v3 test server; retain the reciprocal contradiction warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/stores/(storeId)/2026-11-03.md",
+  "raw_sha256": "a9896dc1cc87274d1aedb8fa441cc6023f51e61a1e8868d97cca2c94a07cfabb",
+  "status": "candidate_ready"
+}

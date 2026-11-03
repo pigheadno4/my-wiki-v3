@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-allowedorigins",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: create an API credential allowed origin\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, allowed-origins]\n---\n\n## Overview\n\nThis 2026-11-03-captured Management API v3 reference describes `POST /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins`, which adds an allowed origin to a specified API credential under a company account. The listed TEST server is `https://management-test.adyen.com/v3`; the caller's API credential requires **Management API\u2014API credentials read and write**. Both path IDs are required. See [[adyen]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- The request-body table marks `domain` required, `id` optional and `_links` optional; if `_links` appears, `self` is marked required within it. The table does not independently say whether the whole body is required. Its example sends only `domain`, so it illustrates a minimal shape without proving that every domain value is accepted.\n- `200` indicates the request succeeded and its response table marks `domain` required, with `id` and `_links` optional. The example shows an allowed-origin ID and self-link, but this is not evidence of client-key generation, successful browser authentication, effective origin acceptance in a later request or payment execution. The page does not specify propagation time, idempotency or deletion/reversal behavior.\n- `400`, `401` authentication, `403` permissions, `422` validation and `500` errors are listed. The generic error body's `requestId`/`pspReference` wording does not turn origin creation into a payment event. The dated TEST capture does not establish current live access.\n\n> [!warning] Contradiction\n> The listed TEST server is `/v3`, while the `200` example self-link uses `/v1`. The sample does not resolve the route-version mismatch; treat its link as illustrative.\n\n## Detail locators\n\n- Raw lines 5\u201332: purpose, role, TEST v3 server, required path IDs and request-body property requiredness.\n- Raw lines 34\u201354: request example and `200` response schema; lines 57\u2013154: error responses.\n- Raw lines 156\u2013171: illustrative response and `/v1` self-link conflict.\n\n## Related\n\n- [[adyen-api-access]] \u2014 credential and client-side access context.\n- [[source-adyen-api-explorer-management-latest-get-me-allowedorigins]] \u2014 separate allowed-origin read for the key-selected credential.\n- [[source-adyen-docs-development-resources-client-side-authentication]] \u2014 separate client-side key and origin guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/2026-11-03|2026-11-03 allowed-origin create reference]]",
+  "quotes": [
+    {
+      "text": "Adds a new [allowed origin](https://docs.adyen.com/development-resources/client-side-authentication#allowed-origins) to the API credential's list of allowed origins.",
+      "location": "line 7, operation description"
+    },
+    {
+      "text": "- Management API\u2014API credentials read and write",
+      "location": "line 11, caller role"
+    },
+    {
+      "text": "| apiCredentialId | string | Yes | Unique identifier of the API credential. |",
+      "location": "line 21, path parameters"
+    },
+    {
+      "text": "| domain | string | Yes | Domain of the allowed origin. |",
+      "location": "line 31, request body"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/companies/YOUR_COMPANY_ACCOUNT/apiCredentials/YOUR_API_CREDENTIAL/allowedOrigins/YOUR_ALLOWED_ORIGIN\"",
+      "location": "line 167, response example self-link"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-create-company-allowed-origin-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-allowedorigins]] \u2014 2026-11-03-captured Management API v3 TEST creation of a domain allowed origin for a company API credential; `200` is a configuration result, not client authentication or payment proof, and its example self-link uses `/v1` despite the listed `/v3` server.\n\n> [!warning] Contradiction\n> The allowed-origin POST reference lists a `/v3` TEST server but illustrates a `/v1` response self-link. The example does not resolve the version mismatch. [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-allowedorigins]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Retain the /v3 server versus /v1 example self-link contradiction reciprocally."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/2026-11-03.md",
+  "raw_sha256": "5845f954f10027756f89e1fd3bbf2545a92c735bc072f3b497a92139c6fdfddd",
+  "status": "candidate_ready"
+}

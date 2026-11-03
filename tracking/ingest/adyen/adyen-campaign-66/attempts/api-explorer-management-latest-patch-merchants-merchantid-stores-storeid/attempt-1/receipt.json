@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-stores-storeid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PATCH /merchants/{merchantId}/stores/{storeId} \u2014 update a store | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(storeId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(storeId)/2026-11-03.md\"\ntags: [adyen, management-api, point-of-sale, stores, store-status]\n---\n\n## Overview\n\nThis 2026-11-03-captured [[adyen]] Management API store-update reference describes `PATCH /merchants/{merchantId}/stores/{storeId}` on the listed TEST `https://management-test.adyen.com/v3` server. The API credential needs the **Management API\u2014Stores read and write** role, and both the merchant-account ID and the Adyen store ID are required path parameters. The operation updates only some store parameters. See [[adyen-pos-store-management]]. [Raw: lines 5\u201324]\n\n## Key takeaways\n\n- The request-body table marks `address`, `businessLineIds`, `description`, `externalReferenceId`, `phoneNumber`, `splitConfiguration`, `status` and `subMerchantData` optional. It does not mark the whole body as required. A store's country cannot be updated. Within an address, `stateOrProvince` is required for Australia, Brazil, Canada, India, Mexico, New Zealand and the United States. [Raw: lines 27\u201345]\n- `externalReferenceId` is required for a Brazil CNPJ in the stated format, optional for France SIRET (up to 14 digits) and Australia Zip (up to 50 digits). The documented phone input is E.164 with country code, with conversion and validation if a different format is passed. `splitConfiguration` names separate balance-account and split-profile IDs; those settings describe booking rules, not a completed split or payment. [Raw: lines 37\u201343]\n- `subMerchantData` is an optional parent for registered payment facilitators transacting on standalone terminals, but its `email`, scheme-facing `id`, four-digit `mcc` and `name` are marked required within it. Its `id` is created by the caller and is distinct from the path's Adyen store ID; the field table gives length/format limits and says `name` overwrites the shopper statement on the card statement. [Raw: lines 45\u201349]\n- Status starts `active` on creation. This PATCH permits `active` \u2192 `inactive`, and `inactive` \u2192 `active` or `closed`. An inactive store blocks new transactions while captures of outstanding transactions remain possible. Closing is irreversible and reassigns its terminals to merchant inventory, where they cannot process payments. The page does not specify when every device reflects the change. [Raw: lines 44, 120]\n- A `200` is a succeeded request with a store response whose fields include optional store/merchant IDs, address, business-line IDs, references, status, split configuration and sub-merchant data. The response table marks `address.country` required within an optional address and describes business-line fallback/conditional multiplicity; these response statements do not override the request table's optional top-level fields. A separate `204` says processing succeeded with no additional content. Neither response proves terminal boarding, payment authorization, capture settlement or bank receipt. [Raw: lines 88\u2013129]\n- The page lists `400`, `401`, `403`, `422` and `500` errors with structured problem fields, and links to live rate limits without stating a number. It gives no idempotency, retry or propagation guarantee. [Raw: lines 13, 132\u2013229]\n\n> [!warning] Contradiction\n> The listed TEST server uses `/v3`, while all three `200` response examples put a `/v1/stores/` URL in `_links.self.href`. The snapshot does not reconcile those versions; an example link is not proof of the endpoint's v3 route or current live behavior. [Raw: lines 15\u201316, 235\u2013320]\n\n## Detail locators\n\n- Credential role, environment and required path IDs: raw lines 5\u201324.\n- Request fields, conditional children and status transition rules: raw lines 27\u201349.\n- Three request examples: raw lines 51\u201385.\n- `200` response fields, nested requiredness and separate `204`: raw lines 86\u2013129.\n- Error statuses and problem-body fields: raw lines 132\u2013229.\n- Three `200` examples and their `/v1/stores/` self links: raw lines 231\u2013323.\n\n## Related\n\n- [[adyen-pos-store-management]] \u2014 primary store administration concept\n- [[adyen-terminal-management]] \u2014 terminal assignment and boarding context\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(storeId)/2026-11-03|Management API store PATCH \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "- Management API\u2014Stores read and write",
+      "location": "line 11, under credential role"
+    },
+    {
+      "text": "- https://management-test.adyen.com/v3",
+      "location": "line 16, under ## Servers"
+    },
+    {
+      "text": "| address | object | No | The address of the store. It is not possible to update the country of the store. |",
+      "location": "line 30, request-body table"
+    },
+    {
+      "text": "Once **closed**, a store can't be reopened.",
+      "location": "line 44, request-body status description"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/stores/YOUR_STORE_ID\"",
+      "location": "line 256, first 200 response example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-patch-store-pos-store-management-route",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-stores-storeid]] \u2014 2026-11-03-captured Management API v3 TEST store PATCH by merchant/store IDs, with country fixed, role-gated updates and active/inactive/irreversibly closed transitions; a `200` store or bodyless `204` is not terminal or payment readiness.\n> [!warning] Contradiction\n> This operation lists a `/v3` TEST server but its `200` examples link to `/v1/stores/`; the captured page does not reconcile the version difference. [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-stores-storeid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source lists a v3 TEST server but v1 self hrefs in all three 200 examples; retain version qualification."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(storeId)/2026-11-03.md",
+  "raw_sha256": "66d0a0c8012a1a1468d52dcee4e7450155d0abf19c665ce1a6d60698789d8634",
+  "status": "candidate_ready"
+}

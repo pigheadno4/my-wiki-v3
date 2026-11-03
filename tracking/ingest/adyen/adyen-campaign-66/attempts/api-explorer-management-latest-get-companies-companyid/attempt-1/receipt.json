@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: get a company account\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/2026-11-03.md\"\ntags: [adyen, management-api, company-accounts, api-access]\n---\n\n## Overview\n\nThis 2026-11-03 Management API reference describes `GET /companies/{companyId}`, a read of the company account identified by the path value. The calling API credential must have access to that company account and the `Management API\u2014Account read` role. The listed server is `https://management-test.adyen.com/v3`. This read does not create or activate an account or establish merchant processing, payout, or payment outcomes. [[adyen]] [[adyen-account-structure]] [[adyen-api-access]]\n\n## Key takeaways\n\n- `companyId` is a required string path parameter; no query parameter or body is listed (raw lines 16\u201322).\n- The 200 response is a company-account representation. Its schema marks `_links.self` required; `dataCenters`, `description`, `id`, `name`, `reference`, and `status` are optional. `description` has a 300-character maximum. The connected-resource links for API credentials, users, and webhooks are optional (raw lines 23\u201347).\n- `Active` permits login, while processing and payouts depend on merchant-account status. `Inactive` permits login but disables payment processing and payouts. `Closed` is irreversible and disables login, processing, and payouts. These are status definitions, not changes made by this GET request (raw line 47).\n- `dataCenters.livePrefix` is empty in TEST. The page recommends a live URL prefix from a data center close to shoppers for live requests; the shown server alone does not prove live access (raw lines 13\u201314, 40\u201342).\n\n> [!warning] Contradiction\n> The declared TEST server uses `/v3`, but response-example resource hrefs use `/v1`. The sample hrefs do not establish this operation's version or resolve which version of those linked resources is applicable (raw lines 13\u201314, 149\u2013179).\n\n## Detail locators\n\n- Purpose, credential access, role, server, and path input: raw lines 5\u201322.\n- 200 schema, including optionality and account status: raw lines 23\u201347; example: 149\u2013179.\n- 400 request, 401 authentication, 403 permission, 422 validation, and 500 server errors and their response fields: raw lines 50\u2013147. No error example is supplied.\n\n## Related\n\n- [[source-adyen-api-explorer-management-latest-get-companies]] \u2014 credential-scoped company-account list from a separate September 2026 snapshot.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/2026-11-03|Management API GET company account, captured 2026-11-03]]\n",
+  "quotes": [
+    {
+      "text": "Returns the company account specified in the path. Your API credential must have access to the company account.",
+      "location": "raw lines 5\u20137"
+    },
+    {
+      "text": "- Management API\u2014Account read",
+      "location": "raw lines 9\u201311"
+    },
+    {
+      "text": "- https://management-test.adyen.com/v3",
+      "location": "raw lines 13\u201314"
+    },
+    {
+      "text": "| companyId | string | Yes | The unique identifier of the company account. |",
+      "location": "raw lines 18\u201321"
+    },
+    {
+      "text": "- **Closed**: The company account is closed and this cannot be reversed. Users cannot log in. Payment processing and payouts are disabled.",
+      "location": "raw line 47"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "company-get-reciprocal-20261103",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid]] \u2014 2026-11-03 Management API v3 TEST credential-scoped GET of a company account by `companyId`, requiring Account read; returned account status does not establish merchant processing or payouts, and example hrefs use `/v1` despite the declared `/v3` server.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Declared /v3 TEST server conflicts with /v1 response-example hrefs; preserve this qualification in the reciprocal route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/2026-11-03.md",
+  "raw_sha256": "e9babe90e55602b44207e58b17412de1c01efd55e4ba2ee460fe5e44d7d09e09",
+  "status": "candidate_ready"
+}

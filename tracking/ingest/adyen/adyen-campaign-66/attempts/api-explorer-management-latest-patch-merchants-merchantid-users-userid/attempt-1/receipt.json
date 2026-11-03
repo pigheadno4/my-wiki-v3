@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-users-userid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PATCH /merchants/{merchantId}/users/{userId} \u2014 Update a user | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/users/(userId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/users/(userId)/2026-11-03.md\"\ntags: [adyen, management-api, customer-area, users, iam]\n---\n\n## Overview\n\nThis 2026-11-03 Management API v3 reference describes `PATCH /merchants/{merchantId}/users/{userId}` on the listed `https://management-test.adyen.com/v3` server. It updates details of the user identified by required `userId` under required merchant `merchantId`. The caller's API credential needs `Management API\u2014Users read and write`. A merchant user is distinct from the API credential making the request. See [[adyen]], [[adyen-customer-area-iam]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- Every listed request-body field is optional: `accountGroups`, `active`, `email`, `loginMethod`, `name` with optional first/last names, `roles`, and `timeZoneCode`. The page does not specify a whole-body requiredness rule, default values, or whether omitted fields remain unchanged.\n- `active: true` requests an active user; `false` requests inactive. `loginMethod` can be `Email` or `SSO`; the page says SSO must already be configured with Adyen before creating the user. That wording is a stated SSO prerequisite, not evidence that this PATCH enrolls a user in SSO or completes login.\n- A `200` response says the request succeeded and its schema includes user `id`, `username`, `email`, `roles`, `timeZoneCode`, optional `active`, `accountGroups`, `apps`, `name`, and a self link. A separate `204` success has no additional content. Returned roles or an active flag are API readback, not proof of effective access, an authenticated session, or a completed SSO login.\n- The reference lists `400`, `401` authentication required, `403` insufficient permissions, `422` validation error, and `500`. It gives no idempotency, propagation timing, asynchronous approval, or conflict/version semantics for this update. No live server is listed in the snapshot.\n\n## Detail locators\n\n- Endpoint purpose, credential role and TEST v3 server: raw lines 5\u201314.\n- Required path IDs and optional request-body fields, including `active`, `loginMethod` and SSO wording: raw lines 16\u201336.\n- `200` response fields and `204` status: raw lines 38\u201363.\n- Error descriptions and repeated response schemas: raw lines 66\u2013163.\n\n## Related\n\n- [[source-adyen-docs-account-users]] \u2014 Customer Area user-management guidance.\n- [[source-adyen-docs-account-single-sign-on-set-up-sso]] \u2014 SSO setup guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/users/(userId)/2026-11-03|Pinned Adyen merchant-user update reference (2026-11-03)]]\n",
+  "quotes": [
+    {
+      "text": "Updates user details for the `userId` and the `merchantId` specified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "Management API\u2014Users read and write",
+      "location": "line 11"
+    },
+    {
+      "text": "Sets the status of the user to active (**true**) or inactive (**false**).",
+      "location": "line 29, Request body > active"
+    },
+    {
+      "text": "To use SSO, you must already have SSO configured with Adyen before creating the user.",
+      "location": "line 31, Request body > loginMethod"
+    },
+    {
+      "text": "The request has been successfully processed, but there is no additional content.",
+      "location": "line 63, 204 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-api-explorer-management-latest-patch-merchants-merchantid-users-userid-iam-route",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-users-userid]] \u2014 2026-11-03-captured Management API v3 TEST merchant-user PATCH for optional active, role, account-group and login-method fields; 200/204 request success and returned flags do not prove effective access or login.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/users/(userId)/2026-11-03.md",
+  "raw_sha256": "e2f0cfd152319128a1a5615d30f8fc54e98ae41c358f1fc0062aa2adf7e6cf55",
+  "status": "candidate_ready"
+}

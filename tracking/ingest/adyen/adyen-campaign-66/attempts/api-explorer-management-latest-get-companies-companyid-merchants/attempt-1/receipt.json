@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-merchants",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: List merchant accounts under a company\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/merchants\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/merchants/2026-11-03.md\"\ntags: [adyen, management-api, merchant-accounts, account-structure]\n---\n\n## Overview\n\nThis captured Management API reference describes `GET /companies/{companyId}/merchants`: a paginated read of merchant accounts under the path's company account, limited to accounts accessible to the calling API credential. The documented server is `https://management-test.adyen.com/v3`; the credential needs the **Management API\u2014Account read** role. See [[adyen]], [[adyen-account-structure]], and [[adyen-api-access]].\n\n## Key takeaways\n\n- `companyId` is the required path identifier of the company account. Optional integer query parameters are `pageSize` (default 10, maximum 100) and `pageNumber`; this reference gives no default for `pageNumber`. No request body is described.\n- A 200 means the list request succeeded. The response schema has optional `data` merchant objects and optional pagination `_links`, plus required `itemsTotal` and `pagesTotal`. Where present, a merchant's `id` identifies the merchant account, `companyId` its parent, and `reference` its merchant reference; these are distinct fields. Merchant links can point to its own resource, API credentials, users and webhooks.\n- Merchant fields include optional `status`, `captureDelay`, `defaultShopperInteraction`, legal-entity name/city, settlement currency, website, pricing plan, and data-center information. In test, `livePrefix` is empty and `default` is the returned data-center name. Read the raw schema for field-level optionality and allowed values.\n- `PreActive` cannot process payments. For `Active`, the reference conditions enabled payment processing and payouts on the **company account also being Active**. `InactiveWithModifications` disallows new payments while allowing changes such as refunds and still allowing payouts; `Inactive` disables processing and payouts; `Closed` is irreversible. A listed account or a 200 response does not itself establish a completed payment, payout, bank receipt, or current live eligibility.\n- The documented error responses are 400, 401, 403, 422 and 500. This GET reference states no idempotency, account creation/change/deletion, review/approval, activation, propagation, or reversal operation.\n\n> [!warning] Version conflict\n> The Servers section lists the test `/v3` base URL, while the 200 response example embeds `/v1` links. Treat the example as illustrative; this captured page does not resolve which version those returned links would use in a current response.\n\n## Detail locators\n\n- Purpose, credential role and test server: raw lines 5\u201314.\n- Path and pagination parameters: raw lines 16\u201328.\n- 200 response, pagination, merchant fields and status meanings: raw lines 30\u201371.\n- Error response schemas: raw lines 74\u2013171.\n- Illustrative 200 payload and its older-version links: raw lines 173\u2013433.\n\n## Related\n\n- [[adyen-account-structure]] \u2014 company and merchant account hierarchy.\n- [[adyen-api-access]] \u2014 credential scope and permissions.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/merchants/2026-11-03|Adyen Management API merchant list reference, captured 2026-11-03]]\n",
+  "quotes": [
+    {
+      "text": "Returns the list of merchant accounts under the company account specified in the path. The list only includes merchant accounts that your API credential has access to.",
+      "location": "raw lines 5\u20137, opening description"
+    },
+    {
+      "text": "- Management API\u2014Account read",
+      "location": "raw lines 9\u201311, required role"
+    },
+    {
+      "text": "- https://management-test.adyen.com/v3",
+      "location": "raw lines 13\u201314, Servers"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 10 items on a page. |",
+      "location": "raw line 27, Query parameters"
+    },
+    {
+      "text": "If the company account is also **Active**, then payment processing and payouts are enabled.",
+      "location": "raw line 69, status response field"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-company-merchants-account-structure-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-merchants]] \u2014 2026-11-03-captured Management API v3 TEST reference for credential-scoped, paginated merchant accounts under a company, including status meanings and conditional Active processing; its v1 response-example links conflict with the v3 server.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source's test server is /v3 but its example links use /v1; preserve this as a source-level version conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/merchants/2026-11-03.md",
+  "raw_sha256": "e87b21b3a07c0daa7c2f49a1e33046ee49d3d5ea157c7f1cb37d0b171d085385",
+  "status": "candidate_ready"
+}

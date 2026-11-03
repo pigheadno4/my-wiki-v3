@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-apicredentials",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: list company API credentials\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, pagination]\n---\n\n## Overview\n\nThis 2026-11-03-captured Management API v3 reference describes `GET /companies/{companyId}/apiCredentials`, a paged listing of API credentials for the company account identified by required path `companyId`. The listed TEST server is `https://management-test.adyen.com/v3`, and the caller's API credential requires **Management API\u2014API credentials read and write**. See [[adyen]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- Optional `pageSize` defaults to 10 and has a maximum of 100; optional `pageNumber` selects the page. The `200` response requires `itemsTotal` and `pagesTotal`; top-level `_links` and `data` are marked optional. Pagination links are nested under `_links`, with first/last/self marked required if that object appears and next/prev conditional on available pages.\n- Each returned credential can include `id`, `username`, `clientKey`, `active`, `roles`, `allowedIpAddresses`, allowed origins, associated merchant accounts, certificate `subjectDN` and resource links. The response table marks `id`, `username`, `clientKey`, `active`, `roles` and `allowedIpAddresses` required within each `data` item, while `data` itself is optional. An empty allowed-IP list permits requests from any IP; a nonempty list blocks requests from other IPs with a security error.\n- `associatedMerchantAccounts` lists explicit merchant access; when the credential has company access, access to all its merchant accounts is implied and those merchants are omitted from that list. `clientKey` is public and used for client-side authentication; it is distinct from an API key. The listed key-generation links and 24-hour old-key overlap descriptions are navigation and lifecycle context, not evidence this GET generated either key.\n- A `200` listing establishes captured metadata, not successful authentication, current role entitlement, origin acceptance, key rotation, payment authorization or settlement. `400`, `401`, `403`, `422` and `500` errors are listed. This read specifies no idempotency, deletion, activation, propagation or financial outcome.\n\n> [!warning] Contradiction\n> The listed TEST server is `/v3`, but the `200` example's pagination, credential and related links use `/v1`. The example does not establish the v3 response-link paths; treat its values as illustrative.\n\n## Detail locators\n\n- Raw lines 5\u201328: purpose, role, TEST server, company ID and pagination defaults/limit.\n- Raw lines 30\u201371: response page counts, credential fields, account-scope, IP and key-link descriptions.\n- Raw lines 74\u2013171: error schema; lines 173\u2013521: full illustrative ten-item page and `/v1` link conflict.\n\n## Related\n\n- [[adyen-api-access]] \u2014 credential identity, scope and lifecycle.\n- [[source-adyen-api-explorer-management-latest-overview]] \u2014 Management API orientation.\n- [[source-adyen-api-explorer-management-latest-get-me]] \u2014 API-key-selected credential lookup.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/2026-11-03|2026-11-03 credential-list endpoint reference]]",
+  "quotes": [
+    {
+      "text": "Returns the list of [API credentials](https://docs.adyen.com/development-resources/api-credentials) for the company account. The list is grouped into pages as defined by the query parameters.",
+      "location": "line 7, under endpoint heading"
+    },
+    {
+      "text": "- Management API\u2014API credentials read and write",
+      "location": "line 11, caller role"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 10 items on a page. |",
+      "location": "line 27, Query parameters"
+    },
+    {
+      "text": "If the credential has access to a company, this implies access to all merchant accounts and no merchants for that company will be included.",
+      "location": "line 63, associatedMerchantAccounts response row"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/companies/YOUR_COMPANY_ACCOUNT/apiCredentials?pageNumber=1&pageSize=10\"",
+      "location": "line 182, first-page response example link"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-company-api-credentials-list-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials]] \u2014 2026-11-03-captured Management API v3 TEST paged read of a company's API-credential metadata and explicit merchant scope; listing and key-generation links are not key rotation or successful access, and the example links use `/v1` despite the listed `/v3` server.\n\n> [!warning] Contradiction\n> This listing reference names the TEST `/v3` server, while its response example uses `/v1` pagination and credential links. The example does not resolve the version mismatch. [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Retain the /v3 listed-server versus /v1 example-link contradiction in both source and concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/2026-11-03.md",
+  "raw_sha256": "541d6b744c2022c99d0f7c8c482cc2655f83de5014ffccd0f22f21dad3359b57",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-legalentity-latest-post-legalentities-id-pciquestionnaires-signingrequired",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /legalEntities/{id}/pciQuestionnaires/signingRequired \u2014 Calculate PCI signing requirement | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/signingRequired\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/signingRequired/2026-11-03.md\"\ntags: [adyen, legal-entity-management, platforms, pci, api-reference]\n---\n\n## Overview\n\nThis 2026-11-03 snapshot of Adyen's Legal Entity Management API v4 reference describes `POST /legalEntities/{id}/pciQuestionnaires/signingRequired` on the listed TEST server, `https://kyc-test.adyen.com/lem/v4`. It calculates whether the user must sign PCI questionnaires for the legal entity identified by the required path `id`. The optional `additionalSalesChannels` array supplies relevant channels if questionnaires must be generated for signing. A successful `200` response can return `signingRequired`; `false` means no questionnaires need signing. This calculation is distinct from questionnaire generation, signing, submission, or independent PCI compliance. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The path `id` is the legal entity's unique identifier. The request-body table lists only optional `additionalSalesChannels` with possible values `eCommerce`, `pos`, `ecomMoto`, and `posMoto`. It says to include relevant channels when the user needs to sign questionnaires, and says the field is not required if stores and payment methods are set up before questionnaire generation. The snapshot does not state a default array or require the request body as a whole.\n- The `200` response table marks `signingRequired` as optional. A returned flag describes whether signing is required; it is not a signed questionnaire, compliance determination, verification approval, product activation, or payment result.\n- The page lists 700 requests per 5 seconds in live environments, 200 per 5 seconds in test, and 5 failed requests per 10 seconds. Only a TEST server URL is shown here. The snapshot gives no idempotency, propagation timing, or lifecycle transition for this calculation.\n\n## Detail locators\n\n- Endpoint purpose, rate limits and TEST server: raw lines 5\u201318.\n- Path `id` and `additionalSalesChannels` schema, conditions and values: raw lines 20\u201331.\n- `200` and optional `signingRequired` meaning: raw lines 33\u201341.\n- Error statuses and optional error fields: raw lines 44\u2013106; `400` request problem, `401` authentication required, `403` insufficient permissions, `422` validation error, and `500` processing failure. The repeated error schema includes `errorCode`, `errorType`, `message`, `pspReference`, and `status`.\n\n## Related\n\n- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-pciquestionnaires-generatepcitemplates]] \u2014 Separate questionnaire-template generation API reference.\n- [[source-adyen-docs-platforms-onboard-users-pci-forms]] \u2014 Platforms PCI questionnaire guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/signingRequired/2026-11-03|Pinned Adyen signingRequired API reference (2026-11-03)]]\n",
+  "quotes": [
+    {
+      "text": "Calculate PCI status of a legal entity.",
+      "location": "line 7"
+    },
+    {
+      "text": "The unique identifier of the legal entity to calculate PCI status.",
+      "location": "line 25, Path parameters > id"
+    },
+    {
+      "text": "An array of additional sales channels to generate PCI questionnaires.",
+      "location": "line 31, Request body > additionalSalesChannels"
+    },
+    {
+      "text": "If **false**, they do not need to sign any questionnaires.",
+      "location": "line 41, 200 Success > signingRequired"
+    },
+    {
+      "text": "Failed requests are subject to a limit of 5 failures per 10 seconds.",
+      "location": "line 15"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-api-explorer-legalentity-latest-post-legalentities-id-pciquestionnaires-signingrequired-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-pciquestionnaires-signingrequired]] \u2014 2026-11-03-captured LEM v4 TEST calculation of whether a legal entity's user must sign PCI questionnaires, with optional sales-channel input; the returned flag is not signing or PCI compliance proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/pciQuestionnaires/signingRequired/2026-11-03.md",
+  "raw_sha256": "89d7f6f4f1aeee49856e71e9bf8eccddf6c20b2618a204a34f8a20ddba93a754",
+  "status": "candidate_ready"
+}

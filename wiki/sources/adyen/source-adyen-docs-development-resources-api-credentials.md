@@ -26,6 +26,9 @@ This Adyen documentation page explains how web service API credentials identify 
 > [!warning] Evidence boundary
 > This collected, unversioned documentation snapshot describes credential administration and stated access controls. It does not prove current account eligibility, a user's Customer Area permissions, correct secret deployment, successful authentication, endpoint authorization, idempotency, API availability, or payment execution. Consult the separately collected authentication, credential-role, idempotency, and API-security pages for their own behavior and qualifications.
 
+> [!warning] Contradiction
+> This Customer Area API-credentials guide says a newly generated API key becomes active immediately and the previous key remains active for 24 hours (pinned raw line 82). The separate 2026-11-03-captured Management API v3 [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-generateapikey|company-path]] and [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateapikey|merchant-path]] generateApiKey references instead say a new key can be used a few minutes after generation and the old key stops working after 24 hours (their pinned raw line 7). These route-specific timing statements remain unresolved; this guide does not establish immediate usability for API-generated keys.
+
 ## Detail locators
 
 - Credential identity, parts, and Customer Area management routes: `# API credentials`.

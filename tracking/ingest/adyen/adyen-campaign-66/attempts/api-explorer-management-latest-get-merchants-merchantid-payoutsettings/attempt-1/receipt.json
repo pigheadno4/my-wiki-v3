@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-payoutsettings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: list merchant payout settings\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/payoutSettings\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/payoutSettings/2026-11-03.md\"\ntags: [adyen, management-api, merchant-accounts, payout-settings, bank-accounts]\n---\n\n## Overview\n\nThis 2026-11-03 [[adyen]] Management API reference describes `GET /merchants/{merchantId}/payoutSettings`, a read of payout settings for the merchant account named by the required path `merchantId`. It names Adyen for Platforms Manage as an example of an integration that may need the endpoint; an Adyen contact sets up access, and the API credential needs `Management API\u2014Payout account settings read`. The captured server is `https://management-test.adyen.com/v3`; no live server URL is supplied here. This is configuration readback, not a payout request or proof of funds reaching a bank. [[adyen-account-structure]]\n\n## Key takeaways\n\n- The only documented input is the required string path ID of the merchant account. No query parameter or request body is shown. `200` means the read request succeeded; its optional `data` array is described as payout accounts. Each array item requires a payout-setting `id` and a `transferInstrumentId` identifying the bank-account transfer instrument. Those IDs are separate from the merchant-account path ID.\n- Optional `verificationStatus` values are `valid`, `pending`, `invalid` and `rejected`. Optional `allowed` is set automatically: true when verification is valid and false otherwise. Optional `enabled` defaults to true, but payouts to the bank account require **both** `enabled` and `allowed` true. A default switch, valid verification or returned setting alone does not establish payout execution or bank receipt.\n- Optional ISO 8601 `enabledFromDate` schedules when payouts are enabled: if `enabled` is true, payouts start on the specified date; if false, they remain disabled until that date, when `enabled` becomes true and the date field resets to null. Without a date, `enabled` indicates the setting. Optional `priority` values are `first` (same day), `urgent` (next day) and `normal` (one to three days); the text qualifies bank arrival by payout frequency, currency and banks, saying funds may take up to three days to reach the account. These timings are descriptive, not a guarantee for a specific payout.\n- The page also lists `204` success without content and `400`, `401`, `403`, `422` and `500` errors. It does not document an idempotency rule, modification or deletion action, propagation timing, review/approval result, activation of a merchant account, payout reversal or transfer state for this GET.\n\n## Detail locators\n\n- **Purpose, access setup, role and captured v3 test server:** raw lines 5\u201316.\n- **Merchant path identifier:** raw lines 18\u201323.\n- **Optional list, required item identifiers, verification and payout-switch rules, date and priority:** raw lines 25\u201340.\n- **204 and error response schemas:** raw lines 43\u2013144.\n\n## Related\n\n- [[adyen-account-structure]] \u2014 merchant-account scope and payout configuration.\n- [[adyen-api-access]] \u2014 credential role and account-scope context.\n- [[source-adyen-docs-account-manage-payout-account-details]] \u2014 separate Customer Area add, edit and review guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/payoutSettings/2026-11-03|Management API v3 payout-settings GET \u2014 collected 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Your Adyen contact will set up your access.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "Management API\u2014Payout account settings read",
+      "location": "raw line 13"
+    },
+    {
+      "text": "To receive payouts into this bank account, both `enabled` and `allowed` must be **true**.",
+      "location": "raw line 35"
+    },
+    {
+      "text": "On the specified date, `enabled` changes to **true** and this field is reset to **null**.",
+      "location": "raw line 36"
+    },
+    {
+      "text": "The unique identifier of the [transfer instrument]",
+      "location": "raw line 39"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-merchant-payout-settings-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-payoutsettings]] \u2014 2026-11-03-captured Management API v3 TEST merchant payout-settings list, requiring Adyen-set access and a payout-settings-read role; bank verification and enabled configuration are distinct, and readback does not prove payout or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A setting with enabled true still requires allowed true; neither field proves an executed payout or recipient-bank credit."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/payoutSettings/2026-11-03.md",
+  "raw_sha256": "3e78e8dc79f95a9ac15535e8728d8d68e6f3e83becd20e2a59b153994550353b",
+  "status": "candidate_ready"
+}

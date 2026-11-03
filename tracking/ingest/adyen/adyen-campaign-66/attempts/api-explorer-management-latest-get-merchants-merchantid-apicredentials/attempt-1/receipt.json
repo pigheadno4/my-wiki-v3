@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-apicredentials",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: List merchant API credentials\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, merchant-account]\n---\n\n## Overview\n\nThis 2026-11-03-captured Management API v3 reference describes `GET /merchants/{merchantId}/apiCredentials`, a paginated list of API credentials for the merchant account identified by required path `merchantId`. The listed server is TEST `https://management-test.adyen.com/v3`; the `latest` URL and TEST server do not establish current Live availability or caller access. See [[adyen]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- The calling API credential needs `Management API\u2014API credentials read and write`, even for this GET. Optional query `pageSize` defaults to 10 and has maximum 100; optional `pageNumber` selects a page. No request body or idempotency behavior is specified.\n- A 200 says the request succeeded. Required top-level `itemsTotal` and `pagesTotal` report counts; optional `data` holds credential records and optional `_links` holds pagination references. When pagination `_links` appears, `first`, `last` and `self` are marked required; `next` and `prev` depend on adjacent pages. A separate 204 reports successful processing with no additional content.\n- Within each returned credential record, the schema requires `active`, `allowedIpAddresses`, public `clientKey`, credential `id`, `roles` and `username`. `active=true` is required to use a credential, but readback does not prove successful authentication, effective role/account access or a payment outcome. An empty allowed-IP list means requests are allowed from any IP; a nonempty list causes a security error for requests from an unlisted IP. Optional allowed-origin objects concern client-side origins, separate from server IP allowlisting.\n- Optional linked resources include allowed origins, merchant, company, `generateApiKey` and `generateClientKey`. The link descriptions say a preceding key remains valid for 24 hours after a new key is generated, but this GET only lists links and does not generate or rotate keys. The response schema contains a public client key; it does not list a secret API-key value. The populated example illustrates credential records and roles, not actual grants to this caller or a Live account.\n- Listed errors are 400, 401, 403, 422 and 500. The page does not describe credential creation, deactivation, deletion, propagation, asynchronous approval or version-conflict behavior for this read.\n\n> [!warning] Contradiction\n> The endpoint lists the TEST `/v3` server (raw line 14), but the sample pagination and credential-resource `href` values use `/v1` (lines 185\u2013195 and 211\u2013543). The example does not establish a consistent v3 resource-link contract.\n\n## Detail locators\n\n- Purpose, required caller role, TEST server, merchant path ID and paging parameters: pinned raw lines 5\u201328.\n- 200 pagination, credential fields, IP/origin and key-link descriptions: lines 30\u201370; 204 no-content result: lines 73\u201374.\n- Error descriptions and problem fields: lines 77\u2013174; illustrative response and v1 links: lines 176\u2013548.\n\n## Related\n\n- [[adyen-api-access]] \u2014 API credential identity, roles and account scope.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/2026-11-03|Merchant API credential list snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Returns the list of [API credentials](https://docs.adyen.com/development-resources/api-credentials) for the merchant account. The list is grouped into pages as defined by the query parameters.",
+      "location": "Pinned raw line 7, opening purpose paragraph"
+    },
+    {
+      "text": "- Management API\u2014API credentials read and write",
+      "location": "Pinned raw line 11, caller credential role"
+    },
+    {
+      "text": "|   - active | boolean | Yes | Indicates if the API credential is enabled. Must be set to **true** to use the credential in your integration. |",
+      "location": "Pinned raw line 57, 200 Success credential data schema"
+    },
+    {
+      "text": "|   - allowedIpAddresses | array of string | Yes | List of IP addresses from which your client can make requests.  If the list is empty, we allow requests from any IP. If the list is not empty and we get a request from an IP which is not on the list, you get a security error. |",
+      "location": "Pinned raw line 58, 200 Success credential data schema"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/merchants/YOUR_MERCHANT_ACCOUNT/apiCredentials?pageNumber=1&pageSize=10\"",
+      "location": "Pinned raw line 185, illustrative 200 Success pagination link"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-management-merchant-api-credentials-list-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials]] \u2014 2026-11-03-captured Management API v3 TEST, role-gated merchant API-credential list with paging, public client-key, role, active and IP/origin readback; listing does not generate an API key or prove usable Live access.\n\n> [!warning] Contradiction\n> This source lists a TEST v3 server while its example pagination and credential links use v1. Those illustrative links do not resolve the v3 resource-link path.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured v3 TEST server conflicts with v1 example pagination and credential-resource hrefs."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/2026-11-03.md",
+  "raw_sha256": "78394b0969ce9e7c0be72f003420d3fddb31f5fc26cd1a969efa849d3d3cb4f1",
+  "status": "candidate_ready"
+}

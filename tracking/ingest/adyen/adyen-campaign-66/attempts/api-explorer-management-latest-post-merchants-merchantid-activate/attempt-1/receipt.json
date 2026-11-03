@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-activate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: Request merchant account activation\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/activate\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/activate/2026-11-03.md\"\ntags: [adyen, management-api, merchant-account, activation]\n---\n\n## Overview\n\nThe captured [[adyen]] Management API v3 TEST reference documents `POST /merchants/{merchantId}/activate`, which requests activation of the merchant account identified by the path parameter. The result arrives asynchronously through a `merchant.updated` webhook. A successful request response is not itself confirmation that the account is activated. This endpoint applies when an integration requires it, such as Adyen for Platforms Manage, with access set up by an Adyen contact. See [[adyen-account-structure]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- The sole documented input is the required string path parameter `merchantId`, the merchant account identifier. No request body, conditional input, default, rate limit, or idempotency contract is stated in this capture.\n- The API credential must have the `Management API\u2014Accounts read and write` role. The captured server is `https://management-test.adyen.com/v3`; the page does not provide a live server URL.\n- A 200 means the request succeeded and can optionally return distinct `companyId` and `merchantId` fields. A 204 means the request was processed with no additional content. Neither response states the activation outcome; check the asynchronous `merchant.updated` result. Once the merchant account is activated, the page says it can be used to accept payments and payouts. That statement does not establish any particular payment, payout, settlement, or bank receipt.\n- This page does not state deletion, reversal, propagation time, further review/approval stages, or current account eligibility. Its `latest` URL and 2026-11-03 capture do not establish present availability.\n\n## Detail locators\n\n- Purpose, asynchronous result, integration and role prerequisites, TEST v3 server: pinned raw lines 5\u201318.\n- Required path identity: pinned raw lines 20\u201325; no request-body section appears before responses at line 27.\n- 200 and 204 semantics and optional IDs: pinned raw lines 27\u201340.\n- Error cases: 400, 401, 403, 422, and 500 at pinned raw lines 43\u2013140. The error schemas include a generic `requestId` described as essentially the same as `pspReference`; this does not imply a payment occurred.\n\n## Related\n\n- [[source-adyen-api-explorer-managementnotification-latest-post-merchant-updated]] \u2014 merchant update notification reference; this operation routes its activation result there.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/activate/2026-11-03|2026-11-03 pinned API Explorer snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Sends a request to activate the merchant account identified in the path.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "You get the result of the activation asynchronously through a [`merchant.updated`](https://docs.adyen.com/api-explorer/ManagementNotification/latest/post/merchant.updated) webhook. Once the merchant account is activated, you can start using it to accept payments and payouts.",
+      "location": "pinned raw line 9"
+    },
+    {
+      "text": "Use this endpoint if your integration requires it, such as Adyen for Platforms Manage. Your Adyen contact will set up your access.",
+      "location": "pinned raw line 11"
+    },
+    {
+      "text": "- Management API\u2014Accounts read and write",
+      "location": "pinned raw line 15"
+    },
+    {
+      "text": "| companyId | string | No | The unique identifier of the company account. |\n| merchantId | string | No | The unique identifier of the merchant account you requested to activate. |",
+      "location": "pinned raw lines 35\u201336"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-merchant-activate-account-structure-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-activate]] \u2014 2026-11-03-captured Management API v3 TEST request for merchant-account activation, requiring Accounts read/write and Adyen-set access; 200/204 request success precedes the asynchronous `merchant.updated` activation result and is not payment or payout proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/activate/2026-11-03.md",
+  "raw_sha256": "a8635610fee865dcf7e327e663d075afee86e7b054bda5420aa4e7201c3a4f05",
+  "status": "candidate_ready"
+}

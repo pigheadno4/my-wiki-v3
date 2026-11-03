@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-stores",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: List stores for a merchant account\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/stores\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/stores/2026-11-03.md\"\ntags: [adyen, management-api, stores, point-of-sale]\n---\n\n## Overview\n\nThis 2026-11-03-captured Management API v3 reference describes `GET /merchants/{merchantId}/stores`, a paginated list of stores for the merchant account named by required path `merchantId`. The listed server is TEST `https://management-test.adyen.com/v3`; Live requests are said to have rate limits, but this page gives no numeric limit. The `latest` URL and TEST server do not establish current Live availability or caller access. See [[adyen]] and [[adyen-pos-store-management]].\n\n## Key takeaways\n\n- The calling API credential must have either `Management API\u2014Stores read` or `Management API\u2014Stores read and write`. The required `merchantId` is a merchant-account identifier, not a company, legal-entity or store ID. Optional query `reference` filters by store reference; optional `pageSize` defaults to 10 and has a maximum of 100; optional `pageNumber` selects a page. No request body or idempotency behavior is specified for this GET.\n- A 200 says the request succeeded. Required top-level `itemsTotal` and `pagesTotal` report counts; optional `data` contains store objects and optional `_links` contains pagination references. Within a present `_links`, `first`, `last` and `self` are marked required, while `next` and `prev` are conditional on adjacent pages. A separate 204 denotes successful processing with no additional content. A successful response therefore does not guarantee a populated store list.\n- Listed store fields include Adyen-generated store `id`, `merchantId`, `reference`, address, business-line IDs, external reference, shopper-statement fields, optional split-configuration IDs, `status`, and conditional sub-merchant data. These are response-schema fields, not additional GET inputs. The raw table has optional parent objects with required nested fields and country/business-line/external-reference conditions; consult the schema before using individual values.\n- The `status` description says new stores are automatically `active`; `inactive` blocks new terminal transactions while outstanding capture remains possible; `closed` is irreversible and reassigns terminals to merchant inventory. Listing a status is readback, not evidence that this GET created, changed or closed a store, boarded a terminal, enabled payment methods, authorized a payment or completed capture. Generic errors include 400, 401, 403, 422 and 500.\n\n> [!warning] Contradiction\n> The endpoint lists the TEST `/v3` server (raw line 18), but the sample pagination and store `href` values use `/v1` (lines 200\u2013209, 233, 254). The example also reports `itemsTotal: 2`, `pagesTotal: 1` while linking a last/next page 2 with `pageSize=1` (lines 200\u2013214). Do not treat those example links or counts as a consistent v3 pagination contract.\n\n## Detail locators\n\n- Purpose, required role, Live rate-limit notice, server, path and query parameters: pinned raw lines 5\u201333.\n- 200 pagination and store response schema, including nested conditions and status semantics: lines 35\u201385; 204 no-content response: lines 88\u201389.\n- Error descriptions and problem fields: lines 92\u2013189; inconsistent illustrative 200 response: lines 191\u2013259.\n\n## Related\n\n- [[adyen-pos-store-management]] \u2014 store administration and terminal-readiness context.\n- [[adyen-api-access]] \u2014 API credential and role context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/stores/2026-11-03|Merchant store list snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of stores for the merchant account identified in the path. The list is grouped into pages as defined by the query parameters.",
+      "location": "Pinned raw line 7, opening purpose paragraph"
+    },
+    {
+      "text": "- Management API\u2014Stores read\n\n- Management API\u2014Stores read and write",
+      "location": "Pinned raw lines 11\u201313, credential role list"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 10 items on a page. |",
+      "location": "Pinned raw line 32, Query parameters table"
+    },
+    {
+      "text": "|   - status | string | No | The status of the store. Possible values are:  - **active**. This value is assigned automatically when a store is created.  - **inactive**. The terminals under the store are blocked from accepting new transactions, but capturing outstanding transactions is still possible.  - **closed**. This status is irreversible. The terminals under the store are reassigned to the merchant inventory. |",
+      "location": "Pinned raw line 78, 200 Success data schema"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/merchants/YOUR_MERCHANT_ACCOUNT_ID/stores?pageNumber=1&pageSize=1\"",
+      "location": "Pinned raw line 200, illustrative 200 Success pagination link"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-management-merchant-stores-list-route",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-stores]] \u2014 2026-11-03-captured Management API v3 TEST, role-gated merchant-account store list with optional reference/page filters, counts and store status readback; listing does not establish terminal or payment readiness.\n\n> [!warning] Contradiction\n> This source lists a TEST v3 server but its example links use v1; its example's page count also conflicts with its last/next page links. Treat the example as illustrative, not a reliable v3 pagination contract.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw's v3 server conflicts with v1 example hrefs; the example's pagesTotal 1 conflicts with page-2 last/next links."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/stores/2026-11-03.md",
+  "raw_sha256": "7aebe2377ff583dd66a1786abb102634139c5912e7f442d74aa5b8249880ee57",
+  "status": "candidate_ready"
+}

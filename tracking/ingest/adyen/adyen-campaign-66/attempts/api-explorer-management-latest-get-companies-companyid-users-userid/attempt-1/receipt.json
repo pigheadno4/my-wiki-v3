@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-users-userid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: get company user details\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/users/(userId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/users/(userId)/2026-11-03.md\"\ntags: [adyen, management-api, company-users, iam]\n---\n\n## Overview\n\nThis 2026-11-03-captured Management API v3 reference describes `GET /companies/{companyId}/users/{userId}`, a read of one user under the company account named by the path. The listed TEST server is `https://management-test.adyen.com/v3`; the API credential requires **Management API\u2014Users read and write**. Both `companyId` and `userId` are required path identifiers. See [[adyen]] and [[adyen-customer-area-iam]].\n\n## Key takeaways\n\n- A successful `200` response requires the user's `email`, `id`, `roles`, `timeZoneCode` and `username` in its table. It may also include `active`, apps, account groups, associated merchant accounts, name and resource links. If the optional `name` object appears, `firstName` and `lastName` are marked required within it; if `_links` appears, `self` is marked required within that object. These response fields are not request inputs.\n- `companyId` identifies a company account; `userId` identifies a user. `associatedMerchantAccounts`, `accountGroups`, `apps` and `roles` have different meanings. The returned `active` flag is a readback, not evidence of a successful login, factor enrollment, effective access to every listed account or any API credential's permissions.\n- The reference lists `400`, `401` (authentication required), `403` (insufficient permissions), `422` (validation), and `500` errors with a common problem-body shape. This GET does not document user creation/update/deactivation, idempotency, propagation timing, asynchronous approval or any payment outcome. The dated TEST capture does not prove current live authorization.\n\n## Detail locators\n\n- Raw lines 5\u201322 \u2192 operation, required credential role, TEST v3 server and both path IDs.\n- Raw lines 24\u201346 \u2192 `200` user fields, required versus optional response properties and nested objects.\n- Raw lines 49\u2013146 \u2192 error categories and problem-body fields. No response example is present in this capture.\n\n## Related\n\n- [[adyen-customer-area-iam]] \u2014 Customer Area user and role context.\n- [[adyen-api-access]] \u2014 distinct web service API credential context.\n- [[source-adyen-docs-account-users]] \u2014 separate Customer Area user-management guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/users/(userId)/2026-11-03|2026-11-03 user-detail endpoint reference]]",
+  "quotes": [
+    {
+      "text": "Returns user details for the `userId` and the `companyId` identified in the path.",
+      "location": "line 7, under endpoint heading"
+    },
+    {
+      "text": "- Management API\u2014Users read and write",
+      "location": "line 11, credential role"
+    },
+    {
+      "text": "| userId | string | Yes | The unique identifier of the user. |",
+      "location": "line 21, Path parameters"
+    },
+    {
+      "text": "| companyId | string | Yes | The unique identifier of the company account. |",
+      "location": "line 22, Path parameters"
+    },
+    {
+      "text": "| roles | array of string | Yes | The list of [roles](https://docs.adyen.com/account/user-roles) for this user. |",
+      "location": "line 44, 200 response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-company-user-get-iam-route",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-users-userid]] \u2014 2026-11-03-captured Management API v3 TEST read of a company-scoped user by company/user IDs, requiring the Users read and write API role; returned roles, account associations and active flag do not prove a login or effective access.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/users/(userId)/2026-11-03.md",
+  "raw_sha256": "a03389aad50852890accc7d006778f2bccac0086966bacc025d64215d2f9a1d5",
+  "status": "candidate_ready"
+}

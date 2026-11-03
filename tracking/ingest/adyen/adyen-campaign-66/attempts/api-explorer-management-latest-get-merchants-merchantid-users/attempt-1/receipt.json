@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-users",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: List merchant-associated users\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/users\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/users/2026-11-03.md\"\ntags: [adyen, management-api, customer-area, users, merchant-account]\n---\n\n## Overview\n\nThe captured [[adyen]] Management API v3 TEST `GET /merchants/{merchantId}/users` returns a list of users associated with the merchant account identified by the required path `merchantId`. It is a readback of user records, separate from creating a user, changing roles, or proving a working login or effective access. See [[adyen-customer-area-iam]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- The API credential needs the `Management API\u2014Users read and write` role. The captured server is `https://management-test.adyen.com/v3`. The path `merchantId` is required; optional query parameters are partial or full `username` filtering, `pageSize` (default 10, maximum 100), and `pageNumber`. The page states no `pageNumber` default.\n- A 200 response optionally includes `data` user records and `_links` pagination references; `itemsTotal` and `pagesTotal` are marked required at the response level. Within optional `data`, user `email`, `id`, `roles`, `timeZoneCode`, and `username` are marked required on each user object; `active`, `apps`, `accountGroups`, and other details are optional. Within optional `_links`, `first`, `last`, and `self` are marked required, with `next`/`prev` conditional on page availability. Nested requiredness does not make the parent fields required.\n- A 204 indicates successful processing with no content. The returned `active` flag, role names, and app list describe a user record at capture time; this endpoint does not prove actual authentication, SSO/MFA completion, current permissions, or a successful action.\n- The page states no request body, mutation, idempotency, deletion, propagation, asynchronous review/approval, or payment outcome. Its `latest` URL and 2026-11-03 snapshot do not establish present availability.\n\n## Detail locators\n\n- Purpose, credential role and TEST v3 server: pinned raw lines 5\u201314.\n- Path and query filters/pagination limits: pinned raw lines 16\u201329.\n- 200 response fields and nested requiredness; 204: pinned raw lines 31\u201369.\n- 400, 401, 403, 422, and 500 errors, including optional nested `invalidFields`: pinned raw lines 72\u2013169. Generic error `requestId`/`pspReference` language is not evidence of a payment.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/users/2026-11-03|2026-11-03 pinned API Explorer snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of users associated with the `merchantId` specified in the path.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "- Management API\u2014Users read and write",
+      "location": "pinned raw line 11"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page. Maximum value is **100**. The default is **10** items on a page. |",
+      "location": "pinned raw line 28, query parameters"
+    },
+    {
+      "text": "| data | array of object | No | The list of users. |",
+      "location": "pinned raw line 50, 200 response"
+    },
+    {
+      "text": "| itemsTotal | integer | Yes | Total number of items. |\n| pagesTotal | integer | Yes | Total number of pages. |",
+      "location": "pinned raw lines 64\u201365, 200 response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-merchant-users-list-customer-area-iam-route",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-users]] \u2014 2026-11-03-captured Management API v3 TEST merchant-associated user list, requiring a Users read-and-write credential role, with username filter and pagination; returned roles and active flags are readback, not working-login or effective-access proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/users/2026-11-03.md",
+  "raw_sha256": "b67a54a8e031ab10fb03a91c5c303609489ba57b9a287af717a4e61e23f08d3f",
+  "status": "candidate_ready"
+}

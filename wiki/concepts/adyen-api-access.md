@@ -15,7 +15,13 @@ Roles define credential permissions. Account scope defaults to company-wide acce
 
 ## Credential lifecycle
 
-A newly generated API key is active immediately while its predecessor remains active for 24 hours by default. Basic-authentication password replacement instead deactivates the previous password immediately, so overlapping migration requires a separate credential. Live credentials must come from the live environment. IP allowlisting can restrict request origins, and a credential can be deactivated immediately and later reactivated but cannot be deleted.
+The 2026-11-03-captured merchant-credential Management API v3 generation endpoint says its new API key can be used a few minutes after generation and the old one stops working after 24 hours. Its response returns a generated key but does not prove successful downstream authentication. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateapikey]]
+
+> [!warning] Contradiction
+> This merchant-credential endpoint states a few minutes before new-key use, while the separate balance-platform Customer Area guide states immediate activation. The broad immediate-activation sentence above must be read as scoped to that guide, not universal across these routes. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateapikey]] [[source-adyen-docs-marketplaces-manage-access-api-credentials-web-service]]
+
+
+The 2026-09-15-captured balance-platform Customer Area guide says a newly generated API key becomes active immediately and its predecessor remains active for 24 hours. The separate 2026-11-03-captured Management API v3 company- and merchant-credential generation references say a new key can be used a few minutes after generation and the old key stops working after 24 hours. [[source-adyen-docs-marketplaces-manage-access-api-credentials-web-service]] [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-generateapikey]] [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateapikey]] Basic-authentication password replacement instead deactivates the previous password immediately, so overlapping migration requires a separate credential. Live credentials must come from the live environment. IP allowlisting can restrict request origins, and a credential can be deactivated immediately and later reactivated but cannot be deleted.
 
 These snapshot statements do not prove current merchant or user eligibility, successful authentication, endpoint access, correct secret storage, API availability, idempotent processing, or payment execution. Future authentication, role-catalog, idempotency, and API-security sources should extend this route without transferring their claims before review.
 
@@ -25,6 +31,94 @@ These snapshot statements do not prove current merchant or user eligibility, suc
 
 Adyen's 2026-09-15 mTLS guide adds a client certificate to API-key authentication for supported APIs using a company-level API credential. The merchant keeps the private key, links the certificate subject DN to the credential, and presents the leaf plus full CA chain at an mTLS endpoint. Linking is a cutover: supported-API requests with that credential fail without the certificate. The guide excludes merchant-level and balance-platform credentials and identifies separate supported/unsupported APIs and endpoints; see the source for scope and regions. This TLS client certificate is distinct from the JWE card-encryption certificate, whose retained EC/RSA sample conflict remains unresolved.
 ## Sources
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid-allowedorigins]] — 2026-11-03-captured Management API v3 TEST read of allowed origins for a merchant-path API credential, requiring API-credentials read/write permission; readback does not add an origin or prove client acceptance.
+
+> [!warning] Contradiction
+> This reference lists a TEST `/v3` server, but both 200 sample origin links use `/v1`. The captured example does not resolve current routing. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid-allowedorigins]]
+
+
+- [[source-adyen-api-explorer-management-latest-delete-companies-companyid-apicredentials-apicredentialid-allowedorigins-originid]] — 2026-11-03 Management API v3 TEST deletion of an allowed origin under a company API credential; the reference says client-side requests from that domain stop being accepted immediately after removal, while 204 has no resource readback.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials-apicredentialid-allowedorigins-originid]] — 2026-11-03-captured Management API v3 TEST credential-scoped allowed-origin detail read; configuration visibility is not client-side acceptance or payment proof.
+
+> [!warning] Contradiction
+> This reference lists a `/v3` TEST server, but its 200 example self link uses `/v1/companies/`. The example establishes neither the v3 self-link route nor the correct Live route.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-allowedorigins]] — 2026-11-03-captured Management API v3 TEST creation of a domain allowed origin for a company API credential; `200` is a configuration result, not client authentication or payment proof, and its example self-link uses `/v1` despite the listed `/v3` server.
+
+> [!warning] Contradiction
+> The allowed-origin POST reference lists a `/v3` TEST server but illustrates a `/v1` response self-link. The example does not resolve the version mismatch. [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-allowedorigins]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials-apicredentialid-allowedorigins]] — 2026-11-03-captured Management API v3 TEST list of allowed origins for a company-path API credential, requiring API-credentials read/write; optional `data` readback is not origin propagation or client-key use proof.
+> [!warning] Contradiction
+> This source lists a `/v3` TEST server, but both `200` example origin self links use `/v1`; the page does not reconcile the version difference. [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials-apicredentialid-allowedorigins]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateclientkey]] — 2026-11-03-captured Management API v3 TEST merchant-credential client-key generation; new key usable after a few minutes, old key stops after 24 hours, and 200/204 do not prove successful client authentication.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid]] — 2026-11-03-captured Management API v3 TEST merchant-credential GET, requiring API credentials read/write on the caller and returning target credential status, roles, IP list, client key and links; readback does not rotate keys or prove endpoint access.
+
+> [!warning] Contradiction
+> The reference lists a `/v3` TEST server, while its `200` example's resource hrefs all use `/v1`. The example establishes neither the v3 self-link route nor the correct Live route. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-generateclientkey]] — 2026-11-03-captured Management API v3 TEST company/target-credential client-key generation reference: required credential role, a few-minute new-key usability delay and 24-hour old-client-key expiry; generation is distinct from API-key rotation or payment readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-generateapikey]] — 2026-11-03-captured Management API v3 TEST POST for a new company-path credential API key, requiring API-credentials read/write; the 200 key is not proof of authentication or payment execution.
+
+> [!warning] Contradiction
+> This API endpoint says the new key can be used a few minutes after generation, while [[source-adyen-docs-development-resources-api-credentials]] says a newly generated key becomes active immediately. Both describe a 24-hour previous-key window; the new-key timing remains unresolved for this route.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-apicredentials-apicredentialid]] — 2026-11-03-captured Management API v3 TEST merchant-credential PATCH for active state, origins, roles, description or subject DN, requiring the API-credentials read/write role; `200` readback or `204` is not later authentication or payment proof.
+> [!warning] Contradiction
+> This source lists a `/v3/merchants/.../apiCredentials/...` PATCH, while the `200` sample links that credential under `/v1/companies/.../apiCredentials/...`; the example does not establish the PATCH route. [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-apicredentials-apicredentialid]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials]] — 2026-11-03-captured Management API v3 TEST merchant-path API credential creation, optional roles/origins and secret/IP response fields; account-scope wording and /v1 example links conflict with the path and server, while creation does not prove live authentication.
+
+> [!warning] Contradiction
+> The pinned POST /merchants/{merchantId}/apiCredentials introduction calls the path a company account, while its path table defines merchantId as a merchant-account ID. The listed TEST server is /v3, but the 200 example includes company-scoped /v1/companies/.../apiCredentials links alongside a merchant link. The snapshot does not reconcile account scope or the versioned route for later calls. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials]] — 2026-11-03-captured Management API v3 TEST, role-gated merchant API-credential list with paging, public client-key, role, active and IP/origin readback; listing does not generate an API key or prove usable Live access.
+
+> [!warning] Contradiction
+> This source lists a TEST v3 server while its example pagination and credential links use v1. Those illustrative links do not resolve the v3 resource-link path.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-apicredentials-apicredentialid]] — 2026-11-03-captured Management API v3 TEST PATCH for company API-credential settings, with role delegation limited by the company web-service credential and explicit merchant IDs distinct from company-wide access; updated readback is not key generation or downstream authorization proof.
+
+> [!warning] Contradiction
+> This reference lists a `/v3` test server, but its response-example resource links use `/v1`. The snapshot does not reconcile the base-path difference. [[source-adyen-api-explorer-management-latest-patch-companies-companyid-apicredentials-apicredentialid]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials-apicredentialid]] — 2026-11-03-captured Management API v3 TEST readback of a company-path API credential's status, IPs, roles, client key and scope; response values do not prove successful authentication or payment.
+
+> [!warning] Contradiction
+> This credential GET lists a /v3 TEST server, but its 200 example resource links use /v1. The sample cannot resolve current routing. [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials-apicredentialid]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials]] — 2026-11-03-captured Management API v3 TEST paged read of a company's API-credential metadata and explicit merchant scope; listing and key-generation links are not key rotation or successful access, and the example links use `/v1` despite the listed `/v3` server.
+
+> [!warning] Contradiction
+> This listing reference names the TEST `/v3` server, while its response example uses `/v1` pagination and credential links. The example does not resolve the version mismatch. [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials]] — 2026-11-03-captured Management API v3 TEST company-credential creation reference for optional merchant scope, roles and origins, returned secrets and one-time API-key retrieval boundary; creation is not proof of endpoint access or payment execution.
+
+> [!warning] Contradiction
+> The reference lists a `/v3` TEST server, but its 200 example credential, origin and generate-key links use `/v1/`. The example establishes neither v3 links nor correct Live routes.
+
+
+- [[source-adyen-api-explorer-management-latest-delete-me-allowedorigins-originid]] — 2026-11-03-captured Management API v3 TEST DELETE for an allowed-origin ID under the request API key's credential, permitting any Management API role; `204` has no success body and does not establish propagation or browser acceptance.
+
 
 - [[source-adyen-api-explorer-management-latest-get-me]] — 2026-09-15-captured Management API v3 TEST `GET /me` reference for reading the API-key-associated credential's identity, roles, active flag, IP restrictions and client-side settings; resource links are not merchant-account management or key rotation.
 
@@ -39,6 +133,9 @@ Adyen's 2026-09-15 mTLS guide adds a client certificate to API-key authenticatio
 
 
 - [[source-adyen-api-explorer-management-latest-get-me-allowedorigins]] — 2026-09-15-captured Management API v3 TEST GET reference for allowed origins of the API-key-selected credential; any Management API role can read, and the response does not create an origin or establish client-key/payment acceptance.
+
+- [[source-adyen-api-explorer-management-latest-get-me-allowedorigins-originid]] — 2026-11-03-captured Management API v3 TEST GET for one allowed-origin domain/ID under the request-API-key-selected credential; any Management API role can read, without proving client-key acceptance or payment authorization.
+
 
 
 - [[source-adyen-api-explorer-management-latest-overview]] — 2026-09-15-captured Management API v3 overview for API-key and test/live endpoint orientation plus company, merchant, store and terminal route catalog; operation details remain in separate references.

@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-apicredentials-apicredentialid-allowedorigins",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins \u2014 list credential allowed origins | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, allowed-origins, client-side-authentication]\n---\n\n## Overview\n\nThis 2026-11-03-captured [[adyen]] Management API reference describes `GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins`: a list read for the API credential identified in the path under the specified company account. Both path IDs are required, and the calling credential needs **Management API\u2014API credentials read and write**. The only listed server is TEST `https://management-test.adyen.com/v3`. The target credential ID and each returned allowed-origin ID identify different resource types; the page does not say whether the calling credential is also the target. See [[adyen-api-access]]. [Raw: lines 5\u201322, 32\u201336]\n\n## Key takeaways\n\n- A `200` reports a succeeded list request. The response schema marks top-level `data` (array of allowed-origin objects) optional. Within each object, `domain` is required and `id` and `_links` are optional; `_links.self` is marked required within `_links`. Preserve these nested conditions rather than treating the sample's two items and IDs as guaranteed. [Raw: lines 24\u201336, 138\u2013165]\n- The response is credential-scoped configuration readback. It does not create or remove origins, issue or rotate a client key, prove an origin has propagated to a browser-side check, or demonstrate a payment or authenticated client request. No query parameters, request body, pagination, idempotency or propagation timing are specified in this reference. [Raw: lines 5\u201336]\n- The page lists `400` request, `401` authentication, `403` permission, `422` validation and `500` server errors with structured problem-body fields. The generic `requestId` description comparing it to `pspReference` does not imply this lookup initiated a payment. [Raw: lines 39\u2013136]\n\n> [!warning] Contradiction\n> The listed TEST server is `/v3`, but both allowed-origin self links in the `200` example use `/v1/companies/.../apiCredentials/.../allowedOrigins/...`. The snapshot does not reconcile the version difference; example hrefs are not proof of a v3 route or current live availability. [Raw: lines 13\u201314, 138\u2013165]\n\n## Detail locators\n\n- Purpose, caller role, TEST server and required company/credential IDs: raw lines 5\u201322.\n- `200` array and nested field requiredness: raw lines 24\u201336.\n- Errors and problem-body fields: raw lines 39\u2013136.\n- Two-item response example and `/v1` self links: raw lines 138\u2013165.\n\n## Related\n\n- [[adyen-api-access]] \u2014 credential and client-side access context\n- [[source-adyen-api-explorer-management-latest-get-me-allowedorigins]] \u2014 separate API-key-selected `/me` allowed-origin read\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/2026-11-03|Management API company-credential allowed-origin list \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Returns the list of [allowed origins](https://docs.adyen.com/development-resources/client-side-authentication#allowed-origins) for the API credential identified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API\u2014API credentials read and write",
+      "location": "line 11, calling credential role"
+    },
+    {
+      "text": "| apiCredentialId | string | Yes | Unique identifier of the API credential. |",
+      "location": "line 21, path-parameter table"
+    },
+    {
+      "text": "| data | array of object | No | List of allowed origins. |",
+      "location": "line 32, 200 response table"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/companies/YOUR_COMPANY_ACCOUNT/apiCredentials/YOUR_API_CREDENTIAL/allowedOrigins/YOUR_ALLOWED_ORIGIN_1\"",
+      "location": "line 151, first 200 response item"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-get-company-credential-allowed-origins-api-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials-apicredentialid-allowedorigins]] \u2014 2026-11-03-captured Management API v3 TEST list of allowed origins for a company-path API credential, requiring API-credentials read/write; optional `data` readback is not origin propagation or client-key use proof.\n> [!warning] Contradiction\n> This source lists a `/v3` TEST server, but both `200` example origin self links use `/v1`; the page does not reconcile the version difference. [[source-adyen-api-explorer-management-latest-get-companies-companyid-apicredentials-apicredentialid-allowedorigins]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Listed v3 TEST server conflicts with v1 self hrefs in both response example items."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/apiCredentials/(apiCredentialId)/allowedOrigins/2026-11-03.md",
+  "raw_sha256": "fdb8f21d1eb9f7a6b72d9fe742f9e153dacdecee63728399f993146b2ca11b07",
+  "status": "candidate_ready"
+}

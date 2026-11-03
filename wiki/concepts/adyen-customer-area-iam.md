@@ -20,6 +20,35 @@ The 2026-09-15 captured page explicitly presents incomplete, non-definitive secu
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-users-userid]] — 2026-11-03 Management API v3 TEST update of a company user’s roles, active state and login method by company and user IDs; SSO requires prior configuration, and a returned user does not prove working login or effective access.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-users-userid]] — 2026-11-03-captured Management API v3 TEST merchant-user PATCH for optional active, role, account-group and login-method fields; 200/204 request success and returned flags do not prove effective access or login.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-users-userid]] — 2026-11-03-captured Management API v3 TEST merchant/user detail GET requiring a Users read-and-write API credential role; returned user roles and optional active/apps fields are readback, not proof of working login or effective access.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-users]] — 2026-11-03-captured Management API v3 TEST merchant-user creation reference requiring a Users read-and-write credential role and preconfigured SSO for SSO users; response is user-resource evidence, not working-login proof.
+
+> [!warning] Contradiction
+> The request table requires `username` to match `email`, but its examples use `johnsmith` versus `john.smith@example.com`; the response example's `/v1` self link also differs from the `/v3` server. The snapshot does not reconcile these values. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-users]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-users]] — 2026-11-03-captured Management API v3 TEST merchant-associated user list, requiring a Users read-and-write credential role, with username filter and pagination; returned roles and active flags are readback, not working-login or effective-access proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-users-userid]] — 2026-11-03-captured Management API v3 TEST read of a company-scoped user by company/user IDs, requiring the Users read and write API role; returned roles, account associations and active flag do not prove a login or effective access.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-users]] — 2026-11-03-captured Management API v3 TEST company-user creation by company ID, with Users read/write credential role and preconfigured SSO for SSO login method; `200` user readback is not a working login or entitlement proof.
+> [!warning] Contradiction
+> This source requires `username` to equal `email`, but all request examples use different values; its listed `/v3` TEST server also differs from the response example's `/v1` self link. [[source-adyen-api-explorer-management-latest-post-companies-companyid-users]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-users]] — 2026-11-03-captured Management API v3 TEST company-user list with a Users read-and-write credential role, username filter and pagination; returned user roles and active flags are readback, not working-login or effective-access proof.
+
+
 - [[source-adyen-docs-about-our-customer-area]] — 2026-09-15-captured dated BPCA-to-unified-Customer-Area migration guide for TEST/LIVE setup, company/merchant role scope, access copying and deep-link changes; timeline remains indicative.
 
 

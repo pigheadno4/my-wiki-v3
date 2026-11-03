@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-patch-companies-companyid-apicredentials-apicredentialid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: update a company API credential\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/apiCredentials/(apiCredentialId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/companies/(companyId)/apiCredentials/(apiCredentialId)/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, access-control, company-accounts]\n---\n\n## Overview\n\nThis 2026-11-03 [[adyen]] Management API reference describes `PATCH /companies/{companyId}/apiCredentials/{apiCredentialId}` for changing selected settings of an API credential under a company account. The request supplies new values for fields being changed; the response is described as the full updated credential. The calling API credential needs `Management API\u2014API credentials read and write`. The captured server is `https://management-test.adyen.com/v3`; no live server URL is given here. This credential-configuration operation does not generate an API key or prove successful authentication to another endpoint. [[adyen-api-access]]\n\n## Key takeaways\n\n- Required path strings identify the company account (`companyId`) and the API credential (`apiCredentialId`). The request-body table lists optional `active`, `allowedOrigins`, `associatedMerchantAccounts`, `description`, `roles` and `subjectDN`; no required body property, default or idempotency rule is stated. The request can change enabled state, allowed origins, merchant access and roles; role delegation is limited to roles assigned to `ws@Company.<CompanyName>`. The page does not specify omission semantics or whether a submitted array is merged or replaced.\n- The `200` response requires `active`, `allowedIpAddresses`, `clientKey`, credential `id`, `roles` and `username`; it can also return optional origins, explicit associated merchant accounts, description, `subjectDN` and resource links. `active` must be true for use in an integration. An empty returned `allowedIpAddresses` list permits requests from any IP; a nonempty list rejects requests from outside it. `allowedIpAddresses` is a response field here, not a documented PATCH input.\n- `associatedMerchantAccounts` in the response lists **explicit** merchant access. Company access implies all company merchants, and their IDs are omitted from that list; an empty example list therefore does not prove the credential has no merchant access. Optional `_links` includes `self` (required within `_links`) and links for origins, related account and separate API/client-key generation actions. A returned `clientKey` or generation link is not evidence that this PATCH rotated either key.\n- The page lists `400`, `401`, `403`, `422` and `500` errors. It gives no key-rotation request in this operation, propagation time, cross-endpoint authorization result, revocation/deletion behavior or payment outcome.\n\n> [!warning] Contradiction\n> The captured test server is `/v3`, while the `200` example's resource links use `/v1`. The snapshot does not reconcile the version difference; the example links should not determine the endpoint base path.\n\n## Detail locators\n\n- **Purpose, caller role and captured test server:** raw lines 5\u201314.\n- **Company/credential path IDs and optional PATCH fields:** raw lines 16\u201333.\n- **Single active-state request example:** raw lines 35\u201342.\n- **Updated response, scope, active/IP rules and related links:** raw lines 43\u201377.\n- **Error response schemas:** raw lines 80\u2013177.\n- **Illustrative response and v1 links:** raw lines 179\u2013225.\n\n## Related\n\n- [[adyen-api-access]] \u2014 credential roles, account scope and lifecycle.\n- [[adyen-account-structure]] \u2014 company and merchant account identities.\n- [[source-adyen-api-explorer-management-latest-get-me]] \u2014 readback for the calling API credential.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/companies/(companyId)/apiCredentials/(apiCredentialId)/2026-11-03|Management API v3 company-credential PATCH \u2014 collected 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Changes the API credential's roles, merchant account access, or allowed origins.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Management API\u2014API credentials read and write",
+      "location": "raw line 11"
+    },
+    {
+      "text": "Only roles assigned to 'ws@Company.<CompanyName>' can be assigned to other API credentials.",
+      "location": "raw line 32"
+    },
+    {
+      "text": "If the credential has access to a company, this implies access to all merchant accounts and no merchants for that company will be included.",
+      "location": "raw line 71"
+    },
+    {
+      "text": "https://management-test.adyen.com/v1/companies/YOUR_COMPANY_ACCOUNT/apiCredentials/YOUR_API_CREDENTIAL",
+      "location": "raw line 208 (self.href example)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-company-credential-patch-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-apicredentials-apicredentialid]] \u2014 2026-11-03-captured Management API v3 TEST PATCH for company API-credential settings, with role delegation limited by the company web-service credential and explicit merchant IDs distinct from company-wide access; updated readback is not key generation or downstream authorization proof.\n\n> [!warning] Contradiction\n> This reference lists a `/v3` test server, but its response-example resource links use `/v1`. The snapshot does not reconcile the base-path difference. [[source-adyen-api-explorer-management-latest-patch-companies-companyid-apicredentials-apicredentialid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the v3 server versus v1 example-link conflict; an empty explicit merchant list can still accompany company-wide access."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/companies/(companyId)/apiCredentials/(apiCredentialId)/2026-11-03.md",
+  "raw_sha256": "5cff7d56509f6872cc1318bd1bafc41e79cfc23bb02c8f27b2d261fb8240197c",
+  "status": "candidate_ready"
+}

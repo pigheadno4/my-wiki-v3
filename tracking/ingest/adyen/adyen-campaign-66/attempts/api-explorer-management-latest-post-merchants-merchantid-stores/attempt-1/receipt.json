@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-stores",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"POST /merchants/{merchantId}/stores \u2014 Create a store | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/stores\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/stores/2026-11-03.md\"\ntags: [adyen, management-api, stores, point-of-sale]\n---\n\n## Overview\n\nThis 2026-11-03 Management API reference describes `POST /merchants/{merchantId}/stores` on the listed `https://management-test.adyen.com/v3` server. It creates a store for the merchant account identified by required path `merchantId`. The API credential needs the `Management API\u2014Stores read and write` role. The page flags live rate limits without stating values. The store, merchant account, optional business lines, balance account and split profile have distinct identifiers. See [[adyen]], [[adyen-pos-store-management]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request-body table marks `address`, `description`, `phoneNumber` and `shopperStatement` required. Inside `address`, `country` is required; `stateOrProvince` is additionally required for Australia, Brazil, Canada, India, Mexico, New Zealand and the US. The page does not separately state whole-body requiredness.\n- `businessLineIds` is optional when the merchant account has one business line, which is then used by default; it becomes required when the merchant has multiple business lines. `externalReferenceId` is required for Brazil CNPJ, with the stated format, and optional for France SIRET and Australia Zip. Optional `reference` is the store code; if omitted, Adyen populates it from the generated store `id`. `shopperStatement` is limited to 22 characters and cannot consist only of numbers.\n- Optional `localizedInformation`, `splitConfiguration` and `subMerchantData` have nested conditions. Japan requires `ja-Hani` and `ja-Kana` local shopper statements when using the localized field. The split configuration can name a balance account and split profile; these settings are not evidence that any amount was split or booked. Registered payment facilitators using standalone terminals may supply sub-merchant data, whose listed children are required within that optional object.\n- The page documents `200` with an optional store `id`, `merchantId`, `reference`, `status`, address and other store fields, and also lists `204` with no additional content. It says `active` is assigned automatically upon creation; `inactive` blocks terminals under the store from new transactions while outstanding captures remain possible, and `closed` is irreversible and reassigns those terminals to merchant inventory. A creation response does not itself show terminal assignment, payment-method activation, authorization, capture or settlement.\n- Listed errors are `400`, `401` authentication required, `403` insufficient permissions, `422` validation and `500`. The reference does not state an idempotency contract, propagation timing, or an asynchronous approval step for store creation.\n\n> [!warning] Contradiction\n> The listed API server is `/v3`, but the `200` example's `_links.self.href` uses `/v1/stores/`. The example does not resolve the version mismatch or establish the route to use for subsequent calls.\n\n## Detail locators\n\n- Purpose, required credential role, live-limit notice and TEST v3 server: raw lines 5\u201316.\n- Path merchant identity and request body, including conditional address, business line, tax-reference, local statement, split and sub-merchant fields: raw lines 18\u201354.\n- Illustrative request: raw lines 56\u201375.\n- `200` response fields and store status meanings: raw lines 76\u2013115; bodyless `204`: lines 118\u2013119.\n- `400`, `401`, `403`, `422`, `500` schemas: raw lines 122\u2013219. Illustrative `200` response and v1 self-link: lines 221\u2013249.\n\n## Related\n\n- [[source-adyen-api-explorer-management-latest-post-stores]] \u2014 Separate company-scoped store creation reference with body `merchantId`.\n- [[source-adyen-docs-platforms-manage-stores]] \u2014 Platform store-management guidance.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/stores/2026-11-03|Pinned Adyen merchant-scoped store creation reference (2026-11-03)]]\n",
+  "quotes": [
+    {
+      "text": "Creates a store for the merchant account identified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "Management API\u2014Stores read and write",
+      "location": "line 11"
+    },
+    {
+      "text": "Required when there are multiple business lines under the merchant account.",
+      "location": "line 37, Request body > businessLineIds"
+    },
+    {
+      "text": "This value is assigned automatically when a store is created.",
+      "location": "line 110, 200 Success > status"
+    },
+    {
+      "text": "This status is irreversible.",
+      "location": "line 110, 200 Success > status"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-api-explorer-management-latest-post-merchants-merchantid-stores-pos-store-route",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-stores]] \u2014 2026-11-03-captured Management API v3 TEST merchant-scoped store-creation contract, conditional fields and status effects; its 200 example uses a /v1 self-link despite the /v3 server, and an active store is not transaction proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Source server is /v3, but its 200 response example self-link uses /v1/stores; retain the version mismatch warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/stores/2026-11-03.md",
+  "raw_sha256": "9814b0697d837ea3586402c6308052386c83524529515004d39f87e9ba9b0654",
+  "status": "candidate_ready"
+}

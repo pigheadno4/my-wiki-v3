@@ -1,6 +1,6 @@
 # Adyen C66 collected API Explorer ingestion selection
 
-Status: **PREPARED ONLY — awaiting exact ingestion approval**. Prepared 2026-11-03.
+Status: **COMPLETE — all 50 sources approved and validated**. Prepared 2026-11-03.
 
 Approved collection completed for all50 exact URLs: **50 HTTP200 substantive Markdown pages**, no failed, title-only or mismatched documents. Families: **Legal Entity8 + Management42**. Every response body is preserved byte-for-byte after collection metadata in a new dated2026-11-03 raw file. All prior Adyen raw/wiki hashes are unchanged; any unrelated concurrent changes are recorded separately. These title/body/byte checks are collection screening, not full semantic reads. [Collection manifest](../../../collections/adyen/c66-collection-2026-11-03/manifest.md), [summary](../../../collections/adyen/c66-collection-2026-11-03/summary.json). Original proposal retained in [collection-selection-review.md](collection-selection-review.md).
 
@@ -64,3 +64,7 @@ Fixed coordinator audit jobs: `api-explorer-management-latest-get-companies-comp
 | 48 | Management | GET /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId} | 1,291 | 154 |
 | 49 | Management | DELETE /companies/{companyId}/apiCredentials/{apiCredentialId}/allowedOrigins/{originId} | 1,215 | 128 |
 | 50 | Management | GET /merchants/{merchantId}/apiCredentials/{apiCredentialId}/allowedOrigins | 1,327 | 170 |
+
+User approved exact C66 ingestion on2026-11-03 after50hash/count checks. Historical preparation statements above retain their pre-approval meaning. No commit/push.
+
+C66 closed: 3059 total sources; 496 API Explorer sources. Remaining 27 API raw pages are excluded title-only stubs. No commit/push.

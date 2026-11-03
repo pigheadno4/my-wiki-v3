@@ -18,6 +18,38 @@ The 2026-09-15 Adyen guide uses a platform-unique store ID for store updates; a 
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-patch-stores-storeid]] — 2026-11-03-captured Management API v3 TEST store-update reference for selected fields and irreversible closure; example self links use /v1, and a returned store does not establish terminal or payment readiness.
+
+> [!warning] Contradiction
+> This Management API reference lists a `/v3` TEST server while both 200 example store `self.href` links use `/v1/stores/`. The examples do not establish a v3 self-link route or the correct Live route.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-stores]] — 2026-11-03-captured Management API v3 TEST merchant-scoped store-creation contract, conditional fields and status effects; its 200 example uses a /v1 self-link despite the /v3 server, and an active store is not transaction proof.
+
+> [!warning] Contradiction
+> The pinned POST /merchants/{merchantId}/stores reference lists a TEST /v3 server, while its 200 response example self-link uses /v1/stores/. The example does not resolve which versioned route applies to a subsequent call. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-stores]]
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-stores-storeid]] — 2026-11-03-captured Management API v3 TEST store PATCH by merchant/store IDs, with country fixed, role-gated updates and active/inactive/irreversibly closed transitions; a `200` store or bodyless `204` is not terminal or payment readiness.
+> [!warning] Contradiction
+> This operation lists a `/v3` TEST server but its `200` examples link to `/v1/stores/`; the captured page does not reconcile the version difference. [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-stores-storeid]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-stores]] — 2026-11-03-captured Management API v3 TEST, role-gated merchant-account store list with optional reference/page filters, counts and store status readback; listing does not establish terminal or payment readiness.
+
+> [!warning] Contradiction
+> This source lists a TEST v3 server but its example links use v1; its example's page count also conflicts with its last/next page links. Treat the example as illustrative, not a reliable v3 pagination contract.
+
+
+- [[source-adyen-api-explorer-management-latest-get-stores-storeid]] — 2026-11-03-captured Management API v3 TEST store lookup by store ID, with merchant/business-line, split and status readback; status is not terminal or payment readiness, and the example self-link uses `/v1` despite the listed `/v3` server.
+
+> [!warning] Contradiction
+> The captured `GET /stores/{storeId}` reference lists the TEST `/v3` server, but its response example links to `/v1/stores/...`; the example does not resolve the route-version mismatch. [[source-adyen-api-explorer-management-latest-get-stores-storeid]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-stores-storeid]] — 2026-11-03-captured Management API v3 TEST merchant-scoped store GET with role gate, store status and optional configuration details; the v1 self link and spaced reference in its example conflict with the v3 server and reference character rule. Readback does not prove terminal or payment readiness.
+
+
 - [[source-adyen-api-explorer-management-latest-post-stores]] — 2026-09-15-captured Management API v3 TEST store-creation contract for merchant-linked request, conditional address/business-line fields, automatic active status and irreversible closure effects; `/v1` example link does not prove v3 route behavior or terminal readiness.
 
 

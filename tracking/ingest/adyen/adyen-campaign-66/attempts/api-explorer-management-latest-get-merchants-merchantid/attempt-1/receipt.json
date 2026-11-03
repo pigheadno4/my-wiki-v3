@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: get a merchant account\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/2026-11-03.md\"\ntags: [adyen, management-api, merchant-accounts, api-access]\n---\n\n## Overview\n\nThis 2026-11-03 [[adyen]] Management API reference describes `GET /merchants/{merchantId}` for the merchant account identified by the required path string `merchantId`. The calling API credential must have access to that merchant account and the `Management API\u2014Account read` role. The captured server is `https://management-test.adyen.com/v3`; the page does not give a live server URL. Merchant-account readback does not create or activate the account or prove a payment, payout or bank receipt. [[adyen-account-structure]]\n\n## Key takeaways\n\n- The path ID identifies the merchant account, distinct from optional response `companyId` (its parent company account), `id` (returned merchant ID), `reference`, and the legal-entity name/city fields. No query parameter or request body is documented.\n- A `200` says the lookup succeeded. The response table makes `_links` optional but marks `_links.self` required within it; `apiCredentials`, `users` and `webhooks` links are optional. Other optional fields include `captureDelay`, `defaultShopperInteraction`, `description`, data centers and live prefixes, company and merchant IDs, legal-entity name/city, pricing plan (partner-managed accounts only), primary settlement currency, reference, shop URL and `status`. The `description` maximum is 300 characters; the described capture-delay choices are Immediate, Manual or 1\u201329 days. For test requests, `livePrefix` is empty and `default` is the data-center name. These are returned settings, not evidence that a payment was captured or settled.\n- The status definitions distinguish `PreActive` (created, no Customer Area access or payment processing), `Active` (Customer Area access; processing and payouts enabled only if the company account is also Active), `InactiveWithModifications` (no new payments, but modifications such as refunds and payouts remain possible), `Inactive` (processing and payouts disabled), and irreversible `Closed` (no login, processing or payouts). A returned status does not report a particular transaction or actual bank receipt.\n- The page also lists `204` success with no additional content, and `400`, `401`, `403`, `422` and `500` error forms. This GET has no documented update, activation action, idempotency contract, propagation timing, review decision or reversal for a state transition.\n\n> [!warning] Contradiction\n> The captured server is `/v3`, but the `200` example's `self`, API-credential, user and webhook `href` values use `/v1`. The response table capitalizes `Manual` for `captureDelay`, while the example uses `manual`. Treat those example values as illustrative; the snapshot does not reconcile their version or case.\n\n## Detail locators\n\n- **Purpose, credential scope/role and test server:** raw lines 5\u201314.\n- **Required path ID:** raw lines 16\u201321.\n- **Response fields, nested requiredness, limits and status conditions:** raw lines 23\u201354.\n- **204 and error forms:** raw lines 57\u2013158.\n- **Illustrative merchant and conflicting v1 links/capture-delay case:** raw lines 160\u2013190.\n\n## Related\n\n- [[adyen-account-structure]] \u2014 company and merchant account hierarchy.\n- [[adyen-api-access]] \u2014 credential roles and account scope.\n- [[source-adyen-api-explorer-management-latest-get-merchants]] \u2014 credential-scoped merchant list.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/2026-11-03|Management API v3 merchant-account GET \u2014 collected 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Your API credential must have access to the merchant account.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Management API\u2014Account read",
+      "location": "raw line 11"
+    },
+    {
+      "text": "https://management-test.adyen.com/v3",
+      "location": "raw line 14"
+    },
+    {
+      "text": "If the company account is also **Active**, then payment processing and payouts are enabled.",
+      "location": "raw line 54"
+    },
+    {
+      "text": "https://management-test.adyen.com/v1/merchants/YOUR_MERCHANT_ACCOUNT",
+      "location": "raw line 177"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-get-merchant-account-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid]] \u2014 2026-11-03-captured Management API v3 TEST merchant-account GET, scoped to an Account-read credential with merchant access; status readback is distinct from transaction outcome, and example links use `/v1` rather than the listed `/v3` server.\n\n> [!warning] Contradiction\n> This endpoint's captured server is `/v3`, while its example resource links use `/v1`; the `captureDelay` example also uses lower-case `manual` against the table's `Manual`. The sample does not resolve either discrepancy. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the v3 server versus v1 example-link conflict and the capture-delay case mismatch when using the example."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/2026-11-03.md",
+  "raw_sha256": "3b5e512980c954c3330162a1a992180cc8af2782f2361b73ba406747cc4dbb91",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateapikey",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: generate a merchant credential API key\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/generateApiKey\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/generateApiKey/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, api-keys, merchant-accounts]\n---\n\n## Overview\n\nThis 2026-11-03 [[adyen]] Management API reference describes `POST /merchants/{merchantId}/apiCredentials/{apiCredentialId}/generateApiKey` for generating a new API key for the credential identified under the merchant account in the path. The calling API credential needs `Management API\u2014API credentials read and write`. The captured server is `https://management-test.adyen.com/v3`; no live server URL is supplied here. This is key generation, not a credential-role or merchant-account activation operation or proof of successful use at another endpoint. [[adyen-api-access]]\n\n## Key takeaways\n\n- Required path strings are `merchantId`, the merchant account, and `apiCredentialId`, the target API credential. No query parameter, request body, default or request-count limit is documented. The operation is not described as idempotent; the reference gives no retry or duplicate-generation behavior.\n- The page says the new API key can be used **a few minutes after** generation, while the old API key stops working **24 hours after** a new one is generated. Those are this endpoint's stated timing boundaries; a `200` response containing a key does not prove the new key already works or that a downstream request is authorized.\n- A `200` says the request succeeded and its response body requires the generated `apiKey` string. The reference also lists `204` success without additional content, which cannot supply that documented key in a body. It lists `400`, `401`, `403`, `422` and `500` errors. It does not describe credential deletion, key-revocation controls, activation of a merchant account, payment execution or payout status.\n\n> [!warning] Contradiction\n> This merchant-credential Management API endpoint says a newly generated key is usable after **a few minutes**. The separately captured [[source-adyen-docs-marketplaces-manage-access-api-credentials-web-service|balance-platform Customer Area credential guide]] says its new API key becomes active **immediately**. Those are different credential routes; the snapshots do not establish one universal activation time. The existing [[adyen-api-access]] concept states immediate activation without this distinction.\n\n## Detail locators\n\n- **Purpose, new/old-key timing, caller role and captured test server:** raw lines 5\u201314.\n- **Required merchant and credential path IDs:** raw lines 16\u201322.\n- **200 key field and 204 no-content form:** raw lines 24\u201336.\n- **Error response schemas:** raw lines 39\u2013136.\n\n## Related\n\n- [[adyen-api-access]] \u2014 API credential scope and lifecycle.\n- [[source-adyen-docs-marketplaces-manage-access-api-credentials-web-service]] \u2014 separate balance-platform Customer Area key route with different activation wording.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/generateApiKey/2026-11-03|Management API v3 merchant API-key generation \u2014 collected 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Returns a new API key for the API credential.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "You can use the new API key a few minutes after generating it.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The old API key stops working 24 hours after generating a new one.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Management API\u2014API credentials read and write",
+      "location": "raw line 11"
+    },
+    {
+      "text": "The generated API key.",
+      "location": "raw line 32"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-merchant-generate-api-key-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "durable_fact",
+        "anchor": "## Credential lifecycle",
+        "proposed_markdown": "The 2026-11-03-captured merchant-credential Management API v3 generation endpoint says its new API key can be used a few minutes after generation and the old one stops working after 24 hours. Its response returns a generated key but does not prove successful downstream authentication. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateapikey]]\n\n> [!warning] Contradiction\n> This merchant-credential endpoint states a few minutes before new-key use, while the separate balance-platform Customer Area guide states immediate activation. The broad immediate-activation sentence above must be read as scoped to that guide, not universal across these routes. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-generateapikey]] [[source-adyen-docs-marketplaces-manage-access-api-credentials-web-service]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Existing concept's unqualified immediate-activation sentence conflicts with this merchant endpoint's few-minutes wording; qualify the sentence when integrating this update."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/apiCredentials/(apiCredentialId)/generateApiKey/2026-11-03.md",
+  "raw_sha256": "871e528238e95d5a02350b20edc76158f27f37a72c33f8a9d6bdf49e5a35b866",
+  "status": "candidate_ready"
+}

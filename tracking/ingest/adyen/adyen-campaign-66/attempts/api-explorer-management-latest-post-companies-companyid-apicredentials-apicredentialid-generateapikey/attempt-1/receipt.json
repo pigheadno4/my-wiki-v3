@@ -1,0 +1,49 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-generateapikey",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: Generate a company API credential key\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/generateApiKey\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/generateApiKey/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, api-key-rotation]\n---\n\n## Overview\n\nThe captured [[adyen]] Management API v3 TEST `POST /companies/{companyId}/apiCredentials/{apiCredentialId}/generateApiKey` returns a new API key for the target API credential in the company-account path. The calling credential must have the `Management API\u2014API credentials read and write` role. The path company ID, target credential ID, and caller credential are distinct. This is a key-generation operation, not proof that a later request authenticates or has endpoint permission. See [[adyen-api-access]].\n\n## Key takeaways\n\n- The required string path parameters are `companyId` and `apiCredentialId`. The captured page shows no query or request body. The server is `https://management-test.adyen.com/v3`; it does not supply a live server URL.\n- A 200 means the request succeeded and its response body requires the generated `apiKey` string. The page says the new key can be used a few minutes after generation and the old key stops working 24 hours after generation. Returning the key is distinct from a verified successful call using it.\n- The page states no idempotency contract, rate limit, retry behavior, conditional input, deletion/reversal, or later approval state. Repeating a key-generation request should not be assumed harmless from this snapshot.\n- This endpoint's key timing differs from the separately captured Customer Area credential guide; the 24-hour predecessor window is common to both statements, but the new-key activation time is unresolved.\n\n> [!warning] Contradiction\n> This Management API v3 reference says the new API key can be used a few minutes after generation (pinned raw line 7). The separately captured [[source-adyen-docs-development-resources-api-credentials|Adyen API credentials guide]] says a newly generated key becomes active immediately (its pinned raw line 82). Do not substitute either timing statement for the other or assume immediate usability of this API-generated key.\n\n## Detail locators\n\n- Purpose, key timing, caller role, TEST server and path IDs: pinned raw lines 5\u201322.\n- 200 response and required `apiKey`: pinned raw lines 24\u201332.\n- 400, 401, 403, 422, and 500 errors: pinned raw lines 35\u2013132. Generic error `requestId`/`pspReference` wording is not evidence of a payment.\n- The `latest` URL and 2026-11-03 TEST snapshot do not establish present availability, live eligibility, successful authentication, or payment execution.\n\n## Related\n\n- [[source-adyen-docs-development-resources-api-credentials]] \u2014 separately captured Customer Area credential-administration guide; conflicting new-key activation timing above.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/generateApiKey/2026-11-03|2026-11-03 pinned API Explorer snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Returns a new API key for the API credential. You can use the new API key a few minutes after generating it. The old API key stops working 24 hours after generating a new one.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "- Management API\u2014API credentials read and write",
+      "location": "pinned raw line 11"
+    },
+    {
+      "text": "| apiCredentialId | string | Yes | Unique identifier of the API credential. |\n| companyId | string | Yes | The unique identifier of the company account. |",
+      "location": "pinned raw lines 21\u201322, path parameters"
+    },
+    {
+      "text": "| apiKey | string | Yes | The generated API key. |",
+      "location": "pinned raw line 32, 200 response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-company-generate-api-key-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials-apicredentialid-generateapikey]] \u2014 2026-11-03-captured Management API v3 TEST POST for a new company-path credential API key, requiring API-credentials read/write; the 200 key is not proof of authentication or payment execution.\n\n> [!warning] Contradiction\n> This API endpoint says the new key can be used a few minutes after generation, while [[source-adyen-docs-development-resources-api-credentials]] says a newly generated key becomes active immediately. Both describe a 24-hour previous-key window; the new-key timing remains unresolved for this route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "New API key usability after a few minutes in assigned raw line 7 conflicts with immediate activation in companion raw/adyen/docs/development-resources/api-credentials/2026-09-15.md line 82. Existing companion source requires reciprocal warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/(apiCredentialId)/generateApiKey/2026-11-03.md",
+  "raw_sha256": "e62b5ace64932f030404e052ffc8a43955e4ba976fc8d189eee13d9cdfcefced",
+  "status": "candidate_ready"
+}

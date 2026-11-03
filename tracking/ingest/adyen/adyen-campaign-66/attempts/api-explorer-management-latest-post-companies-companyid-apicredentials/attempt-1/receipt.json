@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-apicredentials",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: create a company API credential\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, authentication]\n---\n\n## Overview\n\nThis captured Management API v3 reference describes `POST /companies/{companyId}/apiCredentials`, creating an API credential for the company account identified by required path `companyId`. The request may choose associated merchant-account access, roles and allowed origins. The listed server is `https://management-test.adyen.com/v3`; the calling credential needs **Management API\u2014API credentials read and write**. See [[adyen-api-access]] and [[adyen]].\n\n## Key takeaways\n\n- All four documented request-body fields are optional: `allowedOrigins`, `associatedMerchantAccounts`, `description` and `roles`. The role list is limited to roles assigned to `ws@Company.<CompanyName>`. This endpoint capture does not state a default role or merchant scope when those fields are omitted.\n- The 200 response describes the created credential's `id`, `username`, `active`, roles, associated merchant accounts, allowed IP addresses, `apiKey`, `clientKey` and Basic-auth `password` as required fields. It says `active` must be true for integration use. An empty allowed-IP list permits requests from any IP; a nonempty list rejects unlisted source IPs. `allowedOrigins`, description, subject DN and resource links are optional.\n- The API key cannot be retrieved later, so the capture directs secure storage; lost or compromised keys require generating a new key. The response describes optional generate-key links and says the existing key remains valid for 24 hours when a new API or client key is generated. Those are later operations, not an effect of this creation response. A returned credential does not prove successful subsequent authentication, allowed endpoint access, payment authorization or compliance.\n\n> [!warning] Contradiction\n> This reference lists a `/v3` TEST server (raw line 26), while the 200 example's credential, allowed-origin and generate-key `href` values use `/v1/` (raw lines 221\u2013240). The example does not establish the v3 link routes or the correct Live routes.\n\n## Detail locators\n\n- Purpose, authentication types, secret handling, calling role and TEST server: raw lines 5\u201326.\n- Required company path and optional request fields: raw lines 28\u201342; example request: lines 44\u201361.\n- 200 response schema, nested optional links and required credential fields: raw lines 62\u201398.\n- Error tables: raw lines 101\u2013198 (400, 401, 403, 422 and 500).\n- Illustrative 200 response and `/v1/` links: raw lines 200\u2013251.\n\n## Related\n\n- [[adyen-api-access]] \u2014 credential and authentication context.\n- [[source-adyen-api-explorer-management-latest-post-me-generateclientkey]] \u2014 distinct client-key rotation route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/2026-11-03|POST company API credential captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Creates an [API credential](https://docs.adyen.com/development-resources/api-credentials) for the company account identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Make sure you store the API key securely in your system. You won't be able to retrieve it later.",
+      "location": "raw line 17"
+    },
+    {
+      "text": "- Management API\u2014API credentials read and write",
+      "location": "raw line 23"
+    },
+    {
+      "text": "Only roles assigned to 'ws@Company.<CompanyName>' can be assigned to other API credentials.",
+      "location": "raw line 42, roles row"
+    },
+    {
+      "text": "If the list is empty, we allow requests from any IP.",
+      "location": "raw line 84, allowedIpAddresses row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-company-credential-api-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-apicredentials]] \u2014 2026-11-03-captured Management API v3 TEST company-credential creation reference for optional merchant scope, roles and origins, returned secrets and one-time API-key retrieval boundary; creation is not proof of endpoint access or payment execution.\n\n> [!warning] Contradiction\n> The reference lists a `/v3` TEST server, but its 200 example credential, origin and generate-key links use `/v1/`. The example establishes neither v3 links nor correct Live routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Listed TEST /v3 server conflicts with /v1/ links throughout 200 response example; v3 and Live link routes unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/apiCredentials/2026-11-03.md",
+  "raw_sha256": "3578ebfac4b277677015bfb97c80ee1661f6b0ce5c921485da9bc1350697ff57",
+  "status": "candidate_ready"
+}

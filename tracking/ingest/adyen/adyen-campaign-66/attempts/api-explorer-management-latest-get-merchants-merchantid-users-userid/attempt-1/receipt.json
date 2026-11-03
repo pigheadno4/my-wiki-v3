@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-users-userid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: Get merchant user details\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/users/(userId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/users/(userId)/2026-11-03.md\"\ntags: [adyen, management-api, users, access-control]\n---\n\n## Overview\n\nThis 2026-11-03-captured Management API v3 reference describes `GET /merchants/{merchantId}/users/{userId}`, a read of user details for the merchant and user IDs in the path. The listed server is TEST `https://management-test.adyen.com/v3`. The `latest` URL and TEST server do not establish current Live availability or caller access. See [[adyen]], [[adyen-customer-area-iam]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- The calling API credential must have `Management API\u2014Users read and write`. Both string path IDs are required: `merchantId` identifies the merchant and `userId` identifies the user. The captured page specifies no query parameters, request body, default, numeric rate limit or idempotency behavior.\n- A 200 says the request succeeded. The response requires user `email`, `id`, `roles` (the **user's** roles), `timeZoneCode` and `username`. Optional fields are `active`, `apps`, `accountGroups`, `name` and resource `_links`. If `name` is present, its `firstName` and `lastName` are marked required; if `_links` is present, `self` is marked required. A separate 204 says the request was processed without additional content.\n- The caller's credential role is separate from any roles listed on the returned user. An optional `active` flag or app list is readback, not proof that a login succeeds, an app is reachable, or permissions are effective in another account. This GET does not create, activate, deactivate or modify a user or credential.\n- Listed failures are 400, 401, 403, 422 and 500. The page does not describe deletion, propagation, asynchronous approval, reversal or version-conflict behavior for this read, and the user record does not establish merchant processing eligibility or a payment outcome.\n\n## Detail locators\n\n- Purpose, caller role, TEST server and required path IDs: pinned raw lines 5\u201322.\n- 200 field requiredness and optional nested objects: lines 24\u201345; 204 no-content response: lines 48\u201349.\n- Error descriptions and problem fields: lines 52\u2013149.\n\n## Related\n\n- [[adyen-customer-area-iam]] \u2014 user access context.\n- [[adyen-api-access]] \u2014 separate API credential scope and permissions.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/users/(userId)/2026-11-03|Merchant user details GET snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Returns user details for the `userId` and the `merchantId` specified in the path.",
+      "location": "Pinned raw line 7, opening purpose paragraph"
+    },
+    {
+      "text": "- Management API\u2014Users read and write",
+      "location": "Pinned raw line 11, caller credential role"
+    },
+    {
+      "text": "| merchantId | string | Yes | Unique identifier of the merchant. |",
+      "location": "Pinned raw line 22, Path parameters table"
+    },
+    {
+      "text": "| active | boolean | No | Indicates whether this user is active. |",
+      "location": "Pinned raw line 36, 200 Success response table"
+    },
+    {
+      "text": "| roles | array of string | Yes | The list of [roles](https://docs.adyen.com/account/user-roles) for this user. |",
+      "location": "Pinned raw line 43, 200 Success response table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-management-merchant-user-get-iam-route",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-users-userid]] \u2014 2026-11-03-captured Management API v3 TEST merchant/user detail GET requiring a Users read-and-write API credential role; returned user roles and optional active/apps fields are readback, not proof of working login or effective access.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/users/(userId)/2026-11-03.md",
+  "raw_sha256": "be46e49245e450016b57f749e797f73e3a03c86fbe941406e4579dd6add7834e",
+  "status": "candidate_ready"
+}

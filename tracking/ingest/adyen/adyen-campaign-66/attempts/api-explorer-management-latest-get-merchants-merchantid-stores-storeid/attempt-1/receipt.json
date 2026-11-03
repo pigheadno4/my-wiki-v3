@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-stores-storeid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Get a merchant store | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(storeId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(storeId)/2026-11-03.md\"\ntags: [adyen, management-api, point-of-sale, stores, merchants]\n---\n\n## Overview\n\nThis [[adyen]] Management API reference, captured 2026-11-03, describes `GET /merchants/{merchantId}/stores/{storeId}` to retrieve one store's details. The listed server is `https://management-test.adyen.com/v3`. The API credential needs either **Management API\u2014Stores read** or **Management API\u2014Stores read and write**; the page notes live rate limits without numeric values. See [[adyen-pos-store-management]] for the store administration context.\n\n## Key takeaways\n\n- Both path parameters are required strings: `merchantId` identifies the merchant account, and `storeId` identifies the store. This is a scoped read, with no request body or query parameters in the captured page. [Raw: lines 20\u201326]\n- A `200` response has a store-detail schema with optional top-level fields including Adyen-generated `id`, owning `merchantId`, `reference`, address, business-line IDs, shopper statements, split configuration, status, and registered payment-facilitator `subMerchantData`. Nested required flags apply inside their optional parent objects; they do not make the parents required. The `204` alternative says processing succeeded with no additional content, so it supplies no store representation. [Raw: lines 28\u201371]\n- The status description says a newly created store is `active`; `inactive` blocks new terminal transactions while outstanding captures can still proceed; `closed` is irreversible and reassigns terminals to merchant inventory. A retrieved status alone does not establish assigned/boarded terminals, enabled payment methods, an authorized payment, or settlement. The response also describes optional business-line, split-configuration and sub-merchant identities; those IDs are not interchangeable with the merchant account or store ID. [Raw: lines 47\u201367]\n- `400`, `401`, `403`, `422`, and `500` cover malformed request, authentication, permissions, validation, and server processing errors. Error bodies include problem details and `requestId`; use the error sections for their field-level requiredness. [Raw: lines 74\u2013171]\n\n> [!warning] Contradiction\n> The listed server is Management API `/v3`, but the `200` example's `_links.self.href` points to `/v1/stores/...`. The example's `reference` is `Springfield Shop` with a space, while the field description allows letters, digits, hyphens and underscores. Treat the example as illustrative; it does not settle the endpoint version or allowed reference syntax. [Raw: lines 17\u201318, 57, 173\u2013200]\n\n## Detail locators\n\n- Purpose, role requirement, live rate-limit note and TEST v3 server: raw lines 5\u201318.\n- Required path identities: raw lines 20\u201326.\n- Response fields and nested/conditional descriptions: raw lines 28\u201367.\n- `204` and error response schemas: raw lines 70\u2013171.\n- Illustrative `200` response and its v1/reference mismatches: raw lines 173\u2013200.\n\n## Related\n\n- [[adyen-pos-store-management]] \u2014 merchant store administration and readiness context.\n- [[source-adyen-api-explorer-management-latest-get-stores]] \u2014 separate paged store-list reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(storeId)/2026-11-03|Management API get merchant store \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Returns the details of the store identified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API\u2014Stores read",
+      "location": "line 11"
+    },
+    {
+      "text": "- https://management-test.adyen.com/v3",
+      "location": "line 18, Servers"
+    },
+    {
+      "text": "A reference to recognize the store by. Also known as the store code. Allowed characters: lowercase and uppercase letters without diacritics, numbers 0 through 9, hyphen (-), and underscore (_)",
+      "location": "line 57, 200 response / reference description"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/stores/ST322LJ223223K5F4SQNR9XL5\"",
+      "location": "line 196, 200 response example / _links.self.href"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-merchant-store-get-route",
+        "target_path": "wiki/concepts/adyen-pos-store-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-stores-storeid]] \u2014 2026-11-03-captured Management API v3 TEST merchant-scoped store GET with role gate, store status and optional configuration details; the v1 self link and spaced reference in its example conflict with the v3 server and reference character rule. Readback does not prove terminal or payment readiness.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v1 self link in the example differs from the listed v3 server; the spaced example reference differs from the field's allowed-character description."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(storeId)/2026-11-03.md",
+  "raw_sha256": "4a07b7dab8303165ab6d6a0212c07cbb653b0540e3952425c1758ea6347b8039",
+  "status": "candidate_ready"
+}

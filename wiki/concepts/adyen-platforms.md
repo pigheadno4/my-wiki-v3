@@ -18,6 +18,27 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-onboardinglinks]] — 2026-11-03-captured Legal Entity Management API v4 TEST reference for a one-use, four-minute hosted-onboarding URL tied to a legal-entity ID; link issuance is not onboarding or verification approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-themes-id]] — 2026-11-03-captured Legal Entity Management API v4 TEST theme-detail GET for hosted-onboarding link appearance; returned configuration does not establish onboarding or payment outcome.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-checktaxelectronicdeliveryconsent]] — 2026-11-03-captured Legal Entity Management API v4 TEST status lookup for a legal entity's electronic-delivery consent for US1099-K; optional boolean readback does not establish tax-form delivery or compliance.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-pciquestionnaires-pciid]] — 2026-11-03-captured Legal Entity Management API v4 TEST GET for a signed PCI questionnaire by signer legal-entity ID and questionnaire ID; optional readback fields do not independently establish current validity, PCI compliance or capability approval.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-pciquestionnaires-signingrequired]] — 2026-11-03-captured LEM v4 TEST calculation of whether a legal entity's user must sign PCI questionnaires, with optional sales-channel input; the returned flag is not signing or PCI compliance proof.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-pciquestionnaires]] — 2026-11-03-captured Legal Entity Management API v4 TEST GET for a legal entity's signed PCI questionnaire IDs and creation/expiration metadata; readback does not establish current PCI compliance or card-processing capability.
+
+
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-pciquestionnaires-signpcitemplates]] — 2026-11-03-captured Legal Entity Management API v4 TEST POST for signing required PCI questionnaires with template references and an individual legal-entity signer; 200 signed-document IDs are not PCI compliance or onboarding approval proof.
+
+
 - [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-termsofservice]] — 2026-11-03-captured LEM v4 TEST POST for a legal entity’s typed, language-specific Terms document; the stated JSON default conflicts with a JSON-labeled example whose decoded document begins `%PDF-1.4`. Retrieval is not acceptance or onboarding proof.
 
 
@@ -652,6 +673,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 
 - [[source-adyen-docs-platforms-us-tax-forms-edelivery-consent]] — 2026-09-15 US direct-payout 1099-K electronic-only consent guide for platform UI, LEM check/set calls, withdrawal route, registration deadline and platform delivery/access responsibility; no proof of current tax law or form delivery.
+
+- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-settaxelectronicdeliveryconsent]] — 2026-11-03-captured Legal Entity Management API v4 TEST POST reference for setting a legal entity's US1099-K electronic-delivery consent boolean; request status is separate from tax-form delivery or legal-compliance proof.
+
 
 
 - [[source-adyen-docs-platforms-transfer-transactions]] — 2026-09-15 balance-platform transaction tracking hub for transfer status meanings, webhook/API routes and failed/refused/returned handling; booked source debit is not bank receipt.

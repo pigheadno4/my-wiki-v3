@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-legalentity-latest-post-legalentities-id-onboardinglinks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: create a hosted onboarding link\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/(id)/onboardingLinks\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/onboardingLinks/2026-11-03.md\"\ntags: [adyen, legal-entity-management, onboarding, api-reference]\n---\n\n## Overview\n\nThis 2026-11-03 capture of `POST /legalEntities/{id}/onboardingLinks` is a Legal Entity Management API v4 reference for obtaining an Adyen-hosted onboarding-page link for a specified legal entity. The caller redirects its user to the returned URL. The page lists the TEST server `https://kyc-test.adyen.com/lem/v4`; its `latest` URL is a capture route, not evidence of future version currency. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- Path `id` is the required legal-entity identifier. The request-body table marks `locale`, `redirectUrl`, `settings` and `themeId` optional; it does not independently state whole-body requiredness. `themeId` identifies a hosted-onboarding theme. Optional nested settings govern country choice, payout-account format, debug UI, legal-entity type/country editing, legal age, introduction screens, instant bank verification, PCI signing prompts and a transfer-instrument count limit. Consult the table for individual defaults and conditions.\n- `locale` falls back to browser language if omitted or unsupported, then `en-US` if that is unsupported. `acceptedCountries` defaults to an empty array, allowing all countries/regions supported by hosted onboarding; its restriction applies when `editPrefilledCountry` is allowed. `redirectUrl` is the post-completion destination.\n- A `200` response lists an optional `url` field for redirecting the user. The URL expires after four minutes, is single-use and can be clicked only once; create a new link after expiry. Returning a link does not establish that onboarding was completed, identity verified, a capability approved, PCI obligations satisfied, or any payment or payout executed.\n- Captured limits are 700 requests per five seconds in live, 200 per five seconds in test, and five failed requests per ten seconds. The reference lists 400, 401 (authentication required), 403 (insufficient permissions), 422 (validation) and 500 responses. Its generic error body includes an optional `pspReference` description, but this endpoint is a link request, not evidence of a payment. The capture does not specify idempotency, deletion/reversal, asynchronous approval or propagation semantics.\n\n## Detail locators\n\n- `## Servers`, `## Parameters` \u2192 test v4 base, required path ID, optional request fields, nested settings, defaults and conditions.\n- `## Request examples` \u2192 sample theme, redirect and locale; example values are illustrative.\n- `## Responses` \u2192 link lifetime and reuse restrictions, errors and limits; `## Response examples` \u2192 illustrative URL only.\n\n## Related\n\n- [[adyen-platforms]] \u2014 Platforms and marketplace onboarding context.\n- [[source-adyen-api-explorer-legalentity-latest-overview]] \u2014 separate API v4 overview and API-key/live-server context.\n- [[source-adyen-api-explorer-legalentity-latest-get-themes]] \u2014 theme listing reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/onboardingLinks/2026-11-03|2026-11-03 captured endpoint reference]]",
+  "quotes": [
+    {
+      "text": "Returns a link to an Adyen-hosted onboarding page where you need to redirect your user.",
+      "location": "line 7, immediately under endpoint heading"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the legal entity |",
+      "location": "line 25, Path parameters table"
+    },
+    {
+      "text": "If not specified in the request or if the language is not supported, the page uses the browser language. If the browser language is not supported, the page uses **en-US** by default.",
+      "location": "line 31, locale row of Request body table"
+    },
+    {
+      "text": "Expires after 4 minutes.  Can only be used once.  Can only be clicked once by the user.  If the link expires, you need to create a new link.",
+      "location": "line 71, 200 Success response url row"
+    },
+    {
+      "text": "Failed requests are subject to a limit of 5 failures per 10 seconds.",
+      "location": "line 15, rate limits"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-onboardinglinks-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-onboardinglinks]] \u2014 2026-11-03-captured Legal Entity Management API v4 TEST reference for a one-use, four-minute hosted-onboarding URL tied to a legal-entity ID; link issuance is not onboarding or verification approval.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/post/legalEntities/(id)/onboardingLinks/2026-11-03.md",
+  "raw_sha256": "ba694537b631b28a074d7b22425f05ed490c506f479393f0f6451613164cc669",
+  "status": "candidate_ready"
+}

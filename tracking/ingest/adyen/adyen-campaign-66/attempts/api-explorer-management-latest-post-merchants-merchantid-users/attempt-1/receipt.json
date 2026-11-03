@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-users",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: create a merchant user\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/users\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/users/2026-11-03.md\"\ntags: [adyen, management-api, merchant-users, customer-area, iam]\n---\n\n## Overview\n\nThis 2026-11-03 [[adyen]] Management API reference describes `POST /merchants/{merchantId}/users`, creating a user for the merchant account identified by required path string `merchantId`. The calling API credential needs `Management API\u2014Users read and write`. The captured server is `https://management-test.adyen.com/v3`; no live server URL is supplied on this page. This creates a merchant user resource, distinct from an API credential and from proof of working login or effective permissions. [[adyen-customer-area-iam]]\n\n## Key takeaways\n\n- The request-body table marks `email`, `name` and `username` required. Required `name` has required `firstName` and `lastName` children and an allowed length of 1\u201380 characters. The table says `username` must be the same email address as `email`; the request examples conflict with that rule. Optional fields are `accountGroups`, `roles`, `timeZoneCode` and `loginMethod` (`Email` or `SSO`). SSO must already be configured with Adyen before creating an SSO user. The page does not declare a default login method, role or time zone.\n- A `200` says the creation request succeeded. Its response table requires user `email`, `id`, `roles`, `timeZoneCode` and `username`; optional fields include `active`, `apps`, `accountGroups`, `name`, and `_links` with required `self` when `_links` is present. Required `firstName` and `lastName` are nested under optional response `name`. The returned user `id` differs from the merchant path ID. A sample `active: true` is illustrative, not proof of login or that every requested role is effective.\n- The page also lists `204` success without content and `400`, `401`, `403`, `422` and `500` error schemas. It does not document an idempotency contract, duplicate-user behavior, propagation timing, deletion/reversal, approval workflow or account activation outcome for this POST. A user creation response is not payment or payout authorization.\n\n> [!warning] Contradiction\n> The request table requires `username` to equal `email`, but all three request examples set `username` to `johnsmith` while `email` is `john.smith@example.com`. The captured server is `/v3`, while the response example's `self.href` uses `/v1`. The snapshot does not reconcile either discrepancy; examples do not relax the stated username rule or establish the endpoint version for live use.\n\n## Detail locators\n\n- **Purpose, credential role and captured test server:** raw lines 5\u201314.\n- **Path ID, request-body fields, conditional SSO and requiredness:** raw lines 16\u201335.\n- **Three conflicting request examples:** raw lines 37\u201387.\n- **200/204 response fields and nested optionality:** raw lines 88\u2013113.\n- **Error forms:** raw lines 116\u2013213.\n- **Illustrative active user and v1 self link:** raw lines 215\u2013240.\n\n## Related\n\n- [[adyen-customer-area-iam]] \u2014 human user login and access context.\n- [[adyen-api-access]] \u2014 distinct API credential role and account-scope context.\n- [[adyen-account-structure]] \u2014 merchant-account scope.\n- [[source-adyen-docs-account-user-roles]] \u2014 Customer Area user-role catalog.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/users/2026-11-03|Management API v3 merchant-user POST \u2014 collected 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Management API\u2014Users read and write",
+      "location": "raw line 11"
+    },
+    {
+      "text": "To use SSO, you must already have SSO configured with Adyen before creating the user.",
+      "location": "raw line 29"
+    },
+    {
+      "text": "Must be the same as the one in the `email` field.",
+      "location": "raw line 35"
+    },
+    {
+      "text": "\"username\": \"johnsmith\"",
+      "location": "raw line 46 (create-email-user request example)"
+    },
+    {
+      "text": "https://management-test.adyen.com/v1/merchants/YOUR_MERCHANT_ACCOUNT/users/S2-3B3C3C3B22",
+      "location": "raw line 236"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-create-merchant-user-iam-route",
+        "target_path": "wiki/concepts/adyen-customer-area-iam.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-users]] \u2014 2026-11-03-captured Management API v3 TEST merchant-user creation reference requiring a Users read-and-write credential role and preconfigured SSO for SSO users; response is user-resource evidence, not working-login proof.\n\n> [!warning] Contradiction\n> The request table requires `username` to match `email`, but its examples use `johnsmith` versus `john.smith@example.com`; the response example's `/v1` self link also differs from the `/v3` server. The snapshot does not reconcile these values. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-users]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve both username/email and v3-server/v1-link conflicts; do not treat the sample active flag as proof of working login."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/users/2026-11-03.md",
+  "raw_sha256": "6bf9555401752fc411d9a03fb65c9bc421921471768e83acfe4dc6c331ad9a04",
+  "status": "candidate_ready"
+}

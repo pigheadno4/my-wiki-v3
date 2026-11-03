@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-apicredentials-apicredentialid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PATCH /merchants/{merchantId}/apiCredentials/{apiCredentialId} \u2014 update an API credential | Adyen\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/apiCredentials/(apiCredentialId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/apiCredentials/(apiCredentialId)/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, roles, allowed-origins, security]\n---\n\n## Overview\n\nThis 2026-11-03-captured [[adyen]] Management API reference describes `PATCH /merchants/{merchantId}/apiCredentials/{apiCredentialId}` on the listed TEST `https://management-test.adyen.com/v3` server. The required path IDs identify a merchant account and its API credential; the calling API credential separately needs **Management API\u2014API credentials read and write**. The operation changes specified credential values and says its `200` response contains the full updated credential. See [[adyen-api-access]]. [Raw: lines 5\u201322, 42\u201375]\n\n## Key takeaways\n\n- The request-body table marks `active`, `allowedOrigins`, `description`, `roles` and `subjectDN` optional; it does not separately declare whole-body requiredness. `allowedOrigins` is a new list of strings for this credential. The role assignment rule limits assignable roles to those assigned to `ws@Company.<CompanyName>`. The page does not state list-merging behavior, deletion semantics for omitted fields or propagation timing. [Raw: lines 25\u201332]\n- `active` indicates whether the credential is enabled. The `200` schema says it must be `true` to use the credential in an integration. It also returns required credential `id`, `username`, `clientKey`, `roles` and `allowedIpAddresses`; an empty allowed-IP list permits requests from any IP, while an unlisted source IP in a nonempty list gets a security error. The allowed-IP list is a response field here, not a PATCH input. [Raw: lines 28, 63\u201375]\n- The response's optional `allowedOrigins` array contains domain objects, distinct from the request's string array. Optional `_links` may point to self, allowed origins and separate API/client-key generation operations. The link descriptions say a previous key remains valid for 24 hours when a new key is generated; this PATCH does not itself generate or return an API-key secret. The returned `clientKey` is described as a public client-side key, not the server API key. [Raw: lines 50\u201375]\n- A `200` means the update request succeeded with a credential response; `204` means processed without additional content. Neither is proof of a successful later authentication, endpoint authorization, origin acceptance, certificate use or payment. The only request example sets `active: true`; it is not a universal outcome. [Raw: lines 34\u201379]\n- Errors listed are `400` request, `401` authentication, `403` permission, `422` validation and `500` server failure, with structured problem bodies. The page provides no idempotency, retry, live endpoint or version-conflict rule. [Raw: lines 82\u2013179]\n\n> [!warning] Contradiction\n> The listed TEST server and operation path are `/v3/merchants/{merchantId}/apiCredentials/{apiCredentialId}`, but the `200` example's self and related links use `/v1/companies/YOUR_COMPANY_ACCOUNT/apiCredentials/...` for the same credential ID. The example also has a separate merchant link. The snapshot does not reconcile the route and version difference; do not infer that the company-path example is the PATCH route. [Raw: lines 5, 13\u201322, 181\u2013225]\n\n## Detail locators\n\n- Operation, caller role, TEST v3 server and two path IDs: raw lines 5\u201322.\n- Optional PATCH fields and company-credential role ceiling: raw lines 25\u201332.\n- Active-only request example: raw lines 34\u201341.\n- `200` schema, nested links and `204`: raw lines 42\u201379.\n- Error statuses and problem fields: raw lines 82\u2013179.\n- `200` example and v1 company-path links: raw lines 181\u2013225.\n\n## Related\n\n- [[adyen-api-access]] \u2014 web-service credential identity, roles and access context\n- [[source-adyen-api-explorer-management-latest-post-me-allowedorigins]] \u2014 separate allowed-origin creation route\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/apiCredentials/(apiCredentialId)/2026-11-03|Management API merchant-credential PATCH \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Changes the API credential's roles, or allowed origins. The request has the new values for the fields you want to change. The response contains the full updated API credential, including the new values from the request.",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API\u2014API credentials read and write",
+      "location": "line 11, calling credential role"
+    },
+    {
+      "text": "Only roles assigned to 'ws@Company.<CompanyName>' can be assigned to other API credentials.",
+      "location": "line 31, request roles description"
+    },
+    {
+      "text": "| active | boolean | Yes | Indicates if the API credential is enabled. Must be set to **true** to use the credential in your integration. |",
+      "location": "line 63, 200 response table"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/companies/YOUR_COMPANY_ACCOUNT/apiCredentials/YOUR_API_CREDENTIAL\"",
+      "location": "line 210, 200 response example self link"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-patch-merchant-api-credential-api-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-apicredentials-apicredentialid]] \u2014 2026-11-03-captured Management API v3 TEST merchant-credential PATCH for active state, origins, roles, description or subject DN, requiring the API-credentials read/write role; `200` readback or `204` is not later authentication or payment proof.\n> [!warning] Contradiction\n> This source lists a `/v3/merchants/.../apiCredentials/...` PATCH, while the `200` sample links that credential under `/v1/companies/.../apiCredentials/...`; the example does not establish the PATCH route. [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-apicredentials-apicredentialid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "v3 merchant operation path conflicts with v1 company self and related links in the 200 example."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/apiCredentials/(apiCredentialId)/2026-11-03.md",
+  "raw_sha256": "bb86a90310d228d886d6d80099790a7e8b95c9b04f92046238d7e7ae8be93b27",
+  "status": "candidate_ready"
+}

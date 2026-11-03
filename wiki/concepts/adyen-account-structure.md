@@ -30,6 +30,39 @@ This is a 2023-last-modified Adyen page captured 2026-09-15. It does not identif
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-users-userid]] — 2026-11-03 Management API v3 TEST company-user detail update by `companyId` and `userId`, requiring Users read and write; returned user details do not prove login or merchant processing.
+
+
+- [[source-adyen-api-explorer-management-latest-delete-merchants-merchantid-payoutsettings-payoutsettingsid]] — 2026-11-03-captured Management API v3 TEST deletion of a merchant-scoped payout setting by two path IDs, with Adyen-set access and payout-settings role; 204 is request-status evidence, not payout or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-payoutsettings-payoutsettingsid]] — 2026-11-03-captured Management API v3 TEST, role-gated merchant payout-setting GET by merchant and setting IDs; readback distinguishes verification-derived `allowed` from configurable `enabled` and does not prove bank receipt.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-payoutsettings]] — 2026-11-03-captured Management API v3 TEST merchant payout-settings list, requiring Adyen-set access and a payout-settings-read role; bank verification and enabled configuration are distinct, and readback does not prove payout or bank receipt.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-payoutsettings-payoutsettingsid]] — 2026-11-03-captured Management API v3 TEST PATCH for a merchant payout setting's `enabled` flag; `allowed` is verification-derived and both must be true for bank-account payouts, while update success is not payout or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-payoutsettings]] — 2026-11-03-captured Management API v3 TEST request to add a merchant-account payout setting linked to a Legal Entity transfer instrument; Adyen bank verification determines `allowed`, while `enabled` and an optional effective date separately govern payout enablement. Configuration is not payout or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid]] — 2026-11-03-captured Management API v3 TEST merchant-account GET, scoped to an Account-read credential with merchant access; status readback is distinct from transaction outcome, and example links use `/v1` rather than the listed `/v3` server.
+
+> [!warning] Contradiction
+> This endpoint's captured server is `/v3`, while its example resource links use `/v1`; the `captureDelay` example also uses lower-case `manual` against the table's `Manual`. The sample does not resolve either discrepancy. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-activate]] — 2026-11-03-captured Management API v3 TEST request for merchant-account activation, requiring Accounts read/write and Adyen-set access; 200/204 request success precedes the asynchronous `merchant.updated` activation result and is not payment or payout proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid]] — 2026-11-03 Management API v3 TEST credential-scoped GET of a company account by `companyId`, requiring Account read; returned account status does not establish merchant processing or payouts, and example hrefs use `/v1` despite the declared `/v3` server.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-merchants]] — 2026-11-03-captured Management API v3 TEST reference for credential-scoped, paginated merchant accounts under a company, including status meanings and conditional Active processing; its v1 response-example links conflict with the v3 server.
+
+
 - [[source-adyen-api-explorer-document-collector-latest-post-crossborderinvoices]] — captured Document Collector v1 merchant-account PDF upload reference for `paCbInvoice` and `{pspReference}.pdf`; upload success does not establish invoice reconciliation or payment state (2026-09-15 snapshot).
 
 

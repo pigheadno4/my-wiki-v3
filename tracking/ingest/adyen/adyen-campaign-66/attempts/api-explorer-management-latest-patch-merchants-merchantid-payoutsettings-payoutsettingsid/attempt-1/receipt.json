@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-payoutsettings-payoutsettingsid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: Update a merchant payout setting\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/payoutSettings/(payoutSettingsId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/payoutSettings/(payoutSettingsId)/2026-11-03.md\"\ntags: [adyen, management-api, merchant-account, payout-settings]\n---\n\n## Overview\n\nThe captured [[adyen]] Management API v3 TEST reference documents `PATCH /merchants/{merchantId}/payoutSettings/{payoutSettingsId}` to enable or disable the identified merchant-account payout setting. The merchant account ID and payout-setting ID are distinct required path identifiers. This operation concerns the bank-account payout configuration, not a payout instruction or bank receipt. See [[adyen-account-structure]].\n\n## Key takeaways\n\n- The only documented request-body field is optional boolean `enabled`, with a stated default of `true`. The page says both `enabled` and `allowed` must be true to receive payouts to that bank account. It does not mark the whole body required or document a way to set `allowed` in this PATCH body.\n- In the 200 response, `allowed` is optional and set automatically from bank-account `verificationStatus`: true for `valid`, false for other statuses. The response also describes optional `enabledFromDate` timing, `priority`, and `verificationStatus`; these are response fields here, not documented PATCH inputs. The response marks payout-setting `id` and bank-account `transferInstrumentId` required, while other listed fields are optional.\n- A 200 means the request succeeded and returns a setting representation; 204 means it was processed without content. Neither response establishes that a payout was initiated, booked, settled, or received by a bank. The response's timing and priority descriptions are conditional and do not guarantee arrival.\n- This endpoint is for integrations that require it, such as Adyen for Platforms Manage. An Adyen contact sets up access, and the API credential needs the `Management API\u2014Payout account settings read and write` role. The captured server is `https://management-test.adyen.com/v3`.\n\n## Detail locators\n\n- Purpose, access setup, required role, TEST v3 server: pinned raw lines 5\u201316.\n- Required path IDs and optional `enabled` body field/default: pinned raw lines 18\u201330.\n- 200 fields, verification/status and date/priority semantics; 204 response: pinned raw lines 32\u201350.\n- 400, 401, 403, 422, and 500 error cases and nested `invalidFields` schema: pinned raw lines 53\u2013150. The generic error `requestId`/`pspReference` wording is not a payout result.\n- No idempotency, rate limit, deletion/reversal, asynchronous approval, or propagation-time contract appears in this capture. The `latest` URL and 2026-11-03 snapshot do not prove present availability or account eligibility.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/payoutSettings/(payoutSettingsId)/2026-11-03|2026-11-03 pinned API Explorer snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Updates the payout setting identified in the path. You can enable or disable the payout setting.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "Use this endpoint if your integration requires it, such as Adyen for Platforms Manage. Your Adyen contact will set up your access.",
+      "location": "pinned raw line 9"
+    },
+    {
+      "text": "- Management API\u2014Payout account settings read and write",
+      "location": "pinned raw line 13"
+    },
+    {
+      "text": "| enabled | boolean | No | Indicates if payouts to this bank account are enabled. Default: **true**.  To receive payouts into this bank account, both `enabled` and `allowed` must be **true**. |",
+      "location": "pinned raw line 30, request body"
+    },
+    {
+      "text": "| allowed | boolean | No | Indicates if payouts to the bank account are allowed. This value is set automatically based on the status of the verification process. The value is:  - **true** if `verificationStatus` is **valid**.  - **false** for all other values. |",
+      "location": "pinned raw line 40, 200 response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-payout-setting-patch-account-structure-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-payoutsettings-payoutsettingsid]] \u2014 2026-11-03-captured Management API v3 TEST PATCH for a merchant payout setting's `enabled` flag; `allowed` is verification-derived and both must be true for bank-account payouts, while update success is not payout or bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/payoutSettings/(payoutSettingsId)/2026-11-03.md",
+  "raw_sha256": "a521e9c702c6b0e4a9d1c8c39780498717cb6007978d62c1a9d6851e8af0b683",
+  "status": "candidate_ready"
+}

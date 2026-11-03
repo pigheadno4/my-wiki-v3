@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Get a merchant API credential | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId)/2026-11-03.md\"\ntags: [adyen, management-api, api-credentials, merchant-accounts, access-control]\n---\n\n## Overview\n\nThis [[adyen]] Management API reference, captured 2026-11-03, describes `GET /merchants/{merchantId}/apiCredentials/{apiCredentialId}`, a read of a specified merchant-account API credential. The listed server is `https://management-test.adyen.com/v3`. The **calling** API credential needs **Management API\u2014API credentials read and write**; the credential identified in the path is the returned resource and can have different roles. See [[adyen-api-access]] for credential context.\n\n## Key takeaways\n\n- Required string path parameters distinguish `merchantId` (merchant account) from `apiCredentialId` (the credential to retrieve). The captured operation lists no query or request body. [Raw: lines 16\u201322]\n- The `200` response marks `active`, `allowedIpAddresses`, `clientKey`, `id`, `roles`, and `username` required, with optional description, allowed origins, certificate `subjectDN`, and resource links. `active: true` is stated as necessary to use the credential. An empty IP list allows requests from any IP; a nonempty list rejects unlisted source IPs with a security error. These are credential configuration/readback facts, not proof of successful authentication or authorization for another API. [Raw: lines 29\u201357]\n- `clientKey` is described as a public key for client-side authentication; it is distinct from an API key. The optional `generateApiKey` and `generateClientKey` links point to separate generation actions whose descriptions say the existing respective key stays valid for 24 hours after generation. Reading these links does not generate either key. A `204` alternative has no additional content. [Raw: lines 32\u201361]\n- The listed errors are `400` request interpretation, `401` authentication, `403` permission, `422` validation, and `500` server processing, with problem-detail fields in each error body. [Raw: lines 64\u2013161]\n\n> [!warning] Contradiction\n> The listed TEST server uses Management API `/v3`, while all resource `href` values in the `200` example use `/v1`. Treat the example links as illustrative; they do not establish this operation's versioned route. [Raw: lines 13\u201314, 163\u2013196]\n\n## Detail locators\n\n- Purpose, caller role and TEST v3 server: raw lines 5\u201314.\n- Path IDs: raw lines 16\u201322.\n- `200` credential fields, IP policy and separate key-generation links: raw lines 24\u201357.\n- `204` and failure schemas: raw lines 60\u2013161.\n- Example credential and v1 links: raw lines 163\u2013196.\n\n## Related\n\n- [[adyen-api-access]] \u2014 API credential roles, scope and lifecycle context.\n- [[source-adyen-api-explorer-management-latest-get-me]] \u2014 separate request-API-key-selected credential lookup.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId)/2026-11-03|Management API merchant credential detail \u2014 captured 2026-11-03]]",
+  "quotes": [
+    {
+      "text": "Returns the [API credential](https://docs.adyen.com/development-resources/api-credentials) identified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API\u2014API credentials read and write",
+      "location": "line 11"
+    },
+    {
+      "text": "Indicates if the API credential is enabled. Must be set to **true** to use the credential in your integration.",
+      "location": "line 45, 200 response / active"
+    },
+    {
+      "text": "List of IP addresses from which your client can make requests.  If the list is empty, we allow requests from any IP. If the list is not empty and we get a request from an IP which is not on the list, you get a security error.",
+      "location": "line 46, 200 response / allowedIpAddresses"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/merchants/YOUR_MERCHANT_ACCOUNT/apiCredentials/YOUR_CREDENTIAL\"",
+      "location": "line 180, 200 response example / self.href"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-merchant-api-credential-get-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid]] \u2014 2026-11-03-captured Management API v3 TEST merchant-credential GET, requiring API credentials read/write on the caller and returning target credential status, roles, IP list, client key and links; readback does not rotate keys or prove endpoint access.\n\n> [!warning] Contradiction\n> The reference lists a `/v3` TEST server, while its `200` example's resource hrefs all use `/v1`. The example establishes neither the v3 self-link route nor the correct Live route. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The 200 example uses v1 resource hrefs although the listed TEST server is v3."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/apiCredentials/(apiCredentialId)/2026-11-03.md",
+  "raw_sha256": "3ce691d4f60e5b724bd591235d3e40e72d9fe483e8548b4a0ba25f46eff6cf6c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-legalentity-latest-get-legalentities-id-pciquestionnaires-pciid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Legal Entity Management API v4: Get signed PCI questionnaire\"\ntype: source\ndate_ingested: 2026-11-03\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/legalentity/latest/get/legalEntities/(id)/pciQuestionnaires/(pciid)\"\nraw_files:\n  - \"adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/pciQuestionnaires/(pciid)/2026-11-03.md\"\ntags: [adyen, legal-entity, platforms, pci, api]\n---\n\n## Overview\n\nThis 2026-11-03-captured Legal Entity Management API v4 reference describes `GET /legalEntities/{id}/pciQuestionnaires/{pciid}`, a read of a signed PCI questionnaire. The listed server is TEST `https://kyc-test.adyen.com/lem/v4`. The `latest` URL is a snapshot label, not evidence of current live availability or caller access. See [[adyen]], [[adyen-platforms]] and [[adyen-pci-dss-compliance]].\n\n## Key takeaways\n\n- Both path parameters are required strings: `id` is the legal entity ID of the individual who signed the questionnaire, and `pciid` is the signed questionnaire's unique ID. The captured page specifies no query parameters or request body, and does not name a particular caller role.\n- A 200 says the request succeeded. The response schema marks all four fields optional: Base64-encoded generated questionnaire `content`, questionnaire `id`, ISO 8601 extended `createdAt`, and ISO 8601 extended `validUntil`. The populated 200 example illustrates a response, not a guarantee that every successful response includes each field or that a retrieved questionnaire remains unexpired.\n- Captured limits are 700 requests per 5 seconds in Live, 200 per 5 seconds in Test, and 5 failed requests per 10 seconds. The page lists 400, 401, 403, 422 and 500 errors; 401 requires authentication and 403 indicates insufficient permissions. It does not specify a credential mechanism, an endpoint-specific role or idempotency semantics. Generic error schemas include optional payment-labeled `pspReference`; this questionnaire retrieval is not a payment operation.\n- Retrieval is evidence of the endpoint's signed-questionnaire readback only. It does not sign or submit a new questionnaire, independently establish PCI compliance, approve verification or activate a capability. The page states no deletion, propagation, reversal or asynchronous review result for this GET.\n\n## Detail locators\n\n- Purpose, rate limits, TEST server and both path IDs: pinned raw lines 5\u201326.\n- 200 semantics and optional response fields: lines 28\u201339; illustrative response: lines 106\u2013117.\n- Error descriptions and optional generic error fields: lines 42\u2013104.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform onboarding context.\n- [[adyen-pci-dss-compliance]] \u2014 PCI responsibilities and evidence boundaries.\n- [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-pciquestionnaires-generatepcitemplates]] \u2014 separate template-generation endpoint.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/pciQuestionnaires/(pciid)/2026-11-03|Signed PCI questionnaire GET snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Returns the signed PCI questionnaire.",
+      "location": "Pinned raw line 7, opening purpose paragraph"
+    },
+    {
+      "text": "Live environments: 700 requests per 5 seconds.",
+      "location": "Pinned raw line 11, opening rate limits"
+    },
+    {
+      "text": "| pciid | string | Yes | The unique identifier of the signed PCI questionnaire. |",
+      "location": "Pinned raw line 25, Path parameters table"
+    },
+    {
+      "text": "| id | string | Yes | The legal entity ID of the individual who signed the PCI questionnaire. |",
+      "location": "Pinned raw line 26, Path parameters table"
+    },
+    {
+      "text": "| content | string | No | The generated questionnaire in a base64 encoded format. |",
+      "location": "Pinned raw line 36, 200 Success response table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c66-pci-questionnaire-get-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-legalentity-latest-get-legalentities-id-pciquestionnaires-pciid]] \u2014 2026-11-03-captured Legal Entity Management API v4 TEST GET for a signed PCI questionnaire by signer legal-entity ID and questionnaire ID; optional readback fields do not independently establish current validity, PCI compliance or capability approval.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/legalentity/latest/get/legalEntities/(id)/pciQuestionnaires/(pciid)/2026-11-03.md",
+  "raw_sha256": "d625fe89387ad4c791695181cbffd3457a8fa290188b0b7bbdaa48918391304a",
+  "status": "candidate_ready"
+}
