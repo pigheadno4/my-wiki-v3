@@ -1,0 +1,101 @@
+# POST /verifyShopperTaxIdentification - Verify the shopper's tax identification.
+
+In some countries, collecting and verifying tax information is required for regulatory compliance. Submit the shopper's tax identification for verification; when the verification succeeds, the response returns an opaque token that you submit in /payments.
+
+## Servers
+- https://checkout-test.adyen.com/v72
+
+## Parameters
+
+### Request body
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| merchantAccount | string | Yes | The merchant account identifier requesting the tax verification. |
+| shopperReference | string | Yes | Your reference to uniquely identify this shopper, for example user ID or account ID. Used to bind the verification to the shopper context.  Your reference must not include personally identifiable information (PII), for example name or email address. |
+| shopperTaxIdentification | object | Yes | The shopper tax identification to verify. |
+|   - taxCountryCode | string | Yes | The country governing the shopper's tax processing. Initially only IN is supported. |
+|   - taxIdentificationNumber | string | Yes | The tax identification number submitted for verification. |
+|   - taxIdentificationType | string | Yes | The type of the tax identification. Initially only PAN is supported. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| reason | string | No | The human-readable reason for the unsuccessful result. |
+| reasonCode | string | No | The reason code for the unsuccessful result, when available. |
+| result | string | No | The verification result, for example valid or invalid. |
+| taxVerificationReference | string | No | The unique reference for the verification attempt. |
+| verifiedShopperTaxIdentification | object | No | The masked representation of the verified tax identification. |
+|   - maskedName | string | No | The masked name of the tax identification holder. |
+|   - taxCountryCode | string | No | The country governing the shopper's tax processing. |
+|   - taxIdentificationType | string | No | The type of the verified tax identification. |
+| verifiedShopperTaxIdentificationToken | string | No | The opaque, encrypted, and signed token representing the successful verification. Required in /payments. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | Yes |  |
+| errorType | string | Yes |  |
+| message | string | Yes |  |
+| pspReference | string | No |  |
+| status | integer | No |  |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | Yes |  |
+| errorType | string | Yes |  |
+| message | string | Yes |  |
+| pspReference | string | No |  |
+| status | integer | No |  |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | Yes |  |
+| errorType | string | Yes |  |
+| message | string | Yes |  |
+| pspReference | string | No |  |
+| status | integer | No |  |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | Yes |  |
+| errorType | string | Yes |  |
+| message | string | Yes |  |
+| pspReference | string | No |  |
+| status | integer | No |  |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| errorCode | string | Yes |  |
+| errorType | string | Yes |  |
+| message | string | Yes |  |
+| pspReference | string | No |  |
+| status | integer | No |  |

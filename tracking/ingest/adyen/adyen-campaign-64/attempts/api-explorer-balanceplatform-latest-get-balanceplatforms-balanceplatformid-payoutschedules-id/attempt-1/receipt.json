@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-payoutschedules-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET a platform managed payout schedule\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules/(id)/2026-11-02.md\"\ntags: [adyen, balance-platform, managed-payouts, payout-schedules, api]\n---\n\n## Overview\n\nThis 2026-11-02-captured Balance Platform API v2 reference describes `GET /balancePlatforms/{balancePlatformId}/payoutSchedules/{id}`, a read of one managed payout schedule configured on a balance platform. Both path strings are required: `balancePlatformId` identifies the platform and `id` the platform payout configuration. The only displayed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`; the `latest` documentation path does not prove current live version, access or platform eligibility. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The 200 response table requires `balancePlatformId`, `createdAt`, `payoutScheduleDescription`, `userSettlementDelay`, `userSettlementTime` and `userSettlementTimeZone`. It marks the returned schedule `id`, `automaticApplication`, `enabled`, country/currency, defaults, amount thresholds and `updatedAt` optional. The page lists no query parameters or request body.\n- `automaticApplication` describes whether the schedule is automatically applied to **new** balance accounts; its presence does not prove that it was applied to any particular account. `enabled` is described as whether the schedule is enabled immediately after creation, so the field's wording should not be expanded into an execution history. `defaultReference` is copied when applied to a balance account.\n- `defaultFrequencyValue` is allowed only for monthly or weekly `defaultFrequency`: monthly 1\u201331, weekly 1\u20135. The table says a specified monthly date on a weekend moves initiation to the next business day, and a missing 29th\u201331st moves it to that month's last day. `maxPayoutAmount` and `minPayoutAmount` default to 0; max 0 means no maximum. `retainedAmount` defaults to 0 and blocks initiation when available funds are below it. The integer amount fields are not given an explicit unit on this page.\n- `payoutScheduleDescription` lists Standard and Accelerated with relative fund-arrival descriptions after settlement. These are schedule-type descriptions, not evidence that a payout was initiated, a transfer succeeded or a beneficiary received funds. A 200 GET response establishes configuration readback only; applying a schedule to a balance account, execution and transfer outcome require separate evidence. This reference lists 401, 404, 422 and 500 responses, but no response examples.\n\n## Detail locators\n\n- Endpoint, TEST server and two required path identifiers: pinned raw lines 5\u201318.\n- 200 schedule response fields, defaults, frequency/date conditions, amount thresholds and schedule types: `## Responses > ### 200 Success`, lines 20\u201347.\n- Authentication, not-found, validation and server-error schemas: `## Responses`, lines 50\u2013123.\n\n## Related\n\n- [[adyen-platforms]] \u2014 managed payout context and source routes.\n- [[source-adyen-docs-platforms-managed-payouts-use-managed-payouts]] \u2014 separate application and account-level lifecycle guide.\n- [[source-adyen-docs-platforms-managed-payouts-view-payout-executions]] \u2014 separate execution-result guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules/(id)/2026-11-02|Platform managed payout schedule GET snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns the specified managed payout schedule configured on your balance platform.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The unique identifier of the payout configuration for your balance platform.",
+      "location": "pinned raw line 17, id path parameter"
+    },
+    {
+      "text": "The unique identifier of the balance platform.",
+      "location": "pinned raw line 18, balancePlatformId path parameter"
+    },
+    {
+      "text": "Specifies whether this payout schedule is automatically applied to new balance accounts.",
+      "location": "pinned raw line 28, automaticApplication response field"
+    },
+    {
+      "text": "The type of payout schedule. This type indicates how fast funds are paid out to your user.",
+      "location": "pinned raw line 42, payoutScheduleDescription response field"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-get-platform-payoutschedule-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-payoutschedules-id]] \u2014 2026-11-02-captured Balance Platform API v2 TEST read of one platform-level managed payout schedule and defaults; configuration readback does not prove account application, execution or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules/(id)/2026-11-02.md",
+  "raw_sha256": "ba6e9386c1bb9871cbc9cb794e073d281e49a0b2bf126dc92e88e5c933d74a75",
+  "status": "candidate_ready"
+}

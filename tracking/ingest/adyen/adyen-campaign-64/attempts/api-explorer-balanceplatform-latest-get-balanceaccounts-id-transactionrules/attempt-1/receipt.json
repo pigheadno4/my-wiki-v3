@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-id-transactionrules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET /balanceAccounts/{id}/transactionRules\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transactionRules\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transactionRules/2026-11-02.md\"\ntags: [adyen, balance-platform, balance-accounts, transaction-rules, api]\n---\n\n## Overview\n\nThis 2026-11-02-captured Balance Platform API v2 reference describes `GET /balanceAccounts/{id}/transactionRules`: it returns a list of transaction rules associated with the balance account named by the required path `id`. The only server shown is the TEST base `https://balanceplatform-api-test.adyen.com/bcl/v2`. The `latest` documentation route does not establish live deployment, current access or an account's eligibility. See [[adyen]], [[adyen-platforms]], [[adyen-issuing]] and [[adyen-business-accounts]] for product context.\n\n## Key takeaways\n\n- The path `id` identifies the balance account, not a transaction rule. The 200 response table marks the `transactionRules` array optional. Within a listed rule object it marks `description`, `entityKey`, `interval`, `reference`, `ruleRestrictions` and `type` required; the rule's own `id`, `status` and many other fields are marked optional. These are response fields, not GET inputs. The page lists no query parameters, pagination contract or request body.\n- A rule's `entityKey` describes the resource scope with `entityType` and `entityReference`, although those child fields are individually optional in the table. Listed types include balance platform, payment-instrument group, account holder, balance account and payment instrument. `requestType` defaults to `authorization` when omitted and also lists `authentication`, `tokenization` and `bankTransfer`; association with a balance account does not make every listed rule a bank-transfer rule.\n- The rule types are `blockList`, `maxUsage`, `velocity` and `bypass`. The response-field descriptions give a payment-instrument default for `aggregationLevel` on velocity/maxUsage, a conditionally required rolling/sliding `duration` capped at 90 days or equivalent, and `overridesRule` plus empty restrictions for bypass. `outcomeType` defaults to `hardBlock`; `scoreBased` requires a score from -100 to 100 and is disallowed for bank transfers, while `enforceSCA` is limited to authentication. Consult the raw table for the complete conditions and operations.\n- The table describes `startDate`, `endDate` and active/inactive `status`, including creation-time wording. This GET does not create, activate, delete or execute a rule. A 200 list response does not establish that a rule applied to a transaction, a transfer was approved, or funds moved. The page documents 400, 401, 403, 422 and 500 responses; its generic 422 and 500 JSON samples concern payment-instrument operations and do not define this list endpoint's specific failure conditions.\n\n## Detail locators\n\n- Endpoint, TEST server, required balance-account path `id` and optional 200 list parent: pinned raw lines 5\u201327.\n- Rule identity/scope, intervals, defaults, conditions, outcomes and status fields: `## Responses > ### 200 Success`, lines 28\u201376. Conditional descriptions there are response-field semantics, not GET input requirements.\n- Error response schemas: `## Responses`, lines 79\u2013176. Generic error examples, including unrelated payment-instrument 422/500 text: `## Response examples`, lines 178\u2013244.\n\n## Related\n\n- [[adyen-platforms]] \u2014 balance-platform resource context.\n- [[adyen-issuing]] and [[adyen-business-accounts]] \u2014 separate product contexts for transaction rules.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-transactionrules]] \u2014 separate 2026-09-15 rule-creation contract.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] \u2014 separate Issuing rule lifecycle guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transactionRules/2026-11-02|Balance-account transaction-rules GET snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns a list of transaction rules associated with a balance account.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The unique identifier of the balance account.",
+      "location": "pinned raw line 17, path parameter id"
+    },
+    {
+      "text": "| transactionRules | array of object | No | List of transaction rules. |",
+      "location": "pinned raw line 27, 200 response body"
+    },
+    {
+      "text": "Possible values: **authorization**, **authentication**, **tokenization**, **bankTransfer**.",
+      "location": "pinned raw line 46, requestType response field"
+    },
+    {
+      "text": "You must provide the `id` of the rule to bypass in `overridesRule` and leave the `ruleRestrictions` object empty.",
+      "location": "pinned raw line 76, type response field"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-get-balanceaccount-transactionrules-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transactionrules]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET reference for one balance account's associated transaction-rule list; a read result does not prove rule execution or transfer/payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/transactionRules/2026-11-02.md",
+  "raw_sha256": "e71e85b4da4caf6111b07e464e32cef590f4fa428f7c9c46ca99a22ef09662bc",
+  "status": "candidate_ready"
+}

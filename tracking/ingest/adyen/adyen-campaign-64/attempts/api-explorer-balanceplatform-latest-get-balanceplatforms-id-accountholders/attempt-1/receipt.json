@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceplatforms-id-accountholders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET /balancePlatforms/{id}/accountHolders\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/accountHolders\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/accountHolders/2026-11-02.md\"\ntags: [adyen, balance-platform, account-holders, api, pagination]\n---\n\n## Overview\n\nThis 2026-11-02 capture of the Balance Platform API v2 `GET /balancePlatforms/{id}/accountHolders` reference describes listing account holders belonging to one balance platform. The captured server is `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` is the documentation route and does not establish the current live version or account eligibility. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The balance-platform `id` is the required **path** parameter. Optional query parameters are `limit` (10 items by default, maximum 100) and `offset` (items to skip). The page shows no request body or idempotency contract for this read operation.\n- A 200 response returns an `accountHolders` array and required `hasNext` and `hasPrevious` pagination flags. Each listed account holder has a required `id` and `legalEntityId` in the response schema; optional fields include its `balancePlatform`, reference, status, primary balance account, capabilities, and verification deadlines. These are resource identifiers and reported state, not evidence of a payment or funds movement.\n- Capability `requested` is distinct from `allowed`, which reports permission after successful verification; `enabled: false` denotes temporary disablement. Verification can be pending, invalid, valid, or rejected. The account-holder `status` description distinguishes active, suspended (payouts blocked), and permanently closed. A listed `active` holder alone does not prove any specific capability is allowed or that a payout occurred.\n- The response table's optional `balancePlatform` field description says it is required **in the request** when credentials span multiple platforms. This GET's parameter table lists only path `id` and query `limit`/`offset`; do not infer an additional request field from that response-field description.\n- Documented errors are 400, 401 (authentication required), 403 (insufficient permissions), 422, and 500. The 422 and 500 JSON examples discuss payment-instrument operations unrelated to this list endpoint; they do not establish endpoint-specific failure conditions.\n\n## Detail locators\n\n- Purpose, captured test server, path and pagination parameters: pinned raw lines 5\u201326.\n- 200 response fields, holder/legal-entity IDs, capability and lifecycle descriptions, and pagination flags: pinned raw lines 28\u201368.\n- Error schemas and illustrative response bodies: pinned raw lines 71\u2013270.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform account-holder and verification context.\n- [[source-adyen-docs-platforms-manage-account-holders]] \u2014 separate account-holder management guide.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-accountholders]] \u2014 separate account-holder creation endpoint.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/accountHolders/2026-11-02|Balance Platform account-holder list snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns a paginated list of all the account holders that belong to the balance platform. To fetch multiple pages, use the query parameters.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "| limit | integer | No | The number of items returned per page, maximum 100 items. By default, the response returns 10 items per page. |",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "|   - balancePlatform | string | No | The unique identifier of the [balance platform](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/get/balancePlatforms/%7Bid%7D__queryParam_id) to which the account holder belongs. Required in the request if your API credentials can be used for multiple balance platforms. |",
+      "location": "pinned raw line 37"
+    },
+    {
+      "text": "|     - allowed | boolean | No | Indicates whether the capability is allowed. Adyen sets this to **true** if the verification is successful and the account holder is permitted to use the capability. |",
+      "location": "pinned raw line 39"
+    },
+    {
+      "text": "|   - status | string | No | The status of the account holder.  Possible values:  **active**: The account holder is active and allowed to use its capabilities. This is the initial status for account holders and balance accounts. You can change this status to **suspended** or **closed**.  **suspended**: The account holder is temporarily disabled and payouts are blocked. You can change this status to **active** or **closed**.  **closed**: The account holder and all of its capabilities are permanently disabled. This is a final status and cannot be changed. |",
+      "location": "pinned raw line 61"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-accountholders-list-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-accountholders]] \u2014 2026-11-02-captured Balance Platform API v2 TEST reference for a paginated list of one platform's account holders, IDs and reported capability/status fields; listing does not establish capability approval, payment or payout outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/accountHolders/2026-11-02.md",
+  "raw_sha256": "9a490a5c813fcb2bd3d9734effe0049f5c055471ed7ceba535ccb41a5760a0c2",
+  "status": "candidate_ready"
+}

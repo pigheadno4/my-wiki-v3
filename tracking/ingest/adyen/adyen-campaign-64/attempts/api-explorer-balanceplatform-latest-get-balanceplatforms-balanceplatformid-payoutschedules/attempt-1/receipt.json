@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-payoutschedules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET /balancePlatforms/{balancePlatformId}/payoutSchedules\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules/2026-11-02.md\"\ntags: [adyen, balance-platform, managed-payouts, payout-schedules, api]\n---\n\n## Overview\n\nThis 2026-11-02 Balance Platform API v2 reference describes `GET /balancePlatforms/{balancePlatformId}/payoutSchedules`, which lists managed payout schedules configured for one balance platform. It shows the TEST server `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` is a documentation route, not independently verified live availability. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The required **path** parameter `balancePlatformId` identifies the balance platform. Optional `currency` and `countryCode` **query** parameters filter the list. The page provides no request body, pagination parameters, default filter values, or idempotency contract for this GET.\n- A 200 response requires a `balancePlatformPayoutSchedules` array. Each listed schedule has required `balancePlatformId`, `createdAt`, `payoutScheduleDescription`, `userSettlementDelay`, `userSettlementTime`, and `userSettlementTimeZone` fields; its schedule `id` is marked optional. Optional fields describe automatic application to new balance accounts, enabled state after creation, currency/country, default frequency and reference, amount thresholds, retained funds, and update time.\n- `defaultFrequencyValue` is allowed only for monthly or weekly schedules, with documented ranges of 1\u201331 and 1\u20135 respectively. The description gives next-business-day initiation for a weekend monthly date and last-day initiation when a 29th\u201331st does not exist. `maxPayoutAmount` defaults to 0 meaning no maximum; `minPayoutAmount` and `retainedAmount` default to 0. If a balance account has less than the retained amount, schedule execution is not initiated. Consult the raw field table for exact conditions.\n- `payoutScheduleDescription` labels Standard and Accelerated timing relative to settled funds. This GET reports configuration; it does not establish application to a particular balance account, an initiated or successful payout, transfer booking, settlement, or beneficiary-bank receipt. `automaticApplication` and `enabled` are optional reported settings, not evidence that a specific execution occurred.\n- Documented failures are 401 (authentication required), 404 (resource not found), 422 (request validation), and 500 (server unable to process). The page names no specific caller role, response example, or reversal behavior.\n\n## Detail locators\n\n- Purpose, captured server, required path parameter and optional filters: pinned raw lines 5\u201324.\n- 200 schedule fields, defaults, conditional frequency and retained-funds gate: pinned raw lines 26\u201354.\n- Error response shapes: pinned raw lines 57\u2013130.\n\n## Related\n\n- [[adyen-platforms]] \u2014 managed payout schedule context.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-payoutschedules-id]] \u2014 separate single-schedule read.\n- [[source-adyen-docs-platforms-managed-payouts-use-managed-payouts]] \u2014 separate application and lifecycle guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules/2026-11-02|Balance-platform managed payout schedule list snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns a list of all the payout schedules that are configured for your balance platform. You can use query parameters to filter the elements that are returned in the list.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "| balancePlatformPayoutSchedules | array of object | Yes | Contains a list of the payout schedules configured in your balance platform. |",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "|   - automaticApplication | boolean | No | Specifies whether this payout schedule is automatically applied to new balance accounts. |",
+      "location": "pinned raw line 35"
+    },
+    {
+      "text": "|   - defaultFrequencyValue | integer | No | The default value for date of the month or day of the week when payouts are initiated. Allowed only if `defaultFrequency` is **monthly** or **weekly**.  Possible values if `defaultFrequency` is **monthly**: **[1 - 31]**.  - If your specified date happens on a weekend, the payout is initiated on the next business day.  - If your specified date (**29**, **30**, or **31**) does not exist in a month, the payout is initiated  on the last day of that month.  Possible values if `defaultFrequency` is **weekly**: **[1 - 5]**. |",
+      "location": "pinned raw line 42"
+    },
+    {
+      "text": "|   - retainedAmount | integer | No | The amount of funds that must remain available in a balance account after an execution of the payout schedule. If the funds in the balance account are less than the retained amount, the execution is not initiated.  Default value: **0** |",
+      "location": "pinned raw line 50"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-platform-payoutschedules-list-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-payoutschedules]] \u2014 2026-11-02-captured Balance Platform API v2 TEST list of platform-level managed payout schedule configurations, with currency/country filters and optional automatic-application, amount and retained-funds settings; readback is not account application, execution or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/payoutSchedules/2026-11-02.md",
+  "raw_sha256": "bd542538b095df1c72675758e5eb863eb41a72eae9413f0a48152ce5af4e26e6",
+  "status": "candidate_ready"
+}

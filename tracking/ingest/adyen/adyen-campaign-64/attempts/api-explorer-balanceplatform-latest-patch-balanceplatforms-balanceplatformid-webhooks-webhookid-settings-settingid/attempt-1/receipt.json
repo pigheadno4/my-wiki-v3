@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-balanceplatforms-balanceplatformid-webhooks-webhookid-settings-settingid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: PATCH balance webhook setting by ID\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId)/2026-11-02.md\"\ntags: [adyen, balance-platform, webhooks, balance-accounts, configuration]\n---\n\n## Overview\n\nThis 2026-11-02 Balance Platform API reference describes PATCHing a Balance webhook setting's balance-change notification conditions. Its captured server is the TEST `https://balanceplatform-api-test.adyen.com/bcl/v2` endpoint. The `latest` URL is a documentation route, not independently verified live availability. The setting is scoped by distinct balance-platform, webhook, and setting IDs. See [[adyen]], [[adyen-webhooks]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- All three string path IDs are required: `balancePlatformId`, `webhookId`, and `settingId`. The request-body table marks `conditions`, `currency`, `status`, `target`, and `type` optional, and does not separately state that a body is required. Within a supplied `conditions` element, `balanceType`, `conditionType`, and integer `value` are marked required. `conditions` itself is typed `array,null`; the API page does not state the effect of `null` or an empty array.\n- `balanceType` distinguishes `available`, settled `balance`, `pending`, and `reserved`. `conditionType` offers greater-than, greater-than-or-equal, less-than, and less-than-or-equal thresholds; `value` is in minor units of the selected balance type and currency. The optional target can identify a balance platform, account holder, or balance account. The request `type` description says set it to `balance`. The examples show deactivation with `type: balance` and `status: inactive`, and an active balance-account threshold setting; example IDs and amounts are illustrative.\n- The status descriptions say `active` can send a Balance webhook when any condition is met and `inactive` suppresses it even if conditions match. The 200 schema marks `currency`, setting `id`, `status`, `target` (with `id` and `type`), and setting `type` required; the 200 examples also include `conditions`, which that response table does not list. A 200 confirms this PATCH request succeeded and returns configuration, not delivery of a notification or evidence of a balance change or money movement.\n- The documented errors are 400, 401, 403, 404, 422 and 500. The 404 heading says \u201cThe payment was not found\u201d despite this being a webhook-setting endpoint; do not infer a payment lookup or payment outcome. The page does not specify a caller role, idempotency key, conflict/version rule, propagation timing, delivery guarantee, or reversal behavior.\n \n> [!warning] Contradiction\n> This November API reference marks request `type` optional, while the 2026-09-15 [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook|Platforms management guide]] marks `type` required for PATCH (its raw line 133). Its `active` description says **any** condition can trigger, while the 2026-09-15 [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook|Platforms configuration guide]] says **all** conditions must match (its raw line 90). The captured documents do not resolve multi-condition behavior or current request validation. The management guide additionally says to send all conditions to retain when updating and that removing the last condition broadens alerts to all balance changes (its raw lines 155\u2013157, 191\u2013195, 243\u2013245); this API reference alone does not define those PATCH replacement semantics.\n\n## Detail locators\n\n- Operation, TEST server, required path IDs and request field table: pinned raw lines 5\u201334.\n- Deactivate and update request examples: pinned raw lines 36\u201369.\n- 200 response fields and error schemas: pinned raw lines 70\u2013198; note 404 wording at lines 144\u2013145.\n- 200 response examples with `conditions` absent from response field table: pinned raw lines 200\u2013253.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 event notification context.\n- [[adyen-platforms]] \u2014 platform/account-holder/balance-account context.\n- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] \u2014 dated pilot lifecycle guide and condition retention/deletion guidance.\n- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] \u2014 dated pilot configuration guide with conflicting all-condition statement.\n- [[source-adyen-api-explorer-balance-webhooks-latest-post-balanceplatform-balanceaccount-balance-updated]] \u2014 separate event reference; configuration is not event delivery.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId)/2026-11-02|Balance Platform PATCH webhook setting snapshot]]",
+  "quotes": [
+    {
+      "text": "Updates the conditions the balance change needs to meet for Adyen to send a [balance webhook](https://docs.adyen.com/api-explorer/balance-webhooks/latest/post/balanceAccount.balance.updated).",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "The unique identifier of the balance webhook setting.",
+      "location": "raw line 17, Parameters > Path parameters > settingId"
+    },
+    {
+      "text": "The array of conditions a balance change must meet for Adyen to send the webhook.",
+      "location": "raw line 25, Parameters > Request body > conditions"
+    },
+    {
+      "text": "The value limit in the specified balance type and currency, in minor units.",
+      "location": "raw line 28, Parameters > Request body > conditions.value"
+    },
+    {
+      "text": "**active**: You receive a balance webhook if any of the conditions in this setting are met.",
+      "location": "raw line 30, Parameters > Request body > status"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-patch-balance-webhook-setting-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceplatforms-balanceplatformid-webhooks-webhookid-settings-settingid]] \u2014 2026-11-02-captured Balance Platform API v2 TEST PATCH setting reference for Balance webhook threshold/status configuration; response is not delivery or balance-movement proof, and dated guides conflict on PATCH `type` requiredness and any-versus-all condition logic.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source page contains a Contradiction warning against the 2026-09-15 Platforms management and configuration guides. Coordinator should add reciprocal warning to affected counterpart source(s), particularly source-adyen-docs-platforms-balance-updates-manage-balance-webhook.md for PATCH type optional-vs-required and source-adyen-docs-platforms-balance-updates-configure-balance-webhook.md for any-vs-all condition logic."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId)/2026-11-02.md",
+  "raw_sha256": "670a957b813d03fab8ba7fd15ab693a2716ee90621c311ccafb4550d224bf1d0",
+  "status": "candidate_ready"
+}

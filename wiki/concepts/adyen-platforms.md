@@ -18,6 +18,90 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceplatforms-balanceplatformid-webhooks-webhookid-settings]] — 2026-11-02-captured Balance Platform API v2 TEST reference for creating hierarchical balance-webhook threshold settings by currency and target; a 200 configuration response is not webhook delivery or financial movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-paymentinstruments-id]] — 2026-11-02-captured Balance Platform API v2 TEST payment-instrument PATCH reference: active instruments are status-only, inactive cards can change balance account, and closure is irreversible; the generic `Inactive or Requested` 422 example conflicts with operation prose and request enum.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceaccounts-balanceaccountid-sweeps-sweepid]] — 2026-11-02-captured Balance Platform API v2 TEST PATCH for a balance-account sweep configuration; omitted-field versus active/zero/push defaults wording conflicts, and a 200 resource response is not transfer or payout proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps-sweepid-executions]] — 2026-11-02-captured Balance Platform API v2 TEST paginated GET of custom payout sweep execution results; optional transfer ID and succeeded result do not prove bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-balanceaccounts-balanceaccountid-sweeps-sweepid]] — 2026-11-02-captured Balance Platform API v2 TEST DELETE reference for a balance-account sweep configuration with 204/no success body; deletion does not prove transfer cancellation, payout or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps-sweepid]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for one balance-account sweep configuration, including direction, schedule, threshold, counterparty and priority fields; readback is not execution or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps]] — 2026-11-02-captured Balance Platform API v2 TEST paginated read of a balance account's sweep configurations, directions and scheduling fields; readback does not establish transfer execution, booking or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-payoutschedules]] — 2026-11-02-captured Balance Platform API v2 TEST list of platform-level managed payout schedule configurations, with currency/country filters and optional automatic-application, amount and retained-funds settings; readback is not account application, execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-balanceaccounts-balanceaccountid-payoutschedules-id]] — 2026-11-02-captured Balance Platform API v2 TEST 204 DELETE reference for removing a managed payout schedule from a balance account; removal is separate from platform configuration and transfer outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-payoutschedules]] — 2026-11-02-captured Balance Platform API v2 TEST reference for applying an existing platform managed payout schedule to a balance account, with separate schedule, account and transfer-instrument IDs; configuration success is not payout execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-payoutschedules-id]] — 2026-11-02-captured Balance Platform API v2 test-server GET reference for one balance account managed payout schedule; configuration read does not prove execution, booking or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-payoutschedules]] — 2026-11-02-captured Balance Platform API v2 TEST GET list of configured managed payout schedules on a balance account, with currency filtering and pagination; readback is not payout execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-sweeps]] — 2026-11-02-captured Balance Platform API v2 TEST sweep-configuration creation reference for balance-account pull/push schedules and thresholds; creation does not prove transfer execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-payoutschedules-id-executions]] — 2026-11-02-captured Balance Platform API v2 TEST GET for managed payout schedule execution attempts on one balance account, with succeeded/failed/skipped results and optional transfer ID; readback does not prove bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceaccounts-balanceaccountid-payoutschedules-id]] — 2026-11-02-captured Balance Platform API v2 TEST PATCH reference for an applied managed payout schedule's optional settings and retained-funds gate; request/response beneficiary-reference character descriptions differ, and configuration success is not payout execution.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for a balance-account resource and its balance fields; its `pendingAvailable` formula conflicts with a worked balance-types example, so readback does not establish an executable calculation or financial outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-payoutschedules-id]] — 2026-11-02-captured Balance Platform API v2 TEST read of one platform-level managed payout schedule and defaults; configuration readback does not prove account application, execution or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-webhooks-webhookid-settings-settingid]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for one Balance webhook setting's status, target and currency; readback does not prove delivery of an alert or payment.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-balanceplatforms-balanceplatformid-webhooks-webhookid-settings-settingid]] — 2026-11-02-captured Balance Platform API v2 TEST DELETE reference for a balance-webhook trigger setting, with 204/no content; its 404 text oddly says a payment was not found, so that wording is not evidence of payment deletion.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-transactionrules]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for one balance account's associated transaction-rule list; a read result does not prove rule execution or transfer/payment outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceaccounts-id]] — 2026-11-02-captured Balance Platform API v2 TEST PATCH reference for balance-account settings/status updates, metadata omission deletion and conditional payout configuration; update response is not financial-outcome proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-accountholders-id-taxformsummary]] — 2026-11-02-captured Balance Platform API v2 TEST summary read for an account holder's US1099k or US1099nec forms, listing legal-entity IDs and available tax years; summary presence does not prove filing, delivery, tax calculation or financial movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-accountholders-id-taxforms]] — 2026-11-02-captured Balance Platform API v2 test-server GET reference for generating a US account-holder tax form with required year and form type; returned Base64 content does not establish tax filing or financial outcomes.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-accountholders-id-balanceaccounts]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for a paginated account-holder balance-account list; readback does not prove financial movement or live eligibility.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-accountholders-id]] — 2026-11-02-captured Balance Platform API v2 TEST GET account-holder readback for identity, capabilities, verification and lifecycle status; readback is not capability approval or financial-outcome proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-accountholders-id]] — 2026-11-02-captured Balance Platform API v2 TEST `PATCH /accountHolders/{id}` reference for partial holder updates, metadata replacement, capability request versus allowance, and final closed status; a successful resource update does not prove capability approval or financial movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-accountholders]] — 2026-11-02-captured Balance Platform API v2 TEST reference for a paginated list of one platform's account holders, IDs and reported capability/status fields; listing does not establish capability approval, payment or payout outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for reading a balance-platform resource by ID and its optional status; readback is not an operation or financial outcome.
+
+
 - [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-payment-created]] — 2026-09-15-captured, deprecated Payment webhooks v1 request event for authorisation, refund or transfer initiation; actual movement belongs to subsequent transfer events, and `2xx` is only webhook acceptance.
 
 

@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-accountholders-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Update an account holder\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/accountHolders/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/accountHolders/(id)/2026-11-02.md\"\ntags: [adyen, platforms, balance-platform, account-holders, api-reference]\n---\n\n## Overview\n\nCaptured Balance Platform API v2 TEST-server reference for `PATCH /accountHolders/{id}`. It updates the account holder identified by the required path `id`; omitted request parameters ordinarily remain unchanged. This is an account-holder resource operation for [[adyen]] and [[adyen-platforms]], not a payment or payout operation.\n\n## Key takeaways\n\n- The listed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`. The request body's `balancePlatform` is optional in the table but required when the API credential can access multiple balance platforms. The response identifies the account holder with `id` and its associated legal entity with `legalEntityId`; these are different resources.\n- Optional update fields include `capabilities`, `contactDetails`, `description`, `metadata`, `primaryBalanceAccount`, `reference`, `status`, and `timeZone`. If `contactDetails` is supplied, its nested address, email and phone are marked required in the schema; US/Canada `stateOrProvince` is conditionally required in prose. `timeZone` defaults to the balance platform's time zone when unset.\n- Metadata is an exception to the ordinary omission rule: when updating metadata, omitted existing key-value pairs are deleted. The first created balance account is the default `primaryBalanceAccount`; this PATCH can assign a different one.\n- Capability `requested` is a request, not permission. Check returned `allowed`; `enabled: false` temporarily disables a capability, and returned `verificationStatus` can be pending, invalid, valid or rejected. A 200 response means the update request succeeded, not that requested capability verification completed or a payment occurred.\n- `active` is the initial holder status; `suspended` temporarily disables the holder and blocks payouts; `closed` permanently disables the holder and its capabilities and cannot be changed. The raw response also describes verification deadlines that can disallow capabilities if errors remain unresolved.\n\n## Detail locators\n\n- Operation, TEST base URL, path and request fields: pinned raw lines 5\u201346. Capability levels and nested contact-field requirements: lines 24\u201340.\n- Request examples: lines 48\u201368. Response fields and verification states: lines 69\u2013133. The capability-request example returns `requested: true`, `allowed: false`, `verificationStatus: pending` (lines 239\u2013257), illustrating their separation.\n- Success and error schemas: lines 71\u2013233; 400/401/403/422/500 examples: lines 271\u2013335. The generic 422 and 500 examples refer to a payment instrument, so they do not establish account-holder-specific validation or recovery behavior.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform account-holder and resource context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/accountHolders/(id)/2026-11-02|Pinned 2026-11-02 API reference]]\n",
+  "quotes": [
+    {
+      "text": "Updates an account holder. When updating an account holder resource, if a parameter is not provided in the request, it is left unchanged.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Required in the request if your API credentials can be used for multiple balance platforms.",
+      "location": "raw line 23, balancePlatform request field"
+    },
+    {
+      "text": "Note that during an update of metadata, the omission of existing key-value pairs will result in the deletion of those key-value pairs.",
+      "location": "raw line 42, metadata request field"
+    },
+    {
+      "text": "**closed**: The account holder and all of its capabilities are permanently disabled. This is a final status and cannot be changed.",
+      "location": "raw line 45, status request field"
+    },
+    {
+      "text": "To check whether the account holder is permitted to use the capability, refer to the `allowed` field.",
+      "location": "raw line 26, requested capability field"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-patch-account-holder-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-accountholders-id]] \u2014 2026-11-02-captured Balance Platform API v2 TEST `PATCH /accountHolders/{id}` reference for partial holder updates, metadata replacement, capability request versus allowance, and final closed status; a successful resource update does not prove capability approval or financial movement.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/accountHolders/(id)/2026-11-02.md",
+  "raw_sha256": "af4cba494b3be6e0e5065c7fc5ff0ecbefa1f362441e4169526f5f759c6d66cd",
+  "status": "candidate_ready"
+}

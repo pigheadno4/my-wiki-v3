@@ -1,0 +1,262 @@
+# GET /balanceAccounts/{balanceAccountId}/sweeps - Get all sweeps for a balance account
+
+Returns a list of the sweeps configured for a balance account.
+
+To fetch multiple pages, use the query parameters. For example, to limit the page to 5 sweeps and to skip the first 10, use `/balanceAccounts/{balanceAccountId}/sweeps?limit=5&offset=10`.
+
+## Servers
+- https://balanceplatform-api-test.adyen.com/bcl/v2
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| balanceAccountId | string | Yes | The unique identifier of the balance account. |
+
+
+### Query parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| limit | integer | No | The number of items returned per page, maximum 100 items. By default, the response returns 10 items per page. |
+| offset | integer | No | The number of items that you want to skip. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| hasNext | boolean | Yes | Indicates whether there are more items on the next page. |
+| hasPrevious | boolean | Yes | Indicates whether there are more items on the previous page. |
+| sweeps | array of object | Yes | List of sweeps associated with the balance account. |
+|   - category | string | No | The type of transfer that results from the sweep.  Possible values:  **bank**: Sweep to a [transfer instrument](https://docs.adyen.com/api-explorer/#/legalentity/latest/post/transferInstruments__resParam_id).  **internal**: Transfer to another [balance account](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/post/balanceAccounts__resParam_id) within your platform.  Required when setting `priorities`. |
+|   - counterparty | object | Yes | The destination or the source of the funds, depending on the sweep `type`.  Either a `balanceAccountId`, `transferInstrumentId`, or `merchantAccount` is required. |
+|     - balanceAccountId | string | No | The unique identifier of the destination or source [balance account](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/post/balanceAccounts__resParam_id).  If you are updating the counterparty from a transfer instrument to a balance account, set `transferInstrumentId` to **null**. |
+|     - merchantAccount | string | No | The merchant account that will be the source of funds.  You can only use this parameter with sweeps of `type` **pull** and if you are processing payments with Adyen. |
+|     - transferInstrumentId | string | No | The unique identifier of the destination or source [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) depending on the sweep `type`  . To set up automated top-up sweeps to balance accounts in your [marketplace](https://docs.adyen.com/marketplaces/top-up-balance-account/#before-you-begin) or [platform](https://docs.adyen.com/platforms/top-up-balance-account/#before-you-begin), use this parameter in combination with a `merchantAccount` and a sweep `type` of **pull**.  Top-up sweeps start a direct debit request from the source transfer instrument. Contact Adyen Support to enable this feature.> If you are updating the counterparty from a balance account to a transfer instrument, set `balanceAccountId` to **null**. |
+|   - currency | string | Yes | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes) in uppercase. For example, **EUR**.  The sweep currency must match any of the [balances currencies](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/get/balanceAccounts/%7Bid%7D__resParam_balances). |
+|   - description | string | No | The message that will be used in the sweep transfer's description body with a maximum length of 140 characters.  If the message is longer after replacing placeholders, the message will be cut off at 140 characters. |
+|   - id | string | Yes | The unique identifier of the sweep. |
+|   - priorities | array of string | No | The list of priorities for the bank transfer. This sets the speed at which the transfer is sent and the fees that you have to pay. You can provide multiple priorities, ordered by your preference. Adyen will try to pay out using the priorities in the given order. If the first priority is not currently supported or enabled for your platform, the system will try the next one, and so on.  The request will be accepted as long as **at least one** of the provided priorities is valid (i.e., supported by Adyen and activated for your platform). For example, if you provide `["wire","regular"]`, and `wire` is not supported but `regular` is, the request will still be accepted and processed.  Possible values:  **regular**: For normal, low-value transactions.  **fast**: A faster way to transfer funds, but the fees are higher. Recommended for high-priority, low-value transactions.  **wire**: The fastest way to transfer funds, but this has the highest fees. Recommended for high-priority, high-value transactions.  **instant**: For instant funds transfers within the United States and in [SEPA locations](https://www.ecb.europa.eu/paym/integration/retail/sepa/html/index.en.html).  **crossBorder**: For high-value transfers to a recipient in a different country.  **internal**: For transfers to an Adyen-issued business bank account (by bank account number/IBAN).  Set `category` to **bank**. For more details, see optional priorities setup for [marketplaces](https://docs.adyen.com/marketplaces/payout-to-users/scheduled-payouts#optional-priorities-setup) or [platforms](https://docs.adyen.com/platforms/payout-to-users/scheduled-payouts#optional-priorities-setup). |
+|   - reason | string | No | The reason for disabling the sweep. |
+|   - reasonDetail | string | No | The human readable reason for disabling the sweep. |
+|   - reference | string | No | Your reference for the sweep configuration. |
+|   - referenceForBeneficiary | string | No | The reference sent to or received from the counterparty. Only alphanumeric characters are allowed. |
+|   - schedule | object | Yes | The schedule when the `triggerAmount` is evaluated. If the balance meets the threshold, funds are pushed out of or pulled in to the balance account. |
+|     - cronExpression | string | No | A [cron expression](https://en.wikipedia.org/wiki/Cron#CRON_expression) that is used to set the sweep schedule. The schedule uses the time zone of the balance account. For example, **30 17 * * MON** schedules a sweep every Monday at 17:30.  The expression must have five values separated by a single space in the following order:  Minute: **0-59**  Hour: **0-23**  Day of the month: **1-31**  Month: **1-12** or **JAN-DEC**  Day of the week: **0-7** (0 and 7 are Sunday) or **MON-SUN**.  The following non-standard characters are supported: *****, **L**, **#**, **W** and **/**. See [crontab guru](https://crontab.guru/) for more examples.  Required when `type` is **cron**. |
+|     - type | string | Yes | The schedule type.  Possible values:  **cron**: push out funds based on a `cronExpression`.  **daily**: push out funds daily at 07:00 AM CET.  **weekly**: push out funds every Monday at 07:00 AM CET.  **monthly**: push out funds every first of the month at 07:00 AM CET.  **balance**: execute the sweep instantly if the `triggerAmount` is reached. |
+|   - status | string | No | The status of the sweep. If not provided, by default, this is set to **active**.  Possible values:  **active**:  the sweep is enabled and funds will be pulled in or pushed out based on the defined configuration.  **inactive**: the sweep is disabled and cannot be triggered. |
+|   - sweepAmount | object | No | The amount that must be pushed out or pulled in. You can configure either `sweepAmount` or `targetAmount`, not both. |
+|     - currency | string | Yes | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. |
+|     - value | integer | Yes | The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units). |
+|   - targetAmount | object | No | The amount that must be available in the balance account after the sweep. You can configure either `sweepAmount` or `targetAmount`, not both. |
+|     - currency | string | Yes | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. |
+|     - value | integer | Yes | The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units). |
+|   - triggerAmount | object | No | The threshold amount that triggers the sweep. If not provided, by default, the amount is set to zero. The `triggerAmount` is evaluated according to the specified `schedule.type`.  For `type` **pull**, if the balance is less than or equal to the `triggerAmount`, funds are pulled in to the balance account.  For `type` **push**, if the balance is more than or equal to the `triggerAmount`, funds are pushed out of the balance account. |
+|     - currency | string | Yes | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. |
+|     - value | integer | Yes | The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units). |
+|   - type | string | No | The direction of sweep, whether pushing out or pulling in funds to the balance account. If not provided, by default, this is set to **push**.  Possible values:  **push**: *push out funds* to a destination balance account or transfer instrument.  **pull**: *pull in funds* from a source merchant account, transfer instrument, or balance account. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+## Response examples
+
+### 200 Success
+
+**success**
+```json
+{
+  "hasNext": false,
+  "hasPrevious": false,
+  "sweeps": [
+    {
+      "id": "SWPC4227C224555B5FTD2NT2JV4WN5",
+      "schedule": {
+        "type": "daily"
+      },
+      "status": "active",
+      "targetAmount": {
+        "currency": "EUR",
+        "value": 0
+      },
+      "triggerAmount": {
+        "currency": "EUR",
+        "value": 0
+      },
+      "type": "push",
+      "counterparty": {
+        "balanceAccountId": "BA32272223222B5FTD2KR6TJD"
+      },
+      "currency": "EUR"
+    }
+  ]
+}
+```
+
+### 400 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/bad-request",
+  "title": "Bad request",
+  "status": 400,
+  "detail": "Empty input which would have resulted in a null result.",
+  "errorCode": "00_400"
+}
+```
+
+### 401 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Not authorized to access this service.",
+  "errorCode": "00_401"
+}
+```
+
+### 403 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "Not the right permission to access this service.",
+  "errorCode": "00_403"
+}
+```
+
+### 422 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/invalid-field-value",
+  "title": "Invalid Payment Instrument information provided",
+  "status": 422,
+  "detail": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+  "requestId": "1W1UI15PLVGC9V8O",
+  "errorCode": "30_031"
+}
+```
+
+### 500 Server Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/internal",
+  "title": "An internal error happened",
+  "status": 500,
+  "detail": "Unrecoverable error while trying to create payment instrument",
+  "requestId": "1WAF555PLWNTLYOQ",
+  "errorCode": "00_500"
+}
+```

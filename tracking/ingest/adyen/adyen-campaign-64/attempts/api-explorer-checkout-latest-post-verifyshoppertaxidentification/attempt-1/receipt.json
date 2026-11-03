@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-verifyshoppertaxidentification",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72 POST /verifyShopperTaxIdentification\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/verifyShopperTaxIdentification\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/verifyShopperTaxIdentification/2026-11-02.md\"\ntags: [adyen, checkout-api, online-payments, tax-identification]\n---\n\n## Overview\n\nThis 2026-11-02 capture is [[adyen]]'s Checkout API v72 TEST reference for `POST /verifyShopperTaxIdentification`. The endpoint submits a shopper's tax identification for verification where collecting and verifying tax information is required for regulatory compliance. On successful verification, it returns an opaque token for submission in `/payments`. The listed server is `https://checkout-test.adyen.com/v72`; the `latest` URL does not establish current version, live availability or merchant eligibility.\n\n## Key takeaways\n\n- The request-body table marks `merchantAccount`, `shopperReference` and `shopperTaxIdentification` **Yes**, along with nested `taxCountryCode`, `taxIdentificationNumber` and `taxIdentificationType`. `shopperReference` is the merchant's unique shopper reference, binds verification to that shopper context, and must exclude PII such as name or email. The table gives required *properties*; it does not separately state whole-body requiredness (raw lines 12\u201322).\n- Initially only `IN` is supported for `taxCountryCode` and `PAN` for `taxIdentificationType`. No default, numeric limit or idempotency contract is specified in this captured endpoint page (raw lines 19\u201322).\n- HTTP `200 Success` says the request succeeded, while `result` is optional and may, for example, be `valid` or `invalid`. Optional fields include `reason`, `reasonCode`, `taxVerificationReference`, a masked `verifiedShopperTaxIdentification` object and `verifiedShopperTaxIdentificationToken`. The token represents successful verification and is required in `/payments`; a 200 response alone does not establish a valid result or guarantee a token (raw lines 24\u201340).\n- The page lists 400 request-reading, 401 authentication, 403 permissions, 422 validation and 500 server errors, with their response fields at raw lines 43\u2013105. It specifies no deletion, propagation, asynchronous outcome, reversal or downstream payment result contract. Verification and token handoff do not themselves establish payment authorization, capture, settlement or live eligibility.\n\n## Detail locators\n\n- Purpose, endpoint and TEST v72 server: raw lines 5\u201310.\n- Request identities, required property markers and initial country/type scope: raw lines 12\u201322.\n- Success response, optional result and token: raw lines 24\u201340.\n- Error status descriptions and schemas: raw lines 43\u2013105.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Checkout API integration context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/verifyShopperTaxIdentification/2026-11-02|POST /verifyShopperTaxIdentification reference, captured 2026-11-02]]",
+  "quotes": [
+    {
+      "text": "Submit the shopper's tax identification for verification; when the verification succeeds, the response returns an opaque token that you submit in /payments.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- https://checkout-test.adyen.com/v72",
+      "location": "raw line 10"
+    },
+    {
+      "text": "Your reference must not include personally identifiable information (PII), for example name or email address.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "Initially only IN is supported.",
+      "location": "raw line 20"
+    },
+    {
+      "text": "The opaque, encrypted, and signed token representing the successful verification. Required in /payments.",
+      "location": "raw line 40"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-verifyshoppertaxidentification-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-verifyshoppertaxidentification]] \u2014 2026-11-02-captured Checkout API v72 TEST tax-identification verification reference for shopper-bound IN/PAN input, optional result fields and a successful-verification token for /payments; verification is not a payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/verifyShopperTaxIdentification/2026-11-02.md",
+  "raw_sha256": "c4dbd957655eb6813353259a2d3eca65a7452b76111cbbfc888ee0f5f531ca43",
+  "status": "candidate_ready"
+}

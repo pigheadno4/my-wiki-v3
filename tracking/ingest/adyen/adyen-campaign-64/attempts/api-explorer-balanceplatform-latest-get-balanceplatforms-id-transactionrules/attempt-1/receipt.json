@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceplatforms-id-transactionrules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET /balancePlatforms/{id}/transactionRules\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transactionRules\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transactionRules/2026-11-02.md\"\ntags: [adyen, balance-platform, issuing, transaction-rules, api]\n---\n\n## Overview\n\nThis 2026-11-02-captured Balance Platform API v2 reference describes `GET /balancePlatforms/{id}/transactionRules`: it returns a list of transaction rules associated with the balance platform named by the required path `id`. The only server shown is the TEST base `https://balanceplatform-api-test.adyen.com/bcl/v2`. The `latest` documentation route does not establish live deployment, current access or a platform's eligibility. See [[adyen]], [[adyen-issuing]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The 200 response table marks the `transactionRules` array optional. Within a listed rule object it marks `description`, `entityKey`, `interval`, `reference`, `ruleRestrictions` and `type` required, while `id`, `status` and many other fields are marked optional. This is a response schema, not a GET request body. The page lists no query parameters, pagination contract or request-body fields.\n- A rule's `entityKey` identifies its scope by `entityType` and `entityReference`; those child fields are individually marked optional. The listed resource types are balance platform, payment-instrument group, account holder, balance account and payment instrument. `requestType` defaults to `authorization` when omitted and also lists `authentication`, `tokenization` and `bankTransfer`; do not read the list as card authorization alone.\n- Rule types are `blockList`, `maxUsage`, `velocity` and `bypass`. The table describes `aggregationLevel` for velocity/maxUsage and its payment-instrument default; `bypass` calls for `overridesRule` and empty `ruleRestrictions`. `interval.type` is marked required within `interval`; rolling/sliding duration is conditionally required and capped at 90 days or equivalent. `outcomeType` defaults to `hardBlock`; `scoreBased` requires a score from -100 to 100 and is disallowed for bank transfers, while `enforceSCA` is limited to authentication.\n- The response schema describes `startDate`, `endDate` and active/inactive `status`, including creation-time wording. These describe rule evaluation state; this GET does not create, activate, delete or execute a rule. A 200 list response is no proof that a specific rule applied, an authentication or authorization succeeded, or funds moved. The page documents 400, 401, 403, 422 and 500 responses; its generic 422 and 500 JSON examples concern payment-instrument operations and do not establish this list endpoint's specific failure conditions.\n\n## Detail locators\n\n- Endpoint, TEST server, required path `id` and 200 optional list parent: pinned raw lines 5\u201327.\n- Rule identity, hierarchy, interval/defaults, outcomes, restrictions, lifecycle fields and types: `## Responses > ### 200 Success`, lines 28\u201376. The condition rows are response fields, not GET inputs.\n- Error response schemas: `## Responses`, lines 79\u2013176. Generic error examples, including payment-instrument-specific 422/500 text: `## Response examples`, lines 178\u2013244.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuing transaction-rule context and source routes.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-transactionrules]] \u2014 separate 2026-09-15 create-rule contract.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] \u2014 separate lifecycle guide with recorded conflicts.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transactionRules/2026-11-02|Balance Platform GET transaction-rules snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns a list of transaction rules associated with a balance platform.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The unique identifier of the balance platform.",
+      "location": "pinned raw line 17, path parameter id"
+    },
+    {
+      "text": "| transactionRules | array of object | No | List of transaction rules. |",
+      "location": "pinned raw line 27, 200 response body"
+    },
+    {
+      "text": "If not provided, by default, this is set to **authorization**.",
+      "location": "pinned raw line 46, requestType response field"
+    },
+    {
+      "text": "You must provide the `id` of the rule to bypass in `overridesRule` and leave the `ruleRestrictions` object empty.",
+      "location": "pinned raw line 76, type response field"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-get-platform-transactionrules-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-transactionrules]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET reference for listing a platform's transaction rules; the response is rule configuration/state, not proof of rule execution or payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(id)/transactionRules/2026-11-02.md",
+  "raw_sha256": "ec80539aecd8c1f2597b8ab67411e4ce24126625640eed0fa08c98b28a10e793",
+  "status": "candidate_ready"
+}

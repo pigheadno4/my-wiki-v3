@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-paymentinstruments-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET /paymentInstruments/{id}\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/2026-11-02.md\"\ntags: [adyen, balance-platform, payment-instruments, issuing, api]\n---\n\n## Overview\n\nThis 2026-11-02 Balance Platform API v2 reference describes `GET /paymentInstruments/{id}` for details of one card or bank-account payment instrument. The displayed server is TEST, `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` is a documentation route, not independent proof of current live availability. See [[adyen]], [[adyen-issuing]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- `id`, the payment-instrument identifier, is the only required **path** parameter. The page lists no query parameter, request body, or idempotency contract for this read.\n- A 200 response schema requires the linked `balanceAccountId`, instrument `id`, `issuingCountryCode`, and `type` (`card` or `bankAccount`). `card` and `bankAccount` are optional type-dependent response objects; fields marked required beneath an optional parent do not make that parent a GET input. Other optional response fields include status, status reason/comment, group ID and replacement links.\n- The status description distinguishes active, inactive, suspended, and irreversibly closed. It notes active as a creation default with card form-factor and issuing-country exceptions, such as inactive US physical cards. This GET does not create or change status. Its example shows `active` alongside a January 2024 card expiry in a 2026 capture; that example cannot establish current card usability or a successful authorization or capture.\n- The card schema says CVC is returned only in the **POST** response for single-use virtual cards; PAN is masked by default. The GET example contains a masked number and no CVC. Do not infer card-detail reveal from this endpoint; the separate reveal route has its own contract.\n- Documented errors are 400, 401 (authentication required), 403 (insufficient permissions), 422, and 500. The 422 example concerns a `balanceAccountId` change and the 500 example concerns instrument creation, rather than this read; they are generic examples, not GET-specific failure conditions.\n\n## Detail locators\n\n- Purpose, captured TEST server and required path ID: pinned raw lines 5\u201317.\n- 200 resource schema, type branches, card detail limits and status fields: pinned raw lines 19\u201390.\n- Error schemas and illustrative 200/error bodies: pinned raw lines 93\u2013286.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issued-card context.\n- [[adyen-business-accounts]] \u2014 bank-account instrument context.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-reveal]] \u2014 separate card-detail reveal route.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments]] \u2014 separate creation endpoint.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/2026-11-02|Payment-instrument GET snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns the details of a payment instrument.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "| balanceAccountId | string | Yes | The unique identifier of the [balance account](https://docs.adyen.com/api-explorer/#/balanceplatform/v1/post/balanceAccounts__resParam_id) associated with the payment instrument. |",
+      "location": "pinned raw line 28"
+    },
+    {
+      "text": "|   - cvc | string | No | The CVC2 value of the card.  The CVC2 is not sent by default. This is only returned in the `POST` response for single-use virtual cards. |",
+      "location": "pinned raw line 63"
+    },
+    {
+      "text": "|   - number | string | No | The primary account number (PAN) of the card.  The PAN is masked by default and returned only for single-use virtual cards. |",
+      "location": "pinned raw line 77"
+    },
+    {
+      "text": "| status | string | No | The status of the payment instrument. If a status is not specified when creating a payment instrument, it is set to **active** by default. However, there can be exceptions for cards based on the `card.formFactor` and the `issuingCountryCode`. For example, when issuing physical cards in the US, the default status is **inactive**.  Possible values:  **active**:  The payment instrument is active and can be used to make payments.  **inactive**: The payment instrument is inactive and cannot be used to make payments.  **suspended**: The payment instrument is suspended, either because it was stolen or lost.  **closed**: The payment instrument is permanently closed. This action cannot be undone. |",
+      "location": "pinned raw line 87"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-paymentinstrument-get-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET for one card or bank-account payment instrument's identity, linked balance account and reported status; readback and the active/expired sample do not prove current usability or payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/2026-11-02.md",
+  "raw_sha256": "d1f199600b3fe9d3c399c12488e5e518706c3e0105d2e68dd4c38ab1cd529785",
+  "status": "candidate_ready"
+}

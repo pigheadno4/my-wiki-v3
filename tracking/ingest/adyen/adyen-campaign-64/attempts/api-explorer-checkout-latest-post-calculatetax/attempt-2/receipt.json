@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-checkout-latest-post-calculatetax",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Checkout API v72 POST /calculateTax\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Checkout/latest/post/calculateTax\"\nraw_files:\n  - \"adyen/api-explorer/Checkout/latest/post/calculateTax/2026-11-02.md\"\ntags: [adyen, checkout, api, tax, india]\n---\n\n## Overview\n\nThis 2026-11-02 [[adyen]] Checkout API Explorer capture documents `POST /calculateTax` on the listed TEST v72 server. It calculates applicable tax from a taxable amount and tax context; the page gives India Liberalised Remittance Scheme Tax Collected at Source (LRS TCS) as the initial supported case. The response describes a canonical calculation, an attempt reference and an opaque token for a subsequent `/payments` request. The endpoint itself does not submit or complete a payment. The URL's `latest` segment does not establish current version, LIVE availability or merchant eligibility.\n\n## Key takeaways\n\n- The request-body table marks `merchantAccount`, `taxCalculationContext` and `taxableAmount` required; it does not separately state whole-body requiredness. Inside the required context, `calculationType` (initially only `LRS_TCS`), `lrs` declarations (`remittancePurpose` and `sublimitStatus`) and `taxCountryCode` (initially only `IN`) are marked required. The taxable amount requires a three-character ISO `currency` and integer `value` in minor units. No default, numeric amount limit or alternate conditional field path is stated.\n- The 200 schema marks top-level `taxCalculation`, `taxCalculationReference` and `taxCalculationToken` optional. The calculation is described as informational in the initial release. Within the optional calculation, the schema lists accepted merchant/context/taxable amount, individual tax components, `totalTaxAmount` and `totalAmount`; the schema marks `currency` and `value` required within `taxableAmount`, `totalAmount` and `totalTaxAmount` when each respective object is present. It lists `taxCalculations[].taxAmount` as optional without specifying child fields. The attempt reference identifies this calculation attempt; the token is described as opaque, encrypted and signed.\n- The page directs a subsequent `/payments` request to use `taxCalculation.totalAmount` as `/payments.amount` and `taxCalculationToken` as the required token. Because the 200 response schema marks those containing fields optional, the page does not guarantee their presence in every success response. A successful calculation is not payment authorization, capture, settlement or tax remittance.\n- The documented errors are 400 (request problem), 401 (authentication required), 403 (insufficient permissions), 422 (validation) and 500 (server processing). This endpoint page does not specify an idempotency header, token lifetime, deletion/reversal action, propagation timing or asynchronous payment outcome; those cannot be inferred from the calculation response.\n\n## Detail locators\n\n- Raw lines 5\u201310: endpoint purpose, downstream payment instruction and captured TEST v72 server.\n- Raw lines 12\u201326: request-body field hierarchy, initial `LRS_TCS`/`IN` scope, declarations and minor-unit taxable amount.\n- Raw lines 28\u201355: 200 response optional parents, nested amount fields, total and tax amounts, calculation reference and token.\n- Raw lines 58\u2013120: 400, 401, 403, 422 and 500 error descriptions and response schemas.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-api-explorer-checkout-latest-post-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Checkout/latest/post/calculateTax/2026-11-02|Adyen Checkout API Explorer POST /calculateTax (captured 2026-11-02)]]\n",
+  "quotes": [
+    {
+      "text": "Calculates the applicable tax, for example the India Liberalised Remittance Scheme Tax Collected at Source, based on the taxable amount and the tax calculation context.",
+      "location": "raw/adyen/api-explorer/Checkout/latest/post/calculateTax/2026-11-02.md:7"
+    },
+    {
+      "text": "- https://checkout-test.adyen.com/v72",
+      "location": "raw/adyen/api-explorer/Checkout/latest/post/calculateTax/2026-11-02.md:10"
+    },
+    {
+      "text": "|   - calculationType | string | Yes | The type of calculation requested. Initially only LRS_TCS is supported. |",
+      "location": "raw/adyen/api-explorer/Checkout/latest/post/calculateTax/2026-11-02.md:19"
+    },
+    {
+      "text": "|   - totalAmount | object | No | The taxable amount plus the calculated tax. Use this amount in /payments.amount. |",
+      "location": "raw/adyen/api-explorer/Checkout/latest/post/calculateTax/2026-11-02.md:48"
+    },
+    {
+      "text": "| taxCalculationToken | string | No | The opaque, encrypted, and signed token that represents the complete canonical calculation. Required in /payments. |",
+      "location": "raw/adyen/api-explorer/Checkout/latest/post/calculateTax/2026-11-02.md:55"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-calculatetax-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-checkout-latest-post-calculatetax]] \u2014 2026-11-02-captured Checkout API v72 TEST tax-calculation request/response for initial India LRS TCS scope and a downstream /payments token/amount route; calculation does not establish a payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Checkout/latest/post/calculateTax/2026-11-02.md",
+  "raw_sha256": "8f48b2992d3a8d0c1bf0dd55ebfb494f91a2086c89b081e38f2d3a21d24b9871",
+  "status": "candidate_ready"
+}

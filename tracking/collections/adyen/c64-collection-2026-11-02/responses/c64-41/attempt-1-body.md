@@ -1,0 +1,290 @@
+# PATCH /balanceAccounts/{balanceAccountId}/recurringTopUps/{topUpId} - Update a RecurringTopUp
+
+Update the configuration of an existing recurring top up.
+
+For more information, refer to [Manage recurring top-ups](https://docs.adyen.com/issuing/add-manage-funds/top-ups/manage-recurring-top-ups).
+
+## Servers
+- https://balanceplatform-api-test.adyen.com/bcl/v2
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| topUpId | string | Yes | The unique identifier of the recurring top-up you want to update. |
+| balanceAccountId | string | Yes | The unique identifier of the balance account. |
+
+
+### Request body
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| description | string | No | Your description for the recurring top-up.  Maximum length is 140 characters. If you set a longer description, it will be cut off at 140 characters. |
+| referenceForBeneficiary | string,null | No | A reference that is sent to the recipient. This reference is also sent in all webhooks related to the transfer, so you can use it to track statuses for both parties involved in the funds movement.  Supported characters: **a-z**, **A-Z**, **0-9**. |
+| status | string,null | No | The status of the recurring top-up. If not provided, by default, this is set to **active**.  Possible values:  **active**:  the top up is enabled and funds will be pulled in.  **inactive**: the top up is disabled and cannot be triggered. |
+| topUpAmount | object | No | The currency and value to be added to the balance account, specified in minor units. This can be a fixed amount or a target amount. |
+|   - fixed | object | No | The fixed amount with which you want to top up the balance account. |
+|   - target | object | No | The target balance for the balance account that the top-up must achieve. |
+| trigger | object | No | The condition that triggers the top-up. This can be a recurring schedule or a minimum balance threshold. |
+|   - schedule | object | No | Contains the details about the schedule that determines when the top up is executed. |
+|   - threshold | object | No | The balance threshold that triggers the top-up. If the balance falls below this amount, a top-up is initiated. |
+|     - currency | string | No | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). |
+|     - value | integer | No | The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). |
+
+## Request examples
+
+### update-recurring-topup
+```json
+{
+  "description": "new description"
+}
+```
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| counterparty | object | Yes | The details about the counterparty that is funding the top-up. |
+|   - transferInstrumentId | string | Yes | The unique identifier of the [transfer instrument](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#responses-200-id) that is funding the top-up. |
+| description | string | Yes | Your description for the recurring top-up.  Maximum length is 140 characters. If you set a longer description, it will be cut off at 140 characters. |
+| id | string | Yes | The unique identifier of the top up. |
+| referenceForBeneficiary | string | No | A reference that is sent to the recipient. This reference is also sent in all webhooks related to the transfer, so you can use it to track statuses for both parties involved in the funds movement.  Supported characters: **a-z**, **A-Z**, **0-9**. |
+| status | string | No | The status of the recurring top-up. If not provided, by default, this is set to **active**.  Possible values:  **active**:  the top up is enabled and funds will be pulled in.  **inactive**: the top up is disabled and cannot be triggered. |
+| topUpAmount | object | Yes | The currency and value to be added to the balance account, specified in minor units. This can be a fixed amount or a target amount. |
+|   - fixed | object | No | The fixed amount with which you want to top up the balance account. |
+|     - currency | string | Yes | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). |
+|     - value | integer | Yes | The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). |
+|   - target | object | No | The target balance for the balance account that the top-up must achieve. |
+|     - currency | string | Yes | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). |
+|     - value | integer | Yes | The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). |
+| trigger | object | Yes | The condition that triggers the top-up. This can be a recurring schedule or a minimum balance threshold. |
+|   - schedule | object | No | Contains the details about the schedule that determines when the top up is executed. |
+|     - type | string | Yes | The type of schedule at which the top up is executed.  **weekdays**: pull in funds Monday-Friday at 07:00 AM in the local timezone of the balance account.  **weekly**: pull in funds every Monday at 07:00 AM in the local timezone of the balance account.  **monthly**: pull in funds every first of the month at 07:00 AM in the local timezone of the balance account.  **null** (default): continuous monitoring. |
+|   - threshold | object | Yes | The balance threshold that triggers the top-up. If the balance falls below this amount, a top-up is initiated. |
+|     - currency | string | Yes | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). |
+|     - value | integer | Yes | The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes). |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+## Response examples
+
+### 200 Success
+
+**update-recurring-topup-200**
+```json
+{
+  "id": "TUPC0000000000000000000001",
+  "counterparty": {
+    "transferInstrumentId": "SE000000000000000000000001"
+  },
+  "description": "new description",
+  "topUpAmount": {
+    "fixed": {
+      "value": 1000,
+      "currency": "EUR"
+    }
+  },
+  "trigger": {
+    "schedule": {
+      "type": "weekdays"
+    },
+    "threshold": {
+      "value": 100,
+      "currency": "EUR"
+    }
+  },
+  "status": "inactive"
+}
+```
+
+### 400 Client Error
+
+**bad-request-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/bad-request",
+  "errorCode": "00_400",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "The request could not be processed due to malformed syntax.",
+  "requestId": "req123456789"
+}
+```
+
+### 401 Client Error
+
+**unauthorized-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/unauthorized",
+  "errorCode": "00_401",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Authentication failed",
+  "requestId": "req123456789"
+}
+```
+
+### 403 Client Error
+
+**access-denied-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/forbidden",
+  "errorCode": "00_403",
+  "title": "Forbidden",
+  "status": 403,
+  "requestId": "req123456789"
+}
+```
+
+### 422 Client Error
+
+**currency-mismatch-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/validation",
+  "errorCode": "29_001",
+  "title": "The request is missing required fields or contains invalid data.",
+  "status": 422,
+  "detail": "Account top up currency mismatch",
+  "requestId": "req123456789"
+}
+```
+
+**feature-disabled-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/validation",
+  "errorCode": "29_001",
+  "title": "The request is missing required fields or contains invalid data.",
+  "status": 422,
+  "detail": "BAP property DirectDebitTopUp is not active for balance account",
+  "requestId": "req123456789"
+}
+```
+
+**inactive-account-holder-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/validation",
+  "errorCode": "29_001",
+  "title": "The request is missing required fields or contains invalid data.",
+  "status": 422,
+  "detail": "BalanceAccountHolder PeterPanInactive has invalid account status inactive.",
+  "requestId": "req123456789"
+}
+```
+
+**invalid-transfer-instrument-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/validation",
+  "errorCode": "29_001",
+  "title": "The request is missing required fields or contains invalid data.",
+  "status": 422,
+  "detail": "Invalid Transfer instrument with id 00000000-0000-0000-0000-000000000000",
+  "requestId": "req123456789"
+}
+```
+
+**missing-capability-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/validation",
+  "errorCode": "29_001",
+  "title": "The request is missing required fields or contains invalid data.",
+  "status": 422,
+  "detail": "Missing Capabilities [receiveFromTransferInstrument] for BalanceAccountHolder.PeterPanWithoutTransferInstrument",
+  "requestId": "req123456789"
+}
+```
+
+**validation-error-response**
+```json
+{
+  "type": "https://docs.adyen.com/errors/validation",
+  "errorCode": "29_001",
+  "title": "The request is missing required fields or contains invalid data.",
+  "status": 422,
+  "detail": "No routes could be found using the provided sweep.",
+  "requestId": "req123456789"
+}
+```

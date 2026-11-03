@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-webhooks-webhookid-settings-settingid",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"GET balance webhook setting by ID | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId)/2026-11-02.md\"\ntags: [adyen, balance-platform, balance-webhooks, webhook-settings, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `GET /balancePlatforms/{balancePlatformId}/webhooks/{webhookId}/settings/{settingId}` to read a specific setting configured to trigger Balance webhooks. Its captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` in the documentation URL does not itself establish a live version. See [[adyen-platforms]] for the platform context.\n\n## Key takeaways\n\n- All three path parameters are required and identify distinct resources: balance platform, Balance webhook, and webhook setting. This GET has no request body or query parameters in the captured page. [Raw: lines 5\u201319]\n- A 200 response requires `currency`, setting `id`, `status`, `target` and `type`. The target requires its own `id` and `type`; target types are `balancePlatform`, `accountHolder`, and `balanceAccount`, which select the scope of balance-change notifications. `active` means a balance webhook is received if any condition in the setting is met; `inactive` means none is received even if conditions are met. This describes configured behavior, not proof of actual webhook delivery for a particular event. [Raw: lines 23\u201335]\n> [!warning] Contradiction\n> This GET's status row says an active setting triggers a Balance webhook if **any** condition is met (pinned raw line 31). The related [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook|configuration guide]] says a balance change must meet **all** configured conditions (its raw line 90). The captured sources do not resolve how multiple conditions are combined. Do not infer a reliable compound-alert rule or actual delivery from this read.\n\n- The success example includes `conditions` with available-balance, less-than and numeric value fields, but these are absent from the listed 200 response table. Treat the example as illustrative rather than a complete required schema or a guarantee of an emitted alert. [Raw: lines 26\u201335, 151\u2013173]\n- The page lists 400, 401, 403, 404, 422 and 500 errors. Its 404 description says \u201cThe payment was not found,\u201d although this endpoint reads a webhook setting; that text does not establish a payment lookup or payment outcome. [Raw: lines 38\u2013149]\n\n## Detail locators\n\n- Purpose, TEST v2 server and required path identifiers: pinned raw lines 5\u201319.\n- Success response fields and status/target semantics: lines 21\u201335.\n- Error headings and bodies: lines 38\u2013149; illustrative 200 payload: lines 151\u2013173.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform and Balance webhook context.\n- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] \u2014 separate guide for managing settings.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId)/2026-11-02|Captured API Explorer page (2026-11-02)]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of a specific balance webhook setting configured for triggering",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The unique identifier of the balance webhook setting.",
+      "location": "pinned raw line 17, settingId"
+    },
+    {
+      "text": "The unique identifier of the balance webhook.",
+      "location": "pinned raw line 18, webhookId"
+    },
+    {
+      "text": "You do not receive a balance webhook even if the conditions in this settings are met.",
+      "location": "pinned raw line 31, inactive status"
+    },
+    {
+      "text": "The payment was not found",
+      "location": "pinned raw line 96, 404 description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-balance-webhook-setting-get-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-webhooks-webhookid-settings-settingid]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET reference for one Balance webhook setting's status, target and currency; readback does not prove delivery of an alert or payment.",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "The pinned 404 description says payment not found although the endpoint retrieves a webhook setting.",
+          "The GET status row says any condition triggers, while the related configuration guide conditions row says all; multi-condition Boolean behavior is unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/(settingId)/2026-11-02.md",
+  "raw_sha256": "17d045419ebfd4c276ce6638bc00c7121754dd4545638d9c88be4d6e588bb8fa",
+  "status": "candidate_ready"
+}

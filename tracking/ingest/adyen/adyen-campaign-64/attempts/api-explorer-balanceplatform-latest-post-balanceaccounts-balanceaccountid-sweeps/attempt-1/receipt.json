@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-sweeps",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Balance Platform API: Create a balance account sweep\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/sweeps\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md\"\ntags: [adyen, balance-platform, sweeps, api]\n---\n\n## Overview\n\nThis captured Balance Platform API v2 `POST /balanceAccounts/{balanceAccountId}/sweeps` reference creates a sweep configuration to pull funds into or push funds out of a balance account according to a schedule, threshold, currency and counterparty. The listed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`. Creation is distinct from an actual transfer or bank receipt. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Path `balanceAccountId` is required. The request body has required `counterparty`, `currency` and `schedule`. Within `counterparty`, one of balance-account ID, transfer-instrument ID or merchant account is required, though each child is individually marked optional. The uppercase three-character sweep currency must match a balance currency. A merchant-account source is allowed only for a `pull` sweep when processing payments with Adyen. For automated direct-debit top-up from a transfer instrument, the reference says to combine transfer instrument and merchant account with `pull` and contact Adyen Support to enable the feature. See **Parameters**, lines 16\u201330.\n- `schedule.type` is required: `cron`, `daily`, `weekly`, `monthly` or `balance`. `cronExpression` is required for `cron` and uses the balance account time zone; daily/weekly/monthly fixed times are stated as 07:00 CET, and `balance` triggers instantly at the threshold. Optional `type` defaults to `push`; optional `status` defaults to `active`, while `inactive` cannot be triggered. Optional `triggerAmount` defaults to zero. A `pull` triggers at balance less than or equal to threshold, a `push` at balance greater than or equal to it. See **Parameters**, lines 35\u201348.\n- Choose at most one of optional `sweepAmount` (amount to move) and `targetAmount` (desired post-sweep balance). When an amount object is present, its currency and integer value in minor units are required. Optional `priorities` rank bank-transfer routes; `category` becomes required when they are set, and the request is accepted if at least one supplied priority is supported and activated for the platform. This acceptance does not guarantee the first priority or transfer completion. A description over 140 characters after placeholder replacement is cut off. See **Parameters**, lines 25\u201347.\n- A 200 response marks request success and includes required sweep `id`, counterparty, currency and schedule; it may include `reason` and `reasonDetail` for a disabled sweep and other configured fields. The examples show `active` pull/push configurations, not executed transfers. The page lists 400, 401, 403, 422 and 500 errors; its generic 422/500 examples concern payment instruments and do not establish sweep-specific failure behavior. See **Responses** and **Response examples**.\n- This 2026-11-02 snapshot gives a TEST server. The `latest` URL does not establish current live access, caller roles beyond the described permission errors, or account eligibility. The endpoint does not specify idempotency, deletion, propagation timing, reversal or version-conflict behavior.\n\n## Detail locators\n\n- **Parameters**, lines 14\u201348: required fields, nested conditions, defaults, units, threshold and priority behavior.\n- **Request examples**, lines 50\u2013112: illustrative pull, push and prioritized push bodies.\n- **Responses**, lines 113\u2013247: returned fields and error schema.\n- **Response examples**, lines 249\u2013382: illustrative configurations and generic errors.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform balance-account and sweep context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02|Captured sweep creation API reference (2026-11-02)]]\n",
+  "quotes": [
+    {
+      "text": "Creates a sweep that results in moving funds from or to a balance account.",
+      "location": "raw line 7, endpoint overview"
+    },
+    {
+      "text": "https://balanceplatform-api-test.adyen.com/bcl/v2",
+      "location": "raw line 12, Servers"
+    },
+    {
+      "text": "| counterparty | object | Yes | The destination or the source of the funds, depending on the sweep `type`.  Either a `balanceAccountId`, `transferInstrumentId`, or `merchantAccount` is required. |",
+      "location": "raw line 26, Request body"
+    },
+    {
+      "text": "| schedule | object | Yes | The schedule when the `triggerAmount` is evaluated. If the balance meets the threshold, funds are pushed out of or pulled in to the balance account. |",
+      "location": "raw line 35, Request body"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the sweep. |",
+      "location": "raw line 128, 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-create-sweep-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-sweeps]] \u2014 2026-11-02-captured Balance Platform API v2 TEST sweep-configuration creation reference for balance-account pull/push schedules and thresholds; creation does not prove transfer execution or bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md",
+  "raw_sha256": "1802607f4945de63cea39df236550d2ee99260ec8a736e83b0220a2ee5a7ffde",
+  "status": "candidate_ready"
+}

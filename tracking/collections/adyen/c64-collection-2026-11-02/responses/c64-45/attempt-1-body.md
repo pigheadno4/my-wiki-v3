@@ -1,0 +1,214 @@
+# GET /paymentInstruments/{id}/reveal - Get the PAN of a payment instrument
+
+Returns the primary account number (PAN) of a payment instrument.
+
+To make this request, your API credential must have the following [role](https://docs.adyen.com/issuing/manage-access/api-credentials-web-service#api-permissions):
+
+- Balance Platform BCL PCI role
+
+## Servers
+- https://balanceplatform-api-test.adyen.com/bcl/v2
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | The unique identifier of the payment instrument. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| cvc | string | Yes | The CVC2 value of the card. |
+| expiration | object | Yes | The expiration date of the card. |
+|   - month | string | No | The month in which the card will expire. |
+|   - year | string | No | The year in which the card will expire. |
+| pan | string | Yes | The primary account number (PAN) of the card. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+## Response examples
+
+### 200 Success
+
+**success**
+```json
+{
+  "cvc": "123",
+  "expiration": {
+    "month": "02",
+    "year": "2026"
+  },
+  "pan": "5555444411209883"
+}
+```
+
+### 400 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/bad-request",
+  "title": "Bad request",
+  "status": 400,
+  "detail": "Empty input which would have resulted in a null result.",
+  "errorCode": "00_400"
+}
+```
+
+### 401 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Not authorized to access this service.",
+  "errorCode": "00_401"
+}
+```
+
+### 403 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "Not the right permission to access this service.",
+  "errorCode": "00_403"
+}
+```
+
+### 422 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/invalid-field-value",
+  "title": "Invalid Payment Instrument information provided",
+  "status": 422,
+  "detail": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+  "requestId": "1W1UI15PLVGC9V8O",
+  "errorCode": "30_031"
+}
+```
+
+### 500 Server Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/internal",
+  "title": "An internal error happened",
+  "status": 500,
+  "detail": "Unrecoverable error while trying to create payment instrument",
+  "requestId": "1WAF555PLWNTLYOQ",
+  "errorCode": "00_500"
+}
+```

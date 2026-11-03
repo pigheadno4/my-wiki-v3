@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-accountholders-id-balanceaccounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GET /accountHolders/{id}/balanceAccounts \u2014 List an account holder's balance accounts | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/accountHolders/(id)/balanceAccounts\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/accountHolders/(id)/balanceAccounts/2026-11-02.md\"\ntags: [adyen, balance-platform, balance-accounts, account-holders, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `GET /accountHolders/{id}/balanceAccounts`, a paginated read of balance accounts associated with one account holder. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL says `latest`, while the server path identifies v2. See [[adyen-platforms]] for the platform resource context.\n\n## Key takeaways\n\n- The required path `id` is the account-holder identifier, distinct from each returned balance-account `id`. Optional query `limit` defaults to 10 and has a maximum of 100 items per page; optional `offset` skips items. The response requires a `balanceAccounts` array and `hasNext`/`hasPrevious` booleans. Each listed account has required `accountHolderId` and balance-account `id`. [Raw: lines 5\u20139, 14\u201326, 30\u201350]\n- Optional account fields include default currency, description, metadata, migrated classic account code, platform payment configuration, reference, status and time zone. The table describes default currency as EUR and unchangeable after creation; the status is active by default. If metadata is updated, omission of existing pairs deletes them. The optional settlement-delay field requires Custom Sales Day Payout enablement and allows 1\u201320 business days or null; this is configuration detail, not a required GET input. [Raw: lines 36\u201348]\n- The page lists 400, 401, 403, 422 and 500 errors. Its generic 422 and 500 examples concern payment-instrument changes or creation, so they do not establish this GET route's specific validation or lifecycle behavior. [Raw: lines 53\u2013150, 232\u2013257]\n- A 200 response reports associated balance-account records and pagination state at read time. It does not itself create or activate an account, establish capability eligibility, authorize a payment, book funds, execute settlement or prove bank receipt. The example with three active accounts is illustrative. [Raw: lines 5\u20137, 30\u201350, 152\u2013191]\n\n## Detail locators\n\n- Purpose, captured TEST v2 server and path/query inputs: pinned raw lines 5\u201326.\n- Success schema and field descriptions: lines 28\u201350; error schemas: lines 53\u2013150.\n- Success and generic error examples: lines 152\u2013258.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform account-holder and balance-account context.\n- [[source-adyen-docs-platforms-account-structure-resources]] \u2014 separate platform resources.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts]] \u2014 separate balance-account creation route.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/accountHolders/(id)/balanceAccounts/2026-11-02|Captured API Explorer page (2026-11-02)]]\n",
+  "quotes": [
+    {
+      "text": "Returns a paginated list of the balance accounts associated with an account holder. To fetch multiple pages, use the query parameters.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The unique identifier of the account holder.",
+      "location": "pinned raw line 19, path parameter id"
+    },
+    {
+      "text": "The number of items returned per page, maximum 100 items. By default, the response returns 10 items per page.",
+      "location": "pinned raw line 25, query parameter limit"
+    },
+    {
+      "text": "Indicates whether there are more items on the next page.",
+      "location": "pinned raw line 49, hasNext"
+    },
+    {
+      "text": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+      "location": "pinned raw line 240, generic 422 example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-balanceaccounts-list-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-accountholders-id-balanceaccounts]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET reference for a paginated account-holder balance-account list; readback does not prove financial movement or live eligibility.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/accountHolders/(id)/balanceAccounts/2026-11-02.md",
+  "raw_sha256": "f2a44db40279e87d889f469b441eaf0ea157081d355b230553747f9192b12301",
+  "status": "candidate_ready"
+}

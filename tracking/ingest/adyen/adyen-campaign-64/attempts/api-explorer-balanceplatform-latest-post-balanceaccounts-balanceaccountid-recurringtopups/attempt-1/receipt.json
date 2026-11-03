@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-recurringtopups",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: POST recurring top-up configuration\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/recurringTopUps\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/recurringTopUps/2026-11-02.md\"\ntags: [adyen, balance-platform, issuing, recurring-top-ups, api]\n---\n\n## Overview\n\nThis 2026-11-02-captured Balance Platform API v2 reference describes `POST /balanceAccounts/{balanceAccountId}/recurringTopUps`, creation of a recurring top-up **configuration** for the balance account identified by the required path ID. The only displayed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`. A successful configuration is distinct from a triggered direct-debit transfer, booked balance credit or payment. The `latest` path does not prove live availability or account eligibility. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The request table marks `counterparty` (with required `transferInstrumentId`), `description`, `topUpAmount` and `trigger` required. `description` is capped at 140 characters and longer input is cut off. `referenceForBeneficiary` is optional, restricted to letters/digits, and is sent in transfer-related webhooks. The page does not separately state whole-body requiredness.\n- `topUpAmount.fixed` and `topUpAmount.target` are individually optional in this API table; when either object is supplied, its currency and minor-unit integer value are required. The linked Issuing guide says to select one of fixed or target. `trigger.threshold` is marked required within `trigger`, with required currency and minor-unit value; `trigger.schedule` is optional, but its `type` is required when the schedule object is supplied. Listed schedule types are weekdays, weekly and monthly at 07:00 in the balance account's local time zone, and null/default continuous monitoring.\n- Omitted `status` defaults to `active`; `inactive` disables triggering. The 200 response returns a required configuration `id` plus the configuration fields, with `status` itself marked optional in the response table. Creation/readback of an active configuration does not establish that a threshold was met or funds were pulled and credited.\n- The page lists 400, 401, 403 and 422 errors. Its 422 examples illustrate currency mismatch, disabled direct-debit top-up property, inactive holder, invalid transfer instrument, missing `receiveFromTransferInstrument` capability and unavailable route; these are examples, not a complete eligibility matrix. The reference itself does not specify a credential role, idempotency behavior or final transfer outcome.\n\n> [!warning] Contradiction\n> This API reference says a top-up is initiated when balance falls **below** `trigger.threshold` (pinned raw line 40). The linked Issuing guide's Customer Area instructions say **less than or equal to** the threshold (guide raw line 242); its API prose says below (guide raw line 99). The captured sources do not settle equality behavior. [[source-adyen-docs-issuing-add-manage-funds-top-ups-create-recurring-top-ups]]\n\n## Detail locators\n\n- Endpoint, TEST base, required path and request-body fields/defaults: pinned raw lines 5\u201342.\n- Illustrative request: `## Request examples`, lines 44\u201369. Response schema and example: lines 70\u201396 and 174\u2013203.\n- Error schemas: lines 99\u2013172. Generic and top-up-specific examples: lines 205\u2013317.\n\n## Related\n\n- [[adyen-issuing]] \u2014 recurring top-up context.\n- [[source-adyen-docs-issuing-add-manage-funds-top-ups-create-recurring-top-ups]] \u2014 separate requirements and lifecycle guide with threshold wording conflict.\n- [[source-adyen-docs-issuing-add-manage-funds-top-ups-top-up-webhooks]] \u2014 separate transfer and booked-credit events.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/recurringTopUps/2026-11-02|Recurring top-up POST snapshot]]",
+  "quotes": [
+    {
+      "text": "Create a recurring top up configuration.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The unique identifier of the balance account.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "| counterparty | object | Yes | The details about the counterparty that is funding the top-up. |",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "If the balance falls below this amount, a top-up is initiated.",
+      "location": "pinned raw line 40"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the top up. |",
+      "location": "pinned raw line 81, 200 response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-post-recurringtopups-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-recurringtopups]] \u2014 2026-11-02-captured Balance Platform API v2 TEST recurring-top-up configuration creation; active/readback is not booked credit, and threshold equality wording differs from the linked Issuing guide.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "API raw line 40 says below threshold; linked Issuing guide raw line 242 says less than or equal to. The source warning preserves the unresolved equality behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/balanceAccounts/(balanceAccountId)/recurringTopUps/2026-11-02.md",
+  "raw_sha256": "8a8a83bb34e8add895827d3411658b5bf289f53491d6f9a62841669064ee754d",
+  "status": "candidate_ready"
+}

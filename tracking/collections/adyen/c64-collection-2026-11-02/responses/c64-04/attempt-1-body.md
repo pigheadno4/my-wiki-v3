@@ -1,0 +1,266 @@
+# GET /balancePlatforms/{id}/accountHolders - Get all account holders under a balance platform
+
+Returns a paginated list of all the account holders that belong to the balance platform. To fetch multiple pages, use the query parameters.
+
+For example, to limit the page to 5 account holders and to skip the first 20, use `/balancePlatforms/{id}/accountHolders?limit=5&offset=20`.
+
+## Servers
+- https://balanceplatform-api-test.adyen.com/bcl/v2
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | The unique identifier of the balance platform. |
+
+
+### Query parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| limit | integer | No | The number of items returned per page, maximum 100 items. By default, the response returns 10 items per page. |
+| offset | integer | No | The number of items that you want to skip. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| accountHolders | array of object | Yes | List of account holders. |
+|   - balancePlatform | string | No | The unique identifier of the [balance platform](https://docs.adyen.com/api-explorer/#/balanceplatform/latest/get/balancePlatforms/%7Bid%7D__queryParam_id) to which the account holder belongs. Required in the request if your API credentials can be used for multiple balance platforms. |
+|   - capabilities | object (object) | No | Contains key-value pairs that specify the actions that an account holder can do in your platform. The key is a capability required for your integration. For example, **issueCard** for Issuing. The value is an object containing the settings for the capability. |
+|     - allowed | boolean | No | Indicates whether the capability is allowed. Adyen sets this to **true** if the verification is successful and the account holder is permitted to use the capability. |
+|     - allowedLevel | string | No | The capability level that is allowed for the account holder.  Possible values: **notApplicable**, **low**, **medium**, **high**. |
+|     - allowedSettings | object | No | A JSON object containing the settings that are allowed for the account holder. |
+|     - enabled | boolean | No | Indicates whether the capability is enabled. If **false**, the capability is temporarily disabled for the account holder. |
+|     - problems | array of object | No | Contains verification errors and the actions that you can take to resolve them. |
+|     - requested | boolean | No | Indicates whether the capability is requested. To check whether the account holder is permitted to use the capability, refer to the `allowed` field. |
+|     - requestedLevel | string | No | The requested level of the capability. Some capabilities, such as those used in [card issuing](https://docs.adyen.com/issuing/add-capabilities#capability-levels), have different levels. Levels increase the capability, but also require additional checks and increased monitoring.  Possible values: **notApplicable**, **low**, **medium**, **high**. |
+|     - requestedSettings | object | No | A JSON object containing the settings that were requested for the account holder. |
+|     - transferInstruments | array of object | No | Contains the status of the transfer instruments associated with this capability. |
+|     - verificationStatus | string | No | The status of the verification checks for the capability.  Possible values:  **pending**: Adyen is running the verification.  **invalid**: The verification failed. Check if the `errors` array contains more information.  **valid**: The verification has been successfully completed.  **rejected**: Adyen has verified the information, but found reasons to not allow the capability. |
+|   - contactDetails | object | No | Contact details of the account holder. |
+|     - address | object | Yes | The address of the account holder. |
+|     - email | string | Yes | The email address of the account holder. |
+|     - phone | object | Yes | The phone number of the account holder. |
+|     - webAddress | string | No | The URL of the account holder's website. |
+|   - description | string | No | Your description for the account holder. |
+|   - id | string | Yes | The unique identifier of the account holder. |
+|   - legalEntityId | string | Yes | The unique identifier of the [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities#responses-200-id) associated with the account holder. Adyen performs a verification process against the legal entity of the account holder. |
+|   - metadata | object (string) | No | A set of key and value pairs for general use. The keys do not have specific names and may be used for storing miscellaneous data as desired.  Note that during an update of metadata, the omission of existing key-value pairs will result in the deletion of those key-value pairs. |
+|   - migratedAccountHolderCode | string | No | The unique identifier of the migrated account holder in the classic integration. |
+|   - primaryBalanceAccount | string | No | The ID of the account holder's primary balance account. By default, this is set to the first balance account that you create for the account holder. To assign a different balance account, send a PATCH request. |
+|   - reference | string | No | Your reference for the account holder. |
+|   - status | string | No | The status of the account holder.  Possible values:  **active**: The account holder is active and allowed to use its capabilities. This is the initial status for account holders and balance accounts. You can change this status to **suspended** or **closed**.  **suspended**: The account holder is temporarily disabled and payouts are blocked. You can change this status to **active** or **closed**.  **closed**: The account holder and all of its capabilities are permanently disabled. This is a final status and cannot be changed. |
+|   - timeZone | string | No | The time zone of the account holder. For example, **Europe/Amsterdam**. Defaults to the time zone of the balance platform if no time zone is set. For possible values, see the [list of time zone codes](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |
+|   - verificationDeadlines | array of object | No | List of verification deadlines and the capabilities that will be disallowed if verification errors are not resolved. |
+|     - capabilities | array of string | Yes | The names of the capabilities to be disallowed. |
+|     - entityIds | array of string | No | The unique identifiers of the bank account(s) that the deadline applies to |
+|     - expiresAt | string | Yes | The date that verification is due by before capabilities are disallowed. |
+| hasNext | boolean | Yes | Indicates whether there are more items on the next page. |
+| hasPrevious | boolean | Yes | Indicates whether there are more items on the previous page. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+## Response examples
+
+### 200 Success
+
+**success**
+```json
+{
+  "accountHolders": [
+    {
+      "description": "Test-305",
+      "legalEntityId": "LE3227C223222D5D8S5S33M4M",
+      "reference": "LegalEntity internal error test",
+      "id": "AH32272223222B5GFSNSXFFL9",
+      "status": "active"
+    },
+    {
+      "description": "Test-751",
+      "legalEntityId": "LE3227C223222D5D8S5TT3SRX",
+      "reference": "LegalEntity internal error test",
+      "id": "AH32272223222B5GFSNVGFFM7",
+      "status": "active"
+    },
+    {
+      "description": "Explorer Holder",
+      "legalEntityId": "LE3227C223222D5D8S5TT3SRX",
+      "reference": "Account from the Explorer Holder",
+      "id": "AH32272223222B5GFWNRFFVR6",
+      "status": "active"
+    }
+  ],
+  "hasNext": true,
+  "hasPrevious": true
+}
+```
+
+### 400 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/bad-request",
+  "title": "Bad request",
+  "status": 400,
+  "detail": "Empty input which would have resulted in a null result.",
+  "errorCode": "00_400"
+}
+```
+
+### 401 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Not authorized to access this service.",
+  "errorCode": "00_401"
+}
+```
+
+### 403 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "Not the right permission to access this service.",
+  "errorCode": "00_403"
+}
+```
+
+### 422 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/invalid-field-value",
+  "title": "Invalid Payment Instrument information provided",
+  "status": 422,
+  "detail": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+  "requestId": "1W1UI15PLVGC9V8O",
+  "errorCode": "30_031"
+}
+```
+
+### 500 Server Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/internal",
+  "title": "An internal error happened",
+  "status": 500,
+  "detail": "Unrecoverable error while trying to create payment instrument",
+  "requestId": "1WAF555PLWNTLYOQ",
+  "errorCode": "00_500"
+}
+```

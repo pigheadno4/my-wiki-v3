@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-id-paymentinstruments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET /balanceAccounts/{id}/paymentInstruments\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/paymentInstruments\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/paymentInstruments/2026-11-02.md\"\ntags: [adyen, balance-platform, payment-instruments, issuing, api, pagination]\n---\n\n## Overview\n\nThis 2026-11-02 Balance Platform API v2 reference describes `GET /balanceAccounts/{id}/paymentInstruments`, a paginated list of card or bank-account payment instruments associated with a balance account. The page shows only the TEST server, `https://balanceplatform-api-test.adyen.com/bcl/v2`; its `latest` documentation route does not verify current live availability. See [[adyen]], [[adyen-issuing]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The balance-account `id` is the required **path** parameter. Optional query parameters are `status` (all statuses by default), `limit` (10 items by default, maximum 100), and `offset` (items to skip). The page shows no request body or idempotency contract for this read operation.\n- A 200 response has required `hasNext`, `hasPrevious`, and `paymentInstruments` fields. Each listed instrument's schema requires `balanceAccountId`, instrument `id`, `issuingCountryCode`, and `type` (`card` or `bankAccount`). `card` and `bankAccount` are optional type-dependent objects; requiredness of fields nested under them is distinct from whether those parent objects appear. Replacement IDs, group ID, reference and status are optional.\n- The status description distinguishes active, inactive, suspended and permanently closed instruments. It says creation defaults to active unless card form factor and issuing country cause an exception, such as inactive physical cards in the US. That lifecycle wording does not mean this GET activates, changes or closes an instrument. A listed active status is not evidence of a successful authorization, capture, booking or settlement.\n- The card schema says `cvc` is returned only in a **POST** response for single-use virtual cards, while the PAN is masked by default and returned unmasked only for single-use virtual cards. Do not infer that this GET returns CVC or an unmasked PAN; the sample GET response shows masked card numbers and no CVC.\n- The documented errors are 400, 401 (authentication required), 403 (insufficient permissions), 422 and 500. The 422 and 500 examples describe changing a payment instrument's balance-account ID or creating an instrument, not this list operation; they are not endpoint-specific failure or reversal evidence.\n\n## Detail locators\n\n- Purpose, TEST server, required path ID and optional pagination/status filters: pinned raw lines 5\u201327.\n- 200 response shape, card/bank-account branches, identities, status and replacement fields: pinned raw lines 29\u201376.\n- Error schemas and illustrative 200/error examples: pinned raw lines 79\u2013297.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issued-card context.\n- [[adyen-business-accounts]] \u2014 business-account context.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments]] \u2014 separate creation endpoint.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/paymentInstruments/2026-11-02|Balance-account payment-instrument list snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns a paginated list of the payment instruments associated with a balance account.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "| status | string | No | The status of the payment instruments that you want to get. By default, the response includes payment instruments with any status. |",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "| limit | integer | No | The number of items returned per page, maximum 100 items. By default, the response returns 10 items per page. |",
+      "location": "pinned raw line 26"
+    },
+    {
+      "text": "|     - cvc | string | No | The CVC2 value of the card.  The CVC2 is not sent by default. This is only returned in the `POST` response for single-use virtual cards. |",
+      "location": "pinned raw line 58"
+    },
+    {
+      "text": "|   - status | string | No | The status of the payment instrument. If a status is not specified when creating a payment instrument, it is set to **active** by default. However, there can be exceptions for cards based on the `card.formFactor` and the `issuingCountryCode`. For example, when issuing physical cards in the US, the default status is **inactive**.  Possible values:  **active**:  The payment instrument is active and can be used to make payments.  **inactive**: The payment instrument is inactive and cannot be used to make payments.  **suspended**: The payment instrument is suspended, either because it was stolen or lost.  **closed**: The payment instrument is permanently closed. This action cannot be undone. |",
+      "location": "pinned raw line 73"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-paymentinstruments-list-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-paymentinstruments]] \u2014 2026-11-02-captured Balance Platform API v2 TEST paginated list of card or bank-account payment instruments linked to a balance account, with status and resource IDs; readback does not establish card activation or transaction outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/paymentInstruments/2026-11-02.md",
+  "raw_sha256": "1d92af28dc4f4b88d7e196160ecf7a51ea7efe8297b927c0927119790b22b576",
+  "status": "candidate_ready"
+}

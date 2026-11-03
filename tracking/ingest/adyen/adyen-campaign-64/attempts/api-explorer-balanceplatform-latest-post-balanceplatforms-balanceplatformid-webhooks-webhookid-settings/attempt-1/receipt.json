@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-post-balanceplatforms-balanceplatformid-webhooks-webhookid-settings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Create a balance webhook setting\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/post/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/2026-11-02.md\"\ntags: [adyen, platforms, balance-platform, webhooks, api-reference]\n---\n\n## Overview\n\nCaptured Balance Platform API v2 TEST-server `POST /balancePlatforms/{balancePlatformId}/webhooks/{webhookId}/settings` reference. It creates criteria for balance-change webhook notifications, scoped to a balance platform, account holder, or balance account. This configuration resource is part of [[adyen]] and [[adyen-platforms]]; its creation is separate from any balance-change event or money movement.\n\n## Key takeaways\n\n- Both path IDs are required: `balancePlatformId` identifies the balance platform and `webhookId` identifies the balance webhook being configured. The listed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`. The body requires `currency`, `status`, `target`, and `type: balance`; `target` requires a resource `id` and a `type` of `balancePlatform`, `accountHolder`, or `balanceAccount`.\n- `conditions` is an optional array, but its listed members `balanceType`, `conditionType`, and integer `value` are marked required within each condition. `value` is in minor units. The documented balance types are available, balance, pending, and reserved; comparisons are greaterThan, greaterThanOrEqual, lessThan, and lessThanOrEqual. The raw does not specify a default or number limit for conditions.\n- Settings at a higher level apply to lower resources, and the most granular setting overrides higher settings: balance account over account holder over balance platform. `active` means a balance webhook is received if any configured condition is met; `inactive` means it is not received even if conditions are met. The reference does not specify the delivery timing or prove any notification was sent.\n- The 200 response says the request succeeded and returns a webhook-setting `id`, `currency`, `status`, `target`, and `type`. Its example also shows conditions, although the response field table does not list conditions. This response establishes configuration creation, not a balance threshold crossing or settlement, payout, or bank receipt.\n\n## Detail locators\n\n- Purpose, hierarchy and TEST server: pinned raw lines 5\u201318. Path/body schema and minor-unit condition values: lines 20\u201341. Request example: lines 43\u201363.\n- 200 response table and example: lines 64\u201378 and 194\u2013216. The listed error classes are 400, 401, 403, 404, 422, and 500 (lines 81\u2013192). The 404 prose says `The payment was not found` despite this being a webhook-setting route; do not infer a payment lookup from that generic error description.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform resource and webhook context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/post/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/2026-11-02|Pinned 2026-11-02 API reference]]\n",
+  "quotes": [
+    {
+      "text": "Configures the criteria for triggering [balance webhooks](https://docs.adyen.com/api-explorer/balance-webhooks/1/post/balancePlatform.balanceAccount.balance.updated).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Settings on a higher level apply to all lower level resources (balance platform > account holder > balance acocunt).",
+      "location": "raw line 13"
+    },
+    {
+      "text": "The most granular setting overrides higher level settings (balance account > account holder > balance platform).",
+      "location": "raw line 15"
+    },
+    {
+      "text": "The value limit in the specified balance type and currency, in minor units.",
+      "location": "raw line 35, value request field"
+    },
+    {
+      "text": "The payment was not found",
+      "location": "raw line 139, 404 response prose"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-balance-webhook-setting-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceplatforms-balanceplatformid-webhooks-webhookid-settings]] \u2014 2026-11-02-captured Balance Platform API v2 TEST reference for creating hierarchical balance-webhook threshold settings by currency and target; a 200 configuration response is not webhook delivery or financial movement.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/post/balancePlatforms/(balancePlatformId)/webhooks/(webhookId)/settings/2026-11-02.md",
+  "raw_sha256": "bf8cb1caa6456099dcf779e1ee43e21a141257e4fe87f531c4a56984132bb499",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,141 @@
+# GET /balanceAccounts/{balanceAccountId}/payoutSchedules/{id} - Get a specific managed payout schedule on a balance account
+
+Returns the specified payout schedule.
+
+## Servers
+- https://balanceplatform-api-test.adyen.com/bcl/v2
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | The unique identifier of the payout schedule for the balance account. |
+| balanceAccountId | string | Yes | The unique identifier of the balance account. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| balanceAccountId | string | Yes | The unique identifier of the balance account to which you apply the payout schedule. |
+| balancePlatformPayoutScheduleId | string | Yes | The unique identifier of the balance platform payout schedule that is applied to the balance account. |
+| createdAt | string | Yes | The date and time when the payout schedule was created. |
+| currency | string | No | The three-character [ISO code](https://docs.adyen.com/development-resources/currency-codes) of the currency used for this schedule. |
+| description | string | No | The description used for all payouts initiated by this payout schedule.  Maximum length: 140 characters. If your description is longer, it may be truncated.  Default value: The `defaultDescription` from the balance platform schedule that you are applying. |
+| enabled | boolean | No | Specifies whether the payout schedule is active. |
+| frequency | string | No | The frequency of payouts initiated by this payout schedule.  Possible values:  - daily  - weekdays  - weekly  - monthly  Default value: The `defaultFrequency` from the balance platform schedule that you are applying. |
+| frequencyValue | integer | No | The date of the month or day of the week when payouts are initiated. Allowed only if `frequency` is **monthly** or **weekly**.  Possible values if `frequency` is **monthly**: **[1 - 31]**.  - If your specified date happens on a weekend, the payout is initiated on the next business day.  - If your specified date (**29**, **30**, or **31**) does not exist in a month, the payout is initiated  on the last day of that month.  Possible values if `frequency` is **weekly**: **[1 - 5]**.  Default value: The `defaultFrequencyValue` from the balance platform schedule that you are applying. |
+| id | string | No | The unique identifier of the payout schedule for the balance account. |
+| maxPayoutAmount | integer | No | The maximum amount that can be paid out from balance accounts that use this payout schedule.  Default value: **0** |
+| minPayoutAmount | integer | No | The minimum amount that can be paid out from balance accounts that use this payout schedule.  Default value: **0** |
+| reference | string | No | Your reference for the payout schedule. This reference does not appear on statements of payouts initiated by the payout schedule. |
+| referenceForBeneficiary | string | No | The reference for beneficiary used for all payouts initiated by this payout schedule. This reference is sent to the recipient of the payout and is included in all webhooks related to the payout.  Supported characters: **a-z**, **A-Z**, **0-9**.  Default value: The `defaultReferenceForBeneficiary` from the balance platform schedule that you are applying. |
+| retainedAmount | integer | No | The amount of funds that must remain available in the balance account after an execution of the payout schedule. If the funds in the balance account are less than the retained amount, the execution is not initiated.  Default value: **0** |
+| salesDayClosingTime | string | No | The time of day when the sales day is closed in balance account time zone. The sales day closing time can be between 00:00 to 07:00.  Format: **HH:mm:ss** |
+| transferInstrumentId | string | Yes | The unique identifier of the transfer instrument to which the funds are paid out. |
+| updatedAt | string | No | The date and time when the payout schedule was updated. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 404 Client Error
+The resource was not found
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+## Response examples
+
+### 200 Success
+
+**get-payout-schedule**
+```json
+{
+  "id": "PSAC00000000000000000000000001",
+  "balancePlatformPayoutScheduleId": "PSPC00000000000000000000000001",
+  "balanceAccountId": "BA000000000000000000001",
+  "transferInstrumentId": "SE00000000000000000000001",
+  "currency": "EUR",
+  "reference": "Monthly payout",
+  "description": "Scheduled payout to merchant bank account",
+  "referenceForBeneficiary": "PAYOUT-REF-001",
+  "retainedAmount": 10000,
+  "minPayoutAmount": 1000,
+  "maxPayoutAmount": 100000000,
+  "createdAt": "2024-01-15T10:30:00Z",
+  "enabled": true,
+  "frequency": "monthly",
+  "frequencyValue": 1
+}
+```

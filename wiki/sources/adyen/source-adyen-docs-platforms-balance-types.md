@@ -20,6 +20,9 @@ This 2026-09-15 Adyen for Platforms snapshot defines five balance types for each
 - **Consequential examples:** Example 1 shows an incoming payment settling while a EUR 30 refund reserve keeps Available below current balance, then the refund settlement clears the hold. Example 2 shows a positive current balance with negative Available because of a future refund. Example 3 distinguishes Pending EUR 50 from Pending available EUR 20 when current/available is EUR -30. These are illustrative account timelines, not account-specific ledger or authorization evidence.
 - **Observe and respond:** For all currencies in a balance account, the page points to `GET /balanceAccounts/{id}`, `balancePlatform.balanceAccount.balance.updated` webhooks, and Customer Area **Balance accounts > Balances**. It says configurable balance-change notifications can help a platform decide whether to top up or transfer funds to avoid negative balances. That is operational guidance, not an instruction to move funds automatically or proof that a top-up succeeded.
 
+> [!warning] Contradiction
+> The 2026-11-02 [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id]] response field repeats the lower-of(pending, pending + available) formula (GET raw line 33), while this guide’s Example 2 reports Pending available EUR -70 for Pending EUR -70 and Available EUR -20 (this guide raw lines 72–84). The literal calculation would be EUR -90; these snapshots do not provide a reliable executable formula.
+
 ## Detail locators
 
 - Per-currency premise and five balance definitions, including literal formulas and reserve components: raw lines 19–30. Configurable balance notifications and optional top-up/internal-transfer response: line 32. API/webhook/Customer Area viewing routes: lines 34–40.

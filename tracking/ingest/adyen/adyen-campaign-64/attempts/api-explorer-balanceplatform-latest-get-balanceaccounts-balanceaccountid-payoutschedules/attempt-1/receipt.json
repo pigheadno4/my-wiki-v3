@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-payoutschedules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET managed payout schedules on a balance account\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/payoutSchedules\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/payoutSchedules/2026-11-02.md\"\ntags: [adyen, balance-platform, balance-accounts, managed-payouts, api]\n---\n\n## Overview\n\nThis 2026-11-02 Balance Platform API reference lists managed payout schedules configured on one balance account, with optional pagination and currency filtering. Its captured server is the TEST `/bcl/v2` endpoint; `latest` is a documentation route, not proof of current live availability. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The required string path `balanceAccountId` identifies the balance account. Optional query inputs are `limit` (default 10, maximum 100 items per page), prior-response `cursor`, and a three-character ISO `currency` filter. No request body is listed.\n- A 200 returns a required `balanceAccountPayoutSchedules` array and required `link` pagination object. Each returned schedule marks `balanceAccountId`, `balancePlatformPayoutScheduleId`, `createdAt`, and `transferInstrumentId` required. The balance-account schedule's own `id` is optional in this table; it is distinct from the platform schedule ID and payout destination transfer-instrument ID.\n- Optional schedule fields describe currency, enabled state, frequency (`daily`, `weekdays`, `weekly`, `monthly`), timing, amount bounds, retained funds, description, and references. `frequencyValue` is allowed only for monthly (1\u201331, with documented weekend/month-end adjustments) or weekly (1\u20135). Description can be truncated beyond 140 characters; beneficiary reference supports alphanumeric characters. `description`, `frequency`, `frequencyValue`, and beneficiary reference default from the applied platform schedule; minimum/maximum payout and retained amounts each default to 0. If funds are below the retained amount, an execution is not initiated. The raw schema owns exact limits and time-zone detail.\n- This is a configuration read. Even `enabled: true` or a returned transfer-instrument ID does not show that an execution was initiated, a transfer succeeded, funds were booked, or a recipient bank received a payout. The listed 401, 404, 422 and 500 responses concern authentication, missing resource, validation and server failure. The reference does not specify a caller role, GET idempotency key, schedule deletion/propagation behavior, version conflict, or payout outcome.\n\n## Detail locators\n\n- Purpose, TEST server, path and query inputs: pinned raw lines 5\u201325.\n- 200 array, schedule identities, defaults/limits/timing and pagination links: pinned raw lines 27\u201363.\n- Error schemas: pinned raw lines 66\u2013139; illustrative 200 JSON: lines 141\u2013172.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform balance-account and managed-payout context.\n- [[source-adyen-docs-platforms-managed-payouts-use-managed-payouts]] \u2014 separate dated schedule lifecycle guide.\n- [[source-adyen-docs-platforms-managed-payouts]] \u2014 separate dated managed-payout overview.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/payoutSchedules/2026-11-02|Balance Platform GET balance-account payout schedules snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns a list of all managed payout schedules that are configured on a balance account. You can use query parameters to filter the elements that are returned in the list.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "The number of items returned per page, maximum of 100 items. By default, the response returns 10 items per page.",
+      "location": "raw line 23, Parameters > Query parameters > limit"
+    },
+    {
+      "text": "The unique identifier of the balance platform payout schedule that is applied to the balance account.",
+      "location": "raw line 37, Responses > 200 Success > balancePlatformPayoutScheduleId"
+    },
+    {
+      "text": "If the funds in the balance account are less than the retained amount, the execution is not initiated.",
+      "location": "raw line 49, Responses > 200 Success > retainedAmount"
+    },
+    {
+      "text": "The unique identifier of the transfer instrument to which the funds are paid out.",
+      "location": "raw line 51, Responses > 200 Success > transferInstrumentId"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-get-balance-account-payout-schedules-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-payoutschedules]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET list of configured managed payout schedules on a balance account, with currency filtering and pagination; readback is not payout execution or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/payoutSchedules/2026-11-02.md",
+  "raw_sha256": "0fff17f571e590ae9d8ce63e1283f1ad300b7d568687302dd40e1b2e9b122f7d",
+  "status": "candidate_ready"
+}

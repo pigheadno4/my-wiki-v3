@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-paymentinstruments-id-transactionrules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GET /paymentInstruments/{id}/transactionRules \u2014 List payment-instrument transaction rules | Adyen\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/transactionRules\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/transactionRules/2026-11-02.md\"\ntags: [adyen, balance-platform, issuing, payment-instruments, transaction-rules, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `GET /paymentInstruments/{id}/transactionRules`, which returns a list of transaction rules associated with a payment instrument. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL says `latest` while the server path identifies `v2`. It reads rule configuration, not transaction decisions. See [[adyen-issuing]] for card and rule context.\n\n## Key takeaways\n\n- The only listed input is required string path `id`, the payment-instrument identifier. No query parameters, request body, GET default, pagination or list limit is specified. The 200 response is labeled request success; its `transactionRules` array is optional. Required properties inside an included rule object do not make that top-level array required. [Raw: lines 5\u201327]\n- Within a returned rule, the table requires `description`, `entityKey`, `interval`, `reference`, `ruleRestrictions` and rule `type`; it marks rule `id`, `status`, `outcomeType`, dates and other fields optional. `entityKey` names a resource type and reference for the rule's scope, which can be a balance platform, account holder, balance account, payment-instrument group or payment instrument; it is distinct from the GET path ID. The nested `interval.type` is required if an interval object is included; `duration` is conditionally required for rolling or sliding intervals. [Raw: lines 27\u201347, 73\u201376]\n- The schema covers `blockList`, `maxUsage`, `velocity` and `bypass` rule types; request types default to authorization and can include authentication, tokenization or bank transfer. `hardBlock` is the default outcome; `scoreBased` and `enforceSCA` have request-type restrictions, and a score-based outcome requires a score from -100 to 100. `aggregationLevel` defaults to payment-instrument level for relevant accumulation rules and must be at the same or a lower hierarchy than `entityKey`. Interval duration is capped at 90 days or equivalent. `matchingValues` and same-amount/counterparty restrictions have velocity-specific prerequisites. See the raw field table for the full condition and operation inventory. [Raw: lines 28\u201376]\n- The example shows two active `blockList` rules under payment-instrument entity keys, one for point-of-sale processing and one for active network tokens. It illustrates schema shape and cannot establish that a real instrument has those rules, that `active` means a specific transaction was evaluated, or that an authorization was declined. [Raw: lines 180\u2013238]\n- The page lists 400 request-reading/understanding, 401 authentication, 403 permission, 422 validation and 500 server-processing failures. Generic 422 and 500 examples discuss payment-instrument update/creation, not a transaction-rule GET failure or a rule outcome. [Raw: lines 79\u2013176, 240\u2013304]\n\n## Detail locators\n\n- Purpose, TEST v2 server and required path ID: pinned raw lines 5\u201317.\n- 200 response schema, scopes, conditions, intervals, outcomes, defaults and limits: lines 19\u201376; success example: lines 178\u2013238.\n- Error headings/schemas and generic examples: lines 79\u2013176, 240\u2013304.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuing card and transaction-rule context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/transactionRules/2026-11-02|GET payment-instrument transaction rules \u2014 captured 2026-11-02]]",
+  "quotes": [
+    {
+      "text": "Returns a list of transaction rules associated with a payment instrument.",
+      "location": "raw line 7, under GET /paymentInstruments/{id}/transactionRules"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the payment instrument. |",
+      "location": "raw line 17, under Parameters > Path parameters"
+    },
+    {
+      "text": "| transactionRules | array of object | No | List of transaction rules. |",
+      "location": "raw line 27, under Responses > 200 Success"
+    },
+    {
+      "text": "|   - entityKey | object | Yes | The type and unique identifier of the resource to which the rule applies. |",
+      "location": "raw line 31, under Responses > 200 Success"
+    },
+    {
+      "text": "If not provided, by default, this is set to **authorization**.",
+      "location": "raw line 46, requestType row in 200 response table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-paymentinstrument-transactionrules-get-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-transactionrules]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET for rules associated with a payment instrument and their scoped configuration; list readback does not prove rule evaluation or a transaction outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/transactionRules/2026-11-02.md",
+  "raw_sha256": "0affde7df8881404921c3a587380aa159a79658aaedc191d80d6d3ff149c090f",
+  "status": "candidate_ready"
+}

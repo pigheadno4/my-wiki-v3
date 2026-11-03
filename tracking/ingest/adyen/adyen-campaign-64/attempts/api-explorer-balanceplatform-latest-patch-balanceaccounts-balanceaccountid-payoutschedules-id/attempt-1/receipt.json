@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-balanceaccounts-balanceaccountid-payoutschedules-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2 PATCH applied payout schedule\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/payoutSchedules/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/payoutSchedules/(id)/2026-11-02.md\"\ntags: [adyen, balance-platform, platforms, managed-payouts, payout-schedules]\n---\n\n## Overview\n\nThis 2026-11-02 [[adyen]] Balance Platform API v2 TEST reference documents `PATCH /balanceAccounts/{balanceAccountId}/payoutSchedules/{id}`: update a managed payout schedule already applied to a balance account. The required path IDs identify the balance account and its applied payout schedule, not the platform-level schedule or destination transfer instrument. Omitted optional request parameters remain unchanged. The listed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`; the `latest` URL does not establish current version or live eligibility. See [[adyen-platforms]].\n\n## Key takeaways\n\n- The request table marks every body field **No** and does not separately state whole-body requiredness. Fields include `description`, `enabled`, `frequency`, `frequencyValue`, min/max payout amounts, `reference`, `referenceForBeneficiary`, `retainedAmount`, `salesDayClosingTime` and `transferInstrumentId`. The example changes description, enabled and retained amount only; it is not a universal request shape (raw lines 14\u201345). The `enabled` request description says \u201cimmediately after it is created\u201d even though this operation is PATCH of an applied schedule; it does not turn PATCH into creation.\n- `frequency` accepts daily, weekdays, weekly or monthly and defaults to the applied platform schedule's `defaultFrequency` where a default applies. `frequencyValue` is allowed only for weekly (1\u20135) or monthly (1\u201331). The page says a monthly weekend date moves initiation to the next business day, and a nonexistent 29th\u201331st moves it to that month's last day. It does not define weekday-number mapping. Description has a 140-character maximum and may be truncated (raw lines 24\u201327, 58\u201361).\n- Min and max payout amounts and retained amount each have a stated default of 0; the raw does not state currency units. If funds are below `retainedAmount`, execution is not initiated. `salesDayClosingTime` is in the balance account time zone, 00:00\u201307:00, in HH:mm:ss format. `transferInstrumentId` is the destination instrument ID. The request's `reference` is shown only in the schedule; the response says it does not appear on payout statements (raw lines 28\u201334, 63\u201369).\n- A 200 says the update request succeeded. The response marks `balanceAccountId`, `balancePlatformPayoutScheduleId`, `createdAt` and `transferInstrumentId` required; its account-level payout-schedule `id`, `enabled`, schedule settings, currency and `updatedAt` are marked optional. The response example shows `enabled: false` and illustrative amounts, not an executed payout (raw lines 46\u201370, 148\u2013171).\n\n> [!warning] Contradiction\n> The request description allows letters, digits, hyphen and space for `referenceForBeneficiary`, with spaces possibly replaced by hyphens, but the response description lists only letters and digits (raw lines 31 and 66). The snapshot does not resolve accepted versus returned characters or guarantee what a beneficiary bank displays.\n\n- The page lists 401 authentication, 404 not found, 422 validation and 500 server errors (raw lines 73\u2013146). It specifies no idempotency, schedule deletion, propagation timing, payout-execution result, reversal or bank-receipt contract. Updating a schedule, including setting `enabled`, is configuration evidence; execution and financial outcomes require separate evidence.\n\n## Detail locators\n\n- Purpose, TEST v2 host, two path IDs and optional request fields: raw lines 5\u201334.\n- Request example, success schema and response example: raw lines 36\u201370, 148\u2013171.\n- Error schemas: raw lines 73\u2013146.\n- Beneficiary-reference character mismatch: raw lines 31 and 66.\n\n## Related\n\n- [[adyen-platforms]] \u2014 managed schedule and balance-account context.\n- [[source-adyen-docs-platforms-managed-payouts-use-managed-payouts]] \u2014 separate application, management and execution-boundary guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/payoutSchedules/(id)/2026-11-02|PATCH applied payout schedule reference, captured 2026-11-02]]",
+  "quotes": [
+    {
+      "text": "If an optional parameter is not included in the request, it remains unchanged.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The unique identifier of the payout schedule applied to the balance account.",
+      "location": "raw line 17"
+    },
+    {
+      "text": "The unique identifier of the balance account.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "Allowed only if `frequency` is **monthly** or **weekly**.",
+      "location": "raw line 27"
+    },
+    {
+      "text": "If the funds in the balance account are less than the retained amount, the execution is not initiated.",
+      "location": "raw line 32"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-patch-applied-payoutschedule-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceaccounts-balanceaccountid-payoutschedules-id]] \u2014 2026-11-02-captured Balance Platform API v2 TEST PATCH reference for an applied managed payout schedule's optional settings and retained-funds gate; request/response beneficiary-reference character descriptions differ, and configuration success is not payout execution.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The request and response descriptions for referenceForBeneficiary list different supported characters (raw lines 31 and 66); source warning retains the mismatch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/payoutSchedules/(id)/2026-11-02.md",
+  "raw_sha256": "f113eb30e01049e7ca5be2713f3de6f8eeff5a44716e521ee96a3087ec96331d",
+  "status": "candidate_ready"
+}

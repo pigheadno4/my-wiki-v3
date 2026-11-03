@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-paymentinstruments-id-reveal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Reveal card PAN by payment instrument ID\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal/2026-11-02.md\"\ntags: [adyen, balance-platform, issuing, card-data, api]\n---\n\n## Overview\n\nThis 2026-11-02 [[adyen]] Balance Platform API Explorer capture documents `GET /paymentInstruments/{id}/reveal` on the listed TEST `/bcl/v2` server. It returns sensitive card details for the payment instrument identified in the path. The page explicitly requires the API credential's `Balance Platform BCL PCI` role. This GET response schema lists card data directly; it is distinct from the separately captured [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments-reveal|POST /paymentInstruments/reveal]] encrypted-data route. Neither endpoint's response proves cardholder display, card activation or a transaction. The `latest` URL and TEST host do not establish current version, LIVE availability or credential entitlement.\n\n## Key takeaways\n\n- Required string path `id` is the payment instrument's unique identifier. This page lists no query parameters, request body, idempotency header, defaults or amount limits.\n- The 200 schema marks `pan`, `cvc` (card CVC2) and `expiration` required at the top level. Within required `expiration`, `month` and `year` are individually optional. The one 200 example illustrates values but does not guarantee particular card details or display to a cardholder. The page does not describe encryption of this GET response or the client handling path.\n- The page documents 400 request, 401 authentication, 403 permission, 422 validation and 500 server errors. Its generic 422 example concerns changing a balance-account ID on a payment instrument; its generic 500 example concerns creation of a payment instrument. Those example details do not define reveal-specific state transitions or failures.\n\n> [!warning] Contradiction\n> The generic 422 and 500 examples describe payment-instrument update/creation (raw lines 192\u2013218), while this endpoint is a GET that reveals card data. They must not be interpreted as this GET changing or creating an instrument.\n\n## Detail locators\n\n- Raw lines 5\u201321: reveal purpose, required BCL PCI role, TEST v2 server and path ID.\n- Raw lines 23\u201335: 200 card-data response schema and nested expiration requiredness.\n- Raw lines 38\u2013135: 400, 401, 403, 422 and 500 error schemas.\n- Raw lines 137\u2013218: one 200 example and generic error examples; unrelated update/creation text at lines 192\u2013218.\n\n## Related\n\n- [[adyen]]\n- [[adyen-issuing]]\n- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments-reveal]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal/2026-11-02|Adyen Balance Platform API Explorer GET card reveal (captured 2026-11-02)]]\n",
+  "quotes": [
+    {
+      "text": "Returns the primary account number (PAN) of a payment instrument.",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal/2026-11-02.md:7"
+    },
+    {
+      "text": "- Balance Platform BCL PCI role",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal/2026-11-02.md:11"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the payment instrument. |",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal/2026-11-02.md:21"
+    },
+    {
+      "text": "| cvc | string | Yes | The CVC2 value of the card. |",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal/2026-11-02.md:31"
+    },
+    {
+      "text": "| pan | string | Yes | The primary account number (PAN) of the card. |",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal/2026-11-02.md:35"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-card-get-reveal-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-reveal]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET for role-gated PAN/CVC2/expiry readback by payment-instrument ID; distinct from the separate encrypted POST reveal route, and not proof of display, card activation or payment.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The assigned raw's generic 422/500 examples describe payment-instrument update/creation rather than this reveal GET; source page scopes the mismatch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/paymentInstruments/(id)/reveal/2026-11-02.md",
+  "raw_sha256": "be5d7853149775cf4c68af87c6a92517a7fda1c4777f708f4b0e7849d08be81c",
+  "status": "candidate_ready"
+}

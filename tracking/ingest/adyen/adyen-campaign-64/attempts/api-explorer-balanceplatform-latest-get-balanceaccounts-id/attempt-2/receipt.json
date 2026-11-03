@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-id",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"GET /balanceAccounts/{id} \u2014 Get a balance account | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/2026-11-02.md\"\ntags: [adyen, balance-platform, balance-accounts, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `GET /balanceAccounts/{id}`, a read of a balance-account resource and its balances for the default currency and other currencies with a non-zero balance. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the reference URL says `latest`, while the server path identifies `v2`. The balance-account ID and associated account-holder ID are distinct. See [[adyen-platforms]] for the platform resource context.\n\n## Key takeaways\n\n- `id` is the only documented request parameter: a required string path ID for the balance account. This GET reference lists no request body, query parameter, input default or limit. The 200 response is labeled request success and requires the associated `accountHolderId` and balance-account `id`. [Raw: lines 9\u201327, 37]\n- The `balances` array is optional in the response schema, although the purpose line describes balances for the default currency and other currencies with non-zero balances. Within a returned balance object, `available` (for use), `balance` (settled transaction sum), `currency` and `reserved` are required; `pending` and `pendingAvailable` are optional. The `pendingAvailable` field description says it becomes available after pending settlement and prints a lower-of(`pending`, `pending + available`) formula. These fields represent different balance states; the example's EUR zeros are illustrative and do not prove later available funds or a completed payout. [Raw: lines 7, 28\u201334, 149\u2013170]\n\n> [!warning] Contradiction\n> The GET response field prints the `pendingAvailable` lower-of formula [Raw: line 33], but Example 2 in [[source-adyen-docs-platforms-balance-types]] shows Pending EUR -70, Available EUR -20 and Pending available EUR -70 [that guide's raw: lines 72\u201384]; the literal formula yields EUR -90. These dated snapshots do not establish a reliable executable calculation from that formula alone.\n\n- Optional response fields include `defaultCurrencyCode` (EUR default, immutable after creation), `description` (maximum 300 characters), `metadata`, `migratedAccountCode`, `platformPaymentConfiguration`, `reference` (maximum 150 characters), `status` (active by default) and `timeZone` (account-holder time zone default). The metadata-omission deletion note concerns an update, not this GET. The optional configuration fields have a 00:00 closing-time default and a nullable 1\u201320-business-day settlement delay requiring Custom Sales Day Payout enablement; their presence in a read does not grant that capability. [Raw: lines 35\u201345]\n- The page lists 400 request-reading/understanding, 401 authentication, 403 permission, 422 validation and 500 server-processing errors with a common error-body schema. Its generic 422 and 500 examples discuss payment-instrument update/creation, so they do not establish a balance-account GET mutation or failure condition. A returned balance account or reported status is readback, not resource creation, verification, authorization, booking, payout or bank-receipt proof. [Raw: lines 48\u2013145, 172\u2013236]\n\n## Detail locators\n\n- Purpose, TEST v2 server and required path parameter: pinned raw lines 5\u201317.\n- 200 response fields, balance meanings and optional configuration: lines 19\u201345; success example: lines 147\u2013170.\n- Error headings and body schemas: lines 48\u2013145; generic error examples: lines 172\u2013236.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform account-holder and balance-account resource context.\n- [[source-adyen-docs-platforms-balance-types]] \u2014 worked balance examples and the `pendingAvailable` formula conflict.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/2026-11-02|GET /balanceAccounts/{id} \u2014 captured 2026-11-02]]",
+  "quotes": [
+    {
+      "text": "Returns a balance account and its balances for the default currency and other currencies with a non-zero balance.",
+      "location": "raw line 7, under GET /balanceAccounts/{id} - Get a balance account"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the balance account. |",
+      "location": "raw line 17, under Parameters > Path parameters"
+    },
+    {
+      "text": "| accountHolderId | string | Yes | The unique identifier of the [account holder](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/accountHolders#responses-200-id) associated with the balance account. |",
+      "location": "raw line 27, under Responses > 200 Success"
+    },
+    {
+      "text": "| balances | array of object | No | List of balances with the amount and currency. |",
+      "location": "raw line 28, under Responses > 200 Success"
+    },
+    {
+      "text": "|   - balance | integer | Yes | The sum of the transactions that have already been settled. |",
+      "location": "raw line 30, under Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-balanceaccounts-get-by-id-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET reference for a balance-account resource and its balance fields; its `pendingAvailable` formula conflicts with a worked balance-types example, so readback does not establish an executable calculation or financial outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The GET pendingAvailable lower-of formula (raw line 33) conflicts with Example 2 in source-adyen-docs-platforms-balance-types (its raw lines 72\u201384). Coordinator should add a reciprocal > [!warning] Contradiction and cross-link to that source; its current prose already identifies the mismatch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(id)/2026-11-02.md",
+  "raw_sha256": "f5b6bb6dd748ff25ab9e15982d5b5e74b1bcc021f16912f7d73e93ef3737a5ff",
+  "status": "candidate_ready"
+}

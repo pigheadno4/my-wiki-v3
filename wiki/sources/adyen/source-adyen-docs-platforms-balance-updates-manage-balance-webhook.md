@@ -20,6 +20,9 @@ This 2026-09-15-captured Adyen for Platforms guide explains how to list, inspect
 - **Stop temporarily or permanently:** PATCH `status: inactive` temporarily stops notifications for that setting's conditions. DELETE `/balancePlatforms/{id}/webhooks/{id}/settings/{id}` permanently stops notifications for the specified setting/conditions. The guide does not describe a restore operation after deletion; do not infer that disabling the parent webhook, deleting the setting, and clearing conditions have the same effect.
 - **Condition logic remains qualified:** This page's `status=active` row says any condition may trigger. The related configuration guide's `conditions` row says all configured conditions must match. The two captured guides leave multi-condition Boolean behavior unresolved; a platform should verify the current API behavior before relying on a compound threshold. A read response, successful configuration change, or active setting is not proof that any notification was delivered or that the reported balance changed.
 
+> [!warning] Contradiction
+> This September 2026 pilot guide marks PATCH `type=balance` required (raw line 133), while the November 2026 API PATCH table marks `type` optional (raw line 34): [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceplatforms-balanceplatformid-webhooks-webhookid-settings-settingid]]. These captures do not resolve current request-validation requirements. The guide's dated pilot scope remains separate from API availability.
+
 ## Detail locators
 
 - Pilot notice and Configuration API management scope: pinned raw lines 15–24.

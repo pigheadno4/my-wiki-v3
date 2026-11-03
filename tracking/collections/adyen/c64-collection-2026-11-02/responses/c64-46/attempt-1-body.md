@@ -1,0 +1,206 @@
+# GET /paymentInstruments/{id}/networkTokens - List network tokens
+
+List the network tokens connected to a payment instrument.
+
+## Servers
+- https://balanceplatform-api-test.adyen.com/bcl/v2
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | The unique identifier of the payment instrument. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| networkTokens | array of object | No | List of network tokens. |
+|   - brandVariant | string | No | The card brand variant of the payment instrument associated with the network token. For example, **mc_prepaid_mrw**. |
+|   - creationDate | string | No | Date and time when the network token was created, in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) extended format. For example, **2025-03-19T10:15:30+01:00**.. |
+|   - device | object | No | Contains information about the device used to provision the network token. |
+|     - formFactor | string | No | The type of device used to provision the network token. |
+|     - osName | string | No | The operating system of the device used to provision the network token. |
+|     - phone | object | No | The information about the phone number of the device used to provision the the network token. This object is conditionally returned and is available for up to 24 hours after the provisioning request (access to this field requires a specific user role, please contact your Adyen representative to request permission). |
+|   - id | string | No | The unique identifier of the network token. |
+|   - paymentInstrumentId | string | No | The unique identifier of the payment instrument to which this network token belongs to. |
+|   - status | string | No | The status of the network token. Possible values: **active**, **inactive**, **suspended**, **closed**. |
+|   - tokenLastFour | string | No | The last four digits of the network token `id`. |
+|   - tokenRequestor | object | No | The token requestor is an entity who requested tokenization of the card for secure payments. |
+|     - id | string | No | The id of the network token requestor. |
+|     - name | string | No | The name of the network token requestor. |
+|   - type | string | No | The type of network token. For example, **wallet**, **cof**. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+## Response examples
+
+### 400 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/bad-request",
+  "title": "Bad request",
+  "status": 400,
+  "detail": "Empty input which would have resulted in a null result.",
+  "errorCode": "00_400"
+}
+```
+
+### 401 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Not authorized to access this service.",
+  "errorCode": "00_401"
+}
+```
+
+### 403 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "Not the right permission to access this service.",
+  "errorCode": "00_403"
+}
+```
+
+### 422 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/invalid-field-value",
+  "title": "Invalid Payment Instrument information provided",
+  "status": 422,
+  "detail": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+  "requestId": "1W1UI15PLVGC9V8O",
+  "errorCode": "30_031"
+}
+```
+
+### 500 Server Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/internal",
+  "title": "An internal error happened",
+  "status": 500,
+  "detail": "Unrecoverable error while trying to create payment instrument",
+  "requestId": "1WAF555PLWNTLYOQ",
+  "errorCode": "00_500"
+}
+```

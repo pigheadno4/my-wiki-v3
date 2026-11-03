@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps-sweepid-executions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: GET custom payout sweep executions\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/executions\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/executions/2026-11-02.md\"\ntags: [adyen, balance-platform, custom-payouts, sweeps, executions, api]\n---\n\n## Overview\n\nThis 2026-11-02-captured Balance Platform API v2 reference describes `GET /balanceAccounts/{balanceAccountId}/sweeps/{sweepId}/executions` as a paginated read of custom payout schedule executions on a balance account. The required path IDs identify the balance account and sweep configuration, not a transfer. The only displayed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`; the `latest` documentation URL does not establish current live version, access or account eligibility. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- Optional query `cursor` comes from a prior next/previous pagination link; optional `limit` defaults to 10 items per page. Optional comma-separated `results` filters for `succeeded`, `failed` or `skipped`. The 200 response requires `link` and `sweepExecutions`; individual pagination links and execution fields are optional.\n- Each execution may have its own `id`, `triggeredAt`, `result` and `resultDetails`. The details may include a human-readable `reason`, `reasonCode`, `sweepConfigurationDisabled`, and `transferId` for a transfer created by the execution, if applicable. Do not confuse the sweep-configuration path `sweepId`, execution `id`, and optional resulting `transferId`.\n- The API labels `succeeded` a completed sweep payout, `failed` a payout not completed due to error, and `skipped` a payout not triggered as expected. These are execution results. The companion custom-payout execution guide says to follow a resulting transfer ID through separate Transfer webhooks, including possible return; neither the list nor its illustrative `succeeded` item proves beneficiary bank receipt. [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts-view-custom-payout-executions]]\n- The page documents 401, 404, 422 and 500 errors. It does not state a credential role, request body, idempotency behavior, retry policy or execution-propagation timing. Its one 200 JSON sample is illustrative, not a guarantee that every execution has a transfer ID or next page.\n\n## Detail locators\n\n- Endpoint, TEST server, required path IDs and query filters/default: pinned raw lines 5\u201326.\n- 200 pagination and execution/result-detail fields: `## Responses > ### 200 Success`, lines 28\u201355.\n- Error schemas: `## Responses`, lines 58\u2013131. Illustrative one-item success and next-link JSON: `## Response examples`, lines 133\u2013155.\n\n## Related\n\n- [[adyen-platforms]] \u2014 custom payout and sweep context.\n- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts-view-custom-payout-executions]] \u2014 separate execution and transfer-lifecycle guidance.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-sweeps]] \u2014 separate sweep configuration creation.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/executions/2026-11-02|Custom payout sweep execution GET snapshot]]",
+  "quotes": [
+    {
+      "text": "Returns a paginated list of executions of a custom payout schedule on a balance account.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The unique identifier of the sweep configuration.",
+      "location": "pinned raw line 17, sweepId path parameter"
+    },
+    {
+      "text": "By default, the response returns 10 items per page.",
+      "location": "pinned raw line 25, limit query parameter"
+    },
+    {
+      "text": "| sweepExecutions | array of object | Yes | Contains a list of executions of the sweep configuration. |",
+      "location": "pinned raw line 47, 200 response"
+    },
+    {
+      "text": "The unique identifier of the transfer created by the sweep execution, if applicable.",
+      "location": "pinned raw line 54, resultDetails.transferId"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-get-sweep-executions-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps-sweepid-executions]] \u2014 2026-11-02-captured Balance Platform API v2 TEST paginated GET of custom payout sweep execution results; optional transfer ID and succeeded result do not prove bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/executions/2026-11-02.md",
+  "raw_sha256": "9480296719ac8c2a6a66b82381f9fc159f1cf5d62114250f39c36fb75c59d1e5",
+  "status": "candidate_ready"
+}

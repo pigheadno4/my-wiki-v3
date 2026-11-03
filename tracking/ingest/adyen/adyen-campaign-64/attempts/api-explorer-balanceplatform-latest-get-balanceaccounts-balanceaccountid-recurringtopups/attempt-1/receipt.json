@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-recurringtopups",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GET recurring top-ups for a balance account | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/recurringTopUps\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/recurringTopUps/2026-11-02.md\"\ntags: [adyen, balance-platform, issuing, recurring-top-ups, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `GET /balanceAccounts/{balanceAccountId}/recurringTopUps` to list configured recurring top-ups for one balance account. It links to an Issuing management guide; see [[adyen-issuing]] for that product context. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the `latest` documentation URL alone does not establish live availability.\n\n## Key takeaways\n\n- Required path `balanceAccountId` selects the balance account. Optional `cursor` is required to request the next or previous page; optional `limit` must be 1\u2013100. No default limit is stated. The 200 response requires `link` and `recurringTopUps`; optional first/last/next/previous/self link objects can contain `href`. [Raw: lines 14\u201326, 30\u201347]\n- Each returned top-up has required `counterparty.transferInstrumentId`, description, top-up `id`, `topUpAmount`, and `trigger`. The funding transfer-instrument ID, top-up ID and queried balance-account ID are different identities. Description is cut to 140 characters if longer. The beneficiary reference is optional and described as sent in transfer-related webhooks. The amount is in minor units and can have optional fixed or target objects. [Raw: lines 47\u201356]\n- `status` is optional; if omitted, the table says it defaults to `active`. `active` describes an enabled top-up that will pull funds; `inactive` cannot be triggered. The trigger can be a schedule or a minimum-balance threshold, but the schema table marks `schedule` optional and nested `threshold` required. Preserve this schema/prose tension instead of asserting that every configuration requires both trigger forms. A returned configuration or active status does not prove a top-up was initiated, transferred, booked or received. [Raw: lines 53\u201359]\n- Errors listed are 401 authentication, 403 permission, 404 missing top-up and 500 server processing. The 404 example instead says a balance account was not found; it is illustrative, not a complete catalog of missing-resource cases. [Raw: lines 62\u2013135, 207\u2013219]\n\n## Detail locators\n\n- Purpose, TEST v2 server and pagination inputs: pinned raw lines 5\u201326.\n- Success response, identities and trigger/status fields: lines 28\u201359.\n- Error schemas: lines 62\u2013135; success and error examples: lines 137\u2013233.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing funds context.\n- [[source-adyen-docs-issuing-add-manage-funds-top-ups]] \u2014 separate recurring top-up guide.\n- [[source-adyen-docs-issuing-add-manage-funds-top-ups-top-up-webhooks]] \u2014 separate asynchronous event guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/recurringTopUps/2026-11-02|Captured API Explorer page (2026-11-02)]]\n",
+  "quotes": [
+    {
+      "text": "View all recurring top ups configured for a specific `balanceAccountId`.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The cursor used for pagination. Required if you want to see the next or previous page of results.",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "Value must be between 1 and 100.",
+      "location": "pinned raw line 26"
+    },
+    {
+      "text": "that is funding the top-up.",
+      "location": "pinned raw line 49"
+    },
+    {
+      "text": "If not provided, by default, this is set to **active**.",
+      "location": "pinned raw line 53"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-recurring-topups-list-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-recurringtopups]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET for one balance account's configured recurring top-ups, with cursor pagination and trigger/status fields; readback is not a funds-transfer or booked-credit result.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/recurringTopUps/2026-11-02.md",
+  "raw_sha256": "83c32aa8b14eb69f48548bc4318eb1c11558cfc6755819e41fa238afe6367951",
+  "status": "candidate_ready"
+}

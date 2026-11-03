@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps-sweepid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Get a sweep\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/2026-11-02.md\"\ntags: [adyen, platforms, balance-platform, sweeps, api-reference]\n---\n\n## Overview\n\nCaptured Balance Platform API v2 TEST `GET /balanceAccounts/{balanceAccountId}/sweeps/{sweepId}` reference. It reads a sweep configuration identified by required balance-account and sweep path IDs for [[adyen]] [[adyen-platforms]]. Reading configuration is distinct from observing a sweep execution or financial result.\n\n## Key takeaways\n\n- A 200 reports the sweep `id`, `counterparty`, `currency`, and `schedule` as required response fields. `counterparty` is a source or destination depending on pull/push direction; one of balance-account ID, transfer-instrument ID, or merchant account is required by prose. Merchant account is limited to pull sweeps when processing payments with Adyen. Transfer-instrument top-up pull sweeps require a merchant account in the described setup and Adyen Support enablement.\n- The response can describe bank or internal `category`, bank-transfer `priorities`, `status`, `type`, and amounts. `sweepAmount` and `targetAmount` are mutually exclusive configurations. Nested amount currency and minor-unit value are required when their object is present. `triggerAmount` defaults to zero; direction defaults to push and status defaults to active according to response descriptions. These are documented configuration defaults, not evidence of a particular execution.\n- `schedule` is required and its nested `type` is required: cron, daily, weekly, monthly, or balance. Cron requires a five-part expression and uses the balance account time zone; daily, weekly and monthly descriptions give 07:00 CET timing; balance evaluates immediately upon the threshold. A pull threshold uses balance less than or equal to `triggerAmount`, while push uses greater than or equal.\n- Bank-transfer priorities are ordered preferences, with fallback when an earlier one is unsupported or unavailable; the response description says acceptance requires at least one supported and activated priority. This GET snapshot does not establish that a priority is currently enabled for a given platform or that a bank transfer occurred. Optional `reason` and `reasonDetail` describe disabled sweeps.\n- The 200 sample is an active daily push to another balance account with zero target and trigger values. It illustrates a returned configuration, not an execution. Generic 422 and 500 error examples mention payment instruments and should not be treated as sweep-specific failure behavior.\n\n## Detail locators\n\n- Operation, TEST server and path IDs: pinned raw lines 5\u201318. Full 200 field table, defaults and conditional fields: lines 20\u201354. Success example: lines 156\u2013182.\n- Error classes 400/401/403/422/500: lines 57\u2013154; generic error examples: lines 184\u2013248.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform balance-account and sweep context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/2026-11-02|Pinned 2026-11-02 API reference]]\n",
+  "quotes": [
+    {
+      "text": "Returns a sweep.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Either a `balanceAccountId`, `transferInstrumentId`, or `merchantAccount` is required.",
+      "location": "raw line 29, counterparty response field"
+    },
+    {
+      "text": "You can configure either `sweepAmount` or `targetAmount`, not both.",
+      "location": "raw line 45, sweepAmount response field"
+    },
+    {
+      "text": "If not provided, by default, this is set to **active**.",
+      "location": "raw line 44, status response field"
+    },
+    {
+      "text": "If not provided, by default, this is set to **push**.",
+      "location": "raw line 54, type response field"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-get-sweep-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps-sweepid]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET reference for one balance-account sweep configuration, including direction, schedule, threshold, counterparty and priority fields; readback is not execution or bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/2026-11-02.md",
+  "raw_sha256": "4e12bad7b80779e3344ed2f5ee808773de56e7febd84426b0be039476424775b",
+  "status": "candidate_ready"
+}

@@ -22,7 +22,8 @@ This 2026-09-15-captured Adyen Issuing guide configures recurring top-ups for a 
 
 ## Source discrepancies
 
-- The API `trigger.threshold` prose says a top-up triggers when available balance is **below** the threshold (raw line 99). The Customer Area instructions say **less than or equal to** (raw line 242). The snapshot does not reconcile equality behavior.
+> [!warning] Contradiction
+> This guide's API threshold description says a top-up triggers when available balance is **below** the threshold (guide raw line 99), while its Customer Area instructions say **less than or equal to** (guide raw line 242). The 2026-11-02-captured [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-recurringtopups|Balance Platform API v2 POST reference]] also says below (API raw line 40). These captured sources do not resolve whether equality triggers a top-up.
 - The parameter table names `topUpAmount.fixed` (raw lines 78–83), while the optional placeholder payload uses `topUpAmount.fixedAmount` and an outer `currency` field (raw lines 203–225). Treat that payload as an example, not a resolved schema.
 - The example request uses a `balanceplatform-api-beta.adyen.com` `/bcl/v2/` URL (raw line 122), while the page links the endpoint under the latest API Explorer (raw line 46). The snapshot does not establish which version or host to use now.
 

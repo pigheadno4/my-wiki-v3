@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-balanceaccounts-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2 PATCH /balanceAccounts/{id}\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/balanceAccounts/(id)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(id)/2026-11-02.md\"\ntags: [adyen, balance-platform, balance-accounts, platforms, api]\n---\n\n## Overview\n\nThis 2026-11-02 [[adyen]] Balance Platform API v2 TEST reference describes `PATCH /balanceAccounts/{id}`, updating the balance account selected by required path `id`. The listed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`; the `latest` URL does not establish a later current version, live access or account eligibility. See [[adyen-platforms]] for the account-holder and balance-account context.\n\n## Key takeaways\n\n- The path `id` identifies the balance account. The request-body table marks every listed property **No**: `accountHolderId`, `description`, `metadata`, `platformPaymentConfiguration` with nested `salesDayClosingTime` and `settlementDelayDays`, `reference`, `status` and `timeZone`. The page does not separately state whole-body requiredness or show a query parameter (raw lines 12\u201331). Its example updates only `timeZone` (raw lines 33\u201340).\n- Updating `metadata` deletes existing key-value pairs omitted from the supplied metadata object. The `status` enum is `active`, `closed` or `suspended`; linked payment instruments can be used only while the balance account is `active`. If no account time zone is set, it defaults to the account holder's time zone (raw lines 23\u201331). The separate [[source-adyen-docs-platforms-manage-balance-accounts|Platforms balance-account guide]] says closure is permanent and requires an empty balance account; its raw lines 473\u2013482 supply that prerequisite, which this endpoint table does not state.\n- `platformPaymentConfiguration.salesDayClosingTime` accepts HH:MM at whole hours 00 through 07 and defaults to 00:00. `settlementDelayDays` accepts 1\u201320 business days or null, defaults to null and requires Custom Sales Day Payout enablement for that balance account through an account or implementation manager (raw lines 26\u201328). This is a conditional configuration requirement, not a universal prerequisite for a balance-account update.\n- HTTP 200 says the request succeeded and returns the account-holder ID and balance-account ID as required fields; optional fields include status, configuration, metadata, reference, description, time zone, default currency and a balances array. If the array is present, its balance objects mark `available`, settled `balance`, `currency` and `reserved` required, while `pending` and `pendingAvailable` are optional. The response description says default currency is EUR and immutable after creation; it lists a 300-character description maximum and 150-character reference maximum (raw lines 41\u201367). The zero balances and active status in the example are illustrative, not funded-state or payout proof (raw lines 169\u2013190).\n- Errors are listed as 400, 401, 403, 422 and 500 (raw lines 70\u2013167). The generic 422 and 500 JSON examples refer to payment-instrument operations, so they do not define this PATCH's specific failure conditions (raw lines 231\u2013256). The page specifies no idempotency, propagation timing, asynchronous outcome or reversal contract. A successful balance-account update does not prove payment authorization, settlement, payout execution or bank receipt.\n\n## Detail locators\n\n- Endpoint, TEST v2 server, path and request properties: raw lines 5\u201331.\n- Time-zone request example and success response schema: raw lines 33\u201367.\n- Error schemas and generic examples: raw lines 70\u2013167, 192\u2013256.\n- Balance-account closure prerequisite: separate [[source-adyen-docs-platforms-manage-balance-accounts|Platforms guide]], raw lines 473\u2013482; not part of this endpoint schema.\n\n## Related\n\n- [[adyen-platforms]] \u2014 balance-account resource context.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts]] \u2014 separate creation contract.\n- [[source-adyen-docs-platforms-manage-balance-accounts]] \u2014 separate management and permanent-closure guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(id)/2026-11-02|PATCH balance account reference, captured 2026-11-02]]",
+  "quotes": [
+    {
+      "text": "Updates a balance account.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Note that during an update of metadata, the omission of existing key-value pairs will result in the deletion of those key-value pairs.",
+      "location": "raw line 25"
+    },
+    {
+      "text": "Requires Custom Sales Day Payout to be enabled for your balance account.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "Payment instruments linked to the balance account can only be used if the balance account status is **active**.",
+      "location": "raw line 30"
+    },
+    {
+      "text": "After a balance account is created, you cannot change its default currency.",
+      "location": "raw line 57"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-patch-balanceaccount-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceaccounts-id]] \u2014 2026-11-02-captured Balance Platform API v2 TEST PATCH reference for balance-account settings/status updates, metadata omission deletion and conditional payout configuration; update response is not financial-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(id)/2026-11-02.md",
+  "raw_sha256": "ecb89f847f5e3b7fda897faec5f9870ae5b1fac6f0cd18efcd4a84c87df0e04c",
+  "status": "candidate_ready"
+}

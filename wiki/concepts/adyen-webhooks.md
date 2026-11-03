@@ -16,6 +16,12 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-webhooks-webhookid-settings]] — 2026-11-02-captured Balance Platform API v2 TEST read of one webhook's balance-alert settings; the source flags unresolved any-versus-all condition wording and an anomalous 404 payment description. Readback does not prove event delivery or balance movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceplatforms-balanceplatformid-webhooks-webhookid-settings-settingid]] — 2026-11-02-captured Balance Platform API v2 TEST PATCH setting reference for Balance webhook threshold/status configuration; response is not delivery or balance-movement proof, and dated guides conflict on PATCH `type` requiredness and any-versus-all condition logic.
+
+
 - [[source-adyen-api-explorer-payment-webhooks-latest-post-balanceplatform-outgoingtransfer-created]] — 2026-09-15-captured legacy Payment webhook event for a balance-account deduction caused by capture or funds transfer, with `paymentId` request correlation; the separate Platforms catalog deprecates Payment webhooks in favor of Transfer webhooks.
 
 

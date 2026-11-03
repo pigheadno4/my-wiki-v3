@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-balanceaccounts-balanceaccountid-sweeps-sweepid",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"PATCH /balanceAccounts/{balanceAccountId}/sweeps/{sweepId} \u2014 Update a sweep | Adyen Balance Platform API\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/2026-11-02.md\"\ntags: [adyen, balance-platform, balance-accounts, sweeps, api-explorer]\n---\n\n## Overview\n\nThis [[adyen]] Balance Platform API Explorer snapshot documents `PATCH /balanceAccounts/{balanceAccountId}/sweeps/{sweepId}` for updating one sweep configuration under a balance account. The captured server is TEST `https://balanceplatform-api-test.adyen.com/bcl/v2`; the URL says `latest` while the server path identifies `v2`. A sweep's conditional push or pull configuration is distinct from an executed transfer, booked balance change or bank payout. See [[adyen-platforms]] for platform context.\n\n## Key takeaways\n\n- The path requires string `balanceAccountId` and `sweepId`. Every top-level request-body field is marked optional; the introduction says an omitted parameter remains unchanged. Conditional requirements still apply inside provided objects: `counterparty` requires a balance-account, transfer-instrument or merchant-account identity; `category` is required when setting `priorities`; a provided `schedule` requires its `type`, with `cronExpression` required for `cron`; provided `sweepAmount`, `targetAmount` and `triggerAmount` objects require currency and minor-unit integer value. `sweepAmount` and `targetAmount` are alternatives. [Raw: lines 7, 14\u201347]\n- `type` is `push` or `pull`, with the field description naming push as its default; `status` is `active` or `inactive`. The trigger-amount row names zero as its default and is evaluated under the specified schedule; the described push condition is balance at least the threshold, and pull is balance at most the threshold. A `balance` schedule type says execute instantly at threshold; `daily`, `weekly`, `monthly` and `cron` options have distinct timing. The currency must match a balance currency. Counterparty transitions explicitly require nulling the old `transferInstrumentId` or `balanceAccountId`; merchant-account source is restricted to pull sweeps when processing payments with Adyen. [Raw: lines 25\u201329, 34\u201347]\n- Bank-transfer priorities are ordered preferences, with request acceptance when at least one priority is supported and activated for the platform; acceptance does not prove that a particular route paid out. Pull top-up sweeps from a transfer instrument start a direct-debit request and the page says to contact Adyen Support for enablement. The description is capped at 140 characters after placeholder replacement. [Raw: lines 28, 30\u201331]\n- The 200 response is labeled request success and requires `counterparty`, uppercase `currency`, sweep `id` and `schedule`. Its other fields, including `status`, `triggerAmount`, category, direction, amount choices and reason fields, are optional in the response schema. The request example changes only `status` to `inactive`; its response example is illustrative configuration readback, not proof that a sweep fired or funds reached the destination. [Raw: lines 49\u201391, 193\u2013215]\n\n> [!warning] Contradiction\n> The PATCH introduction says omitted request parameters are left unchanged [Raw: line 7], while the request and response rows name omission defaults of `active` for `status`, zero for `triggerAmount`, and `push` for `type` [Raw: lines 37, 44, 47, 81, 88, 91]. The snapshot does not reconcile these defaults with the unchanged-field statement. It does not establish what omitting any of those fields does to an existing inactive, nonzero-threshold or pull sweep configuration.\n\n- Errors include 400 request-reading/understanding, 401 authentication, 403 insufficient permissions, 422 validation and 500 server-processing. The generic 422 and 500 examples concern payment instruments, so they do not define a sweep-specific failure or transfer outcome. [Raw: lines 94\u2013191, 217\u2013281]\n\n## Detail locators\n\n- Purpose, TEST v2 server, path IDs and request schema: pinned raw lines 5\u201347; status-only request example: lines 49\u201356.\n- Success response schema and optional-versus-required fields: lines 57\u201391; success example: lines 193\u2013215.\n- Error headings/schemas and generic examples: lines 94\u2013191, 217\u2013281.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform balance-account and sweep configuration context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/2026-11-02|PATCH balance-account sweep \u2014 captured 2026-11-02]]",
+  "quotes": [
+    {
+      "text": "Updates a sweep. When updating a sweep resource, note that if a request parameter is not provided, the parameter is left unchanged.",
+      "location": "raw line 7, under PATCH /balanceAccounts/{balanceAccountId}/sweeps/{sweepId}"
+    },
+    {
+      "text": "| sweepId | string | Yes | The unique identifier of the sweep. |",
+      "location": "raw line 17, under Parameters > Path parameters"
+    },
+    {
+      "text": "Required when setting `priorities`.",
+      "location": "raw line 24, request body category row"
+    },
+    {
+      "text": "If not provided, by default, this is set to **active**.",
+      "location": "raw line 37, request body status row"
+    },
+    {
+      "text": "The request has succeeded.",
+      "location": "raw line 60, under Responses > 200 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-balanceaccount-sweep-patch-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceaccounts-balanceaccountid-sweeps-sweepid]] \u2014 2026-11-02-captured Balance Platform API v2 TEST PATCH for a balance-account sweep configuration; omitted-field versus active/zero/push defaults wording conflicts, and a 200 resource response is not transfer or payout proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw PATCH introduction says omitted fields remain unchanged (line 7), while status, triggerAmount and type rows give omission defaults of active, zero and push (lines 37, 44, 47, 81, 88, 91); retain the source contradiction warning for update semantics."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/balanceAccounts/(balanceAccountId)/sweeps/(sweepId)/2026-11-02.md",
+  "raw_sha256": "6131721295138214f8486c6af5b4070def31caa6b14e77d4d6acd793194a3a63",
+  "status": "candidate_ready"
+}

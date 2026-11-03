@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: Get sweeps for a balance account\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md\"\ntags: [adyen, balance-platform, balance-accounts, sweeps, api]\n---\n\n## Overview\n\nThis 2026-11-02 [[adyen]] Balance Platform API Explorer capture documents `GET /balanceAccounts/{balanceAccountId}/sweeps` on the listed TEST `/bcl/v2` server. It reads paginated sweep configurations associated with one balance account. Reading a configuration is separate from a triggered transfer, booked balance-account movement or bank receipt. The `latest` URL and TEST server do not establish current version, LIVE availability or account eligibility.\n\n## Key takeaways\n\n- `balanceAccountId` is a required string path parameter identifying the balance account. Optional integer query parameters `limit` and `offset` control page size and skipped items: default `limit` is 10 and maximum is 100. No request body or idempotency header is specified.\n- The 200 schema requires `hasNext`, `hasPrevious` and a `sweeps` array. Each listed sweep requires `counterparty`, `currency`, sweep `id` and `schedule`; `schedule.type` is required within the schedule. The sweep ID is distinct from the path balance-account ID and counterparty identifiers. `counterparty` is a source or destination depending on sweep direction; the prose requires one of `balanceAccountId`, `transferInstrumentId` or `merchantAccount` within it, even though each child is marked optional in the table. `merchantAccount` is limited to pull sweeps when processing payments with Adyen; transfer-instrument pull top-ups carry a separate enablement note.\n- Optional configuration fields include `category` (bank or internal, required when setting `priorities`), `priorities`, status, references, description, `sweepAmount`, `targetAmount`, `triggerAmount` and direction `type`. The page says `sweepAmount` and `targetAmount` are alternatives; amount children `currency` and integer minor-unit `value` are required within each present amount object. It describes default `status=active`, default `type=push` and default `triggerAmount=0` when those fields are omitted. Those are configuration descriptions in the returned sweep schema, not evidence that this GET mutates or triggers a sweep.\n- `schedule.type` covers cron, daily, weekly, monthly and balance-triggered evaluation; `cronExpression` is required when the schedule type is cron. The raw schema gives schedule times/time zone, direction-specific threshold comparisons, and priority fallback detail; use those locators before implementing a schedule or route. `active` means enabled for potential triggering, while `inactive` cannot trigger; neither value proves an executed transfer.\n- The page documents 400, 401 authentication, 403 permission, 422 validation and 500 errors. The generic 422 and 500 example payloads refer to changing or creating a payment instrument, although this endpoint lists sweeps. Treat those examples as generic error illustrations, not sweep-update/create semantics or guaranteed failure causes.\n\n> [!warning] Contradiction\n> The 422 example says a `balanceAccountId` can only be changed in an inactive or requested payment instrument, and the 500 example says payment-instrument creation failed (raw lines 240\u2013265). This GET has no update/create request body and its 200 result lists sweeps. Those example details do not define this endpoint's lifecycle or failure conditions.\n\n## Detail locators\n\n- Raw lines 5\u201326: list purpose, pagination example, TEST v2 server and path/query parameters.\n- Raw lines 28\u201365: 200 response and sweep-configuration schema, including identity, counterparties, schedule, status, amounts, direction and defaults.\n- Raw lines 68\u2013165: 400, 401, 403, 422 and 500 error schemas.\n- Raw lines 167\u2013266: one success example and generic error examples; payment-instrument wording is at lines 240\u2013265.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[adyen-platform-internal-transfers]]\n- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts]]\n- [[source-adyen-docs-platforms-top-up-balance-account-scheduled-top-ups]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02|Adyen Balance Platform API Explorer GET balance-account sweeps (captured 2026-11-02)]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of the sweeps configured for a balance account.",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md:7"
+    },
+    {
+      "text": "| limit | integer | No | The number of items returned per page, maximum 100 items. By default, the response returns 10 items per page. |",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md:25"
+    },
+    {
+      "text": "| sweeps | array of object | Yes | List of sweeps associated with the balance account. |",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md:38"
+    },
+    {
+      "text": "|   - counterparty | object | Yes | The destination or the source of the funds, depending on the sweep `type`.  Either a `balanceAccountId`, `transferInstrumentId`, or `merchantAccount` is required. |",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md:40"
+    },
+    {
+      "text": "|   - schedule | object | Yes | The schedule when the `triggerAmount` is evaluated. If the balance meets the threshold, funds are pushed out of or pulled in to the balance account. |",
+      "location": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md:52"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-sweep-list-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-sweeps]] \u2014 2026-11-02-captured Balance Platform API v2 TEST paginated read of a balance account's sweep configurations, directions and scheduling fields; readback does not establish transfer execution, booking or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Assigned raw's generic 422 and 500 examples describe payment-instrument operations rather than this sweep-list GET; source page scopes the mismatch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/balanceAccounts/(balanceAccountId)/sweeps/2026-11-02.md",
+  "raw_sha256": "c6eea12b9b2f41c6aa08e549efc23cf09105f7425d1dddb5f53b7cad97ad3c6c",
+  "status": "candidate_ready"
+}

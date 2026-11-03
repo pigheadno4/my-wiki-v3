@@ -21,6 +21,12 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-api-explorer-checkout-latest-post-calculatetax]] — 2026-11-02-captured Checkout API v72 TEST tax-calculation request/response for initial India LRS TCS scope and a downstream /payments token/amount route; calculation does not establish a payment outcome.
+
+
+- [[source-adyen-api-explorer-checkout-latest-post-verifyshoppertaxidentification]] — 2026-11-02-captured Checkout API v72 TEST tax-identification verification reference for shopper-bound IN/PAN input, optional result fields and a successful-verification token for /payments; verification is not a payment outcome.
+
+
 - [[source-adyen-api-explorer-checkout-latest-post-payments-paymentpspreference-reversals]] — 2026-11-02-captured Checkout API v72 test-server full-amount reversal endpoint: distinct reversal-request reference, `received` acknowledgement and asynchronous `CANCEL_OR_REFUND` outcome. The endpoint excludes multiple partial captures; the linked 2026-09-15 reversal guide also excludes payment-request or Adyen for Platforms capture-request split data (guide raw lines 35–36).
 
 

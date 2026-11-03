@@ -1,0 +1,366 @@
+# PATCH /paymentInstruments/{id} - Update a payment instrument
+
+Updates a payment instrument. Once a payment instrument is already active, you can only update its status. However, for cards created with **inactive** status, you can still update the balance account associated with the card.
+
+## Servers
+- https://balanceplatform-api-test.adyen.com/bcl/v2
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | The unique identifier of the payment instrument. |
+
+
+### Request body
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| balanceAccountId | string | No | The unique identifier of the balance account associated with this payment instrument.  You can only change the balance account ID if the payment instrument has **inactive** status. |
+| card | object | No | Object that contains information about the card payment instrument. |
+|   - authentication | object | No | Contains the card user's password and mobile phone number. This is required when you issue cards that can be used to make online payments within the EEA and the UK, or can be added to digital wallets. Refer to [3D Secure and digital wallets](https://docs.adyen.com/issuing/3d-secure-and-wallets) for more information. |
+|     - email | string | No | The email address where the one-time password (OTP) is sent. |
+|     - password | string | No | The password used for 3D Secure password-based authentication. The value must be between 1 to 30 characters and must only contain the following supported characters.  Characters between **a-z**, **A-Z**, and **0-9**  Special characters: **äöüßÄÖÜ+-*/ç%()=?!~#'",;:$&àùòâôûáúó** |
+|     - phone | object | No | The phone number where the one-time password (OTP) is sent.  This object must have:  A `type` set to **mobile**.  A `number` with a valid country code.  A `number` with more than 4 digits, excluding the country code.  Make sure to verify that the card user owns the phone number. |
+|   - brand | string | Yes | The brand of the physical or the virtual card. Possible values: **visa**, **mc**. |
+|   - brandVariant | string | Yes | The brand variant of the physical or the virtual card. For example, **visadebit** or **mcprepaid**.  Reach out to your Adyen contact to get the values relevant for your integration. |
+|   - cardholderName | string | Yes | The name of the cardholder. Maximum length: 26 characters. |
+|   - configuration | object | No | Contains information about the configuration profile for your cards. The configuration profile consists of settings required when creating a physical or a virtual card. You identify a configuration profile with its `configurationProfileId`.  When you provide this field in a request, you can override the settings of an existing configuration profile.  Reach out to your Adyen contact to get the values that you can send in this object. |
+|     - activation | string | No | The activation label attached to the card that contains the activation instructions.  This field overrides the activation label design ID defined in the card configuration profile. |
+|     - activationUrl | string | No | Your app's URL, if you want to activate cards through your app. For example, **my-app://ref1236a7d**. A QR code is created based on this URL, and is included in the carrier. Before you use this field, reach out to your Adyen contact to set up the QR code process.  Maximum length: 255 characters. |
+|     - bulkAddress | object | No | Overrides the shipment bulk address defined in the card configuration profile. |
+|     - cardImageId | string | No | The unique identifier of the card image. This image is printed on the full front of the card. |
+|     - carrier | string | No | The letter or packaging to which the card is attached.  This field overrides the carrier design ID defined in the card configuration profile. |
+|     - carrierImageId | string | No | The unique identifier of the carrier image. This image is printed on the letter to which the card is attached. |
+|     - configurationProfileId | string | Yes | The unique identifier of the card configuration profile that contains the settings that are applied to the card. For example, the envelope and PIN mailer designs or the logistics company handling the shipment.  You can override some of the existing settings in the configuration profile by providing the corresponding fields in the `configuration` object. For example, send the `shipmentMethod` to override the logistics company defined in the card configuration profile. |
+|     - currency | string | No | The three-letter [ISO-4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the card. For example, **EUR**.  This field overrides the existing currency setting on the card configuration profile. |
+|     - envelope | string | No | Overrides the envelope design ID defined in the card configuration profile. |
+|     - insert | string | No | Any additional material, such as marketing material, that is shipped together with the card.  This field overrides the insert design ID defined in the card configuration profile. |
+|     - language | string | No | The two-letter [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code of the card. For example, **en**. |
+|     - logoImageId | string | No | The unique identifier of the logo image. This image is printed on the partial front of the card, for example, a logo on the upper right corner. |
+|     - pinMailer | string | No | The letter on which the PIN of the card is printed.  This field overrides the PIN mailer design ID defined in the card configuration profile. |
+|     - printLine | string | No | Print Line.  Text printed on the physical card below the cardholder name. You provide the value, which can be up to 26 characters. |
+|     - shipmentMethod | string | No | The logistics company that ships the card.  This field overrides the logistics company defined in the card configuration profile. |
+|   - deliveryContact | object | No | The delivery contact (name and address) for physical card delivery. |
+|     - address | object | Yes | The address of the contact. |
+|     - company | string | No | The company name of the contact. |
+|     - email | string | No | The email address of the contact. |
+|     - fullPhoneNumber | string | No | The full phone number of the contact provided as a single string. It will be handled as a landline phone. **Examples:** "0031 6 11 22 33 44", "+316/1122-3344", "(0031) 611223344" |
+|     - name | object | Yes | The name of the contact. |
+|     - phoneNumber | object | No | The phone number of the contact. |
+|     - webAddress | string | No | The URL of the contact's website. |
+|   - formFactor | string | Yes | The form factor of the card. Possible values: **virtual**, **physical**. |
+|   - threeDSecure | string | No | The 3DS configuration of the physical or the virtual card. Possible values: **fullySupported**, **secureCorporate**.  Reach out to your Adyen contact to get the values relevant for your integration. |
+|   - usage | string | No | Specifies how many times the card can be used. Possible values: **singleUse**, **multiUse**.  Reach out to your Adyen contact to determine the value relevant for your integration. |
+| status | string | No | The status of the payment instrument. If a status is not specified when creating a payment instrument, it is set to **active** by default. However, there can be exceptions for cards based on the `card.formFactor` and the `issuingCountryCode`. For example, when issuing physical cards in the US, the default status is **inactive**.  Possible values:  **active**:  The payment instrument is active and can be used to make payments.  **inactive**: The payment instrument is inactive and cannot be used to make payments.  **suspended**: The payment instrument is suspended, either because it was stolen or lost.  **closed**: The payment instrument is permanently closed. This action cannot be undone. |
+| statusComment | string | No | Comment for the status of the payment instrument.  Required if `statusReason` is **other**. |
+| statusReason | string | No | The reason for updating the status of the payment instrument.  Possible values: **lost**, **stolen**, **damaged**, **suspectedFraud**, **expired**, **endOfLife**, **accountClosure**, **other**. If the reason is **other**, you must also send the `statusComment` parameter describing the status change. |
+
+## Request examples
+
+### updatePaymentInstrumentBalanceAccount
+```json
+{
+  "balanceAccountId": "BA32272223222B5CM82WL892M"
+}
+```
+
+### updatePaymentInstrumentStatus
+```json
+{
+  "status": "suspended"
+}
+```
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| additionalBankAccountIdentifications | array | No | Contains optional, additional business account details. Returned when you create a payment instrument with `type` **bankAccount**. |
+| balanceAccountId | string | Yes | The unique identifier of the [balance account](https://docs.adyen.com/api-explorer/#/balanceplatform/v1/post/balanceAccounts__resParam_id) associated with the payment instrument. |
+| bankAccount | object | No | Contains the business account details. Returned when you create a payment instrument with `type` **bankAccount**. |
+|   - accountNumber | string | No | The bank account number, without separators or whitespace. |
+|   - accountType | string | No | The bank account type.  Possible values: **checking** or **savings**. Defaults to **checking**. |
+|   - branchNumber | string | No | The bank account branch number, without separators or whitespace |
+|   - formFactor | string | No | Business accounts with a `formFactor` value of **physical** are business accounts issued under the central bank of that country. The default value is **physical** for NL, US, and UK business accounts.  Adyen creates a local IBAN for business accounts when the `formFactor` value is set to **virtual**. The local IBANs that are supported are for DE and FR, which reference a physical NL account, with funds being routed through the central bank of NL. |
+|   - iban | string | No | The international bank account number as defined in the [ISO-13616](https://www.iso.org/standard/81090.html) standard. |
+|   - routingNumber | string | No | The [routing number](https://en.wikipedia.org/wiki/ABA_routing_transit_number), without separators or whitespace. |
+|   - sortCode | string | No | The [sort code](https://en.wikipedia.org/wiki/Sort_code), without separators or whitespace. |
+|   - type | string | Yes | **iban** or **usLocal** or **ukLocal** |
+| card | object | No | Contains information about the card payment instrument. Returned when you create a payment instrument with `type` **card**. |
+|   - authentication | object | No | Contains the card user's password and mobile phone number. This is required when you issue cards that can be used to make online payments within the EEA and the UK, or can be added to digital wallets. Refer to [3D Secure and digital wallets](https://docs.adyen.com/issuing/3d-secure-and-wallets) for more information. |
+|     - email | string | No | The email address where the one-time password (OTP) is sent. |
+|     - password | string | No | The password used for 3D Secure password-based authentication. The value must be between 1 to 30 characters and must only contain the following supported characters.  Characters between **a-z**, **A-Z**, and **0-9**  Special characters: **äöüßÄÖÜ+-*/ç%()=?!~#'",;:$&àùòâôûáúó** |
+|     - phone | object | No | The phone number where the one-time password (OTP) is sent.  This object must have:  A `type` set to **mobile**.  A `number` with a valid country code.  A `number` with more than 4 digits, excluding the country code.  Make sure to verify that the card user owns the phone number. |
+|   - bin | string | No | The bank identification number (BIN) of the card number. |
+|   - brand | string | Yes | The brand of the physical or the virtual card. Possible values: **visa**, **mc**. |
+|   - brandVariant | string | Yes | The brand variant of the physical or the virtual card. For example, **visadebit** or **mcprepaid**.  Reach out to your Adyen contact to get the values relevant for your integration. |
+|   - cardholderName | string | Yes | The name of the cardholder. Maximum length: 26 characters. |
+|   - configuration | object | No | Contains information about the configuration profile for your cards. The configuration profile consists of settings required when creating a physical or a virtual card. You identify a configuration profile with its `configurationProfileId`.  When you provide this field in a request, you can override the settings of an existing configuration profile.  Reach out to your Adyen contact to get the values that you can send in this object. |
+|     - activation | string | No | The activation label attached to the card that contains the activation instructions.  This field overrides the activation label design ID defined in the card configuration profile. |
+|     - activationUrl | string | No | Your app's URL, if you want to activate cards through your app. For example, **my-app://ref1236a7d**. A QR code is created based on this URL, and is included in the carrier. Before you use this field, reach out to your Adyen contact to set up the QR code process.  Maximum length: 255 characters. |
+|     - bulkAddress | object | No | Overrides the shipment bulk address defined in the card configuration profile. |
+|     - cardImageId | string | No | The unique identifier of the card image. This image is printed on the full front of the card. |
+|     - carrier | string | No | The letter or packaging to which the card is attached.  This field overrides the carrier design ID defined in the card configuration profile. |
+|     - carrierImageId | string | No | The unique identifier of the carrier image. This image is printed on the letter to which the card is attached. |
+|     - configurationProfileId | string | Yes | The unique identifier of the card configuration profile that contains the settings that are applied to the card. For example, the envelope and PIN mailer designs or the logistics company handling the shipment.  You can override some of the existing settings in the configuration profile by providing the corresponding fields in the `configuration` object. For example, send the `shipmentMethod` to override the logistics company defined in the card configuration profile. |
+|     - currency | string | No | The three-letter [ISO-4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the card. For example, **EUR**.  This field overrides the existing currency setting on the card configuration profile. |
+|     - envelope | string | No | Overrides the envelope design ID defined in the card configuration profile. |
+|     - insert | string | No | Any additional material, such as marketing material, that is shipped together with the card.  This field overrides the insert design ID defined in the card configuration profile. |
+|     - language | string | No | The two-letter [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code of the card. For example, **en**. |
+|     - logoImageId | string | No | The unique identifier of the logo image. This image is printed on the partial front of the card, for example, a logo on the upper right corner. |
+|     - pinMailer | string | No | The letter on which the PIN of the card is printed.  This field overrides the PIN mailer design ID defined in the card configuration profile. |
+|     - printLine | string | No | Print Line.  Text printed on the physical card below the cardholder name. You provide the value, which can be up to 26 characters. |
+|     - shipmentMethod | string | No | The logistics company that ships the card.  This field overrides the logistics company defined in the card configuration profile. |
+|   - cvc | string | No | The CVC2 value of the card.  The CVC2 is not sent by default. This is only returned in the `POST` response for single-use virtual cards. |
+|   - deliveryContact | object | No | The delivery contact (name and address) for physical card delivery. |
+|     - address | object | Yes | The address of the contact. |
+|     - company | string | No | The company name of the contact. |
+|     - email | string | No | The email address of the contact. |
+|     - fullPhoneNumber | string | No | The full phone number of the contact provided as a single string. It will be handled as a landline phone. **Examples:** "0031 6 11 22 33 44", "+316/1122-3344", "(0031) 611223344" |
+|     - name | object | Yes | The name of the contact. |
+|     - phoneNumber | object | No | The phone number of the contact. |
+|     - webAddress | string | No | The URL of the contact's website. |
+|   - expiration | object | No | The expiration date of the card. |
+|     - month | string | No | The month in which the card will expire. |
+|     - year | string | No | The year in which the card will expire. |
+|   - formFactor | string | Yes | The form factor of the card. Possible values: **virtual**, **physical**. |
+|   - lastFour | string | No | Last last four digits of the card number. |
+|   - number | string | No | The primary account number (PAN) of the card.  The PAN is masked by default and returned only for single-use virtual cards. |
+|   - threeDSecure | string | No | The 3DS configuration of the physical or the virtual card. Possible values: **fullySupported**, **secureCorporate**.  Reach out to your Adyen contact to get the values relevant for your integration. |
+|   - usage | string | No | Specifies how many times the card can be used. Possible values: **singleUse**, **multiUse**.  Reach out to your Adyen contact to determine the value relevant for your integration. |
+| description | string | No | Your description for the payment instrument, maximum 300 characters. |
+| id | string | Yes | The unique identifier of the payment instrument. |
+| issuingCountryCode | string | Yes | The two-character [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code where the payment instrument is issued. For example, **NL** or **US**. |
+| paymentInstrumentGroupId | string | No | The unique identifier of the [payment instrument group](https://docs.adyen.com/api-explorer/#/balanceplatform/v1/post/paymentInstrumentGroups__resParam_id) to which the payment instrument belongs. |
+| reference | string | No | Your reference for the payment instrument, maximum 150 characters. |
+| replacedById | string | No | The unique identifier of the payment instrument that replaced this payment instrument. |
+| replacementOfId | string | No | The unique identifier of the payment instrument that is replaced by this payment instrument. |
+| status | string | No | The status of the payment instrument. If a status is not specified when creating a payment instrument, it is set to **active** by default. However, there can be exceptions for cards based on the `card.formFactor` and the `issuingCountryCode`. For example, when issuing physical cards in the US, the default status is **inactive**.  Possible values:  **active**:  The payment instrument is active and can be used to make payments.  **inactive**: The payment instrument is inactive and cannot be used to make payments.  **suspended**: The payment instrument is suspended, either because it was stolen or lost.  **closed**: The payment instrument is permanently closed. This action cannot be undone. |
+| statusComment | string | No | Comment for the status of the payment instrument.  Required if `statusReason` is **other**. |
+| statusReason | string | No | The reason for the status of the payment instrument.  Possible values: **accountClosure**, **damaged**, **endOfLife**, **expired**, **lost**, **stolen**, **suspectedFraud**, **transactionRule**, **other**. If the reason is **other**, you must also send the `statusComment` parameter describing the status change. |
+| type | string | Yes | The type of payment instrument.  Possible values: **card**, **bankAccount**. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+## Response examples
+
+### 200 Success
+
+**updatePaymentInstrumentBalanceAccount**
+```json
+{
+  "balanceAccountId": "BA32272223222B5CM82WL892M",
+  "description": "S. Hopper - Main card",
+  "issuingCountryCode": "GB",
+  "status": "inactive",
+  "type": "card",
+  "card": {
+    "brand": "mc",
+    "brandVariant": "mcdebit",
+    "cardholderName": "Simon Hopper",
+    "formFactor": "virtual",
+    "bin": "555544",
+    "expiration": {
+      "month": "01",
+      "year": "2024"
+    },
+    "lastFour": "5785",
+    "number": "************5785"
+  },
+  "id": "PI3227C223222B5CMD278FKGS"
+}
+```
+
+**updatePaymentInstrumentStatus**
+```json
+{
+  "balanceAccountId": "BA32272223222B59CZ3T52DKZ",
+  "description": "S. Hopper - Main card",
+  "issuingCountryCode": "GB",
+  "status": "suspended",
+  "type": "card",
+  "card": {
+    "brand": "mc",
+    "brandVariant": "mcdebit",
+    "cardholderName": "Simon Hopper",
+    "formFactor": "virtual",
+    "bin": "555544",
+    "expiration": {
+      "month": "01",
+      "year": "2024"
+    },
+    "lastFour": "5785",
+    "number": "************5785"
+  },
+  "id": "PI3227C223222B5CMD278FKGS"
+}
+```
+
+### 400 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/bad-request",
+  "title": "Bad request",
+  "status": 400,
+  "detail": "Empty input which would have resulted in a null result.",
+  "errorCode": "00_400"
+}
+```
+
+### 401 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Not authorized to access this service.",
+  "errorCode": "00_401"
+}
+```
+
+### 403 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/security/unauthorized",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "Not the right permission to access this service.",
+  "errorCode": "00_403"
+}
+```
+
+### 422 Client Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/invalid-field-value",
+  "title": "Invalid Payment Instrument information provided",
+  "status": 422,
+  "detail": "The balanceAccountId can only be changed when the status is Inactive or Requested",
+  "requestId": "1W1UI15PLVGC9V8O",
+  "errorCode": "30_031"
+}
+```
+
+### 500 Server Error
+
+**generic**
+```json
+{
+  "type": "https://docs.adyen.com/errors/general/internal",
+  "title": "An internal error happened",
+  "status": 500,
+  "detail": "Unrecoverable error while trying to create payment instrument",
+  "requestId": "1WAF555PLWNTLYOQ",
+  "errorCode": "00_500"
+}
+```

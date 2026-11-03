@@ -15,6 +15,60 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstrumentgroups-id]] — 2026-11-02-captured Balance Platform API v2 TEST GET readback for one payment instrument group and its platform/transaction variant; readback does not establish instrument activation or transaction outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-networktokenactivationdata]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for Adyen-issued payment-instrument network-token activation data used by provisioning SDKs; `sdkInput` is response-optional but needed for SDK initialization, and retrieval is not token activation.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-networktokens]] — 2026-11-02-captured Balance Platform API v2 TEST GET network-token list by payment instrument, with separate token statuses and conditional time-limited role-gated device phone; readback is not card-transaction proof.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments-id-networktokenactivationdata]] — 2026-11-02-captured Balance Platform API v2 TEST POST for wallet network-token provisioning data, with `sdkOutput` table/prose requiredness tension and optional response `sdkInput` needed by the SDK; 200 does not prove token activation or payment.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-transactionrules]] — 2026-11-02-captured Balance Platform API v2 TEST GET for rules associated with a payment instrument and their scoped configuration, with conflicting bypass restriction wording; list readback does not prove rule evaluation or a transaction outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-balanceaccounts-balanceaccountid-recurringtopups]] — 2026-11-02-captured Balance Platform API v2 TEST recurring-top-up POST; 200 and an ID are request evidence, while the created Configuration webhook confirms asynchronous creation and later transfer/credit remain separate; threshold equality wording differs from the linked Issuing guide.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id]] — 2026-11-02-captured Balance Platform API v2 TEST GET for one card or bank-account payment instrument's identity, linked balance account and reported status; readback and the active/expired sample do not prove current usability or payment outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-id-reveal]] — 2026-11-02-captured Balance Platform API v2 TEST GET for role-gated PAN/CVC2/expiry readback by payment-instrument ID; distinct from the separate encrypted POST reveal route, and not proof of display, card activation or payment.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-balanceaccounts-balanceaccountid-recurringtopups-topupid]] — 2026-11-02-captured Balance Platform API v2 TEST deletion of one balance-account recurring top-up configuration; bodyless 204 does not establish funds reversal or bank movement.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-balanceaccounts-balanceaccountid-recurringtopups-topupid]] — 2026-11-02-captured Balance Platform API v2 TEST PATCH reference for an existing recurring top-up configuration, amount/trigger/status readback and illustrative 422 failures; omitted-status default conflicts with the paired inactive response example, and update success is not booked credit.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-balanceaccountid-recurringtopups]] — 2026-11-02-captured Balance Platform API v2 TEST GET for one balance account's configured recurring top-ups, with cursor pagination and trigger/status fields; readback is not a funds-transfer or booked-credit result.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-paymentinstruments-paymentinstrumentid-authorisedcardusers]] — 2026-11-02-captured Balance Platform API v2 TEST GET for legal-entity IDs of authorized users linked to a card payment instrument; readback does not prove card activation, verification or transaction outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-delete-paymentinstruments-paymentinstrumentid-authorisedcardusers]] — 2026-11-02-captured Balance Platform API v2 TEST DELETE reference for a card payment instrument's assigned authorized-user list; 204 shows operation success, not card deletion or payment outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-patch-paymentinstruments-paymentinstrumentid-authorisedcardusers]] — 2026-11-02-captured Balance Platform API v2 TEST PATCH for replacing a card's authorized legal-entity user list; `legalEntityIds` is marked optional, omitted/empty behavior is unspecified, and 204 is update success rather than card or payment outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-post-paymentinstruments-paymentinstrumentid-authorisedcardusers]] — 2026-11-02-captured Balance Platform API v2 TEST POST for assigning legal-entity users to a card payment instrument; card use requires `authorisedPaymentInstrumentUser` capability, and bodyless 204 does not prove activation or transaction outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-accountholders-id-transactionrules]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for account-holder transaction-rule readback, returned rule scope/conditions/status and generic-error sample caveat; readback is not rule activation or transaction outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceaccounts-id-paymentinstruments]] — 2026-11-02-captured Balance Platform API v2 TEST paginated list of card or bank-account payment instruments linked to a balance account, with status and resource IDs; readback does not establish card activation or transaction outcome.
+
+
+- [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-transactionrules]] — 2026-11-02-captured Balance Platform API v2 TEST GET reference for listing a platform's transaction rules; the response is rule configuration/state, not proof of rule execution or payment outcome.
+
+
 - [[source-adyen-api-explorer-transfers-api-latest-get-disputes]] — 2026-09-15-captured Issuing Raise disputes API v4 `GET /disputes` list reference at a `transfers-api` URL, with optional filters and pagination; 200 has no response-body schema and this is separate from funds-movement Transfers API.
 
 

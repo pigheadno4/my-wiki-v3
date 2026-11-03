@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-patch-paymentinstruments-paymentinstrumentid-authorisedcardusers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2: PATCH /paymentInstruments/{paymentInstrumentId}/authorisedCardUsers\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/paymentInstruments/(paymentInstrumentId)/authorisedCardUsers\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/patch/paymentInstruments/(paymentInstrumentId)/authorisedCardUsers/2026-11-02.md\"\ntags: [adyen, balance-platform, issuing, cards, authorised-users, api]\n---\n\n## Overview\n\nThis 2026-11-02 Balance Platform API v2 reference describes `PATCH /paymentInstruments/{paymentInstrumentId}/authorisedCardUsers` to update the authorized-user list for a card. The documented request **replaces all existing authorized users** for that card. The page shows only the TEST server `https://balanceplatform-api-test.adyen.com/bcl/v2`; `latest` is a documentation route, not independent proof of live availability. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- `paymentInstrumentId` is a required **path** parameter. The request-body table lists `legalEntityIds`, an array of the authorized card users' legal-entity IDs linked to that payment instrument, as **optional**. The page does not separately declare whether the entire body is required. Its JSON example supplies two IDs, but no requirement that two be sent follows from that example.\n- The prose says the request replaces the whole existing authorized-user list, so a caller must treat supplied IDs as a replacement set rather than an additive change. The page does not specify what an omitted `legalEntityIds` field or an empty array does; neither can safely be equated with a documented clear operation.\n- The success response is 204 with no documented response body. It reports success of this user-list update, not card creation, activation, legal-entity verification, a card authorization, capture or settlement. No propagation timing, asynchronous outcome or idempotency behavior is specified here.\n- Errors listed are 400 bad request, 401 unauthorized, 403 forbidden and 422 validation. The 400 example says an instrument lacks a linked legal-entity reference and suggests POST; the 403 example says a card partner is not allowed yet. A 422 **example** says the request must have at most 10 legal-entity references, but the request schema states no maximum. Treat these example details as illustrative, not general eligibility or a complete numeric contract.\n\n## Detail locators\n\n- Replacement behavior, TEST server, path and body table: pinned raw lines 5\u201325.\n- Request JSON and 204 success: pinned raw lines 27\u201341.\n- Error schemas and 400/401/403/422 examples: pinned raw lines 44\u2013173.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issued-card and legal-entity context.\n- [[source-adyen-docs-issuing-create-cards]] \u2014 separate card-creation guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/patch/paymentInstruments/(paymentInstrumentId)/authorisedCardUsers/2026-11-02|Authorized card users PATCH snapshot]]",
+  "quotes": [
+    {
+      "text": "This request replaces all existing authorized users for the card.",
+      "location": "pinned raw line 9"
+    },
+    {
+      "text": "| paymentInstrumentId | string | Yes |  |",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "| legalEntityIds | array of string | No | The legal entity IDs of the authorized card users linked to the specified payment instrument. |",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "### 204 Success",
+      "location": "pinned raw line 40"
+    },
+    {
+      "text": "  \"detail\": \"Request must have maximum 10 legal entity reference.\",",
+      "location": "pinned raw line 169"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-authorised-card-users-patch-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-patch-paymentinstruments-paymentinstrumentid-authorisedcardusers]] \u2014 2026-11-02-captured Balance Platform API v2 TEST PATCH for replacing a card's authorized legal-entity user list; `legalEntityIds` is marked optional, omitted/empty behavior is unspecified, and 204 is update success rather than card or payment outcome.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/patch/paymentInstruments/(paymentInstrumentId)/authorisedCardUsers/2026-11-02.md",
+  "raw_sha256": "1928f067e889b01dd1e862e0090a87dc7fa83e3e12d5a675590986c11e0f2084",
+  "status": "candidate_ready"
+}

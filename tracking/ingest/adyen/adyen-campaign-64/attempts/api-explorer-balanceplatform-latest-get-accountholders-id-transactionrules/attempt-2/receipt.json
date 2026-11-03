@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-latest-get-accountholders-id-transactionrules",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Balance Platform API v2 GET account-holder transaction rules\"\ntype: source\ndate_ingested: 2026-11-02\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform/latest/get/accountHolders/(id)/transactionRules\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform/latest/get/accountHolders/(id)/transactionRules/2026-11-02.md\"\ntags: [adyen, balance-platform, issuing, transaction-rules, api]\n---\n\n## Overview\n\nThis 2026-11-02 [[adyen]] Balance Platform Configuration API v2 TEST reference describes `GET /accountHolders/{id}/transactionRules`: a read of transaction rules associated with the account holder identified by the required path `id`. Its listed server is `https://balanceplatform-api-test.adyen.com/bcl/v2`. The `latest` documentation URL does not establish current version, live access or account eligibility. See [[adyen-issuing]] for the rule context.\n\n## Key takeaways\n\n- The only listed input is the required account-holder path `id`; the page shows no query or request-body parameters (raw lines 12\u201318). A 200 says the request succeeded and may return an optional `transactionRules` array. This read does not create, update, activate or apply a rule to a specific transaction (raw lines 19\u201327).\n- Returned rule objects describe their own resource scope through `entityKey` (`entityType` and `entityReference`), distinct rule `id`, rule `reference`, `type`, `status`, `requestType`, `ruleRestrictions`, `interval`, `outcomeType`, `score`, start/end dates and optional override ID. The array is optional; within a returned rule, the schema marks `description`, `entityKey`, `interval`, `reference`, `ruleRestrictions` and `type` **Yes**. The children of `entityKey` are individually **No** (raw lines 27\u201347, 73\u201376). These are response-field markers, not GET request requirements.\n- The rule schema lists `blockList`, `maxUsage`, `velocity` and `bypass` types; `bypass` calls for an `overridesRule` ID and empty restrictions. For velocity/maxUsage, `aggregationLevel` must be no higher than `entityKey` and defaults to `paymentInstrument`. `requestType` defaults to `authorization`; `outcomeType` defaults to `hardBlock`, with `scoreBased` restricted to -100 through 100 and disallowed for `bankTransfer`, while `enforceSCA` is only allowed for `authentication` (raw lines 28, 42\u201346, 73, 76).\n- `interval.type` is marked required within the returned `interval`. Rolling/sliding intervals require `duration`, capped at 90 days or equivalent. The response descriptions give defaults for day of month (1), day of week (Monday), time of day (00:00:00) and time zone (UTC), while fixed daily/weekly/monthly reset wording uses CET. The listed `interval.dayOfWeek` values omit Saturday; consult the table as captured rather than assuming the full week (raw lines 35\u201341).\n- The response schema says that if `startDate` is supplied in a creation request, the rule is automatically created active; omitted `endDate` leaves evaluation until inactive. These describe rule lifecycle fields; this GET response is a readback, not an activation or outcome acknowledgement (raw lines 30, 74\u201375). Restrictions and operations occupy raw lines 47\u201372.\n- Errors are documented as 400, 401, 403, 422 and 500 (raw lines 79\u2013176). The generic 422 and 500 JSON examples discuss changing a payment instrument's balance account and creating a payment instrument, respectively, so they do not define failures specific to this GET (raw lines 219\u2013244). No idempotency, deletion, propagation or asynchronous outcome is specified here. A returned rule does not prove that it was evaluated for a transaction or that an authorization, bank transfer, booking, settlement or bank receipt occurred.\n\n## Detail locators\n\n- Endpoint, purpose, TEST server and required path ID: raw lines 5\u201317.\n- Response object identities, interval/outcome defaults and conditional fields: raw lines 19\u201347, 73\u201376.\n- All available rule restrictions and operations: raw lines 47\u201372.\n- Error response tables and generic examples: raw lines 79\u2013244.\n\n## Related\n\n- [[adyen-issuing]] \u2014 rule and Issuing context.\n- [[source-adyen-api-explorer-balanceplatform-latest-post-transactionrules]] \u2014 separate creation endpoint, with its own request contract.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform/latest/get/accountHolders/(id)/transactionRules/2026-11-02|GET account-holder transaction rules reference, captured 2026-11-02]]",
+  "quotes": [
+    {
+      "text": "Returns a list of transaction rules associated with an account holder.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The unique identifier of the account holder.",
+      "location": "raw line 17"
+    },
+    {
+      "text": "List of transaction rules.",
+      "location": "raw line 27"
+    },
+    {
+      "text": "If not provided, by default, the rule will accumulate data at the **paymentInstrument** level.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "You must provide the `id` of the rule to bypass in `overridesRule` and leave the `ruleRestrictions` object empty.",
+      "location": "raw line 76"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c64-get-accountholder-transactionrules-issuing-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-latest-get-accountholders-id-transactionrules]] \u2014 2026-11-02-captured Balance Platform API v2 TEST GET reference for account-holder transaction-rule readback, returned rule scope/conditions/status and generic-error sample caveat; readback is not rule activation or transaction outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform/latest/get/accountHolders/(id)/transactionRules/2026-11-02.md",
+  "raw_sha256": "5c3cf39939f49af72754e73f337b1791f48d0841a79d1e12a4e6def324af143f",
+  "status": "candidate_ready"
+}
