@@ -1,0 +1,298 @@
+# GET /companies/{companyId}/terminalModels - Get a list of terminal models
+
+Returns a list of payment terminal models that the company identified in the path has access to.
+The response includes the terminal model ID, which can be used as a query parameter when getting a list of terminals or a list of products for ordering.
+
+To make this request, your API credential must have one of the following [roles](https://docs.adyen.com/development-resources/api-credentials#api-permissions):
+
+- Management API—Terminal ordering read
+
+- Management API—Terminal ordering read and write
+
+In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).
+
+## Servers
+- https://management-test.adyen.com/v3
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| companyId | string | Yes | The unique identifier of the company account. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| data | array of object | No | The terminal models that the API credential has access to. |
+|   - id | string | No | The identifier of the terminal model. |
+|   - name | string | No | The name of the terminal model. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+## Response examples
+
+### 200 Success
+
+**success**
+```json
+{
+  "data": [
+    {
+      "id": "Verifone.e315",
+      "name": "Verifone e315"
+    },
+    {
+      "id": "Verifone.e315M",
+      "name": "Verifone e315M"
+    },
+    {
+      "id": "Verifone.E355",
+      "name": "Verifone E355"
+    },
+    {
+      "id": "Verifone.M400",
+      "name": "Verifone M400"
+    },
+    {
+      "id": "Verifone.MX915",
+      "name": "Verifone MX915"
+    },
+    {
+      "id": "Verifone.MX925",
+      "name": "Verifone MX925"
+    },
+    {
+      "id": "Verifone.P400",
+      "name": "Verifone P400"
+    },
+    {
+      "id": "Verifone.P400Plus",
+      "name": "Verifone P400Plus"
+    },
+    {
+      "id": "Verifone.P400Eth",
+      "name": "Verifone P400Eth"
+    },
+    {
+      "id": "Verifone.V240m",
+      "name": "Verifone V240m"
+    },
+    {
+      "id": "Verifone.V240mPlus",
+      "name": "Verifone V240mPlus"
+    },
+    {
+      "id": "Verifone.UX300",
+      "name": "Verifone UX300"
+    },
+    {
+      "id": "Verifone.V200cPlus",
+      "name": "Verifone V200cPlus"
+    },
+    {
+      "id": "Verifone.V400cPlus",
+      "name": "Verifone V400cPlus"
+    },
+    {
+      "id": "Verifone.V400m",
+      "name": "Verifone V400m"
+    },
+    {
+      "id": "Verifone.V210mPlus",
+      "name": "Verifone V210mPlus"
+    },
+    {
+      "id": "Verifone.VX520",
+      "name": "Verifone VX520"
+    },
+    {
+      "id": "Verifone.VX6753G",
+      "name": "Verifone VX6753G"
+    },
+    {
+      "id": "Verifone.VX675WIFIBT",
+      "name": "Verifone VX675WIFIBT"
+    },
+    {
+      "id": "Verifone.VX680",
+      "name": "Verifone VX680"
+    },
+    {
+      "id": "Verifone.VX6803G",
+      "name": "Verifone VX6803G"
+    },
+    {
+      "id": "Verifone.VX690",
+      "name": "Verifone VX690"
+    },
+    {
+      "id": "Verifone.VX700",
+      "name": "Verifone VX700"
+    },
+    {
+      "id": "Verifone.VX810",
+      "name": "Verifone VX810"
+    },
+    {
+      "id": "Verifone.VX820",
+      "name": "Verifone VX820"
+    },
+    {
+      "id": "Verifone.VX825",
+      "name": "Verifone VX825"
+    },
+    {
+      "id": "Verifone.e285",
+      "name": "Verifone e285"
+    },
+    {
+      "id": "Verifone.E285",
+      "name": "Verifone E285"
+    },
+    {
+      "id": "Verifone.e285p",
+      "name": "Verifone e285p"
+    },
+    {
+      "id": "Verifone.e280",
+      "name": "Verifone e280"
+    },
+    {
+      "id": "Verifone.UX410",
+      "name": "Verifone UX410"
+    },
+    {
+      "id": "Castles.S1E",
+      "name": "Castles S1E"
+    },
+    {
+      "id": "Castles.S1EL",
+      "name": "Castles S1EL"
+    },
+    {
+      "id": "Castles.S1F",
+      "name": "Castles S1F"
+    },
+    {
+      "id": "Castles.S1F2",
+      "name": "Castles S1F2"
+    },
+    {
+      "id": "Castles.S1F2L",
+      "name": "Castles S1F2L"
+    },
+    {
+      "id": "Castles.S1E2",
+      "name": "Castles S1E2"
+    },
+    {
+      "id": "Castles.S1E2L",
+      "name": "Castles S1E2L"
+    }
+  ]
+}
+```

@@ -1,0 +1,604 @@
+# POST /merchants/{merchantId}/paymentMethodSettings - Request a payment method
+
+Sends a request to add a new payment method to the merchant account identified in the path.
+Depending the payment method [`type`](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/_merchantId_/paymentMethodSettings#request-type), you may need to send an additional object required for the payment method.
+
+To make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#api-permissions):
+
+- Management API—Payment methods read and write
+
+## Servers
+- https://management-test.adyen.com/v3
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| merchantId | string | Yes | The unique identifier of the merchant account. |
+
+
+### Request body
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| accel | object | No | Details to provide if `type` is **accel**. |
+|   - processingType | string | Yes | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| affirm | object | No | Details to provide if `type` is **affirm**. |
+|   - pricePlan | string | No | Selected Affirm financing package. Choose from **core**, **standard**, or **signature**. Defaults to **core** if no selection made. |
+|   - supportEmail | string | Yes | Merchant support email used to manage disputes. |
+| afterpayTouch | object | No | Details to provide if `type` is **afterpaytouch**. |
+|   - supportEmail | string | No | Support Email |
+|   - supportUrl | string | Yes | Support Url |
+| alipayPlus | object | No | Details to provide if `type` is **alipay_plus**. |
+|   - branchName | string | No | The name of the company branch. Required for TrueMoney. |
+|   - merchantMobileAppName | string | No | The name of your mobile app. Required for TrueMoney. |
+|   - productServiceDescription | string | No | The description of the product or service. Required for TrueMoney. |
+|   - settlementCurrencyCode | string | No | The currency used for settlement. Defaults to USD. |
+| amex | object | No | Details to provide if `type` is **amex**. For merchants operating in Australia, New Zealand & Canada, JCB and American Express are automatically requested together. |
+|   - midNumber | string | No | Merchant ID (MID) number. Format: 10 numeric characters. You must provide this field when you request `gatewayContract` or `paymentDesignatorContract` service levels. |
+|   - reuseMidNumber | boolean | No | Indicates whether the Amex Merchant ID is reused from a previously setup Amex payment method. This is only applicable for `gatewayContract` and `paymentDesignatorContract` service levels. The default value is **false**. |
+|   - serviceLevel | string | Yes | Specifies the service level (settlement type) of this payment method. Possible values:  - **noContract**: Adyen holds the contract with American Express.  - **gatewayContract**: American Express receives the settlement and handles disputes, then pays out to you or your sub-merchant directly.  - **paymentDesignatorContract**: Adyen receives the settlement, and handles disputes and payouts. |
+| ancv | object | No | Details to provide if `type` is **ancv**. |
+|   - shopId | string | Yes | ANCV [Shop ID](https://static.ancv.com/ddmc/connect/PTL/PAP_PTL_avec_interm%C3%A9diaire_Raccordement_et_Shop_ID.pdf). Format: exactly 8 numeric characters with the first digit set as **1** in the live environment and **9** in the test environment. Example: 10000008. |
+| applePay | object | No | Details to provide if `type` is **applepay**. |
+|   - domains | array of string | Yes | The list of merchant domains. Maximum: 99 domains per request.  For more information, see [Apple Pay documentation](https://docs.adyen.com/payment-methods/apple-pay/web-drop-in?tab=adyen-certificate-live_1#going-live). |
+| bcmc | object | No | Details to provide if `type` is **bcmc** (Bancontact). |
+|   - enableBcmcMobile | boolean | No | Indicates if [Bancontact mobile](https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile) is enabled. |
+| businessLineId | string | No | The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms). |
+| carnet | object | No | Details to provide if `type` is **carnet**. |
+|   - addMccAcronym | boolean | No | Indicates whether to add the MCC acronym to the merchant name for Prosa acquirer in Mexico. When set to **true**, the MCC acronym is automatically appended to the merchant name. Default: **false**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| cartesBancaires | object | No | Details to provide if `type` is **cartebancaire**. |
+|   - siret | string | Yes | Cartes Bancaires SIRET. Format: 14 digits. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| clearpay | object | No | Details to provide if `type` is **clearpay**. |
+|   - supportUrl | string | Yes | Support Url |
+| countries | array of string | No | The list of countries where a payment method is available. By default, all countries supported by the payment method. |
+| cup | object | No | Details to provide if `type` is **cup** (China Union Pay). |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| currencies | array of string | No | The list of currencies that a payment method supports. By default, all currencies supported by the payment method. |
+| customRoutingFlags | array of string | No | The list of custom routing flags to route payment to the intended acquirer. |
+| diners | object | No | Details to provide if `type` is **diners**. For merchants operating in Japan, Diners payments are processed through the JCB network. This means that you must include [JCB-specific fields](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)#request-jcb) in this object. |
+|   - midNumber | string | No | MID (Merchant ID) number. Required for merchants operating in Japan. Format: 14 numeric characters. |
+|   - reuseMidNumber | boolean | Yes | Indicates whether the JCB Merchant ID is reused from a previously configured JCB payment method. The default value is **false**. For merchants operating in Japan, this field is required and must be set to **true**. |
+|   - serviceLevel | string | No | Specifies the service level (settlement type) of this payment method. Required for merchants operating in Japan. Possible values:  - **noContract**: Adyen holds the contract with JCB.  - **gatewayContract**: JCB receives the settlement and handles disputes, then pays out to you or your sub-merchant directly. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| discover | object | No | Details to provide if `type` is **discover**. For merchants operating in Japan, request [Diners](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)#request-diners) payment method instead. Discover is automatically requested, together with Diners. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| ebt | object | No | Details to provide if `type` is **ebt**. |
+|   - fnaNumber | string | Yes | Food and Nutrition Administration (FNA) number for EBT. |
+| eft_directdebit_CA | object | No | Details to provide if `type` is **eft_directdebit_CA** (EFT PAD). |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| eftpos_australia | object | No | Details to provide if `type` is **eftpos_australia**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| girocard | object | No | Details to provide if `type` is **girocard**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| givex | object | No | Details to provide if `type` is **givex**. |
+|   - currencyCode | string | Yes | The three-character ISO currency code, such as **EUR**. |
+|   - password | string | Yes | The password provided by the acquirer. |
+|   - paymentFlow | string | Yes | The sales channel used for the payment. |
+|   - username | string | Yes | The username provided by the acquirer. |
+| googlePay | object | No | Details to provide if `type` is **googlepay**. |
+|   - merchantId | string | Yes | Google Pay [Merchant ID](https://support.google.com/paymentscenter/answer/7163092?hl=en). Character length and limitations: 16 alphanumeric characters or 20 numeric characters. |
+|   - reuseMerchantId | boolean | No | Indicates whether the Google Pay Merchant ID is used for several merchant accounts. Default value: **false**. |
+| ideal | object | No | Details to provide if `type` is **ideal**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| interac_card | object | No | Details to provide if `type` is **interac_card**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| jcb | object | No | Details to provide if `type` is **jcb**. For merchants operating in Japan, `midNumber`, `reuseMidNumber`, and `serviceLevel` fields are required. For merchants operating outside of Japan, these fields are not required. For merchants operating in Australia, New Zealand & Canada, JCB and American Express are automatically requested together. |
+|   - midNumber | string | No | MID (Merchant ID) number. Required for merchants operating in Japan or merchants operating in Canada, Australia and New Zealand when requesting `gatewayContract` or `paymentDesignatorContract` service levels.Format: 14 numeric characters for Japan, 10 numeric characters for Canada, Australia and New Zealand. |
+|   - reuseMidNumber | boolean | No | Indicates whether the JCB Merchant ID is reused from a previously setup JCB payment method. The default value is **false**.For merchants operating in Japan, this field is required and must be set to **true**. |
+|   - serviceLevel | string | No | Specifies the service level (settlement type) of this payment method. Required for merchants operating in Japan. Possible values:  - **noContract**: Adyen holds the contract with JCB for merchants operating in Japan or American Express for merchants operating in Canada, Australia and New Zealand.  - **gatewayContract**: JCB or American Express receives the settlement and handles disputes, then pays out to you or your sub-merchant directly.  - **paymentDesignatorContract**: Available only for merchants operating in Canada, Australia and New Zealand. Adyen receives the settlement, and handles disputes and payouts. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| klarna | object | No | Details to provide if `type` is **klarna** or its variant.  You can use the following payment method `type` values for Klarna:  - **klarna**: Klarna Pay Later  - **klarna_account**: Klarna Pay over time  - **klarna_paynow**: Klarna Pay now  - **klarna_b2b**: [Billie via Klarna](https://docs.adyen.com/payment-methods/klarna/billie) |
+|   - autoCapture | boolean | No | Indicates the status of [Automatic capture](https://docs.adyen.com/online-payments/capture#automatic-capture). Default value: **false**. |
+|   - disputeEmail | string | Yes | The email address for disputes. |
+|   - region | string | Yes | The region of operation. For example, **NA**, **EU**, **CH**, **AU**. |
+|   - supportEmail | string | Yes | The email address of merchant support. |
+| maestro | object | No | Details to provide if `type` is **maestro**. In the US, `maestro` is not supported; use `maestro_usa` instead. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| maestro_usa | object | No | Details to provide if `type` is **maestro_usa**. Only for Maestro USA, otherwise use `maestro`. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| mc | object | No | Details to provide if `type` is **mc**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| mealVoucher_FR | object | No | Details to provide if `type` is **mealVoucher_FR**. |
+|   - conecsId | string | Yes | Meal Voucher conecsId. Format: digits only |
+|   - siret | string | Yes | Meal Voucher siret. Format: 14 digits. |
+|   - subTypes | array of string | Yes | The list of additional payment methods. Allowed values: **mealVoucher_FR_endenred**, **mealVoucher_FR_groupeup**, **mealVoucher_FR_natixis**, **mealVoucher_FR_sodexo**. |
+| nyce | object | No | Details to provide if `type` is **nyce**. |
+|   - processingType | string | Yes | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| paybybank_plaid | object | No | Details to provide if `type` is **paybybank_plaid**. |
+|   - logo | string | No | Merchant logo (max. size 150kB). Format: Base64-encoded string. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| payme | object | No | Details to provide if `type` is **payme**. |
+|   - displayName | string | Yes | Merchant display name |
+|   - logo | string | Yes | Merchant logo. Format: Base64-encoded string. |
+|   - supportEmail | string | Yes | The email address of merchant support. |
+| paypal | object | No | Details to provide if `type` is **paypal**. |
+|   - directCapture | boolean | No | Indicates if direct (immediate) capture for PayPal is enabled. If set to **true**, this setting overrides the [capture](https://docs.adyen.com/online-payments/capture) settings of your merchant account. Default value: **true**. |
+|   - payerId | string | Yes | PayPal Merchant ID. Character length and limitations: 13 single-byte alphanumeric characters. |
+|   - subject | string | Yes | Your business email address. |
+| payto | object | No | Details to provide if `type` is **payto**. |
+|   - merchantName | string | Yes | Merchant name displayed to the shopper in the Agreements |
+|   - payToPurpose | string | Yes | Represents the purpose of the Agreements created, it relates to the business type **Allowed values**: mortgage, utility, loan, gambling, retail, salary, personal, government, pension, tax, other |
+| pulse | object | No | Details to provide if `type` is **pulse**. |
+|   - processingType | string | Yes | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| reference | string | No | Your reference for the payment method. Supported characters a-z, A-Z, 0-9. |
+| sepadirectdebit | object | No | Details to provide if `type` is **sepadirectdebit**. |
+|   - creditorId | string | No | Creditor id |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| shopperInteraction | string | No | The sales channel. Required if:  - The merchant account does not have a sales channel.  - `type` is **alipay**.  When you provide this field, it overrides the default sales channel set on the merchant account.  Possible values: **eCommerce**, **pos**, **contAuth**, and **moto**. |
+| sodexo | object | No | Details to provide if `type` is **sodexo**. |
+|   - merchantContactPhone | string | Yes | Sodexo merchantContactPhone |
+| sofort | object | No | Sofort details. |
+|   - currencyCode | string | Yes | Sofort currency code. For example, **EUR**. |
+|   - logo | string | Yes | Sofort logo. Format: Base64-encoded string. |
+| star | object | No | Details to provide if `type` is **star**. |
+|   - processingType | string | Yes | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| storeIds | array of string | No | The unique identifier of the store for which to configure the payment method, if any. |
+| svs | object | No | Details to provide if `type` is **svs**. |
+|   - authorisationMid | string | Yes | The merchant ID (MID) that the acquirer recognizes you by. |
+|   - currencyCode | string | Yes | The three-character ISO currency code, example **USD** |
+| swish | object | No | Details to provide if `type` is **swish**.  - This field is required only if you have a contract with Swish. Swish handles settlement directly with you (not through Adyen).  - If not specified then it's assumed that you are using Adyen's contract with Swish.You don't have a direct relationship with Swish. |
+|   - swishNumber | string | Yes | Swish number. Format: 10 digits without spaces. For example, **1231111111**. |
+| ticket | object | No | Details to provide if `type` is **ticket** (Edenred Brazil). |
+|   - requestorId | string | No | Ticket requestorId |
+| twint | object | No | Details to provide if `type` is **twint**. |
+|   - logo | string | Yes | Twint logo. Format: Base64-encoded string. |
+| type | string | Yes | Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).  For payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object of the response. |
+| valuelink | object | No | Details to provide if `type` is **valuelink**. |
+|   - alternateMerchantNumber | string | No | Alternate Merchant Number |
+|   - authorisationMid | string | Yes | Authorisation Mid |
+|   - pinSupport | string | Yes | PIN Support. For ecommerce, PIN is required. |
+|   - terminalId | string | No | Terminal ID |
+| vipps | object | No | Details to provide if `type` is **vipps**. |
+|   - logo | string | Yes | Vipps logo. Format: Base64-encoded string. |
+|   - subscriptionCancelUrl | string | No | Vipps subscription cancel url (required in case of [recurring payments](https://docs.adyen.com/online-payments/tokenization)) |
+| visa | object | No | Details to provide if `type` is **visa**. |
+|   - transactionDescription | object | No | Information regarding the transaction description.  You cannot configure the transaction description in the test environment. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| wechatpay | object | No | Details to provide if `type` is **wechatpay**. |
+|   - contactPersonName | string | Yes | The name of the contact person from merchant support. |
+|   - email | string | Yes | The email address of merchant support. |
+| wechatpay_pos | object | No | Details to provide if `type` is **wechatpay_pos**. |
+|   - contactPersonName | string | Yes | The name of the contact person from merchant support. |
+|   - email | string | Yes | The email address of merchant support. |
+
+## Request examples
+
+### add-payment-method
+```json
+{
+  "type": "visa",
+  "currencies": [
+    "USD"
+  ],
+  "countries": [
+    "US"
+  ]
+}
+```
+
+### add-payment-method-partner-model
+```json
+{
+  "businessLineId": "BL322KV223222D5F8H2J4BQ6C",
+  "type": "swish",
+  "swish": {
+    "swishNumber": "1231111111"
+  },
+  "currencies": [
+    "SEK"
+  ],
+  "countries": [
+    "SE"
+  ]
+}
+```
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| accel | object | No | **accel** details |
+|   - processingType | string | No | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| affirm | object | No | **affirm** details |
+|   - publicApiKey | string | No | Affirm public API key |
+| afterpayTouch | object | No | **afterpaytouch** details |
+|   - supportEmail | string | No | Support Email |
+|   - supportUrl | string | No | Support Url |
+| alipayPlus | object | No | **alipay_plus** details |
+|   - settlementCurrencyCode | string | No | The currency used for settlement. |
+| allowed | boolean | No | Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account. |
+| amex | object | No | **amex** details |
+|   - midNumber | string | No | Merchant ID (MID) number. |
+|   - reuseMidNumber | boolean | No | Indicates whether the Amex Merchant ID is reused from a previously setup Amex payment method. |
+|   - serviceLevel | string | No | The service level (settlement type) of this payment method. Possible values:  - **noContract**: Adyen holds the contract with American Express.  - **gatewayContract**: American Express receives the settlement and handles disputes, then pays out to you or your sub-merchant directly.  - **paymentDesignatorContract**: Adyen receives the settlement, and handles disputes and payouts. |
+| ancv | object | No | **ancv** details |
+|   - shopId | string | No | ANCV [Shop ID](https://static.ancv.com/ddmc/connect/PTL/PAP_PTL_avec_interm%C3%A9diaire_Raccordement_et_Shop_ID.pdf). Format: exactly 8 numeric characters with the first digit set as **1** in the live environment and **9** in the test environment. Example: 10000008. |
+| applePay | object | No | **applepay** details |
+|   - domains | array of string | No | The list of merchant domains.  For more information, see [Apple Pay documentation](https://docs.adyen.com/payment-methods/apple-pay/web-drop-in?tab=adyen-certificate-live_1#going-live). |
+| associatedPaymentMethods | array of object | No | Payment methods that were also updated as part of an associated transition. |
+|   - enabled | boolean | Yes | Indicates whether the payment method is enabled (**true**) or disabled (**false**). |
+|   - id | string | Yes | The identifier of the payment method. |
+|   - type | string | Yes | Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).  For payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object. |
+| bcmc | object | No | **bcmc** (Bancontact) details |
+|   - enableBcmcMobile | boolean | No | Indicates if [Bancontact mobile](https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile) is enabled. |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| businessLineId | string | No | The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms). |
+| carnet | object | No | **carnet** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| cartesBancaires | object | No | **cartesbancaires** details |
+|   - siret | string | No | Cartes Bancaires SIRET. Format: 14 digits. |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| clearpay | object | No | **clearpay** details |
+|   - supportUrl | string | No | Support Url |
+| countries | array of string | No | The list of countries where a payment method is available. By default, all countries supported by the payment method. |
+| cup | object | No | **cup** (China Union Pay) details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| currencies | array of string | No | The list of currencies that a payment method supports. By default, all currencies supported by the payment method. |
+| customRoutingFlags | array of string | No | The list of custom routing flags to route payment to the intended acquirer. |
+| diners | object | No | **diners** details |
+|   - midNumber | string | No | MID (Merchant ID) number. |
+|   - reuseMidNumber | boolean | No | Indicates whether the JCB Merchant ID is reused from a previously configured JCB payment method. |
+|   - serviceLevel | string | No | The service level (settlement type) of this payment method. Possible values:  - **noContract**: Adyen holds the contract with JCB.  - **gatewayContract**: JCB receives the settlement and handles disputes, then pays out to you or your sub-merchant directly. |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| discover | object | No | **discover** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| ebt | object | No | **ebt** details |
+|   - fnaNumber | string | No | Food and Nutrition Administration (FNA) number for EBT. |
+| eft_directdebit_CA | object | No | **eft_directdebit_CA** (EFT PAD) details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| eftpos_australia | object | No | **eftpos_australia** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| enabled | boolean | No | Indicates whether the payment method is enabled (**true**) or disabled (**false**). |
+| girocard | object | No | **girocard** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| givex | object | No | **givex** details |
+|   - currencyCode | string | No | The three-character ISO currency code |
+|   - password | string | No | The password provided by the acquirer. |
+|   - paymentFlow | string | No | The sales channel used for the payment. |
+|   - username | string | No | The username provided by the acquirer. |
+| googlePay | object | No | **googlepay** details |
+|   - merchantId | string | No | Google Pay [Merchant ID] |
+|   - reuseMerchantId | boolean | No | Indicates whether the Google Pay Merchant ID is used for several merchant accounts. |
+| id | string | Yes | The identifier of the resource. |
+| ideal | object | No | **ideal** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| interac_card | object | No | **interac_card** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| jcb | object | No | **jcb** details |
+|   - midNumber | string | No | MID (Merchant ID) number. |
+|   - reuseMidNumber | boolean | No | Indicates whether the JCB Merchant ID is reused from a previously setup JCB payment method. |
+|   - serviceLevel | string | No | Specifies the service level (settlement type) of this payment method. |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| klarna | object | No | **klarna** or its variant details |
+|   - autoCapture | boolean | No | Indicates the status of [Automatic capture](https://docs.adyen.com/online-payments/capture#automatic-capture). |
+|   - disputeEmail | string | No | The email address for disputes. |
+|   - region | string | No | The region of operation. |
+|   - supportEmail | string | No | The email address of merchant support. |
+| maestro | object | No | **maestro** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| maestro_usa | object | No | **maestro_usa** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| mc | object | No | **mc** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| mealVoucher_FR | object | No | **mealVoucher_FR** details |
+|   - conecsId | string | No | Meal Voucher conecsId. |
+|   - siret | string | No | Meal Voucher siret. |
+|   - subTypes | array of string | No | The list of additional payment methods. |
+| merchantCategoryCode | string | No | The Merchant Category Code (MCC) associated with the payment method. |
+| mid | string | No | The Merchant Identifier (MID) associated with the payment method. |
+| nyce | object | No | **nyce** details |
+|   - processingType | string | No | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| paybybank_plaid | object | No | **paybybank_plaid** details |
+|   - logo | string | No | Merchant logo |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| payme | object | No | **payme** details |
+|   - displayName | string | No | Merchant display name |
+|   - logo | string | No | Merchant logo. Format: Base64-encoded string. |
+|   - supportEmail | string | No | The email address of merchant support. |
+| paypal | object | No | **paypal** details |
+|   - directCapture | boolean | No | Indicates if direct (immediate) capture for PayPal is enabled. If set to **true**, this setting overrides the [capture](https://docs.adyen.com/online-payments/capture) settings of your merchant account. Default value: **true**. |
+|   - payerId | string | No | PayPal Merchant ID. Character length and limitations: 13 single-byte alphanumeric characters. |
+|   - subject | string | No | Your business email address. |
+| payto | object | No | **payto** details |
+|   - merchantName | string | No | Merchant name displayed to the shopper in the Agreements |
+|   - payToPurpose | string | No | Represents the purpose of the Agreements created, it relates to the business type **Allowed values**: mortgage, utility, loan, gambling, retail, salary, personal, government, pension, tax, other |
+| pulse | object | No | **pulse** details |
+|   - processingType | string | No | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| reference | string | No | Your reference for the payment method. Supported characters a-z, A-Z, 0-9. |
+| sepadirectdebit | object | No | **sepadirectdebit** details |
+|   - creditorId | string | No | Creditor id |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| shopperInteraction | string | No | The sales channel. |
+| sodexo | object | No | **sodexo** details |
+|   - merchantContactPhone | string | No | Sodexo merchantContactPhone |
+| sofort | object | No | Sofort details. |
+|   - currencyCode | string | No | Sofort currency code. For example, **EUR**. |
+|   - logo | string | No | Sofort logo. Format: Base64-encoded string. |
+| star | object | No | **star** details |
+|   - processingType | string | No | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| storeIds | array of string | No | The unique identifier of the store for which to configure the payment method, if any. |
+| svs | object | No | **svs** details |
+|   - authorisationMid | string | No | The merchant ID (MID) that the acquirer recognizes you by. |
+|   - currencyCode | string | No | The three-character ISO currency code, example **USD** |
+| swish | object | No | **swish** or its variant details |
+|   - swishNumber | string | No | Swish number. Format: 10 digits without spaces. For example, **1231111111**. |
+| ticket | object | No | **ticket** (Edenred Brazil) details |
+|   - requestorId | string | No | Ticket requestorId |
+| twint | object | No | **twint** details |
+|   - logo | string | No | Twint logo. Format: Base64-encoded string. |
+| type | string | No | Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).  For payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object. |
+| valuelink | object | No | **valuelink** details |
+|   - alternateMerchantNumber | string | No | Alternate Merchant Number |
+|   - authorisationMid | string | No | Authorisation Mid |
+|   - pinSupport | string | No | PIN Support. For ecommerce, PIN is required. |
+|   - terminalId | string | No | Terminal ID |
+| verificationStatus | string | No | Payment method status. Possible values:  - **valid**  - **pending**  - **invalid**  - **rejected** |
+| vipps | object | No | **vipps** details |
+|   - logo | string | No | Vipps logo. Format: Base64-encoded string. |
+|   - subscriptionCancelUrl | string | No | Vipps subscription cancel url (required in case of [recurring payments](https://docs.adyen.com/online-payments/tokenization)) |
+| visa | object | No | **visa** details |
+|   - transactionDescription | object | No | Information regarding the transaction description. |
+|     - doingBusinessAsName | string | No | The text to be shown on the shopper's bank statement. We recommend sending a maximum of 22 characters, otherwise banks might truncate the string. Allowed characters: **a-z**, **A-Z**, **0-9**, spaces, and special characters **. , ' _ - ? + * /**. |
+|     - type | string | No | The type of transaction description you want to use:  - **fixed**: The transaction description set in this request is used for all payments with this payment method.  - **append**: The transaction description set in this request is used as a base for all payments with this payment method. The [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is appended to this base description. Note that if the combined length exceeds 22 characters, banks may truncate the string.  - **dynamic**: Only the [transaction description set in the request to process the payment](https://docs.adyen.com/api-explorer/Checkout/70/post/sessions#request-shopperStatement) is used for payments with this payment method. |
+| wechatpay | object | No | **wechatpay** details |
+|   - contactPersonName | string | No | The name of the contact person from merchant support. |
+|   - email | string | No | The email address of merchant support. |
+| wechatpay_pos | object | No | **wechatpay_pos** details |
+|   - contactPersonName | string | No | The name of the contact person from merchant support. |
+|   - email | string | No | The email address of merchant support. |
+
+
+### 204 Success
+The request has been successfully processed, but there is no additional content.
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 429 Client Error
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+## Response examples
+
+### 200 Success
+
+**add-payment-method**
+```json
+{
+  "id": "PM3227C223224K5FH84M8CBNH",
+  "type": "visa",
+  "countries": [
+    "US"
+  ],
+  "currencies": [
+    "USD"
+  ]
+}
+```
+
+**add-payment-method-partner-model**
+```json
+{
+  "id": "PM3227C223224K5FH84M8CBNH",
+  "businessLineId": "BL322KV223222D5F8H2J4BQ6C",
+  "type": "swish",
+  "countries": [
+    "SE"
+  ],
+  "currencies": [
+    "SEK"
+  ],
+  "swish": {
+    "swishNumber": "1231111111"
+  }
+}
+```

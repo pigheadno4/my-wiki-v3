@@ -1,0 +1,324 @@
+# GET /merchants/{merchantId}/paymentMethodSettings - Get all payment methods
+
+Returns details for all payment methods of the merchant account identified in the path.
+
+To make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#api-permissions):
+
+- Management API—Payment methods read
+
+## Servers
+- https://management-test.adyen.com/v3
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| merchantId | string | Yes | The unique identifier of the merchant account. |
+
+
+### Query parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| pageNumber | integer | No | The number of the page to fetch. |
+| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 10 items on a page. |
+| businessLineId | string | No | The unique identifier of the Business Line for which to return the payment methods. |
+| storeId | string | No | The unique identifier of the store for which to return the payment methods. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| _links | object | No | Pagination references. |
+|   - first | object | Yes | The first page. |
+|     - href | string | No |  |
+|   - last | object | Yes | The last page. |
+|     - href | string | No |  |
+|   - next | object | No | The next page. Only present if there is a next page. |
+|     - href | string | No |  |
+|   - prev | object | No | The previous page. Only present if there is a previous page. |
+|     - href | string | No |  |
+|   - self | object | Yes | The current page. |
+|     - href | string | No |  |
+| data | array of object | No | The list of supported payment methods and their details. |
+|   - accel | object | No | **accel** details |
+|     - processingType | string | No | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - affirm | object | No | **affirm** details |
+|     - publicApiKey | string | No | Affirm public API key |
+|   - afterpayTouch | object | No | **afterpaytouch** details |
+|     - supportEmail | string | No | Support Email |
+|     - supportUrl | string | No | Support Url |
+|   - alipayPlus | object | No | **alipay_plus** details |
+|     - settlementCurrencyCode | string | No | The currency used for settlement. |
+|   - allowed | boolean | No | Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account. |
+|   - amex | object | No | **amex** details |
+|     - midNumber | string | No | Merchant ID (MID) number. |
+|     - reuseMidNumber | boolean | No | Indicates whether the Amex Merchant ID is reused from a previously setup Amex payment method. |
+|     - serviceLevel | string | No | The service level (settlement type) of this payment method. Possible values:  - **noContract**: Adyen holds the contract with American Express.  - **gatewayContract**: American Express receives the settlement and handles disputes, then pays out to you or your sub-merchant directly.  - **paymentDesignatorContract**: Adyen receives the settlement, and handles disputes and payouts. |
+|   - ancv | object | No | **ancv** details |
+|     - shopId | string | No | ANCV [Shop ID](https://static.ancv.com/ddmc/connect/PTL/PAP_PTL_avec_interm%C3%A9diaire_Raccordement_et_Shop_ID.pdf). Format: exactly 8 numeric characters with the first digit set as **1** in the live environment and **9** in the test environment. Example: 10000008. |
+|   - applePay | object | No | **applepay** details |
+|     - domains | array of string | No | The list of merchant domains.  For more information, see [Apple Pay documentation](https://docs.adyen.com/payment-methods/apple-pay/web-drop-in?tab=adyen-certificate-live_1#going-live). |
+|   - associatedPaymentMethods | array of object | No | Payment methods that were also updated as part of an associated transition. |
+|     - enabled | boolean | Yes | Indicates whether the payment method is enabled (**true**) or disabled (**false**). |
+|     - id | string | Yes | The identifier of the payment method. |
+|     - type | string | Yes | Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).  For payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/3/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object. |
+|   - bcmc | object | No | **bcmc** (Bancontact) details |
+|     - enableBcmcMobile | boolean | No | Indicates if [Bancontact mobile](https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile) is enabled. |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - businessLineId | string | No | The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms). |
+|   - carnet | object | No | **carnet** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - cartesBancaires | object | No | **cartesbancaires** details |
+|     - siret | string | No | Cartes Bancaires SIRET. Format: 14 digits. |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - clearpay | object | No | **clearpay** details |
+|     - supportUrl | string | No | Support Url |
+|   - countries | array of string | No | The list of countries where a payment method is available. By default, all countries supported by the payment method. |
+|   - cup | object | No | **cup** (China Union Pay) details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - currencies | array of string | No | The list of currencies that a payment method supports. By default, all currencies supported by the payment method. |
+|   - customRoutingFlags | array of string | No | The list of custom routing flags to route payment to the intended acquirer. |
+|   - diners | object | No | **diners** details |
+|     - midNumber | string | No | MID (Merchant ID) number. |
+|     - reuseMidNumber | boolean | No | Indicates whether the JCB Merchant ID is reused from a previously configured JCB payment method. |
+|     - serviceLevel | string | No | The service level (settlement type) of this payment method. Possible values:  - **noContract**: Adyen holds the contract with JCB.  - **gatewayContract**: JCB receives the settlement and handles disputes, then pays out to you or your sub-merchant directly. |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - discover | object | No | **discover** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - ebt | object | No | **ebt** details |
+|     - fnaNumber | string | No | Food and Nutrition Administration (FNA) number for EBT. |
+|   - eft_directdebit_CA | object | No | **eft_directdebit_CA** (EFT PAD) details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - eftpos_australia | object | No | **eftpos_australia** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - enabled | boolean | No | Indicates whether the payment method is enabled (**true**) or disabled (**false**). |
+|   - girocard | object | No | **girocard** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - givex | object | No | **givex** details |
+|     - currencyCode | string | No | The three-character ISO currency code |
+|     - password | string | No | The password provided by the acquirer. |
+|     - paymentFlow | string | No | The sales channel used for the payment. |
+|     - username | string | No | The username provided by the acquirer. |
+|   - googlePay | object | No | **googlepay** details |
+|     - merchantId | string | No | Google Pay [Merchant ID] |
+|     - reuseMerchantId | boolean | No | Indicates whether the Google Pay Merchant ID is used for several merchant accounts. |
+|   - id | string | Yes | The identifier of the resource. |
+|   - ideal | object | No | **ideal** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - interac_card | object | No | **interac_card** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - jcb | object | No | **jcb** details |
+|     - midNumber | string | No | MID (Merchant ID) number. |
+|     - reuseMidNumber | boolean | No | Indicates whether the JCB Merchant ID is reused from a previously setup JCB payment method. |
+|     - serviceLevel | string | No | Specifies the service level (settlement type) of this payment method. |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - klarna | object | No | **klarna** or its variant details |
+|     - autoCapture | boolean | No | Indicates the status of [Automatic capture](https://docs.adyen.com/online-payments/capture#automatic-capture). |
+|     - disputeEmail | string | No | The email address for disputes. |
+|     - region | string | No | The region of operation. |
+|     - supportEmail | string | No | The email address of merchant support. |
+|   - maestro | object | No | **maestro** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - maestro_usa | object | No | **maestro_usa** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - mc | object | No | **mc** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - mealVoucher_FR | object | No | **mealVoucher_FR** details |
+|     - conecsId | string | No | Meal Voucher conecsId. |
+|     - siret | string | No | Meal Voucher siret. |
+|     - subTypes | array of string | No | The list of additional payment methods. |
+|   - merchantCategoryCode | string | No | The Merchant Category Code (MCC) associated with the payment method. |
+|   - mid | string | No | The Merchant Identifier (MID) associated with the payment method. |
+|   - nyce | object | No | **nyce** details |
+|     - processingType | string | No | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - paybybank_plaid | object | No | **paybybank_plaid** details |
+|     - logo | string | No | Merchant logo |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - payme | object | No | **payme** details |
+|     - displayName | string | No | Merchant display name |
+|     - logo | string | No | Merchant logo. Format: Base64-encoded string. |
+|     - supportEmail | string | No | The email address of merchant support. |
+|   - paypal | object | No | **paypal** details |
+|     - directCapture | boolean | No | Indicates if direct (immediate) capture for PayPal is enabled. If set to **true**, this setting overrides the [capture](https://docs.adyen.com/online-payments/capture) settings of your merchant account. Default value: **true**. |
+|     - payerId | string | No | PayPal Merchant ID. Character length and limitations: 13 single-byte alphanumeric characters. |
+|     - subject | string | No | Your business email address. |
+|   - payto | object | No | **payto** details |
+|     - merchantName | string | No | Merchant name displayed to the shopper in the Agreements |
+|     - payToPurpose | string | No | Represents the purpose of the Agreements created, it relates to the business type **Allowed values**: mortgage, utility, loan, gambling, retail, salary, personal, government, pension, tax, other |
+|   - pulse | object | No | **pulse** details |
+|     - processingType | string | No | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - reference | string | No | Your reference for the payment method. Supported characters a-z, A-Z, 0-9. |
+|   - sepadirectdebit | object | No | **sepadirectdebit** details |
+|     - creditorId | string | No | Creditor id |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - shopperInteraction | string | No | The sales channel. |
+|   - sodexo | object | No | **sodexo** details |
+|     - merchantContactPhone | string | No | Sodexo merchantContactPhone |
+|   - sofort | object | No | Sofort details. |
+|     - currencyCode | string | No | Sofort currency code. For example, **EUR**. |
+|     - logo | string | No | Sofort logo. Format: Base64-encoded string. |
+|   - star | object | No | **star** details |
+|     - processingType | string | No | The type of transactions processed over this payment method. Allowed values:  - **pos** for in-person payments.  - **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**.  - **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**. |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - storeIds | array of string | No | The unique identifier of the store for which to configure the payment method, if any. |
+|   - svs | object | No | **svs** details |
+|     - authorisationMid | string | No | The merchant ID (MID) that the acquirer recognizes you by. |
+|     - currencyCode | string | No | The three-character ISO currency code, example **USD** |
+|   - swish | object | No | **swish** or its variant details |
+|     - swishNumber | string | No | Swish number. Format: 10 digits without spaces. For example, **1231111111**. |
+|   - ticket | object | No | **ticket** (Edenred Brazil) details |
+|     - requestorId | string | No | Ticket requestorId |
+|   - twint | object | No | **twint** details |
+|     - logo | string | No | Twint logo. Format: Base64-encoded string. |
+|   - type | string | No | Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).  For payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object. |
+|   - valuelink | object | No | **valuelink** details |
+|     - alternateMerchantNumber | string | No | Alternate Merchant Number |
+|     - authorisationMid | string | No | Authorisation Mid |
+|     - pinSupport | string | No | PIN Support. For ecommerce, PIN is required. |
+|     - terminalId | string | No | Terminal ID |
+|   - verificationStatus | string | No | Payment method status. Possible values:  - **valid**  - **pending**  - **invalid**  - **rejected** |
+|   - vipps | object | No | **vipps** details |
+|     - logo | string | No | Vipps logo. Format: Base64-encoded string. |
+|     - subscriptionCancelUrl | string | No | Vipps subscription cancel url (required in case of [recurring payments](https://docs.adyen.com/online-payments/tokenization)) |
+|   - visa | object | No | **visa** details |
+|     - transactionDescription | object | No | Information regarding the transaction description. |
+|   - wechatpay | object | No | **wechatpay** details |
+|     - contactPersonName | string | No | The name of the contact person from merchant support. |
+|     - email | string | No | The email address of merchant support. |
+|   - wechatpay_pos | object | No | **wechatpay_pos** details |
+|     - contactPersonName | string | No | The name of the contact person from merchant support. |
+|     - email | string | No | The email address of merchant support. |
+| itemsTotal | integer | Yes | Total number of items. |
+| pagesTotal | integer | Yes | Total number of pages. |
+| typesWithErrors | array of string | No | The payment method types that were not successfully requested and their corresponding errors. |
+
+
+### 204 Success
+The request has been successfully processed, but there is no additional content.
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 429 Client Error
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | Yes | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | Yes | A code that identifies the problem type. |
+| instance | string | No | A unique URI that identifies the specific occurrence of the problem. |
+| invalidFields | array of object | No | Detailed explanation of each validation error, when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | A unique reference for the request, essentially the same as `pspReference`. |
+| response | object | No | JSON response payload. |
+| status | integer | Yes | The HTTP status code. |
+| title | string | Yes | A short, human-readable summary of the problem type. |
+| type | string | Yes | A URI that identifies the problem type, pointing to human-readable documentation on this problem type. |
