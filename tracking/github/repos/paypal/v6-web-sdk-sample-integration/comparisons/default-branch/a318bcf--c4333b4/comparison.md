@@ -1,0 +1,135 @@
+# GitHub repository ref comparison
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- Ref: `default-branch/main`
+- From SHA: `a318bcf7cb8a458b180df553ab459db3a5a79586`
+- To SHA: `c4333b444368a67ad54fa4786fccb57021c5abdd`
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `client/components/fastlane/html/README.md`
+- `client/components/fastlane/html/src/advanced/threeDSecure/fastlane.css`
+- `client/components/fastlane/html/src/advanced/threeDSecure/fastlane.js`
+- `client/components/fastlane/html/src/advanced/threeDSecure/fastlaneSdkComponent.js`
+- `client/components/fastlane/html/src/advanced/threeDSecure/index.html`
+- `client/components/fastlane/html/src/fastlane.css`
+- `client/components/fastlane/html/src/fastlane.js`
+- `client/components/fastlane/html/src/fastlaneSdkComponent.js`
+- `client/components/fastlane/html/src/index.html`
+- `client/components/fastlane/html/src/recommended/fastlane.css`
+- `client/components/fastlane/html/src/recommended/fastlane.js`
+- `client/components/fastlane/html/src/recommended/fastlaneSdkComponent.js`
+- `client/components/fastlane/html/src/recommended/index.html`
+- `client/components/localPaymentMethods/README.md`
+- `client/components/localPaymentMethods/airtelKenyaPayments/html/src/app.js`
+- `client/components/localPaymentMethods/airtelKenyaPayments/html/src/index.html`
+- `client/components/localPaymentMethods/airtelTanzaniaPayments/html/src/app.js`
+- `client/components/localPaymentMethods/airtelTanzaniaPayments/html/src/index.html`
+- `client/components/localPaymentMethods/breBPayments/html/src/app.js`
+- `client/components/localPaymentMethods/breBPayments/html/src/index.html`
+- `client/components/localPaymentMethods/codiPayments/html/src/app.js`
+- `client/components/localPaymentMethods/codiPayments/html/src/index.html`
+- `client/components/localPaymentMethods/dimoPayments/html/src/app.js`
+- `client/components/localPaymentMethods/dimoPayments/html/src/index.html`
+- `client/components/localPaymentMethods/halopesaPayments/html/src/app.js`
+- `client/components/localPaymentMethods/halopesaPayments/html/src/index.html`
+- `client/components/localPaymentMethods/mercadoPagoPayments/html/src/app.js`
+- `client/components/localPaymentMethods/mercadoPagoPayments/html/src/index.html`
+- `client/components/localPaymentMethods/mixxByYasPayments/html/src/app.js`
+- `client/components/localPaymentMethods/mixxByYasPayments/html/src/index.html`
+- `client/components/localPaymentMethods/naverpayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/naverpayPayments/html/src/index.html`
+- `client/components/localPaymentMethods/nequiPayments/html/src/app.js`
+- `client/components/localPaymentMethods/nequiPayments/html/src/index.html`
+- `client/components/localPaymentMethods/nigeriaBanksPayments/html/src/app.js`
+- `client/components/localPaymentMethods/nigeriaBanksPayments/html/src/index.html`
+- `client/components/localPaymentMethods/nupayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/nupayPayments/html/src/index.html`
+- `client/components/localPaymentMethods/opayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/opayPayments/html/src/index.html`
+- `client/components/localPaymentMethods/pagoefectivoPayments/html/src/app.js`
+- `client/components/localPaymentMethods/pagoefectivoPayments/html/src/index.html`
+- `client/components/localPaymentMethods/payattitudePayments/html/src/app.js`
+- `client/components/localPaymentMethods/payattitudePayments/html/src/index.html`
+- `client/components/localPaymentMethods/pesalinkPayments/html/src/app.js`
+- `client/components/localPaymentMethods/pesalinkPayments/html/src/index.html`
+- `client/components/localPaymentMethods/picpayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/picpayPayments/html/src/index.html`
+- `client/components/localPaymentMethods/promptpayQrPayments/html/src/app.js`
+- `client/components/localPaymentMethods/promptpayQrPayments/html/src/index.html`
+- `client/components/localPaymentMethods/psePayments/html/src/app.js`
+- `client/components/localPaymentMethods/psePayments/html/src/index.html`
+- `client/components/localPaymentMethods/qrphPayments/html/src/app.js`
+- `client/components/localPaymentMethods/qrphPayments/html/src/index.html`
+- `client/components/localPaymentMethods/shopeepayPayments/html/src/app.js`
+- `client/components/localPaymentMethods/shopeepayPayments/html/src/index.html`
+- `client/components/localPaymentMethods/speiPayments/html/src/app.js`
+- `client/components/localPaymentMethods/speiPayments/html/src/index.html`
+- `client/components/localPaymentMethods/truemoneyPayments/html/src/app.js`
+- `client/components/localPaymentMethods/truemoneyPayments/html/src/index.html`
+- `client/components/localPaymentMethods/vietqrPayments/html/src/app.js`
+- `client/components/localPaymentMethods/vietqrPayments/html/src/index.html`
+- `client/index.html`
+
+## Upstream changes
+
+- `modified`: `client/components/fastlane/html/README.md`
+- `renamed`: `client/components/fastlane/html/src/fastlane.css` -> `client/components/fastlane/html/src/advanced/threeDSecure/fastlane.css`
+- `added`: `client/components/fastlane/html/src/advanced/threeDSecure/fastlane.js`
+- `added`: `client/components/fastlane/html/src/advanced/threeDSecure/fastlaneSdkComponent.js`
+- `added`: `client/components/fastlane/html/src/advanced/threeDSecure/index.html`
+- `added`: `client/components/fastlane/html/src/recommended/fastlane.css`
+- `renamed`: `client/components/fastlane/html/src/fastlane.js` -> `client/components/fastlane/html/src/recommended/fastlane.js`
+- `renamed`: `client/components/fastlane/html/src/fastlaneSdkComponent.js` -> `client/components/fastlane/html/src/recommended/fastlaneSdkComponent.js`
+- `renamed`: `client/components/fastlane/html/src/index.html` -> `client/components/fastlane/html/src/recommended/index.html`
+- `modified`: `client/components/localPaymentMethods/README.md`
+- `added`: `client/components/localPaymentMethods/airtelKenyaPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/airtelKenyaPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/airtelTanzaniaPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/airtelTanzaniaPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/breBPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/breBPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/codiPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/codiPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/dimoPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/dimoPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/halopesaPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/halopesaPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/mercadoPagoPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/mercadoPagoPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/mixxByYasPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/mixxByYasPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/naverpayPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/naverpayPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/nequiPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/nequiPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/nigeriaBanksPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/nigeriaBanksPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/nupayPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/nupayPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/opayPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/opayPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/pagoefectivoPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/pagoefectivoPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/payattitudePayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/payattitudePayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/pesalinkPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/pesalinkPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/picpayPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/picpayPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/promptpayQrPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/promptpayQrPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/psePayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/psePayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/qrphPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/qrphPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/shopeepayPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/shopeepayPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/speiPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/speiPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/truemoneyPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/truemoneyPayments/html/src/index.html`
+- `added`: `client/components/localPaymentMethods/vietqrPayments/html/src/app.js`
+- `added`: `client/components/localPaymentMethods/vietqrPayments/html/src/index.html`
+- `modified`: `client/index.html`

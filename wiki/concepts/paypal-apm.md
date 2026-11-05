@@ -46,6 +46,17 @@ All 46 local-method HTML implementations switch `presentationMode` from `popup` 
 
 The new ACH Wallet sample is documented separately in [[paypal-ach]]; it is not one of these 46 local-method changes.
 
+## Expanded HTML Samples at `c4333b4`
+
+The October 30, 2026 sample commit (full additive ingest November 3) adds 24 HTML/JavaScript local-method examples, taking the retained implementation catalog from 46 to 70. New examples include Airtel Kenya/Tanzania, Bre-B, CoDi, DiMo, HaloPesa, Mercado Pago, Mixx by Yas, Naver Pay, Nequi, Nigeria Banks, NuPay, OPay, PagoEfectivo, Payattitude, PesaLink, PicPay, PromptPay QR, PSE, QRPH, ShopeePay, SPEI, TrueMoney and VietQR. Countries/currencies in these examples are sandbox inputs, not general availability or merchant-enablement evidence.
+
+All 24 mount SDK name/email fields, check method/currency eligibility, validate, request `presentationMode: "auto"`, and create an order with `ORDER_COMPLETE_ON_PAYMENT_APPROVAL`. Extra merchant-collected values go in the promise resolving to session-start data, not in the sample's order-create JSON: phone for Airtel Kenya, Payattitude, ShopeePay and TrueMoney; tax information for Mercado Pago; phone plus tax information for NuPay; phone plus identification for PagoEfectivo; identification/phone/billing address for Nequi; the same plus BIC for PSE. These are exact sample contracts, not exhaustive production requirements. The six historical explicit-capture paths remain unchanged.
+
+> [!warning] Contradiction - expanded sample guidance and payment status
+> The shared README still describes popup presentation and name-only validation, while new code uses `auto`, name/email fields and method-specific extra data. All 24 approval handlers retrieve the order but display success without checking returned payment status; even retrieval failure is labeled "Transaction successful". These labels do not prove settlement. HaloPesa, Mixx by Yas and VietQR enlarge demo carts; their minimum-amount comments are not verified current product rules. Earlier completion/presentation warnings remain valid. See [[source-github-v6-web-sdk-sample-integration]] and [[changelog-github-v6-web-sdk-sample-integration]].
+
+No React, server or dependency manifest changes occur in this boundary; do not infer new typed/React LPM support or a loader-package release from these HTML examples.
+
 ## v6 Core Type Surface
 
 `@paypal/paypal-js@11.0.0` adds `/sdk-v6` TypeScript contracts for 50 local-payment components. `createInstance({ components })` accepts package names such as `ideal-payments`, `bancontact-payments`, `blik-payments`, `pix-international-payments`, `wechatpay-payments`, and `sepa-payments`, and narrows the returned instance to the session-creation methods actually requested.

@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal-examples/v6-web-sdk-sample-integration"
 type: source
 date_ingested: 2026-08-04
-date_updated: 2026-10-04
+date_updated: 2026-11-03
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json"
@@ -16,6 +17,17 @@ tags: [paypal, web-sdk-v6, samples, changelog, github-repository]
 ## Overview
 
 Commit-qualified history for `paypal-examples/v6-web-sdk-sample-integration`. Durable integration guidance belongs in [[source-github-v6-web-sdk-sample-integration]].
+
+## `default-branch@c4333b4` - Fastlane 3DS And Expanded Local Methods (2026-10-30)
+
+- **Transition:** `a318bcf7cb8a458b180df553ab459db3a5a79586` -> `c4333b444368a67ad54fa4786fccb57021c5abdd` on `main`, collected/ingested November 3, 2026. Approved full additive mode with focused reading; work item `github-4108c3990b081a22a6e2`.
+- **Reading/evidence:** 59 changed current files, affected prior files and supporting dependencies read fully; generated inventories, unchanged files and duplicated patch verified mechanically. Current 316-file / 1,150,559-byte snapshot and prior 264 files verified by size/SHA-256/Git blob identity. Git-aware changes: 52 additions, four renames, three modifications; 257 unchanged. No whole-repository or complete 591-path semantic-read claim.
+- **Fastlane:** original four files move unchanged into `recommended/`; advanced 3DS checks token eligibility before `show()`, gates enriched nonce on succeeded authentication and possible/yes liability shift, then uses the existing order route. Ineligible cards continue with the original token. Demo amount USD 205 matches the unchanged default cart. README requires production server-side outcome confirmation; no new server enforcement, React wrapper or tested liability shift.
+- **Local methods:** 24 new HTML/JS examples expand implementation count 46 -> 70, with sandbox country/currency eligibility, name/email fields, `auto` presentation, auto-completion order instruction and method-specific extra session data. PSE adds BIC plus identification/phone/address; Nequi omits BIC; other extra phone/tax/ID contracts are in the cumulative source. Three methods enlarge demo carts; comments are not verified production thresholds.
+- **Limits/contradictions:** popup/name-only README guidance remains incomplete; all new approval handlers display success after retrieval without checking payment status. No transaction-level duplicate-submit lock or runtime/browser/payment proof. Six historical explicit-capture paths remain unchanged, along with prior saved-payment, ACH, vault and documentation warnings.
+- **Unchanged:** React/server implementations, saved-payment examples and package manifests; no new `paypal-js` release, React flow, dependency or proven availability inferred.
+- **Updated:** concept-first Fastlane/APM/Checkout additions, cumulative source and this ledger, company/catalog/logs. Historical raw references and all older commit sections preserved; source_count unchanged.
+- **Evidence:** [snapshot](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/manifest.json), [comparison](../../../../tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/a318bcf--c4333b4/comparison.json), [patch](../../../../tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/a318bcf--c4333b4/diff.patch). See [[source-github-v6-web-sdk-sample-integration]].
 
 ## `default-branch@a318bcf` - Direct PayPal Saved Payment Methods (2026-09-29)
 

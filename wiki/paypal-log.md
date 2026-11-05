@@ -6,6 +6,12 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-03] ingest | Direct v6 samples `default-branch@c4333b4`
+
+- Approved full additive item `github-4108c3990b081a22a6e2`, exact SHA `c4333b444368a67ad54fa4786fccb57021c5abdd`, with focused reading: all 59 changed current files, affected prior code and dependencies fully read; 580 prior/current snapshot files and generated/unchanged evidence mechanically verified. Five located grounding excerpts before concept-first edits; no whole-repository/full-591-path semantic-read claim.
+- Adds Fastlane 3DS and 24 local-method examples (46 -> 70), method-specific session fields and three demo-cart overrides. Preserves ineligible-card fallback, production 3DS verification boundary, popup/name-only README discrepancies and unchecked payment-success labels. React/server/saved-payment/package manifests unchanged; no upstream execution or hosted/eligibility claim.
+- Updates existing Fastlane/APM/Checkout concepts, cumulative source and separate changelog, company/catalog and logs; source_count stays 177. All earlier commit sections/raw refs and contradiction warnings preserved. No commit or push.
+
 ## [2026-11-03] ingest | Messaging unreleased `default-branch@b0a201e`
 
 - Approved focused-reading delta `github-35bb69190c7798090909`, from released `1.101.0` (`f1092bb`) to exact `develop` SHA `b0a201e92d95a384c2af1ceb9ab25583a0fc4df9`. All six changed retained files, affected prior code and cumulative source/changelog read; five located grounding excerpts before concept-first edits. Generated/unchanged evidence checked mechanically; no whole-repository read claim.

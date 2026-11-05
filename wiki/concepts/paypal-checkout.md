@@ -151,6 +151,10 @@ The September 29, 2026 direct-PayPal HTML example adds a preview/edit saved-meth
 
 This updates the September 27 direct-v6 frontend evidence gap at the sample-code level, not deployed behavior, merchant eligibility or v5 feature parity. It does not add a React saved-method wrapper: the TypeScript one-time sample declares core `^11.2.0` and the React sample declares wrapper `^10.5.2`, but neither implements this new HTML flow. These are dependency ranges, not exact installations or new package releases. Keep the direct Orders API path separate from Braintree's preferred-token/nonce integration.
 
+### Fastlane 3DS and expanded LPM samples at `c4333b4`
+
+The October 30, 2026 direct v6 sample commit, full additive ingested November 3, adds a Fastlane 3DS-before-order example and 24 local-payment-method HTML implementations. Fastlane uses eligibility-conditioned authentication and an enriched single-use token; ineligible cards continue without 3DS, and server-side verification remains a production responsibility. New local methods use eligibility, name/email validation, method-specific extra session data, automatic presentation and the auto-completion instruction, but their success labels do not check final payment status. Existing React, server and saved-payment implementations and package manifests are unchanged. This is sample-code evidence, not current enablement, hosted behavior or new `paypal-js`/React support. Details: [[paypal-fastlane]], [[paypal-apm]], [[source-github-v6-web-sdk-sample-integration]] and [[changelog-github-v6-web-sdk-sample-integration]].
+
 ### Historical server-side sample at `5409a3b`
 
 The September 2023 `paypal-examples/paypal-sdk-server-side-integration` baseline uses PayPal JS SDK 5.1.x with a Fastify/TypeScript server. The browser sends cart SKU and quantity to the merchant server; the server resolves prices from its own catalog, obtains and caches an OAuth access token, creates the order, and captures or authorizes after approval. Partner examples add `PayPal-Partner-Attribution-Id` and either `PayPal-Auth-Assertion` or a payee merchant ID for connected-merchant calls.

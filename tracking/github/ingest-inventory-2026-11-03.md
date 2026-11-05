@@ -13,7 +13,7 @@ Dates below are the cumulative wiki source `date_updated`, falling back to `date
 | `paypal-examples/paypal-android-sdk-demo-app` | 2026-08-16 | [source](../../wiki/sources/paypal/github/source-github-paypal-android-sdk-demo-app.md) |
 | `paypal-examples/paypal-ios-sdk-demo-app` | 2026-08-16 | [source](../../wiki/sources/paypal/github/source-github-paypal-ios-sdk-demo-app.md) |
 | `paypal-examples/paypal-sdk-server-side-integration` | 2026-08-05 | [source](../../wiki/sources/paypal/github/source-github-paypal-sdk-server-side-integration.md) |
-| `paypal-examples/v6-web-sdk-sample-integration` | 2026-10-04 | [source](../../wiki/sources/paypal/github/source-github-v6-web-sdk-sample-integration.md) |
+| `paypal-examples/v6-web-sdk-sample-integration` | 2026-11-03 | [source](../../wiki/sources/paypal/github/source-github-v6-web-sdk-sample-integration.md) |
 | `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration` | 2026-10-02 | [source](../../wiki/sources/paypal/github/source-github-v6-web-sdk-with-braintree-sdk-sample-integration.md) |
 | `paypal/paypal-android` | 2026-10-16 | [source](../../wiki/sources/paypal/github/source-github-paypal-android.md) |
 | `paypal/paypal-checkout-components` | 2026-11-03 | [source](../../wiki/sources/paypal/github/source-github-paypal-checkout-components.md) |

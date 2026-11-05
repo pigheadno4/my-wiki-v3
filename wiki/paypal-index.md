@@ -22,8 +22,8 @@ Operations history: [[paypal-log]]
 - [[source-stripe-paypal-custom-payment-method]] — PayPal as CPM: low-code adapter for Checkout, EU→standard PM vs global→CPM adapter decision rule (webpage, 2026-05-08)
 - [[source-stripe-subscriptions-paypal]] — PayPal subscription: Checkout + Direct API, off_session required, billing agreement ID, mandate.updated on revoke (webpage, 2026-05-13)
 - [[stripe-paypal]] — Stripe PayPal Integration: Checkout + SetupIntents, off_session critical, BAID, mandate.updated, detach cancels billing agreement
-- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 samples through `a318bcf`: direct saved-method preview/edit, token context, ACH Wallet, card name and LPM presentation; earlier history retained
-- [[changelog-github-v6-web-sdk-sample-integration]] — history through `a318bcf`, saved-method sample limits and focused-reading boundaries
+- [[source-github-v6-web-sdk-sample-integration]] — cumulative v6 samples through `c4333b4`: Fastlane 3DS, 70 LPM examples and preserved saved-payment/ACH/card history (updated 2026-11-03)
+- [[changelog-github-v6-web-sdk-sample-integration]] — history through `c4333b4`, method-specific inputs and sample documentation/payment-state limits (updated 2026-11-03)
 - [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — Braintree v6 sample through `06bc2de`: static saved-payment editing, preferred-token server context and nonce/token submission; React and earlier baseline preserved
 - [[changelog-github-v6-web-sdk-with-braintree-sdk-sample-integration]] — commit-qualified `f1c7123` to `06bc2de` history and production-boundary ledger
 - [[source-github-paypal-sdk-server-side-integration]] — historical JS SDK 5.1.x client/server sample: Orders, partner headers, Hosted Fields, shipping patches, subscriptions, and retained defects (`5409a3b`)

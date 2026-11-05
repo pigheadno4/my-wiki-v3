@@ -1,0 +1,179 @@
+async function onPayPalWebSdkLoaded() {
+  try {
+    const clientId = await getBrowserSafeClientId();
+    const sdkInstance = await window.paypal.createInstance({
+      clientId,
+      components: ["paypal-payments"],
+      pageType: "checkout",
+    });
+
+    const paymentMethods = await sdkInstance.findEligibleMethods({
+      currencyCode: "USD",
+    });
+
+    if (paymentMethods.isEligible("paypal")) {
+      configurePayPalButton(sdkInstance);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const paymentSessionOptions = {
+  async onApprove(data) {
+    console.log("onApprove", data);
+    const orderData = await captureOrder({
+      orderId: data.orderId,
+    });
+    renderAlert({
+      type: "success",
+      message: `Order successfully captured! ${JSON.stringify(data)}`,
+    });
+    console.log("Capture result", orderData);
+  },
+  onCancel(data) {
+    renderAlert({ type: "warning", message: "onCancel() callback called" });
+    console.log("onCancel", data);
+  },
+  onError(error) {
+    renderAlert({
+      type: "danger",
+      message: `onError() callback called: ${error}`,
+    });
+    console.log("onError", error);
+  },
+};
+
+async function configurePayPalButton(sdkInstance) {
+  const paypalPaymentSession = sdkInstance.createPayPalOneTimePaymentSession(
+    paymentSessionOptions,
+  );
+
+  const paypalButton = document.querySelector("#paypal-button");
+  paypalButton.removeAttribute("hidden");
+
+  // Async promise to be passed into .start()
+  async function validateAndCreateOrder() {
+    await runAsyncValidation();
+    const createOrderResult = await createOrder();
+
+    return createOrderResult;
+  }
+
+  paypalButton.addEventListener("click", async () => {
+    try {
+      // get the promise reference by invoking validateAndCreateOrder()
+      // do not await this async function since it can cause transient activation issues
+      const createOrderPromise = validateAndCreateOrder();
+      await paypalPaymentSession.start(
+        {
+          presentationMode: "auto",
+          loadingScreen: { label: "connecting" },
+        },
+        createOrderPromise,
+      );
+    } catch (error) {
+      console.error(error);
+      renderAlert({ type: "danger", message: error.message });
+    }
+  });
+}
+
+// Async validation logic - customize this function for your validation needs
+async function runAsyncValidation() {
+  const delayInput = document.getElementById("validation-delay");
+  const passCheckbox = document.getElementById("validation-pass");
+
+  const delay = parseInt(delayInput.value) || 0;
+  const shouldPass = passCheckbox.checked;
+
+  renderAlert({
+    type: "info",
+    message: `Running async validation with ${delay}ms delay...`,
+  });
+  console.log(`Running async validation with ${delay}ms delay...`);
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (shouldPass) {
+        resolve("Validation successful");
+      } else {
+        reject(new Error("Validation failed."));
+      }
+    }, delay);
+  });
+}
+
+// TODO replace these:
+function showError(message) {
+  const errorDiv = document.querySelector(".error-display");
+  errorDiv.textContent = message;
+  errorDiv.classList.add("show");
+}
+
+function hideError() {
+  const errorDiv = document.querySelector(".error-display");
+  errorDiv.classList.remove("show");
+}
+
+async function getBrowserSafeClientId() {
+  const response = await fetch("/paypal-api/auth/browser-safe-client-id", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch client id");
+  }
+  const { clientId } = await response.json();
+
+  return clientId;
+}
+
+async function createOrder() {
+  const response = await fetch(
+    "/paypal-api/checkout/orders/create-order-for-one-time-payment",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Failed to create order");
+  }
+  const { id } = await response.json();
+  renderAlert({ type: "info", message: `Order successfully created: ${id}` });
+
+  return { orderId: id };
+}
+
+async function captureOrder({ orderId }) {
+  const response = await fetch(
+    `/paypal-api/checkout/orders/${orderId}/capture`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Failed to capture order");
+  }
+  const data = await response.json();
+
+  return data;
+}
+
+function renderAlert({ type, message }) {
+  const alertComponentElement = document.querySelector("alert-component");
+  if (!alertComponentElement) {
+    return;
+  }
+
+  alertComponentElement.setAttribute("type", type);
+  alertComponentElement.innerText = message;
+}

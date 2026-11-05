@@ -1494,6 +1494,33 @@
   Release: [manifest](../../raw/github/adyen/adyen-wechatpay-ios/releases/adyenwechatpayinternal/2.2.0/2026-08-26/manifest.json)
   Comparison: Not applicable
 
+## `github-4108c3990b081a22a6e2`
+
+- Repository: `paypal-examples/v6-web-sdk-sample-integration`
+- SHA: `c4333b444368a67ad54fa4786fccb57021c5abdd`
+- Collection date: `2026-11-03`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/manifest.json)
+- Packet: [review packet](repos/paypal/v6-web-sdk-sample-integration/ingest-packets/github-4108c3990b081a22a6e2/packet.md)
+- Review priority: `normal`
+- Required reading: `591` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@c4333b4` (recommended `full`)
+  Ref: `main`
+  From SHA: `a318bcf7cb8a458b180df553ab459db3a5a79586`
+  To SHA: `c4333b444368a67ad54fa4786fccb57021c5abdd`
+  Comparison: [manifest](repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/a318bcf--c4333b4/comparison.json)
+
 ## `github-436c32c59360977be8fa`
 
 - Repository: `stripe/stripe-node`

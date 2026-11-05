@@ -68,6 +68,12 @@ The current v6 sample loads the Fastlane component with a browser-safe client to
 
 The sample README names `/paypal-api/checkout/orders/create`, but its code calls `/paypal-api/checkout/orders/create-order-for-card-with-single-use-token`. Use the implementation route when reproducing this exact baseline.
 
+### v6 Fastlane 3DS sample at `c4333b4`
+
+The October 30, 2026 sample commit (full additive ingest November 3) moves the existing four Fastlane files unchanged into `src/recommended/` and adds `src/advanced/threeDSecure/`. In the advanced path, both guest and member token acquisition feed `createFastlaneThreeDomainSecure()`: check `isEligible()` with the token and USD 205.00, then call `show()`. Cancellation stops submission; successful authentication with `liabilityShift` equal to `POSSIBLE` or `YES` supplies an enriched nonce to the existing single-use-token order route. Ineligible cards continue with the original token, so this is not mandatory 3DS for every payment. `threeDSRequested: true` is a demo challenge request, not guaranteed issuer behavior.
+
+The server calculates the matching default cart independently; its implementation is unchanged and does not add server-side authentication-result enforcement. The new README explicitly calls for confirming the Orders API authentication outcome before production fulfillment. The sample proves a hosted v6 SDK invocation, not that `paypal-js` implements 3DS, a new React wrapper, tested liability shift, merchant eligibility or payment completion. Earlier member/guest history and the stale README order-route warning remain preserved. See [[source-github-v6-web-sdk-sample-integration]] and [[changelog-github-v6-web-sdk-sample-integration]].
+
 ## Key Distinctions vs PayPal Checkout / Vault
 
 | Aspect | Fastlane | PayPal Checkout | PayPal Vault |

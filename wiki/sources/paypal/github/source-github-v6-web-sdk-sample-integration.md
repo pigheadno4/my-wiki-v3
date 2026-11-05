@@ -2,9 +2,10 @@
 title: "GitHub: paypal-examples/v6-web-sdk-sample-integration"
 type: source
 date_ingested: 2026-04-17
-date_updated: 2026-10-04
+date_updated: 2026-11-03
 original_format: github-repo
 raw_files:
+  - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-09-19-bb23e7c/manifest.json"
   - "github/paypal/v6-web-sdk-sample-integration/snapshots/2026-08-30-de90a89/manifest.json"
@@ -21,7 +22,9 @@ Repository: <https://github.com/paypal-examples/v6-web-sdk-sample-integration>
 
 The September 19 collected baseline, `default-branch@bb23e7c` (`bb23e7c63305a872326f43c3d52c5edd53e20b43`, committed September 17, 2026), adds ACH Wallet, optional cardholder-name fields, and local-method automatic presentation. Its commit-qualified findings remain historical reference.
 
-The latest locally ingested snapshot is `default-branch@a318bcf` (`a318bcf7cb8a458b180df553ab459db3a5a79586`, committed September 29, collected/ingested October 4, 2026). It adds a direct-PayPal saved-method preview/edit HTML example, customer-aware client-token generation and saved-method order submission. Full additive ingest preserves every earlier baseline; no browser or payment test was performed.
+The October 4 locally ingested snapshot is `default-branch@a318bcf` (`a318bcf7cb8a458b180df553ab459db3a5a79586`, committed September 29, collected/ingested October 4, 2026). It adds a direct-PayPal saved-method preview/edit HTML example, customer-aware client-token generation and saved-method order submission. Full additive ingest preserves every earlier baseline; no browser or payment test was performed.
+
+The latest locally ingested checkpoint is `default-branch@c4333b4`, exact SHA `c4333b444368a67ad54fa4786fccb57021c5abdd`, committed October 30 and collected/ingested November 3, 2026. It adds Fastlane 3DS and 24 local-method HTML examples; all earlier commit-qualified behavior below is preserved. This is not a semantic package release or a live upstream/hosted availability assertion.
 
 ## Evidence Boundary
 
@@ -110,7 +113,7 @@ Google Pay similarly combines the PayPal and Google SDKs. The 3DS example treats
 
 ## Local Payment Methods
 
-The current sample catalog contains 46 local-method implementations spanning wallets, bank methods, vouchers, and pay-later products. Each uses a method-specific component, eligibility key, session constructor, sandbox buyer country, and currency.
+At `b5f2df2`, the sample catalog contains 46 local-method implementations spanning wallets, bank methods, vouchers, and pay-later products. Each uses a method-specific component, eligibility key, session constructor, sandbox buyer country, and currency.
 
 Most newer examples send `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` and retrieve the completed order after approval. Six retained implementations instead perform an explicit capture: Bancontact, BLIK, EPS, iDEAL, P24, and SEPA.
 
@@ -284,6 +287,75 @@ Paths below are under `raw/github/paypal/v6-web-sdk-sample-integration/snapshots
 - `client/components/paypalPayments/savePayment/html/src/app.js`: setup-token exchange and development-ID handoff.
 - `client/components/paypalPayments/oneTimePayment/typescript/src/app.ts` and `package.json`, `client/prebuiltPages/react/package.json` and `src/App.tsx`: version-range and frontend-scope boundaries.
 
+## Change from `a318bcf` to `c4333b4`
+
+Approved **full additive** ingestion with focused reading: all 59 selected changed current files, affected prior files and supporting dependencies read fully; unchanged files, generated inventories and duplicated diff verified mechanically. The packet assigns 591 paths / 3,540,368 bytes; this is not a claim to have semantically reread the entire packet or upstream repository. Current snapshot: 316 files / 1,150,559 bytes, with 11 policy exclusions. Path-only comparison: 56 added, four removed, three modified, 257 unchanged. Git-aware comparison identifies four renames, 52 additions and three modifications. Source and packet budget increases preserve selection/exclusion policy and historical hashes; no raw evidence was rewritten.
+
+### Fastlane 3DS Before Order Creation
+
+The original four Fastlane files move byte-identically from `src/` to `src/recommended/`. The new `src/advanced/threeDSecure/` page loads sandbox v6 core, initializes the `fastlane` component using a browser-safe client token and retains email lookup, member authentication, guest fallback and payment-token acquisition. Its SDK instance is available to a new authentication helper. Both member and guest submission pass through that helper before calling the existing single-use-token order route.
+
+1. Create `sdkInstance.createFastlaneThreeDomainSecure()` for each authentication attempt.
+2. Call `isEligible()` with the token as `nonce`, USD `205.00`, `threeDSRequested: true` and return/cancel URLs. The fixed amount matches the unchanged server default cart; adapting the cart requires keeping authentication and order amounts aligned.
+3. An ineligible result returns the original token. Otherwise, `show()` returns `authenticationState`, optional `liabilityShift` and an enriched nonce.
+4. Cancellation stops order creation. Other outcomes proceed only when authentication succeeded and liability shift is `POSSIBLE` or `YES`; the enriched nonce becomes the order token. This is a sample gate, not proof of actual issuer authentication or liability shift.
+5. Send the token to `/paypal-api/checkout/orders/create-order-for-card-with-single-use-token`. The unchanged server places it in `paymentSource.card.singleUseToken`; the advanced client displays success only when the order response status is `COMPLETED`.
+
+```js
+const threeDomainSecure = sdkInstance.createFastlaneThreeDomainSecure();
+// After isEligible() and show(), the sample gates the returned nonce:
+const liabilityMayShift =
+  liabilityShift === "POSSIBLE" || liabilityShift === "YES";
+```
+
+This excerpt requires the sample's initialized instance and surrounding async flow. Ineligible cards continue without 3DS, so it is not mandatory authentication for every card. `threeDSRequested: true` requests a demo challenge, not guaranteed issuer behavior. The README explicitly requires checking the Orders API authentication outcome before production fulfillment; the unchanged server adds no such enforcement. Member profiles without a shipping address still reach a placeholder, and the sample adds no transaction-level duplicate-submit lock. Its README still names the stale `/checkout/orders/create` endpoint. No browser, SDK, issuer or payment execution was performed. See [[paypal-fastlane]].
+
+### Twenty-Four Additional Local-Method Examples
+
+The retained implementation catalog grows from 46 to 70; SPEI was already listed in the prior README but gains an implementation here. All 24 new pages initialize the sandbox SDK with a public client ID, method component, country override and currency-qualified eligibility check. They mount name/email SDK fields, validate, and call `start({ presentationMode: "auto" }, orderPromise)`.
+
+The order-create request sends currency and `ORDER_COMPLETE_ON_PAYMENT_APPROVAL`, plus a demo cart override for three methods. Additional merchant-collected inputs are merged into the promise result passed to the SDK, not into that order-create JSON. Values in this table are exact sandbox sample inputs, not current merchant eligibility or universal production field requirements.
+
+| New Example | Sandbox Country / Currency | Additional Session Data Beyond SDK Name/Email |
+| --- | --- | --- |
+| Airtel Kenya | KE / KES | `phone` |
+| Airtel Tanzania | TZ / TZS | None |
+| Bre-B | CO / COP | None |
+| CoDi | MX / MXN | None |
+| DiMo | MX / MXN | None |
+| HaloPesa | TZ / TZS | None; enlarged demo cart |
+| Mercado Pago | BR / BRL | `taxInfo` |
+| Mixx by Yas | TZ / TZS | None; enlarged demo cart |
+| Naver Pay | KR / KRW | None |
+| Nequi | CO / COP | `identification`, `phone`, `billingAddress` |
+| Nigeria Banks | NG / NGN | None |
+| NuPay | BR / BRL | `phone`, `taxInfo` |
+| OPay | NG / NGN | None |
+| PagoEfectivo | PE / PEN | `phone`, `identification` |
+| Payattitude | NG / NGN | `phone` |
+| PesaLink | KE / KES | None |
+| PicPay | BR / BRL | None |
+| PromptPay QR | TH / THB | None |
+| PSE | CO / COP | `bic`, `identification`, `phone`, `billingAddress` |
+| QRPH | PH / PHP | None |
+| ShopeePay | SG / SGD | `phone` |
+| SPEI | MX / MXN | None |
+| TrueMoney | TH / THB | `phone` |
+| VietQR | VN / VND | None; enlarged demo cart |
+
+Extra-field validation checks trimmed nonempty strings; it does not prove full phone, tax, identity or address validity. Nequi/PSE collect address line 2 but do not require it to be nonempty. HaloPesa and Mixx by Yas send ten units each of the 75 and 55 catalog items, totaling 1,300 in their selected currency. VietQR sends 70 repeated lines of ten 75-unit items, totaling 52,500 VND. The server caps each line's quantity at ten but imposes no array-length/duplicate-SKU constraint here. Minimum-amount comments are sample rationale, not verified current product thresholds; the catalog reuses numeric prices with the requested currency and performs no FX conversion.
+
+> [!warning] Contradiction - new local-method guidance and payment status
+> The expanded README still describes popup presentation and name-only validation, but new code requests `auto`, mounts name/email and sometimes requires additional fields. Every new approval handler retrieves the order then displays "Payment successful" without checking returned order/capture status; even retrieval failure is labeled "Transaction successful". The unchanged GET route exposes status and payment data, but clients do not inspect them. Do not use these labels as settlement/fulfillment evidence. No new handler adds transaction-level duplicate-submit protection. Existing six-method explicit-capture and presentation warnings above remain intact. See [[paypal-apm]].
+
+### Unchanged Scope And Exact Evidence
+
+All retained React implementations, server implementations, package manifests and saved-payment examples are unchanged by hash from `a318bcf`. There is no new React Fastlane 3DS page or wrapper, returning-buyer change, dependency migration or separately ingested `paypal-js` release in this boundary. Actual authentication/checkout behavior is delegated to the hosted SDK; sample presence does not establish merchant enablement, regional rollout, certification or production safety.
+
+Grounding at the current snapshot: advanced Fastlane `fastlane.js:8` contains `const threeDomainSecure = sdkInstance.createFastlaneThreeDomainSecure();`; line 48 contains `liabilityShift === "POSSIBLE" || liabilityShift === "YES";`. PSE `app.js:217` contains `bic: extraData.bic,`; NuPay `app.js:197` contains `taxInfo: {`; Bre-B `app.js:109` contains `await checkout.start({ presentationMode: "auto" }, createOrder());`.
+
+Evidence: [snapshot](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/manifest.json), [comparison](../../../../tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/a318bcf--c4333b4/comparison.json), [patch](../../../../tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/a318bcf--c4333b4/diff.patch), [Fastlane 3DS](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/files/client/components/fastlane/html/src/advanced/threeDSecure/fastlane.js), [Fastlane README](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/files/client/components/fastlane/html/README.md), [LPM catalog](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/files/client/components/localPaymentMethods/README.md), [order handlers](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/files/server/node/src/routes/ordersRouteHandler.ts), [product catalog](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/files/server/node/src/productCatalog.ts).
+
 ## Related
 
 - Company: [[paypal]]
@@ -299,6 +371,9 @@ Paths below are under `raw/github/paypal/v6-web-sdk-sample-integration/snapshots
 - Repository history: [[changelog-github-v6-web-sdk-sample-integration]]
 
 ## Raw Sources
+
+- [Current `c4333b4` snapshot](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/manifest.json) - Fastlane 3DS and 24 new local-method source/HTML pairs; all earlier snapshots retained.
+- [PSE fields](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/files/client/components/localPaymentMethods/psePayments/html/src/app.js), [NuPay fields](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/files/client/components/localPaymentMethods/nupayPayments/html/src/app.js), [VietQR cart](../../../../raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-11-03-c4333b4/files/client/components/localPaymentMethods/vietqrPayments/html/src/app.js) - concrete method-specific data and cart contracts.
 
 - `raw/github/paypal/v6-web-sdk-sample-integration/snapshots/2026-10-04-a318bcf/manifest.json` - immutable saved-payment-methods update; all earlier snapshots retained
 - `tracking/github/repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/bb23e7c--a318bcf/comparison.json` - fourteen retained changes and two excluded changed paths

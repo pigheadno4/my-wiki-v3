@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-03] ingest | Direct PayPal v6 samples `c4333b4`
+
+Approved focused-reading full additive ingest: Fastlane 3DS and 24 new local-method HTML examples, with method-specific session inputs, demo carts and explicit sample/payment-state limits. Earlier saved-payment, ACH, React and server history preserved; source_count unchanged. Details: [[paypal-log]], [[source-github-v6-web-sdk-sample-integration]], [[changelog-github-v6-web-sdk-sample-integration]]. No upstream SDK/browser/payment execution, commit or push.
+
 ## [2026-11-03] ingest | Adyen API Explorer C66
 
 - All 50 remaining complete-body local API Explorer sources independently approved; 5 concepts touched (0 new). Source_count 3059 = 2547 General Docs + 496 API Explorer + 16 GitHub. Remaining 27 title-only stubs excluded; raw unchanged. 100 actual query answers, three full-read exemplars and validation: `tracking/ingest/adyen/adyen-campaign-66/`; details [[adyen-log]]. No commit/push.

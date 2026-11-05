@@ -1,0 +1,167 @@
+import type { CartItem } from "./types";
+
+export const getBrowserSafeClientId = async () => {
+  const response = await fetch("/paypal-api/auth/browser-safe-client-id", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch client id");
+  }
+  const { clientId } = await response.json();
+
+  return clientId;
+};
+
+export const fetchProducts = async () => {
+  const response = await fetch("/paypal-api/products", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch products");
+  }
+  return await response.json();
+};
+
+export const createOrder = async (cart: CartItem[]) => {
+  const response = await fetch(
+    "/paypal-api/checkout/orders/create-order-for-one-time-payment",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cart }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to create order: ${response.status}`);
+  }
+
+  const { id } = await response.json();
+  return { orderId: id };
+};
+
+export const createOrderWithVault = async (cart: CartItem[]) => {
+  const response = await fetch(
+    "/paypal-api/checkout/orders/create-order-for-paypal-one-time-payment-with-vault",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cart }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to create order with vault: ${response.status}`);
+  }
+
+  const { id } = await response.json();
+  return { orderId: id };
+};
+
+export const captureOrder = async ({ orderId }: { orderId: string }) => {
+  const response = await fetch(
+    `/paypal-api/checkout/orders/${orderId}/capture`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to capture order: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  return data;
+};
+
+export const createSubscription = async () => {
+  try {
+    const response = await fetch("/paypal-api/billing/create-subscription", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || `HTTP error! status: ${response.status}`,
+      );
+    }
+
+    const data = await response.json();
+    console.log("Subscription created:", data);
+
+    return { subscriptionId: data.id };
+  } catch (error) {
+    console.error("Error creating subscription:", error);
+    throw error;
+  }
+};
+
+export const createVaultToken = async () => {
+  try {
+    const response = await fetch(
+      "/paypal-api/vault/create-setup-token-for-paypal-save-payment",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Vault token created:", data);
+
+    return { vaultSetupToken: data.id };
+  } catch (error) {
+    console.error("Error creating vault token:", error);
+    throw error;
+  }
+};
+
+export const createCardVaultToken = async () => {
+  try {
+    const response = await fetch(
+      "/paypal-api/vault/create-setup-token-for-card-save-payment",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Vault token created:", data);
+
+    return { vaultSetupToken: data.id };
+  } catch (error) {
+    console.error("Error creating vault token:", error);
+    throw error;
+  }
+};
