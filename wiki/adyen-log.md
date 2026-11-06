@@ -6,6 +6,16 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-07] ingest | Adyen iOS `5.27.0`
+
+- Approved full additive ingest with focused reading, `github-2e39da6002199c52091d`, exact SHA `15167f660094853d204dc6cd25a068eddf1bc2b2`, serially after the completed `5.26.0` notes delta. VoiceOver controls/format/headers, guarded submit activation, scanner constraints and version-qualified CocoaPods announcement; SPI/payment/device/compliance boundaries retained.
+- All 13 modified retained files read; 676 unchanged verified mechanically, all prior history preserved. Concept-first source/changelog/company/catalog/log update, no source-count change. Receipt: `tracking/github/repos/adyen/adyen-ios/ingest-review-2026-11-07.md`. No Xcode/install/device/payment execution, commit or push.
+
+## [2026-11-07] ingest | Adyen iOS `5.26.0` notes revision
+
+- Approved notes-only delta `github-03f5682f5c6d30579f8c` at unchanged SHA `da347498d07b843e5af3f9eb871376514ffdf38c`: removes the original CocoaPods cutoff notice, preserves all implementation highlights and 689 retained files. Both dated captures and earlier wiki history retained; contradiction qualified in source/concept and company.
+- Concept-first source/changelog/company/catalog/log update; no source-count change. Receipt: `tracking/github/repos/adyen/adyen-ios/ingest-review-2026-11-07.md`. No runtime/install/device/payment execution, commit or push. Complete this delta before claiming `5.27.0`.
+
 ## [2026-11-07] ingest | Adyen Android `5.22.0`
 
 - Approved full additive ingest with focused reading, exact SHA `73df6558fa5868a2c14449ac2e0c6379fc349798`, serially after completed `5.21.0`; all prior history preserved. Upstream eMudhra security claim attributed to release notes, OkHttp/logging `4.12.1` confirmed; URL image saving uses shared cached loader and recycling is scoped to the view-created bitmap path.

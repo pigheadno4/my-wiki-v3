@@ -1,0 +1,487 @@
+diff --git a/Adyen.podspec b/Adyen.podspec
+index 138b8cb..f5526b5 100644
+--- a/Adyen.podspec
++++ b/Adyen.podspec
+@@ -1,6 +1,6 @@
+ Pod::Spec.new do |s|
+   s.name = 'Adyen'
+-  s.version = '5.26.0'
++  s.version = '5.27.0'
+   s.summary = "Adyen Components for iOS"
+   s.description = <<-DESC
+     Adyen Components for iOS allows you to accept in-app payments by providing you with the building blocks you need to create a checkout experience.
+diff --git a/Adyen/Core/ToolBar/ModalToolbar.swift b/Adyen/Core/ToolBar/ModalToolbar.swift
+index 5343b7e..4b13ee8 100644
+--- a/Adyen/Core/ToolBar/ModalToolbar.swift
++++ b/Adyen/Core/ToolBar/ModalToolbar.swift
+@@ -33,6 +33,7 @@ public class ModalToolbar: UIView, AnyNavigationBar {
+         label.textAlignment = style.barTitle.textAlignment
+         label.translatesAutoresizingMaskIntoConstraints = false
+         label.text = title ?? ""
++        label.accessibilityTraits.insert(.header)
+         return label
+     }()
+ 
+@@ -41,6 +42,7 @@ public class ModalToolbar: UIView, AnyNavigationBar {
+         button.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+         button.translatesAutoresizingMaskIntoConstraints = false
+         button.addTarget(self, action: #selector(didCancel), for: .touchUpInside)
++        button.accessibilityLabel = localizedString(.cancelButton, nil)
+         return button
+     }()
+ 
+diff --git a/Adyen/Helpers/AdyenSdkVersion.swift b/Adyen/Helpers/AdyenSdkVersion.swift
+index 0750472..e20e723 100644
+--- a/Adyen/Helpers/AdyenSdkVersion.swift
++++ b/Adyen/Helpers/AdyenSdkVersion.swift
+@@ -7,4 +7,4 @@
+ import Foundation
+ 
+ /// The Adyen SDK version.
+-public let adyenSdkVersion: String = "5.26.0"
++public let adyenSdkVersion: String = "5.27.0"
+diff --git a/Adyen/UI/Form/Items/Address/FormAddressItem.swift b/Adyen/UI/Form/Items/Address/FormAddressItem.swift
+index 3a55911..f54c747 100644
+--- a/Adyen/UI/Form/Items/Address/FormAddressItem.swift
++++ b/Adyen/UI/Form/Items/Address/FormAddressItem.swift
+@@ -95,6 +95,7 @@ public final class FormAddressItem: FormValueItem<PostalAddress, AddressStyle>,
+             style: style.title
+         )
+         item.identifier = ViewIdentifierBuilder.build(scopeInstance: self, postfix: "title")
++        item.accessibilityTraits.insert(.header)
+         return item
+     }()
+     
+diff --git a/Adyen/UI/Form/Items/Basic Items/FormLabelItem.swift b/Adyen/UI/Form/Items/Basic Items/FormLabelItem.swift
+index a1d2642..e488ae2 100644
+--- a/Adyen/UI/Form/Items/Basic Items/FormLabelItem.swift	
++++ b/Adyen/UI/Form/Items/Basic Items/FormLabelItem.swift	
+@@ -29,6 +29,8 @@ public class FormLabelItem: FormItem {
+     /// The text of the label.
+     public var text: String
+ 
++    internal var accessibilityTraits: UIAccessibilityTraits = .staticText
++
+     public func build(with builder: FormItemViewBuilder) -> AnyFormItemView {
+         let label = ADYLabel()
+         label.text = text
+@@ -39,6 +41,7 @@ public class FormLabelItem: FormItem {
+         label.textAlignment = style.textAlignment
+         label.backgroundColor = style.backgroundColor
+         label.adyen.round(using: style.cornerRounding)
++        label.accessibilityTraits = accessibilityTraits
+         label.isHidden = isHidden.wrappedValue
+         return label
+     }
+diff --git a/Adyen/UI/Form/Items/Toggle/FormToggleItemView.swift b/Adyen/UI/Form/Items/Toggle/FormToggleItemView.swift
+index 1eea5ae..d8be8c7 100644
+--- a/Adyen/UI/Form/Items/Toggle/FormToggleItemView.swift
++++ b/Adyen/UI/Form/Items/Toggle/FormToggleItemView.swift
+@@ -16,6 +16,7 @@ public final class FormToggleItemView: FormItemView<FormToggleItem> {
+         let label = UILabel(style: item.style.title)
+         label.text = item.title
+         label.numberOfLines = 0
++        label.isAccessibilityElement = false
+         label.accessibilityIdentifier = item.identifier.map {
+             ViewIdentifierBuilder.build(scopeInstance: $0, postfix: "titleLabel")
+         }
+@@ -35,6 +36,7 @@ public final class FormToggleItemView: FormItemView<FormToggleItem> {
+         let switchControl = UISwitch()
+         switchControl.translatesAutoresizingMaskIntoConstraints = false
+         switchControl.isOn = item.value
++        switchControl.accessibilityLabel = item.title
+         switchControl.onTintColor = item.style.tintColor
+         switchControl.isAccessibilityElement = true
+         switchControl.setContentHuggingPriority(.required, for: .horizontal)
+@@ -55,8 +57,6 @@ public final class FormToggleItemView: FormItemView<FormToggleItem> {
+         backgroundColor = item.style.backgroundColor
+ 
+         isAccessibilityElement = false
+-        accessibilityTraits = switchControl.accessibilityTraits
+-        accessibilityValue = switchControl.accessibilityValue
+         
+         setupObservation()
+         addSubviews()
+@@ -64,13 +64,6 @@ public final class FormToggleItemView: FormItemView<FormToggleItem> {
+     
+     // MARK: - Public
+ 
+-    @discardableResult
+-    override public func accessibilityActivate() -> Bool {
+-        switchControl.isOn.toggle()
+-        switchControlValueChanged()
+-        return true
+-    }
+-
+     override public func reset() {
+         item.value = false
+     }
+@@ -89,29 +82,15 @@ private extension FormToggleItemView {
+     func setupObservation() {
+         observe(item.$title) { [weak self] value in
+             self?.label.text = value
+-            self?.accessibilityLabel = value
++            self?.switchControl.accessibilityLabel = value
+         }
+         
+         observe(item.publisher) { [weak self] value in
+             self?.switchControl.isOn = value
+         }
+-        
+-        NotificationCenter.default.addObserver(
+-            self,
+-            selector: #selector(onVoiceOverStatusUpdate),
+-            name: UIAccessibility.voiceOverStatusDidChangeNotification,
+-            object: nil
+-        )
+     }
+ 
+     @objc func switchControlValueChanged() {
+-        accessibilityValue = switchControl.accessibilityValue
+-        accessibilityTraits = switchControl.accessibilityTraits
+         item.value = switchControl.isOn
+     }
+-    
+-    @objc private func onVoiceOverStatusUpdate() {
+-        switchControl.isAccessibilityElement = !UIAccessibility.isVoiceOverRunning
+-        self.isAccessibilityElement = UIAccessibility.isVoiceOverRunning
+-    }
+ }
+diff --git a/Adyen/UI/Form/Items/Value/Validatable/FormValidatableValueItemView.swift b/Adyen/UI/Form/Items/Value/Validatable/FormValidatableValueItemView.swift
+index 7b15f72..0090d68 100644
+--- a/Adyen/UI/Form/Items/Value/Validatable/FormValidatableValueItemView.swift
++++ b/Adyen/UI/Form/Items/Value/Validatable/FormValidatableValueItemView.swift
+@@ -13,6 +13,12 @@ open class FormValidatableValueItemView<ValueType, ItemType: FormValidatableValu
+     AnyFormValidatableValueItemView {
+     
+     private var itemObserver: Observation?
++    private var isShowingValidationError = false
++
++    /// Describes the expected input format without losing it when validation changes.
++    public var accessibilityInputFormat: String? {
++        didSet { updateAccessibilityLabel() }
++    }
+         
+     public required init(item: ItemType) {
+         super.init(item: item)
+@@ -47,6 +53,11 @@ open class FormValidatableValueItemView<ValueType, ItemType: FormValidatableValu
+         
+         observe(item.$validationFailureMessage) { [weak self] in
+             self?.alertLabel.text = $0
++            self?.updateAccessibilityLabel()
++        }
++
++        observe(item.$title) { [weak self] _ in
++            self?.updateAccessibilityLabel()
+         }
+     }
+     
+@@ -76,7 +87,7 @@ open class FormValidatableValueItemView<ValueType, ItemType: FormValidatableValu
+             hideAlertLabel(true)
+             isEditing ? highlightSeparatorView(color: tintColor) : unhighlightSeparatorView()
+             titleLabel.textColor = defaultTitleColor
+-            accessibilityLabelView?.accessibilityLabel = item.title
++            updateAccessibilityLabel()
+             return
+         }
+         
+@@ -84,19 +95,24 @@ open class FormValidatableValueItemView<ValueType, ItemType: FormValidatableValu
+             hideAlertLabel(true)
+             highlightSeparatorView(color: tintColor)
+             titleLabel.textColor = tintColor
+-            accessibilityLabelView?.accessibilityLabel = item.title
+         } else {
+             hideAlertLabel(false)
+             highlightSeparatorView(color: item.style.errorColor)
+             titleLabel.textColor = item.style.errorColor
+-            accessibilityLabelView?.accessibilityLabel = [
+-                item.title,
+-                item.validationFailureMessage
+-            ].compactMap { $0 }.joined(separator: ", ")
+         }
++        updateAccessibilityLabel()
++    }
++
++    private func updateAccessibilityLabel() {
++        accessibilityLabelView?.accessibilityLabel = [
++            item.title,
++            accessibilityInputFormat,
++            isShowingValidationError ? item.validationFailureMessage : nil
++        ].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: ", ")
+     }
+     
+     private func hideAlertLabel(_ shouldHide: Bool, animated: Bool = true) {
++        isShowingValidationError = !shouldHide && item.validationFailureMessage != nil
+         guard shouldHide || alertLabel.text != nil else { return }
+         if !shouldHide {
+             triggerValidationErrorIfNeeded()
+@@ -115,7 +131,7 @@ open class FormValidatableValueItemView<ValueType, ItemType: FormValidatableValu
+         hideAlertLabel(true, animated: false)
+         unhighlightSeparatorView()
+         titleLabel.textColor = defaultTitleColor
+-        accessibilityLabelView?.accessibilityLabel = item.title
++        updateAccessibilityLabel()
+     }
+ }
+ 
+diff --git a/Adyen/UI/Views/SubmitButton.swift b/Adyen/UI/Views/SubmitButton.swift
+index 2c32717..caca58f 100644
+--- a/Adyen/UI/Views/SubmitButton.swift
++++ b/Adyen/UI/Views/SubmitButton.swift
+@@ -121,6 +121,12 @@ public final class SubmitButton: UIControl {
+         super.layoutSubviews()
+         self.adyen.round(using: style.cornerRounding)
+     }
++
++    override public func accessibilityActivate() -> Bool {
++        guard isEnabled, isUserInteractionEnabled else { return false }
++        sendActions(for: .touchUpInside)
++        return true
++    }
+     
+     private func configureConstraints() {
+         backgroundView.adyen.anchor(inside: self)
+diff --git a/AdyenCard/Form/FormCardExpiryDateItem.swift b/AdyenCard/Form/FormCardExpiryDateItem.swift
+index 3cb4b51..1c36fde 100644
+--- a/AdyenCard/Form/FormCardExpiryDateItem.swift
++++ b/AdyenCard/Form/FormCardExpiryDateItem.swift
+@@ -12,13 +12,6 @@ internal final class FormCardExpiryDateItem: FormTextInputItem {
+ 
+     internal var localizationParameters: LocalizationParameters?
+ 
+-    /// Provides accessibility label for corresponding view
+-    internal var accessibilityValue: String {
+-        let format = localizedString(.cardExpiryItemAccessibilityLabel, localizationParameters)
+-        let title = title ?? ""
+-        return title.isEmpty ? format : "\(title), \(format)"
+-    }
+-
+     /// Flag determining this forms state. Validation changes based on this.
+     internal var isOptional: Bool = false {
+         didSet {
+@@ -51,6 +44,7 @@ internal final class FormCardExpiryDateItem: FormTextInputItem {
+         style: FormTextItemStyle = FormTextItemStyle(),
+         localizationParameters: LocalizationParameters? = nil
+     ) {
++        self.localizationParameters = localizationParameters
+         super.init(style: style)
+         title = localizedString(.cardExpiryItemTitle, localizationParameters)
+         placeholder = localizedString(.cardExpiryItemPlaceholder, localizationParameters)
+@@ -83,10 +77,7 @@ internal final class FormCardExpiryDateItem: FormTextInputItem {
+ extension FormItemViewBuilder {
+     internal func build(with item: FormCardExpiryDateItem) -> FormTextInputItemView {
+         let view = FormTextInputItemView(item: item)
+-        view.observe(item.$title) { _ in
+-            view.accessibilityLabelView?.accessibilityLabel = item.accessibilityValue
+-        }
+-        view.accessibilityLabelView?.accessibilityLabel = item.accessibilityValue
++        view.accessibilityInputFormat = localizedString(.cardExpiryItemAccessibilityLabel, item.localizationParameters)
+         return view
+     }
+ }
+diff --git a/AdyenCard/Form/FormCardLogosItemView.swift b/AdyenCard/Form/FormCardLogosItemView.swift
+index 3f081d7..d92f7bc 100644
+--- a/AdyenCard/Form/FormCardLogosItemView.swift
++++ b/AdyenCard/Form/FormCardLogosItemView.swift
+@@ -23,6 +23,10 @@ internal final class FormCardLogosItemView: FormItemView<FormCardLogosItem>, UIC
+         flowLayout.scrollDirection = .vertical
+         let collectionView = CardLogoCollectionView(frame: .zero, collectionViewLayout: flowLayout)
+         collectionView.backgroundColor = .clear
++        collectionView.allowsSelection = false
++        if #available(iOS 15.0, *) {
++            collectionView.allowsFocus = false
++        }
+         return collectionView
+     }()
+     
+@@ -110,8 +114,8 @@ extension FormCardLogosItemView {
+             self.imageLoader = imageLoader
+             
+             cardTypeImageView.isAccessibilityElement = true
+-            cardTypeImageView.accessibilityValue = altText
+-            cardTypeImageView.accessibilityTraits.insert(.image)
++            cardTypeImageView.accessibilityLabel = altText
++            cardTypeImageView.accessibilityTraits = .image
+             
+             cardTypeImageView.layer.masksToBounds = style.clipsToBounds
+             cardTypeImageView.layer.borderWidth = style.borderWidth
+diff --git a/AdyenCard/Form/FormCardSecurityCodeItemView.swift b/AdyenCard/Form/FormCardSecurityCodeItemView.swift
+index fd1ea5d..315d1bd 100644
+--- a/AdyenCard/Form/FormCardSecurityCodeItemView.swift
++++ b/AdyenCard/Form/FormCardSecurityCodeItemView.swift
+@@ -21,7 +21,7 @@ internal final class FormCardSecurityCodeItemView: FormTextItemView<FormCardSecu
+ 
+             if let textField = self?.textField {
+                 textField.apply(placeholderText: localizedPlaceholder, with: item.style.placeholderText)
+-                textField.accessibilityLabel = self?.accessibilityLabel(placeholder: localizedPlaceholder)
++                self?.accessibilityInputFormat = localizedPlaceholder
+             }
+         }
+ 
+@@ -180,9 +180,4 @@ extension FormCardSecurityCodeItemView {
+             compatibleWith: nil
+         ))
+     }
+-
+-    private func accessibilityLabel(placeholder: String) -> String {
+-        let title = item.title ?? ""
+-        return title.isEmpty ? placeholder : "\(title), \(placeholder)"
+-    }
+ }
+diff --git a/AdyenCardScanner/Sources/CardScannerOverlayView.swift b/AdyenCardScanner/Sources/CardScannerOverlayView.swift
+index 9db2877..1aba11a 100644
+--- a/AdyenCardScanner/Sources/CardScannerOverlayView.swift
++++ b/AdyenCardScanner/Sources/CardScannerOverlayView.swift
+@@ -35,12 +35,14 @@ internal class CardScannerOverlayView: UIView {
+ 
+     @Published internal private(set) var roiFrame: CGRect = .zero
+ 
++    private lazy var roiWidthConstraint = roiView.widthAnchor.constraint(equalToConstant: 0)
++
+     // MARK: - Initializers
+ 
+     override internal init(frame: CGRect) {
+         super.init(frame: frame)
+         setupMaskViews()
+-        setupMasksLayout()
++        setupConstraints()
+     }
+ 
+     @available(*, unavailable)
+@@ -49,8 +51,8 @@ internal class CardScannerOverlayView: UIView {
+     }
+ 
+     override internal func layoutSubviews() {
+-        super.layoutSubviews()
+         updateRoiLayout()
++        super.layoutSubviews()
+         self.roiFrame = roiView.frame
+     }
+ 
+@@ -67,7 +69,7 @@ internal class CardScannerOverlayView: UIView {
+         addSubview(roiView)
+     }
+ 
+-    private func setupMasksLayout() {
++    private func setupConstraints() {
+         NSLayoutConstraint.activate([
+             topMask.topAnchor.constraint(equalTo: topAnchor),
+             topMask.leadingAnchor.constraint(equalTo: leadingAnchor),
+@@ -87,24 +89,17 @@ internal class CardScannerOverlayView: UIView {
+             rightMask.topAnchor.constraint(equalTo: topMask.bottomAnchor),
+             rightMask.leadingAnchor.constraint(equalTo: roiView.trailingAnchor),
+             rightMask.trailingAnchor.constraint(equalTo: trailingAnchor),
+-            rightMask.bottomAnchor.constraint(equalTo: bottomMask.topAnchor)
++            rightMask.bottomAnchor.constraint(equalTo: bottomMask.topAnchor),
++
++            roiView.centerXAnchor.constraint(equalTo: centerXAnchor),
++            roiView.centerYAnchor.constraint(equalTo: centerYAnchor),
++            roiView.heightAnchor.constraint(equalTo: roiView.widthAnchor, multiplier: 1.0 / Constants.roiAspectRatio),
++            roiWidthConstraint
+         ])
+     }
+ 
+     private func updateRoiLayout() {
+-        // Deactivate old constraints
+-        NSLayoutConstraint.deactivate(roiView.constraints)
+-
+         let padding: CGFloat = 12
+-
+-        let roiWidth = min(bounds.width, bounds.height) - (padding * 2)
+-        let roiHeightMultiplier = 1.0 / Constants.roiAspectRatio
+-
+-        NSLayoutConstraint.activate([
+-            roiView.centerXAnchor.constraint(equalTo: centerXAnchor),
+-            roiView.centerYAnchor.constraint(equalTo: centerYAnchor),
+-            roiView.widthAnchor.constraint(equalToConstant: roiWidth),
+-            roiView.heightAnchor.constraint(equalTo: roiView.widthAnchor, multiplier: roiHeightMultiplier)
+-        ])
++        roiWidthConstraint.constant = max(0, min(bounds.width, bounds.height) - (padding * 2))
+     }
+ }
+diff --git a/README.md b/README.md
+index 6df5215..2e0c749 100644
+--- a/README.md
++++ b/README.md
+@@ -118,7 +118,7 @@ You can add all modules or select individual modules to add to your integration.
+ 
+ ## Drop-in
+ 
+-The [Drop-in](https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/dropincomponent) handles the presentation of available payment methods and the subsequent entry of a customer's payment details. It is initialized with the response of [`/sessions`][apiExplorer.sessions], and handles the entire checkout flow under the hood.
++The [Drop-in](https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/dropincomponent) handles the presentation of available payment methods and the subsequent entry of a customer's payment details. It is initialized with the response of [`/sessions`][apiExplorer.sessions], and handles the entire checkout flow under the hood.
+ 
+ ### Usage
+ 
+@@ -126,7 +126,7 @@ The [Drop-in](https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/dropi
+ 
+ All Components need an `AdyenContext`. An instance of `AdyenContext` wraps your client key, environment, analytics configuration and so on.
+ Please read more [here](https://docs.adyen.com/development-resources/client-side-authentication) about the client key and how to get one.
+-Use **Environment.test** for environment. When you're ready to accept live payments, change the value to one of our [live environments](https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/environment)
++Use **Environment.test** for environment. When you're ready to accept live payments, change the value to one of our [live environments](https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/environment)
+ 
+ ```swift
+ let apiContext = try! APIContext(environment: componentsEnvironment, clientKey: clientKey)
+@@ -365,34 +365,34 @@ Read our [**contribution guidelines**](CONTRIBUTING.md) to find out how.
+ 
+ This repository is open source and available under the MIT license. For more information, see the LICENSE file.
+ 
+-[reference]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/
+-[reference.dropInComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/dropin
+-[reference.installation]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/installation
+-[reference.styles]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/customization
+-[reference.advancedFlow]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/threeapis
+-[reference.cardComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/cardcomponent
+-[reference.threeDS2Component]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/threeds2component
+-[reference.applePayComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/applepaycomponent
+-[reference.bcmcComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/bcmccomponent
+-[reference.issuerListComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/issuerlistcomponent
+-[reference.weChatPaySDKActionComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/wechatpaysdkactioncomponent
+-[reference.qiwiWalletComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/qiwiwalletcomponent
+-[reference.sepaDirectDebitComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/sepadirectdebitcomponent
+-[reference.redirectComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/redirectcomponent
+-[reference.mbWayComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/mbwaycomponent
+-[reference.BLIKComponent]: https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/blikcomponent
+-[reference.DokuComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/dokucomponent
+-[reference.BoletoComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/boletocomponent
+-[reference.ACHDirectDebitComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/achdirectdebitcomponent
+-[reference.AffirmComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/affirmcomponent
+-[reference.BACSDirectDebitComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/bacsdirectdebitcomponent
+-[reference.OnlineBankingComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/onlinebankingcomponent
+-[reference.AtomeComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/atomecomponent
+-[reference.UPIComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/upicomponent
+-[reference.QRCodeActionComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/qrcodeactioncomponent
+-[reference.CashAppPayComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/cashapppaycomponent
+-[reference.TwintComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/twintcomponent
+-[reference.PayToComponent]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/paytocomponent
+-[reference.localization]:  https://adyen.github.io/adyen-ios/5.26.0/documentation/adyen/localization
++[reference]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/
++[reference.dropInComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/dropin
++[reference.installation]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/installation
++[reference.styles]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/customization
++[reference.advancedFlow]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/threeapis
++[reference.cardComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/cardcomponent
++[reference.threeDS2Component]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/threeds2component
++[reference.applePayComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/applepaycomponent
++[reference.bcmcComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/bcmccomponent
++[reference.issuerListComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/issuerlistcomponent
++[reference.weChatPaySDKActionComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/wechatpaysdkactioncomponent
++[reference.qiwiWalletComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/qiwiwalletcomponent
++[reference.sepaDirectDebitComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/sepadirectdebitcomponent
++[reference.redirectComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/redirectcomponent
++[reference.mbWayComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/mbwaycomponent
++[reference.BLIKComponent]: https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/blikcomponent
++[reference.DokuComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/dokucomponent
++[reference.BoletoComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/boletocomponent
++[reference.ACHDirectDebitComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/achdirectdebitcomponent
++[reference.AffirmComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/affirmcomponent
++[reference.BACSDirectDebitComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/bacsdirectdebitcomponent
++[reference.OnlineBankingComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/onlinebankingcomponent
++[reference.AtomeComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/atomecomponent
++[reference.UPIComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/upicomponent
++[reference.QRCodeActionComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/qrcodeactioncomponent
++[reference.CashAppPayComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/cashapppaycomponent
++[reference.TwintComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/twintcomponent
++[reference.PayToComponent]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/paytocomponent
++[reference.localization]:  https://adyen.github.io/adyen-ios/5.27.0/documentation/adyen/localization
+ 
+ [apiExplorer.sessions]: https://docs.adyen.com/api-explorer/#/CheckoutService/latest/post/sessions

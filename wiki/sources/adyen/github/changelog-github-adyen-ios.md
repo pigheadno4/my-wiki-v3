@@ -2,8 +2,11 @@
 title: "GitHub changelog: Adyen/adyen-ios"
 type: source
 date_ingested: 2026-10-15
+date_updated: 2026-11-07
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/manifest.json"
+  - "github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/manifest.json"
   - "github/adyen/adyen-ios/snapshots/2026-10-14-da34749/manifest.json"
   - "github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/manifest.json"
 tags: [adyen, ios, swift, mobile-sdk, changelog, github-repository]
@@ -12,6 +15,46 @@ tags: [adyen, ios, swift, mobile-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `Adyen/adyen-ios`. Cumulative implementation knowledge belongs in [[source-github-adyen-ios]] and the linked immutable snapshots.
+
+## `adyen-ios@5.27.0` (2026-10-30)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `adyen-ios` | `5.26.0` | `5.27.0` | `15167f660094853d204dc6cd25a068eddf1bc2b2` | Full additive; focused reading approved |
+
+Collected/ingested 2026-11-07 as `github-2e39da6002199c52091d`, after completing the `5.26.0` notes delta. All older implementation findings and dated notes remain preserved.
+
+**Release findings:** VoiceOver storage toggle becomes one labeled native switch; expiry/CVC format descriptions persist across editing/validation; logo images are labeled and not collection-selectable/focusable (focus disabled on iOS 15+); address/toolbar titles acquire header semantics; cancel labels cover custom-image styles. These are source-grounded presentation changes, not verified accessibility compliance or altered server-side storage/payment semantics.
+
+**Additional code findings:** Shared SubmitButton accessibility activation rejects disabled/noninteractive state and otherwise sends touchUpInside, respecting its existing loading disablement. CardScannerOverlayView sets constraints once, updates a retained width constraint clamped at zero before layout, then publishes roiFrame. No measured performance/recognition or complete duplicate-submission guarantee is claimed. The new accessibilityInputFormat property belongs to AdyenInternal SPI, not an advertised merchant payment API.
+
+**Distribution/migration:** `5.27.0` notes now carry the final-CocoaPods-release notice removed from revised `5.26.0` notes. Same-tag README and podspec still include CocoaPods for this version; do not infer that this final release is unavailable or installed successfully. README minimums remain iOS 12 / Xcode 15 / Swift 5.7; retained dependency pins unchanged. Plan future distribution upgrades and regression-test VoiceOver, validation, cancel/headers, disabled/loading submission and scanner resizing. Independent wrappers/delegated SDKs retain separate version histories. No Xcode build, installation, device/VoiceOver, compliance or payment test was run.
+
+**Updated sections/checks:** `5.27.0` full additive source section, latest pointer, exact evidence, SDK concept and company/catalog/logs. All 13 changed retained files read completely with affected prior/dependency code; 676 unchanged files and inventories mechanically verified. Both snapshots' 1,378 file identities pass, all 7,780 upstream paths dispositioned, no packet gaps/unclassified changes. No source-count increment; security-keyword heuristic is not an advisory finding.
+
+**Evidence:**
+
+- `raw/github/adyen/adyen-ios/releases/adyen-ios/5.27.0/2026-11-07/manifest.json`
+- `raw/github/adyen/adyen-ios/releases/adyen-ios/5.27.0/2026-11-07/release-notes.md`
+- `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/manifest.json`
+- `tracking/github/repos/adyen/adyen-ios/comparisons/adyen-ios/5.26.0--5.27.0/comparison.json`
+- `tracking/github/repos/adyen/adyen-ios/comparisons/adyen-ios/5.26.0--5.27.0/comparison.md`
+- `tracking/github/repos/adyen/adyen-ios/comparisons/adyen-ios/5.26.0--5.27.0/diff.patch`
+- Exact changed implementation/distribution and label-dependency paths: [[source-github-adyen-ios]].
+
+## `adyen-ios@5.26.0` notes revision (2026-11-07 capture)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `adyen-ios` | `5.26.0` original notes | `5.26.0` revised notes | `da347498d07b843e5af3f9eb871376514ffdf38c` | Notes-only delta |
+
+Ingested 2026-11-07 as `github-03f5682f5c6d30579f8c`, evidence revision `150add119593315c95baaf53265469d17cfc35acdb37111ca4f9218b09950c31`. The release timestamp remains 2026-10-07; collection/ingest dates are not new release dates.
+
+**Finding:** The revised note removes the final-CocoaPods-release notice and leaves the iPhone Duo heading and all implementation highlights. The older entry below documents the original 2026-10-14 capture and remains historical evidence; its distribution statement is superseded by this dated correction, not silently erased.
+
+**Impact/migration:** No source, dependency or payment-flow change; all 689 retained files and existing knowledge are preserved. Do not use the superseded `5.26.0` notice alone to decide a package-manager cutoff. No installation, device, accessibility or payment test was run. Concept, source, company/catalog and logs updated; no new source pages or source-count change.
+
+**Evidence:** `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/release-notes.md`, `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/manifest.json`, `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/release-notes.md`, `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/manifest.json`, `tracking/github/repos/adyen/adyen-ios/ingest-packets/github-03f5682f5c6d30579f8c/packet.json` and `tracking/github/repos/adyen/adyen-ios/ingest-packets/github-03f5682f5c6d30579f8c/packet.md`. There is no code comparison for the same-SHA notes-only change.
 
 ## `adyen-ios@5.26.0` (2026-10-07)
 

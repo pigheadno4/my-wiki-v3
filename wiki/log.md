@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-11-07] ingest | Adyen iOS `5.27.0`
+
+Approved focused-reading full additive ingest after the notes delta: VoiceOver controls/format, guarded submission, scanner constraints and corrected CocoaPods notice. All older source/notes history preserved; source_count unchanged. Details [[adyen-log]], [[source-github-adyen-ios]] and [[changelog-github-adyen-ios]]. No runtime execution, commit or push.
+
+## [2026-11-07] ingest | Adyen iOS `5.26.0` notes revision
+
+Approved notes-only delta preserves all SDK/history evidence while recording removal of the CocoaPods cutoff notice from revised `5.26.0` notes. Source_count unchanged; details [[adyen-log]], [[source-github-adyen-ios]] and [[changelog-github-adyen-ios]]. No runtime execution, commit or push.
+
 ## [2026-11-07] ingest | Adyen Android `5.22.0`
 
 Approved focused-reading full additive ingest after `5.21.0`, preserving all history: attributed eMudhra security release claim, OkHttp `4.12.1`, shared image loading and bitmap-ownership change. No independent blocklist/device-rejection proof; source_count unchanged by this ingest. Details [[adyen-log]], [[source-github-adyen-android]] and [[changelog-github-adyen-android]]. No upstream execution, commit or push.

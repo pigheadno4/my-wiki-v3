@@ -2,8 +2,11 @@
 title: "GitHub: Adyen/adyen-ios"
 type: source
 date_ingested: 2026-10-15
+date_updated: 2026-11-07
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/manifest.json"
+  - "github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/manifest.json"
   - "github/adyen/adyen-ios/snapshots/2026-10-14-da34749/manifest.json"
   - "github/adyen/adyen-ios/snapshots/2026-08-01-5f6779b/manifest.json"
 tags: [adyen, ios, swift, mobile-sdk, drop-in, components, github-repository]
@@ -15,7 +18,7 @@ tags: [adyen, ios, swift, mobile-sdk, drop-in, components, github-repository]
 
 Repository: <https://github.com/Adyen/adyen-ios>
 
-Newest ingested release: `adyen-ios@5.26.0`, published 2026-10-07, exact SHA `da347498d07b843e5af3f9eb871376514ffdf38c`. Its additive full ingest preserves the original baseline and all earlier knowledge; changed behavior is qualified below rather than retroactively attributed to `5.25.1`.
+Newest ingested release: `adyen-ios@5.27.0`, published 2026-10-30, exact SHA `15167f660094853d204dc6cd25a068eddf1bc2b2`, ingested 2026-11-07. Its full additive section below preserves the `5.25.1` baseline, `5.26.0` implementation and dated notes correction; new behavior is not retroactively attributed to earlier releases.
 
 ## Evidence boundary
 
@@ -171,6 +174,58 @@ Evidence: `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/files/Adyen/C
 
 The retained requirements remain iOS 12, Xcode 15 and Swift 5.7; no dependency change is reported by this comparison. Future upgrade planning should account for the announced distribution change without rewriting the historical `5.25.1` installation guidance.
 
+### `5.26.0` release-note correction (2026-11-07 capture)
+
+> [!warning] Contradiction
+> The CocoaPods statement and excerpt above describe the original 2026-10-14 capture. The revised `5.26.0` notes collected on 2026-11-07 remove that notice and change the heading from "iPhone Duo and CocoaPods" to "iPhone Duo". Preserve the old capture as history, but do not treat it as the current distribution cutoff. [[adyen-ios-sdk]] records the same dated correction.
+
+This is a notes-only delta at the unchanged `da347498d07b843e5af3f9eb871376514ffdf38c` SHA: all 689 retained files and all Apple Pay, CVC, currency-conversion, layout and demo findings remain unchanged. It is not a new package version, implementation fix or proof of package-registry availability. The revised record retains the original release timestamp 2026-10-07; collection and ingestion occurred on 2026-11-07. A code comparison is not fabricated for a same-SHA notes revision. Original raw and all older wiki knowledge remain intact.
+
+Evidence: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/release-notes.md`, `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/manifest.json`, `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/release-notes.md` and `tracking/github/repos/adyen/adyen-ios/ingest-packets/github-03f5682f5c6d30579f8c/packet.json` / `tracking/github/repos/adyen/adyen-ios/ingest-packets/github-03f5682f5c6d30579f8c/packet.md`.
+
+## `adyen-ios@5.27.0` full additive update
+
+Exact boundary: `5.26.0` (`da347498d07b843e5af3f9eb871376514ffdf38c`) -> `5.27.0` (`15167f660094853d204dc6cd25a068eddf1bc2b2`). Released 2026-10-30; collected and ingested 2026-11-07, after the notes-only correction above completed. Full mode uses the approved focused read: all 13 changed retained files, affected prior/dependency code, release evidence and cumulative wiki history; 676 unchanged files and generated inventories checked mechanically. The snapshot has 689 files; all 7,780 upstream paths are dispositioned (13 retained, 7,767 intentional exclusions), with no packet-reported gaps/unclassified changes. This is not a full upstream-repository read or runtime test. Security-keyword triage is not an independently established security advisory.
+
+### VoiceOver controls and form guidance
+
+| Surface | Retained `5.27.0` behavior | Boundary |
+| --- | --- | --- |
+| Store-payment toggle | Native UISwitch owns the label and accessibility element; separate label excluded, prior VoiceOver-status-dependent wrapper switching removed | UI accessibility wiring, not new token storage or consent semantics |
+| Expiry/CVC format | Shared label combines title, expected input format and a currently shown validation error; format remains through validation/reset | AdyenInternal SPI implementation, not a new merchant payment request field |
+| Card logos | Disables collection selection and iOS-15+ focus; images use accessibilityLabel and image trait | Does not prove removal of card-network selection elsewhere |
+| Address/toolbar titles | Adds header trait through FormLabelItem and ModalToolbar | Code-level semantics, not measured accessibility compliance |
+| Cancel button | Localized cancel label assigned regardless of button image/style | No physical-device/localization test here |
+
+`FormValidatableValueItemView` adds `accessibilityInputFormat` and `isShowingValidationError`; it recomputes labels when title, validation message, format or validation state changes. `FormTextItemView.accessibilityLabelView` resolves to the text field, so the constructed description reaches that control. Expiry creation supplies localized format text and now stores the supplied localizationParameters; the CVC view supplies the selected brand's localized digit-count placeholder to the shared label builder. Its existing sanitized-value/length policy from `5.26.0` is not a new change in this release.
+
+The new property is on a type annotated `@_spi(AdyenInternal)`. Do not present it as a supported new merchant configuration option or as a reason to depend on internal SDK types. Likewise, descriptive store-payment labeling does not replace server-side tokenization, eligibility or fulfillment verification.
+
+### Additional source-derived changes
+
+**Submit activation:** The shared SubmitButton gains this override, beyond the five release-note highlights:
+
+```swift
+override public func accessibilityActivate() -> Bool {
+    guard isEnabled, isUserInteractionEnabled else { return false }
+    sendActions(for: .touchUpInside)
+    return true
+}
+```
+
+The existing loading-indicator setter disables the control while loading and re-enables it afterward. The new override therefore respects that control state before sending its normal action. It is not an end-to-end payment success, duplicate-submission guarantee or new merchant callback API.
+
+**Scanner overlay:** CardScannerOverlayView creates center/aspect/width constraints once, retains its width constraint, updates it before super.layoutSubviews, then publishes roiFrame. Width is now `max(0, min(bounds.width, bounds.height) - 24)`, rather than recreating constraints on each layout with an unclamped width. This establishes layout/constraint handling only, not measured speed, recognition accuracy or verified device rotation behavior.
+
+### Distribution notice and compatibility
+
+> [!warning] Contradiction
+> The original October capture attached the final-CocoaPods notice to `5.26.0`; the revised notes remove it there, and the `5.27.0` notes now identify this release as the final CocoaPods release, with SPM/Carthage for future distribution. Both dated claims remain recorded. Do not use the superseded `5.26.0` wording as current guidance. [[adyen-ios-sdk]] and [[changelog-github-adyen-ios]] preserve the same correction.
+
+Same-tag README still documents CocoaPods installation, and Adyen.podspec declares `5.27.0`. These current-version files can coexist with a final-version announcement; neither the notice nor this inspection proves that `5.27.0` is unavailable from the registry, that it was installed successfully, or a global CocoaPods shutdown date. Minimum README requirements remain iOS 12, Xcode 15 and Swift 5.7; the podspec retains iOS 12 / Swift 5.7. Retained Package.swift/Cartfile and dependency pins are unchanged. Older distribution and integration evidence is preserved, and this native upgrade does not change an independently pinned wrapper automatically.
+
+**Merchant regression checks:** exercise VoiceOver storage toggling, expiry/CVC format descriptions before/after editing and validation, logo/header/cancel navigation, enabled versus loading/disabled submit activation, and scanner layout/resizing. Plan future package-manager upgrades using the corrected version-qualified notice. No Swift/Xcode build, dependency installation, device/VoiceOver, accessibility-compliance or payment execution was performed in this ingest.
+
 ## Related
 
 - [[changelog-github-adyen-ios]] - package-qualified release ledger
@@ -184,6 +239,16 @@ The retained requirements remain iOS 12, Xcode 15 and Swift 5.7; no dependency c
 
 ## Raw sources
 
+- `5.27.0` snapshot: `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/manifest.json`
+- `5.27.0` release: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.27.0/2026-11-07/manifest.json` and `raw/github/adyen/adyen-ios/releases/adyen-ios/5.27.0/2026-11-07/release-notes.md`
+- `5.26.0` -> `5.27.0` comparison: `tracking/github/repos/adyen/adyen-ios/comparisons/adyen-ios/5.26.0--5.27.0/comparison.json`, `tracking/github/repos/adyen/adyen-ios/comparisons/adyen-ios/5.26.0--5.27.0/comparison.md` and `tracking/github/repos/adyen/adyen-ios/comparisons/adyen-ios/5.26.0--5.27.0/diff.patch`
+- Toggle/format: `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen/UI/Form/Items/Toggle/FormToggleItemView.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen/UI/Form/Items/Value/Validatable/FormValidatableValueItemView.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/AdyenCard/Form/FormCardExpiryDateItem.swift` and `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/AdyenCard/Form/FormCardSecurityCodeItemView.swift`
+- Logos/headers: `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/AdyenCard/Form/FormCardLogosItemView.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen/Core/ToolBar/ModalToolbar.swift`, `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen/UI/Form/Items/Address/FormAddressItem.swift` and `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen/UI/Form/Items/Basic Items/FormLabelItem.swift`
+- Submit/scanner: `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen/UI/Views/SubmitButton.swift` and `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/AdyenCardScanner/Sources/CardScannerOverlayView.swift`
+- Label dependency: `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen/UI/Form/Items/Text/FormTextItemView.swift`
+- Distribution/version: `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/README.md`, `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen.podspec` and `raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/files/Adyen/Helpers/AdyenSdkVersion.swift`
+- Revised `5.26.0` release record: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/manifest.json`
+- Revised `5.26.0` notes: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/release-notes.md`
 - New snapshot: `raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/manifest.json`
 - New release record: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/manifest.json`
 - New release notes: `raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-10-14/release-notes.md`

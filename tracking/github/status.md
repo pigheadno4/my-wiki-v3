@@ -25,6 +25,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.5.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.4.1--26.5.0/comparison.json)
 
+## `github-03f5682f5c6d30579f8c`
+
+- Repository: `adyen/adyen-ios`
+- SHA: `da347498d07b843e5af3f9eb871376514ffdf38c`
+- Collection date: `2026-11-07`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `150add119593315c95baaf53265469d17cfc35acdb37111ca4f9218b09950c31`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-ios/snapshots/2026-10-14-da34749/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-ios/ingest-packets/github-03f5682f5c6d30579f8c/packet.md)
+- Review priority: `high`
+- Required reading: `5` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-ios@5.26.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-ios/releases/adyen-ios/5.26.0/2026-11-07/manifest.json)
+  Comparison: Not applicable
+
 ## `github-0410aa98455f316b0c06`
 
 - Repository: `stripe/stripe-cli`
@@ -1139,6 +1164,31 @@
 - `stripe-cli@1.54.1` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.1/2026-10-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.54.0--1.54.1/comparison.json)
+
+## `github-2e39da6002199c52091d`
+
+- Repository: `adyen/adyen-ios`
+- SHA: `15167f660094853d204dc6cd25a068eddf1bc2b2`
+- Collection date: `2026-11-07`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-ios/snapshots/2026-11-07-15167f6/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-ios/ingest-packets/github-2e39da6002199c52091d/packet.md)
+- Review priority: `high`
+- Required reading: `22` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-ios@5.27.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-ios/releases/adyen-ios/5.27.0/2026-11-07/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-ios/comparisons/adyen-ios/5.26.0--5.27.0/comparison.json)
 
 ## `github-30e591eb05618f8c9c5e`
 

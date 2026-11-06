@@ -86,7 +86,7 @@ Dates are the cumulative wiki source date_updated, falling back to date_ingested
 | `adyen/adyen-3ds2-ios` | 2026-08-19 | [source](../../wiki/sources/adyen/github/source-github-adyen-3ds2-ios.md) |
 | `adyen/adyen-3ds2-ios-swift` | 2026-08-29 | [source](../../wiki/sources/adyen/github/source-github-adyen-3ds2-ios-swift.md) |
 | `adyen/adyen-android` | 2026-11-07 | [source](../../wiki/sources/adyen/github/source-github-adyen-android.md) |
-| `adyen/adyen-ios` | 2026-10-15 | [source](../../wiki/sources/adyen/github/source-github-adyen-ios.md) |
+| `adyen/adyen-ios` | 2026-11-07 | [source](../../wiki/sources/adyen/github/source-github-adyen-ios.md) |
 | `adyen/adyen-magento2` | 2026-08-25 | [source](../../wiki/sources/adyen/github/source-github-adyen-magento2.md) |
 | `adyen/adyen-node-api-library` | 2026-10-04 | [source](../../wiki/sources/adyen/github/source-github-adyen-node-api-library.md) |
 | `adyen/adyen-php-api-library` | 2026-10-29 | [source](../../wiki/sources/adyen/github/source-github-adyen-php-api-library.md) |
@@ -111,4 +111,4 @@ All enabled repositories have an ingested baseline. The three disabled entries n
 
 ## Validation Boundaries
 
-Adyen Android 5.21.0 and 5.22.0 were ingested serially as full additive updates with approved focused reading, preserving all prior history. Scoped wiki, history and evidence checks pass. The offline global validator retains 13 unrelated historical errors: six packet-budget failures, six consequent invalid-packet reports, and the Adyen PHP 30.1.0 package-qualified ledger omission. Recorded ingested counts are not a claim of globally clean validation.
+Adyen Android 5.21.0 and 5.22.0 retain their serial full additive ingests. Adyen iOS now includes the 5.26.0 notes-only correction followed by the 5.27.0 full additive ingest with approved focused reading, preserving all prior history. Scoped wiki, history and evidence checks pass. The offline global validator retains 13 unrelated historical errors: six packet-budget failures, six consequent invalid-packet reports, and the Adyen PHP 30.1.0 package-qualified ledger omission. Recorded ingested counts are not a claim of globally clean validation. Queue-repair regression and full-suite limits are documented in `repos/adyen/adyen-ios/notes-revision-repair-2026-11-07.md`.

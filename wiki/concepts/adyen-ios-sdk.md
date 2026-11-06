@@ -15,10 +15,27 @@ The first retained baseline is `adyen-ios@5.25.1` at exact SHA `5f6779b31299e306
 
 This is version-qualified repository evidence, not current merchant eligibility guidance. The payment methods returned by the merchant backend, account configuration, shopper context, region, and transaction determine what can actually be offered.
 
-The newest ingested update is `adyen-ios@5.26.0` at `da347498d07b843e5af3f9eb871376514ffdf38c` (2026-10-15 ingest). The `5.25.1` baseline and its integration knowledge remain preserved below and in [[source-github-adyen-ios]].
+The 2026-10-15 ingest added `adyen-ios@5.26.0` at `da347498d07b843e5af3f9eb871376514ffdf38c`. Latest implementation evidence is now `5.27.0` (2026-11-07 ingest), described below; both older versions and their integration knowledge remain preserved in [[source-github-adyen-ios]].
 
 > [!warning] Contradiction
 > The `5.26.0` release notes identify this as the last CocoaPods release and announce SPM/Carthage-only distribution afterward, while the same-tag README still advertises CocoaPods installation and the podspec remains present. This is a distribution-policy announcement, not evidence that `5.26.0` cannot be installed with CocoaPods. The discrepancy is also recorded in [[source-github-adyen-ios]].
+
+### `5.26.0` notes correction collected 2026-11-07
+
+The warning above records the original release notes captured on 2026-10-14, not the latest wording. A same-SHA notes revision collected and delta-ingested on 2026-11-07 removes the CocoaPods final-release notice from `5.26.0` and leaves the iPhone Duo and implementation highlights unchanged. Both captures remain preserved in [[source-github-adyen-ios]] and [[changelog-github-adyen-ios]]. This is a documentation correction, not an SDK upgrade, dependency change or verified CocoaPods installation result. Do not continue presenting `5.26.0` as the cutoff based on the superseded capture alone.
+
+## `5.27.0` accessibility and distribution update
+
+Latest ingested implementation: `adyen-ios@5.27.0`, SHA `15167f660094853d204dc6cd25a068eddf1bc2b2` (released 2026-10-30, full additive ingest 2026-11-07 with focused reading). Earlier `5.25.1`, `5.26.0` and both dated distribution-note captures remain preserved.
+
+- The storage toggle exposes one labeled native UISwitch rather than switching accessibility ownership between the wrapper and switch. This does not create server tokens or change merchant consent responsibilities.
+- Expiry and CVC fields retain expected input-format text through editing, validation and reset. Shared label construction combines title, format and the currently shown validation error; the new accessibilityInputFormat property belongs to an AdyenInternal SPI type, not an advertised merchant checkout API. Expiry initialization also retains supplied localization parameters.
+- Card-logo images get labels/image traits; their collection disables selection and, on iOS 15+, focus. Address/toolbar titles become accessibility headers; cancel-button labeling covers custom-image styles. This does not establish removal of card-network choice elsewhere.
+- Source-derived findings beyond the release highlights: SubmitButton accessibility activation checks enabled/interaction state before dispatching touchUpInside; scanner overlay constraints are set up once, with width clamped at zero and the retained width constraint updated before layout.
+
+The `5.27.0` release note now carries the final-CocoaPods-release notice removed from the revised `5.26.0` notes. Its README still documents CocoaPods and the podspec declares `5.27.0`; record the future-distribution announcement without claiming this final version cannot be installed. README requirements stay iOS 12, Xcode 15 and Swift 5.7, with no retained dependency-pin change. Independent React Native/delegated SDK histories are not automatically advanced by this native update.
+
+Merchant checks: VoiceOver toggle activation/labeling, expiry/CVC guidance before/after errors, headers/cancel controls, disabled/loading submit behavior and scanner resizing; plan package-manager upgrades using version-qualified distribution guidance. No Xcode build, package installation, device/VoiceOver, compliance or payment test was performed. Exact files and release history: [[source-github-adyen-ios]] and [[changelog-github-adyen-ios]].
 
 ## Integration and server boundary
 
