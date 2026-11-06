@@ -6,6 +6,14 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-07] ingest | credit-card-type@10.3.1
+
+- Approved delta `github-84021be2188f8cfe1577`, SHA `b1ca7027bcba9377382abaf7db8d6902c8842ec1`, claimed only after the notes revision completed. Fully read all eleven assigned paths and affected matching context. Two modified/twelve unchanged files; all 28 sizes/SHA-256/Git blob IDs and evidence hashes verified, four upstream changes classified. Adds Elo ranges `650057-650081` and `651680-651704`, no API/algorithm/dependency change. Concepts first, then cumulative source/changelog/company/catalog/logs; source_count and all history preserved. No upstream suite/build/install/browser/payment execution, commit or push. [[source-github-credit-card-type]] [[changelog-github-credit-card-type]]
+
+## [2026-11-07] ingest | credit-card-type@10.3.0 notes revision
+
+- Approved delta `github-33914676c405b863373a`, same SHA `fbd8ed80a411fa9b238055208c19a7323cd38e21`, all 14 retained files unchanged. Fully read all five assigned paths; records newly available upstream Troy note and distinguishes June commit-backed date, October publication, August baseline and today's evidence ingest. Original raw/knowledge preserved; concept first, then cumulative source/changelog/company/catalog/logs. Source_count unchanged. No upstream tests/build/payment execution, commit or push. [[source-github-credit-card-type]] [[changelog-github-credit-card-type]]
+
 ## [2026-11-06] ingest | braintree-web@3.148.0
 
 - Approved focused-reading delta, work item `github-b0a5af655a25673da0cb`, SHA `0b989560481a1274a8fda27e426f6297d3bde552`, after 3.147.0. Twenty modified/313 unchanged files; all 666 prior/current sizes, SHA-256 and Git blob IDs verified. Packet/release/comparison hashes match; old raw changelog tail identical. Notes label November 2, GitHub publication November 4, collection November 5; ingestion November 6.

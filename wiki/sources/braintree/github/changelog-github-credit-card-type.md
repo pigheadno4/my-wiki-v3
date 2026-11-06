@@ -2,8 +2,11 @@
 title: "GitHub changelog: braintree/credit-card-type"
 type: source
 date_ingested: 2026-08-29
+date_updated: 2026-11-07
 original_format: github-repo
 raw_files:
+  - "github/braintree/credit-card-type/snapshots/2026-11-07-b1ca702/manifest.json"
+  - "github/braintree/credit-card-type/releases/credit-card-type/10.3.0/2026-11-07/manifest.json"
   - "github/braintree/credit-card-type/snapshots/2026-08-29-fbd8ed8/manifest.json"
 tags: [braintree, credit-card-type, card-brand, changelog, github-repository]
 ---
@@ -11,6 +14,30 @@ tags: [braintree, credit-card-type, card-brand, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/credit-card-type`. Cumulative implementation knowledge belongs in [[source-github-credit-card-type]] and the linked immutable snapshot.
+
+## `credit-card-type@10.3.1` (2026-10-13; ingested 2026-11-07)
+
+`credit-card-type@10.3.0` -> `credit-card-type@10.3.1`; SHA `b1ca7027bcba9377382abaf7db8d6902c8842ec1`. Approved serial delta `github-84021be2188f8cfe1577`, started only after the preceding notes-only item completed and validated. All baseline and note-revision history remains below.
+
+**Findings:** adds inclusive Elo prefixes `650057-650081` and `651680-651704`; the latter extends existing coverage adjacent to `651652-651679`. No new brand, public API, matching algorithm, card-length/CVV definition or runtime dependency. Package metadata changes only its version; the raw cumulative changelog is unchanged.
+
+**Impact:** complete six-digit Elo patterns now outrank broad Discover `65` and Maestro `6` under default configuration; short-prefix ambiguity remains. Static source-derived examples and unchanged adjacent Troy boundaries are recorded in [[source-github-credit-card-type]], not represented as executed tests. This fills the standalone dependency evidence gap for Braintree Web 3.148.0's 10.3.1 pin without claiming merchant acceptance, network routing, hosted runtime or payment proof.
+
+**Migration:** no mandatory migration stated. Check new endpoints/interiors, adjacent prefixes, UI brand treatment and any custom detector overrides; keep validation and accepted-network policy independent. Existing normalization, unknown-type and boxed-String caveats remain preserved.
+
+**Reading and updates:** all eleven assigned paths read in full, plus affected matching dependencies/prior definitions. Two modified/twelve unchanged retained files; all 28 sizes/SHA-256/Git blob IDs and packet/release/comparison hashes pass. All four upstream dispositions reconcile without gaps/unclassified changes. Two concepts updated first, followed by source/changelog/company/catalog/logs; source_count unchanged, no new comparison page. No upstream suite/build/install/browser/payment execution or generated-dist verification.
+
+**Evidence:** [snapshot](../../../../raw/github/braintree/credit-card-type/snapshots/2026-11-07-b1ca702/manifest.json), [release manifest](../../../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.1/2026-11-07/manifest.json), [release note](../../../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.1/2026-11-07/release-notes.md), [comparison manifest](../../../../tracking/github/repos/braintree/credit-card-type/comparisons/credit-card-type/10.3.0--10.3.1/comparison.json), [readable comparison](../../../../tracking/github/repos/braintree/credit-card-type/comparisons/credit-card-type/10.3.0--10.3.1/comparison.md) and [patch](../../../../tracking/github/repos/braintree/credit-card-type/comparisons/credit-card-type/10.3.0--10.3.1/diff.patch).
+
+## `credit-card-type@10.3.0` Release-Notes Revision (ingested 2026-11-07)
+
+Approved serial delta, work item `github-33914676c405b863373a`; same SHA `fbd8ed80a411fa9b238055208c19a7323cd38e21` and same 14-file snapshot. The newly available upstream note says `- add support for troy cards`, confirming the already-ingested feature without changing code, public APIs, dependencies or payment-acceptance evidence. No new implementation comparison applies.
+
+The original record had no note body and used the June 30 commit-backed date. The new record reports GitHub publication `2026-10-13T16:20:11Z`; neither is today's collection/ingest date. The original August ingest, June-dated baseline entry, empty note and raw manifest remain preserved. Do not retroactively call the new note available at the original ingestion.
+
+All five assigned paths read in full; snapshot/release/packet identities and hashes verified. Existing concept updated first, followed by source/changelog/company/catalog/logs; source_count unchanged. No build, upstream tests, payment run, commit or push. Exact grounding excerpts and dates: [[source-github-credit-card-type]].
+
+Evidence: [revised release manifest](../../../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.0/2026-11-07/manifest.json), [new note](../../../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.0/2026-11-07/release-notes.md), [original release record](../../../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.0/2026-08-29/manifest.json), [unchanged snapshot](../../../../raw/github/braintree/credit-card-type/snapshots/2026-08-29-fbd8ed8/manifest.json).
 
 ## `credit-card-type@10.3.0` (2026-06-30)
 

@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-11-07] ingest | Card detector `10.3.1`
+
+Approved serial delta after the notes revision: two added Elo prefix ranges, unchanged API/algorithm and explicit recognition-versus-acceptance boundary. Original history and source_count preserved; details [[braintree-log]], [[source-github-credit-card-type]] and [[changelog-github-credit-card-type]]. No upstream suite/build/payment execution, commit or push.
+
+## [2026-11-07] ingest | Card detector 10.3.0 notes revision
+
+Approved same-SHA notes-only delta confirms already-retained Troy support; original empty note and all history preserved. Dates and evidence remain distinct; details [[braintree-log]], [[source-github-credit-card-type]] and [[changelog-github-credit-card-type]]. No build/tests/payment execution, commit or push.
+
 ## [2026-11-07] ingest | Adyen API Explorer C68
 
 - All 50 remaining complete-body local API Explorer sources independently approved; 5 concepts touched (0 new). Source_count 3159 = 2547 General Docs + 596 API Explorer + 16 GitHub. Remaining 27 title-only stubs excluded; raw unchanged. 100 actual query answers, three full-read exemplars and validation: `tracking/ingest/adyen/adyen-campaign-68/`; details [[adyen-log]]. No commit/push.

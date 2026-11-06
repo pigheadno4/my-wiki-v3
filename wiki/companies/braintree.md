@@ -958,6 +958,10 @@ The active 4.x package requires Ruby 2.6 or later and supports key credentials o
 
 ## Card Brand Detection Utility
 
+Latest implementation is `credit-card-type@10.3.1`, SHA `b1ca7027bcba9377382abaf7db8d6902c8842ec1`, delta ingested 2026-11-07 after the notes revision. It adds Elo ranges `650057-650081` and `651680-651704` without changing APIs or algorithms. The independent Braintree Web 3.148.0 pin now has matching utility-source evidence; this does not prove processing acceptance. All earlier knowledge and source_count 797 remain intact. [[source-github-credit-card-type]] [[changelog-github-credit-card-type]]
+
+The 2026-11-07 notes-only delta adds upstream confirmation of the existing 10.3.0 Troy feature at the same SHA; it does not change detector implementation. The June commit-backed date, October GitHub publication and August baseline ingestion remain distinct in [[changelog-github-credit-card-type]].
+
 `credit-card-type@10.3.0` is a standalone CommonJS utility that infers likely card brands from partial or complete number prefixes and supplies expected number lengths, formatting gaps, and security-code metadata. Its exact release adds Troy; the retained v10 changelog also records Naranja and Verve additions.
 
 The package has no runtime dependencies and can be used independently of Braintree processing. It does not validate a PAN, choose a co-badged processing network, tokenize a card, establish merchant acceptance, or authorize a payment. Its mutable custom-card and ordering APIs affect subsequent detector calls in the same loaded module.
@@ -1072,7 +1076,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest ingested Braintree PHP release: `braintree_php@6.40.0` at `b116668cb1c66b10aceb71e7753a49fbf4e44fd6` (ingested 2026-10-29; all earlier history preserved)
 - Latest retained Braintree Ruby release: `braintree@4.42.0` at `647f4bb8a45a869cb4d664077d28287881d299b1`; all 4.40.0/4.41.0 history preserved
 - Latest retained Braintree Web release: `braintree-web@3.147.0` at `f3357c49c7b71f079d031c3ddf89cdfe444f6511`
-- Latest retained card-brand detector release: `credit-card-type@10.3.0` at `fbd8ed80a411fa9b238055208c19a7323cd38e21`
+- Latest retained card-brand detector release: `credit-card-type@10.3.1` at `b1ca7027bcba9377382abaf7db8d6902c8842ec1` (ingested 2026-11-07; 10.3.0 baseline and notes revision preserved)
 - Latest retained UUID utility release: `@braintree/uuid@2.0.0` at `d134a2ca93d12705a76ff036baeba568016f9b13`
 - Latest retained input formatter ref: `default-branch@8dcc6ea` at `8dcc6ea9e6cea44eef2b02fbc3f7569a602fa089` (`package.json` 4.2.0)
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`

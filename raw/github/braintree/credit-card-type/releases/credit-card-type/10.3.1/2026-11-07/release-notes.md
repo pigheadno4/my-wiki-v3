@@ -1,0 +1,1 @@
+- fix: add new ranges for Elo card types (thanks @Victor-Vechi!)

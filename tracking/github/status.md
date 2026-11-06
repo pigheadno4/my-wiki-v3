@@ -1240,6 +1240,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/10.0.0/2026-10-18/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.17.0--10.0.0/comparison.json)
 
+## `github-33914676c405b863373a`
+
+- Repository: `braintree/credit-card-type`
+- SHA: `fbd8ed80a411fa9b238055208c19a7323cd38e21`
+- Collection date: `2026-11-07`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `27bdfe943c09a73fab866f5c2b90f28b179de3efcbf104f2f212736b1717c345`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/credit-card-type/snapshots/2026-08-29-fbd8ed8/manifest.json)
+- Packet: [review packet](repos/braintree/credit-card-type/ingest-packets/github-33914676c405b863373a/packet.md)
+- Review priority: `normal`
+- Required reading: `5` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `credit-card-type@10.3.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.0/2026-11-07/manifest.json)
+  Comparison: Not applicable
+
 ## `github-3393b966354c2316a5fd`
 
 - Repository: `stripe/stripe-android`
@@ -3229,6 +3254,31 @@
 - `@stripe/stripe-js@9.12.1` (recommended `full`)
   Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/9.12.1/2026-07-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/8.11.0--9.12.1/comparison.json)
+
+## `github-84021be2188f8cfe1577`
+
+- Repository: `braintree/credit-card-type`
+- SHA: `b1ca7027bcba9377382abaf7db8d6902c8842ec1`
+- Collection date: `2026-11-07`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/credit-card-type/snapshots/2026-11-07-b1ca702/manifest.json)
+- Packet: [review packet](repos/braintree/credit-card-type/ingest-packets/github-84021be2188f8cfe1577/packet.md)
+- Review priority: `normal`
+- Required reading: `11` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `credit-card-type@10.3.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/credit-card-type/releases/credit-card-type/10.3.1/2026-11-07/manifest.json)
+  Comparison: [manifest](repos/braintree/credit-card-type/comparisons/credit-card-type/10.3.0--10.3.1/comparison.json)
 
 ## `github-8416828e1141b2d896ea`
 

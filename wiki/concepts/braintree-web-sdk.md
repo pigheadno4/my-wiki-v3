@@ -30,6 +30,8 @@ Hosted Fields keeps sensitive card inputs inside injected Braintree frames while
 
 The retained `braintree-web@3.144.0` release updates its `credit-card-type` dependency to `10.2.0`. The independently retained standalone package is `credit-card-type@10.3.0`; its Troy addition must not be attributed to Braintree Web `3.144.0` without a newer exact dependency snapshot. See [[card-brand-detection]].
 
+The later Braintree Web 3.148.0 pin is `credit-card-type@10.3.1`. Its independently ingested utility snapshot adds Elo ranges `650057-650081` and `651680-651704`, not a new API or matching algorithm. This closes the earlier dependency-source gap for that bounded change, while preserving the old 3.144.0/10.2.0 boundary; it does not prove hosted-field runtime, merchant acceptance or routing behavior. [[source-github-credit-card-type]] [[changelog-github-credit-card-type]]
+
 The same Braintree Web release pins `@braintree/uuid@2.0.0`. That utility uses global `crypto.randomUUID()`, falls back to `crypto.getRandomValues()` with explicit v4 and variant bits, and throws when no secure random source is available. It supplies internal identifiers rather than payment-resource creation or API idempotency. See [[source-github-uuid]].
 
 The 3D Secure component verifies a card nonce and BIN, can collect device data, supports lookup inspection before challenge continuation, and returns liability-shift indicators. The merchant still decides whether a result without liability shift is acceptable.
