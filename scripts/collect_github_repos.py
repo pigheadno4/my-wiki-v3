@@ -1309,7 +1309,11 @@ def _publish_comparison_and_change(
     if context.release_record is None:
         raise CollectionUsageError("release record must be published before comparison")
     comparison: Optional[ComparisonRecord] = None
-    prior_version = context.prior.version if context.prior is not None else ""
+    prior_version = (
+        context.candidate.version
+        if release_notes_revision
+        else context.prior.version if context.prior is not None else ""
+    )
     if context.prior is not None and not release_notes_revision:
         comparison = write_package_comparison(
             root,

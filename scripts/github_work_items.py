@@ -1075,7 +1075,18 @@ def _validate_work_item(item: WorkItem) -> None:
     if item.state not in ("discovered", "collection_failed", "needs_manual_review"):
         if any(not change.release_manifest for change in item.package_changes):
             raise ValueError("work-item state requires all release manifests")
-        if any(change.from_version and not change.comparison_manifest for change in item.package_changes):
+        # A same-version notes revision has no code boundary to compare.
+        if any(
+            change.from_version
+            and not change.comparison_manifest
+            and not (
+                item.evidence_revision
+                and change.from_version == change.to_version
+                and change.recommended_mode == "delta"
+                and "release-notes-revision" in change.reasons
+            )
+            for change in item.package_changes
+        ):
             raise ValueError("work-item state requires all applicable comparisons")
         if any(change.from_sha and not change.comparison_manifest for change in item.ref_changes):
             raise ValueError("work-item state requires all applicable comparisons")

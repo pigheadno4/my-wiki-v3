@@ -570,6 +570,48 @@ class GitHubWorkItemTests(unittest.TestCase):
         self.assertEqual(self.snapshot_manifest, merged.snapshot_manifest)
         self.assertTrue(merged.package_changes[0].release_manifest)
 
+    def test_same_version_notes_revision_can_finalize_without_code_comparison(self):
+        change = replace(
+            self.change(), from_version="10.0.3", comparison_manifest="",
+            reasons=("release-notes-revision",),
+        )
+        item = build_work_item(
+            "paypal/paypal-js", self.awaiting_item.sha, "2026-07-21",
+            (change,), self.snapshot_manifest, evidence_revision="a" * 64,
+        )
+        item = replace(item, ingest_packet=(
+            "tracking/github/repos/paypal/paypal-js/ingest-packets/"
+            + item.work_item_id + "/packet.json"
+        ))
+        finalized = github_work_items.finalize_collected_work_item(self.path, item)[0]
+        self.assertEqual("awaiting_approval", finalized.state)
+        self.assertIsNone(finalized.approved_mode)
+        self.assertEqual((finalized,), load_work_items(self.path))
+
+    def test_missing_comparison_is_not_excused_by_incomplete_notes_revision_markers(self):
+        base = replace(
+            self.change(), from_version="10.0.3", comparison_manifest="",
+            reasons=("release-notes-revision",),
+        )
+        cases = (
+            (replace(base, from_version="10.0.2"), "a" * 64),
+            (base, ""),
+            (replace(base, reasons=("contained-patch-release",)), "a" * 64),
+            (replace(base, recommended_mode="full"), "a" * 64),
+        )
+        for change, revision in cases:
+            with self.subTest(change=change, revision=revision):
+                item = build_work_item(
+                    "paypal/paypal-js", self.awaiting_item.sha, "2026-07-21",
+                    (change,), self.snapshot_manifest, evidence_revision=revision,
+                )
+                item = replace(item, ingest_packet=(
+                    "tracking/github/repos/paypal/paypal-js/ingest-packets/"
+                    + item.work_item_id + "/packet.json"
+                ))
+                with self.assertRaisesRegex(ValueError, "all applicable comparisons"):
+                    github_work_items.finalize_collected_work_item(self.path, item)
+
     def test_atomic_finalization_publishes_new_item_directly_to_approval(self):
         discovered = replace(self.awaiting_item, state="discovered")
 

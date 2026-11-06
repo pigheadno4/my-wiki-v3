@@ -329,6 +329,55 @@ class CollectGitHubReposTests(unittest.TestCase):
             all(change.reasons == ("release-notes-revision",) for change in revision.package_changes)
         )
 
+    def test_notes_revision_with_prior_release_queues_same_version_without_comparison(self):
+        self.collect()
+        sha = commit_files(
+            self.remote,
+            {"packages/paypal-js/package.json": package_manifest("@paypal/paypal-js", "10.0.1")},
+            "release next patch",
+        )
+        tag(self.remote, "@paypal/paypal-js@10.0.1")
+        self.collect(release_mode=None, release="@paypal/paypal-js@10.0.1")
+        queue = self.root / "tracking/github/work-items.json"
+        original_items = load_work_items(queue)
+        snapshots = {
+            str(path): path.read_bytes()
+            for path in (self.root / "raw").rglob("*") if path.is_file()
+        }
+
+        result = self.collect(
+            release_mode=None,
+            release="@paypal/paypal-js@10.0.1",
+            collection_date="2026-07-21",
+            release_notes_fetcher=lambda config, candidate: ReleaseNotesEvidence(
+                "https://api.github.test/" + candidate.tag,
+                "2026-07-07T12:00:00Z",
+                b"Corrected distribution notice.\n",
+            ),
+        )
+
+        self.assertEqual((), result.errors)
+        self.assertEqual("awaiting_approval", result.state)
+        items = load_work_items(queue)
+        self.assertEqual(len(original_items) + 1, len(items))
+        revision = next(item for item in items if item.work_item_id not in {
+            old.work_item_id for old in original_items
+        })
+        self.assertEqual(sha, revision.sha)
+        self.assertIsNone(revision.approved_mode)
+        self.assertTrue(revision.evidence_revision)
+        change, = revision.package_changes
+        self.assertEqual(("10.0.1", "10.0.1"), (change.from_version, change.to_version))
+        self.assertEqual("", change.comparison_manifest)
+        self.assertIn("release-notes-revision", change.reasons)
+        packet = json.loads((self.root / revision.ingest_packet).read_text())
+        self.assertEqual("delta", packet["recommendation"]["mode"])
+        self.assertEqual([], packet["evidence_gaps"])
+        for old in original_items:
+            self.assertIn(old, items)
+        for path, content in snapshots.items():
+            self.assertEqual(content, Path(path).read_bytes())
+
     def test_recollection_routes_moved_release_tag_to_manual_review(self):
         self.collect()
         moved_sha = commit_files(
