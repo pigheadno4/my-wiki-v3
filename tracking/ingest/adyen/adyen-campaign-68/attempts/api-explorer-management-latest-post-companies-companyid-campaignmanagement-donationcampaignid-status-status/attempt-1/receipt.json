@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-campaignmanagement-donationcampaignid-status-status",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: Activate or end a donation campaign\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/(donationCampaignId)/status/(status)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/(donationCampaignId)/status/(status)/2026-11-07.md\"\ntags: [adyen, management-api, giving, donation-campaign]\n---\n\n## Overview\n\nThis 2026-11-07-captured Management API `latest` reference lists a TEST `/v3` server for `POST /companies/{companyId}/campaignManagement/{donationCampaignId}/status/{status}`. It starts or stops the specified donation campaign. [[adyen]] [[adyen-giving]]\n\n## Key takeaways\n\n- The required path IDs are `companyId` for the company account and `donationCampaignId` for the campaign. Required path `status` accepts `activate` to start an **inactive** campaign or `end` to stop an **active** campaign. The reference says other transitions are not allowed. It lists no request body or query parameters.\n- The caller's API credential requires **Management API\u2014Campaign Management read and write**.\n- A `200` means this request succeeded and returns a campaign representation. `id`, `name`, `nonprofitCause`, and `status` are required in that response schema; account-holder IDs, activation/end timestamps, and online/in-person settings are optional. The response `status` is described as current status, without an enum in this page. Nested amount/currency fields have their own requirements if their optional parent amounts are present.\n- The reference lists `400`, `401`, `403`, `422`, `500`, and `503` errors. For `503`, campaign management is temporarily unavailable for the account, while donations themselves are unaffected. A campaign status response does not prove that any shopper donated, a payment succeeded, or a nonprofit received funds.\n\n## Detail locators\n\n- Transition rule, role and TEST server: raw lines 5\u201315; required path parameters: lines 17\u201324.\n- `200` campaign fields and channel settings: raw lines 26\u201368; error schemas: lines 71\u2013182.\n\n## Related\n\n- [[adyen-giving]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/(donationCampaignId)/status/(status)/2026-11-07|Activate or end donation campaign, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Use the path parameter **activate** to start an inactive campaign, or **end** to stop an active campaign. Other status transitions are not allowed.",
+      "location": "raw line 8, opening transition rule"
+    },
+    {
+      "text": "- Management API\u2014Campaign Management read and write",
+      "location": "raw line 12, caller role"
+    },
+    {
+      "text": "| status | string | Yes | The desired status change. Possible values: **activate** or **end**. |",
+      "location": "raw line 22, Path parameters"
+    },
+    {
+      "text": "| status | string | Yes | The current status of the donation campaign. |",
+      "location": "raw line 68, 200 response body"
+    },
+    {
+      "text": "Managing donation campaigns is temporarily not possible for this account. The donations themselves are not affected.",
+      "location": "raw line 167, 503 Server Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-donation-campaign-status-route",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-campaignmanagement-donationcampaignid-status-status]] \u2014 2026-11-07-captured Management API v3 TEST campaign status POST, allowing `activate` only from inactive or `end` only from active; the returned campaign state is separate from any donation outcome.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/(donationCampaignId)/status/(status)/2026-11-07.md",
+  "raw_sha256": "ad0bbc28e349e98546112e56381c12f422df610b8725dd00f928fa4eb15a1efd",
+  "status": "candidate_ready"
+}

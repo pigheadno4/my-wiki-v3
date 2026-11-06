@@ -1,0 +1,9 @@
+# api-explorer-management-latest-delete-companies-companyid-terminalthemes-id-assets — actual query answers
+
+## Q1
+
+`DELETE /companies/{companyId}/terminalThemes/{id}/assets` is a Management API `latest` reference captured 2026-11-07 with TEST `https://management-test.adyen.com/v3` server. It deletes one asset from a company-owned terminal theme. The caller needs Management API - Terminal themes read and write. Required path `companyId` selects the company account and `id` the theme; required query `type` and `model` select the asset. `logo` uses `model=All` only, while other types use a single Android model; idle and shopper-engagement screens are limited to SFO1/M450. There is no body, default or response field specified; success is 204 with no content. [[source-adyen-api-explorer-management-latest-delete-companies-companyid-terminalthemes-id-assets]] [Canonical reference](https://docs.adyen.com/api-explorer/Management/latest/delete/companies/(companyId)/terminalThemes/(id)/assets). Raw lines 5–36.
+
+## Q2
+
+A 204 establishes deletion of the selected asset, not deletion of the entire theme or a known replacement image. The page does not specify a fallback visual, device-propagation timing, approval/activation state, reversal, idempotency or financial effect. Logo asset deletion is blocked if the theme owner cannot edit logos. The reference lists 401 unauthorized, 403 forbidden, 404 missing, 422 invalid and 500 server failures; its examples include a forbidden logo edit and no asset for the type/model selector. The TEST v3 November snapshot does not prove Live eligibility, on-device application, payment execution or compliance. [[source-adyen-api-explorer-management-latest-delete-companies-companyid-terminalthemes-id-assets]] [Canonical reference](https://docs.adyen.com/api-explorer/Management/latest/delete/companies/(companyId)/terminalThemes/(id)/assets). Raw lines 5–16, 27–128.

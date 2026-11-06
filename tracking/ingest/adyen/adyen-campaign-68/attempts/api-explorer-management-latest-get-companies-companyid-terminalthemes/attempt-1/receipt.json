@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-terminalthemes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: list company terminal themes\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/2026-11-07.md\"\ntags: [adyen, management-api, android-terminals, terminal-themes]\n---\n\n## Overview\n\nThis 2026-11-07 Management API `latest` reference describes `GET /companies/{companyId}/terminalThemes` on the listed TEST `/v3` server. It lists theme metadata for the selected company and its associated merchant accounts, with pagination. Images and videos are absent; the reference directs a separate theme-detail GET to obtain asset URLs. Listing a theme does not apply it to a terminal or establish on-device display. See [[adyen]] and [[adyen-android-terminals]].\n\n## Key takeaways\n\n- `companyId` is the required path ID of the company account. The API credential needs `Management API - Terminal themes read and write`. Optional `search` filters theme names by case-insensitive substring; `page` starts at 1 by default; `pageSize` defaults to 10. The parameter table states no `pageSize` maximum, although a `422` example rejects `200` with a message saying `1` to `100`; treat that as an illustrative validation example, not a complete limit contract.\n- `200` has required `data` for the requested page and required `hasNextPage`. Each theme entry requires unique `id`, `name`, and display `mode` of `dark` or `light`. The list contains metadata only. `hasNextPage` signals more list pages, not applied themes or downloaded assets.\n- Documented errors are `400`, `401`, `403`, `404`, `422`, and `500`; examples show inaccessible-account wording for `403` and `404`. Neither a list result nor its example verifies theme application, terminal software compatibility, display, payment activity, or current Live eligibility.\n\n## Detail locators\n\n- Purpose, role, TEST server, path and query parameters: pinned raw lines 5\u201329.\n- `200` required list metadata and pagination field, and error headings: pinned raw lines 31\u201367.\n- Illustrative success and error payloads: pinned raw lines 69\u2013173, including the `422` `pageSize` example at lines 144\u2013162.\n\n## Related\n\n- [[adyen-android-terminals]] \u2014 Android terminal theme and deployment context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/2026-11-07|2026-11-07 pinned company terminal themes list reference]]",
+  "quotes": [
+    {
+      "text": "Returns a paginated list of terminal themes for the company specified in the path and all the associated merchant accounts.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "The response provides only the metadata of the themes. Assets (images and videos) are not included.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "Management API - Terminal themes read and write",
+      "location": "pinned raw line 11"
+    },
+    {
+      "text": "If not specified, the list has 10 themes per page.",
+      "location": "pinned raw line 29"
+    },
+    {
+      "text": "| hasNextPage | boolean | Yes | Indicates whether there are more themes after the current page. |",
+      "location": "pinned raw line 43"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-company-terminalthemes-get-reciprocal",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalthemes]] \u2014 2026-11-07-captured Management API v3 TEST paged list of company and associated-merchant terminal-theme metadata; assets require a separate theme-detail GET, and listing does not prove on-device application.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/2026-11-07.md",
+  "raw_sha256": "b90e1319efbe84b64936d4eff5fa978f6f1e38150aca3f1df03e5e2ac9633c4a",
+  "status": "candidate_ready"
+}

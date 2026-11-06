@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-stores-reference-terminalsettings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: update store terminal settings\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(reference)/terminalSettings\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(reference)/terminalSettings/2026-11-07.md\"\ntags: [adyen, management-api, terminal-settings, point-of-sale]\n---\n\n## Overview\n\nThis captured Management API `PATCH /merchants/{merchantId}/stores/{reference}/terminalSettings` reference updates terminal settings for a store. The settings apply to its terminals except where an individual terminal has different values. It identifies the merchant account by `merchantId` and store by its `reference`; the listed server is the TEST `/v3` endpoint. This is configuration, not a payment request. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- Include the full object containing a parameter to change it. An omitted object is not updated. To restore an inherited value from a higher level, include its full containing object and set that parameter empty or omit it. This is a store-level update subject to terminal-level overrides.\n- The API credential needs `Management API\u2014Terminal settings read and write`; sensitive settings additionally need `Management API\u2014Terminal settings Advanced read and write`. Live requests are subject to rate limits.\n- The request body table marks top-level settings objects optional. Nested `Yes` fields are required within their relevant objects, such as surcharge configuration `brand` and `currencies`, and Wi-Fi profile `authType`, `bssType`, `ssid`, and `wsec`. The store-and-forward `maxAmount`, `maxPayments`, and `supportedCardTypes` must be configured in the request or inherited from a higher level.\n- Important operational cautions in the schema: contact Adyen before first changing `payment.contactlessCurrency` for a compliance check; enabling DCC carries receipt and terms obligations; unreferenced refunds carry fraud and duplicate-loss liability. The SIM status setting can be updated and received only at supported terminal level, despite its presence in this shared schema.\n- `200` returns a terminal-settings body with optional fields; `204` succeeds without additional content. Neither response alone proves the configuration is effective on a particular device, that a transaction succeeded, or current live eligibility. The captured page lists 400, 401, 403, 422, and 500 errors.\n\n## Detail locators\n\n- Raw lines 5\u201334: purpose, inheritance/change semantics, roles, live rate-limit note, TEST server, and path parameters.\n- Raw lines 37\u2013197: request body fields, conditional requirements, defaults, limits, units, and cautions; lines 199\u2013286: Wi-Fi request examples.\n- Raw lines 287\u2013452: 200 response schema; lines 455\u2013556: 204 and error responses; lines 558\u2013786: illustrative 200 responses.\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-management]]\n- [[adyen-pos-store-management]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(reference)/terminalSettings/2026-11-07|Captured Management API PATCH store terminal settings reference]]\n",
+  "quotes": [
+    {
+      "text": "These settings apply to all terminals under the store, unless different values are configured for an individual terminal.",
+      "location": "line 7"
+    },
+    {
+      "text": "To change a parameter value, include the full object that contains the parameter, even if you don't want to change all parameters in the object.",
+      "location": "line 9"
+    },
+    {
+      "text": "To restore a parameter value inherited from a higher level, include the full object that contains the parameter, and specify an empty value for the parameter or omit the parameter.",
+      "location": "line 11"
+    },
+    {
+      "text": "For [sensitive terminal settings](https://docs.adyen.com/point-of-sale/automating-terminal-management/configure-terminals-api#sensitive-terminal-settings), your API credential must have the following role:",
+      "location": "line 19"
+    },
+    {
+      "text": "The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure.",
+      "location": "line 146"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-store-terminal-settings-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-stores-reference-terminalsettings]] \u2014 2026-11-07-captured Management API v3 TEST store-reference terminal-settings PATCH; full containing objects, inherited-value resets, terminal overrides, and sensitive-setting role boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(reference)/terminalSettings/2026-11-07.md",
+  "raw_sha256": "4eb72e53d698383b65e3c63e98513e843db2bebbdfb5b8dcaca1c0ee09546660",
+  "status": "candidate_ready"
+}

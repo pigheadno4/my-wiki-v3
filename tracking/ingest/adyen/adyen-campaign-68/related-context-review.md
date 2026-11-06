@@ -1,0 +1,3 @@
+# Related historical context
+
+Every C68 source unit is its one exact pinned Management API raw file, fully read by its worker and initial independent reviewer. The existing September split-configuration guide is related historical context: its existing canonical source and relevant raw sections (including line 121) were inspected for the retained attributed ANY instruction; no whole-guide read or new ingestion of its 2,655-line raw is claimed. The older overview was fully read for its dated pilot qualification. The bounded reciprocal warning on the existing guide source received separate independent approval before coordinator application; original guide raw and frontmatter provenance remain unchanged.

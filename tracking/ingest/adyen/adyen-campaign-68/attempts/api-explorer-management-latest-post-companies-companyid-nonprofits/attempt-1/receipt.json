@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-nonprofits",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: list compatible Giving nonprofits\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/nonprofits\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/nonprofits/2026-11-07.md\"\ntags: [adyen, management-api, giving, nonprofits]\n---\n\n## Overview\n\nThis captured [[adyen]] Management API `latest` reference documents `POST /companies/{companyId}/nonprofits` on the v3 test server. Despite its POST method, it **returns a list** of supported nonprofit organizations to choose from for a Giving campaign; the list is restricted to nonprofits compatible with all account holders supplied in the request. It does not create a nonprofit or campaign. See [[adyen-giving]].\n\n## Key takeaways\n\n- Required path `companyId` identifies the company account. Required body `accountHolderIds` supplies the account holders for compatibility filtering. Optional query filters are UN Sustainable Development Goal, page number, page size (default 10, maximum 100), and search term (maximum 100 characters). The raw does not state an operation-specific credential role.\n- A `200` response requires `itemsTotal` and `pagesTotal`. The `nonprofits` array and `_links` object are optional. If nonprofit entries are returned, their cause and organization metadata are described in the raw table; cause `id` and nonprofit `id` are separately optional Adyen-generated identifiers.\n- The result is a documented compatibility list for the supplied account-holder IDs, not evidence of nonprofit verification, current account eligibility, campaign creation or activation, donation success, settlement, or bank receipt. A `503` says campaign management is temporarily unavailable for the account while donations themselves are unaffected.\n\n## Detail locators\n\n- `## Parameters` \u2192 path, query, and request-body tables: company and account-holder identities, goal/search filters, pagination defaults and limits.\n- `## Responses` \u2192 `200 Success`: totals, optional links/list, nonprofit metadata and nested causes.\n- `## Responses` \u2192 `400`, `401`, `403`, `422`, `500`, and `503`: failure categories; error-envelope top-level fields are optional.\n\n## Related\n\n- [[adyen]]\n- [[adyen-giving]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/nonprofits/2026-11-07|Management API compatible nonprofit list, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of supported nonprofit organizations to choose from when creating a donation campaign. The list only contains nonprofits that are compatible with all the account holders specified in the request.",
+      "location": "line 7, opening description"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 10 items on a page. |",
+      "location": "line 24, Query parameters table"
+    },
+    {
+      "text": "| accountHolderIds | array of string | Yes | The unique identifiers of the account holders to be included in a donation campaign. |",
+      "location": "line 32, Request body table"
+    },
+    {
+      "text": "| nonprofits | array of object | No | The supported nonprofit organizations. |",
+      "location": "line 54, 200 response-body table"
+    },
+    {
+      "text": "Managing donation campaigns is temporarily not possible for this account. The donations themselves are not affected.",
+      "location": "line 169, 503 Server Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-nonprofit-list-concept-route",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-nonprofits]] \u2014 2026-11-07-captured Management API v3 TEST POST that lists nonprofits compatible with all supplied account holders for campaign selection; it does not create a nonprofit or campaign.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/nonprofits/2026-11-07.md",
+  "raw_sha256": "695395102ef7c01a5d74f86b512965f982d35dcc0f86df67ae46d73ad102c5b9",
+  "status": "candidate_ready"
+}

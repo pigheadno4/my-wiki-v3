@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-terminalthemes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"List merchant terminal-theme metadata (Adyen Management API)\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/2026-11-07.md\"\ntags: [adyen, management-api, terminal-themes, point-of-sale]\n---\n\n## Overview\n\nThis 2026-11-07 Management API `latest` reference documents `GET /merchants/{merchantId}/terminalThemes`: a paginated list of terminal-theme metadata for the merchant account in the path. The listed server is Test `/v3`, and the API credential needs `Management API - Terminal themes read and write`.\n\n## Key takeaways\n\n- `merchantId` is required. Optional `search` filters theme names by case-insensitive substring; `page` defaults to 1 and `pageSize` to 10 themes per page. The `422` example shows a `pageSize` of 200 rejected with a message saying 1\u2013100, but the query-parameter table states no formal range.\n- A `200` response has required `data` and `hasNextPage`. Each listed theme has required `id`, `name` and display `mode` (`dark` or `light`). `hasNextPage` signals more pages after this one.\n- The list excludes image and video assets. The reference directs a separate theme-detail GET for the asset URLs. Listing metadata does not establish a theme's assignment, installation, effective display on a terminal, or payment readiness.\n- The reference lists `400`, `401`, `403`, `404`, `422` and `500` errors. Its `403` example describes no access to the requested account, and its `404` example cannot distinguish missing from inaccessible account.\n\n## Detail locators\n\n- Raw lines 5\u201329: purpose, metadata-only boundary, role, Test server, merchant ID and optional filters/defaults.\n- Raw lines 31\u201367: `200` fields and documented error status headings.\n- Raw lines 69\u2013173: illustrative success/error bodies, including the `pageSize` validation message at lines 144\u2013160.\n\n## Related\n\n- [[adyen]]\n- [[adyen-android-terminals]]\n- [[adyen-terminal-management]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/2026-11-07|GET merchant terminal themes, 2026-11-07 capture]]\n",
+  "quotes": [
+    {
+      "text": "Returns a paginated list of terminal themes for the merchant account specified in the path. The response provides only the metadata of the themes. Assets (images and videos) are not included.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- Management API - Terminal themes read and write",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| search | string | No | A search term to filter themes by name. The match is case-insensitive and returns any theme with a name that contains the search term. |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of themes to return per page. If not specified, the list has 10 themes per page. |",
+      "location": "raw line 29"
+    },
+    {
+      "text": "| hasNextPage | boolean | Yes | Indicates whether there are more themes after the current page. |",
+      "location": "raw line 43"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-merchant-terminal-themes-android-terminals",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalthemes]] \u2014 2026-11-07-captured Management API v3 Test merchant terminal-theme metadata list, with search/pagination and separate detail GET for assets; listing does not prove on-device application.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/2026-11-07.md",
+  "raw_sha256": "a732be59ccede400d30262c04f35d3d4f866253405b6875eeae465036e1f96c0",
+  "status": "candidate_ready"
+}

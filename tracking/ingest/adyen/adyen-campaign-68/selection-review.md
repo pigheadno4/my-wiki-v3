@@ -1,74 +1,70 @@
-# Adyen C68 API Explorer collection-first preparation
+# Adyen C68 collected API Explorer ingestion selection
 
-Status: **AWAITING EXACT COLLECTION APPROVAL — no ingestion-ready manifest**. Prepared 2026-11-07 after C67 publication `e117a5eaba9572ef70fa4d97a40023ff0539c2d1`.
+Status: **COMPLETE — all 50 sources approved and validated**. Prepared 2026-11-07.
 
-C67 ingested all 50 Management pages. Current totals: **3,109 sources = 2,547 General Docs + 546 API Explorer + 16 GitHub**. All locally collected complete-body API Explorer pages are ingested. The only 27 unreferenced local raw pages are excluded title-only stubs, retried in C63 and still title-only. No repeated stub retries proposed here.
+Approved collection completed for all50 exact URLs: **50 HTTP200 substantive Markdown pages**, no failed, title-only or mismatched documents. Families: **Management50**. Every response body is preserved byte-for-byte after collection metadata in a new dated2026-11-07 raw file. All prior Adyen raw/wiki hashes are unchanged; concurrent unrelated PayPal work is recorded separately. These title/body/byte checks are collection screening, not full semantic reads. [Collection manifest](../../../collections/adyen/c68-collection-2026-11-07/manifest.md), [summary](../../../collections/adyen/c68-collection-2026-11-07/summary.json). Original proposal retained in [collection-selection-review.md](collection-selection-review.md).
 
-## Pinned catalog reconciliation
+Exact proposed ingestion: **50 source units**, **100 fixed answers**, **three predetermined distinct full-read audits**. All hashes, URL/target uniqueness, absent canonical targets and unreferenced pins verified. Size: **121,812 whitespace words, 12,326 raw lines, 798,258 bytes**. Source generation begins only after separate exact ingestion approval.
 
-The official API Explorer catalog captured 2026-11-02 contains **670 distinct normalized documentation URLs** (623 operation references and 47 overview references). Exact-URL reconciliation on 2026-11-07 finds 573 local raw URLs: 546 with ingested raw and 27 excluded title-only stubs. **97 catalog URLs have no local raw**. All 573 local URLs occur in the pinned catalog. [Complete reconciliation](catalog-reconciliation.json) retains its SHA256 and all missing URLs.
+Current baseline **3,109 = 2,547 General Docs +546 API Explorer +16 GitHub**. Successful ingestion of all50 gives **3,159 = 2,547 General Docs +596 API Explorer +16 GitHub**. API Explorer now has623 local raw pages:546 ingested substantive pages,50 newly collected and27 excluded title-only stubs. Unreferenced local raw would decline77→27 after successful ingestion. The captured670-URL catalog has **47 URLs still without local raw**; the27 stub exclusions remain separate. This is captured-catalog coverage, not a current upstream completeness claim.
 
-This is reconciliation against an immutable captured catalog, not a refreshed upstream inventory or a claim about present page availability. No network requests or semantic reads of the proposed pages were made. Titles and paths identify navigation scope only.
+[Proposed provider authorization](dispatch-contract.md) retains ten shared rolling child slots, medium gpt-6-sol workers/different high initial reviewers, full numbered reads of every schema/example,3–5locatedquotes, concept audit first, max3attempts, coordinator-only serial approved concept-before-source promotion and aggregate close once. [100 original fixed prompts](proposed-queries.md) require actual independently checked answers. Full raw reads apply to every captured schema, authentication/security qualification and example, including minimal references.
 
-## Exact next collection proposal
+Fixed coordinator audit jobs: `api-explorer-management-latest-get-merchants-merchantid-terminallogos`, `api-explorer-management-latest-patch-terminals-terminalid-terminalsettings`, `api-explorer-management-latest-get-companies-companyid-androidapps`. Material partial/fail expands to all50. No ingestion runtime, dispatch, canonical wiki source generation, commit or push. Await separate exact C68 ingestion approval.
 
-Propose **50 exact official Markdown URLs**: the next 50 uncollected Management references in captured catalog order. Metadata scope covers the next Management references. All navigation labels are listed below for inspection. No behavior is inferred from these names. Every selected URL has a pinned catalog-line locator; the documented duplicated API Explorer prefix is collapsed, retaining official case and parenthesized parameters. Every raw directory and provisional source target is absent and all URLs/targets are unique. [Exact 50-target proposal](collection-proposal.json).
+| # | Family | Operation | Words | Raw lines |
+| --- | --- | --- | ---: | ---: |
+| 1 | Management | GET /merchants/{merchantId}/terminalSettings | 5,037 | 400 |
+| 2 | Management | GET /merchants/{merchantId}/terminalLogos | 1,357 | 158 |
+| 3 | Management | PATCH /merchants/{merchantId}/terminalSettings | 9,035 | 753 |
+| 4 | Management | PATCH /merchants/{merchantId}/terminalLogos | 1,432 | 187 |
+| 5 | Management | GET /merchants/{merchantId}/stores/{reference}/terminalSettings | 5,043 | 399 |
+| 6 | Management | GET /merchants/{merchantId}/stores/{reference}/terminalLogos | 1,365 | 159 |
+| 7 | Management | PATCH /merchants/{merchantId}/stores/{reference}/terminalSettings | 9,097 | 787 |
+| 8 | Management | PATCH /merchants/{merchantId}/stores/{reference}/terminalLogos | 1,447 | 188 |
+| 9 | Management | GET /stores/{storeId}/terminalLogos | 1,334 | 154 |
+| 10 | Management | PATCH /stores/{storeId}/terminalLogos | 1,417 | 183 |
+| 11 | Management | GET /stores/{storeId}/terminalSettings | 5,056 | 420 |
+| 12 | Management | PATCH /stores/{storeId}/terminalSettings | 9,079 | 788 |
+| 13 | Management | GET /terminals/{terminalId}/terminalSettings | 5,052 | 428 |
+| 14 | Management | GET /terminals/{terminalId}/terminalLogos | 1,258 | 147 |
+| 15 | Management | PATCH /terminals/{terminalId}/terminalSettings | 9,111 | 814 |
+| 16 | Management | PATCH /terminals/{terminalId}/terminalLogos | 1,325 | 176 |
+| 17 | Management | GET /companies/{companyId}/androidApps | 1,663 | 190 |
+| 18 | Management | GET /companies/{companyId}/androidCertificates | 1,507 | 185 |
+| 19 | Management | GET /companies/{companyId}/androidApps/{id} | 1,497 | 147 |
+| 20 | Management | POST /companies/{companyId}/androidApps | 1,241 | 135 |
+| 21 | Management | POST /companies/{companyId}/androidCertificates | 1,201 | 133 |
+| 22 | Management | PATCH /companies/{companyId}/androidApps/{id} | 1,244 | 135 |
+| 23 | Management | POST /merchants/{merchantId}/splitConfigurations | 3,592 | 262 |
+| 24 | Management | POST /merchants/{merchantId}/splitConfigurations/{splitConfigurationId} | 3,658 | 285 |
+| 25 | Management | GET /merchants/{merchantId}/splitConfigurations | 1,882 | 239 |
+| 26 | Management | GET /merchants/{merchantId}/splitConfigurations/{splitConfigurationId} | 2,461 | 224 |
+| 27 | Management | PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId} | 2,507 | 238 |
+| 28 | Management | PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId} | 2,759 | 246 |
+| 29 | Management | PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId}/splitLogic/{splitLogicId} | 3,237 | 274 |
+| 30 | Management | DELETE /merchants/{merchantId}/splitConfigurations/{splitConfigurationId} | 2,353 | 164 |
+| 31 | Management | DELETE /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId} | 2,357 | 165 |
+| 32 | Management | GET /companies/{companyId}/clientCertificates | 1,054 | 135 |
+| 33 | Management | POST /companies/{companyId}/clientCertificates | 1,679 | 194 |
+| 34 | Management | POST /companies/{companyId}/campaignManagement | 2,743 | 205 |
+| 35 | Management | GET /companies/{companyId}/campaignManagement/accountHolders/{accountHolderId} | 2,362 | 200 |
+| 36 | Management | DELETE /companies/{companyId}/campaignManagement/{donationCampaignId} | 1,329 | 141 |
+| 37 | Management | PATCH /companies/{companyId}/campaignManagement/{donationCampaignId} | 2,308 | 193 |
+| 38 | Management | POST /companies/{companyId}/campaignManagement/{donationCampaignId}/status/{status} | 2,222 | 182 |
+| 39 | Management | POST /companies/{companyId}/nonprofits | 1,887 | 184 |
+| 40 | Management | GET /companies/{companyId}/terminalThemes | 548 | 174 |
+| 41 | Management | GET /companies/{companyId}/terminalThemes/{id} | 502 | 147 |
+| 42 | Management | POST /companies/{companyId}/terminalThemes | 548 | 192 |
+| 43 | Management | POST /companies/{companyId}/terminalThemes/{id}/assets | 874 | 210 |
+| 44 | Management | POST /companies/{companyId}/terminalThemes/{id}/assets/replace | 885 | 213 |
+| 45 | Management | DELETE /companies/{companyId}/terminalThemes/{id}/assets | 457 | 129 |
+| 46 | Management | PATCH /companies/{companyId}/terminalThemes/{id} | 463 | 171 |
+| 47 | Management | POST /companies/{companyId}/terminalThemes/{id}/apply | 246 | 97 |
+| 48 | Management | POST /companies/{companyId}/terminalThemes/unapply | 287 | 109 |
+| 49 | Management | DELETE /companies/{companyId}/terminalThemes/{id} | 271 | 113 |
+| 50 | Management | GET /merchants/{merchantId}/terminalThemes | 543 | 174 |
 
-Approval authorizes documentation collection for these 50 URLs only. Stage each response, retain status/headers/body/hash and final URL, omit server-set cookies from published metadata, and classify substantive/failed/title-only results separately. Preserve substantive body bytes verbatim in new dated immutable raw snapshots. No whole-corpus refresh, code/rule/validator changes, General Docs, GitHub, stub retries, provider/account/security/device/payment operations, automatic ingestion or further publication. Endpoint action names describe documentation targets, not authorized API calls.
+User approved exact C68 ingestion on2026-11-07 after50hash/count checks. Historical preparation statements above retain their pre-approval meaning. No commit/push.
 
-After all 50 selected URLs reach recorded outcomes, reconcile results and prepare an exact ingestion manifest only from recovered complete-body evidence: raw SHA256 pins, actual fixed query prompts, three distinct audit samples and explicit provider review authorization. Obtain separate ingestion approval per rules/psp-collection.md. Do not pad failed or incomplete results or waive body/schema presence. If all 50 collect successfully, 47 captured-catalog URLs would still lack raw; source counts rise only after approved ingestion.
-
-C68 is **PREPARED ONLY / awaiting approval**. No runtime, dispatch, candidates, raw collection or canonical sources created. Publishing this proposal does not authorize execution.
-
-| Item | Family | Catalog label | Exact Markdown URL |
-| --- | --- | --- | --- |
-| c68-01 | Management | GET /merchants/{merchantId}/terminalSettings | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/terminalSettings.md` |
-| c68-02 | Management | GET /merchants/{merchantId}/terminalLogos | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/terminalLogos.md` |
-| c68-03 | Management | PATCH /merchants/{merchantId}/terminalSettings | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalSettings.md` |
-| c68-04 | Management | PATCH /merchants/{merchantId}/terminalLogos | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalLogos.md` |
-| c68-05 | Management | GET /merchants/{merchantId}/stores/{reference}/terminalSettings | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(reference)/terminalSettings.md` |
-| c68-06 | Management | GET /merchants/{merchantId}/stores/{reference}/terminalLogos | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/stores/(reference)/terminalLogos.md` |
-| c68-07 | Management | PATCH /merchants/{merchantId}/stores/{reference}/terminalSettings | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(reference)/terminalSettings.md` |
-| c68-08 | Management | PATCH /merchants/{merchantId}/stores/{reference}/terminalLogos | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(reference)/terminalLogos.md` |
-| c68-09 | Management | GET /stores/{storeId}/terminalLogos | `https://docs.adyen.com/api-explorer/Management/latest/get/stores/(storeId)/terminalLogos.md` |
-| c68-10 | Management | PATCH /stores/{storeId}/terminalLogos | `https://docs.adyen.com/api-explorer/Management/latest/patch/stores/(storeId)/terminalLogos.md` |
-| c68-11 | Management | GET /stores/{storeId}/terminalSettings | `https://docs.adyen.com/api-explorer/Management/latest/get/stores/(storeId)/terminalSettings.md` |
-| c68-12 | Management | PATCH /stores/{storeId}/terminalSettings | `https://docs.adyen.com/api-explorer/Management/latest/patch/stores/(storeId)/terminalSettings.md` |
-| c68-13 | Management | GET /terminals/{terminalId}/terminalSettings | `https://docs.adyen.com/api-explorer/Management/latest/get/terminals/(terminalId)/terminalSettings.md` |
-| c68-14 | Management | GET /terminals/{terminalId}/terminalLogos | `https://docs.adyen.com/api-explorer/Management/latest/get/terminals/(terminalId)/terminalLogos.md` |
-| c68-15 | Management | PATCH /terminals/{terminalId}/terminalSettings | `https://docs.adyen.com/api-explorer/Management/latest/patch/terminals/(terminalId)/terminalSettings.md` |
-| c68-16 | Management | PATCH /terminals/{terminalId}/terminalLogos | `https://docs.adyen.com/api-explorer/Management/latest/patch/terminals/(terminalId)/terminalLogos.md` |
-| c68-17 | Management | GET /companies/{companyId}/androidApps | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/androidApps.md` |
-| c68-18 | Management | GET /companies/{companyId}/androidCertificates | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/androidCertificates.md` |
-| c68-19 | Management | GET /companies/{companyId}/androidApps/{id} | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/androidApps/(id).md` |
-| c68-20 | Management | POST /companies/{companyId}/androidApps | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/androidApps.md` |
-| c68-21 | Management | POST /companies/{companyId}/androidCertificates | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/androidCertificates.md` |
-| c68-22 | Management | PATCH /companies/{companyId}/androidApps/{id} | `https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/androidApps/(id).md` |
-| c68-23 | Management | POST /merchants/{merchantId}/splitConfigurations | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/splitConfigurations.md` |
-| c68-24 | Management | POST /merchants/{merchantId}/splitConfigurations/{splitConfigurationId} | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/splitConfigurations/(splitConfigurationId).md` |
-| c68-25 | Management | GET /merchants/{merchantId}/splitConfigurations | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations.md` |
-| c68-26 | Management | GET /merchants/{merchantId}/splitConfigurations/{splitConfigurationId} | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/(splitConfigurationId).md` |
-| c68-27 | Management | PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId).md` |
-| c68-28 | Management | PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId).md` |
-| c68-29 | Management | PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId}/splitLogic/{splitLogicId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId)/splitLogic/(splitLogicId).md` |
-| c68-30 | Management | DELETE /merchants/{merchantId}/splitConfigurations/{splitConfigurationId} | `https://docs.adyen.com/api-explorer/Management/latest/delete/merchants/(merchantId)/splitConfigurations/(splitConfigurationId).md` |
-| c68-31 | Management | DELETE /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId} | `https://docs.adyen.com/api-explorer/Management/latest/delete/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId).md` |
-| c68-32 | Management | GET /companies/{companyId}/clientCertificates | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/clientCertificates.md` |
-| c68-33 | Management | POST /companies/{companyId}/clientCertificates | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/clientCertificates.md` |
-| c68-34 | Management | POST /companies/{companyId}/campaignManagement | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement.md` |
-| c68-35 | Management | GET /companies/{companyId}/campaignManagement/accountHolders/{accountHolderId} | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/campaignManagement/accountHolders/(accountHolderId).md` |
-| c68-36 | Management | DELETE /companies/{companyId}/campaignManagement/{donationCampaignId} | `https://docs.adyen.com/api-explorer/Management/latest/delete/companies/(companyId)/campaignManagement/(donationCampaignId).md` |
-| c68-37 | Management | PATCH /companies/{companyId}/campaignManagement/{donationCampaignId} | `https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/campaignManagement/(donationCampaignId).md` |
-| c68-38 | Management | POST /companies/{companyId}/campaignManagement/{donationCampaignId}/status/{status} | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/(donationCampaignId)/status/(status).md` |
-| c68-39 | Management | POST /companies/{companyId}/nonprofits | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/nonprofits.md` |
-| c68-40 | Management | GET /companies/{companyId}/terminalThemes | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes.md` |
-| c68-41 | Management | GET /companies/{companyId}/terminalThemes/{id} | `https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/(id).md` |
-| c68-42 | Management | POST /companies/{companyId}/terminalThemes | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes.md` |
-| c68-43 | Management | POST /companies/{companyId}/terminalThemes/{id}/assets | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets.md` |
-| c68-44 | Management | POST /companies/{companyId}/terminalThemes/{id}/assets/replace | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/replace.md` |
-| c68-45 | Management | DELETE /companies/{companyId}/terminalThemes/{id}/assets | `https://docs.adyen.com/api-explorer/Management/latest/delete/companies/(companyId)/terminalThemes/(id)/assets.md` |
-| c68-46 | Management | PATCH /companies/{companyId}/terminalThemes/{id} | `https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/terminalThemes/(id).md` |
-| c68-47 | Management | POST /companies/{companyId}/terminalThemes/{id}/apply | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/apply.md` |
-| c68-48 | Management | POST /companies/{companyId}/terminalThemes/unapply | `https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/unapply.md` |
-| c68-49 | Management | DELETE /companies/{companyId}/terminalThemes/{id} | `https://docs.adyen.com/api-explorer/Management/latest/delete/companies/(companyId)/terminalThemes/(id).md` |
-| c68-50 | Management | GET /merchants/{merchantId}/terminalThemes | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes.md` |
+C68 closed: 3159 total sources; 596 API Explorer sources. Remaining 27 API raw pages are excluded title-only stubs. No commit/push.

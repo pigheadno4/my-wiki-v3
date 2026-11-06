@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-splitconfigurations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create a merchant split configuration profile\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/splitConfigurations\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/splitConfigurations/2026-11-07.md\"\ntags: [adyen, management-api, platforms, automatic-splits]\n---\n\n## Overview\n\nThis 2026-11-07 snapshot of the [[adyen]] Management API `latest` POST reference lists the v3 TEST server for creating a split configuration profile under the merchant account identified by required path `merchantId`. An API credential with **Management API - SplitConfiguration read and write** is required. The profile is intended for automatic payment splits only after it is associated with a store in that merchant account; the described split is between the platform's liable balance account and the user's balance account.\n\n## Key takeaways\n\n- The request body requires `description` and a `rules` array. Each rule requires `currency`, `fundingSource`, `paymentMethod`, `shopperInteraction`, and a `splitLogic` object; within that object, `commission` is marked required. `cardRegion` and `cardUsageType` are optional conditions; `cardUsageType` defaults to `ANY`. See the pinned table for allowed values and fee, refund, chargeback, tip, remainder, and commission details.\n- If no transaction fee type is included in `splitLogic`, the reference says Adyen updates the payment request with `paymentFee`, booking all transaction fees to the platform liable balance account. The `dcc` field is described as a pilot, unavailable to some platforms.\n- A `200` response describes the profile with `description` and `rules`, while `splitConfigurationId`, rule `ruleId`, and `splitLogicId` are marked optional in the response schema. `204` is successful processing with no content. Neither response proves store association, a matched payment, booking, settlement, or payout.\n\n> [!warning] Contradiction\n> The request and response `currency` tables say a three-character ISO currency code is required (raw lines 31, 97), but both JSON examples set `currency` to `ANY` (lines 65, 237). The example does not establish that `ANY` is accepted for this field.\n\n## Detail locators\n\n- Purpose, store-association condition, role, TEST server, merchant path: raw lines 5\u201321.\n- Request schema and optional/default conditions, split logic, pilot and fee fallback: lines 24\u201352; request example: 54\u201384.\n- `200` response schema, including optional generated identifiers: lines 85\u2013121; `204` no content: 124\u2013125; illustrative `200` response: 227\u2013262.\n- Error descriptions and schemas: `400` lines 128\u2013145, `401` 148\u2013165, `403` 168\u2013185, `422` 188\u2013205, `500` 208\u2013225.\n\n## Related\n\n- [[adyen-automatic-split-configuration]] \u2014 automatic split rules and store association.\n- [[adyen-platforms]] \u2014 platform and balance-account context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/splitConfigurations/2026-11-07|Create split configuration reference (2026-11-07)]]\n",
+  "quotes": [
+    {
+      "text": "Creates a split configuration profile to [split payments automatically](https://docs.adyen.com/platforms/automatic-split-configuration/). After you [associate it with a store](https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(storeId)#request-splitConfiguration) in your merchant account, it splits the funds of all transactions processed through that store between your liable balance account and [your user's balance account](https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/stores/(storeId)#request-splitConfiguration-balanceAccountId).",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API - SplitConfiguration read and write",
+      "location": "line 11"
+    },
+    {
+      "text": "|   - currency | string | Yes | The currency condition that defines whether the split logic applies. Its value must be a three-character [ISO currency code](https://en.wikipedia.org/wiki/ISO_4217). |",
+      "location": "line 31"
+    },
+    {
+      "text": "If you don't include at least one transaction fee type in the `splitLogic` object, Adyen updates the payment request with the `paymentFee` parameter, booking all transaction fees to your platform's liable balance account.",
+      "location": "line 46"
+    },
+    {
+      "text": "The request has been successfully processed, but there is no additional content.",
+      "location": "line 125"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-splitconfig-create-reciprocal",
+        "target_path": "wiki/concepts/adyen-automatic-split-configuration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-splitconfigurations]] \u2014 2026-11-07-captured Management API v3 TEST profile-creation reference for merchant-scoped automatic splits; separate store association is needed, and `200`/`204` is not payment or booking proof. Its currency schema requires a three-character ISO code while the examples use `ANY`.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Contradiction: currency request/response schema requires a three-character ISO code, but request and response examples use ANY; example acceptance is unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/splitConfigurations/2026-11-07.md",
+  "raw_sha256": "18831979871aaaef976e02d27c2c8b0c5571307cef5cb1ab8ced37cf4da2cc4c",
+  "status": "candidate_ready"
+}

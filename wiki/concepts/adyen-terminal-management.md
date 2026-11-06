@@ -15,6 +15,67 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes-id-assets]] — 2026-11-07-captured Management API v3 TEST reference for adding a company terminal-theme asset by type/model; duplicates require the replace endpoint, and creation does not prove device display.
+
+
+> [!warning] Contradiction
+> The store terminal-settings PATCH Wi-Fi table labels `eapIntermediateCert` for TLS, while its PEAP request and response examples include it. The capture does not settle when the field is accepted. [[source-adyen-api-explorer-management-latest-patch-stores-storeid-terminalsettings]]
+
+
+- [[source-adyen-api-explorer-management-latest-patch-stores-storeid-terminalsettings]] — 2026-11-07-captured Management API v3 TEST store terminal-settings PATCH: full containing-object changes and inheritance reset; individual-terminal overrides remain possible, and `200` readback does not prove on-device application.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-terminals-terminalid-terminalsettings]] — 2026-11-07-captured Management API v3 Test terminal-specific settings PATCH, with full-containing-object update/reset rules, sensitive-setting Advanced role, optional settings readback and device-application boundary.
+
+> [!warning] Contradiction
+> This reference describes `eapIntermediateCert` as an EAP TLS field, while its PEAP request and response examples include it. The snapshot does not settle PEAP validation. [[source-adyen-api-explorer-management-latest-patch-terminals-terminalid-terminalsettings]]
+
+
+- [[source-adyen-api-explorer-management-latest-patch-terminals-terminalid-terminallogos]] — 2026-11-07-captured Management API v3 TEST terminal-logo PATCH; Base64 data updates one terminal logo, while an empty value restores higher-level inheritance.
+
+
+- [[source-adyen-api-explorer-management-latest-get-terminals-terminalid-terminallogos]] — 2026-11-07-captured Management API v3 TEST read of one terminal's configured logo by terminal ID, with optional Base64 image data and Live rate-limit notice; readback does not prove on-device display or payment readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-terminals-terminalid-terminalsettings]] — 2026-11-07-captured Management API v3 TEST readback of one terminal's configured settings and role-gated sensitive fields; response settings do not prove on-device application or payment readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-stores-storeid-terminalsettings]] — 2026-11-07-captured Management API v3 TEST read of store-level terminal settings by store ID; individual terminal values can differ, sensitive settings need an Advanced role, and readback does not prove device application or payment readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-stores-storeid-terminallogos]] — 2026-11-07-captured Management API v3 TEST GET for a store's model-specific terminal logo; optional Base64 `data` is subject to an individual-terminal override, and readback does not prove on-device display.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-terminalsettings]] — 2026-11-07-captured Management API `latest` v3 TEST merchant terminal-settings PATCH, with full-containing-object changes, inheritance reset, lower-level overrides and role gates; success does not prove on-device application or payment.
+
+> [!warning] Contradiction
+> This source's Wi-Fi schema limits `eapIntermediateCert` to `eap` `tls`, but its illustrative PEAP request and `200` response include that field. The capture does not resolve PEAP acceptance or requirement. [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-terminalsettings]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminallogos]] — 2026-11-07-captured Management API v3 TEST read of a merchant-account terminal logo by required model; optional Base64 image data remains subject to store or terminal override and does not prove on-device display.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-stores-reference-terminalsettings]] — 2026-11-07-captured Management API v3 TEST store-reference terminal-settings PATCH; full containing objects, inherited-value resets, terminal overrides, and sensitive-setting role boundary.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-stores-storeid-terminallogos]] — 2026-11-07-captured Management API v3 TEST PATCH for a store and one terminal model's logo; individual-terminal override and higher-level inheritance apply, while a 200 configuration response does not prove on-device display.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-stores-reference-terminallogos]] — 2026-11-07-captured Management API v3 TEST reference for updating a store's terminal logo by merchant ID and store reference; empty logo data restores higher-level inheritance.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-stores-reference-terminallogos]] — 2026-11-07-captured Management API v3 Test reference for reading a store-reference terminal logo by model, with optional Base64 data and a 204 no-content success; individual-terminal logos can override the store logo.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-stores-reference-terminalsettings]] — 2026-11-07-captured Management API v3 TEST read of store terminal settings by merchant ID and store reference, with credential roles, lower-level overrides and optional settings readback; this does not prove on-device application or payment readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-terminallogos]] — 2026-11-07-captured Management API v3 TEST reference for updating one merchant terminal-model logo, including lower-level overrides and empty-value restoration of company inheritance.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalsettings]] — 2026-11-07-captured Management API v3 TEST read of merchant-level terminal settings; store or terminal values can override them, sensitive settings need an Advanced role, and readback does not prove on-device application or payment readiness.
+
+
 - [[source-adyen-api-explorer-management-latest-patch-companies-companyid-terminallogos]] — 2026-11-05-captured Management API v3 TEST PATCH for one company terminal model's logo; lower-level logos can override it, empty image data restores PSP inheritance, and `200` readback does not prove on-device application.
 
 

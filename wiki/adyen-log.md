@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-07] ingest | Adyen API Explorer C68
+
+- All 50 exact-manifest complete-body API Explorer sources independently approved and promoted: Management50 references. First full-review approvals 45/50; 5 targeted correction reviews. Full raw reads, 3–5 located quotes and coordinator-only approved concept-before-source promotion.
+- 5 concepts touched (0 new). Captured family/version/environment and company/merchant/store/terminal/app/certificate/split-configuration/rule/logic/campaign/theme identities retained; creation, verification, activation, request acceptance and financial finality remain distinct. Snapshot/schema conflicts retain scoped warnings. No provider/account/security/device/payment operations or collection.
+- Source_count 3159 = 2547 General Docs + 596 API Explorer + 16 GitHub. All 50 raw hashes unchanged; 100 actual fixed query answers independently checked and three coordinator full-read exemplars pass. All complete-body pages in the local API Explorer corpus now referenced; remaining27 local raw pages are excluded title-only stubs, while47 captured-catalog URLs still lack raw. No upstream completeness claim.
+- Close evidence: `tracking/ingest/adyen/adyen-campaign-68/close-validation.md`. No commit/push; unrelated work preserved.
+
 ## [2026-11-06] ingest | Adyen API Explorer C67
 
 - All 50 exact-manifest complete-body API Explorer sources independently approved and promoted: Management50 references. First full-review approvals 45/50; 5 targeted correction reviews. Full raw reads, 3–5 located quotes and coordinator-only approved concept-before-source promotion.

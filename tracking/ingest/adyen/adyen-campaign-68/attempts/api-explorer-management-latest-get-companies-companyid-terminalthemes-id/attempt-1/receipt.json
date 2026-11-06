@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-terminalthemes-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Get a company terminal theme\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/(id)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/(id)/2026-11-07.md\"\ntags: [adyen, management-api, android-terminals, terminal-themes]\n---\n\n## Overview\n\nThis 2026-11-07 snapshot of the [[adyen]] Management API `latest` GET reference lists the v3 TEST server for reading one terminal theme. Required path parameters are the unique company-account `companyId` and theme `id`. The operation introduction requires the **Management API - Terminal themes read and write** credential role.\n\n## Key takeaways\n\n- A `200` returns required theme `id`, `name`, display `mode` (`dark` or `light`), and `assets` array. Each asset has required terminal `model`, screen `type`, and a tokenized CDN `url` valid for 24 hours. The raw table lists logo, home, idle, after-payment, and shopper-engagement screen types.\n- The reference says the theme's logo URL leads to the Adyen logo if the theme lacks permission to customize terminal logos. Asset URLs and theme metadata are readback, not proof that a terminal has applied or displayed the theme.\n- The captured errors are `400`, `401`, `403`, `404`, and `500`. The `404` example says no theme was found for the ID and specified account.\n\n> [!warning] Contradiction\n> The operation introduction specifies **Management API - Terminal themes read and write** (raw lines 10\u201312), while the `403` example's detail says **Management API - Terminal settings read and write** (line 117). The example does not resolve the actual role requirement.\n\n## Detail locators\n\n- Purpose, logo permission condition, role and TEST server: raw lines 5\u201315.\n- Required company and theme IDs: lines 17\u201323.\n- `200` schema and 24-hour URL lifetime: lines 25\u201339; response example: 61\u201384.\n- Error descriptions and examples, including role mismatch: lines 42\u201359 and 86\u2013147.\n\n## Related\n\n- [[adyen-android-terminals]] \u2014 Android terminal theme context.\n- [[adyen-terminal-management]] \u2014 terminal fleet administration.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/(id)/2026-11-07|Get terminal theme reference (2026-11-07)]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of the terminal theme specified in the path. The response includes the metadata of the theme and the content delivery network (CDN) URLs for all assets that have been added to the theme.",
+      "location": "line 7"
+    },
+    {
+      "text": "The URL for the logo of the theme will lead to the Adyen logo if the theme is not associated with the permission to customize terminal logos.",
+      "location": "line 8"
+    },
+    {
+      "text": "- Management API - Terminal themes read and write",
+      "location": "line 12"
+    },
+    {
+      "text": "|   - url | string | Yes | The CDN URL for this asset, including the token as a query parameter (?token=). This URL is valid for 24 hours. |",
+      "location": "line 36"
+    },
+    {
+      "text": "\"detail\": \"Missing required role: Management API - Terminal settings read and write\",",
+      "location": "line 117"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-company-theme-get-reciprocal",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalthemes-id]] \u2014 2026-11-07-captured Management API v3 TEST read of a company terminal theme and 24-hour tokenized asset URLs; readback does not prove device application.\n\n> [!warning] Contradiction\n> The [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalthemes-id|theme GET reference]] introduction requires the Terminal themes read and write role, but its 403 example names Terminal settings read and write. The captured example does not settle the effective role requirement.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Role contradiction between operation introduction and 403 example."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalThemes/(id)/2026-11-07.md",
+  "raw_sha256": "071391d63a648babbcf5610f96558a09eddfaa97f9555c88cf46fbc40e3cd1a6",
+  "status": "candidate_ready"
+}

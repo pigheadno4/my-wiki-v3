@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-management-latest-get-terminals-terminalid-terminalsettings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: get terminal settings\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/terminals/(terminalId)/terminalSettings\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/terminals/(terminalId)/terminalSettings/2026-11-07.md\"\ntags: [adyen, management-api, point-of-sale, terminal-management, terminal-settings]\n---\n\n## Overview\n\nThis captured [[adyen]] Management API `latest` reference documents `GET /terminals/{terminalId}/terminalSettings` on the v3 test server. It returns settings configured for the payment terminal identified by required path `terminalId`. It is a settings read, not a terminal action or payment operation. See [[adyen-terminal-management]].\n\n## Key takeaways\n\n- The API credential needs either `Management API\u2014Terminal settings read` or `Management API\u2014Terminal settings read and write`. Sensitive terminal settings additionally require `Management API\u2014Terminal settings Advanced read and write`. Live requests are subject to rate limits.\n- A `200` response says the request succeeded. The response table marks its top-level settings groups optional, including receipts, connectivity, payment, refunds, offline processing, hardware, and Wi-Fi. Nested required cells, such as surcharge configuration and Wi-Fi profile fields, do not make their optional parents mandatory.\n- Material setting qualifications in the response schema include terminal-level, cellular-model-only SIM status; a contactless-currency change that requires contacting Adyen for a compliance check first; full merchant liability for losses from fraudulent or duplicate unreferenced refunds; and the store-and-forward trio of `maxAmount`, `maxPayments`, and `supportedCardTypes` that must be configured locally or inherited. These are configuration descriptions, not evidence that a particular terminal is online, has applied changes, or can process payments.\n\n## Detail locators\n\n- `## Parameters` \u2192 `### Path parameters`: required terminal ID; no query or request body is listed.\n- `## Responses` \u2192 `200 Success` response table: optional groups and detailed field semantics, limits, defaults, and conditional notes. Inspect `connectivity`, `hardware`, `payment`, `refunds`, `storeAndForward`, `surcharge`, and `wifiProfiles` as relevant.\n- `## Responses` \u2192 `400`, `401`, `403`, `422`, and `500` error tables.\n- `## Response examples` \u2192 `200 Success`: illustrative settings only; it does not establish that all groups are always returned or describe live device state.\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-management]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/terminals/(terminalId)/terminalSettings/2026-11-07|Management API terminal settings GET, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Returns the settings that are configured for the payment terminal identified in the path.",
+      "location": "line 7, opening description"
+    },
+    {
+      "text": "your API credential must have the following role:",
+      "location": "line 15, credential-role qualification"
+    },
+    {
+      "text": "| terminalId | string | Yes | The unique identifier of the payment terminal. |",
+      "location": "line 29, Path parameters table"
+    },
+    {
+      "text": "|   - simcardStatus | string | No | Indicates the status of the SIM card in the payment terminal. Can be updated and received only at terminal level, and only for models that support cellular connectivity.  Possible values:  - **ACTIVATED**: the SIM card is activated. Cellular connectivity may still need to be enabled on the terminal itself, in the **Network** settings.  - **INVENTORY**: the SIM card is not activated. The terminal can't use cellular connectivity. |",
+      "location": "line 42, 200 response-body table"
+    },
+    {
+      "text": "| storeAndForward | object | No | Settings for store-and-forward offline payments. The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure. |",
+      "location": "line 145, 200 response-body table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-terminal-settings-get-concept-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-terminals-terminalid-terminalsettings]] \u2014 2026-11-07-captured Management API v3 TEST readback of one terminal's configured settings and role-gated sensitive fields; response settings do not prove on-device application or payment readiness.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/terminals/(terminalId)/terminalSettings/2026-11-07.md",
+  "raw_sha256": "01da03e48134628972075a7132673efb3d29d1e8e132db2bbe779d384d3104d8",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-splitconfigurations-splitconfigurationid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: Get a merchant split configuration profile\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/2026-11-07.md\"\ntags: [adyen, management-api, platforms, split-configurations]\n---\n\n## Overview\n\nThis 2026-11-07 Management API `latest` reference documents `GET /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}` on the shown TEST v3 server (`https://management-test.adyen.com/v3`). It reads a specified split-configuration profile under the merchant account identified in the path. The API credential needs **Management API - SplitConfiguration read and write**. [[adyen]] \u00b7 [[adyen-automatic-split-configuration]]\n\n## Key takeaways\n\n- Both path identifiers are required: `merchantId` is the merchant account and `splitConfigurationId` is the profile. The reference shows no query parameters or request body.\n- A `200` profile representation requires `description` and `rules`; its top-level `splitConfigurationId` is optional. Each returned rule requires `currency`, `fundingSource`, `paymentMethod`, `shopperInteraction`, and `splitLogic`. Within `splitLogic`, `commission` is marked required; `ruleId`, `splitLogicId`, conditions such as `cardRegion` and `cardUsageType`, and the other allocation fields are marked optional. `cardUsageType` describes `ANY` as its default. Commission fixed amounts are in minor units and percentages in basis points.\n- Rule conditions describe when split logic applies. The `dcc` allocation field is labeled pilot and unavailable to some platforms. The `paymentFee` description says that if no transaction-fee type is included in `splitLogic`, Adyen updates a **payment request** with `paymentFee`, booking all transaction fees to the platform's liable balance account; this is documented behavior of the configuration, not an effect of this GET.\n- `204` means successful processing with no additional content. A `200` readback or example does not prove that the profile is enabled or linked to a store, that any rule matched, or that a payment, capture, booking, settlement, or payout occurred. The reference lists `400`, `401`, `403`, `422`, and `500` errors but gives no idempotency, mutation, deletion, reversal, review, activation, version/conflict, or asynchronous completion contract for this read.\n\n> [!warning] Contradiction\n> The `rules[].currency` response schema says its value must be a three-character ISO currency code (raw line 36), while the illustrative `200` response uses `\"currency\": \"ANY\"` in one rule (line 176). This capture does not resolve whether `ANY` is accepted or what it means for this field. Do not treat the example as a validation guarantee.\n\n## Detail locators\n\n- Endpoint purpose, required role, TEST server and path IDs: raw lines 5\u201322.\n- `200` response schema and condition/allocation fields: raw lines 24\u201360. The pilot `dcc` qualifier is at line 50; the transaction-fee fallback description is at line 52.\n- `204` and error responses: raw lines 63\u2013164. Illustrative two-rule `200` response: raw lines 166\u2013223.\n\n## Related\n\n- [[adyen]] \u00b7 [[adyen-automatic-split-configuration]] \u00b7 [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/2026-11-07|2026-11-07 captured merchant split-configuration profile GET reference]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of the split configuration profile specified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Its value must be a three-character [ISO currency code](https://en.wikipedia.org/wiki/ISO_4217).",
+      "location": "raw line 36"
+    },
+    {
+      "text": "The commission is booked to your platform's liable balance account.",
+      "location": "raw line 49"
+    },
+    {
+      "text": "This field is in pilot phase, and not yet available for all platforms.",
+      "location": "raw line 50"
+    },
+    {
+      "text": "\"currency\": \"ANY\",",
+      "location": "raw line 176"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-merchant-split-profile-get-route",
+        "target_path": "wiki/concepts/adyen-automatic-split-configuration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-splitconfigurations-splitconfigurationid]] \u2014 2026-11-07-captured Management API `latest` v3 TEST read of a merchant split-configuration profile and its rules; profile readback does not prove store association or financial execution.\n\n> [!warning] Contradiction\n> This GET response schema requires a three-character ISO `rules[].currency` value, but its illustrative `200` response uses `ANY`. The capture does not settle acceptance or meaning for that value. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-splitconfigurations-splitconfigurationid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the currency schema/example conflict unresolved; do not infer ANY is a valid value."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/2026-11-07.md",
+  "raw_sha256": "d709781cebda1409b8a6ef47366d1eb2dc024459b7c11468374d61f0cc0b0cca",
+  "status": "candidate_ready"
+}

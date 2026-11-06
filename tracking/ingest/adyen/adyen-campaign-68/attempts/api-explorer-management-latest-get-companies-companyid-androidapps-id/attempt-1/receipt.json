@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-androidapps-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: get a company Android app\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/androidApps/(id)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/androidApps/(id)/2026-11-07.md\"\ntags: [adyen, management-api, android-terminals, android-apps]\n---\n\n## Overview\n\nThis captured [[adyen]] Management API `latest` reference documents `GET /companies/{companyId}/androidApps/{id}` on the v3 test server. It returns details of an Android app previously uploaded to Adyen, identified by its app ID under a company account. Installation or uninstallation on Android payment terminals is a separate terminal action. See [[adyen-android-terminals]].\n\n## Key takeaways\n\n- Both path values are required: `companyId` identifies the company account, and `id` identifies the app. The API credential needs either `Management API\u2014Android files read` or `Management API\u2014Android files read and write`. Live requests are subject to rate limits.\n- A successful `200` response requires `id` and `status`; description, label, package name, version fields, and error details are optional. Status values are `processing` (signing/conversion underway), `error`, `invalid` (APK problem), `ready` (signed and converted), and `archived` (no longer available).\n- `ready` describes app preparation, not installation on a terminal. Error details may be present for `error` or `invalid`; model-specific errors may appear in `errors[].terminalModels`. This GET does not schedule deployment, change app state, or establish a device's installed version or payment readiness.\n\n## Detail locators\n\n- `## Parameters` \u2192 `### Path parameters`: required company and app IDs; no query or request body is listed.\n- `## Responses` \u2192 `200 Success`: optional metadata, status meanings, error fields, and model-scoped errors.\n- `## Responses` \u2192 `400`, `401`, `403`, `422`, and `500` error tables.\n\n## Related\n\n- [[adyen]]\n- [[adyen-android-terminals]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/androidApps/(id)/2026-11-07|Management API company Android-app GET, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of the Android app identified in the path.",
+      "location": "line 7, opening description"
+    },
+    {
+      "text": "These apps have been uploaded to Adyen and can be installed or uninstalled on Android payment terminals through",
+      "location": "line 8, opening description before linked terminal actions"
+    },
+    {
+      "text": "- Management API\u2014Android files read",
+      "location": "line 12, credential roles"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the app. |",
+      "location": "line 26, Path parameters table"
+    },
+    {
+      "text": "| status | string | Yes | The status of the app. Possible values:  - `processing`: the app is being signed and converted to a format that the terminal can handle.  - `error`: something went wrong. Check that the app matches the [requirements](https://docs.adyen.com/point-of-sale/android-terminals/app-requirements).  - `invalid`: there is something wrong with the APK file of the app.  - `ready`: the app has been signed and converted.  - `archived`: the app is no longer available. |",
+      "location": "line 45, 200 response-body table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-company-android-app-get-concept-route",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-androidapps-id]] \u2014 2026-11-07-captured Management API v3 TEST read of one uploaded company Android app's metadata and processing status; terminal installation is a separate action.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/androidApps/(id)/2026-11-07.md",
+  "raw_sha256": "9bfb921e2d2fee76705d51d1819a56a045e4b8d3950765d29a8925c76720c68d",
+  "status": "candidate_ready"
+}

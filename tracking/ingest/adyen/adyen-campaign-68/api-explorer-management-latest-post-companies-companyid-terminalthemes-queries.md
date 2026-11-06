@@ -1,0 +1,9 @@
+# C68 worker query answers: api-explorer-management-latest-post-companies-companyid-terminalthemes
+
+## Q1
+
+The 2026-11-07 Management API `latest` reference documents `POST /companies/{companyId}/terminalThemes` on the listed `https://management-test.adyen.com/v3` TEST server. It creates basic Android payment-terminal theme metadata for the company account identified by required unique `companyId`. The credential needs Management API - Terminal themes read and write. Required body fields are `mode` (`dark` or `light`) and `name`; the name must be unique within that company account and at most 255 characters, though another account may use the same name. No query fields or defaults are listed. `201 Created` returns required Adyen-generated theme `id`, `name`, and `mode`. [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes]] https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes (raw lines 5–53, 79–90).
+
+## Q2
+
+A `201` establishes creation of theme metadata only. The page explicitly makes adding terminal-model-specific image/video assets and applying/activating the theme subsequent steps; it does not show on-device application, device readiness or payment. It lists 400, 401, 403, 404, 422 and 500 errors. The `422` examples show a blank name and a duplicate name within the account; account access failures are illustrated by 403/404 examples. No idempotency key, deletion, reversal, asynchronous review, installed-version state or concurrency/version rule is documented. The TEST server and November snapshot do not establish current Live eligibility or any transaction, settlement or bank receipt. [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes]] https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes (raw lines 7–18, 43–77, 79–192).

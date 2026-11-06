@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-androidapps",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: list company Android apps\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/androidApps\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/androidApps/2026-11-07.md\"\ntags: [adyen, management-api, android-terminals, android-apps]\n---\n\n## Overview\n\nThis 2026-11-07 Management API `latest` reference lists `GET /companies/{companyId}/androidApps` on the TEST `/v3` server. It reads Android apps uploaded to Adyen for the company account. Installation and removal on Android payment terminals use separate terminal actions; listing an app, including one marked `ready`, does not establish installation. See [[adyen]] and [[adyen-android-terminals]].\n\n## Key takeaways\n\n- `companyId` is the required path ID of the company account. Optional filters are `versionCode` and `packageName`; optional `pageSize` defaults to 20 and has a maximum of 100, with optional `pageNumber`. No request body is listed. The caller needs one of four roles: Android files read/read and write or Terminal actions read/read and write. Live requests have a rate-limit notice but no numerical limit here.\n- `200` has optional `data` listing uploaded apps. Within each returned app object, `id` and `status` are required; description, label, package name, version fields and error details are optional. The status values are `processing` (signing/conversion), `error` (a problem; check app requirements), `invalid` (APK problem), `ready` (signed/converted), and `archived` (no longer available). `ready` is a preparation state, not proof of deployment to a device.\n- The reference documents `400`, `401`, `403`, `422`, and `500` errors. The two `ready` items in the `200` example are illustrative, not evidence of a company account's current apps or installed versions. This read does not upload, sign, install, uninstall, or execute a payment.\n\n## Detail locators\n\n- Purpose, caller roles, Live rate-limit notice, TEST server, path and optional query parameters: pinned raw lines 5\u201339.\n- `200` optional `data`, item identity, status meanings and optional error/model fields: pinned raw lines 41\u201360.\n- Error response shapes: pinned raw lines 63\u2013160. Illustrative two-app `200` JSON: lines 162\u2013189.\n\n## Related\n\n- [[adyen-android-terminals]] \u2014 app deployment context and separate installation routes.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/androidApps/2026-11-07|2026-11-07 pinned company Android apps list reference]]",
+  "quotes": [
+    {
+      "text": "Returns a list of the Android apps that are available for the company identified in the path.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "These apps have been uploaded to Adyen and can be installed or uninstalled on Android payment terminals through [terminal actions](https://docs.adyen.com/point-of-sale/automating-terminal-management/terminal-actions-api).",
+      "location": "pinned raw line 8"
+    },
+    {
+      "text": "Management API\u2014Android files read",
+      "location": "pinned raw line 12"
+    },
+    {
+      "text": "The number of items to have on a page, maximum 100. The default is 20 items on a page.",
+      "location": "pinned raw line 38"
+    },
+    {
+      "text": "`ready`: the app has been signed and converted.",
+      "location": "pinned raw line 58"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-company-androidapps-get-reciprocal",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-androidapps]] \u2014 2026-11-07-captured Management API v3 TEST list of company-uploaded Android apps, with version/package filters and processing, error, invalid, ready or archived status; `ready` means signed and converted, while terminal installation uses separate actions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/androidApps/2026-11-07.md",
+  "raw_sha256": "f7f2b566489fdcf0e4a1b8aba2d4f16e35860d001fd0903a6063e5e67b19a6c7",
+  "status": "candidate_ready"
+}

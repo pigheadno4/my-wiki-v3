@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-splitconfigurations-splitconfigurationid-rules-ruleid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: Update split rule conditions\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId)/2026-11-07.md\"\ntags: [adyen, management-api, platforms, automatic-split, split-configuration]\n---\n\n## Overview\n\nThis 2026-11-07 Management API `latest` reference documents `PATCH /merchants/{merchantId}/splitConfigurations/{splitConfigurationId}/rules/{ruleId}` on the listed TEST `https://management-test.adyen.com/v3` server. It changes the conditions of one rule in a merchant-account split configuration. The required path IDs identify the merchant account, split configuration and rule separately. See [[adyen]] and [[adyen-automatic-split-configuration]].\n\n## Key takeaways\n\n- The API credential requires Management API - SplitConfiguration read and write.\n- The request table marks `currency`, `fundingSource`, `paymentMethod` and `shopperInteraction` required; optional `cardUsageType` defaults to `ANY`. These are rule conditions. The documented request does not include `splitLogic`, so this endpoint's condition update should not be mistaken for an edit of booking instructions.\n- A `200` returns a split-configuration representation with required `description` and `rules`, and optional `splitConfigurationId`; nested rule responses include conditions and `splitLogic`. A `204` has no additional content. Success is configuration response evidence, not proof that a store uses the profile or that a payment was split, captured, settled or paid out.\n- The response schema describes a DCC split-logic field as pilot-only. It also says that when no transaction fee type is included in `splitLogic`, Adyen updates the payment request with `paymentFee` to book all transaction fees to the platform's liable balance account. Those response descriptions are not additional request fields for this PATCH.\n\n> [!warning] Contradiction\n> The request and response tables describe `currency` as a three-character ISO currency code, but the illustrative `200` response includes a rule with `\"currency\": \"ANY\"`. The capture does not establish whether `ANY` is accepted as a request value for this endpoint.\n\n## Detail locators\n\n- Purpose, role, TEST server, three required path IDs and request conditions: raw lines 5\u201333. Illustrative request: lines 35\u201345.\n- `200` configuration response, rule and split-logic fields, including DCC pilot and fee fallback descriptions: raw lines 46\u201382. `204` and error definitions: lines 85\u2013186. Illustrative `200` response: lines 188\u2013246.\n\n## Related\n\n- [[adyen-automatic-split-configuration]] \u2014 profile selection and booking context.\n- [[adyen-platforms]] \u2014 platform account context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId)/2026-11-07|Pinned split rule condition PATCH reference (2026-11-07)]]\n",
+  "quotes": [
+    {
+      "text": "Changes the [split conditions of the rule](https://docs.adyen.com/platforms/automatic-split-configuration/manage-split-configurations/api/#update-condition) specified in the path.",
+      "location": "line 7, endpoint description"
+    },
+    {
+      "text": "- Management API - SplitConfiguration read and write",
+      "location": "line 11, credential role"
+    },
+    {
+      "text": "| currency | string | Yes | The currency condition that defines whether the split logic applies. Its value must be a three-character [ISO currency code](https://en.wikipedia.org/wiki/ISO_4217). |",
+      "location": "line 30, request body schema"
+    },
+    {
+      "text": "If you don't include at least one transaction fee type in the `splitLogic` object, Adyen updates the payment request with the `paymentFee` parameter, booking all transaction fees to your platform's liable balance account.",
+      "location": "line 74, response splitLogic.paymentFee description"
+    },
+    {
+      "text": "\"currency\": \"ANY\",",
+      "location": "line 198, illustrative 200 response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-api-explorer-management-latest-patch-merchants-merchantid-splitconfigurations-splitconfigurationid-rules-ruleid-automatic-split",
+        "target_path": "wiki/concepts/adyen-automatic-split-configuration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-splitconfigurations-splitconfigurationid-rules-ruleid]] \u2014 2026-11-07-captured Management API v3 TEST PATCH for one merchant split-configuration rule's conditions; the `200` readback includes the full configuration, while a `204` has no content and neither proves a transaction was split.\n\n> [!warning] Contradiction\n> This PATCH reference's request/response currency tables require a three-character ISO code, while its illustrative `200` response includes `\"currency\": \"ANY\"`. The sample does not establish that `ANY` is accepted in the request. [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-splitconfigurations-splitconfigurationid-rules-ruleid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Currency table versus 200 example conflict must remain explicit on both source and concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/splitConfigurations/(splitConfigurationId)/rules/(ruleId)/2026-11-07.md",
+  "raw_sha256": "e4965da1e3973cccff030d6ae77cc287416ef59f6751b05072300aa6b69622bc",
+  "status": "candidate_ready"
+}

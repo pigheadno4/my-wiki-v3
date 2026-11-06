@@ -1,0 +1,9 @@
+# C68 worker query answers: api-explorer-management-latest-post-companies-companyid-androidapps
+
+## Q1
+
+The 2026-11-07 Management API `latest` reference documents `POST /companies/{companyId}/androidApps`, an Android APK upload to Adyen on the listed `https://management-test.adyen.com/v3` TEST server. The required `companyId` path value is the unique identifier of the company account; the app's returned `id` is a separate uploaded-app identifier. The APK limit is 200 MB. The API credential needs Management API—Android files read and write, and Live requests are rate limited. The captured page does not list a query or request-body schema, file encoding, or an idempotency header. A `200` means request success and may return an optional app `id`; no other success fields are listed. [[source-adyen-api-explorer-management-latest-post-companies-companyid-androidapps]] https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/androidApps (raw lines 5–35).
+
+## Q2
+
+A `200` establishes request success and may identify the uploaded Android app; because `id` is optional, it must not be assumed present. This page documents 400, 401, 403, 422 and 500 errors, but no app processing state, asynchronous review/approval, activation, installation, deletion, reversal or conflict/version transition. It expressly assigns full responsibility and liability for consequences of uploading, installing or running third-party apps. Thus upload success is separate from any later app approval or on-device installation and from terminal readiness or payment execution. The TEST server listing and November capture do not establish current Live eligibility, compliance, authorization, capture, settlement or bank receipt. [[source-adyen-api-explorer-management-latest-post-companies-companyid-androidapps]] https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/androidApps (raw lines 7–18, 27–35, 38–135).

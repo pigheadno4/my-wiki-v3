@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-terminalsettings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: Update merchant terminal settings\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalSettings\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalSettings/2026-11-07.md\"\ntags: [adyen, management-api, point-of-sale, terminal-settings]\n---\n\n## Overview\n\nThis 2026-11-07 capture of the Management API `latest` reference documents `PATCH /merchants/{merchantId}/terminalSettings` on the shown TEST v3 server (`https://management-test.adyen.com/v3`). It updates settings for the merchant account identified by required path `merchantId`. Settings apply to its terminals unless a store or terminal has a lower-level override. This is a configuration endpoint, not a [[adyen-terminal-api]] payment request. [[adyen]] \u00b7 [[adyen-terminal-management]]\n\n## Key takeaways\n\n- To change a parameter, send its **full containing object**, including other parameters to retain. To restore an inherited higher-level value, send that full object with the parameter empty or omitted. Omitted objects are not updated. This is not a field-by-field patch.\n- The API credential needs **Management API\u2014Terminal settings read and write**; sensitive settings additionally need **Management API\u2014Terminal settings Advanced read and write**. Live requests are subject to rate limits, without a numeric limit specified here.\n- The request table marks top-level settings objects optional. Nested requirements apply when their containing structures are used: `surcharge.configurations[]` marks `brand` and `currencies` required; `wifiProfiles.profiles[]` marks `authType`, `bssType`, `ssid`, and `wsec` required. The `storeAndForward` prose requires `maxAmount`, `maxPayments`, and `supportedCardTypes` to be configured in the request or inherited from a higher level. `kioskAppOnStartup` must be in `allowedAppsInKioskMode`.\n- Material feature cautions: enabling DCC carries receipt-requirement and terms responsibilities; contact Adyen before the first `payment.contactlessCurrency` update for a compliance check; enabling unreferenced refunds carries liability for fraudulent or duplicate refunds, with a recommended limit and delay. `connectivity.simcardStatus` can be updated or received only at terminal level on cellular-capable models, despite its appearance in this shared schema. The MOTO maximum-amount description points to `standalone.currencyCode` and cautions against enabling standalone outside a standalone solution.\n- `200` says the request succeeded and describes a settings representation whose fields are optional; `204` has no additional content. Neither response establishes that a terminal has applied settings, accepted a payment, or settled funds. The captured reference lists `400`, `401`, `403`, `422`, and `500` errors. It states no idempotency, deletion, reversal, review, or activation contract for this PATCH.\n\n## Detail locators\n\n- Endpoint, inheritance, full-object/reset semantics, roles, live limit and server: raw lines 5\u201327.\n- Path and request schema: raw lines 29\u2013197. Defaults, units and bounds include `hardware.resetTotalsHour`/`restartHour` default 06:00 terminal time with 0\u201323 bounds (lines 54\u201357), gratuity options capped at four or three plus custom (49\u201353), and store-and-forward amounts in minor units (146\u2013156). Wi-Fi profile types and conditional EAP fields are at 173\u2013197.\n- Illustrative PEAP/PSK and TLS request examples: raw lines 199\u2013289. Response schemas, status and errors: lines 290\u2013559. Illustrative `200` response examples: lines 561\u2013752. Example values do not establish guaranteed returned fields or applied device state.\n\n## Related\n\n- [[adyen]] \u00b7 [[adyen-terminal-management]] \u00b7 [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalSettings/2026-11-07|2026-11-07 captured merchant terminal-settings PATCH reference]]\n",
+  "quotes": [
+    {
+      "text": "Updates payment terminal settings for the merchant account identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "To change a parameter value, include the full object that contains the parameter, even if you don't want to change all parameters in the object.",
+      "location": "raw line 10"
+    },
+    {
+      "text": "To restore a parameter value inherited from a higher level, include the full object that contains the parameter, and specify an empty value for the parameter or omit the parameter.",
+      "location": "raw line 12"
+    },
+    {
+      "text": "Management API\u2014Terminal settings Advanced read and write",
+      "location": "raw line 22"
+    },
+    {
+      "text": "The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure.",
+      "location": "raw line 146"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-merchant-terminal-settings-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-terminalsettings]] \u2014 2026-11-07-captured Management API `latest` v3 TEST merchant terminal-settings PATCH, with full-containing-object changes, inheritance reset, lower-level overrides and role gates; success does not prove on-device application or payment.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalSettings/2026-11-07.md",
+  "raw_sha256": "d66ad342b73c1a9e51106af9ed595049c4cb825b1e025b6fe75cac1ae44dc7ca",
+  "status": "candidate_ready"
+}

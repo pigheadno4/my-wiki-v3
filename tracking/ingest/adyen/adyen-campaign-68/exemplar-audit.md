@@ -1,0 +1,9 @@
+# C68 coordinator exemplar audit
+
+**PASS** — three predetermined full-read audits. Coordinator read all numbered raw lines including schemas/errors/examples in bounded contiguous chunks without truncation/unread ranges, then compared final sources, quotes, approved reciprocal routes and actual original answers. No material partial/fail; all50 expansion not triggered.
+
+- api-explorer-management-latest-get-merchants-merchantid-terminallogos: Full numbered raw1–158, final approved source, all five quotes, actual original Q1/Q2 and TerminalManagement reciprocal compared. Merchant+requiredmodel, lower store/terminal overrides, OR roles, optionalBase64data vs204, TESTv3/live rate-limit withoutnumber and device-display boundary retained. PASS.
+
+- api-explorer-management-latest-patch-terminals-terminalid-terminalsettings: Full numbered raw1–814 in contiguous boundedchunks including every request/responsefield,error,allfour examples andfinalfence. Finalapprovedsource/quotes/actualQ1Q2/TerminalManagement reciprocal compared. Fullobjectchange/reset/omittedobjects, Advancedsensitiverole, AndroidhiddenSSID prose, inherited-or-requested storeforward prerequisites, SIMmodel/level/networkdistinctions, DCC/compliance/unreferencedrefundliability, MOTOstandalonecoupling retained. PEAPintermediatecert vsTLSdescription formalwarning retained. 200optionalsettings notdeviceapplication/financialproof. PASS.
+
+- api-explorer-management-latest-get-companies-companyid-androidapps: Full numbered raw1–190 every schema/error/twoappexample. Finalsource/fivequotes/AndroidTerminals reciprocal/actualQ1Q2 compared. CompanyID, fouralternativeroles, page20default100max/filteridentities, optionaldata withconditionalrequiredid/status, precise processing/error/invalid/ready/archived andmodelerrors. ready meanssigned/converted notinstalled. TESTv3/live rate limits andreadbackboundaries retained. PASS.

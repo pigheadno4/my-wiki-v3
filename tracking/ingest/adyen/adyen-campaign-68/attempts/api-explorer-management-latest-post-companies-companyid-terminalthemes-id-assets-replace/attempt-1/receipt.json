@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-terminalthemes-id-assets-replace",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Replace a company terminal-theme asset\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/replace\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/replace/2026-11-07.md\"\ntags: [adyen, management-api, android-terminals, terminal-themes]\n---\n\n## Overview\n\nThis 2026-11-07 snapshot of the [[adyen]] Management API `latest` POST reference lists the v3 TEST server for replacing an **existing** image or video asset of a company-owned terminal theme. Required path IDs identify the company account and theme; required query `type` and `model` identify the existing asset pair. If that pair is absent, this replacement request fails and the separate asset-creation endpoint is needed. The credential requires **Management API - Terminal themes read and write**. The endpoint is rate limited.\n\n## Key takeaways\n\n- Upload exactly one multipart/form-data part named `file` with a supported, specific Content-Type; generic or missing Content-Type such as `application/octet-stream` is rejected with `422`. SVG is only for `logo` with model `All`; JPEG/PNG exclude `All`; MP4/QuickTime are only for SFO1/M450; GIF excludes SFO1/M450.\n- The `model` query allows `All` only for `logo`; `idleScreen` and `shopperEngagementScreen` require SFO1/M450. Maximum upload size is 100 MB for SFO1/M450 and 10 MB for other models. The raw table owns the full screen-type descriptions and combinations.\n- A `200` returns asset `model`, `type`, and tokenized CDN `url` valid for 24 hours. This is asset replacement readback, not evidence that the theme has been applied to a terminal or displayed. The `403` example shows a theme-specific logo-modification denial; `404` examples distinguish missing theme from absent asset pair.\n\n## Detail locators\n\n- Replacement prerequisite, media mapping, size limits, role and TEST server: raw lines 5\u201332.\n- Required path/query fields and multipart file: lines 34\u201353.\n- `200` response and 24-hour URL: lines 55\u201365; example: 95\u2013106.\n- Errors: `400` lines 68\u201369 and 108\u2013118; `401` 72\u201373 and 120\u2013130; `403` 76\u201377 and 132\u2013144; `404` 80\u201381 and 146\u2013168; `422` 84\u201385 and 170\u2013188; `429` 88\u201389 and 190\u2013201; `500` 92\u201393 and 203\u2013213.\n\n## Related\n\n- [[adyen-android-terminals]] \u2014 Android terminal customization context.\n- [[adyen-terminal-management]] \u2014 terminal administration.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/replace/2026-11-07|Replace terminal-theme asset reference (2026-11-07)]]\n",
+  "quotes": [
+    {
+      "text": "You can upload an asset using this endpoint if the theme already has an asset with the specified combination of `type` and `model`. If that is not the case, the request fails and you need to use the endpoint `/companies/{companyId}/terminalThemes/{id}/assets` instead.",
+      "location": "line 25"
+    },
+    {
+      "text": "- Management API - Terminal themes read and write",
+      "location": "line 29"
+    },
+    {
+      "text": "| model | string | Yes | The Android terminal model that the asset is for. Use **All** only if the `type` is **logo**. For every other screen type specify a single Android terminal model such as **AMS1**. |",
+      "location": "line 46"
+    },
+    {
+      "text": "| file | string | Yes | The asset file. The part must declare a specific supported Content-Type; which Content-Type is accepted depends on the asset `type` and terminal `model` (see the endpoint description for the full mapping). The file extension is derived from it. A request with a generic or missing Content-Type such as application/octet-stream is rejected with response code **422**. The maximum asset size depends on the terminal model: up to 100 MB for SFO1 and M450, or 10 MB for all other models. |",
+      "location": "line 53"
+    },
+    {
+      "text": "| url | string | Yes | The CDN URL for this asset, including the token as a query parameter (?token=). This URL is valid for 24 hours. |",
+      "location": "line 65"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-theme-asset-replace-reciprocal",
+        "target_path": "wiki/concepts/adyen-android-terminals.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes-id-assets-replace]] \u2014 2026-11-07-captured Management API v3 TEST reference for replacing an existing company theme asset matching screen type and terminal model; media and size gates apply, and a 200 asset URL does not prove terminal application.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/replace/2026-11-07.md",
+  "raw_sha256": "1b227b3089603cba374c751d3d25d608316204cc5aa0b5783ea94fc47bad09c4",
+  "status": "candidate_ready"
+}

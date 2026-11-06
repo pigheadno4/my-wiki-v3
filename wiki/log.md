@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-07] ingest | Adyen API Explorer C68
+
+- All 50 remaining complete-body local API Explorer sources independently approved; 5 concepts touched (0 new). Source_count 3159 = 2547 General Docs + 596 API Explorer + 16 GitHub. Remaining 27 title-only stubs excluded; raw unchanged. 100 actual query answers, three full-read exemplars and validation: `tracking/ingest/adyen/adyen-campaign-68/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-11-06] ingest | Adyen API Explorer C67
 
 - All 50 remaining complete-body local API Explorer sources independently approved; 6 concepts touched (0 new). Source_count 3109 = 2547 General Docs + 546 API Explorer + 16 GitHub. Remaining 27 title-only stubs excluded; raw unchanged. 100 actual query answers, three full-read exemplars and validation: `tracking/ingest/adyen/adyen-campaign-67/`; details [[adyen-log]]. No commit/push.

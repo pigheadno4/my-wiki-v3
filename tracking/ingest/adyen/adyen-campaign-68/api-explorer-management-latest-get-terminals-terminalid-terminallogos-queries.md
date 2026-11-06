@@ -1,0 +1,9 @@
+# C68 worker query answers: api-explorer-management-latest-get-terminals-terminalid-terminallogos
+
+## Q1
+
+The 2026-11-07 Management API `latest` capture documents `GET /terminals/{terminalId}/terminalLogos` against the listed v3 TEST server `https://management-test.adyen.com/v3`. It reads the logo configured for a single payment terminal, identified by the required unique `terminalId` path parameter. No query or request body fields are documented. The API credential needs Management API—Terminal settings read or read and write, and Live requests face rate limits. On `200`, optional `data` contains the logo image as a Base64 string to decode into an image file. The example's placeholder does not guarantee that `data` is returned. [[source-adyen-api-explorer-management-latest-get-terminals-terminalid-terminallogos]] https://docs.adyen.com/api-explorer/Management/latest/get/terminals/(terminalId)/terminalLogos (raw lines 5–36, 138–147).
+
+## Q2
+
+A `200` establishes a successful read request and may return the configured logo's encoded image; `data` is optional. The endpoint documents 400 request, 401 authentication, 403 permission, 422 validation and 500 server errors. This GET has no documented idempotency key, mutation, deletion, reset, asynchronous review, approval, activation or reversal transition. The captured v3 TEST listing and any returned `data` do not establish Live entitlement, physical display/application on the terminal, terminal readiness, payment authorization, capture, settlement or bank receipt. The page is a 2026-11-07 snapshot, so current configuration and availability require separate evidence. [[source-adyen-api-explorer-management-latest-get-terminals-terminalid-terminallogos]] https://docs.adyen.com/api-explorer/Management/latest/get/terminals/(terminalId)/terminalLogos (raw lines 5–19, 28–136, 138–147).

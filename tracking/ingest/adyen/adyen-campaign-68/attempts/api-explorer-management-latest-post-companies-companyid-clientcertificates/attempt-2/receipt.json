@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-clientcertificates",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Management API: Generate a company client certificate\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/clientCertificates\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/clientCertificates/2026-11-07.md\"\ntags: [adyen, management-api, mtls, client-certificates]\n---\n\n## Overview\n\nThis 2026-11-07 Management API `latest` reference documents `POST /companies/{companyId}/clientCertificates` on the shown TEST v3 server (`https://management-test.adyen.com/v3`). It signs a certificate signing request (CSR) and returns a client certificate for mutual TLS communication with Adyen. The path `companyId` identifies the company account; the request's `apiCredential` identifies the intended credential for that certificate. [[adyen]] \u00b7 [[adyen-api-access]]\n\n## Key takeaways\n\n- The calling API credential needs **Management API - Client certificates read and write**. The body requires `apiCredential` in `ws_*@Company.*` format and `certificateSigningRequest` as a Base64-encoded DER CSR. The CSR must be signed by its associated private key and use RSA of at least 2048 bits or ECC of at least 224 bits. Only the public key is enrolled.\n- Adyen constructs the issued `subjectDN` from path `companyId` and body `apiCredential`; it does not use the CSR subject. The returned DN has the documented `UID={apiCredential}-Company.{companyId},CN={apiCredential}-Company.{companyId},O=Company.{companyId}` form. The generated DN **must be assigned** on the specified API credential through Customer Area or its credential PATCH endpoint. Generation and assignment are separate steps.\n- A company account can have at most **10 valid client certificates at a time**. The `422` description includes an unmet CSR requirement, missing/invalid request fields, or reaching a limit of 10 client certificates. The reference gives no idempotency, renewal, or automatic replacement behavior.\n- `201` reports successful certificate generation and requires `caChain` (intermediates and Management CA root, excluding the leaf), unique `id`, Base64 DER signed `leaf`, `serialNumber`, and `subjectDN`. This result is certificate issuance, not proof that the target credential has been assigned the DN, that a subsequent mTLS request authenticated, or that a payment succeeded. The error list also includes `400` malformed/incorrect CSR, `401` says the API credential used in the request is invalid, without distinguishing the calling credential from the body `apiCredential`, `403` insufficient permission, `429` rate limit, and `500` server error.\n\n## Detail locators\n\n- Purpose, key criteria, certificate limit, server-generated DN, caller role and TEST server: raw lines 5\u201325.\n- Required path/body and credential-assignment instruction: raw lines 27\u201339. Illustrative request: lines 41\u201349.\n- `201` result fields: raw lines 50\u201362. Error statuses and optional error-body fields: lines 65\u2013176. Illustrative `201` certificate/chain response: lines 178\u2013193.\n\n## Related\n\n- [[adyen]] \u00b7 [[adyen-api-access]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/clientCertificates/2026-11-07|2026-11-07 captured company client-certificate generation reference]]\n",
+  "quotes": [
+    {
+      "text": "Generates a client certificate for secure communication with Adyen using mutual TLS (mTLS). Provide a certificate signing request (CSR). Adyen signs it and returns the client certificate.",
+      "location": "raw line 8"
+    },
+    {
+      "text": "Key type: RSA with a minimum key size of 2048 bits, or ECC with a minimum key size of 224 bits.",
+      "location": "raw line 14"
+    },
+    {
+      "text": "A company account can have a maximum of 10 valid client certificates at a time.",
+      "location": "raw line 16"
+    },
+    {
+      "text": "The subject in your CSR is not used.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "NOTE: You must assign the DN on that specified API credential with the one from the generated client certificate.",
+      "location": "raw line 38"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-company-client-certificate-generation-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-clientcertificates]] \u2014 2026-11-07-captured Management API `latest` v3 TEST company client-certificate generation from a CSR; Adyen derives the subject DN from company and target credential, and the DN must separately be assigned to that credential before this readback can support mTLS use.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/clientCertificates/2026-11-07.md",
+  "raw_sha256": "2b6766fda051556b00072acda133f6deaa223dead5737a68e4d68ab8f9d3e936",
+  "status": "candidate_ready"
+}

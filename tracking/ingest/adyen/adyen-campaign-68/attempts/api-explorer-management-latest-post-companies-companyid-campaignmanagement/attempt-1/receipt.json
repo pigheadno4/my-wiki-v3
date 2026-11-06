@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-campaignmanagement",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: create a Giving campaign\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/2026-11-07.md\"\ntags: [adyen, management-api, giving, donation-campaigns]\n---\n\n## Overview\n\nThis captured [[adyen]] Management API `latest` reference documents `POST /companies/{companyId}/campaignManagement` on the v3 test server. It creates a Giving campaign to offer shoppers a donation to a nonprofit during a payment, for online, in-person, or both channels. It is campaign creation, not a donation transaction. See [[adyen-giving]].\n\n## Key takeaways\n\n- Required path `companyId` identifies the company account. The request body requires campaign `name` and `nonprofitCauseId`; `accountHolderIds`, `online`, and `inPerson` are optional. Company, account-holder, merchant-account, store, campaign, and nonprofit-cause identifiers have distinct roles. The API credential needs `Management API\u2014Campaign Management read and write`.\n- If in-person settings are supplied, `displayTextField` and `donationFlow` are marked required within that optional object. `presentCardTimeoutMs` is conditionally required for `twoStep`, defaults to 10000 ms, and ranges 5000\u201315000 ms; `promptTimeoutMs` has the same default and range. Each optional channel's `defaultAmount`, if used, requires a currency code and 1\u20133 minor-unit amounts.\n- A `200` response says the request succeeded and requires an Adyen-generated campaign `id`, `name`, `nonprofitCause`, and `status`. Channel details, account-holder IDs, and activation/end timestamps are optional. The reference does not enumerate `status` values or establish that a newly created campaign is active, shown to a shopper, or has received donations.\n- A documented `503` means campaign management is temporarily unavailable for the account; the reference specifically says donations themselves are unaffected. It does not state idempotency or a campaign-activation workflow.\n\n## Detail locators\n\n- `## Parameters` \u2192 path and request-body tables: identifier scopes, optional channel objects, conditional in-person fields, donation types, amounts, and timeouts.\n- `## Responses` \u2192 `200 Success`: campaign ID, status, nonprofit cause, channel associations, amounts, and optional lifecycle timestamps.\n- `## Responses` \u2192 `400`, `401`, `403`, `422`, `500`, and `503`: failure categories and optional error-envelope fields.\n\n## Related\n\n- [[adyen]]\n- [[adyen-giving]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/2026-11-07|Management API Giving campaign creation, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Creates a new donation campaign, to give shoppers the option to donate to a nonprofit organization when making a payment. A campaign can be for online payments, in-person payments, or both online and in-person payments.",
+      "location": "line 7, opening description"
+    },
+    {
+      "text": "| name | string | Yes | The name of the donation campaign. |",
+      "location": "line 39, Request body table"
+    },
+    {
+      "text": "| nonprofitCauseId | string | Yes | The unique identifier of the nonprofit cause that the campaign supports. |",
+      "location": "line 40, Request body table"
+    },
+    {
+      "text": "|   - presentCardTimeoutMs | integer | No | Required if `donationFlow` is set to **twoStep**. The time, in milliseconds, that the terminal waits for the shopper to present their card. Defaults to **10000** (10 seconds). Range: 5000 to 15000. |",
+      "location": "line 36, Request body table"
+    },
+    {
+      "text": "Managing donation campaigns is temporarily not possible for this account. The donations themselves are not affected.",
+      "location": "line 190, 503 Server Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-company-giving-create-concept-route",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-campaignmanagement]] \u2014 2026-11-07-captured Management API v3 TEST company-path Giving campaign creation contract for online and in-person settings, nonprofit cause and returned campaign identity/status; creation is not activation or donation proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/campaignManagement/2026-11-07.md",
+  "raw_sha256": "d71895853bdf41d4cee3ac03b265eac61626b7875359de96fb0d86fd7aad8de6",
+  "status": "candidate_ready"
+}

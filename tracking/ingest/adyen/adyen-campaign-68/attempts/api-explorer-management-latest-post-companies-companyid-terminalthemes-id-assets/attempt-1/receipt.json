@@ -1,0 +1,49 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-terminalthemes-id-assets",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: Add a terminal-theme asset\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/2026-11-07.md\"\ntags: [adyen, management-api, terminal-management, terminal-themes]\n---\n\n## Overview\n\nCaptured Management API v3 reference for adding an image or video asset to the terminal theme identified by theme `id` under company account `companyId`. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- Required query `type` selects a screen type or element and required `model` selects the Android terminal model; the request uses multipart/form-data with one required `file` part declaring a supported Content-Type. The permitted type/model/media combinations are constrained: `logo` uses `All`, while certain screen types and video are limited to SFO1 or M450. Consult the raw mapping before uploading.\n- Asset size is at most 100 MB for SFO1/M450 or 10 MB for other models. Generic or missing file Content-Type is rejected with `422`. An existing asset for the same type/model combination makes this add request fail; use the separate replace endpoint.\n- The credential needs **Management API - Terminal themes read and write**. The endpoint is rate limited; the captured server is `https://management-test.adyen.com/v3`.\n- `201` returns required `model`, `type` and tokenized CDN `url`, with the URL valid for 24 hours. Asset creation and a returned URL do not themselves state that the theme was applied to terminals or displayed on devices.\n\n## Detail locators\n\n- Type/model media restrictions, size and duplicate behavior: raw lines 5\u201323.\n- Credential, server, required path/query and file fields: raw lines 25\u201351.\n- `201` schema and 400, 401, 403, 404, 422, 429, 500 errors: raw lines 53\u201391; response examples: lines 93\u2013210.\n\n## Related\n\n- [[adyen-terminal-management]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/2026-11-07|Management API v3 terminal-theme asset add reference]]\n",
+  "quotes": [
+    {
+      "text": "Adds an image or video (an 'asset') to a terminal theme owned by the company specified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "The maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** and **M450**, or 10 MB for all other `model` values.",
+      "location": "line 21"
+    },
+    {
+      "text": "If the theme already has an asset for the same combination of `type` and `model`, the request fails and you need to upload the new asset using the `/companies/{companyId}/terminalThemes/{id}/assets/replace` endpoint.",
+      "location": "line 23"
+    },
+    {
+      "text": "Management API - Terminal themes read and write",
+      "location": "line 27"
+    },
+    {
+      "text": "This URL is valid for 24 hours.",
+      "location": "line 63"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-theme-asset-add-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes-id-assets]] \u2014 2026-11-07-captured Management API v3 TEST reference for adding a company terminal-theme asset by type/model; duplicates require the replace endpoint, and creation does not prove device display.",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalThemes/(id)/assets/2026-11-07.md",
+  "raw_sha256": "89141168579b82b94e6393441fe8d8818d21d77d03c75394e3e107ce6e45f778",
+  "status": "candidate_ready"
+}

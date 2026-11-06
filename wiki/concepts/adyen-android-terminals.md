@@ -15,6 +15,57 @@ The 2026-09-15 overview's terminal-model and Android-version table is a snapshot
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalthemes]] — 2026-11-07-captured Management API v3 Test merchant terminal-theme metadata list, with search/pagination and separate detail GET for assets; listing does not prove on-device application.
+
+
+- [[source-adyen-api-explorer-management-latest-delete-companies-companyid-terminalthemes-id]] — 2026-11-07-captured Management API v3 TEST company terminal-theme DELETE; an in-use theme must first be unapplied, while `204` reports deletion without device-state readback.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes-unapply]] — 2026-11-07-captured Management API `latest` v3 TEST company theme unapply: resets company assignment toward Adyen default while merchant/store/terminal overrides persist; the theme is not deleted.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes-id-apply]] — 2026-11-07-captured Management API v3 TEST company-level theme apply by theme ID, subject to merchant/store/terminal overrides; `200` OK has no device readback or propagation timing.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-terminalthemes-id]] — 2026-11-07-captured Management API v3 TEST PATCH for theme name and dark/light metadata; it does not describe asset edits or on-device application.
+
+
+- [[source-adyen-api-explorer-management-latest-delete-companies-companyid-terminalthemes-id-assets]] — 2026-11-07-captured Management API v3 TEST deletion of one company terminal-theme asset selected by theme, type and model; 204 confirms asset deletion without proving device application.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes-id-assets-replace]] — 2026-11-07-captured Management API v3 TEST reference for replacing an existing company theme asset matching screen type and terminal model; media and size gates apply, and a 200 asset URL does not prove terminal application.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes]] — 2026-11-07-captured Management API v3 TEST creation of company Android-terminal theme metadata (unique name and dark/light mode); model assets and application/activation follow separately, so a `201` does not prove on-device display.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalthemes-id]] — 2026-11-07-captured Management API v3 TEST read of a company terminal theme and 24-hour tokenized asset URLs; readback does not prove device application.
+
+> [!warning] Contradiction
+> The [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalthemes-id|theme GET reference]] introduction requires the Terminal themes read and write role, but its 403 example names Terminal settings read and write. The captured example does not settle the effective role requirement.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalthemes]] — 2026-11-07-captured Management API v3 TEST paged list of company and associated-merchant terminal-theme metadata; assets require a separate theme-detail GET, and listing does not prove on-device application.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-androidapps-id]] — 2026-11-07-captured Management API v3 TEST reference to reprocess an existing company Android app by ID; a successful request does not establish terminal deployment.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-androidcertificates]] — 2026-11-07-captured Management API v3 TEST company-scoped Android certificate upload reference; the response can identify the uploaded certificate, not its app or device deployment state.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-androidapps]] — 2026-11-07-captured Management API v3 TEST company-account Android APK upload reference, with a 200 MB limit, Android-files role and third-party-app liability notice; optional app ID readback does not prove processing or device installation.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-androidapps-id]] — 2026-11-07-captured Management API v3 TEST read of one uploaded company Android app's metadata and processing status; terminal installation is a separate action.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-androidcertificates]] — 2026-11-07-captured Management API `latest` v3 TEST company Android-certificate list with optional name/pagination filters and optional `data`; an uploaded-certificate listing is separate from terminal installation or app deployment.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-androidapps]] — 2026-11-07-captured Management API v3 TEST list of company-uploaded Android apps, with version/package filters and processing, error, invalid, ready or archived status; `ready` means signed and converted, while terminal installation uses separate actions.
+
+
 - [[source-adyen-docs-point-of-sale-user-manuals-s1u2-user-manual]] — S1U2 Android-terminal manual (2026-09-15 snapshot) for on-device software/menu, app-action and unattended kiosk context; physical setup and safety detail belongs in the source and [[adyen-payment-terminals]].
 
 

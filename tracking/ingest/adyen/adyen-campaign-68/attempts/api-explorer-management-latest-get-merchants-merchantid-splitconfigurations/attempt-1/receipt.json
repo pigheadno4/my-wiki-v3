@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-splitconfigurations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: list merchant split configuration profiles\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/2026-11-07.md\"\ntags: [adyen, management-api, platforms, split-configurations]\n---\n\n## Overview\n\nThis 2026-11-07 Management API `latest` reference describes `GET /merchants/{merchantId}/splitConfigurations` on the listed TEST `/v3` server. It lists split-configuration profiles for a merchant account. The response describes rules and their split logic; it is a configuration read, not a payment, capture, booking, settlement, or payout result. See [[adyen]] and [[adyen-automatic-split-configuration]].\n\n## Key takeaways\n\n- The required path `merchantId` uniquely identifies the merchant account. No query parameter or request body is listed. The API credential needs `Management API - SplitConfiguration read and write`.\n- `200` has optional `data`, described as split configurations applied to stores under the merchant account. Within a returned configuration object, `description` and `rules` are required, while `splitConfigurationId` is optional in the table. Each returned rule requires `currency`, `fundingSource`, `paymentMethod`, `shopperInteraction`, and `splitLogic`; `cardRegion`, `cardUsageType` (default `ANY`), and `ruleId` are optional. The response gives no store ID or per-store association field, so this list alone cannot identify which store uses which profile.\n- `204` is processed successfully with no content. Errors documented are `400`, `401`, `403`, `422`, and `500`. The `200` example illustrates nested commission, fee, remainder, tip and balance-account values inside `splitLogic`, but the response table does not define that object's child schema here; example values do not prove actual applied rules or transaction outcomes.\n\n> [!warning] Contradiction\n> The response table says rule `currency` must be a three-character ISO currency code (line 36), while the `200` example includes `\"currency\": \"ANY\"` (line 189). This snapshot does not resolve whether `ANY` is accepted for that field; do not infer validation from the example.\n\n## Detail locators\n\n- Purpose, role, TEST server and path ID: pinned raw lines 5\u201321.\n- `200` optional parent and nested rule schema, conditions, IDs and status: pinned raw lines 23\u201342.\n- `204` and error response shapes: pinned raw lines 45\u2013146. The illustrative `200` split-logic payload and conflicting `currency` value are at lines 148\u2013238.\n\n## Related\n\n- [[adyen-automatic-split-configuration]] \u2014 platform split configuration and booking context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/2026-11-07|2026-11-07 pinned merchant split configurations list reference]]",
+  "quotes": [
+    {
+      "text": "Returns the list of split configuration profiles for the merchant account.",
+      "location": "pinned raw line 7"
+    },
+    {
+      "text": "Management API - SplitConfiguration read and write",
+      "location": "pinned raw line 11"
+    },
+    {
+      "text": "List of split configurations applied to the stores under the merchant account.",
+      "location": "pinned raw line 31"
+    },
+    {
+      "text": "Its value must be a three-character [ISO currency code](https://en.wikipedia.org/wiki/ISO_4217).",
+      "location": "pinned raw line 36"
+    },
+    {
+      "text": "\"currency\": \"ANY\",",
+      "location": "pinned raw line 189"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-merchant-splitconfigurations-get-reciprocal",
+        "target_path": "wiki/concepts/adyen-automatic-split-configuration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-splitconfigurations]] \u2014 2026-11-07-captured Management API v3 TEST merchant profile list with optional `data`, rule conditions and split logic; it does not expose per-store association IDs or prove a financial outcome.\n\n> [!warning] Contradiction\n> The list response table requires a three-character ISO rule `currency`, but its `200` example uses `ANY`; the snapshot does not settle acceptance of that value. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-splitconfigurations]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Rule currency table versus example conflicts on ANY; preserve the warning alongside the reciprocal source route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/splitConfigurations/2026-11-07.md",
+  "raw_sha256": "2ac424fa65c722cebee9d736aaab3ec2bc4eb31f93f2331a906a4c8ad977cd14",
+  "status": "candidate_ready"
+}

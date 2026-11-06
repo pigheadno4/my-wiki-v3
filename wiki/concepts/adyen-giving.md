@@ -28,6 +28,24 @@ The captured Advanced-flow guide lists Web Components v5.0.0 or later and descri
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-nonprofits]] — 2026-11-07-captured Management API v3 TEST POST that lists nonprofits compatible with all supplied account holders for campaign selection; it does not create a nonprofit or campaign.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-campaignmanagement-donationcampaignid-status-status]] — 2026-11-07-captured Management API v3 TEST campaign status POST, allowing `activate` only from inactive or `end` only from active; the returned campaign state is separate from any donation outcome.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-campaignmanagement-donationcampaignid]] — 2026-11-07-captured Management API v3 Test donation-campaign properties PATCH; campaign status uses a separate POST route, incompatible account holders fail validation, and `200` campaign readback is not a donation outcome.
+
+
+- [[source-adyen-api-explorer-management-latest-delete-companies-companyid-campaignmanagement-donationcampaignid]] — 2026-11-07-captured Management API v3 TEST reference for deleting an inactive company donation campaign; its 503 says temporary campaign-management unavailability does not affect donations.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-campaignmanagement-accountholders-accountholderid]] — 2026-11-07-captured Management API v3 TEST list of an account holder's donation campaigns under a company, with optional status/pagination filters; a 503 limits campaign management for the account without affecting donations themselves, and readback is not a donation outcome.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-campaignmanagement]] — 2026-11-07-captured Management API v3 TEST company-path Giving campaign creation contract for online and in-person settings, nonprofit cause and returned campaign identity/status; creation is not activation or donation proof.
+
+
 - [[source-adyen-api-explorer-payment-latest-post-donate]] — 2026-09-15-captured inactive Payment API v68 `POST /donate` reference for scheduling a separate donation request from an original payment; its response acknowledges receipt for processing, not the donation outcome.
 
 

@@ -1,0 +1,9 @@
+# C68 terminal-theme metadata PATCH query answers
+
+## Q1
+
+`PATCH /companies/{companyId}/terminalThemes/{id}` is the captured Management API `latest` v3 TEST-server operation to update a terminal theme's name and dark/light mode metadata. Required path `companyId` identifies the company account and `id` identifies the theme. The credential needs `Management API - Terminal themes read and write`. Body `mode` is optional and accepts `dark` or `light`; body `name` is optional, typed `string,null`, and must be unique per account in the same company context. The reference does not specify null-name or empty-body effects, defaults, or size limits. A `200` returns required `id`, `name`, and `mode`. See [[source-adyen-api-explorer-management-latest-patch-companies-companyid-terminalthemes-id]] and [captured API reference](https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/terminalThemes/(id)), lines 5–50.
+
+## Q2
+
+A `200 OK` establishes a successful metadata update and readback of the theme's ID, name, and mode. This endpoint has no asset field, association field, or apply action; the response does not prove asset upload, terminal assignment, configuration propagation, on-device display, or payment readiness. The reference lists `400`, `401`, `403`, `404`, `422`, and `500` failures. Its `404` example describes a theme ID not found for the owner/company context; its `422` example describes a duplicate name. It gives no idempotency key, version/conflict guard, review/approval step, rollback, or propagation time. The shown server is test v3, and the 2026-11-07 snapshot cannot establish live account/device state or financial outcomes. See [[source-adyen-api-explorer-management-latest-patch-companies-companyid-terminalthemes-id]] and [captured API reference](https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/terminalThemes/(id)), lines 7–14, 25–74, and 76–170.

@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-clientcertificates",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: list valid company client certificates\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/clientCertificates\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/clientCertificates/2026-11-07.md\"\ntags: [adyen, management-api, client-certificates, mtls]\n---\n\n## Overview\n\nThis 2026-11-07 Management API `latest` reference describes `GET /companies/{companyId}/clientCertificates` on the listed TEST `/v3` server. It retrieves previously issued client certificates under the company account that are still valid, meaning neither expired nor revoked. It is a certificate inventory read, not enrollment, credential linking, or a successful mutual-TLS request. See [[adyen]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- `companyId` is the required company-path parameter; its table provides no additional description. The caller's API credential must have `Management API - Client certificates read`. No query parameter or request body is listed.\n- `200` means all valid client certificates were returned successfully. Its `data` array is marked required, and each listed item requires `caChain` (intermediates and Management Certificate Authority Root, excluding the leaf), unique `id`, Base64-encoded DER `leaf`, `serialNumber`, and server-generated `subjectDN` derived from `companyId` and `apiCredential`. The example certificate bytes and identity are illustrative.\n- Errors documented here are `401` for an invalid API credential, `403` for insufficient permission, `429` for rate-limit exceedance, and `500` for an unrecoverable server error. Listing a valid certificate does not show its private key, credential linkage, successful mTLS authentication, Live support, payment access, or current validity beyond the captured reference's semantics.\n\n## Detail locators\n\n- Purpose, read role, TEST server, path parameter: pinned raw lines 5\u201322.\n- `200` response and required certificate fields: pinned raw lines 24\u201337.\n- Error shapes: pinned raw lines 40\u2013113. Illustrative `200` certificate payload: lines 115\u2013134.\n\n## Related\n\n- [[adyen-api-access]] \u2014 credential and mTLS access context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/clientCertificates/2026-11-07|2026-11-07 pinned company client certificates list reference]]",
+  "quotes": [
+    {
+      "text": "Retrieve all previously issued client certificates under this company account which are still valid (neither expired nor revoked).",
+      "location": "pinned raw line 8"
+    },
+    {
+      "text": "Management API - Client certificates read",
+      "location": "pinned raw line 12"
+    },
+    {
+      "text": "All valid client certificates were returned successfully.",
+      "location": "pinned raw line 27"
+    },
+    {
+      "text": "Certificate chain with intermediates and Management Certificate Authority Root which excludes the signed client certificate leaf",
+      "location": "pinned raw line 33"
+    },
+    {
+      "text": "Subject DN (Distinguished Name) of client certificate. Server-generated from `companyId` and `apiCredential`; see the enroll operation for details.",
+      "location": "pinned raw line 37"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c68-company-clientcertificates-get-reciprocal",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-clientcertificates]] \u2014 2026-11-07-captured Management API v3 TEST list of company client certificates that are neither expired nor revoked; inventory readback does not establish credential linkage or successful mTLS authentication.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/clientCertificates/2026-11-07.md",
+  "raw_sha256": "28dd6e2d52fcc446778f7cac887982e70e22fecfb688078e2f5dc125d6dc2fdb",
+  "status": "candidate_ready"
+}
