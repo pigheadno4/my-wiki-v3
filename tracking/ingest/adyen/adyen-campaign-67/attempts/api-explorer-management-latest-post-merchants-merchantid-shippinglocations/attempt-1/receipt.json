@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-shippinglocations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create a merchant shipping location | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/shippingLocations\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/shippingLocations/2026-11-05.md\"\ntags: [adyen, management-api, shipping-locations, terminal-ordering]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference describes `POST /merchants/{merchantId}/shippingLocations`, which creates a shipping-location address under the merchant account identified by required `merchantId`. The location's ID can later serve as `shippingLocationId` when creating an order; this POST is not an order. The listed server is TEST `https://management-test.adyen.com/v3`. The caller's API credential needs **Management API\u2014Terminal ordering read and write**. The page says Live requests are rate-limited without giving a number. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- The request table marks `address`, `contact`, `id` and unique `name` optional, along with their listed nested fields. It does not separately declare whole-body requiredness, defaults or idempotency behavior. `country` is an ISO 3166-1 alpha-2 code; `stateOrProvince` uses ISO 3166-2 for the listed countries. The `contact.phoneNumber` table specifies 10\u201314 digits and an optional `+` prefix.\n- `200` says the request succeeded. Its response table marks `id`, `name`, `address` and `contact` optional; the example has a location ID but does not establish an always-present response field. `204` says successfully processed with no additional content. Neither result demonstrates creation of a later order, stock allocation, shipment or receipt.\n- The page lists `400`, `401`, `403`, `422` and `500` errors. Its generic error `requestId` description mentions `pspReference`, but the operation is location configuration rather than a payment. The snapshot states no propagation, deletion/reversal or order-approval contract.\n\n> [!warning] Contradiction\n> The request table describes `contact.phoneNumber` as 10\u201314 digits with an optional `+` prefix, but its request example uses `+34 93 1234567` with spaces. The response example instead uses `+34931234567`. The examples do not establish whether spaced input is accepted or normalized.\n\n## Detail locators\n\n- Raw lines 5\u201344: purpose, role, Live rate-limit caveat, TEST server, merchant path and request fields.\n- Raw lines 46\u201395: illustrative request, `200` response schema and `204` no-content result.\n- Raw lines 98\u2013195: documented errors and schemas; lines 197\u2013220: illustrative `200` response.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal ordering and fleet administration.\n- [[source-adyen-docs-point-of-sale-automating-terminal-management-order-terminals-api]] \u2014 separate order-creation guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/shippingLocations/2026-11-05|2026-11-05 merchant shipping-location creation reference]]",
+  "quotes": [
+    {
+      "text": "Creates a shipping location for the merchant account identified in the path. A shipping location defines an address where orders can be shipped to.",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API\u2014Terminal ordering read and write",
+      "location": "line 11"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "line 13"
+    },
+    {
+      "text": "| id | string | No | The unique identifier of the shipping location, for use as `shippingLocationId` when creating an order. |",
+      "location": "line 43"
+    },
+    {
+      "text": "The request has been successfully processed, but there is no additional content.",
+      "location": "line 95"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-w41-terminal-shipping-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-shippinglocations]] \u2014 2026-11-05-captured Management API v3 TEST merchant shipping-location creation for later terminal orders, requiring Terminal ordering read/write; 200/204 is not order or delivery proof.\n\n> [!warning] Contradiction\n> The phone-number table specifies 10\u201314 digits with an optional `+` prefix, but the request example has spaces and the response example omits them. The capture does not settle acceptance or normalization. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-shippinglocations]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Phone-number table conflicts with spaced request example; response example removes spaces."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/shippingLocations/2026-11-05.md",
+  "raw_sha256": "00f905de272629a70e55a47a5794177fc167e52da9460d3ff0c3044e65deeacc",
+  "status": "candidate_ready"
+}

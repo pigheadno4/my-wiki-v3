@@ -16,6 +16,66 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks]] — 2026-11-05-captured Management API v3 TEST paged read of merchant webhook configurations, excluding parent-company configurations; listed `active` state and test/HMAC links are not delivery or payment proof.
+
+> [!warning] Contradiction
+> This reference lists a TEST `/v3` server, but its `200` example pagination and webhook resource links use `/v1`. The snapshot does not resolve the versioned or Live routes. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-test]] — 2026-11-05-captured Management API v3 TEST merchant webhook test reference: chosen sample event codes, optional custom notification, per-test receiver response/status, and separate 204 no-content success. A test result is not a real payment or production delivery result.
+
+> [!warning] Contradiction
+> The custom request example has HUF amount value `1000`, while its response example's sent notification has HUF value `100`; do not infer exact amount echo from those examples. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-test]]
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-webhooks-webhookid]] — 2026-11-05-captured Management API v3 test PATCH reference for changing one merchant webhook configuration, with 200 full-config or 204 no-content success; the sample response uses v1 links, and update success is not delivery or payment proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks-webhookid]] — 2026-11-05-captured Management API v3 TEST read of a merchant webhook configuration, including active/error flags and delivery settings; readback does not prove event delivery. Its 200 example links use `/v1` despite the listed `/v3` server.
+
+> [!warning] Contradiction
+> This endpoint lists a TEST `/v3` server, while its 200 example's webhook action links use `/v1`; the example does not resolve the correct action-link version. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks-webhookid]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-generatehmac]] — 2026-11-05-captured Management API `latest` Test v3 reference for generating an HMAC key on a merchant-account webhook; 200 returns a key, while 204 has no content, and generation does not prove delivery or verification.
+
+
+- [[source-adyen-api-explorer-management-latest-delete-merchants-merchantid-webhooks-webhookid]] — 2026-11-05-captured Management API v3 TEST DELETE of a merchant-path webhook configuration, requiring Webhooks read and write; `204` gives no resource readback or delivery/propagation proof.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-webhooks]] — 2026-11-05-captured Management API v3 TEST merchant webhook-configuration POST, requiring Webhooks read/write; `active: true` is necessary for sending, while 200/204 is not delivery or payment proof.
+
+> [!warning] Contradiction
+> This POST lists a TEST `/v3` server but `/v1` links in its 200 example. Its request type list includes `rreq-notification` while its response list instead includes `terminal-api-notification`. The snapshot does not resolve either difference. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-webhooks]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-webhooks]] — 2026-11-05-captured Management API v3 Test company-webhook creation reference for role-gated configuration, merchant filtering, and notification destination; a successful configuration response does not prove delivery or payment outcome.
+
+> [!warning] Contradiction
+> This operation lists a Test `/v3` server, but its `200` example resource links use `/v1`. Its request `type` options also omit `terminal-api-notification`, which appears in the response options. The snapshot does not reconcile these differences. [[source-adyen-api-explorer-management-latest-post-companies-companyid-webhooks]]
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-webhooks-webhookid-test]] — 2026-11-05-captured Management API v3 TEST company webhook test endpoint; up to 20 merchant accounts, per-notification receiver response results, and no real payment or live-delivery proof.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-webhooks-webhookid-generatehmac]] — 2026-11-05-captured Management API v3 TEST reference for generating an HMAC key on a company webhook configuration; generation starts signed notifications but does not prove receipt or signature verification.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-webhooks-webhookid]] — 2026-11-05-captured Management API v3 TEST GET for a company-path webhook configuration; required Webhooks read or read/write role, configuration status and related operation links do not prove delivery or a payment outcome.
+
+> [!warning] Contradiction
+> This reference lists a TEST `/v3` server, while its `200` example resource links use `/v1`; the sample does not resolve the current route. [[source-adyen-api-explorer-management-latest-get-companies-companyid-webhooks-webhookid]]
+
+
+- [[source-adyen-api-explorer-management-latest-delete-companies-companyid-webhooks-webhookid]] — 2026-11-05-captured Management API v3 TEST DELETE reference for removing a company webhook configuration by company and webhook IDs; HTTP 204 is the documented success status, not event delivery proof.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-webhooks-webhookid]] — 2026-11-05-captured Management API `latest` company-webhook PATCH reference for configuration updates and full-config readback on the listed Test v3 server; its example action links use v1 paths and readback does not prove delivery.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-webhooks]] — 2026-11-05-captured Management API v3 test GET reference for paginated company webhook configurations, roles and response fields; the 200 example contains v1 links, and readback is not delivery or payment proof.
+
+
 - [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-balanceplatformid-webhooks-webhookid-settings]] — 2026-11-02-captured Balance Platform API v2 TEST read of one webhook's balance-alert settings; the source flags unresolved any-versus-all condition wording and an anomalous 404 payment description. Readback does not prove event delivery or balance movement.
 
 

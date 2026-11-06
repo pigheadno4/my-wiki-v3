@@ -1,0 +1,9 @@
+# C67 api-explorer-management-latest-delete-companies-companyid-webhooks-webhookid — original query answers
+
+## Q1
+
+The 2026-11-05 captured **Management API v3** reference describes `DELETE /companies/{companyId}/webhooks/{webhookId}` to remove the webhook configuration identified in the path. Its listed server is TEST, `https://management-test.adyen.com/v3`; no live server is shown. The caller needs an API credential with **Management API—Webhooks read and write**. Both `companyId` (company account) and `webhookId` (webhook configuration) are required string path parameters. The page lists no query or request body, defaults, limits, or conditional fields. It documents HTTP `204` success with no success response body. See [[source-adyen-api-explorer-management-latest-delete-companies-companyid-webhooks-webhookid]], [pinned reference](https://docs.adyen.com/api-explorer/Management/latest/delete/companies/(companyId)/webhooks/(webhookId)), raw lines 5–27.
+
+## Q2
+
+The page says to inspect the actual response code for request status; its documented `204` indicates success for the **configuration removal request**, with no returned resource or state to infer beyond that contract. It lists `400` malformed/unreadable request, `401` authentication required, `403` insufficient permissions, `422` validation error, and `500` server processing error, each with a problem response schema. It specifies no idempotency, propagation or asynchronous review/approval/activation timing, reversal, version conflict, or payment outcome. The TEST v3 snapshot captured on 2026-11-05 is not evidence of live availability, current account eligibility, webhook delivery, compliance, authorization, settlement, or receipt of funds. See [[source-adyen-api-explorer-management-latest-delete-companies-companyid-webhooks-webhookid]], [pinned reference](https://docs.adyen.com/api-explorer/Management/latest/delete/companies/(companyId)/webhooks/(webhookId)), raw lines 24–127.

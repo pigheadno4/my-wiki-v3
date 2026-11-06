@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-generatehmac",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: Generate an HMAC key for a merchant webhook\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/generateHmac\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/generateHmac/2026-11-05.md\"\ntags: [adyen, management-api, webhooks, hmac]\n---\n\n## Overview\n\nThis [[adyen]] Management API `latest` reference, captured 2026-11-05, documents `POST /merchants/{merchantId}/webhooks/{webhookId}/generateHmac`. It generates an HMAC key for the identified merchant-account webhook so received notifications can be checked for integrity and origin. The page says creating the key starts HMAC-signed notifications. Its only listed server is `https://management-test.adyen.com/v3`; no Live server is listed here.\n\n## Key takeaways\n\n- The caller's API credential must have the **Management API\u2014Webhooks read and write** role. Both path parameters are required: `merchantId` is the merchant-account identifier and `webhookId` identifies the target webhook. The captured reference lists no request body, query parameters, idempotency header, rate/size limit, or default.\n- A `200` means the request succeeded and has a response body with required `hmacKey`. A `204` also means successful processing but has no additional content; do not assume a key is returned for that response. The example key is illustrative and is not a usable credential to copy.\n- Generating a key and starting signed notifications do not prove that a notification was delivered or that a receiver verified its signature. The separate [[source-adyen-docs-development-resources-webhooks-secure-webhooks-verify-hmac-signatures|HMAC verification guide]] documents endpoint-specific and Test-versus-Live key scope plus replacement-key propagation, but those operational details are separate from this API reference.\n- The page documents 400, 401, 403, 422 and 500 error responses. It does not specify retry, reversal or key-rotation timing for this endpoint. No payment, settlement, account eligibility or compliance outcome follows from key generation.\n\n## Detail locators\n\n- Purpose, signed-notification statement, role and captured Test server: opening text and `## Servers`, lines 5-14.\n- Required merchant and webhook path identities; no other input section appears: `## Parameters`, lines 16-22.\n- Success response alternatives and required `hmacKey` only for the 200 body: `### 200 Success` and `### 204 Success`, lines 24-36.\n- Error meanings and shared problem-body schema: `### 400 Client Error` (lines 39-56), `### 401 Client Error` (59-76), `### 403 Client Error` (79-96), `### 422 Client Error` (99-116), and `### 500 Server Error` (119-136).\n- Illustrative returned-key value: `## Response examples`, lines 138-147.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-webhooks]]\n- Separate HMAC verification and replacement-key guidance: [[source-adyen-docs-development-resources-webhooks-secure-webhooks-verify-hmac-signatures]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/generateHmac/2026-11-05|Adyen Management API \u2014 Generate merchant webhook HMAC key (2026-11-05)]]\n",
+  "quotes": [
+    {
+      "text": "Returns an [HMAC key](https://en.wikipedia.org/wiki/HMAC) for the webhook identified in the path. This key allows you to check the integrity and the origin of the notifications you receive.By creating an HMAC key, you start receiving [HMAC-signed notifications](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures#enable-hmac-signatures) from Adyen.",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API\u2014Webhooks read and write",
+      "location": "line 11"
+    },
+    {
+      "text": "- https://management-test.adyen.com/v3",
+      "location": "line 14"
+    },
+    {
+      "text": "| hmacKey | string | Yes | The HMAC key generated for this webhook. |",
+      "location": "line 32"
+    },
+    {
+      "text": "The request has been successfully processed, but there is no additional content.",
+      "location": "line 36"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-merchant-webhook-generatehmac-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-generatehmac]] \u2014 2026-11-05-captured Management API `latest` Test v3 reference for generating an HMAC key on a merchant-account webhook; 200 returns a key, while 204 has no content, and generation does not prove delivery or verification.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/generateHmac/2026-11-05.md",
+  "raw_sha256": "5086197aa683193180b983262f78ca43286f0c0555fe95fe44fe24260e24f5a0",
+  "status": "candidate_ready"
+}

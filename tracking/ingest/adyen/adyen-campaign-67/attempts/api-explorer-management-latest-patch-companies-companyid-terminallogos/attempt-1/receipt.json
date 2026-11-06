@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-patch-companies-companyid-terminallogos",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Update a company terminal logo | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/terminalLogos\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/companies/(companyId)/terminalLogos/2026-11-05.md\"\ntags: [adyen, management-api, terminal-settings, terminal-logos, point-of-sale]\n---\n\n## Overview\n\nThis [[adyen]] Management API `latest` reference, captured 2026-11-05, describes `PATCH /companies/{companyId}/terminalLogos`: update the company-level logo for one payment terminal model at a time. The logo applies to terminals of that model under the company unless a merchant-account, store or individual-terminal logo overrides it. The listed server is TEST `https://management-test.adyen.com/v3`; the caller's API credential needs `Management API\u2014Terminal settings read and write`. Live calls are rate limited, with no numeric limit stated here. See [[adyen-terminal-management]] for configuration scope and [[adyen-api-access]] for credential scope.\n\n## Key takeaways\n\n- Required path string `companyId` identifies the company account. Required query string `model` selects one terminal model; the raw lists its possible values. The request body table marks `data` optional, while the prose says to provide a Base64-encoded image string to change the logo or an empty logo value to restore the logo inherited from Adyen PSP level. The examples show both `{\"data\": \"\"}` and encoded image data. Do not interpret omitted `data` as removal; that behavior is not specified. [Raw: lines 5\u201312, 23\u201356]\n- The `200` response marks the request successful and has an optional `data` string for image data. The remove-logo response example contains an inherited higher-level Base64 string; it is illustrative and does not establish a universal returned value. [Raw: lines 57\u201365, 167\u2013182]\n- Company-level update scope is qualified by lower-level overrides. A `200` configuration response does not prove that every terminal displays the logo, that device settings have propagated, or that a payment is ready or completed. The capture gives no propagation delay, per-device confirmation, idempotency or automatic rollback/reversal rule. [Raw: lines 5\u201312, 57\u201365]\n- The documented failures are `400` request interpretation, `403` insufficient permission, `422` validation and `500` server processing, each with a problem-detail response schema. This page does not list a `401` response. [Raw: lines 68\u2013165]\n\n## Detail locators\n\n- Purpose, inheritance/override, change/restore instructions, role, Live rate-limit notice and TEST server: pinned raw lines 5\u201321.\n- Required path/query inputs, model list, optional body field and request examples: pinned raw lines 23\u201356.\n- `200` response field and error categories/schemas: pinned raw lines 57\u2013165.\n- Illustrative remove/upload response examples: pinned raw lines 167\u2013182.\n- This dated `latest` capture does not establish present account eligibility, current Live endpoint/rate, on-device application, compliance or financial outcome.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/companies/(companyId)/terminalLogos/2026-11-05|Management API company terminal-logo PATCH \u2014 captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "You can update the logo for only one terminal model at a time.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "This logo applies to all terminals of the specified model under the company, unless a different logo is configured at a lower level (merchant account, store, or individual terminal).",
+      "location": "raw line 8"
+    },
+    {
+      "text": "To restore the logo inherited from the Adyen PSP level, specify an empty logo value.",
+      "location": "raw line 12"
+    },
+    {
+      "text": "- Management API\u2014Terminal settings read and write",
+      "location": "raw line 16"
+    },
+    {
+      "text": "| model | string | Yes | The terminal model.",
+      "location": "raw line 34"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-company-terminal-logo-patch-reciprocal",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-terminallogos]] \u2014 2026-11-05-captured Management API v3 TEST PATCH for one company terminal model's logo; lower-level logos can override it, empty image data restores PSP inheritance, and `200` readback does not prove on-device application.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/companies/(companyId)/terminalLogos/2026-11-05.md",
+  "raw_sha256": "2c3fb1cdb91aeac1db1c2b3bf4c3d3d6af119ad8cb2440c32471c4926ef9282b",
+  "status": "candidate_ready"
+}

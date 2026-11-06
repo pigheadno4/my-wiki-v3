@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-webhooks-webhookid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: get a merchant webhook configuration\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks/(webhookId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks/(webhookId)/2026-11-05.md\"\ntags: [adyen, management-api, webhooks, configuration]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference documents `GET /merchants/{merchantId}/webhooks/{webhookId}`, which reads the path-identified webhook configuration for a merchant account. The caller's API credential needs either `Management API\u2014Webhooks read` or `Management API\u2014Webhooks read and write`. The only listed server is TEST `https://management-test.adyen.com/v3`; this capture does not establish a Live endpoint or current account access. A configuration readback does not prove webhook delivery, event receipt, payment authorization, or settlement. [[adyen]] [[adyen-webhooks]]\n\n> [!warning] Contradiction\n> The reference lists a TEST `/v3` server, but the 200 response example's `self`, `generateHmac`, `merchant`, and `testWebhook` links all use `/v1`. The example does not resolve which action-link version should be used.\n\n## Key takeaways\n\n- Required string path parameters are `merchantId`, the merchant account ID, and `webhookId`, the webhook configuration ID. No query parameters or request body are listed (raw lines 18\u201324).\n- HTTP 200 returns the configuration schema. Required response fields include `active`, `communicationFormat`, `type`, and public `url`; within optional `_links`, `generateHmac`, `self`, and `testWebhook` are marked required. The account-level `company` and `merchant` links are optional and qualified by webhook level (raw lines 28\u201344, 49, 55, 66\u201367).\n- `active: true` is required to receive webhooks about account events, but its readback does not demonstrate successful delivery. Optional `hasError` flags configuration problems; optional `hmacKeyCheckValue` identifies the configured key by checksum, not its secret (raw lines 49, 60\u201363).\n- The response schema describes certificate-acceptance flags defaulting to `false`; `encryptionProtocol` allows `HTTP` only in Test and otherwise defaults to `TLSv1.2` when unspecified. For company-level filtering, `filterMerchantAccounts` is required when `filterMerchantAccountType` is `includeAccounts` or `excludeAccounts`, but not for `allAccounts` (raw lines 45\u201347, 57\u201359). These are schema descriptions, not an assertion that every field appears in a given response.\n- The reference also lists HTTP 204 with no additional content and 400, 401, 403, 422, and 500 errors. A 204 has no configuration readback (raw lines 71\u2013172).\n\n## Detail locators\n\n- Purpose, role and TEST server: raw lines 5\u201316; path IDs: lines 18\u201324.\n- Complete 200 response field schema, including additional settings, protocol, filters, types, URL and optional IDs: raw lines 28\u201368.\n- 204 and error-body schemas: raw lines 71\u2013172.\n- Illustrative 200 response and v1 action links: raw lines 174\u2013275. Example values do not establish defaults or Live behavior.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks/(webhookId)/2026-11-05|Management API GET merchant webhook configuration, captured 2026-11-05]]\n",
+  "quotes": [
+    {
+      "text": "Returns the configuration for the webhook identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- Management API\u2014Webhooks read",
+      "location": "raw line 11"
+    },
+    {
+      "text": "- https://management-test.adyen.com/v3",
+      "location": "raw line 16"
+    },
+    {
+      "text": "| active | boolean | Yes | Indicates if the webhook configuration is active. The field must be **true** for you to receive webhooks about events related an account. |",
+      "location": "raw line 49"
+    },
+    {
+      "text": "      \"href\": \"https://management-test.adyen.com/v1/merchants/YOUR_MERCHANT_ACCOUNT/webhooks/S2-3E5E42476641\"",
+      "location": "raw line 262"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-api-explorer-management-latest-get-merchants-merchantid-webhooks-webhookid-webhooks-link",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks-webhookid]] \u2014 2026-11-05-captured Management API v3 TEST read of a merchant webhook configuration, including active/error flags and delivery settings; readback does not prove event delivery. Its 200 example links use `/v1` despite the listed `/v3` server.\n\n> [!warning] Contradiction\n> This endpoint lists a TEST `/v3` server, while its 200 example's webhook action links use `/v1`; the example does not resolve the correct action-link version. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks-webhookid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "TEST v3 server conflicts with v1 action links in the 200 example; retain the warning in source and concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks/(webhookId)/2026-11-05.md",
+  "raw_sha256": "bd992bb123cbd4d2d283a8676c6e2f9071eee2ece1cf7bd3febfb40dee981b7f",
+  "status": "candidate_ready"
+}

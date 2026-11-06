@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-terminalorders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: list company terminal orders\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/terminalOrders\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalOrders/2026-11-05.md\"\ntags: [adyen, management-api, terminal-orders, company-accounts]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference documents `GET /companies/{companyId}/terminalOrders`, a filtered list of terminal-product orders for the path-identified company account. The caller needs either `Management API\u2014Terminal ordering read` or `Management API\u2014Terminal ordering read and write`. The only listed server is TEST `https://management-test.adyen.com/v3`; the page notes Live rate limits without giving a numeric value. An order-list readback is not proof of delivery, terminal boarding, payment readiness, or a financial outcome. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- Required string `companyId` identifies the company account. Optional query filters are integer `limit` (orders to return), integer `offset` (orders to skip), case-insensitive `status` with Placed, Confirmed, Cancelled, Shipped, or Delivered values, and `customerOrderReference` (merchant purchase-order number). No bounds or defaults are specified for limit/offset (raw lines 21\u201335).\n- HTTP 200 returns an optional `data` array of terminal-package and part orders. Each order can include `id`, `customerOrderReference`, `orderDate`, processing `status`, carrier `trackingUrl`, product `items`, `billingEntity`, and `shippingLocation`; all are schema-marked optional. Billing entity, shipping location, product and order IDs are distinct references (raw lines 39\u201366).\n- The example contains one Placed and one Cancelled order with illustrative addresses, products and quantities; it does not establish shipping or billing status for a real order (raw lines 168\u2013260).\n- The reference lists 400, 401, 403, 422 and 500 error schemas. It does not document an idempotency, mutation, reversal, or delivery-confirmation contract for this GET (raw lines 69\u2013166).\n\n## Detail locators\n\n- Purpose, caller roles, Live rate-limit qualification and TEST server: raw lines 5\u201319.\n- Path and query fields: raw lines 21\u201335; complete 200 order schema: lines 39\u201366.\n- Error schemas: raw lines 69\u2013166; illustrative 200 response: lines 168\u2013260.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalOrders/2026-11-05|Management API company terminal-order list, captured 2026-11-05]]\n",
+  "quotes": [
+    {
+      "text": "Returns a lists of terminal products orders for the company identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- Management API\u2014Terminal ordering read",
+      "location": "raw line 12"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "raw line 16"
+    },
+    {
+      "text": "| status | string | No | The order status. Possible values (not case-sensitive): Placed, Confirmed, Cancelled, Shipped, Delivered. |",
+      "location": "raw line 34"
+    },
+    {
+      "text": "| data | array of object | No | List of orders for payment terminal packages and parts. |",
+      "location": "raw line 45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-api-explorer-management-latest-get-companies-companyid-terminalorders-terminal-management-link",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalorders]] \u2014 2026-11-05-captured Management API v3 TEST company terminal-order list with status/reference filters and optional order data; readback does not prove shipment delivery, device boarding, or payment readiness.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalOrders/2026-11-05.md",
+  "raw_sha256": "b1953b7836b4db8679fb308b93f31c9ce7b52897a44a3ca1d00fc459bd031973",
+  "status": "candidate_ready"
+}

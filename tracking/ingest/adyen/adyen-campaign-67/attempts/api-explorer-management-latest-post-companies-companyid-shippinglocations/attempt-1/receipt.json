@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-shippinglocations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create a company shipping location | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/shippingLocations\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/shippingLocations/2026-11-05.md\"\ntags: [adyen, management-api, shipping-locations, terminal-ordering]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference describes `POST /companies/{companyId}/shippingLocations`, which creates a delivery-address record for the company identified by the required `companyId` path parameter. A shipping location can later be referenced as `shippingLocationId` when creating an order; this POST does not itself place or deliver an order. The listed server is TEST `https://management-test.adyen.com/v3`. The caller's API credential needs **Management API\u2014Terminal ordering read and write**. The page says Live requests are rate-limited without stating a numerical limit. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- The request-body table marks `address`, `contact`, `id` and `name` optional; all listed children of those optional objects are also marked optional. It does not independently declare whole-body requiredness or an idempotency rule. `name` is described as unique, `country` as an ISO 3166-1 alpha-2 code and `stateOrProvince` as ISO 3166-2 for the specified countries. The `contact.phoneNumber` table says 10\u201314 digits with an optional `+` prefix.\n- `200` says the request succeeded. Its response table offers `id`, `name`, `address` and `contact`, all marked optional, and describes `id` as the later order's `shippingLocationId`. The example includes an ID, but the schema does not guarantee one in every shown body. Creation does not prove order creation, stock allocation, shipment or receipt.\n- Listed errors are `400`, `401`, `403`, `422` and `500`. The generic error `requestId` description invokes `pspReference`, but this is a shipping-location configuration request, not a payment. The snapshot does not state later propagation, deletion/reversal or order-approval behavior.\n\n> [!warning] Contradiction\n> The request and response tables describe `contact.phoneNumber` as 10\u201314 digits with only an optional `+` prefix, but both examples use `+31 020 1234567` with spaces. The examples do not resolve whether spaces are accepted by validation.\n\n## Detail locators\n\n- Raw lines 5\u201344: purpose, credential role, Live rate-limit caveat, TEST server, company path and request-property table.\n- Raw lines 46\u201391: illustrative request, `200` result and response schema.\n- Raw lines 94\u2013191: error cases and bodies; lines 193\u2013215: illustrative `200` response.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal-ordering and fleet administration context.\n- [[source-adyen-docs-point-of-sale-automating-terminal-management-order-terminals-api]] \u2014 separate order-creation guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/shippingLocations/2026-11-05|2026-11-05 company shipping-location creation reference]]",
+  "quotes": [
+    {
+      "text": "Creates a shipping location for the company identified in the path. A shipping location defines an address where orders can be delivered.",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API\u2014Terminal ordering read and write",
+      "location": "line 11"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "line 13"
+    },
+    {
+      "text": "| id | string | No | The unique identifier of the shipping location, for use as `shippingLocationId` when creating an order. |",
+      "location": "line 43"
+    },
+    {
+      "text": "|   - phoneNumber | string | No | The individual's phone number, specified as 10-14 digits with an optional `+` prefix. |",
+      "location": "line 42"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-w31-terminal-shipping-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-shippinglocations]] \u2014 2026-11-05-captured Management API v3 TEST company shipping-location creation for later terminal orders, requiring Terminal ordering read/write; Live rate limits are noted, and location creation is not order or delivery proof.\n\n> [!warning] Contradiction\n> This reference describes contact phone numbers as 10\u201314 digits with an optional `+` prefix, but its request and response examples include spaces. The example does not settle validation. [[source-adyen-api-explorer-management-latest-post-companies-companyid-shippinglocations]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Phone-number schema says digits and optional plus, while examples contain spaces."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/shippingLocations/2026-11-05.md",
+  "raw_sha256": "58d58884c206749fe239d54453982b4226e2b25e7b19a8f41bcbca29c47c0fdc",
+  "status": "candidate_ready"
+}

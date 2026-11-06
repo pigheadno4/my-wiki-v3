@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-paymentmethodsettings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: List merchant payment method settings\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/2026-11-05.md\"\ntags: [adyen, management-api, payment-methods, merchant-accounts]\n---\n\n## Overview\n\nThe captured Management API `GET /merchants/{merchantId}/paymentMethodSettings` returns details for the merchant account's payment methods. The pinned reference lists the v3 TEST server `https://management-test.adyen.com/v3` and requires an API credential with the Management API\u2014Payment methods read role. The required path `merchantId` identifies the merchant account. See [[adyen]] and [[adyen-payment-method-variants]].\n\n## Key takeaways\n\n- Optional query filters are `businessLineId` and `storeId`; optional `pageNumber` and `pageSize` control pagination. `pageSize` defaults to 10 and has a maximum of 100.\n- A 200 response has optional `data` entries and pagination `_links`, with required top-level `itemsTotal` and `pagesTotal`. Each returned method has a required resource `id`; optional fields include `type` (variant), `enabled`, `allowed`, `verificationStatus`, `businessLineId`, `storeIds`, countries/currencies and method-specific settings. The reference says `allowed` becomes true after Adyen screens the merchant account; `verificationStatus` can be `valid`, `pending`, `invalid` or `rejected`. `typesWithErrors` can identify methods not successfully requested.\n- The readback is configuration and status evidence for the returned scope and snapshot. An `enabled` flag alone is not the same as Adyen's `allowed` screening flag or a `valid` verification status, and this endpoint does not itself execute a payment or establish live acceptance, capture, settlement or compliance.\n- The reference also lists 204 with no content; 400, 401, 403, 422, 429 and 500 errors. No request body, mutation, idempotency key or activation transition is documented for this GET.\n\n## Detail locators\n\n- Purpose, credential role, TEST server, path and query parameters: raw lines 5\u201330.\n- Pagination, payment-method result fields and method-specific settings: raw lines 32\u2013205. See especially `allowed` (line 62), `enabled` (104), resource `id` (115), `type` (185), `verificationStatus` (191), totals and `typesWithErrors` (203\u2013205).\n- Success and error response schemas: raw lines 208\u2013328.\n\n## Related\n\n- [[adyen-payment-method-variants]]\n- [[adyen-api-access]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/2026-11-05|Adyen Management API merchant payment method settings list, captured 2026-11-05]]\n",
+  "quotes": [
+    {
+      "text": "Returns details for all payment methods of the merchant account identified in the path.",
+      "location": "line 7"
+    },
+    {
+      "text": "The number of items to have on a page, maximum 100. The default is 10 items on a page.",
+      "location": "line 28"
+    },
+    {
+      "text": "Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account.",
+      "location": "line 62"
+    },
+    {
+      "text": "|   - id | string | Yes | The identifier of the resource. |",
+      "location": "line 115"
+    },
+    {
+      "text": "Payment method status. Possible values:  - **valid**  - **pending**  - **invalid**  - **rejected**",
+      "location": "line 191"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-merchant-paymentmethod-list-route",
+        "target_path": "wiki/concepts/adyen-payment-method-variants.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-paymentmethodsettings]] \u2014 2026-11-05-captured Management API v3 TEST merchant payment-method settings list, with pagination, variant and separate enabled, allowed and verification fields.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/2026-11-05.md",
+  "raw_sha256": "75ee7d65a284b03c990d5d6cf46efa1fbc99135a23ff6da025dc1e02e32d92b4",
+  "status": "candidate_ready"
+}

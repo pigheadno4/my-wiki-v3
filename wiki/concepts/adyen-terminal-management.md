@@ -15,6 +15,96 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-terminallogos]] — 2026-11-05-captured Management API v3 TEST PATCH for one company terminal model's logo; lower-level logos can override it, empty image data restores PSP inheritance, and `200` readback does not prove on-device application.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-terminalsettings]] — 2026-11-05-captured Management API v3 TEST company terminal-settings PATCH: lower-level overrides, full-containing-object changes and PSP-inheritance reset rules; 200 does not prove on-device application or payment execution.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminallogos]] — 2026-11-05-captured Management API v3 Test read of a company-level terminal logo by model; optional Base64 `data` is subject to merchant/store/terminal overrides and does not prove on-device display.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalproducts]] — 2026-11-05-captured Management API v3 TEST merchant-account terminal-product catalog read, with required country and ordering role; listing is separate from ordering and device readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalsettings]] — 2026-11-05-captured Management API v3 TEST read of company terminal settings, with lower-level override scope and an additional Advanced role for sensitive settings; readback does not prove effective on-device configuration or payment readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalorders-orderid-cancel]] — 2026-11-05-captured Management API v3 TEST merchant-path terminal-products-order cancellation, limited to `Placed` orders; `200` describes `Cancelled` order readback, while `204` has no content, and neither proves shipment, refund or device readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-terminalorders-orderid]] — 2026-11-05-captured Management API v3 TEST PATCH for a merchant terminal products order: Placed-only updates, complete replacement when changing items, and 200 order detail or 204 no-content success; neither establishes shipment or device readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalorders]] — 2026-11-05-captured Management API v3 TEST merchant terminal-order list with status/reference filters, optional order data, and a 204 no-content response; readback does not prove delivery, boarding, or payment readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalorders-orderid]] — 2026-11-05-captured Management API `latest` Test v3 merchant terminal-order read: 200 order details or 204 with no content; optional order status and tracking fields are not delivery or device-readiness proof.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalorders]] — 2026-11-05-captured Management API v3 test merchant terminal-product order reference with 200 representation or 204 no-content success; test calls create no actual test-terminal orders, and a returned order is not shipment, boarding or payment proof.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-shippinglocations]] — 2026-11-05-captured Management API v3 TEST merchant shipping-location creation for later terminal orders, requiring Terminal ordering read/write; 200/204 is not order or delivery proof.
+
+> [!warning] Contradiction
+> The phone-number table specifies 10–14 digits with an optional `+` prefix, but the request example has spaces and the response example omits them. The capture does not settle acceptance or normalization. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-shippinglocations]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-shippinglocations]] — 2026-11-05-captured Management API v3 TEST merchant shipping-location list for terminal orders, with live rate-limit qualification; readback does not place or deliver an order.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-billingentities]] — 2026-11-05-captured Management API v3 Test, role-gated merchant billing-entity list for later terminal orders; optional `data` or a `204` supplies no order or delivery proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalmodels]] — 2026-11-05-captured Management API v3 TEST merchant terminal-model lookup with ordering-read roles and a Live rate-limit notice; optional model-list readback supplies IDs for later queries, not order, inventory or device-readiness proof.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalorders-orderid-cancel]] — 2026-11-05-captured Management API v3 TEST cancellation of a company-path terminal products order only while `Placed`; a successful response reports `Cancelled`, with Live rate-limit notice and no shipping, refund or device-state proof.
+
+> [!warning] Contradiction
+> The response schema calls for two-letter ISO country codes in billing/shipping addresses, but the `200` example uses `"Netherlands"` for both. Treat sample address values as illustrative. [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalorders-orderid-cancel]]
+
+
+- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-terminalorders-orderid]] — 2026-11-05-captured Management API v3 TEST PATCH for a company terminal products order: updates are Placed-only, and changing items replaces the entire array; 200 returns order details, not shipment or device-readiness proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalorders-orderid]] — 2026-11-05-captured Management API `latest` Test v3 read of a company terminal-products order, with optional status, tracking, product, billing and shipping details; order readback does not prove delivery or device readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalorders]] — 2026-11-05-captured Management API v3 TEST company terminal-order list with status/reference filters and optional order data; readback does not prove shipment delivery, device boarding, or payment readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalorders]] — 2026-11-05-captured Management API v3 test reference for creating a company terminal-product order, with optional request/response fields and a test endpoint that does not create actual test-terminal orders; a returned order is not shipment, boarding or payment proof.
+
+
+- [[source-adyen-api-explorer-management-latest-post-companies-companyid-shippinglocations]] — 2026-11-05-captured Management API v3 TEST company shipping-location creation for later terminal orders, requiring Terminal ordering read/write; Live rate limits are noted, and location creation is not order or delivery proof.
+
+> [!warning] Contradiction
+> This reference describes contact phone numbers as 10–14 digits with an optional `+` prefix, but its request and response examples include spaces. The example does not settle validation. [[source-adyen-api-explorer-management-latest-post-companies-companyid-shippinglocations]]
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-shippinglocations]] — 2026-11-05-captured Management API v3 TEST company and merchant shipping-location list for terminal orders, with live rate-limit qualification; listing does not place or deliver an order.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-billingentities]] — 2026-11-05-captured Management API v3 Test read of company and associated merchant billing entities for terminal ordering; an optional `data` readback supplies possible `billingEntityId` values but does not place an order or prove delivery.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalproducts]] — 2026-11-05-captured Management API v3 TEST country-specific company terminal-product catalog read, with ordering-role and live rate-limit notes; listing does not place an order or prove device readiness.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalmodels]] — 2026-11-05-captured Management API v3 TEST company terminal-model lookup with ordering-read roles and a Live rate-limit notice; optional model-list readback supplies IDs for later queries, not order, inventory or device-readiness proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalactions-actionid]] — 2026-11-05-captured Management API v3 TEST GET of one company terminal action by action ID, with action type, reported status, schedule/confirmation times and result fields; live requests have rate limits. Readback is not a new action or payment-readiness proof.
+
+
+- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalactions]] — 2026-11-05-captured Management API `latest` Test v3 company terminal-action list; excludes Adyen-scheduled actions, supports type/status filters and pagination, and returns action status rather than device or payment proof.
+
+
+- [[source-adyen-api-explorer-management-latest-post-terminals-terminalid-reassign]] — 2026-11-05-captured Management API v3 TEST terminal reassignment reference for company, merchant, merchant inventory, or store destinations; merchant assignment requires an explicit inventory flag, and 200 has no device-state readback.
+
+
 - [[source-adyen-api-explorer-managementnotification-latest-post-terminalsettings-modified]] — 2026-09-15-captured Management notification for completed terminal-settings update request, with optional resource IDs and updater source; the event does not show settings or prove on-device application.
 
 

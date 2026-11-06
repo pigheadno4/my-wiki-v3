@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-terminalorders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create a company terminal order | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/terminalOrders\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalOrders/2026-11-05.md\"\ntags: [adyen, management-api, terminal-orders, company-account]\n---\n\n## Overview\n\n`POST /companies/{companyId}/terminalOrders` creates an order for payment-terminal products for the company identified by required path `companyId`. The captured Management API server is `https://management-test.adyen.com/v3`; the caller's credential needs **Management API\u2014Terminal ordering read and write**. This concerns product ordering and logistics, not a Terminal API payment. See [[adyen]] and [[adyen-terminal-management]].\n\n> [!warning] Test and live boundary\n> Requests to the Management API test endpoint **do not create actual orders for test terminals**; the page directs test-terminal sales orders to Customer Area. In live, this endpoint is subject to rate limits. The pinned page lists only the test server and does not establish live account eligibility or an actual order from a test response.\n\n## Key takeaways\n\n- The request table marks all body properties optional: `billingEntityId`, merchant-defined `customerOrderReference`, `items` with optional product `id`, `name`, `quantity`, and `installments`, plus `orderType`, `shippingLocationId`, and `taxId`. The page says a Brazil product order need not include `billingEntityId`. The illustrated request is one example, not a schema-required field set.\n- HTTP 200 reports request success and can return optional order `id`, `status`, `orderDate`, `items`, billing entity, shipping location, customer reference and carrier `trackingUrl`. The schema does not mark any response property required.\n- The example's `status: \"Placed\"` is sample data. Neither it nor optional `trackingUrl` establishes shipment, delivery, device assignment, boarding or payment readiness.\n- Error routes are 400, 401, 403, 422 and 500. Authentication and role permission are separate from request validation and server processing.\n\n## Detail locators\n\n- Raw lines 5\u201340: purpose, credential role, test/live qualification, server, company identifier and complete request schema.\n- Raw lines 42\u201363: illustrative product-order request.\n- Raw lines 66\u2013111: 200 response schema, including optional order identity, status, billing/shipping details and tracking URL.\n- Raw lines 114\u2013211: 400, 401, 403, 422 and 500 errors and their generic response fields.\n- Raw lines 213\u2013264: illustrative 200 order with `Placed` status; values are examples, not delivery proof.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 fleet management and ordering context.\n- [[source-adyen-docs-point-of-sale-automating-terminal-management-order-terminals-api]] \u2014 separate ordering guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalOrders/2026-11-05|Create company terminal order, captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "Creates an order for payment terminal products for the company identified in the path.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "Requests to the Management API test endpoint do not create actual orders for test terminals.",
+      "location": "raw line 13, test endpoint warning"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "raw line 15, live environment qualification"
+    },
+    {
+      "text": "| companyId | string | Yes | The unique identifier of the company account. |",
+      "location": "raw line 25, Path parameters"
+    },
+    {
+      "text": "| status | string | No | The processing status of the order. |",
+      "location": "raw line 110, 200 response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-company-terminal-order-create-source",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalorders]] \u2014 2026-11-05-captured Management API v3 test reference for creating a company terminal-product order, with optional request/response fields and a test endpoint that does not create actual test-terminal orders; a returned order is not shipment, boarding or payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/terminalOrders/2026-11-05.md",
+  "raw_sha256": "c9d2a3f4e85134a8adbe4dc8d467d9d3f080f92089aab5fd7e2365282215a49b",
+  "status": "candidate_ready"
+}

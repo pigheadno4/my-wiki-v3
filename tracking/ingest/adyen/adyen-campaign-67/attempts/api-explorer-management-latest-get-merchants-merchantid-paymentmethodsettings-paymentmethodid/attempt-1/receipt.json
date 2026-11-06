@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-paymentmethodsettings-paymentmethodid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Management API: Get merchant payment method details\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/2026-11-05.md\"\ntags: [adyen, management-api, payment-methods, merchant-account]\n---\n\n## Overview\n\nThe captured Management API `GET /merchants/{merchantId}/paymentMethodSettings/{paymentMethodId}` returns details for the merchant account and payment method identified by the two required path IDs. It lists the Test `https://management-test.adyen.com/v3` server and requires the caller's API credential to have **Management API\u2014Payment methods read**. This is a configuration read, not a payment or method-activation request. [[adyen]] [[adyen-account-structure]]\n\n## Key takeaways\n\n- A `200` means the read request succeeded. Its response schema requires `id`, the resource identifier. `type` is an optional payment-method variant; `reference`, merchant category code, MID, countries, currencies, store IDs, and method-specific objects are optional. The raw response table is the locator for those fields and their conditional or method-specific descriptions.\n- `allowed` is optional and indicates whether receiving payments is allowed; the page says Adyen sets it true after screening the merchant account. `enabled` separately indicates enabled or disabled configuration. `verificationStatus` is optional with `valid`, `pending`, `invalid`, or `rejected` values. These fields should not be collapsed into one readiness state. The optional `associatedPaymentMethods` parent lists methods updated as part of an associated transition; each item marks `enabled`, `id`, and `type` required within that item.\n- The response's `businessLineId` description says it is required if the caller is a platform model, though the response table marks the field optional. This is a response-field condition, not an additional GET input. Some method-specific fields carry their own defaults or limits: for example, optional PayPal `directCapture` defaults true, and the PayPal `payerId` description specifies 13 single-byte alphanumeric characters. Transaction-description text recommends 22 characters and warns banks may truncate longer strings; that recommendation is not a universal request limit here.\n- The page also documents `204` as successful processing with no additional content, so that status supplies no resource readback. It lists 400, 401, 403, 422, 429, and 500 error responses. The captured GET has no body, idempotency setting, mutation, deletion, propagation or approval transition, Live endpoint, or payment-outcome guarantee. A returned configuration does not itself prove current Live eligibility, successful authorization, capture, settlement, or bank receipt.\n\n## Detail locators\n\n- Purpose, credential role, Test server, and two required path IDs: raw lines 5\u201322.\n- `200` response identity, `allowed`, associated transitions, `businessLineId`, countries/currencies, and `enabled`: raw lines 26\u2013102. Method-specific detail continues through lines 103\u2013226; `id` is line 115, PayPal fields are lines 168\u2013171, `verificationStatus` is line 213.\n- `204` no-content response and error statuses/body schemas: raw lines 229\u2013349. This captured page has no request or response JSON example.\n\n## Related\n\n- [[adyen-account-structure]] \u2014 merchant-account placement of payment-method configuration.\n- [[adyen-payment-method-variants]] \u2014 variant terminology; a variant name is not an activation or payment result.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/2026-11-05|Pinned Management API payment-method detail GET reference]]",
+  "quotes": [
+    {
+      "text": "Returns details for the merchant account and the payment method identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Management API\u2014Payment methods read",
+      "location": "raw line 11"
+    },
+    {
+      "text": "Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account.",
+      "location": "raw line 44"
+    },
+    {
+      "text": "Payment methods that were also updated as part of an associated transition.",
+      "location": "raw line 53"
+    },
+    {
+      "text": "Payment method status. Possible values:  - **valid**  - **pending**  - **invalid**  - **rejected**",
+      "location": "raw line 213"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-merchant-paymentmethod-detail-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-paymentmethodsettings-paymentmethodid]] \u2014 2026-11-05-captured Management API v3 Test, role-gated read of one merchant-account payment-method setting by merchant and method IDs; optional `allowed`, `enabled`, and `verificationStatus` readback remain distinct from a payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/2026-11-05.md",
+  "raw_sha256": "9d003168eacf3175b2104ba9164dd4a396eaf480aba1bcceb577e6038926dea8",
+  "status": "candidate_ready"
+}

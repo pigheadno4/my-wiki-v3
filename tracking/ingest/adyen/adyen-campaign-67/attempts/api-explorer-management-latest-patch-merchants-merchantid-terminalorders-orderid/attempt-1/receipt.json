@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-terminalorders-orderid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: update a merchant terminal products order\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalOrders/(orderId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalOrders/(orderId)/2026-11-05.md\"\ntags: [adyen, management-api, terminal-management, terminal-orders]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference describes `PATCH /merchants/{merchantId}/terminalOrders/{orderId}` to update a terminal products order under a **merchant account**. The listed server is `https://management-test.adyen.com/v3`; the credential needs **Management API\u2014Terminal ordering read and write**. The page separately notes rate limits for live requests. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- Updating is possible only while the order status is **`Placed`**. Both `merchantId` (merchant account) and `orderId` (order) are required string path IDs.\n- The request body need contain only fields to change, **except `items` must be sent as the entire replacement array** when products change. The schema marks `billingEntityId`, `customerOrderReference`, `items` and its product subfields, `orderType`, `shippingLocationId`, and `taxId` optional. It says Brazil product orders do not need `billingEntityId`; it does not mark that field required for all other PATCH requests.\n- The reference documents both HTTP `200` with order details and HTTP `204` processed with no additional content. The `200` schema marks order ID, status, items, order date, billing and shipping objects, customer reference and carrier `trackingUrl` optional. The example's `Placed` order does not prove shipment, inventory, billing, arrival or terminal boarding.\n- No idempotency or propagation timing is specified.\n\n## Detail locators\n\n- Purpose, `Placed` gate, whole-`items` replacement, role, live rate-limit notice, TEST server, and path identities: raw lines 5\u201329.\n- Optional request fields, Brazil `billingEntityId` note, and illustrative item request: raw lines 32\u201369.\n- `200` order response schema and `204` no-content result: raw lines 70\u2013121; illustrative `200` response: raw lines 223\u2013281.\n- `400`, `401`, `403`, `422`, and `500` problem response schemas: raw lines 124\u2013221. `401` means authentication required and `403` insufficient permission.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal-ordering and fleet administration routes.\n- [[adyen-api-access]] \u2014 API credential context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalOrders/(orderId)/2026-11-05|Adyen Management API update merchant terminal order, captured 2026-11-05]]\n",
+  "quotes": [
+    {
+      "text": "Updating is only possible while the order has the status **Placed**.",
+      "location": "raw line 8"
+    },
+    {
+      "text": "The request body only needs to contain what you want to change.",
+      "location": "raw line 10"
+    },
+    {
+      "text": "However, to update the products in the `items` array, you must provide the entire array. For example, if the array has three items:",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| merchantId | string | Yes | The unique identifier of the merchant account. |",
+      "location": "raw line 29"
+    },
+    {
+      "text": "The request has been successfully processed, but there is no additional content.",
+      "location": "raw line 121"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-api-explorer-management-latest-patch-merchants-merchantid-terminalorders-orderid-terminal-management-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-terminalorders-orderid]] \u2014 2026-11-05-captured Management API v3 TEST PATCH for a merchant terminal products order: Placed-only updates, complete replacement when changing items, and 200 order detail or 204 no-content success; neither establishes shipment or device readiness.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalOrders/(orderId)/2026-11-05.md",
+  "raw_sha256": "3bd01e4feb186b412cc7c56e3a8e56d917384e05cbb4377514d0136bdfe2c308",
+  "status": "candidate_ready"
+}

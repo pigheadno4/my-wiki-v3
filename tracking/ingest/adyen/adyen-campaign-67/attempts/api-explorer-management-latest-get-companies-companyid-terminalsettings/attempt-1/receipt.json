@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-terminalsettings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: get company terminal settings\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/terminalSettings\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalSettings/2026-11-05.md\"\ntags: [adyen, management-api, terminal-management, terminal-settings]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference describes `GET /companies/{companyId}/terminalSettings`, a read of settings configured for the company account. These settings apply to its terminals unless overridden at merchant, store or individual-terminal level. The listed server is `https://management-test.adyen.com/v3`. The calling credential needs **Management API\u2014Terminal settings read** or **Management API\u2014Terminal settings read and write**; the reference additionally requires **Management API\u2014Terminal settings Advanced read and write** for sensitive terminal settings. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- The required string path parameter `companyId` identifies the company account. This GET reference specifies no query parameters or request body. Live requests are subject to rate limits, with no numeric limit stated here.\n- A `200` reports configured terminal-settings fields, all optional at the top level in the response table. Their categories include receipts, connectivity, DCC, gratuities, hardware, kiosk/localization, MOTO, Terminal API (`nexo`), offline processing, passcodes, pay-at-table, payments, refunds, standalone mode, store-and-forward, surcharge, Tap to Pay, instructions, timeouts and Wi-Fi profiles. Optional parents do not make every nested property required; within optional `surcharge.configurations` entries, `brand` and `currencies` are marked required, and within optional Wi-Fi `profiles` entries, `authType`, `bssType`, `ssid` and `wsec` are marked required.\n- Important scope and safety qualifications in the response field descriptions: `connectivity.simcardStatus` is terminal-level only for cellular-capable models; DCC enablement carries receipt/terms responsibility; a first `payment.contactlessCurrency` change requires contacting Adyen for a compliance check; unreferenced refunds create liability for fraudulent or duplicate losses. The `storeAndForward` description says `maxAmount`, `maxPayments` and `supportedCardTypes` must be configured in a request or inherited from a higher level; that is not a requirement to include them in this GET response.\n- Tipping has at most four predefined options, or three plus a custom-tip option. `hardware.resetTotalsHour` and `restartHour` default to 06:00 in the terminal's timezone with a 0\u201323 range. Other limits and units, including MOTO/offline amounts, receipt logo, encryption-key passphrase, Wi-Fi and kiosk constraints, remain in the raw response table.\n- The reference lists `400`, `401`, `403`, `422` and `500` failures. This GET readback does not change settings, prove lower-level effective values or on-device application, establish payment readiness, or execute any example receipt/refund/offline transaction. Example passcodes, network credentials and URLs are illustrative values.\n\n## Detail locators\n\n- Raw opening paragraphs, `## Servers` and `## Parameters > ### Path parameters`: scope, roles, rate-limit notice, TEST host and company ID.\n- Raw `## Responses > ### 200 Success`, lines 39\u201388: receipt, connectivity, DCC, gratuity, hardware, kiosk and `nexo` settings; terminal-only SIM status and encryption-key constraints.\n- Same response table, lines 89\u2013155: offline, passcodes, pay-at-table, currency/compliance, receipts, refunds, standalone and store-and-forward conditions.\n- Same response table, lines 156\u2013196: surcharge nested required fields, Tap to Pay, timeouts and Wi-Fi profile constraints.\n- Raw error sections, lines 199\u2013296: HTTP failure classes and problem fields.\n- Raw `## Response examples > ### 200 Success`, lines 298\u2013419: illustrative settings payload, not a universal default or effective device state.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal configuration and lifecycle boundaries.\n- [[source-adyen-docs-point-of-sale-automating-terminal-management-configure-terminals-api]] \u2014 separate guide for inheritance, updates and timing.\n- [[source-adyen-api-explorer-managementnotification-latest-post-terminalsettings-modified]] \u2014 separate modification notification.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalSettings/2026-11-05|GET company terminal settings, captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "Returns the payment terminal settings that are configured for the company identified in the path. These settings apply to all terminals under the company, unless different values are configured at a lower level (merchant account, store, or individual terminal).",
+      "location": "line 7"
+    },
+    {
+      "text": "- Management API\u2014Terminal settings Advanced read and write",
+      "location": "line 17"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "line 19"
+    },
+    {
+      "text": "|   - simcardStatus | string | No | Indicates the status of the SIM card in the payment terminal. Can be updated and received only at terminal level, and only for models that support cellular connectivity.",
+      "location": "line 42 (prefix)"
+    },
+    {
+      "text": "| storeAndForward | object | No | Settings for store-and-forward offline payments. The `maxAmount`, `maxPayments`, and `supportedCardTypes` parameters must be configured, either in the request or inherited from a higher level in your account structure. |",
+      "location": "line 145"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-api-explorer-management-latest-get-companies-companyid-terminalsettings-terminal-management",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalsettings]] \u2014 2026-11-05-captured Management API v3 TEST read of company terminal settings, with lower-level override scope and an additional Advanced role for sensitive settings; readback does not prove effective on-device configuration or payment readiness.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalSettings/2026-11-05.md",
+  "raw_sha256": "5386ba9c95733fbce905ef1c5c782e0d757a6c1ed5379d758ea15c34ecffeaf5",
+  "status": "candidate_ready"
+}

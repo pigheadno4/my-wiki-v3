@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-patch-merchants-merchantid-webhooks-webhookid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Update a merchant webhook | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/webhooks/(webhookId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/webhooks/(webhookId)/2026-11-05.md\"\ntags: [adyen, management-api, webhooks, merchant-account]\n---\n\n## Overview\n\n`PATCH /merchants/{merchantId}/webhooks/{webhookId}` changes the specified merchant-account webhook configuration using new values in the request. The captured Management API server is `https://management-test.adyen.com/v3`. Both merchant-account `merchantId` and webhook-configuration `webhookId` are required path identifiers, and the API credential needs **Management API\u2014Webhooks read and write**. This operation concerns configuration, not a payment or webhook event. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request body lists optional fields for `active`, endpoint `url`, `communicationFormat` (`soap`, `http`, `json`), description, endpoint username/password, certificate acceptance, encryption protocol, and other settings. For Standard webhooks, optional `additionalSettings` can include event codes and boolean properties. The raw gives no required body property; its example changes only `active`.\n- `active` must be true for Adyen to send account-related webhooks. `encryptionProtocol: HTTP` is permitted only in Test; when omitted, the documented fallback is `sslVersion: TLSv1.2`. `networkType` defaults to `public`; `populateSoapActionHeader` applies only with SOAP. The three certificate-acceptance flags default to false.\n- A 200 success returns the full configuration with new request values, including required response fields `active`, `communicationFormat`, `type`, and `url`; a 204 success has no additional content. The returned `id`, account reference, HMAC checksum, error flag and related links have their own schema locations. A `generateHmac` or `testWebhook` link does not indicate either action has run.\n- A successful configuration update does not establish event delivery, endpoint health, payment authorization, account eligibility or compliance. `hasError: true` signals troubleshooting via a separate test endpoint.\n\n> [!warning] Captured version mismatch\n> The captured server list specifies Management API **v3 test**, but the illustrative 200 response uses `management-test.adyen.com/v1` resource links. Treat those as example links, not the endpoint version or live availability.\n\n## Detail locators\n\n- Raw lines 5\u201342: update purpose, required read-and-write role, test server, path identifiers and complete optional request-body field table.\n- Raw lines 44\u201351: illustrative request containing only `active: true`.\n- Raw lines 54\u201398: 200 response schema and separate 204 no-content success. Company/merchant links are conditional on configuration scope; `filterMerchantAccounts` conditional wording belongs to the returned configuration, not this PATCH request.\n- Raw lines 101\u2013198: 400, 401, 403, 422 and 500 errors; 401 is authentication required, 403 insufficient permissions and 422 request validation error.\n- Raw lines 200\u2013300: illustrative 200 configuration; example-only values and v1 links do not override the captured v3 test server.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 webhook configuration and event context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/webhooks/(webhookId)/2026-11-05|PATCH merchant webhook, captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "Make changes to the configuration of the webhook identified in the path. The request contains the new values you want to have in the webhook configuration. The response contains the full configuration for the webhook, which includes the new values from the request.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "- Management API\u2014Webhooks read and write",
+      "location": "raw line 11, credential role"
+    },
+    {
+      "text": "| active | boolean | No | Indicates if the webhook configuration is active. The field must be **true** for us to send webhooks about events related an account. |",
+      "location": "raw line 31, Request body"
+    },
+    {
+      "text": "| encryptionProtocol | string | No | SSL version to access the public webhook URL specified in the `url` field. Possible values:  - **TLSv1.3**  - **TLSv1.2**  - **HTTP** - Only allowed on Test environment.  If not specified, the webhook will use `sslVersion`: **TLSv1.2**. |",
+      "location": "raw line 37, Request body"
+    },
+    {
+      "text": "The request has been successfully processed, but there is no additional content.",
+      "location": "raw lines 97\u201398, 204 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-merchant-webhook-patch-source",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-webhooks-webhookid]] \u2014 2026-11-05-captured Management API v3 test PATCH reference for changing one merchant webhook configuration, with 200 full-config or 204 no-content success; the sample response uses v1 links, and update success is not delivery or payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured v3 test server conflicts with v1 URLs in illustrative 200 response."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/merchants/(merchantId)/webhooks/(webhookId)/2026-11-05.md",
+  "raw_sha256": "61aed8c1008d08b39ec61844d249169489acfed5e4644e29e5da900b502e808c",
+  "status": "candidate_ready"
+}

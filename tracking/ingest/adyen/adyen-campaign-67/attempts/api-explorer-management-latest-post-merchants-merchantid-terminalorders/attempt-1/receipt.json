@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-terminalorders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create a merchant terminal order | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalOrders\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalOrders/2026-11-05.md\"\ntags: [adyen, management-api, terminal-orders, merchant-account]\n---\n\n## Overview\n\n`POST /merchants/{merchantId}/terminalOrders` creates an order for payment-terminal products for the merchant account identified by required `merchantId`. The captured Management API server is `https://management-test.adyen.com/v3`; the credential needs **Management API\u2014Terminal ordering read and write**. This merchant-scoped order is distinct from a company-scoped order and from Terminal API payment processing. See [[adyen]] and [[adyen-terminal-management]].\n\n> [!warning] Test and live boundary\n> Management API test requests **do not create actual orders for test terminals**; the page directs test-terminal sales orders to Customer Area. Live calls to this endpoint are subject to rate limits, but the pinned page supplies no live server or rate figure. A test response is not proof of an actual order.\n\n## Key takeaways\n\n- The request-body table marks `billingEntityId`, `customerOrderReference`, `items`, `orderType`, `shippingLocationId`, and `taxId` optional; nested item `id`, `installments`, `name`, and `quantity` are also table-optional. For Brazil product orders, `billingEntityId` need not be included. The request example's merchant billing-entity ID and two accessory lines do not make those fields mandatory.\n- HTTP 200 reports request success and can return optional order `id`, processing `status`, `orderDate`, item details, billing and shipping entities, customer reference and carrier `trackingUrl`. HTTP 204 is separately documented as successful processing without additional content. No response property is schema-required.\n- The example's `status: \"Placed\"` is a sample value, not a general guarantee. Order creation or status does not establish shipment, delivery, device assignment, boarding or payment readiness.\n- 400, 401, 403, 422 and 500 error routes separate request problems, authentication, permission, validation and server processing.\n\n## Detail locators\n\n- Raw lines 5\u201340: purpose, role, test/live warning, test v3 server, merchant ID and optional request-body schema.\n- Raw lines 42\u201363: illustrative accessory order with merchant-account billing entity.\n- Raw lines 66\u2013115: optional 200 order fields and distinct 204 no-content success.\n- Raw lines 118\u2013215: 400, 401, 403, 422 and 500 errors and generic response fields.\n- Raw lines 217\u2013269: illustrative 200 order with `Placed` status; not shipment or delivery proof.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal fleet and ordering context.\n- [[source-adyen-docs-point-of-sale-automating-terminal-management-order-terminals-api]] \u2014 separate ordering guide.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalOrders/2026-11-05|Create merchant terminal order, captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "Creates an order for payment terminal products for the merchant account identified in the path.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "Requests to the Management API test endpoint do not create actual orders for test terminals.",
+      "location": "raw line 13, test endpoint warning"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "raw line 15, live environment qualification"
+    },
+    {
+      "text": "| merchantId | string | Yes | The unique identifier of the merchant account. |",
+      "location": "raw line 25, Path parameters"
+    },
+    {
+      "text": "The request has been successfully processed, but there is no additional content.",
+      "location": "raw lines 114\u2013115, 204 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-merchant-terminal-order-create-source",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalorders]] \u2014 2026-11-05-captured Management API v3 test merchant terminal-product order reference with 200 representation or 204 no-content success; test calls create no actual test-terminal orders, and a returned order is not shipment, boarding or payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalOrders/2026-11-05.md",
+  "raw_sha256": "90b9e57e90c12eb2793b381030dff93e0f3666b54f3940d86195bfaebcc3c2df",
+  "status": "candidate_ready"
+}

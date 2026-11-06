@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-patch-companies-companyid-webhooks-webhookid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: Update a company webhook\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/patch/companies/(companyId)/webhooks/(webhookId)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/patch/companies/(companyId)/webhooks/(webhookId)/2026-11-05.md\"\ntags: [adyen, management-api, webhooks, configuration]\n---\n\n## Overview\n\nThis [[adyen]] Management API `latest` reference, captured 2026-11-05, documents `PATCH /companies/{companyId}/webhooks/{webhookId}` for changing the configuration of one company-account webhook. The captured server is `https://management-test.adyen.com/v3`; this page does not list a live server. The response describes the full webhook configuration including the requested new values.\n\n## Key takeaways\n\n- The caller's API credential needs the **Management API\u2014Webhooks read and write** role. Both `companyId` (company account) and `webhookId` (webhook configuration) are required path identifiers. Request-body fields are individually marked optional; this reference does not specify an idempotency header or a general body-required flag.\n- `active` is optional in the update body, but must be `true` for Adyen to send account-event webhooks. Company merchant filtering supports `includeAccounts`, `excludeAccounts`, or `allAccounts`; `filterMerchantAccounts` is required when the filter type is include or exclude, and is not needed for all accounts.\n- Configuration options include the public `url`, format (`soap`, `http`, or `json`), optional username/password, SSL certificate acceptance flags (each default `false`), `encryptionProtocol` (`TLSv1.3`, `TLSv1.2`, or Test-only `HTTP`; omitted uses TLSv1.2), Standard-webhook additional settings, SOAP-action header flag (SOAP only), and Terminal API notification `networkType` (default `public`). Consult the raw request table for exact field scope.\n- A `200` means this configuration update request succeeded and returns the full configuration. Response fields include `active`, `communicationFormat`, `type`, `url`, optional `id`, `hasError`, `hasPassword`, HMAC key check value and resource/action links. `hasError=true` calls for troubleshooting via the testing endpoint; links to generate HMAC and test are actions, not evidence those actions occurred. An active response or example does not establish successful webhook delivery, payment authorization, settlement, compliance, or account eligibility.\n\n> [!warning] Versioned sample links\n> The captured server list says Management Test `/v3` (line 14), while the 200 response example's `_links` use `/v1` (lines 285-297). Treat those links as sample values; this snapshot does not resolve which versioned action URL to invoke.\n\n## Detail locators\n\n- Purpose, role and captured server: opening text and `## Servers`, lines 5-14.\n- Required path identifiers and optional request fields, defaults, conditional merchant filtering, and Test-only HTTP: `## Parameters`, lines 16-44.\n- Example `{\"active\": true}`: `## Request examples`, lines 46-53; example values are illustrative.\n- Success meaning, response schema, links and error indicator: `### 200 Success`, lines 54-96.\n- Documented failures: `### 400 Client Error` (lines 99-116), `### 401 Client Error` (119-136), `### 403 Client Error` (139-156), `### 422 Client Error` (159-176), and `### 500 Server Error` (179-196). Their error bodies expose details, code, status and optional validation fields; no endpoint-specific rollback or retry contract is stated.\n- Illustrative response and versioned `_links`: `## Response examples`, lines 198-299.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-webhooks]]\n- Separate Customer Area configuration guide: [[source-adyen-docs-development-resources-webhooks-configure-and-manage]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/patch/companies/(companyId)/webhooks/(webhookId)/2026-11-05|Adyen Management API \u2014 Update a company webhook (2026-11-05)]]\n",
+  "quotes": [
+    {
+      "text": "Make changes to the configuration of the webhook identified in the path. The request contains the new values you want to have in the webhook configuration. The response contains the full configuration for the webhook, which includes the new values from the request.",
+      "location": "lines 5-7"
+    },
+    {
+      "text": "- Management API\u2014Webhooks read and write",
+      "location": "line 11"
+    },
+    {
+      "text": "- https://management-test.adyen.com/v3",
+      "location": "line 14"
+    },
+    {
+      "text": "| filterMerchantAccounts | array of string | No | A list of merchant account names that are included or excluded from receiving the webhook. Inclusion or exclusion is based on the value defined for `filterMerchantAccountType`.  Required if `filterMerchantAccountType` is either:  - **includeAccounts**  - **excludeAccounts**  Not needed for `filterMerchantAccountType`: **allAccounts**. |",
+      "location": "line 39"
+    },
+    {
+      "text": "The request has succeeded.",
+      "location": "line 57"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-company-webhook-patch-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-patch-companies-companyid-webhooks-webhookid]] \u2014 2026-11-05-captured Management API `latest` company-webhook PATCH reference for configuration updates and full-config readback on the listed Test v3 server; its example action links use v1 paths and readback does not prove delivery.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Captured server is Test /v3, but response example action links are /v1; preserve unresolved version mismatch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/patch/companies/(companyId)/webhooks/(webhookId)/2026-11-05.md",
+  "raw_sha256": "af71043ab1d04e11f01f20f8827b6aa6767034f13838b4a9c166b8844991a099",
+  "status": "candidate_ready"
+}

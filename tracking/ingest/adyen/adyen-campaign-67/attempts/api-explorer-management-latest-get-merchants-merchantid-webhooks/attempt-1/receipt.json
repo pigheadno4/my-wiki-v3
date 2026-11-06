@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: list merchant webhook configurations\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks/2026-11-05.md\"\ntags: [adyen, management-api, webhooks, merchant-account]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference describes `GET /merchants/{merchantId}/webhooks`: a paged list of webhook configurations for the identified merchant account. It explicitly excludes configurations for the merchant's parent company account. The listed server is `https://management-test.adyen.com/v3`. The calling API credential needs either **Management API\u2014Webhooks read** or **Management API\u2014Webhooks read and write**. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- `merchantId` is the required merchant-account path ID. Optional integer query parameters are `pageSize` (default 10, maximum 100) and `pageNumber`; the reference specifies no request body.\n- A `200` response requires `itemsTotal` and `pagesTotal`. `data`, `accountReference` and pagination `_links` are optional. If pagination `_links` appears, `first`, `last` and `self` are required within it, while `next` and `prev` depend on page availability.\n- For each webhook object, the response table marks `active`, `communicationFormat`, `type` and `url` required. `active=true` is necessary to receive account events according to the field description; listing that flag does not prove delivery, receipt, event correctness or payment outcome. Other fields include optional ID, account reference, certificate flags, error flag, HMAC-key check value, additional settings and resource links; their definitions and conditional details remain in the raw table.\n- The reference also lists `204` success with no additional content and `400`, `401`, `403`, `422` and `500` error classes. A readback neither creates or changes a webhook nor executes the example's HMAC-generation or test links.\n\n> [!warning] Contradiction\n> The listed TEST server uses `/v3`, but the `200` example's pagination and webhook resource links use `/v1`. Those example URLs do not resolve the current versioned route or a Live route.\n\n## Detail locators\n\n- Raw opening paragraphs and `## Servers`: merchant-only scope, parent-company exclusion, caller roles and TEST host.\n- Raw `## Parameters`: required merchant ID and pagination defaults/maximum.\n- Raw `## Responses > ### 200 Success`: pagination, webhook object fields, conditional company-level schema fields, TLS/format/type options and response-requiredness.\n- Raw `## Responses > ### 204 Success` and error sections: no-content and failure shapes.\n- Raw `## Response examples > ### 200 Success`: illustrative single webhook and version-conflicting links; sample values are not general defaults.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 webhook delivery concepts and source routes.\n- [[source-adyen-api-explorer-management-latest-overview]] \u2014 Management API family overview.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks/2026-11-05|GET merchant webhooks, captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "This call does not return webhook configurations for the company account to which the specified merchant account belongs. You can see these in your Customer Area under **Developers** > **Webhooks**.",
+      "location": "line 9"
+    },
+    {
+      "text": "- Management API\u2014Webhooks read",
+      "location": "line 13"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 10 items on a page. |",
+      "location": "line 31"
+    },
+    {
+      "text": "|   - active | boolean | Yes | Indicates if the webhook configuration is active. The field must be **true** for you to receive webhooks about events related an account. |",
+      "location": "line 65"
+    },
+    {
+      "text": "\"href\": \"https://management-test.adyen.com/v1/merchants/YOUR_MERCHANT_ACCOUNT/webhooks?pageNumber=1&pageSize=10\"",
+      "location": "line 201 (also lines 204 and 207)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-api-explorer-management-latest-get-merchants-merchantid-webhooks-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks]] \u2014 2026-11-05-captured Management API v3 TEST paged read of merchant webhook configurations, excluding parent-company configurations; listed `active` state and test/HMAC links are not delivery or payment proof.\n\n> [!warning] Contradiction\n> This reference lists a TEST `/v3` server, but its `200` example pagination and webhook resource links use `/v1`. The snapshot does not resolve the versioned or Live routes. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "TEST /v3 server versus /v1 sample links is unresolved; do not infer Live routing or delivery from list readback."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/webhooks/2026-11-05.md",
+  "raw_sha256": "1b2b31461319ecf4082104ab5910e76122495c942af0be262a3d72e0dd609646",
+  "status": "candidate_ready"
+}

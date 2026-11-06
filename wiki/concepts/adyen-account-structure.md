@@ -30,6 +30,9 @@ This is a 2023-last-modified Adyen page captured 2026-09-15. It does not identif
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-paymentmethodsettings-paymentmethodid]] — 2026-11-05-captured Management API v3 Test, role-gated read of one merchant-account payment-method setting by merchant and method IDs; optional `allowed`, `enabled`, and `verificationStatus` readback remain distinct from a payment outcome.
+
+
 - [[source-adyen-api-explorer-management-latest-patch-companies-companyid-users-userid]] — 2026-11-03 Management API v3 TEST company-user detail update by `companyId` and `userId`, requiring Users read and write; returned user details do not prove login or merchant processing.
 
 

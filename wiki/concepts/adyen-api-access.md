@@ -32,6 +32,21 @@ These snapshot statements do not prove current merchant or user eligibility, suc
 Adyen's 2026-09-15 mTLS guide adds a client certificate to API-key authentication for supported APIs using a company-level API credential. The merchant keeps the private key, links the certificate subject DN to the credential, and presents the leaf plus full CA chain at an mTLS endpoint. Linking is a cutover: supported-API requests with that credential fail without the certificate. The guide excludes merchant-level and balance-platform credentials and identifies separate supported/unsupported APIs and endpoints; see the source for scope and regions. This TLS client certificate is distinct from the JWE card-encryption certificate, whose retained EC/RSA sample conflict remains unresolved.
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid-allowedorigins-originid]] — 2026-11-05-captured Management API v3 TEST detail read of one merchant-credential allowed origin; the role-gated resource readback does not demonstrate browser client-key acceptance or payment authorization.
+
+> [!warning] Contradiction
+> This reference lists a TEST `/v3` server, but its `200` example self-link uses `/v1/merchants/...`. The capture does not establish the correct versioned self-link or Live route. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid-allowedorigins-originid]]
+
+
+- [[source-adyen-api-explorer-management-latest-delete-merchants-merchantid-apicredentials-apicredentialid-allowedorigins-originid]] — 2026-11-05-captured Management API v3 TEST deletion of an allowed origin under a merchant API credential; the reference says client-side requests from that domain stop being accepted immediately after removal, while 204 returns no resource readback.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-allowedorigins]] — 2026-11-05-captured Management API v3 TEST POST to add a domain allowed origin for a merchant-path API credential; the required API-credentials read/write caller role and 200/204 configuration result do not prove later client authentication or payment acceptance.
+
+> [!warning] Contradiction
+> The reference lists a TEST `/v3` server, while its `200` example allowed-origin self link uses `/v1`. The example does not resolve the version mismatch. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-apicredentials-apicredentialid-allowedorigins]]
+
+
 - [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-apicredentials-apicredentialid-allowedorigins]] — 2026-11-03-captured Management API v3 TEST read of allowed origins for a merchant-path API credential, requiring API-credentials read/write permission; readback does not add an origin or prove client acceptance.
 
 > [!warning] Contradiction

@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"List company webhooks | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/webhooks\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/webhooks/2026-11-05.md\"\ntags: [adyen, management-api, webhooks, company-account]\n---\n\n## Overview\n\n`GET /companies/{companyId}/webhooks` lists webhook configurations for the specified company account in the captured Management API reference. The captured server is `https://management-test.adyen.com/v3`; `companyId` is the required company-account identifier. The API credential needs either **Management API\u2014Webhooks read** or **Management API\u2014Webhooks read and write**. This read operation does not create, activate, test, deliver, or delete a webhook. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- Optional `pageSize` defaults to 10 and has maximum 100; optional `pageNumber` selects a page. The 200 body includes `itemsTotal`, `pagesTotal`, optional pagination `_links`, and optional `data` array of configurations.\n- A listed configuration can identify its `id`, `type`, `url`, `communicationFormat`, `active`, `hasError`, account reference and account-scope links. The schema marks `active`, `type`, `url`, and `communicationFormat` required **within each configuration object**; `data` itself is optional. A company link is present only for company-level webhooks, and a merchant link only for merchant-level webhooks.\n- `active: true` is required to receive account-related events, while `hasError: true` points to troubleshooting through the test endpoint. A returned configuration, active flag, or test link does not establish actual event delivery, payment outcome, account eligibility, or compliance.\n- Company-level merchant inclusion depends on `filterMerchantAccountType`: `allAccounts` includes all merchant accounts without a list; `includeAccounts` or `excludeAccounts` requires `filterMerchantAccounts`. These are response-field descriptions, not request inputs for this GET operation.\n\n> [!warning] Captured version mismatch\n> The captured server list specifies Management API **v3 test**, but the illustrative 200 response uses `management-test.adyen.com/v1` links. Do not use those example links as proof that this operation's captured server is v1 or that a live endpoint was documented here.\n\n## Detail locators\n\n- Raw lines 5\u201330: purpose, credential roles, test server, required path identifier and pagination inputs.\n- Raw lines 34\u201384: 200 response schema, including optional parent objects versus required nested fields, configuration identity, active/error flags, certificate/security settings, event filters, webhook type and endpoint URL.\n- Raw lines 87\u2013184: 400, 401, 403, 422 and 500 error responses; 401 means authentication required, 403 insufficient permissions, and 422 request validation error.\n- Raw lines 186\u2013304: one illustrative 200 response, including v1 example links and sample configuration values. Example values do not define defaults beyond the field descriptions.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 webhook concepts and configuration context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/webhooks/2026-11-05|GET company webhooks, captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "Lists all webhook configurations for the company account.",
+      "location": "raw lines 5\u20137, opening description"
+    },
+    {
+      "text": "- Management API\u2014Webhooks read",
+      "location": "raw lines 9\u201313, credential roles"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 10 items on a page. |",
+      "location": "raw line 29, Query parameters"
+    },
+    {
+      "text": "|   - active | boolean | Yes | Indicates if the webhook configuration is active. The field must be **true** for you to receive webhooks about events related an account. |",
+      "location": "raw line 63, 200 response body"
+    },
+    {
+      "text": "|   - filterMerchantAccounts | array of string | No | A list of merchant account names that are included or excluded from receiving the webhook. Inclusion or exclusion is based on the value defined for `filterMerchantAccountType`.  Required if `filterMerchantAccountType` is either:  - **includeAccounts**  - **excludeAccounts**  Not needed for `filterMerchantAccountType`: **allAccounts**. |",
+      "location": "raw line 73, 200 response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-company-webhook-list-source",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-webhooks]] \u2014 2026-11-05-captured Management API v3 test GET reference for paginated company webhook configurations, roles and response fields; the 200 example contains v1 links, and readback is not delivery or payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured v3 test server conflicts with v1 URLs in illustrative 200 response."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/webhooks/2026-11-05.md",
+  "raw_sha256": "9935a3404c75b686892bb0d816b0b0c076594995a8aff6b266270a7957188050",
+  "status": "candidate_ready"
+}

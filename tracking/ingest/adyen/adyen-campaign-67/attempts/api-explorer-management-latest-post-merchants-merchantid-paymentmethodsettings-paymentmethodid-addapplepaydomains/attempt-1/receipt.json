@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-paymentmethodsettings-paymentmethodid-addapplepaydomains",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Add Apple Pay domains | Adyen Management API v3\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/addApplePayDomains\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/addApplePayDomains/2026-11-05.md\"\ntags: [adyen, management-api, apple-pay, payment-method-settings]\n---\n\n## Overview\n\n`POST /merchants/{merchantId}/paymentMethodSettings/{paymentMethodId}/addApplePayDomains` adds domains to the Apple Pay domain list registered for the named merchant account and payment method. The captured Management API server is `https://management-test.adyen.com/v3`. This is a merchant payment-method configuration operation, separate from Apple Pay merchant validation or a payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The caller's API credential requires **Management API\u2014Payment methods read and write**. Both `merchantId` (merchant account) and `paymentMethodId` (payment method) are required path identifiers.\n- The body requires `domains`, an array of merchant-domain strings, with a maximum of **99 domains per request**. The example supplies `https://example.com`; the example is not a validation rule for every allowed string. The pinned page states no other body field or default.\n- The documented success is HTTP **204**, with no response resource fields; the page tells readers to inspect the actual status code. It does not specify a returned domain list, asynchronous approval state, verification result, or activation timing.\n- Authentication, permission, request validation, rate-limit and server-error routes appear as 401, 403, 422, 429 and 500; 400 covers request-reading problems. The 429 section provides a generic error schema without retry timing.\n\n> [!warning] Outcome boundary\n> A successful add-domain request records a configuration operation in this reference. The pinned page alone does not establish that the domain was independently verified, Apple Pay is live or eligible for this merchant, a wallet session was created, or any payment was authorized or settled. Its sole captured server is test.\n\n## Detail locators\n\n- Raw lines 5\u201328: operation purpose, credential role, test v3 server, required path identities and `domains` body limit.\n- Raw lines 30\u201343: illustrative body and 204 success instruction.\n- Raw lines 46\u2013162: 400, 401, 403, 422, 429 and 500 response descriptions and generic error fields.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and Apple Pay source routes.\n- [[source-adyen-docs-payment-methods-apple-pay-web]] \u2014 separate Apple Pay web guidance; not evidence for this endpoint's response.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/addApplePayDomains/2026-11-05|Add Apple Pay domains, captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "Adds the new domain to the list of Apple Pay domains that are registered with the merchant account and the payment method identified in the path.",
+      "location": "raw line 7, opening description"
+    },
+    {
+      "text": "- Management API\u2014Payment methods read and write",
+      "location": "raw line 11, credential role"
+    },
+    {
+      "text": "| paymentMethodId | string | Yes | The unique identifier of the payment method. |",
+      "location": "raw line 21, Path parameters"
+    },
+    {
+      "text": "| domains | array of string | Yes | The list of merchant domains. Maximum: 99 domains per request.  For more information, see [Apple Pay documentation](https://docs.adyen.com/payment-methods/apple-pay/web-drop-in?tab=adyen-certificate-live_1#going-live). |",
+      "location": "raw line 28, Request body"
+    },
+    {
+      "text": "Look at the actual response code for the status of the request.",
+      "location": "raw lines 42\u201343, 204 Success"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-apple-pay-domain-add-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-paymentmethodsettings-paymentmethodid-addapplepaydomains]] \u2014 2026-11-05-captured Management API v3 test reference for adding up to 99 Apple Pay merchant domains per request to a named merchant/payment-method setting; 204 reports request status without domain-verification or payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/(paymentMethodId)/addApplePayDomains/2026-11-05.md",
+  "raw_sha256": "e49673ce48c3211599d73f4918f6cb8ec8785d0782fc14497a160e429bfbe66a",
+  "status": "candidate_ready"
+}

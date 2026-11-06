@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-paymentmethodsettings",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: request a merchant payment method\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/2026-11-05.md\"\ntags: [adyen, management-api, payment-methods, merchant-account]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API v3 TEST reference defines `POST /merchants/{merchantId}/paymentMethodSettings` to request adding a payment method to the merchant account in the required `merchantId` path. The API credential needs `Management API\u2014Payment methods read and write`. The request's required `type` is a payment method variant; see [[adyen-payment-method-variants]] and [[adyen-api-access]].\n\n## Key takeaways\n\n- The request body requires `type`. Its many method-specific parent objects are marked optional in the table, while nested fields can be required when the relevant object is supplied, and some prose imposes type, contract, or region conditions. For example, `businessLineId` is required for a platform model; `shopperInteraction` is required if the merchant has no sales channel or `type` is `alipay`. Read the exact method row before constructing a request.\n- Optional `countries` and `currencies` default to all supported by the chosen method. Optional `storeIds` scopes configuration to stores. Method-specific defaults and limits vary: Apple Pay `domains` has a 99-domain request maximum; PayPal `directCapture` defaults to true and, when true, overrides merchant capture settings. Transaction-description settings cannot be configured in TEST.\n- A 200 response requires resource `id` and may include `allowed`, `enabled`, `verificationStatus`, and `associatedPaymentMethods`. Adyen sets `allowed=true` after screening; `enabled` separately reports enablement; `verificationStatus` can be `valid`, `pending`, `invalid`, or `rejected`. The endpoint also documents 204 with no content. A successful request or returned ID does not itself establish screening approval, enablement, verification, transaction authorization, capture, or settlement.\n- Documented failures are 400, 401, 403, 422, 429 and 500. The snapshot specifies no idempotency, propagation timing, deletion/reversal, or live-server behavior. The Visa and partner-model examples illustrate request and response shapes, not general eligibility.\n\n## Detail locators\n\n- Purpose, role, TEST v3 server and merchant path: raw lines 5\u201322.\n- Request fields and method-specific/conditional requirements: raw lines 25\u2013214; illustrative requests: lines 216\u2013246.\n- 200 response states, associated transitions and ID: raw lines 247\u2013449; 204 and errors: lines 452\u2013572.\n- Illustrative 200 responses: raw lines 574\u2013608.\n\n## Related\n\n- [[adyen-payment-method-variants]] \u2014 variant identity and configuration scope.\n- [[adyen-api-access]] \u2014 credential permissions.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/2026-11-05|POST merchant paymentMethodSettings, captured 2026-11-05]]",
+  "quotes": [
+    {
+      "text": "Sends a request to add a new payment method to the merchant account identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- Management API\u2014Payment methods read and write",
+      "location": "raw line 12"
+    },
+    {
+      "text": "| businessLineId | string | No | The unique identifier of the business line. Required if you are a [platform model](https://docs.adyen.com/platforms). |",
+      "location": "raw line 54"
+    },
+    {
+      "text": "| allowed | boolean | No | Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account. |",
+      "location": "raw line 267"
+    },
+    {
+      "text": "| verificationStatus | string | No | Payment method status. Possible values:  - **valid**  - **pending**  - **invalid**  - **rejected** |",
+      "location": "raw line 436"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-j18-variant-source",
+        "target_path": "wiki/concepts/adyen-payment-method-variants.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-paymentmethodsettings]] \u2014 2026-11-05-captured Management API v3 TEST reference for requesting a merchant payment method by variant, with method-specific inputs and separate screening, enablement and verification response states.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings/2026-11-05.md",
+  "raw_sha256": "544c73d1b7d044ae9d4d3d6397701ad6848e477df999ecf8b72318a092130eb3",
+  "status": "candidate_ready"
+}

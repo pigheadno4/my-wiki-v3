@@ -21,6 +21,12 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-paymentmethodsettings-paymentmethodid-getapplepaydomains]] — 2026-11-05-captured Management API v3 TEST read of Apple Pay domains registered for a merchant/payment-method pair; `200` has optional domain-list readback, while `204` has no content, and neither proves Live Apple Pay readiness or a payment outcome.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-paymentmethodsettings-paymentmethodid-addapplepaydomains]] — 2026-11-05-captured Management API v3 test reference for adding up to 99 Apple Pay merchant domains per request to a named merchant/payment-method setting; 204 reports request status without domain-verification or payment proof.
+
+
 - [[source-adyen-api-explorer-checkout-latest-post-calculatetax]] — 2026-11-02-captured Checkout API v72 TEST tax-calculation request/response for initial India LRS TCS scope and a downstream /payments token/amount route; calculation does not establish a payment outcome.
 
 

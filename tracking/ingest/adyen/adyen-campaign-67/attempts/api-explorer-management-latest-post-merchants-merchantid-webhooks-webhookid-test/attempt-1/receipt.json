@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-test",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: test a merchant webhook\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/test\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/test/2026-11-05.md\"\ntags: [adyen, management-api, webhooks, testing]\n---\n\n## Overview\n\nThis 2026-11-05-captured Adyen Management API reference describes `POST /merchants/{merchantId}/webhooks/{webhookId}/test`. It sends sample notifications to test a merchant webhook configuration and returns test results, including the receiver's HTTP response. The listed server is `https://management-test.adyen.com/v3`; the API credential needs the **Management API\u2014Webhooks read and write** role. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- Required string path IDs are `merchantId` for the merchant account and `webhookId` for the webhook configuration. The body schema marks `types` optional and lists supported event codes by webhook type; `notification` is an optional custom test notification object but is **required when `types` contains `CUSTOM`**. Within an included `notification.amount`, `currency` and minor-unit integer `value` are required. The page gives no default for an omitted `types` list.\n- For each chosen event code, the reference says Adyen sends four test notifications spanning success/failure scenarios in hard-coded EUR and GBP, regardless of merchant configured currencies. For `CUSTOM`, it says only the specified custom notification is sent.\n- HTTP `200` has an optional `data` array of per-test results; each element's `status` is required and is `success` when the receiver returns `2xx`, otherwise `failed`. Optional fields include `merchantId`, `output`, sent notification body, receiver `responseCode`, and `responseTime` in milliseconds. HTTP `204` is separately documented as processed without additional content.\n- A successful test reports the sample webhook receiver's response. Neither a sample notification's `success` field nor the test `status` proves a real payment, production delivery, later webhook reliability, or financial finality. The captured page does not specify idempotency or a live server.\n\n> [!warning] Contradiction\n> The custom request example sets HUF `notification.amount.value` to `1000` (raw lines 57\u201371), but its `200` response example embeds a `requestSent` notification with HUF `value` `100` (raw lines 213\u2013223). The examples do not establish that the sent amount echoes the submitted custom amount exactly.\n\n## Detail locators\n\n- Purpose, number/currencies of samples, credential role, TEST server, and path IDs: raw lines 5\u201326.\n- Optional and conditional body fields, supported `types` by webhook type, and custom notification subfields: raw lines 29\u201342.\n- Standard and custom request examples: raw lines 44\u201372. The custom example is an illustration, not a payment result.\n- `200`/per-test result schema and `204` no-content response: raw lines 73\u201391; response examples: raw lines 193\u2013226.\n- `400`, `401`, `403`, `422`, and `500` problem responses: raw lines 94\u2013191. `401` requires authentication; `403` means insufficient permission.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 webhook configuration, receipt, and testing context.\n- [[adyen-api-access]] \u2014 API credential context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/test/2026-11-05|Adyen Management API merchant webhook test, captured 2026-11-05]]\n",
+  "quotes": [
+    {
+      "text": "Sends sample notifications to test if the webhook is set up correctly.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "We send four test notifications for each event code you choose. They cover success and failure scenarios for the hard-coded currencies EUR and GBP, regardless of the currencies configured in the merchant accounts. For custom notifications, we only send the specified custom notification.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "Management API\u2014Webhooks read and write",
+      "location": "raw line 15"
+    },
+    {
+      "text": "| notification | object | No | Custom test notification object. Required when the [`types`](https://docs.adyen.com/api-explorer/#/ManagementService/v1/post/companies/%7BcompanyId%7D/webhooks/%7BwebhookId%7D/test__reqParam_types) list contains **CUSTOM**. |",
+      "location": "raw line 32"
+    },
+    {
+      "text": "|   - status | string | Yes | The status of the test request. Possible values are:  - **success**, `data.responseCode`: **2xx**.  - **failed**, in all other cases.  You can use the value of the [`output`](https://docs.adyen.com/api-explorer/#/ManagementService/v1/post/merchants/%7BmerchantId%7D/webhooks/%7Bid%7D/test__resParam_data-output) field together with the [`responseCode`](https://docs.adyen.com/api-explorer/#/ManagementService/v1/post/merchants/%7BmerchantId%7D/webhooks/%7Bid%7D/test__resParam_data-responseCode) value to troubleshoot failed test webhooks. |",
+      "location": "raw line 87"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-test-webhooks-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-test]] \u2014 2026-11-05-captured Management API v3 TEST merchant webhook test reference: chosen sample event codes, optional custom notification, per-test receiver response/status, and separate 204 no-content success. A test result is not a real payment or production delivery result.\n\n> [!warning] Contradiction\n> The custom request example has HUF amount value `1000`, while its response example's sent notification has HUF value `100`; do not infer exact amount echo from those examples. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-webhooks-webhookid-test]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Custom request example amount 1000 differs from response requestSent amount 100 (raw lines 57\u201371 and 213\u2013223)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/webhooks/(webhookId)/test/2026-11-05.md",
+  "raw_sha256": "2397935f9dd72acc52d5eebbd81cea1c5c6874fe07ad25f9af27d0b640d5fff3",
+  "status": "candidate_ready"
+}

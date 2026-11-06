@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-billingentities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Management API: List company billing entities\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/billingEntities\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/billingEntities/2026-11-05.md\"\ntags: [adyen, management-api, billing-entities, terminal-ordering]\n---\n\n## Overview\n\nThe captured Management API `GET /companies/{companyId}/billingEntities` lists billing entities for the company account identified by `companyId` and its merchant accounts. A billing entity is the legal entity to which Adyen charges orders; terminal-product orders must contain its ID. The reference lists the Test `https://management-test.adyen.com/v3` server and requires the caller's API credential to have **Management API\u2014Terminal ordering read** or **Management API\u2014Terminal ordering read and write**. This is a lookup for terminal ordering, not an order or payment operation. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- `companyId` is the required path identifier of the company account. Optional query `name` is a billing-entity name filter. No request body is described.\n- The `200` response says the request succeeded. Its `data` array is optional in the response schema; its billing-entity objects have optional `id`, `name`, `taxId`, `email`, and `address` fields, with optional address children. The `id` is the value to use as `billingEntityId` when creating a separate order. The example's company- and merchant-looking IDs are illustrative and do not establish a universal ID format or a mandatory number of entries.\n- The page says Live requests are subject to rate limits, but gives no numeric limit in this capture. It lists 400, 401, 403, 422, and 500 errors. A successful listing does not create an order, verify a tax number or legal entity, charge an invoice, establish current Live ordering eligibility, or prove terminal delivery or payment.\n- No idempotency header, state transition, deletion, asynchronous review/approval, propagation timing, or Live server URL is specified by this read-only endpoint. These are evidence limits of the captured page.\n\n## Detail locators\n\n- Purpose, billing-entity definition, caller roles, Live rate-limit caveat, and Test server: raw lines 5\u201319.\n- Required company path ID, optional name query, and `200` response-field schema: raw lines 21\u201354.\n- Error statuses and payloads: raw lines 57\u2013154. The `200` example with two illustrative company/merchant entity entries: raw lines 156\u2013189.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal ordering and management context.\n- [[adyen-account-structure]] \u2014 company versus merchant-account hierarchy.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/billingEntities/2026-11-05|Pinned Management API billing-entity list reference]]",
+  "quotes": [
+    {
+      "text": "Returns the billing entities of the company identified in the path and all merchant accounts belonging to the company.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "A billing entity is a legal entity where we charge orders to. An order for terminal products must contain the ID of a billing entity.",
+      "location": "raw line 8"
+    },
+    {
+      "text": "Management API\u2014Terminal ordering read",
+      "location": "raw line 12"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "raw line 16"
+    },
+    {
+      "text": "The unique identifier of the billing entity, for use as `billingEntityId` when creating an order.",
+      "location": "raw line 52"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-billingentity-list-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-billingentities]] \u2014 2026-11-05-captured Management API v3 Test read of company and associated merchant billing entities for terminal ordering; an optional `data` readback supplies possible `billingEntityId` values but does not place an order or prove delivery.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/billingEntities/2026-11-05.md",
+  "raw_sha256": "b50f8f227ccef69b78075008baffa9635e019fd43e051839b4268e097ded955a",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-post-terminals-terminalid-reassign",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: reassign a terminal\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/terminals/(terminalId)/reassign\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/terminals/(terminalId)/reassign/2026-11-05.md\"\ntags: [adyen, management-api, terminal-management, reassignment]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference documents `POST /terminals/{terminalId}/reassign` for moving a payment terminal to a company account, merchant account, merchant account inventory, or store. The caller needs the `Management API\u2014Assign Terminal` role. The listed server is TEST `https://management-test.adyen.com/v3`; the page says Live requests are rate limited but gives no numeric limit here. A successful request is a reassignment API result, not proof of on-device boarding, payment readiness, transaction processing, or settlement. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- The path requires the terminal's string `terminalId`. The request body lists optional `companyId`, `merchantId`, `storeId`, and `inventory` fields for distinct assignment destinations; no single body property is schema-marked universally required (raw lines 18\u201332).\n- For reassignment to a merchant account, the prose requires `inventory` with `merchantId`. `inventory: true` places the terminal in merchant inventory, where the page says it cannot process transactions; `false` assigns it directly to the merchant account, which the page describes as able to process transactions. This is a destination distinction, not evidence a particular device has boarded or processed a payment (raw lines 29\u201331).\n- The merchant and store JSON request examples illustrate separate destinations; they do not establish the full set of valid combinations or a default `inventory` value (raw lines 34\u201349).\n- HTTP 200 is the documented success status, with no success response-body schema. The page says to inspect the actual response code for request status. It separately lists 400, 401, 403, 422, and 500 errors; it gives no idempotency or reversal contract (raw lines 50\u2013153).\n\n## Detail locators\n\n- Purpose, role, Live rate-limit qualification, and TEST server: raw lines 5\u201316.\n- Path ID, body identities, conditional inventory rule, and request examples: raw lines 18\u201349.\n- 200 status and error schemas: raw lines 50\u2013153.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/terminals/(terminalId)/reassign/2026-11-05|Management API terminal reassignment, captured 2026-11-05]]\n",
+  "quotes": [
+    {
+      "text": "Reassigns a payment terminal to a company account, merchant account, merchant account inventory, or a store.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- Management API\u2014Assign Terminal",
+      "location": "raw line 11"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "raw line 13"
+    },
+    {
+      "text": "| inventory | boolean | No | Must be specified when reassigning terminals to a merchant account:  If set to **true**, reassigns terminals to the inventory of the merchant account and the terminals cannot process transactions.  If set to **false**, reassigns terminals directly to the merchant account and the terminals can process transactions. |",
+      "location": "raw line 30"
+    },
+    {
+      "text": "Look at the actual response code for the status of the request.",
+      "location": "raw line 53"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-api-explorer-management-latest-post-terminals-terminalid-reassign-terminal-management-link",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-terminals-terminalid-reassign]] \u2014 2026-11-05-captured Management API v3 TEST terminal reassignment reference for company, merchant, merchant inventory, or store destinations; merchant assignment requires an explicit inventory flag, and 200 has no device-state readback.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/terminals/(terminalId)/reassign/2026-11-05.md",
+  "raw_sha256": "af23af9079ff1d75cc206ac0d694751830b3a0244e5a6944230fb125bf6b28e5",
+  "status": "candidate_ready"
+}

@@ -1,6 +1,6 @@
 # Adyen C67 collected API Explorer ingestion selection
 
-Status: **PREPARED ONLY — awaiting exact ingestion approval**. Prepared 2026-11-05.
+Status: **COMPLETE — all 50 sources approved and validated**. Prepared 2026-11-05.
 
 Approved collection completed for all50 exact URLs: **50 HTTP200 substantive Markdown pages**, no failed, title-only or mismatched documents. Families: **Management50**. Every response body is preserved byte-for-byte after collection metadata in a new dated2026-11-05 raw file. All prior Adyen raw/wiki hashes are unchanged; concurrent unrelated PayPal work is recorded separately. These title/body/byte checks are collection screening, not full semantic reads. [Collection manifest](../../../collections/adyen/c67-collection-2026-11-05/manifest.md), [summary](../../../collections/adyen/c67-collection-2026-11-05/summary.json). Original proposal retained in [collection-selection-review.md](collection-selection-review.md).
 
@@ -64,3 +64,7 @@ Fixed coordinator audit jobs: `api-explorer-management-latest-post-merchants-mer
 | 48 | Management | GET /companies/{companyId}/terminalLogos | 1,342 | 155 |
 | 49 | Management | PATCH /companies/{companyId}/terminalSettings | 9,087 | 788 |
 | 50 | Management | PATCH /companies/{companyId}/terminalLogos | 1,421 | 183 |
+
+User approved exact C67 ingestion on2026-11-06 after50hash/count checks. Historical preparation statements above retain their pre-approval meaning. No commit/push.
+
+C67 closed: 3109 total sources; 546 API Explorer sources. Remaining 27 API raw pages are excluded title-only stubs. No commit/push.

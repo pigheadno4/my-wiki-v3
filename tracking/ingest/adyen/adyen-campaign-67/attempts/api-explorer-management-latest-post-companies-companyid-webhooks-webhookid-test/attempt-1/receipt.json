@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-management-latest-post-companies-companyid-webhooks-webhookid-test",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: Test a company webhook\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/companies/(companyId)/webhooks/(webhookId)/test\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/companies/(companyId)/webhooks/(webhookId)/test/2026-11-05.md\"\ntags: [adyen, management-api, webhooks, testing]\n---\n\n## Overview\n\nThe captured Management API company webhook test endpoint, `POST /companies/{companyId}/webhooks/{webhookId}/test`, sends sample notifications to check a configured webhook. The pinned reference lists only the TEST server `https://management-test.adyen.com/v3`. The API credential needs the Management API\u2014Webhooks read and write role. `companyId` identifies the company account; `webhookId` identifies its webhook configuration. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request body fields are optional at the top level. `merchantIds` can select at most 20 configured merchant accounts. Without it, Adyen says it sends samples to all configured merchant accounts, while also limiting sending to a maximum of 20; for a configuration above 20, specify a subset.\n- `types` selects supported event codes by webhook type. Four test notifications are sent per chosen event code, covering success and failure in hard-coded EUR and GBP. For `CUSTOM`, `notification` is required and only the specified custom notification is sent. Its optional `amount` object has required `currency` and minor-unit integer `value` when supplied.\n- A 200 response has optional `data` results, one per test webhook sent. Each result has required `status` (`success` for a 2xx response from your server, otherwise `failed`); optional merchant ID, sent body, response code, response time in milliseconds, and explanatory output aid troubleshooting.\n- This tests notification delivery and the receiving server's HTTP response. A successful test does not establish a real authorization, capture, settlement, webhook delivery guarantee, or production setup. The response examples are sample data, not live payment evidence.\n\n## Detail locators\n\n- Purpose, sample limit and test semantics: raw lines 5\u201317.\n- TEST server, path IDs, request fields, supported `types` by webhook type and conditional custom fields: raw lines 19\u201345.\n- Request examples: raw lines 47\u201383. Response schema and success rule: raw lines 84\u201398. Client and server error schemas: raw lines 101\u2013198. Response examples: raw lines 200\u2013249.\n- The pinned reference lists 400, 401, 403, 422 and 500 errors; it does not document an idempotency key, lifecycle change, asynchronous approval, activation, or financial outcome for this endpoint.\n\n## Related\n\n- [[adyen-webhooks]]\n- [[adyen-api-access]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/webhooks/(webhookId)/test/2026-11-05|Adyen Management API company webhook test, captured 2026-11-05]]\n",
+  "quotes": [
+    {
+      "text": "Sends sample notifications to test if the webhook is set up correctly.",
+      "location": "line 7"
+    },
+    {
+      "text": "We send sample notifications for maximum 20 of the merchant accounts that the webhook is configured for.",
+      "location": "line 9"
+    },
+    {
+      "text": "For custom notifications, we only send the specified custom notification.",
+      "location": "line 11"
+    },
+    {
+      "text": "Your server must respond with **HTTP 2xx* for the test webhook to be successful",
+      "location": "line 94"
+    },
+    {
+      "text": "The status of the test request. Possible values are:  - **success**, `data.responseCode`: **2xx**.  - **failed**, in all other cases.",
+      "location": "line 98"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-company-webhook-test-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-companies-companyid-webhooks-webhookid-test]] \u2014 2026-11-05-captured Management API v3 TEST company webhook test endpoint; up to 20 merchant accounts, per-notification receiver response results, and no real payment or live-delivery proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/companies/(companyId)/webhooks/(webhookId)/test/2026-11-05.md",
+  "raw_sha256": "5cac793128424f1c1c5524dfae84f9ede327462a0e36562dab7654f82c45af5e",
+  "status": "candidate_ready"
+}

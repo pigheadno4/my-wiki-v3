@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-terminalactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: List company terminal actions\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/terminalActions\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalActions/2026-11-05.md\"\ntags: [adyen, management-api, terminal-actions, point-of-sale]\n---\n\n## Overview\n\nThis [[adyen]] Management API `latest` reference, captured 2026-11-05, lists terminal actions scheduled for the company named by `companyId` through `GET /companies/{companyId}/terminalActions`. Adyen-scheduled actions are excluded. The listed server is `https://management-test.adyen.com/v3`; the text also says Live requests are subject to rate limits, without giving a numeric limit here.\n\n## Key takeaways\n\n- The API credential needs either **Management API\u2014Terminal actions read** or **Management API\u2014Terminal actions read and write**. The required path `companyId` uniquely identifies the company account. Optional query filters are `type` (four Android app/certificate install/uninstall actions) and `status` (`pending`, `successful`, `failed`, `cancelled`, `tryLater`).\n- Optional `pageSize` defaults to 20 and has a maximum of 100; `pageNumber` selects the page. The page does not specify a `pageNumber` default or total-count/pagination metadata in the response.\n- A 200 indicates the list request succeeded. Its optional `data` array contains optional per-action `id`, `terminalId`, `actionType`, `config`, `scheduledAt`, `confirmedAt`, `status`, and `result`. An item's reported status and result describe that action, not every terminal action in the company or a payment outcome. The sample shows a cancelled action; it is illustrative, not a default outcome.\n- The reference documents 400, 401, 403, 422 and 500 errors. It gives no idempotency, scheduling, cancellation, reversal, or device-application contract for this read endpoint. The snapshot is not evidence of current account eligibility, live device state, or successful payment execution.\n\n## Detail locators\n\n- List scope and Adyen-scheduled exclusion, caller roles, Live rate-limit qualification, and Test server: opening text and `## Servers`, lines 5-17.\n- Required company ID, optional type/status filters, page size default and maximum, and page number: `## Parameters`, lines 19-33.\n- Success meaning and optional action fields: `### 200 Success`, lines 35-51.\n- Error meanings and problem-body schemas: `### 400 Client Error` (lines 54-71), `### 401 Client Error` (74-91), `### 403 Client Error` (94-111), `### 422 Client Error` (114-131), and `### 500 Server Error` (134-151).\n- Illustrative cancelled action: `## Response examples`, lines 153-173.\n\n## Related\n\n- Company: [[adyen]]\n- Concept: [[adyen-terminal-management]]\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalActions/2026-11-05|Adyen Management API \u2014 List company terminal actions (2026-11-05)]]\n",
+  "quotes": [
+    {
+      "text": "Returns the [terminal actions](https://docs.adyen.com/point-of-sale/automating-terminal-management/terminal-actions-api) that have been scheduled for the company identified in the path.The response doesn't include actions that are scheduled by Adyen.",
+      "location": "line 7"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "line 14"
+    },
+    {
+      "text": "| pageSize | integer | No | The number of items to have on a page, maximum 100. The default is 20 items on a page. |",
+      "location": "line 32"
+    },
+    {
+      "text": "| data | array of object | No | The list of terminal actions. |",
+      "location": "line 43"
+    },
+    {
+      "text": "|   - status | string | No | The status of the terminal action: **pending**, **successful**, **failed**, **cancelled**, or **tryLater**. |",
+      "location": "line 50"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-company-terminal-actions-list-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminalactions]] \u2014 2026-11-05-captured Management API `latest` Test v3 company terminal-action list; excludes Adyen-scheduled actions, supports type/status filters and pagination, and returns action status rather than device or payment proof.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalActions/2026-11-05.md",
+  "raw_sha256": "880defcfe90b47de08187b5fde69e7b8b0108baeb7492587fe5443f6aa7890b5",
+  "status": "candidate_ready"
+}

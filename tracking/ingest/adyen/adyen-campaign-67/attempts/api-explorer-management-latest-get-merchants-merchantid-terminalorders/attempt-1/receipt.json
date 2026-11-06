@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-terminalorders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API v3: list merchant terminal orders\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/terminalOrders\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalOrders/2026-11-05.md\"\ntags: [adyen, management-api, terminal-orders, merchant-accounts]\n---\n\n## Overview\n\nThis 2026-11-05-captured Management API reference documents `GET /merchants/{merchantId}/terminalOrders`, a list of terminal-product orders for the path-identified merchant account. The caller needs either `Management API\u2014Terminal ordering read` or `Management API\u2014Terminal ordering read and write`. The listed server is TEST `https://management-test.adyen.com/v3`; Live requests are subject to rate limits, without a numeric value here. Order readback is not shipment delivery, terminal boarding, payment readiness, or financial-outcome proof. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- Required string `merchantId` identifies the merchant account, as stated by the endpoint purpose; its path table leaves the description blank. Optional query parameters are integer `limit` and `offset`, case-insensitive `status` (Placed, Confirmed, Cancelled, Shipped, Delivered), and `customerOrderReference`. No limit/offset bounds or defaults are given (raw lines 5\u20137, 20\u201334).\n- HTTP 200 has an optional `data` array of terminal-package and part orders. Each order's `id`, purchase-order reference, UTC `orderDate`, processing `status`, carrier `trackingUrl`, `items`, `billingEntity`, and `shippingLocation` are schema-marked optional; product, billing, shipping and order IDs are distinct references (raw lines 38\u201365).\n- The reference also lists HTTP 204 with no additional content; that response provides no order readback. The illustrative 200 example has Placed and Cancelled rows with example billing and shipping identities, not evidence for an actual merchant (raw lines 68\u201369, 171\u2013270).\n- The reference lists 400, 401, 403, 422, and 500 error schemas; it gives no order mutation, idempotency, reversal, or delivery-confirmation contract for this GET (raw lines 72\u2013169).\n\n## Detail locators\n\n- Purpose, required caller role, Live rate-limit qualification, and TEST server: raw lines 5\u201318.\n- Path and query parameters: raw lines 20\u201334; complete 200 order schema: lines 38\u201365.\n- 204 and error schemas: raw lines 68\u2013169; illustrative 200 response: lines 171\u2013270.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalOrders/2026-11-05|Management API merchant terminal-order list, captured 2026-11-05]]\n",
+  "quotes": [
+    {
+      "text": "Returns a list of terminal products orders for the merchant account identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- Management API\u2014Terminal ordering read",
+      "location": "raw line 11"
+    },
+    {
+      "text": "In the live environment, requests to this endpoint are subject to [rate limits](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).",
+      "location": "raw line 15"
+    },
+    {
+      "text": "| status | string | No | The order status. Possible values (not case-sensitive): Placed, Confirmed, Cancelled, Shipped, Delivered. |",
+      "location": "raw line 33"
+    },
+    {
+      "text": "| data | array of object | No | List of orders for payment terminal packages and parts. |",
+      "location": "raw line 44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-api-explorer-management-latest-get-merchants-merchantid-terminalorders-terminal-management-link",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalorders]] \u2014 2026-11-05-captured Management API v3 TEST merchant terminal-order list with status/reference filters, optional order data, and a 204 no-content response; readback does not prove delivery, boarding, or payment readiness.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalOrders/2026-11-05.md",
+  "raw_sha256": "029dcceecbfd2edf1e59b9ca03f028ceac4dfda36b3757eae3c3130dedb8f4bc",
+  "status": "candidate_ready"
+}

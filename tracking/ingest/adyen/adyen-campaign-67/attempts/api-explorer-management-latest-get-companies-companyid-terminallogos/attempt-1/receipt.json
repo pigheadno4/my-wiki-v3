@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-get-companies-companyid-terminallogos",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Management API: Get company terminal logo\"\ntype: source\ndate_ingested: 2026-11-06\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/companies/(companyId)/terminalLogos\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalLogos/2026-11-05.md\"\ntags: [adyen, management-api, terminal-logos, terminal-settings]\n---\n\n## Overview\n\nThe captured Management API `GET /companies/{companyId}/terminalLogos` reads the logo configured for a specified payment-terminal model at a company account. Its required path `companyId` identifies that company; required query `model` selects a terminal model from the reference's enumerated values. The page lists the Test `https://management-test.adyen.com/v3` server and requires the caller's API credential to have **Management API\u2014Terminal settings read** or **Management API\u2014Terminal settings read and write**. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- The company-level logo applies to terminals of the specified model under that company unless a different logo is configured at a lower level: merchant account, store, or individual terminal. This GET reads the company configuration; it does not identify any particular terminal's effective displayed image.\n- A `200` means the read request succeeded. The response's `data` string is optional in the schema and, when present, holds the image file as Base64 text. Decode that string to obtain the image file. The response example's `BASE-64_ENCODED_STRING` is illustrative.\n- The reference states that Live requests are subject to rate limits but provides no numeric threshold here. It lists 400, 401, 403, 422, and 500 errors. It specifies no request body, idempotency mechanism, logo update/deletion, propagation or device-application timing, Live server URL, or payment outcome. A readback does not establish device display, successful boarding, merchant eligibility, or payment execution.\n\n## Detail locators\n\n- Purpose, Base64 format, lower-level overrides, caller roles, Live rate-limit caveat, and Test server: raw lines 5\u201321.\n- Required `companyId` path and `model` query, including the complete model value list: raw lines 23\u201334.\n- `200` optional `data` string: raw lines 36\u201344. Error statuses and schemas: lines 47\u2013144. Illustrative JSON response: lines 146\u2013154.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal-settings administration and inheritance context.\n- [[source-adyen-docs-point-of-sale-automating-terminal-management-configure-terminals-api]] \u2014 separate configuration guide for company, merchant, store, and terminal levels.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalLogos/2026-11-05|Pinned Management API company terminal-logo GET reference]]",
+  "quotes": [
+    {
+      "text": "Returns the logo that is configured for a specific payment terminal model at the company identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The logo is returned as a Base64-encoded string. You need to Base64-decode the string to get the actual image file.",
+      "location": "raw line 9"
+    },
+    {
+      "text": "This logo applies to all terminals of the specified model under the company, unless a different logo is configured at a lower level (merchant account, store, or individual terminal).",
+      "location": "raw line 10"
+    },
+    {
+      "text": "Management API\u2014Terminal settings read",
+      "location": "raw line 14"
+    },
+    {
+      "text": "The terminal model. Possible values: E355, VX675WIFIBT, VX680, VX690, VX700, VX820, M400, MX925, P400Plus, UX300, UX410, V200cPlus, V240mPlus, V400cPlus, V400m, e280, e285, e285p, S1E, S1EL, S1F2, S1L, S1U, S7T.",
+      "location": "raw line 34"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c67-company-terminal-logo-get-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-companies-companyid-terminallogos]] \u2014 2026-11-05-captured Management API v3 Test read of a company-level terminal logo by model; optional Base64 `data` is subject to merchant/store/terminal overrides and does not prove on-device display.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/companies/(companyId)/terminalLogos/2026-11-05.md",
+  "raw_sha256": "f9b2bfe64dec5fb2943f3e7e3c750ea1118de24c3e17f956b7a2810a58541c4f",
+  "status": "candidate_ready"
+}
