@@ -4645,6 +4645,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/21.2.1/2026-10-18/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-php/comparisons/stripe-php/21.2.0--21.2.1/comparison.json)
 
+## `github-b0a5af655a25673da0cb`
+
+- Repository: `braintree/braintree-web`
+- SHA: `0b989560481a1274a8fda27e426f6297d3bde552`
+- Collection date: `2026-11-05`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-web/ingest-packets/github-b0a5af655a25673da0cb/packet.md)
+- Review priority: `high`
+- Required reading: `29` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-web@3.148.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.148.0/2026-11-05/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.147.0--3.148.0/comparison.json)
+
 ## `github-b11f1f62c66a78b84806`
 
 - Repository: `paypal/paypal-js`

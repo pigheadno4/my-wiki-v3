@@ -6,6 +6,11 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-06] ingest | braintree-web@3.148.0
+
+- Approved focused-reading delta, work item `github-b0a5af655a25673da0cb`, SHA `0b989560481a1274a8fda27e426f6297d3bde552`, after 3.147.0. Twenty modified/313 unchanged files; all 666 prior/current sizes, SHA-256 and Git blob IDs verified. Packet/release/comparison hashes match; old raw changelog tail identical. Notes label November 2, GitHub publication November 4, collection November 5; ingestion November 6.
+- Records v6 frame cleanup, conditional shared/load-order-sensitive `shopperSessionId` forwarding, exact Instant Verification fingerprint-shim removal and `credit-card-type` 10.2.0 -> 10.3.1. Two existing concepts updated before source/changelog/company/catalog/logs; all earlier knowledge and source_count 797 preserved. Helper-only checks are not hosted execution. No new comparison, supplement, upstream suite/build/browser/payment execution, commit or push. [[source-github-braintree-web]] [[changelog-github-braintree-web]]
+
 ## [2026-10-30] ingest | iOS `default-branch@9cfa623`
 
 - User-approved full ingest with focused reading, work item `github-5efc2eb4eec2312c8b58`, exact SHA `9cfa6232f165285ee7cfbdb644329c7e7a97c180` after released 7.13.0. Two selected changed/290 unchanged files; all 584 snapshot file sizes/SHA-256/Git IDs and packet/comparison hashes verified. Old raw changelog tail is identical. The selected comparison is not an exhaustive upstream-repository diff.

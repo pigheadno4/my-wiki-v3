@@ -2,9 +2,10 @@
 title: "GitHub: braintree/braintree-web"
 type: source
 date_ingested: 2026-07-28
-date_updated: 2026-10-19
+date_updated: 2026-11-06
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web/snapshots/2026-11-05-0b98956/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/manifest.json"
   - "github/braintree/braintree-web/supplements/2026-09-27-893d4e7-1540eb0a/manifest.json"
@@ -16,13 +17,13 @@ tags: [braintree, javascript-sdk, checkout, hosted-fields, venmo, paypal, 3d-sec
 
 ## Overview
 
-`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest ingested release is `braintree-web@3.147.0` at exact SHA `f3357c49c7b71f079d031c3ddf89cdfe444f6511`. All earlier version findings remain preserved below.
+`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest ingested release is `braintree-web@3.148.0` at exact SHA `0b989560481a1274a8fda27e426f6297d3bde552`. All earlier version findings remain preserved below.
 
 Repository: <https://github.com/braintree/braintree-web>
 
 ## Evidence Boundary
 
-- The snapshots prove implementation present in the retained `braintree-web@3.143.0` through `3.147.0` releases. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
+- The snapshots prove implementation present in the retained `braintree-web@3.143.0` through `3.148.0` releases. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
 - The package exposes SDK components, not Braintree Web Drop-in. Drop-in is a separately versioned repository.
 - The `3.146.0` snapshot adds the Edit Saved Payment story to the earlier 28 stories. Tests, fixtures, and mocks remain excluded; the approved helper supplement does not change future collection policy.
 - PayPal Checkout v6 and Fastlane delegate runtime behavior to PayPal SDKs. This source covers the Braintree adapters and nonce boundary, not the complete delegated runtimes.
@@ -301,6 +302,65 @@ No mandatory migration is stated in the release notes. For adopters, verify awai
 >
 > [Corrected v6 JSDoc example, line 1872](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/paypal-checkout-v6/paypal-checkout-v6.js#L1872)
 
+## `3.148.0` Cleanup, Shopper Sessions and Instant Verification
+
+Approved delta ingestion on 2026-11-06 from `braintree-web@3.147.0` to `braintree-web@3.148.0`, SHA `0b989560481a1274a8fda27e426f6297d3bde552`, collected 2026-11-05. Release notes label the version 2026-11-02; the immutable release record records GitHub publication at `2026-11-04T17:26:41Z`. These dates are not the ingest date. All earlier knowledge above is preserved.
+
+### PayPal v6 Frame Cleanup
+
+The [v6 adapter](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/paypal-checkout-v6/paypal-checkout-v6.js#L4262) still disables its methods and removes its owned SDK script, but now awaits both `_clientPromise` and `_frameServicePromise`, calls `_frameService.teardown()` when available, and sends teardown analytics. Previously it awaited only the client and sent analytics without invoking frame-service teardown.
+
+The retained [FrameService dependency](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/lib/frame-service/external/frame-service.js#L205) closes its frame, removes its dispatch iframe, and cleans polling/visibility handlers. A rejected prerequisite prevents the adapter's completion callback, and this is not a guarantee that every delegated hosted-SDK resource is destroyed or that repeated teardown is safe. No browser or payment execution was performed.
+
+There is also an early-call timing boundary visible in source: `_frameServicePromise` is assigned inside the client-resolution callback, while authorization-only creation can resolve the wrapper before that callback. Teardown captures the property's value at call time; if it is still undefined, `Promise.all` does not wait for the frame-service promise assigned later. Avoid describing this change as proof of race-free cleanup during deferred initialization.
+
+Fourteen modified Storybook files add teardown controls and the shared [button/status helper](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/.storybook/stories/PayPalCheckoutV6/common.ts#L65). The [saved-payment example](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/.storybook/stories/PayPalCheckoutV6/EditSavedPayment.stories.ts#L224) explicitly tears down both its initial vaulting wrapper and later edit wrapper. These are lifecycle demonstrations, not newly introduced saved-payment or returning-buyer capability.
+
+### Optional Shopper Session Metadata and Forwarding Limits
+
+The [public create documentation](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/paypal-checkout-v6/index.js#L21) adds optional `shopperSessionId`. `_initialize` records a truthy value through a shared setter; `_initializePayPalInstance` can include it in options for a newly created checkout, vault, Messages or saved-payment-method instance, and `_createPayPalInstance` forwards options to `window.paypal.createInstance`. This is metadata, not a payment token, authenticated buyer identity or transaction result. The change does not establish a new typed/React interface in another repository.
+
+> [!warning] Contradiction
+> The release-note promise that the value will propagate is conditional in the implementation. The map is shared across wrappers and owned by the exact current `window.paypal` object. If `_initialize` records an ID before `loadPayPalSDK()` creates/replaces that object, the getter returns undefined. A later wrapper can overwrite the shared ID. Existing/in-flight instance branches return before the forwarding branch, so this is not a per-wrapper ID update API. The same discrepancy is recorded in [[paypal-braintree-integration]].
+
+Source inspection and a helper-only Node VM check with a stub `window` confirmed that recording A before replacing the SDK object yields undefined, and recording A then B against one object yields B. This did not import the SDK, load a browser/hosted runtime, or execute a payment. Test fresh-load, preloaded-SDK, multi-wrapper and SDK-replacement paths in the merchant integration; do not present the stub check as end-to-end proof. The new shared map also stores locale, but does not fix the earlier requested/pending-locale-versus-success discrepancy documented for 3.147.0.
+
+### Instant Verification Fingerprint Normalization
+
+Before constructing the redirect, [startPayment](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/instant-verification/instant-verification.js#L50) now passes the client authorization fingerprint through `removeCustomerIdSuffix`. For strings, the [constant](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/instant-verification/constants.js#L20) removes only the exact trailing literal `?customer_id=`; nonstrings are unchanged. The resulting value is passed as query parameter `at`, separately from the existing `ct: options.jwt`.
+
+Examples of the inspected normalization (not hosted execution): `fingerprint?customer_id=` becomes `fingerprint`; `fingerprint?customer_id=123` and a suffix followed by other parameters are unchanged. This is not general query stripping, JWT validation, buyer authorization or proof of a successful bank verification.
+
+### Dependency, Reading Scope and Migration
+
+The [direct dependency pin](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/package.json#L58) changes `credit-card-type` from `10.2.0` to `10.3.1`; other direct pins are unchanged. Its implementation is outside this capsule, so no specific recognition/security behavior is inferred from the bump.
+
+The approved focused-reading delta covers the changed implementation/content sections, affected prior code, complete Instant Verification/public entry/helper/edit-story files, release notes, comparison and cumulative wiki history. Unchanged source ranges/files, historical raw changelog and generated inventories were checked mechanically; this is not a full semantic read of every assigned file or upstream tree. Snapshot counts: 333 files, 20 modified, 313 unchanged, no additions/removals. All 666 prior/current files passed size, SHA-256 and Git blob-ID checks. Twenty retained changes plus the lockfile and two test exclusions reconcile all 23 upstream changes; no packet gaps/unclassified changes. No raw/packet modification, supplement, install, upstream suite, build, hosted-browser or payment execution.
+
+No mandatory migration is stated. For adoption, await and handle teardown failures, clean each owned wrapper, verify session-ID forwarding against real SDK loading/concurrency, and exercise Instant Verification with and without the exact fingerprint shim. Preserve trusted server-side buyer/token/order processing and do not treat analytics or nonce creation as settlement.
+
+### 3.148.0 Grounding Excerpts
+
+> `* @param {string} [options.shopperSessionId] An identifier representing the shopper's session.`
+>
+> [Public entry, line 21](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/paypal-checkout-v6/index.js#L21)
+
+> `if (activePayPalSdkInstance !== window.paypal) {`
+>
+> [Identity-guarded getter, line 46](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/paypal-checkout-v6/paypal-checkout-v6.js#L46)
+
+> `createInstanceOptions.shopperSessionId =`
+>
+> [New-instance forwarding, line 669](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/paypal-checkout-v6/paypal-checkout-v6.js#L669)
+
+> `return Promise.all([this._clientPromise, this._frameServicePromise]).then(`
+>
+> [Teardown, line 4269](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/paypal-checkout-v6/paypal-checkout-v6.js#L4269)
+
+> `var WEB_DROP_IN_SHIM = /\?customer_id=$/;`
+>
+> [Instant Verification constant, line 20](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/files/src/instant-verification/constants.js#L20)
+
 ## Related
 
 - [[changelog-github-braintree-web]] — package-qualified release ledger
@@ -310,6 +370,10 @@ No mandatory migration is stated in the release notes. For adopters, verify awai
 - [[paypal-fastlane]] — delegated Fastlane product concept
 
 ## Raw Sources
+
+- [3.148.0 snapshot](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/manifest.json)
+- [3.148.0 release identity](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.148.0/2026-11-05/manifest.json) and [release notes](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.148.0/2026-11-05/release-notes.md)
+- [3.147.0 to 3.148.0 comparison manifest](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.147.0--3.148.0/comparison.json), [readable comparison](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.147.0--3.148.0/comparison.md) and [patch](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.147.0--3.148.0/diff.patch)
 
 - [3.147.0 snapshot](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/manifest.json)
 - [3.147.0 release identity](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.147.0/2026-10-19/manifest.json) and [release notes](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.147.0/2026-10-19/release-notes.md)

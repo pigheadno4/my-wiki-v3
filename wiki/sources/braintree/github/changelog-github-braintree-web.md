@@ -2,9 +2,10 @@
 title: "GitHub changelog: braintree/braintree-web"
 type: source
 date_ingested: 2026-07-28
-date_updated: 2026-10-19
+date_updated: 2026-11-06
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web/snapshots/2026-11-05-0b98956/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/manifest.json"
   - "github/braintree/braintree-web/supplements/2026-09-27-893d4e7-1540eb0a/manifest.json"
@@ -17,6 +18,22 @@ tags: [braintree, javascript-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/braintree-web`. Cumulative implementation knowledge belongs in [[source-github-braintree-web]] and the linked immutable snapshots.
+
+## `braintree-web@3.148.0` (release notes: 2026-11-02)
+
+`braintree-web@3.147.0` -> `braintree-web@3.148.0`; SHA `0b989560481a1274a8fda27e426f6297d3bde552`. GitHub publication `2026-11-04T17:26:41Z`, collected 2026-11-05, approved focused-reading delta ingested 2026-11-06. All prior history remains below.
+
+**Findings:** PayPal v6 teardown now awaits client and the currently assigned frame-service promise and calls frame-service cleanup before analytics. Rejected prerequisites still bypass the callback; early authorization-only teardown can capture an undefined frame-service promise before client resolution assigns it. This is not race-free deferred initialization, comprehensive hosted-resource destruction or repeat-teardown proof. Fourteen Storybook files add cleanup controls, including both initial vaulting and edit wrappers in the saved-payment story.
+
+**Shopper metadata:** optional create `shopperSessionId` can reach newly created delegated SDK instances, but storage is module-wide and guarded by `window.paypal` identity. Recording before SDK loading/replacement can lose the value; another wrapper can overwrite it; existing/pending instance branches do not update it. The release-note wording is qualified in the source and integration concept. A helper-only stub check is not hosted-browser proof. This metadata is not authentication, a preferred vaulted token or payment confirmation, and does not establish an independent PayPal JS/React release change.
+
+**Instant Verification and dependencies:** strip only the exact trailing literal `?customer_id=` from string authorization fingerprints before the redirect's `at` parameter. No general query stripping or JWT validation. Direct `credit-card-type` changes `10.2.0` -> `10.3.1`; dependency internals were not audited.
+
+**Migration:** none mandated by the notes. Handle awaited cleanup failures, track each wrapper, test fresh/preloaded/replaced SDK and concurrent wrappers before relying on shopper metadata, and exercise the exact Instant Verification shim. Earlier app-switch, locale, saved-payment and nonce/server boundaries remain intact.
+
+**Reading and updates:** 20 modified/313 unchanged retained files; all 666 prior/current size/SHA-256/Git blob checks pass. Changed source/content sections, affected prior/dependency code, release evidence, comparison and complete cumulative wiki history read under the approved focus exception; unchanged ranges/files, raw changelog history and inventories checked mechanically. All 23 upstream dispositions reconcile; no gaps/unclassified changes. Two existing concepts updated first, then cumulative source/changelog/company/catalog/logs. Source count unchanged; no new cross-company comparison. No upstream suite/build/browser/payment execution, raw mutation or supplement.
+
+**Evidence:** [snapshot](../../../../raw/github/braintree/braintree-web/snapshots/2026-11-05-0b98956/manifest.json), [release manifest](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.148.0/2026-11-05/manifest.json), [release notes](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.148.0/2026-11-05/release-notes.md), [comparison manifest](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.147.0--3.148.0/comparison.json), [readable comparison](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.147.0--3.148.0/comparison.md) and [patch](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.147.0--3.148.0/diff.patch). Exact source links and five quotes: [[source-github-braintree-web]].
 
 ## `braintree-web@3.147.0` (2026-10-12)
 

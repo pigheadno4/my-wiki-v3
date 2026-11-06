@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-06] ingest | Braintree Web `3.148.0`
+
+Approved focused-reading delta preserves all earlier history: v6 frame cleanup, conditional shopper-session metadata forwarding, the Instant Verification fingerprint-shim fix and dependency pin. Concepts, cumulative source/changelog and Braintree catalog updated; source_count unchanged. Details: [[braintree-log]], [[source-github-braintree-web]], [[changelog-github-braintree-web]]. No upstream suite/browser/payment execution, commit or push.
+
 ## [2026-11-03] ingest | Direct PayPal v6 samples `c4333b4`
 
 Approved focused-reading full additive ingest: Fastlane 3DS and 24 new local-method HTML examples, with method-specific session inputs, demo carts and explicit sample/payment-state limits. Earlier saved-payment, ACH, React and server history preserved; source_count unchanged. Details: [[paypal-log]], [[source-github-v6-web-sdk-sample-integration]], [[changelog-github-v6-web-sdk-sample-integration]]. No upstream SDK/browser/payment execution, commit or push.

@@ -115,6 +115,15 @@ The wrapper memoizes the underlying session for return-check/resume calls, inclu
 > [!warning] Contradiction
 > In 3.147.0, initializer comments describe the last successfully applied locale, but the implementation caches the requested locale before the instance-creation promise resolves and does not roll it back on failure. Treat it as requested/pending state rather than verified successful application. The same discrepancy is recorded in [[source-github-braintree-web]].
 
+## Braintree Web 3.148.0 Shopper Metadata and Teardown
+
+The adapter documents optional `shopperSessionId` on `paypalCheckoutV6.create()`. A truthy value is stored in a module-wide map owned by the current `window.paypal` reference, then can be passed to new checkout, vault, Messages and saved-payment-method SDK instances. It is shopper-session metadata, not authentication, preferred vaulted-payment context or payment completion. This Braintree release does not establish a corresponding change in independently versioned PayPal JS/React packages. [[source-github-braintree-web]]
+
+> [!warning] Contradiction
+> The 3.148.0 release note says the parameter will propagate to the PayPal SDK, but the adapter records it before SDK loading. If loading creates/replaces `window.paypal`, the identity-guarded getter returns undefined. Another wrapper can overwrite the shared value; existing/in-flight SDK-instance branches return before forwarding it. Treat propagation as conditional, not a per-wrapper guarantee. Source inspection and a helper-only stub check establish these semantics, not a hosted-browser reproduction. The same discrepancy is recorded in [[source-github-braintree-web]].
+
+Teardown now waits for the client and currently assigned frame-service promise, then calls frame-service teardown before analytics. That service closes its frame, removes its dispatch iframe and cleans polling/visibility handlers. Rejected prerequisites still bypass the completion callback; an early authorization-only teardown can capture an undefined frame-service promise before client resolution assigns it. The change does not prove race-free deferred initialization, destruction of every hosted SDK resource or safe repeated teardown. The saved-payment story explicitly cleans both its initial vaulting wrapper and edit wrapper. All earlier returning-buyer, locale and nonce/server boundaries remain preserved. [[source-github-braintree-web]] [[changelog-github-braintree-web]]
+
 ## Returning-Buyer Sample at `06bc2de` (independent commit evidence)
 
 The independent Braintree v6 sample adds a static View/Edit Saved Payment page at `default-branch@06bc2de` (October 1, 2026). That page loads Braintree Web `3.146.0`; its unchanged React entry still loads `3.142.0` and declares `@paypal/react-paypal-js@^10.1.0`. This sample update does not add a React edit component or update the independently versioned PayPal JS packages. [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]]

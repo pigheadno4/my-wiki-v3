@@ -58,7 +58,7 @@ The collected 2026-09-16 JavaScript v3 deprecation-policy snapshot distinguishes
 
 ## Versioned Evidence
 
-The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. Release `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7` adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback. Release `3.145.0` at SHA `732ed094354d650605e678d98246ce6332952ad3` adds the checkout/recovery changes below. Release `3.146.0` at SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d` adds v6 saved-payment editing. The latest ingested release is `3.147.0` at SHA `f3357c49c7b71f079d031c3ddf89cdfe444f6511`; all earlier baselines remain in the cumulative source and changelog.
+The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. Release `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7` adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback. Release `3.145.0` at SHA `732ed094354d650605e678d98246ce6332952ad3` adds the checkout/recovery changes below. Release `3.146.0` at SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d` adds v6 saved-payment editing. Release `3.147.0` at SHA `f3357c49c7b71f079d031c3ddf89cdfe444f6511` adds return recovery and BIN hardening. The latest ingested release is `3.148.0` at SHA `0b989560481a1274a8fda27e426f6297d3bde552`; all earlier baselines remain in the cumulative source and changelog.
 
 ## Checkout and Recovery Changes in 3.145.0
 
@@ -82,6 +82,14 @@ PayPal v6 payment and billing-agreement session wrappers add asynchronous `hasRe
 Locale normalization changes underscores to hyphens and propagates locale to new, ready or pending SDK instances where supported. Locale is shared through the loaded PayPal SDK rather than isolated per button. The cache is scoped to the `window.paypal` object and can retain a pending/requested locale even after failed instance creation; it is not a record of only successful locale application. Coordinate locale across components and handle failures. [[paypal-braintree-integration]]
 
 Hosted Fields validates the copied `binVerificationLength` once and freezes that property before forwarding it to frames. Public input remains numeric 6 or 8 (or omitted); invalid values throw, while the internal card model separately falls back to 6 for invalid/missing configuration. This limits value divergence/getter bypass, not every card-data or security risk. `inject-stylesheet` changes 7.0.0 to 7.1.0 without an audit of its implementation. No browser, payment or upstream test execution is claimed. [[source-github-braintree-web]] and [[changelog-github-braintree-web]]
+
+## Cleanup, Shopper Sessions and Instant Verification in 3.148.0
+
+`braintree-web@3.148.0` at SHA `0b989560481a1274a8fda27e426f6297d3bde552` extends the retained history without replacing the earlier baselines. PayPal v6 teardown now awaits the client and currently assigned frame-service promise and invokes frame-service cleanup. This is a bounded iframe/lifecycle fix, not proof that every delegated PayPal resource is destroyed; rejected prerequisites prevent the cleanup callback, and early deferred initialization can leave that promise unassigned at call time. Storybook adds teardown controls, including cleanup of both vaulting and edit wrappers in its saved-payment example. [[source-github-braintree-web]]
+
+Optional `paypalCheckoutV6.create({ shopperSessionId })` can forward shopper-session metadata when creating new delegated SDK instances. Storage is shared across wrappers and tied to the exact `window.paypal` object: SDK loading/replacement can invalidate an earlier value, another wrapper can overwrite it, and cached instance branches do not update it. This is not buyer authentication, a vaulted token or payment confirmation. See [[paypal-braintree-integration]] for the conditional forwarding boundary.
+
+Instant Verification removes only a trailing literal `?customer_id=` from string authorization fingerprints before passing the redirect's `at` value. It does not strip arbitrary query strings or validate the JWT. The direct `credit-card-type` pin changes `10.2.0` -> `10.3.1`; no dependency-internal behavior is inferred. Earlier return recovery, locale, BIN and saved-payment findings remain version-qualified. [[source-github-braintree-web]] [[changelog-github-braintree-web]]
 
 ## Related
 

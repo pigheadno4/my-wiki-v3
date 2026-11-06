@@ -1,0 +1,1009 @@
+diff --git a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/CustomizableOptions.stories.ts b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/CustomizableOptions.stories.ts
+index d88cd00..9187815 100644
+--- a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/CustomizableOptions.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/CustomizableOptions.stories.ts
+@@ -6,7 +6,11 @@ import type {
+ import { createSimpleBraintreeStory } from "../../../utils/story-helper";
+ import { getClientToken } from "../../../utils/sdk-config";
+ import { getBraintreeSDK } from "../../../utils/braintree-sdk";
+-import { showDetailedError, showSimpleError } from "../common";
++import {
++  showDetailedError,
++  showSimpleError,
++  wireTeardownButton,
++} from "../common";
+ import {
+   billingAgreementArgTypes,
+   applyBillingAgreementOptions,
+@@ -97,6 +101,9 @@ const createCustomizableForm = (args: CustomizableOptionsArgs): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -129,6 +136,8 @@ const setupCustomizableFlow = async (
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Build options object dynamically based on args
+diff --git a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/RecurringPlanType.stories.ts b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/RecurringPlanType.stories.ts
+index d521e7a..75c193c 100644
+--- a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/RecurringPlanType.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/RecurringPlanType.stories.ts
+@@ -12,6 +12,7 @@ import {
+   createPayPalButton,
+   showSimpleError,
+   showDetailedError,
++  wireTeardownButton,
+ } from "../common";
+ import {
+   billingAgreementArgTypes,
+@@ -69,6 +70,9 @@ const createRecurringForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -102,6 +106,8 @@ const setupRecurringFlow = async (
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Check eligibility for recurring billing agreements
+diff --git a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/SubscriptionPlanType.stories.ts b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/SubscriptionPlanType.stories.ts
+index f7b3de6..f933069 100644
+--- a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/SubscriptionPlanType.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/SubscriptionPlanType.stories.ts
+@@ -12,6 +12,7 @@ import {
+   createPayPalButton,
+   showSimpleError,
+   showDetailedError,
++  wireTeardownButton,
+ } from "../common";
+ import {
+   billingAgreementArgTypes,
+@@ -70,6 +71,9 @@ const createSubscriptionForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -103,6 +107,8 @@ const setupSubscriptionFlow = async (
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Check eligibility for subscription billing agreements
+diff --git a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/UnscheduledPlanType.stories.ts b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/UnscheduledPlanType.stories.ts
+index 424969f..eeab25e 100644
+--- a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/UnscheduledPlanType.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/UnscheduledPlanType.stories.ts
+@@ -11,6 +11,7 @@ import {
+   createPayPalButton,
+   showSimpleError,
+   showDetailedError,
++  wireTeardownButton,
+ } from "../common";
+ import {
+   billingAgreementArgTypes,
+@@ -70,6 +71,9 @@ const createUnscheduledForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -103,6 +107,8 @@ const setupUnscheduledFlow = async (
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Check eligibility for unscheduled vault flow
+diff --git a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/VaultFlow.stories.ts b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/VaultFlow.stories.ts
+index 4c8ab2c..769e1ed 100644
+--- a/.storybook/stories/PayPalCheckoutV6/BillingAgreements/VaultFlow.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/BillingAgreements/VaultFlow.stories.ts
+@@ -11,6 +11,7 @@ import {
+   createPayPalButton,
+   showSimpleError,
+   showDetailedError,
++  wireTeardownButton,
+ } from "../common";
+ import {
+   billingAgreementArgTypes,
+@@ -68,6 +69,9 @@ const createVaultForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -102,6 +106,8 @@ const setupVaultFlow = async (
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Check eligibility for vault flow (no payment)
+diff --git a/.storybook/stories/PayPalCheckoutV6/ContactModule.stories.ts b/.storybook/stories/PayPalCheckoutV6/ContactModule.stories.ts
+index 60be1ee..901e786 100644
+--- a/.storybook/stories/PayPalCheckoutV6/ContactModule.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/ContactModule.stories.ts
+@@ -8,6 +8,7 @@ import {
+   createPayPalButton,
+   showSimpleError,
+   showDetailedError,
++  wireTeardownButton,
+ } from "./common";
+ import "../../css/main.css";
+ import "../PayPalCheckout/payPalCheckout.css";
+@@ -83,6 +84,9 @@ const createEditableContactForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -112,6 +116,8 @@ const setupEditableContact = async (container: HTMLElement): Promise<void> => {
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Create payment session with editable contact preference
+@@ -227,6 +233,9 @@ const createReadOnlyContactForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -256,6 +265,8 @@ const setupReadOnlyContact = async (container: HTMLElement): Promise<void> => {
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Create payment session with read-only contact preference
+@@ -377,6 +388,9 @@ const createNoContactForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -406,6 +420,8 @@ const setupNoContact = async (container: HTMLElement): Promise<void> => {
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Create payment session with no contact preference
+diff --git a/.storybook/stories/PayPalCheckoutV6/EditSavedPayment.stories.ts b/.storybook/stories/PayPalCheckoutV6/EditSavedPayment.stories.ts
+index b1e300b..f937f19 100644
+--- a/.storybook/stories/PayPalCheckoutV6/EditSavedPayment.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/EditSavedPayment.stories.ts
+@@ -7,7 +7,7 @@ import type {
+ import { createSimpleBraintreeStory } from "../../utils/story-helper";
+ import { getBraintreeSDK } from "../../utils/braintree-sdk";
+ import { getClientToken, vaultPaymentMethod } from "../../utils/sdk-config";
+-import { showDetailedError } from "./common";
++import { showDetailedError, wireTeardownButton } from "./common";
+ 
+ const meta: Meta = {
+   title: "Braintree/PayPal Checkout V6/Edit Saved Payment",
+@@ -84,6 +84,9 @@ const createEditSavedPaymentForm = (): HTMLElement => {
+       </div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -96,6 +99,10 @@ const setupEditSavedPayment = async (container: HTMLElement): Promise<void> => {
+ 
+   const resultDiv = getElementById("result");
+ 
++  // Both the initial vaulting instance and the Step 2 edit-session instance
++  // need teardown, since each opens its own PayPal Checkout V6 frame service.
++  let editPaypalV6: IPayPalCheckoutV6Instance | undefined;
++
+   const setStatus = (id: string, message: string): void => {
+     getElementById(id).innerHTML = message;
+   };
+@@ -130,20 +137,22 @@ const setupEditSavedPayment = async (container: HTMLElement): Promise<void> => {
+         authorization: editClientToken,
+       });
+ 
+-      const editPaypalV6 = (await braintree.paypalCheckoutV6.create({
++      const editPaypalV6Instance = (await braintree.paypalCheckoutV6.create({
+         client: editClientInstance,
+       })) as IPayPalCheckoutV6Instance;
+ 
+-      await editPaypalV6.loadPayPalSDK();
++      editPaypalV6 = editPaypalV6Instance;
++
++      await editPaypalV6Instance.loadPayPalSDK();
+ 
+-      const editSession = editPaypalV6.createEditSavedPaymentSession({
++      const editSession = editPaypalV6Instance.createEditSavedPaymentSession({
+         amount: "10.00",
+         currency: "USD",
+         intent: "authorize",
+         commit: false,
+         onApprove: async (data: IPayPalV6ApproveData) => {
+           try {
+-            const payload = await editPaypalV6.tokenizePayment({
++            const payload = await editPaypalV6Instance.tokenizePayment({
+               orderId: data.orderId,
+               payerId: data.payerId,
+             });
+@@ -212,6 +221,13 @@ const setupEditSavedPayment = async (container: HTMLElement): Promise<void> => {
+     await paypalV6.loadPayPalSDK();
+     setStatus("sdk-status", "✅ PayPal V6 SDK loaded");
+ 
++    wireTeardownButton(container, {
++      teardown: () =>
++        Promise.all(
++          [editPaypalV6, paypalV6].map((instance) => instance?.teardown())
++        ).then(() => undefined),
++    });
++
+     getElementById("vault-section").style.display = "block";
+     showResult(
+       "<strong>Initialized successfully!</strong> Now vault a PayPal account in Step 1.",
+diff --git a/.storybook/stories/PayPalCheckoutV6/Messages.stories.ts b/.storybook/stories/PayPalCheckoutV6/Messages.stories.ts
+index 0b819c8..23d4362 100644
+--- a/.storybook/stories/PayPalCheckoutV6/Messages.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/Messages.stories.ts
+@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/html";
+ import { createSimpleBraintreeStory } from "../../utils/story-helper";
+ import { getClientToken } from "../../utils/sdk-config";
+ import { getBraintreeSDK } from "../../utils/braintree-sdk";
+-import { showSimpleError } from "./common";
++import { showSimpleError, wireTeardownButton } from "./common";
+ import "../../css/main.css";
+ import "../PayPalCheckout/payPalCheckout.css";
+ 
+@@ -160,6 +160,9 @@ const createMessagesForm = (): HTMLElement => {
+       </div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -176,6 +179,8 @@ const setupMessages = async (
+     const paypalCheckoutV6Instance = await initializePayPal(resultDiv);
+     if (!paypalCheckoutV6Instance) return; // Error already displayed
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     // Get the message element
+ 
+     const messageEl = container.querySelector(
+@@ -390,6 +395,9 @@ export const AutoBootstrap: StoryObj = {
+   text-color="${textColor}"
+ &gt;&lt;/paypal-message&gt;</code></pre>
+           </div>
++
++          <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++          <div id="teardown-status"></div>
+         </div>
+       `;
+ 
+@@ -399,7 +407,10 @@ export const AutoBootstrap: StoryObj = {
+       const resultDiv = container.querySelector(
+         ".shared-result"
+       ) as HTMLElement;
+-      await initializePayPal(resultDiv);
++      const paypalCheckoutV6Instance = await initializePayPal(resultDiv);
++      if (paypalCheckoutV6Instance) {
++        wireTeardownButton(container, paypalCheckoutV6Instance);
++      }
+       // SDK loaded by initializePayPal helper
+     },
+     ["client.min.js", "paypal-checkout-v6.min.js"]
+diff --git a/.storybook/stories/PayPalCheckoutV6/MultiButtonEligibility.stories.ts b/.storybook/stories/PayPalCheckoutV6/MultiButtonEligibility.stories.ts
+index 124bfed..eeb06e1 100644
+--- a/.storybook/stories/PayPalCheckoutV6/MultiButtonEligibility.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/MultiButtonEligibility.stories.ts
+@@ -3,7 +3,11 @@ import type { IPayPalV6ApproveData, IBraintreeError } from "../../types/global";
+ import { createSimpleBraintreeStory } from "../../utils/story-helper";
+ import { getClientToken } from "../../utils/sdk-config";
+ import { getBraintreeSDK } from "../../utils/braintree-sdk";
+-import { showSimpleError, showDetailedError } from "./common";
++import {
++  showSimpleError,
++  showDetailedError,
++  wireTeardownButton,
++} from "./common";
+ import "../../css/main.css";
+ import "../PayPalCheckout/payPalCheckout.css";
+ 
+@@ -131,6 +135,9 @@ const createMultiButtonForm = (): HTMLElement => {
+       </div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -155,6 +162,7 @@ interface PayPalCheckoutV6Instance {
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   tokenizePayment: (_options: any) => Promise<any>;
+   loadPayPalSDK: () => Promise<PayPalCheckoutV6Instance>;
++  teardown: () => Promise<void>;
+ }
+ 
+ /**
+@@ -220,6 +228,8 @@ const setupMultiButtonEligibility = async (
+       client: clientInstance,
+     })) as unknown as PayPalCheckoutV6Instance;
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Enable the check eligibility button
+diff --git a/.storybook/stories/PayPalCheckoutV6/PayPalCheckoutV6.stories.ts b/.storybook/stories/PayPalCheckoutV6/PayPalCheckoutV6.stories.ts
+index 24ea689..b270022 100644
+--- a/.storybook/stories/PayPalCheckoutV6/PayPalCheckoutV6.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/PayPalCheckoutV6.stories.ts
+@@ -13,6 +13,7 @@ import {
+   createPayPalButton,
+   showSimpleError,
+   showDetailedError,
++  wireTeardownButton,
+ } from "./common";
+ import "../../css/main.css";
+ import "../PayPalCheckout/payPalCheckout.css";
+@@ -90,6 +91,9 @@ const createOneTimePaymentForm = (): HTMLElement => {
+       <div id="update-payment-section" style="display: none;">
+         <div id="update-result" class="shared-result"></div>
+       </div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -125,6 +129,8 @@ const setupOneTimePayment = async (
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     // Check eligibility
+@@ -484,6 +490,8 @@ const setupRecurringBilling = async (container: HTMLElement): Promise<void> => {
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     // Load the PayPal V6 SDK
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+@@ -615,6 +623,9 @@ export const RecurringBillingAgreement: StoryObj = {
+           <div id="paypal-button" class="paypal-button-container"></div>
+ 
+           <div id="result" class="shared-result"></div>
++
++          <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++          <div id="teardown-status"></div>
+         </div>
+       `;
+ 
+@@ -653,6 +664,9 @@ const createLineItemsForm = (): HTMLElement => {
+       </div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -855,6 +869,8 @@ const setupLineItemsPayment = async (container: HTMLElement): Promise<void> => {
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     const initialTotals = calculateOrderTotals(
+@@ -1170,6 +1186,9 @@ const createCheckoutWithVaultForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -1256,6 +1275,8 @@ const setupCheckoutWithVault = async (
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     const getSessionOptions = () => {
+diff --git a/.storybook/stories/PayPalCheckoutV6/PayPalCheckoutV6AppSwitch.stories.ts b/.storybook/stories/PayPalCheckoutV6/PayPalCheckoutV6AppSwitch.stories.ts
+index f8b1265..e816c1e 100644
+--- a/.storybook/stories/PayPalCheckoutV6/PayPalCheckoutV6AppSwitch.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/PayPalCheckoutV6AppSwitch.stories.ts
+@@ -2,7 +2,11 @@ import type { Meta, StoryObj } from "@storybook/html";
+ import { createSimpleBraintreeStory } from "../../utils/story-helper";
+ import { getClientToken } from "../../utils/sdk-config";
+ import { getBraintreeSDK } from "../../utils/braintree-sdk";
+-import { showSimpleError, showDetailedError } from "./common";
++import {
++  showSimpleError,
++  showDetailedError,
++  wireTeardownButton,
++} from "./common";
+ import "../../css/main.css";
+ import "../PayPalCheckout/payPalCheckout.css";
+ 
+@@ -76,6 +80,9 @@ const createAppSwitchPaymentForm = (): HTMLElement => {
+       <div id="redirect-info" class="shared-result" style="display: none;"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -126,6 +133,8 @@ const setupAppSwitchPayment = async (
+       });
+     })
+     .then((paypalCheckoutV6Instance) => {
++      wireTeardownButton(container, paypalCheckoutV6Instance);
++
+       // Load the PayPal V6 SDK
+       return paypalCheckoutV6Instance.loadPayPalSDK().then(() => {
+         return paypalCheckoutV6Instance;
+diff --git a/.storybook/stories/PayPalCheckoutV6/PaymentHandler.stories.ts b/.storybook/stories/PayPalCheckoutV6/PaymentHandler.stories.ts
+index d1605a1..f76cb39 100644
+--- a/.storybook/stories/PayPalCheckoutV6/PaymentHandler.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/PaymentHandler.stories.ts
+@@ -3,7 +3,11 @@ import type { IPayPalV6ApproveData, IBraintreeError } from "../../types/global";
+ import { createSimpleBraintreeStory } from "../../utils/story-helper";
+ import { getClientToken } from "../../utils/sdk-config";
+ import { getBraintreeSDK } from "../../utils/braintree-sdk";
+-import { showSimpleError, showDetailedError } from "./common";
++import {
++  showSimpleError,
++  showDetailedError,
++  wireTeardownButton,
++} from "./common";
+ import "../../css/main.css";
+ import "../PayPalCheckout/payPalCheckout.css";
+ 
+@@ -76,6 +80,9 @@ const createPaymentHandlerForm = (): HTMLElement => {
+       <div id="paypal-button" class="paypal-button-container"></div>
+ 
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -161,6 +168,8 @@ const setupPaymentHandler = async (container: HTMLElement): Promise<void> => {
+       client: clientInstance,
+     });
+ 
++    wireTeardownButton(container, paypalCheckoutV6Instance);
++
+     await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+     const session = paypalCheckoutV6Instance.createOneTimePaymentSession({
+diff --git a/.storybook/stories/PayPalCheckoutV6/VaultInitiatedCheckout.stories.ts b/.storybook/stories/PayPalCheckoutV6/VaultInitiatedCheckout.stories.ts
+index 4b678bc..1814335 100644
+--- a/.storybook/stories/PayPalCheckoutV6/VaultInitiatedCheckout.stories.ts
++++ b/.storybook/stories/PayPalCheckoutV6/VaultInitiatedCheckout.stories.ts
+@@ -7,7 +7,7 @@ import type {
+ import { createSimpleBraintreeStory } from "../../utils/story-helper";
+ import { getBraintreeSDK } from "../../utils/braintree-sdk";
+ import { getClientToken } from "../../utils/sdk-config";
+-import { showDetailedError } from "./common";
++import { showDetailedError, wireTeardownButton } from "./common";
+ 
+ const meta: Meta = {
+   title: "Braintree/PayPal Checkout V6",
+@@ -120,6 +120,9 @@ const createVaultInitiatedCheckoutForm = (): HTMLElement => {
+ 
+       <!-- Result Display -->
+       <div id="result" class="shared-result"></div>
++
++      <button id="teardown-button" class="shared-button" type="button" disabled>Teardown Component</button>
++      <div id="teardown-status"></div>
+     </div>
+   `;
+ 
+@@ -214,6 +217,8 @@ const setupVaultInitiatedCheckout = (container: HTMLElement): void => {
+         client: clientInstance,
+       });
+ 
++      wireTeardownButton(container, paypalCheckoutV6Instance);
++
+       await paypalCheckoutV6Instance.loadPayPalSDK();
+ 
+       showResult(
+diff --git a/.storybook/stories/PayPalCheckoutV6/common.ts b/.storybook/stories/PayPalCheckoutV6/common.ts
+index 1eb4cbc..0d6b894 100644
+--- a/.storybook/stories/PayPalCheckoutV6/common.ts
++++ b/.storybook/stories/PayPalCheckoutV6/common.ts
+@@ -62,6 +62,34 @@ export const createPayPalButton = (
+   return button;
+ };
+ 
++export const wireTeardownButton = (
++  container: HTMLElement,
++  instance: { teardown: () => Promise<void> }
++): void => {
++  const teardownButton = container.querySelector(
++    "#teardown-button"
++  ) as HTMLButtonElement;
++  const teardownStatus = container.querySelector(
++    "#teardown-status"
++  ) as HTMLElement;
++
++  teardownButton.disabled = false;
++  teardownButton.addEventListener("click", () => {
++    teardownButton.disabled = true;
++    teardownStatus.textContent = "Tearing down...";
++    instance
++      .teardown()
++      .then(() => {
++        teardownStatus.textContent = "Teardown complete";
++        teardownButton.disabled = false;
++      })
++      .catch((err: Error) => {
++        teardownStatus.textContent = `Teardown failed: ${err.message}`;
++        teardownButton.disabled = false;
++      });
++  });
++};
++
+ /**
+  * Display a simple error message in the result div
+  */
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 42e57d0..6955651 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,15 @@
+ # CHANGELOG
+ 
++## 3.148.0 (2026-11-02)
++
++- Dependencies
++  - update `credit-card-type` to 10.3.1
++- PayPal Checkout v6
++  - Fix `paypal-checkout-v6` teardown function not correctly removing iframes
++  - `paypal-checkout-v6` now allows passing a `shopperSessionId` parameter, which will propagate to the PayPal SDK
++- Instant Verification
++  - Fix `startPayment` sending client tokens generated with a customer ID to the Instant Verification experience in an unexpected format
++
+ ## 3.147.0 (2026-10-12)
+ 
+ - Hosted Fields
+diff --git a/package-lock.json b/package-lock.json
+index 24b3cf3..4cc7b17 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,12 +1,12 @@
+ {
+   "name": "braintree-web",
+-  "version": "3.147.0",
++  "version": "3.148.0",
+   "lockfileVersion": 3,
+   "requires": true,
+   "packages": {
+     "": {
+       "name": "braintree-web",
+-      "version": "3.147.0",
++      "version": "3.148.0",
+       "license": "MIT",
+       "dependencies": {
+         "@braintree/asset-loader": "2.1.0",
+@@ -19,7 +19,7 @@
+         "@braintree/wrap-promise": "2.1.0",
+         "@paypal/fastlane-sdk-loader": "1.2.1",
+         "card-validator": "10.0.3",
+-        "credit-card-type": "10.2.0",
++        "credit-card-type": "10.3.1",
+         "framebus": "6.2.0",
+         "inject-stylesheet": "7.1.0",
+         "promise-polyfill": "8.2.3",
+@@ -6932,9 +6932,9 @@
+       }
+     },
+     "node_modules/credit-card-type": {
+-      "version": "10.2.0",
+-      "resolved": "https://registry.npmjs.org/credit-card-type/-/credit-card-type-10.2.0.tgz",
+-      "integrity": "sha512-1bChi7rCJki1/EML5yYy6uVV6mE21/qFUJCTiDUfq4zl3kjXVqLTDd/wI1+Yqk4NlR4fNTJXj6tLEpECWrlY7w==",
++      "version": "10.3.1",
++      "resolved": "https://registry.npmjs.org/credit-card-type/-/credit-card-type-10.3.1.tgz",
++      "integrity": "sha512-mmHHMrNofu9WF/U1qlZTuzoEixmT7robK7s26ut8HgrjxXVPRWGlVb1l6K+fDNLJdShc4zv4ml+ZE5KwKHpZMA==",
+       "license": "MIT"
+     },
+     "node_modules/cross-spawn": {
+diff --git a/package.json b/package.json
+index 3aa9227..9687ad9 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "braintree-web",
+-  "version": "3.147.0",
++  "version": "3.148.0",
+   "license": "MIT",
+   "main": "src/index.js",
+   "private": true,
+@@ -55,7 +55,7 @@
+     "@braintree/wrap-promise": "2.1.0",
+     "@paypal/fastlane-sdk-loader": "1.2.1",
+     "card-validator": "10.0.3",
+-    "credit-card-type": "10.2.0",
++    "credit-card-type": "10.3.1",
+     "framebus": "6.2.0",
+     "inject-stylesheet": "7.1.0",
+     "promise-polyfill": "8.2.3",
+diff --git a/src/instant-verification/constants.js b/src/instant-verification/constants.js
+index 35b9c74..ba93ab1 100644
+--- a/src/instant-verification/constants.js
++++ b/src/instant-verification/constants.js
+@@ -15,6 +15,10 @@ if (process.env.BRAINTREE_JS_ENV === "development") {
+ }
+ // endRemoveIf(production)
+ 
++// Suffix appended to authorization fingerprints of client tokens
++// generated with a customer ID
++var WEB_DROP_IN_SHIM = /\?customer_id=$/;
++
+ var ACH_MANDATE_DETAILS_QUERY =
+   "query AchMandateDetails($id: ID!) { " +
+   "node(id: $id) { " +
+@@ -50,4 +54,5 @@ var ACH_MANDATE_DETAILS_QUERY =
+ module.exports = {
+   EXPERIENCE_URL: EXPERIENCE_URL,
+   ACH_MANDATE_DETAILS_QUERY: ACH_MANDATE_DETAILS_QUERY,
++  WEB_DROP_IN_SHIM: WEB_DROP_IN_SHIM,
+ };
+diff --git a/src/instant-verification/instant-verification.js b/src/instant-verification/instant-verification.js
+index 9a998b8..f3d22ad 100644
+--- a/src/instant-verification/instant-verification.js
++++ b/src/instant-verification/instant-verification.js
+@@ -50,8 +50,9 @@ function InstantVerification(options) {
+ InstantVerification.prototype.startPayment = function (options) {
+   var self = this;
+ 
+-  var clientAuthFingerprint =
+-    self._client.getConfiguration().authorizationFingerprint;
++  var clientAuthFingerprint = removeCustomerIdSuffix(
++    self._client.getConfiguration().authorizationFingerprint
++  );
+ 
+   var redirectUrl = "";
+ 
+@@ -82,6 +83,16 @@ InstantVerification.prototype.startPayment = function (options) {
+   return Promise.resolve();
+ };
+ 
++// Client tokens generated with a customer ID have the web Drop-in shim
++// appended to the authorization fingerprint, which the Experience URL does not expect
++function removeCustomerIdSuffix(authorizationFingerprint) {
++  if (typeof authorizationFingerprint !== "string") {
++    return authorizationFingerprint;
++  }
++
++  return authorizationFingerprint.replace(constants.WEB_DROP_IN_SHIM, "");
++}
++
+ function getBaseUrl(configuration) {
+   var url = constants.EXPERIENCE_URL.production;
+ 
+diff --git a/src/paypal-checkout-v6/index.js b/src/paypal-checkout-v6/index.js
+index cbc65fa..b37047b 100644
+--- a/src/paypal-checkout-v6/index.js
++++ b/src/paypal-checkout-v6/index.js
+@@ -18,6 +18,7 @@ var VERSION = process.env.npm_package_version;
+  * @param {Client} [options.client] A {@link Client} instance.
+  * @param {string} [options.authorization] A clientToken. Can be used in place of `options.client`. Note: V6 requires client tokens; tokenization keys are not supported.
+  * @param {string} [options.merchantAccountId] A non-default merchant account ID to use for tokenization.
++ * @param {string} [options.shopperSessionId] An identifier representing the shopper's session.
+  * @param {callback} [callback] The second argument, `data`, is the {@link PayPalCheckoutV6} instance.
+  * @example
+  * braintree.client.create({
+diff --git a/src/paypal-checkout-v6/paypal-checkout-v6.js b/src/paypal-checkout-v6/paypal-checkout-v6.js
+index 8ebc3a2..cbacb23 100644
+--- a/src/paypal-checkout-v6/paypal-checkout-v6.js
++++ b/src/paypal-checkout-v6/paypal-checkout-v6.js
+@@ -27,23 +27,27 @@ var REQUIRED_PARAMS_FOR_VIC = [
+   "vaultInitiatedCheckoutPaymentMethodToken",
+ ];
+ 
+-// Locale applied to the current window.paypal, shared across PayPalCheckoutV6 wrappers.
++// Set a value that will be applied to the current window.paypal, shared across PayPalCheckouV6 wrappers.
+ // Guarded by the window.paypal reference it was recorded for, so a script reload (a new
+-// window.paypal object) invalidates it instead of leaking a stale locale forward.
+-var activePayPalSdkLocale;
+-var activePayPalSdkLocaleOwner;
+-
+-function getActivePayPalSdkLocale() {
+-  if (activePayPalSdkLocaleOwner !== window.paypal) {
+-    return undefined;
++// window.paypal object) invalidates it instead of leaking a stale value.
++var activePayPalSdkInstance;
++var activePayPalSdkValues = new Map();
++
++function setActivePayPalSdkValue(key, value) {
++  if (activePayPalSdkInstance !== window.paypal) {
++    activePayPalSdkValues.clear();
++    activePayPalSdkInstance = window.paypal;
+   }
+ 
+-  return activePayPalSdkLocale;
++  activePayPalSdkValues.set(key, value);
+ }
+ 
+-function setActivePayPalSdkLocale(locale) {
+-  activePayPalSdkLocaleOwner = window.paypal;
+-  activePayPalSdkLocale = locale;
++function getActivePayPalSdkValue(key) {
++  if (activePayPalSdkInstance !== window.paypal) {
++    return undefined;
++  }
++
++  return activePayPalSdkValues.get(key);
+ }
+ 
+ /**
+@@ -202,6 +206,10 @@ PayPalCheckoutV6.prototype._initialize = function (options) {
+       }.bind(this)
+     );
+ 
++  if (options.shopperSessionId) {
++    setActivePayPalSdkValue("shopperSessionId", options.shopperSessionId);
++  }
++
+   if (options.client) {
+     return this._clientPromise.then(
+       function () {
+@@ -500,7 +508,8 @@ PayPalCheckoutV6.prototype.loadPayPalSDK = function (options) {
+  * Creates a PayPal SDK instance using the Braintree client token.
+  * @private
+  * @param {object} options Options for SDK instance creation.
+- * @param {Array<string>} options.components Components array specifying which PayPal components to load (e.g., ["paypal-payments"], ["paypal-billing-agreements"], ["paypal-messages"]).
++ * @param {Array<string>} [options.components] Components array specifying which PayPal components to load (e.g., ["paypal-payments"], ["paypal-billing-agreements"], ["paypal-messages"]).
++ * @param {string} [shopperSessionId] An identifier representing the shopper's current session.
+  * @returns {Promise} Resolves with the PayPal SDK instance.
+  */
+ PayPalCheckoutV6.prototype._createPayPalInstance = function (options) {
+@@ -613,7 +622,7 @@ PayPalCheckoutV6.prototype._initializePayPalInstance = function (
+       typeof self[instanceKey].updateLocale === "function"
+     ) {
+       self[instanceKey].updateLocale(normalizedLocale);
+-      setActivePayPalSdkLocale(normalizedLocale);
++      setActivePayPalSdkValue("locale", normalizedLocale);
+     }
+     return;
+   }
+@@ -623,7 +632,7 @@ PayPalCheckoutV6.prototype._initializePayPalInstance = function (
+     if (normalizedLocale) {
+       // Recorded eagerly so a concurrent creation for another instance type
+       // sees this pending locale instead of resetting the SDK.
+-      setActivePayPalSdkLocale(normalizedLocale);
++      setActivePayPalSdkValue("locale", normalizedLocale);
+ 
+       self[promiseKey] = self[promiseKey].then(function (instance) {
+         if (instance && typeof instance.updateLocale === "function") {
+@@ -644,7 +653,8 @@ PayPalCheckoutV6.prototype._initializePayPalInstance = function (
+   // createInstance's locale is a single page-wide setting on window.paypal itself (shared across
+   // every PayPalCheckoutV6 instance); reuse the last one successfully applied so a new instance
+   // type (e.g. messages) doesn't reset the locale set for another (e.g. checkout).
+-  var localeForNewInstance = normalizedLocale || getActivePayPalSdkLocale();
++  var localeForNewInstance =
++    normalizedLocale || getActivePayPalSdkValue("locale");
+ 
+   var createInstanceOptions = { components: components };
+ 
+@@ -652,7 +662,12 @@ PayPalCheckoutV6.prototype._initializePayPalInstance = function (
+     createInstanceOptions.locale = localeForNewInstance;
+     // Recorded eagerly so a concurrent creation for another instance type sees this
+     // pending locale instead of resetting the SDK.
+-    setActivePayPalSdkLocale(localeForNewInstance);
++    setActivePayPalSdkValue("locale", localeForNewInstance);
++  }
++
++  if (getActivePayPalSdkValue("shopperSessionId")) {
++    createInstanceOptions.shopperSessionId =
++      getActivePayPalSdkValue("shopperSessionId");
+   }
+ 
+   // Create and cache the promise
+@@ -4251,9 +4266,16 @@ PayPalCheckoutV6.prototype.teardown = function () {
+     this._paypalScript.parentNode.removeChild(this._paypalScript);
+   }
+ 
+-  return this._clientPromise.then(function (client) {
+-    analytics.sendEvent(client, constants.ANALYTICS_EVENTS.TEARDOWN);
+-  });
++  return Promise.all([this._clientPromise, this._frameServicePromise]).then(
++    function (results) {
++      var client = results[0];
++
++      if (this._frameService) {
++        this._frameService.teardown();
++      }
++      analytics.sendEvent(client, constants.ANALYTICS_EVENTS.TEARDOWN);
++    }.bind(this)
++  );
+ };
+ 
+ module.exports = wrapPromise.wrapPrototype(PayPalCheckoutV6);
+diff --git a/test/instant-verification/unit/instant-verification.js b/test/instant-verification/unit/instant-verification.js
+index 97e5e46..249f056 100644
+--- a/test/instant-verification/unit/instant-verification.js
++++ b/test/instant-verification/unit/instant-verification.js
+@@ -120,6 +120,25 @@ describe("Instant-Verification", () => {
+       });
+     });
+ 
++    it("removes the customer_id suffix from the client auth fingerprint", () => {
++      const fingerprint = "header.payload.signature";
++
++      testContext.configuration.authorizationFingerprint =
++        fingerprint + "?customer_id=";
++      const instantVerification = new InstantVerification({
++        client: testContext.client,
++      });
++
++      instantVerification.startPayment({
++        jwt: "jwt",
++      });
++
++      expect(window.location.href).toEqual(
++        expect.stringMatching(new RegExp("at=" + fingerprint + "$"))
++      );
++      expect(window.location.href).not.toContain("customer_id");
++    });
++
+     it("sends analytics event upon launching redirect", async () => {
+       const options = {
+         client: testContext.client,
+diff --git a/test/paypal-checkout-v6/unit/paypal-checkout-v6.js b/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
+index 8058191..dd8c46f 100644
+--- a/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
++++ b/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
+@@ -41,6 +41,7 @@ describe("PayPalCheckoutV6", () => {
+     testContext.fakeFrameService = {
+       close: jest.fn(),
+       focus: jest.fn(),
++      teardown: jest.fn(),
+       open: jest.fn().mockImplementation(
+         yieldsAsync(null, {
+           token: "token",
+@@ -809,6 +810,12 @@ describe("PayPalCheckoutV6", () => {
+         );
+       });
+     });
++
++    it("tears down the frame service", () => {
++      return testContext.instance.teardown().then(() => {
++        expect(testContext.fakeFrameService.teardown).toHaveBeenCalled();
++      });
++    });
+   });
+ 
+   describe("_initializePayPalInstance", () => {
+@@ -1092,6 +1099,37 @@ describe("PayPalCheckoutV6", () => {
+     });
+   });
+ 
++  it("initializing a PPCPv6 instance with a shopperSessionId propagates to the PayPal SDK", () => {
++    const instance = new PayPalCheckoutV6({
++      shopperSessionId: "6B29FC40-CA47-1067-B21D-00DD010462DA",
++    });
++
++    const createPayPalInstanceSpy = jest.spyOn(
++      instance,
++      "_createPayPalInstance"
++    );
++
++    jest.spyOn(instance, "_isPayPalSdkAvailable").mockReturnValue(true);
++
++    window.paypal = {
++      createInstance: jest.fn().mockResolvedValue({ mockInstance: true }),
++    };
++    instance._initialize({
++      client: testContext.client,
++      shopperSessionId: "6B29FC40-CA47-1067-B21D-00DD010462DA",
++    });
++
++    instance._initializePayPalInstance("checkout");
++
++    return Promise.resolve(instance._checkoutInstancePromise).then(() => {
++      expect(createPayPalInstanceSpy).toHaveBeenCalledWith(
++        expect.objectContaining({
++          shopperSessionId: "6B29FC40-CA47-1067-B21D-00DD010462DA",
++        })
++      );
++    });
++  });
++
+   describe("createMessages", () => {
+     beforeEach(() => {
+       testContext.instance = new PayPalCheckoutV6({});
+@@ -3959,6 +3997,7 @@ describe("PayPalCheckoutV6", () => {
+         });
+     });
+   });
++
+   describe("createBillingAgreementSession", () => {
+     beforeEach(() => {
+       testContext.instance = new PayPalCheckoutV6({});
