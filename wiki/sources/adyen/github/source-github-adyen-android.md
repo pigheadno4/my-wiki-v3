@@ -2,8 +2,12 @@
 title: "GitHub: Adyen/adyen-android"
 type: source
 date_ingested: 2026-08-01
+date_updated: 2026-11-07
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-android/snapshots/2026-11-07-73df655/manifest.json"
+  - "github/adyen/adyen-android/snapshots/2026-11-07-405b582/manifest.json"
+  - "github/adyen/adyen-android/supplements/2026-11-07-405b582-93095740/manifest.json"
   - "github/adyen/adyen-android/snapshots/2026-08-01-5314fad/manifest.json"
 tags: [adyen, android, kotlin, mobile-sdk, drop-in, components, sessions, jetpack-compose, github-repository]
 ---
@@ -13,6 +17,8 @@ tags: [adyen, android, kotlin, mobile-sdk, drop-in, components, sessions, jetpac
 `Adyen/adyen-android` contains Adyen's modular native Android checkout SDK. It provides a prebuilt Drop-in, individual payment Components, Session orchestration, follow-up actions, card encryption, Jetpack Compose adapters, and integrations for local payment methods and delegated wallet or authentication SDKs. This cumulative page begins with package-qualified release `adyen-android@5.20.0` at exact SHA `5314fad1389a8def9d8e3377f27f7405e303faba`.
 
 Repository: <https://github.com/Adyen/adyen-android>
+
+Latest ingested package evidence is `adyen-android@5.22.0`, released 2026-10-30 and ingested 2026-11-07. The full additive sections below retain all `5.20.0` architecture and behavior plus the `5.21.0` release (2026-10-27, ingested 2026-11-07) as historical evidence rather than replacing them.
 
 ## Evidence boundary
 
@@ -95,6 +101,68 @@ The exact release documents one change: compile and target SDK support moved to 
 
 Broader Drop-in, Session, Component, card, action, wallet, analytics, and payment-method findings above describe accumulated behavior present at the exact SHA, not changes introduced solely by `5.20.0`.
 
+## `adyen-android@5.21.0` full additive findings
+
+From `5.20.0` to `5.21.0`, exact SHA `405b582a7b2060aceac756eae7b6bd3757e0c084`. The selected capsule has 1,199 files: 65 modified and 1,134 unchanged. User approved full mode despite the script's contained-minor delta recommendation because the broad build migration merits full migration treatment. Focused reading and mechanical verification of unchanged evidence were explicitly approved; this is not a full upstream-tree read. The five supplemental build files belong to this exact SHA.
+
+### Checkout fixes
+
+- **Save-card switch after address lookup:** `CardView.updateInputFields` now restores the switch from the output state:
+
+  ```kotlin
+  binding.switchStorePaymentMethod.isChecked = outputData.shouldStorePaymentMethod
+  ```
+
+  Located at `card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt:756` in the current snapshot. Release notes identify the visible fix as preventing the store-payment-details switch from resetting on return from address lookup. This does not by itself store a payment token or change backend/consent responsibilities.
+- **Native redirect failure reporting:** `DefaultRedirectDelegate.handleNativeRedirect` protects request submission and response serialization with `runSuspendCatching`. Success emits details; failure tracks a serialization/network error and invokes `emitError`, preserving CheckoutException or wrapping another failure in `ComponentException("Native redirect request failed.", e)`. The unchanged helper rethrows CancellationException. This closes the previously narrower HttpException/serialization handling path, not all app crash paths; no automatic retry is introduced.
+- The example Card Activity and BACS dialog switch back handling to `OnBackPressedDispatcher`, preserving the Component's first chance to handle back navigation. Other retained Kotlin changes are lint suppression, whitespace and comment cleanup, not demonstrated new public callback contracts.
+
+### Build migration and delegated dependencies
+
+| Evidence | `5.20.0` | `5.21.0` | Qualification |
+| --- | --- | --- | --- |
+| Adyen 3DS2 pin | `2.2.27` | `2.2.28` | Adapter dependency only; dependency runtime not audited here |
+| Kotlin catalog | `1.9.25` | `2.3.21` | Repository build definition, not a universal consumer minimum |
+| Android Gradle Plugin | `8.8.1` | `9.4.1` | Repository build definition |
+| Android Java source/target | `11` | `11` | Explicit in the exact-SHA supplemental Java convention |
+| Catalog JVM target | Prior shared Java setting `11` | `17` | Plain Kotlin JVM tooling/convention build; not universal Android-library bytecode 17 |
+| Compile/min SDK catalog | `36` / `21` | `36` / `21` | Retained configuration, not merchant/device eligibility |
+| Example-app Retrofit | `2.11.0` | `3.0.0` | Not evidence of an SDK-core transport migration |
+
+The version catalog also updates AndroidX, Compose, Coroutines and Material. Module build files adopt `checkout.android.library`; settings includes `build-logic`. Supplemental plugin registration maps these aliases to the retained implementations. The Java convention explicitly says `compileOptions.sourceCompatibility = JavaVersion.VERSION_11` and sets targetCompatibility to 11, while `jvmToolchain(jvmTarget.majorVersion.toInt())` applies to plain Kotlin JVM projects. The convention build separately uses catalog target 17. The wrapper file records `gradle-9.8.0-bin.zip`; it is not a requirement for every consuming application to copy that wrapper or proof that the build ran successfully.
+
+The supplemental Android library convention sets `com.adyen.checkout` group, compile/min SDK, consumer ProGuard and checkout-version BuildConfig settings. Its conditional AGP 9/binary-compatibility-validator workaround registers API build/check/dump tasks for non-ignored projects and filters generated Compose `ComposableSingletons` content. These are configured tasks, not passing compatibility tests, and generated API dump changes outside the capsule are not independently established authored API removals.
+
+**Migration action:** test the consuming application's dependency/build compatibility, save-card choice through address lookup and redirect failure callbacks. Independently validate the delegated 3DS2 runtime if its internal changes matter. This ingest ran no Gradle build, Android/device, certificate-rejection or payment tests. Earlier `5.20.0` integration and runtime descriptions remain version-qualified history.
+
+## `adyen-android@5.22.0` full additive findings
+
+From `5.21.0` to `5.22.0`, exact SHA `73df6558fa5868a2c14449ac2e0c6379fc349798`. Three of 1,199 retained files change; 1,196 remain hash-identical. This is an approved full security ingest with focused reading, not an assertion that the small changed-file count makes security impact bounded. All `5.20.0` and `5.21.0` knowledge above remains, and the five-file supplement stays attributed to its exact `5.21.0` SHA.
+
+### Security claim and source evidence
+
+Adyen's release notes state that Drop-in and Components block eight compromised eMudhra intermediate CA certificates on Android devices without Google Play services, and that devices with Play services had already received Google's automatic update. The retained version catalog raises both OkHttp and its logging pin from `4.12.0` to `4.12.1`. SDK-core HttpClientFactory and the existing DefaultImageLoader instantiate OkHttp clients.
+
+**Evidence limit:** The certificate-blocking claim comes from the upstream release note. This capsule does not contain the upgraded dependency's blocklist implementation, an independently verified eight-certificate inventory or a device rejection test. No CVE, comprehensive TLS guarantee, live rollout, or universal safety claim is inferred from the version pin alone.
+
+### Image saving and bitmap ownership
+
+`ImageSaver.saveImageFromUrl` no longer downloads through URL.openStream/BufferedInputStream and BitmapFactory.decodeStream. It checks URL syntax, then calls the existing shared image loader through a new `loadBitmap` helper:
+
+```kotlin
+context.imageLoader.load(
+    url = imageUrl,
+    onSuccess = { bitmap -> bitmapResult = Result.success(bitmap) },
+    onError = { error -> bitmapResult = Result.failure(error) },
+)
+```
+
+`ImageLoadingExtensions` makes the Context.imageLoader accessor internal rather than private, allowing this reuse. The loader caches by URL and uses OkHttp; callback errors or protected load failures now become `CheckoutException("Failed to load image", error)`, distinct from the initial `CheckoutException("Malformed URL")` check.
+
+The shared `saveImageFromBitmap` helper no longer recycles every input bitmap. Recycling now happens after saving in `saveImageFromView`, which created that bitmap. Consequently, the URL-saving route does not recycle a loader-provided cached bitmap via the old shared helper. This is an ownership-path change, not proof of leak-free cleanup or cancellation safety on every path. Existing MediaStore/legacy permission-saving paths remain; this is not a new merchant payment API.
+
+**Migration action:** prioritize reviewing the upstream security release and the application's resolved dependency graph; regression-test image download/save, malformed URL, HTTP failure and cached-image reuse, including target device populations. No Gradle build, Android/device, certificate-rejection or payment test was run during ingestion. The earlier build-migration distinctions remain documented at `5.21.0`, not re-proven by a mismatched-SHA supplement.
+
 ## Related
 
 - [[changelog-github-adyen-android]] - package-qualified release ledger
@@ -106,6 +174,20 @@ Broader Drop-in, Session, Component, card, action, wallet, analytics, and paymen
 
 ## Raw sources
 
+- `5.22.0` snapshot: `raw/github/adyen/adyen-android/snapshots/2026-11-07-73df655/manifest.json`
+- `5.22.0` release: `raw/github/adyen/adyen-android/releases/adyen-android/5.22.0/2026-11-07/manifest.json` and `raw/github/adyen/adyen-android/releases/adyen-android/5.22.0/2026-11-07/release-notes.md`
+- `5.21.0` -> `5.22.0` comparison: `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.21.0--5.22.0/comparison.json`, `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.21.0--5.22.0/comparison.md` and `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.21.0--5.22.0/diff.patch`
+- `5.22.0` catalog: `raw/github/adyen/adyen-android/snapshots/2026-11-07-73df655/files/gradle/libs.versions.toml`
+- `5.22.0` image changes: `raw/github/adyen/adyen-android/snapshots/2026-11-07-73df655/files/ui-core/src/main/java/com/adyen/checkout/ui/core/internal/util/ImageSaver.kt` and `raw/github/adyen/adyen-android/snapshots/2026-11-07-73df655/files/ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/ImageLoadingExtensions.kt`
+- `5.22.0` retained dependency boundaries: `raw/github/adyen/adyen-android/snapshots/2026-11-07-73df655/files/checkout-core/src/main/java/com/adyen/checkout/core/internal/ui/ImageLoader.kt` and `raw/github/adyen/adyen-android/snapshots/2026-11-07-73df655/files/checkout-core/src/main/java/com/adyen/checkout/core/internal/data/api/HttpClientFactory.kt`
+- `5.21.0` snapshot: `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/manifest.json`
+- `5.21.0` release: `raw/github/adyen/adyen-android/releases/adyen-android/5.21.0/2026-11-07/manifest.json` and `raw/github/adyen/adyen-android/releases/adyen-android/5.21.0/2026-11-07/release-notes.md`
+- `5.20.0` -> `5.21.0` comparison: `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.20.0--5.21.0/comparison.json`, `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.20.0--5.21.0/comparison.md` and `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.20.0--5.21.0/diff.patch`
+- `5.21.0` card fix: `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt`
+- Redirect and cancellation boundary: `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt` and `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/checkout-core/src/main/java/com/adyen/checkout/core/internal/util/ResultExt.kt`
+- `5.21.0` catalog/example build: `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/gradle/libs.versions.toml` and `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/example-app/build.gradle`
+- Exact-SHA build supplement: `raw/github/adyen/adyen-android/supplements/2026-11-07-405b582-93095740/manifest.json`; attached through `tracking/github/repos/adyen/adyen-android/evidence-attachments/github-7ed8658609166ae83227/attachment.json`
+- Supplemental build files: `raw/github/adyen/adyen-android/supplements/2026-11-07-405b582-93095740/files/build-logic/convention/build.gradle.kts`, `raw/github/adyen/adyen-android/supplements/2026-11-07-405b582-93095740/files/build-logic/convention/src/main/kotlin/CheckoutAndroidLibraryPlugin.kt`, `raw/github/adyen/adyen-android/supplements/2026-11-07-405b582-93095740/files/build-logic/convention/src/main/kotlin/JavaConventionPlugin.kt`, `raw/github/adyen/adyen-android/supplements/2026-11-07-405b582-93095740/files/build-logic/convention/src/main/kotlin/com/adyen/checkout/ProjectExtensions.kt` and `raw/github/adyen/adyen-android/supplements/2026-11-07-405b582-93095740/files/gradle/wrapper/gradle-wrapper.properties`
 - Snapshot manifest: `raw/github/adyen/adyen-android/snapshots/2026-08-01-5314fad/manifest.json`
 - Release manifest: `raw/github/adyen/adyen-android/releases/adyen-android/5.20.0/2026-08-01/manifest.json`
 - Release notes: `raw/github/adyen/adyen-android/releases/adyen-android/5.20.0/2026-08-01/release-notes.md`

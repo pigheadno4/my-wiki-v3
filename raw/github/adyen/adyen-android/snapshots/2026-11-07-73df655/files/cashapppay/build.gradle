@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2023 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by oscars on 20/6/2023.
+ */
+
+plugins {
+    alias libs.plugins.checkout.android.library
+    alias libs.plugins.kotlin.parcelize
+}
+
+checkoutPublishing {
+    id = "cashapppay"
+    name = "Adyen checkout Cash App Pay component"
+    description = "Adyen checkout Cash App Pay component client for Adyen's Checkout API."
+}
+
+android {
+    namespace 'com.adyen.checkout.cashapppay'
+
+    defaultConfig {
+        // Get scheme for redirect result
+        buildConfigField "String", "checkoutRedirectScheme", "\"$rootProject.ext.checkoutRedirectScheme\""
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    api project(':action-core')
+    api project(':components-core')
+    api project(':sessions-core')
+    api project(':ui-core')
+
+    api libs.cash.app.pay
+    implementation libs.material
+
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation testFixtures(project(':components-core'))
+    testImplementation testFixtures(project(':ui-core'))
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.kotlin.coroutines.test
+    testImplementation libs.bundles.mockito
+}

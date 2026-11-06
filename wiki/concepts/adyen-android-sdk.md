@@ -9,7 +9,7 @@ tags: [adyen, android, kotlin, mobile, sdk, drop-in, components, sessions, jetpa
 
 Adyen Android is a modular native checkout SDK. Its main integration choices are Drop-in, which supplies a prebuilt payment-method selection and action flow, and individual Components, which let the merchant own the surrounding interface and orchestration. Both traditional Android Views and Jetpack Compose entry points are retained in the `adyen-android@5.20.0` baseline.
 
-## Current baseline
+## Historical 5.20.0 baseline
 
 | Field | Value |
 | --- | --- |
@@ -23,6 +23,22 @@ Adyen Android is a modular native checkout SDK. Its main integration choices are
 | Kotlin | 1.9.25 |
 
 The README marks the 5.x line active. This table reports retained repository evidence, not current merchant eligibility or payment-method availability.
+
+## `5.21.0` checkout and build changes
+
+The full additive `adyen-android@5.21.0` ingest (SHA `405b582a7b2060aceac756eae7b6bd3757e0c084`, released 2026-10-27) preserves the historical baseline above. The Card View now restores its store-payment-details switch from `outputData.shouldStorePaymentMethod` when restoring input fields after address lookup. This is UI-state restoration, not automatic tokenization or a change to merchant consent/server ownership.
+
+Native redirect result submission and serialization now run inside `runSuspendCatching`, with failures sent to the Component error channel and non-CheckoutException failures wrapped as ComponentException. The helper rethrows coroutine cancellation; this does not introduce automatic retry or guarantee that every app failure is caught.
+
+The retained catalog moves Adyen 3DS2 `2.2.27` -> `2.2.28`, Kotlin `1.9.25` -> `2.3.21` and AGP `8.8.1` -> `9.4.1`, alongside AndroidX/Compose/Coroutines updates. Modules adopt shared convention plugins. The exact-SHA supplemental Java convention still explicitly sets Android Java source/target to **11**, while catalog JVM target **17** configures plain Kotlin JVM tooling and the convention build. The upstream wrapper names Gradle `9.8.0`; compile/min catalog settings remain 36/21. These are repository settings, not a universal consuming-app wrapper/JDK requirement or a successful merchant build test. Retrofit `3.0.0` is evidenced in the example-app dependency, not a replacement of SDK-core networking.
+
+The supplemental library convention also configures an AGP 9 API-validation workaround and filters generated Compose singleton dump content. Configured validation tasks are not executed-test evidence or proof of authored API removal. The delegated 3DS2 runtime and independently pinned React Native wrapper retain their own evidence histories. See [[source-github-adyen-android]] and [[changelog-github-adyen-android]] for exact files, supplement and migration boundaries.
+
+## `5.22.0` security and image-loading boundary
+
+The latest ingested package evidence is `adyen-android@5.22.0` at SHA `73df6558fa5868a2c14449ac2e0c6379fc349798` (released 2026-10-30, ingested 2026-11-07). Full additive ingestion preserves both earlier version sections. Adyen's release notes say Drop-in/Components block eight compromised eMudhra intermediates on devices without Google Play services, while Play-services devices had already received Google's automatic update. This is an attributed upstream security claim; the dependency blocklist and actual certificate rejection were not independently inspected or executed here.
+
+Retained code updates OkHttp/logging `4.12.0` -> `4.12.1`. URL image saving moves from URL.openStream to the shared cached DefaultImageLoader, which uses OkHttp; load failures are wrapped separately from malformed URLs. Bitmap recycling moves to the view-created bitmap path, avoiding the old generic save helper's recycling of loader-provided cached bitmaps. No new public checkout API, universal TLS safety, or fully leak/cancellation-safe image pipeline is established. Regression-test image download/save and error paths in the consuming app. Exact evidence and migration limits: [[source-github-adyen-android]] and [[changelog-github-adyen-android]].
 
 ## Integration and server boundary
 

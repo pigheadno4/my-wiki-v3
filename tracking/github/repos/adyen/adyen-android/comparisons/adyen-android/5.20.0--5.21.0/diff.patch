@@ -1,0 +1,2603 @@
+diff --git a/3ds2/build.gradle b/3ds2/build.gradle
+index abccc27..b97ac25 100644
+--- a/3ds2/build.gradle
++++ b/3ds2/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "3ds2"
+-ext.mavenArtifactName = "Adyen checkout 3DS2 component"
+-ext.mavenArtifactDescription = "Adyen Checkout 3DS2 component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "3ds2"
++    name = "Adyen checkout 3DS2 component"
++    description = "Adyen Checkout 3DS2 component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.adyen3ds2'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     testOptions {
+         unitTests.returnDefaultValues = true
+diff --git a/ach/build.gradle b/ach/build.gradle
+index 11b02cd..77a38c9 100644
+--- a/ach/build.gradle
++++ b/ach/build.gradle
+@@ -1,30 +1,21 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+-// Maven artifact
+-ext.mavenArtifactId = "ach"
+-ext.mavenArtifactName = "Adyen checkout ACH Direct Debit component"
+-ext.mavenArtifactDescription = "Adyen checkout ACH Direct Debit component client for Adyen's Checkout API."
+ 
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "ach"
++    name = "Adyen checkout ACH Direct Debit component"
++    description = "Adyen checkout ACH Direct Debit component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.ach'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+     }
++
+     testOptions {
+         unitTests.returnDefaultValues = true
+     }
+diff --git a/action-core/build.gradle b/action-core/build.gradle
+index a7746a1..f468a06 100644
+--- a/action-core/build.gradle
++++ b/action-core/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "action-core"
+-ext.mavenArtifactName = "Adyen Checkout Action Core component"
+-ext.mavenArtifactDescription = "Adyen Checkout Action Core module."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "action-core"
++    name = "Adyen Checkout Action Core component"
++    description = "Adyen Checkout Action Core module."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.action.core'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     testOptions {
+         unitTests.returnDefaultValues = true
+diff --git a/action-core/src/main/java/com/adyen/checkout/action/core/internal/ActionHandlingPaymentMethodConfigurationBuilder.kt b/action-core/src/main/java/com/adyen/checkout/action/core/internal/ActionHandlingPaymentMethodConfigurationBuilder.kt
+index ea1aed0..57b6118 100644
+--- a/action-core/src/main/java/com/adyen/checkout/action/core/internal/ActionHandlingPaymentMethodConfigurationBuilder.kt
++++ b/action-core/src/main/java/com/adyen/checkout/action/core/internal/ActionHandlingPaymentMethodConfigurationBuilder.kt
+@@ -28,6 +28,7 @@ import java.util.Locale
+     "UNCHECKED_CAST",
+     "ktlint:standard:discouraged-comment-location",
+     "ktlint:standard:type-parameter-list-spacing",
++    "ktlint:standard:kdoc",
+ )
+ abstract class ActionHandlingPaymentMethodConfigurationBuilder<
+     ConfigurationT : Configuration,
+diff --git a/await/build.gradle b/await/build.gradle
+index d4fce54..3e9de97 100644
+--- a/await/build.gradle
++++ b/await/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "await"
+-ext.mavenArtifactName = "Adyen Checkout Await component"
+-ext.mavenArtifactDescription = "Adyen checkout await component for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "await"
++    name = "Adyen Checkout Await component"
++    description = "Adyen checkout await component for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.await'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/bacs/build.gradle b/bacs/build.gradle
+index d139525..8b2ecc1 100644
+--- a/bacs/build.gradle
++++ b/bacs/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "bacs"
+-ext.mavenArtifactName = "Adyen BACS Direct Debit component"
+-ext.mavenArtifactDescription = "Adyen checkout BACS Direct Debit component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "bacs"
++    name = "Adyen BACS Direct Debit component"
++    description = "Adyen checkout BACS Direct Debit component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.bacs'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/bcmc/build.gradle b/bcmc/build.gradle
+index 7bab022..2a2c8c7 100644
+--- a/bcmc/build.gradle
++++ b/bcmc/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "bcmc"
+-ext.mavenArtifactName = "Adyen checkout BCMC component"
+-ext.mavenArtifactDescription = "Adyen checkout BCMC component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "bcmc"
++    name = "Adyen checkout BCMC component"
++    description = "Adyen checkout BCMC component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.bcmc'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/blik/build.gradle b/blik/build.gradle
+index 7e1232e..49a67a4 100644
+--- a/blik/build.gradle
++++ b/blik/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "blik"
+-ext.mavenArtifactName = "Adyen Checkout Blik Component"
+-ext.mavenArtifactDescription = "Adyen Checkout Blik Component"
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "blik"
++    name = "Adyen Checkout Blik Component"
++    description = "Adyen Checkout Blik Component"
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.blik'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/boleto/build.gradle b/boleto/build.gradle
+index fad366b..7f2b52a 100644
+--- a/boleto/build.gradle
++++ b/boleto/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "boleto"
+-ext.mavenArtifactName = "Adyen checkout Boleto component"
+-ext.mavenArtifactDescription = "Adyen checkout Boleto component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "boleto"
++    name = "Adyen checkout Boleto component"
++    description = "Adyen checkout Boleto component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.boleto'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/build.gradle b/build.gradle
+index 2073aeb..636090d 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -1,11 +1,10 @@
+ import com.android.build.gradle.LibraryPlugin
+-import org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper
+ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+ 
+ plugins {
+     alias libs.plugins.android.application apply false
+     alias libs.plugins.android.library apply false
+-    alias libs.plugins.jetbrains.kotlin.android apply false
++    alias libs.plugins.kotlin.compose apply false
+     alias libs.plugins.kover apply false
+     alias libs.plugins.ksp apply false
+     alias libs.plugins.hilt apply false
+@@ -13,12 +12,11 @@ plugins {
+     alias libs.plugins.dokka
+     alias libs.plugins.sonarqube
+     alias libs.plugins.binary.compatibility.validator
++    alias libs.plugins.dependency.list.aggregate
++    alias libs.plugins.dependency.resolve
+ }
+ 
+-apply from: "config/gradle/dokkaRoot.gradle"
+-apply from: "config/gradle/sonarcloud.gradle"
+ apply from: "config/gradle/apiValidator.gradle"
+-apply from: "config/gradle/dependencyList.gradle"
+ 
+ ext {
+     if (project.hasProperty("version-name")) {
+@@ -30,8 +28,6 @@ ext {
+ }
+ 
+ subprojects {
+-    def javaVersion = 11
+-
+     plugins.withType(com.android.build.gradle.BasePlugin).configureEach {
+         android {
+             if (project.hasProperty("strip-resources") && project.property("strip-resources") == "true") {
+@@ -46,11 +42,6 @@ subprojects {
+                 }
+             }
+ 
+-            compileOptions {
+-                sourceCompatibility = javaVersion
+-                targetCompatibility = javaVersion
+-            }
+-
+             packagingOptions {
+                 excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                 merges += "META-INF/LICENSE.md"
+@@ -65,12 +56,6 @@ subprojects {
+         }
+     }
+ 
+-    plugins.withType(KotlinAndroidPluginWrapper).configureEach {
+-        kotlin {
+-            jvmToolchain(javaVersion)
+-        }
+-    }
+-
+     tasks.withType(KotlinCompile).configureEach {
+         kotlinOptions {
+             freeCompilerArgs += [
+@@ -84,4 +69,68 @@ subprojects {
+     }
+ }
+ 
++sonar {
++    properties {
++        property 'sonar.projectKey', 'Adyen_adyen-android'
++        property 'sonar.organization', 'adyen'
++        property 'sonar.host.url', 'https://sonarcloud.io'
++        property 'sonar.gradle.skipCompile', 'true'
++    }
++}
++
++dependencies {
++    dokka(project(':3ds2'))
++    dokka(project(':ach'))
++    dokka(project(':action'))
++    dokka(project(':action-core'))
++    dokka(project(':await'))
++    dokka(project(':bacs'))
++    dokka(project(':bcmc'))
++    dokka(project(':blik'))
++    dokka(project(':boleto'))
++    dokka(project(':card'))
++    dokka(project(':card-scanning'))
++    dokka(project(':cashapppay'))
++    dokka(project(':checkout-core'))
++    dokka(project(':components-compose'))
++    dokka(project(':components-core'))
++    dokka(project(':convenience-stores-jp'))
++    dokka(project(':cse'))
++    dokka(project(':dotpay'))
++    dokka(project(':drop-in'))
++    dokka(project(':drop-in-compose'))
++    dokka(project(':econtext'))
++    dokka(project(':entercash'))
++    dokka(project(':eps'))
++    dokka(project(':giftcard'))
++    dokka(project(':googlepay'))
++    dokka(project(':ideal'))
++    dokka(project(':instant'))
++    dokka(project(':issuer-list'))
++    dokka(project(':mbway'))
++    dokka(project(':meal-voucher-fr'))
++    dokka(project(':molpay'))
++    dokka(project(':online-banking-core'))
++    dokka(project(':online-banking-cz'))
++    dokka(project(':online-banking-jp'))
++    dokka(project(':online-banking-pl'))
++    dokka(project(':online-banking-sk'))
++    dokka(project(':openbanking'))
++    dokka(project(':paybybank'))
++    dokka(project(':paybybank-us'))
++    dokka(project(':payeasy'))
++    dokka(project(':payto'))
++    dokka(project(':qr-code'))
++    dokka(project(':redirect'))
++    dokka(project(':seven-eleven'))
++    dokka(project(':sepa'))
++    dokka(project(':sessions-core'))
++    dokka(project(':twint'))
++    dokka(project(':twint-action'))
++    dokka(project(':ui-core'))
++    dokka(project(':upi'))
++    dokka(project(':voucher'))
++    dokka(project(':wechatpay'))
++}
++
+ apply from: file('config/gradle/dependencyGraph.gradle')
+diff --git a/card-scanning/build.gradle b/card-scanning/build.gradle
+index 04dfcc1..8689f1a 100644
+--- a/card-scanning/build.gradle
++++ b/card-scanning/build.gradle
+@@ -7,28 +7,17 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "card-scanning"
+-ext.mavenArtifactName = "Adyen Checkout Card Scanning"
+-ext.mavenArtifactDescription = "Adyen Checkout Card scanning."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "card-scanning"
++    name = "Adyen Checkout Card Scanning"
++    description = "Adyen Checkout Card scanning."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.card.scanning'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/card/build.gradle b/card/build.gradle
+index 9b1e040..f5f7039 100644
+--- a/card/build.gradle
++++ b/card/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "card"
+-ext.mavenArtifactName = "Adyen Checkout Card component"
+-ext.mavenArtifactDescription = "Adyen checkout Card component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "card"
++    name = "Adyen Checkout Card component"
++    description = "Adyen checkout Card component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.card'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt b/card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt
+index 5c2c770..9627108 100644
+--- a/card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt
++++ b/card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt
+@@ -753,6 +753,7 @@ class CardView @JvmOverloads constructor(
+             binding.autoCompleteTextViewInstallments.setText(
+                 InstallmentUtils.getTextForInstallmentOption(localizedContext, outputData.installmentState.value),
+             )
++            binding.switchStorePaymentMethod.isChecked = outputData.shouldStorePaymentMethod
+         }
+     }
+ 
+diff --git a/cashapppay/build.gradle b/cashapppay/build.gradle
+index aaa0167..78526e8 100644
+--- a/cashapppay/build.gradle
++++ b/cashapppay/build.gradle
+@@ -7,28 +7,20 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "cashapppay"
+-ext.mavenArtifactName = "Adyen checkout Cash App Pay component"
+-ext.mavenArtifactDescription = "Adyen checkout Cash App Pay component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "cashapppay"
++    name = "Adyen checkout Cash App Pay component"
++    description = "Adyen checkout Cash App Pay component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.cashapppay'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+ 
+     defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-
+         // Get scheme for redirect result
+         buildConfigField "String", "checkoutRedirectScheme", "\"$rootProject.ext.checkoutRedirectScheme\""
+     }
+diff --git a/checkout-core/build.gradle b/checkout-core/build.gradle
+index ab2fee0..7e81f82 100644
+--- a/checkout-core/build.gradle
++++ b/checkout-core/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "checkout-core"
+-ext.mavenArtifactName = "Adyen Checkout Core module"
+-ext.mavenArtifactDescription = "Core module for Adyen Checkout products."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "checkout-core"
++    name = "Adyen Checkout Core module"
++    description = "Core module for Adyen Checkout products."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.core'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/components-compose/build.gradle b/components-compose/build.gradle
+index f46433e..ed28f49 100644
+--- a/components-compose/build.gradle
++++ b/components-compose/build.gradle
+@@ -7,36 +7,22 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
++    alias libs.plugins.kotlin.compose
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "components-compose"
+-ext.mavenArtifactName = "Adyen checkout components compose"
+-ext.mavenArtifactDescription = "Compose compat Adyen checkout components."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "components-compose"
++    name = "Adyen checkout components compose"
++    description = "Compose compat Adyen checkout components."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.components.compose'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         compose true
+     }
+-
+-    composeOptions {
+-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+-    }
+ }
+ 
+ dependencies {
+diff --git a/components-core/build.gradle b/components-core/build.gradle
+index 5b50e5c..2d8fa1e 100644
+--- a/components-core/build.gradle
++++ b/components-core/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "components-core"
+-ext.mavenArtifactName = "Adyen Checkout Components Core"
+-ext.mavenArtifactDescription = "Adyen checkout Components Core module."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "components-core"
++    name = "Adyen Checkout Components Core"
++    description = "Adyen checkout Components Core module."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.components.core'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     testFixtures {
+         enable = true
+diff --git a/components-core/src/main/java/com/adyen/checkout/components/core/internal/BaseConfigurationBuilder.kt b/components-core/src/main/java/com/adyen/checkout/components/core/internal/BaseConfigurationBuilder.kt
+index 615e7da..f85118b 100644
+--- a/components-core/src/main/java/com/adyen/checkout/components/core/internal/BaseConfigurationBuilder.kt
++++ b/components-core/src/main/java/com/adyen/checkout/components/core/internal/BaseConfigurationBuilder.kt
+@@ -10,7 +10,11 @@ import com.adyen.checkout.core.exception.CheckoutException
+ import com.adyen.checkout.core.internal.util.LocaleUtil
+ import java.util.Locale
+ 
+-@Suppress("ktlint:standard:discouraged-comment-location", "ktlint:standard:type-parameter-list-spacing")
++@Suppress(
++    "ktlint:standard:discouraged-comment-location",
++    "ktlint:standard:type-parameter-list-spacing",
++    "ktlint:standard:kdoc",
++)
+ abstract class BaseConfigurationBuilder<
+     ConfigurationT : Configuration,
+     BuilderT : BaseConfigurationBuilder<ConfigurationT, BuilderT>
+diff --git a/convenience-stores-jp/build.gradle b/convenience-stores-jp/build.gradle
+index a07267a..e8a9036 100644
+--- a/convenience-stores-jp/build.gradle
++++ b/convenience-stores-jp/build.gradle
+@@ -1,27 +1,16 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "convenience-stores-jp"
+-ext.mavenArtifactName = "Adyen Japanese Convenience Stores Component"
+-ext.mavenArtifactDescription = "Adyen checkout Japanese Convenience Stores Component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "convenience-stores-jp"
++    name = "Adyen Japanese Convenience Stores Component"
++    description = "Adyen checkout Japanese Convenience Stores Component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.conveniencestoresjp'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/cse/build.gradle b/cse/build.gradle
+index 8f9532e..8a58e26 100644
+--- a/cse/build.gradle
++++ b/cse/build.gradle
+@@ -1,27 +1,16 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "cse"
+-ext.mavenArtifactName = "Adyen Client Side Encryption"
+-ext.mavenArtifactDescription = "Adyen Client Side Encryption for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "cse"
++    name = "Adyen Client Side Encryption"
++    description = "Adyen Client Side Encryption for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.cse'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     testFixtures {
+         enable = true
+diff --git a/dotpay/build.gradle b/dotpay/build.gradle
+index 5c156c8..339130d 100644
+--- a/dotpay/build.gradle
++++ b/dotpay/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "dotpay"
+-ext.mavenArtifactName = "Adyen checkout Dotpay component"
+-ext.mavenArtifactDescription = "Adyen checkout Dotpay component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "dotpay"
++    name = "Adyen checkout Dotpay component"
++    description = "Adyen checkout Dotpay component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.dotpay'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/drop-in-compose/build.gradle b/drop-in-compose/build.gradle
+index ccc7432..56645af 100644
+--- a/drop-in-compose/build.gradle
++++ b/drop-in-compose/build.gradle
+@@ -7,36 +7,22 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
++    alias libs.plugins.kotlin.compose
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "drop-in-compose"
+-ext.mavenArtifactName = "Adyen checkout drop-in component compose"
+-ext.mavenArtifactDescription = "Compose compat Adyen checkout drop-in component."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "drop-in-compose"
++    name = "Adyen checkout drop-in component compose"
++    description = "Compose compat Adyen checkout drop-in component."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.dropin.compose'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         compose true
+     }
+-
+-    composeOptions {
+-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+-    }
+ }
+ 
+ dependencies {
+diff --git a/drop-in/build.gradle b/drop-in/build.gradle
+index bfc0fd1..bfdabe8 100644
+--- a/drop-in/build.gradle
++++ b/drop-in/build.gradle
+@@ -7,29 +7,20 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "drop-in"
+-ext.mavenArtifactName = "Adyen checkout drop-in component"
+-ext.mavenArtifactDescription = "Adyen checkout drop-in component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "drop-in"
++    name = "Adyen checkout drop-in component"
++    description = "Adyen checkout drop-in component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.dropin'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+ 
+     defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-
+         // Get scheme for redirect result
+         manifestPlaceholders = ["checkoutRedirectScheme": rootProject.ext.checkoutRedirectScheme]
+     }
+diff --git a/econtext/build.gradle b/econtext/build.gradle
+index a6d04d8..b158f2a 100644
+--- a/econtext/build.gradle
++++ b/econtext/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "econtext"
+-ext.mavenArtifactName = "Adyen checkout E-Context component"
+-ext.mavenArtifactDescription = "Adyen checkout E-Context component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "econtext"
++    name = "Adyen checkout E-Context component"
++    description = "Adyen checkout E-Context component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.econtext'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/entercash/build.gradle b/entercash/build.gradle
+index 21de4fb..a41cb6e 100644
+--- a/entercash/build.gradle
++++ b/entercash/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "entercash"
+-ext.mavenArtifactName = "Adyen checkout Entercash component"
+-ext.mavenArtifactDescription = "Adyen checkout Entercash component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "entercash"
++    name = "Adyen checkout Entercash component"
++    description = "Adyen checkout Entercash component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.entercash'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/eps/build.gradle b/eps/build.gradle
+index 8dddf52..a6a4436 100644
+--- a/eps/build.gradle
++++ b/eps/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "eps"
+-ext.mavenArtifactName = "Adyen checkout EPS component"
+-ext.mavenArtifactDescription = "Adyen checkout EPS component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "eps"
++    name = "Adyen checkout EPS component"
++    description = "Adyen checkout EPS component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.eps'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/example-app/build.gradle b/example-app/build.gradle
+index b46c003..265b0c2 100644
+--- a/example-app/build.gradle
++++ b/example-app/build.gradle
+@@ -8,13 +8,14 @@
+ 
+ plugins {
+     alias libs.plugins.android.application
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.kotlin.compose
+     alias libs.plugins.ksp
+     alias libs.plugins.hilt
++    alias libs.plugins.checkout.detekt
++    alias libs.plugins.checkout.java
++    alias libs.plugins.checkout.ktlint
+ }
+ 
+-apply from: "${rootDir}/config/gradle/codeQuality.gradle"
+-
+ if (file("local.gradle").exists()) {
+     apply from: "local.gradle"
+ } else if (System.getenv("CI") == "true") {
+@@ -70,10 +71,6 @@ android {
+         viewBinding true
+         buildConfig true
+     }
+-
+-    composeOptions {
+-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+-    }
+ }
+ 
+ dependencies {
+@@ -96,6 +93,7 @@ dependencies {
+     implementation libs.compose.activity
+     implementation libs.compose.hilt
+     implementation libs.compose.material
++    implementation libs.compose.material.icons
+     implementation libs.compose.viewmodel
+ 
+     implementation libs.material
+diff --git a/example-app/src/main/java/com/adyen/checkout/example/ui/bacs/BacsFragment.kt b/example-app/src/main/java/com/adyen/checkout/example/ui/bacs/BacsFragment.kt
+index 5189aee..9bed447 100644
+--- a/example-app/src/main/java/com/adyen/checkout/example/ui/bacs/BacsFragment.kt
++++ b/example-app/src/main/java/com/adyen/checkout/example/ui/bacs/BacsFragment.kt
+@@ -14,6 +14,7 @@ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+ import android.widget.Toast
++import androidx.activity.addCallback
+ import androidx.core.os.bundleOf
+ import androidx.core.view.isVisible
+ import androidx.fragment.app.FragmentManager
+@@ -77,10 +78,13 @@ class BacsFragment : BottomSheetDialogFragment() {
+ 
+     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+         return object : BottomSheetDialog(requireContext(), theme) {
+-            @Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
+-            override fun onBackPressed() {
+-                if (bacsComponent?.handleBackPress() == true) return
+-                super.onBackPressed()
++            override fun onCreate(savedInstanceState: Bundle?) {
++                super.onCreate(savedInstanceState)
++                onBackPressedDispatcher.addCallback(this@BacsFragment) {
++                    if (bacsComponent?.handleBackPress() == true) return@addCallback
++                    isEnabled = false
++                    onBackPressedDispatcher.onBackPressed()
++                }
+             }
+         }
+     }
+diff --git a/example-app/src/main/java/com/adyen/checkout/example/ui/card/CardActivity.kt b/example-app/src/main/java/com/adyen/checkout/example/ui/card/CardActivity.kt
+index 37503dc..a7c304d 100644
+--- a/example-app/src/main/java/com/adyen/checkout/example/ui/card/CardActivity.kt
++++ b/example-app/src/main/java/com/adyen/checkout/example/ui/card/CardActivity.kt
+@@ -5,6 +5,7 @@ import android.os.Bundle
+ import android.util.Log
+ import android.view.MenuItem
+ import android.widget.Toast
++import androidx.activity.addCallback
+ import androidx.activity.viewModels
+ import androidx.appcompat.app.AppCompatActivity
+ import androidx.core.view.isVisible
+@@ -61,6 +62,12 @@ class CardActivity : AppCompatActivity(), AddressLookupCallback {
+                 launch { cardViewModel.events.collect(::onCardEvent) }
+             }
+         }
++
++        onBackPressedDispatcher.addCallback(this) {
++            if (cardComponent?.handleBackPress() == true) return@addCallback
++            isEnabled = false
++            onBackPressedDispatcher.onBackPressed()
++        }
+     }
+ 
+     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+@@ -168,11 +175,6 @@ class CardActivity : AppCompatActivity(), AddressLookupCallback {
+         cardViewModel.onAddressLookupQueryChanged(query)
+     }
+ 
+-    override fun onBackPressed() {
+-        if (cardComponent?.handleBackPress() == true) return
+-        super.onBackPressed()
+-    }
+-
+     override fun onDestroy() {
+         super.onDestroy()
+         cardComponent = null
+diff --git a/giftcard/build.gradle b/giftcard/build.gradle
+index 35b2f76..f77d87b 100644
+--- a/giftcard/build.gradle
++++ b/giftcard/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "giftcard"
+-ext.mavenArtifactName = "Adyen checkout Gift Card component"
+-ext.mavenArtifactDescription = "Adyen checkout Gift Card component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "giftcard"
++    name = "Adyen checkout Gift Card component"
++    description = "Adyen checkout Gift Card component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.giftcard'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/giftcard/src/main/java/com/adyen/checkout/giftcard/SessionsGiftCardComponentCallback.kt b/giftcard/src/main/java/com/adyen/checkout/giftcard/SessionsGiftCardComponentCallback.kt
+index e74084e..988adee 100644
+--- a/giftcard/src/main/java/com/adyen/checkout/giftcard/SessionsGiftCardComponentCallback.kt
++++ b/giftcard/src/main/java/com/adyen/checkout/giftcard/SessionsGiftCardComponentCallback.kt
+@@ -34,6 +34,7 @@ interface SessionsGiftCardComponentCallback : SessionComponentCallback<GiftCardC
+     fun onPartialPayment(result: SessionPaymentResult)
+ 
+     // API Events
++
+     /**
+      * Only applicable for partial payments flow.
+      *
+diff --git a/googlepay/build.gradle b/googlepay/build.gradle
+index 60ca3a4..4ca4896 100644
+--- a/googlepay/build.gradle
++++ b/googlepay/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "googlepay"
+-ext.mavenArtifactName = "Adyen checkout Google Pay component"
+-ext.mavenArtifactDescription = "Adyen checkout Google Pay component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "googlepay"
++    name = "Adyen checkout Google Pay component"
++    description = "Adyen checkout Google Pay component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.googlepay'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/gradle.properties b/gradle.properties
+index 1ee9c41..c0ea30a 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -10,8 +10,6 @@ android.useAndroidX=true
+ android.nonTransitiveRClass=true
+ 
+ # Disable some unused build features in the Android Gradle Plugin to improve build speed.
+-android.defaults.buildfeatures.aidl=false
+-android.defaults.buildfeatures.renderscript=false
+ android.defaults.buildfeatures.resvalues=false
+ android.defaults.buildfeatures.shaders=false
+ 
+@@ -38,3 +36,6 @@ org.gradle.configuration-cache=true
+ 
+ # Kotlin test fixtures support
+ android.experimental.enableTestFixturesKotlinSupport=true
++
++org.jetbrains.dokka.experimental.gradle.pluginMode=V2Enabled
++org.jetbrains.dokka.experimental.gradle.pluginMode.nowarn=true
+diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
+index a7d9ec1..59b4b4b 100644
+--- a/gradle/libs.versions.toml
++++ b/gradle/libs.versions.toml
+@@ -8,41 +8,41 @@ min-sdk = "21"
+ version-code = "1"
+ 
+ # Build script
+-android-gradle-plugin = "8.8.1"
+-kotlin = "1.9.25"
+-ksp = "1.9.25-1.0.20"
+-dokka = "1.9.20"
+-hilt = "2.55"
+-compose-compiler = "1.5.15"
++jvm-target = "17"
++android-gradle-plugin = "9.4.1"
++kotlin = "2.3.21"
++ksp = "2.3.12"
++dokka = "2.2.0"
++hilt = "2.60.1"
+ 
+ # Code quality
+ detekt = "1.23.8"
+-kover = "0.9.3"
+-ktlint = "1.5.0"
+-sonarqube = "5.1.0.4882"
+-binary-compatibility-validator = "0.16.3"
++kover = "0.9.11"
++ktlint = "1.8.0"
++sonarqube = "7.5.0.8588"
++binary-compatibility-validator = "0.18.2"
+ 
+ # Android dependencies
+-activity = "1.10.1"
+-annotation = "1.9.1"
+-appcompat = "1.7.0"
+-autofill = "1.3.0-rc01"
+-browser = "1.8.0"
+-coroutines = "1.9.0"
+-fragment = "1.8.6"
+-lifecycle = "2.8.7"
+-material = "1.12.0"
++activity = "1.11.0"
++annotation = "1.11.0"
++appcompat = "1.7.1"
++autofill = "1.3.0"
++browser = "1.9.0"
++coroutines = "1.11.0"
++fragment = "1.8.9"
++lifecycle = "2.9.4"
++material = "1.13.0"
+ recyclerview = "1.4.0"
+-constraintlayout = "2.2.1"
++constraintlayout = "2.2.2"
+ 
+ # Compose dependencies
+-compose-activity = "1.10.1"
+-compose-bom = "2025.03.00"
++compose-activity = "1.11.0"
++compose-bom = "2025.11.01"
+ compose-hilt = "1.2.0"
+-compose-viewmodel = "2.8.7"
++compose-viewmodel = "2.9.4"
+ 
+ # Adyen dependencies
+-adyen3ds2 = "2.2.27"
++adyen3ds2 = "2.2.28"
+ 
+ # External dependencies
+ cash-app-pay = "2.5.0"
+@@ -57,23 +57,23 @@ moshi-adapters = "1.15.2"
+ moshi-kotlin-adapter = "1.15.2"
+ okhttp-logging = "4.12.0"
+ preference = "1.2.1"
+-retrofit2 = "2.11.0"
++retrofit2 = "3.0.0"
+ 
+ # Tests
+ arch-core-testing = "2.2.0"
+ barista = "4.3.0"
+-espresso = "3.6.1"
+-json = "20250107"
+-jose4j = "0.9.6"
+-junit-jupiter = "5.12.2"
++espresso = "3.7.0"
++json = "20250517"
++jose4j = "0.9.7"
++junit-jupiter = "5.14.4"
+ konsist = "0.17.3"
+-lint = "31.8.0"
+-mockito-kotlin = "5.4.0"
+-mockito = "5.17.0"
+-robolectric = "4.14.1"
+-test-ext = "1.2.1"
+-test-rules = "1.6.1"
+-turbine = "1.2.0"
++lint = "32.4.1"
++mockito-kotlin = "6.4.0"
++mockito = "5.24.0"
++robolectric = "4.17"
++test-ext = "1.3.0"
++test-rules = "1.7.0"
++turbine = "1.2.1"
+ uiautomator = "2.3.0"
+ 
+ [libraries]
+@@ -96,14 +96,13 @@ compose-activity = { group = "androidx.activity", name = "activity-compose", ver
+ compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+ compose-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "compose-hilt" }
+ compose-material = { group = "androidx.compose.material3", name = "material3" }
++compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core" }
+ compose-ui-main = { group = "androidx.compose.ui", name = "ui" }
+ compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+ compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+ compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+ compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "compose-viewmodel" }
+-# this unused dependency is needed so that renovate can update the compose compiler version. More info in: https://github.com/renovatebot/renovate/issues/18354
+-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose-compiler" }
+ google-pay-play-services-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
+ google-pay-play-services-wallet = { group = "com.google.android.gms", name = "play-services-wallet", version.ref = "play-services-wallet" }
+ hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+@@ -154,6 +153,15 @@ mockito-android-main = { group = "org.mockito", name = "mockito-android", versio
+ mock-web-server = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
+ robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+ 
++# Util libraries
++android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gradle-plugin" }
++detekt-gradle-plugin = { group = "io.gitlab.arturbosch.detekt", name = "io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "detekt" }
++dokka-gradle-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
++kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
++kover-gradle-plugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
++sonarqube-gradle-plugin = { group = "org.sonarqube", name = "org.sonarqube.gradle.plugin", version.ref = "sonarqube" }
++binary-compatibility-validator-gradle-plugin = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
++
+ [bundles]
+ 
+ # Production bundles
+@@ -175,13 +183,25 @@ mockito-android = ["mockito-android-main", "mockito-kotlin"]
+ android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+ android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+ kotlin = { id = "kotlin" }
+-kotlin-android = { id = "kotlin-android" }
+-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
++kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ kotlin-parcelize = { id = "kotlin-parcelize" }
+-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
++kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+ sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+ binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
++
++# Plugins defined by this project
++checkout-android-library = { id = "checkout.android.library" }
++checkout-detekt = { id = "checkout.detekt" }
++checkout-dokka = { id = "checkout.dokka" }
++checkout-java = { id = "checkout.java" }
++checkout-kover = { id = "checkout.kover" }
++checkout-ktlint = { id = "checkout.ktlint" }
++checkout-publish = { id = "checkout.publish" }
++checkout-sonar = { id = "checkout.sonar" }
++dependency-list-aggregate = { id = "checkout.dependency.list.aggregate" }
++dependency-list-generate = { id = "checkout.dependency.list.generate" }
++dependency-resolve = { id = "checkout.dependency.resolve" }
+diff --git a/ideal/build.gradle b/ideal/build.gradle
+index e838d0b..d475a89 100644
+--- a/ideal/build.gradle
++++ b/ideal/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "ideal"
+-ext.mavenArtifactName = "Adyen checkout iDEAL component"
+-ext.mavenArtifactDescription = "Adyen checkout iDEAL component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "ideal"
++    name = "Adyen checkout iDEAL component"
++    description = "Adyen checkout iDEAL component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.ideal'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/instant/build.gradle b/instant/build.gradle
+index 93582e1..df5c333 100644
+--- a/instant/build.gradle
++++ b/instant/build.gradle
+@@ -1,27 +1,16 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "instant"
+-ext.mavenArtifactName = "Adyen Instant Payment Component"
+-ext.mavenArtifactDescription = "Adyen checkout Instant Payment component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "instant"
++    name = "Adyen Instant Payment Component"
++    description = "Adyen checkout Instant Payment component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.instant'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/issuer-list/build.gradle b/issuer-list/build.gradle
+index fa3fe1f..f7514ed 100644
+--- a/issuer-list/build.gradle
++++ b/issuer-list/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "issuer-list"
+-ext.mavenArtifactName = "Adyen checkout issuer list component"
+-ext.mavenArtifactDescription = "Adyen checkout issuer list component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "issuer-list"
++    name = "Adyen checkout issuer list component"
++    description = "Adyen checkout issuer list component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.issuerlist'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/lint/build.gradle b/lint/build.gradle
+index 478ebc7..12fdad2 100644
+--- a/lint/build.gradle
++++ b/lint/build.gradle
+@@ -8,15 +8,7 @@
+ 
+ plugins {
+     alias libs.plugins.kotlin
+-}
+-
+-java {
+-    targetCompatibility = JavaVersion.VERSION_11
+-    sourceCompatibility = JavaVersion.VERSION_11
+-}
+-
+-kotlin {
+-    jvmToolchain(11)
++    alias libs.plugins.checkout.java
+ }
+ 
+ dependencies {
+diff --git a/mbway/build.gradle b/mbway/build.gradle
+index 2bc16bd..241cdeb 100644
+--- a/mbway/build.gradle
++++ b/mbway/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "mbway"
+-ext.mavenArtifactName = "Adyen checkout MB WAY component"
+-ext.mavenArtifactDescription = "Adyen checkout MB WAY component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "mbway"
++    name = "Adyen checkout MB WAY component"
++    description = "Adyen checkout MB WAY component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.mbway'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/meal-voucher-fr/build.gradle b/meal-voucher-fr/build.gradle
+index 2862605..a586b78 100644
+--- a/meal-voucher-fr/build.gradle
++++ b/meal-voucher-fr/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "meal-voucher-fr"
+-ext.mavenArtifactName = "Adyen checkout Meal Voucher France component"
+-ext.mavenArtifactDescription = "Adyen checkout Meal Voucher France component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "meal-voucher-fr"
++    name = "Adyen checkout Meal Voucher France component"
++    description = "Adyen checkout Meal Voucher France component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.mealvoucherfr'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/molpay/build.gradle b/molpay/build.gradle
+index b935fb7..10387b3 100644
+--- a/molpay/build.gradle
++++ b/molpay/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "molpay"
+-ext.mavenArtifactName = "Adyen checkout MOLPay component"
+-ext.mavenArtifactDescription = "Adyen checkout MOLPay component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "molpay"
++    name = "Adyen checkout MOLPay component"
++    description = "Adyen checkout MOLPay component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.molpay'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/online-banking-core/build.gradle b/online-banking-core/build.gradle
+index 0ff5e4c..d147d21 100644
+--- a/online-banking-core/build.gradle
++++ b/online-banking-core/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "online-banking-core"
+-ext.mavenArtifactName = "Adyen checkout Online Banking core module"
+-ext.mavenArtifactDescription = "Adyen checkout Online Banking core module component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "online-banking-core"
++    name = "Adyen checkout Online Banking core module"
++    description = "Adyen checkout Online Banking core module component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.onlinebankingcore'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/online-banking-cz/build.gradle b/online-banking-cz/build.gradle
+index 073afa8..00214b3 100644
+--- a/online-banking-cz/build.gradle
++++ b/online-banking-cz/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "online-banking-cz"
+-ext.mavenArtifactName = "Adyen checkout Online Banking Czech Republic"
+-ext.mavenArtifactDescription = "Adyen checkout Online Banking Czech Republic component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "online-banking-cz"
++    name = "Adyen checkout Online Banking Czech Republic"
++    description = "Adyen checkout Online Banking Czech Republic component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.onlinebankingcz'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/online-banking-jp/build.gradle b/online-banking-jp/build.gradle
+index ca2516b..5880c3b 100644
+--- a/online-banking-jp/build.gradle
++++ b/online-banking-jp/build.gradle
+@@ -1,27 +1,16 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "online-banking-jp"
+-ext.mavenArtifactName = "Adyen Online Banking Japan Component"
+-ext.mavenArtifactDescription = "Adyen checkout Online Banking Japan Component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "online-banking-jp"
++    name = "Adyen Online Banking Japan Component"
++    description = "Adyen checkout Online Banking Japan Component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.onlinebankingjp'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/online-banking-pl/build.gradle b/online-banking-pl/build.gradle
+index b0c1350..488beac 100644
+--- a/online-banking-pl/build.gradle
++++ b/online-banking-pl/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "online-banking-pl"
+-ext.mavenArtifactName = "Adyen checkout Online Banking Poland"
+-ext.mavenArtifactDescription = "Adyen checkout Online Banking Poland component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "online-banking-pl"
++    name = "Adyen checkout Online Banking Poland"
++    description = "Adyen checkout Online Banking Poland component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.onlinebankingpl'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/online-banking-sk/build.gradle b/online-banking-sk/build.gradle
+index e005e38..1a4f755 100644
+--- a/online-banking-sk/build.gradle
++++ b/online-banking-sk/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "online-banking-sk"
+-ext.mavenArtifactName = "Adyen checkout Online Banking Slovakia"
+-ext.mavenArtifactDescription = "Adyen checkout Online Banking Slovikia component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "online-banking-sk"
++    name = "Adyen checkout Online Banking Slovakia"
++    description = "Adyen checkout Online Banking Slovikia component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.onlinebankingsk'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/openbanking/build.gradle b/openbanking/build.gradle
+index b7ad88e..b206c4c 100644
+--- a/openbanking/build.gradle
++++ b/openbanking/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "openbanking"
+-ext.mavenArtifactName = "Adyen checkout Open Banking component"
+-ext.mavenArtifactDescription = "Adyen checkout Open Banking component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "openbanking"
++    name = "Adyen checkout Open Banking component"
++    description = "Adyen checkout Open Banking component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.openbanking'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/paybybank-us/build.gradle b/paybybank-us/build.gradle
+index 69ec3c7..7c47834 100644
+--- a/paybybank-us/build.gradle
++++ b/paybybank-us/build.gradle
+@@ -1,27 +1,16 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "paybybank-us"
+-ext.mavenArtifactName = "Adyen Pay by Bank US component"
+-ext.mavenArtifactDescription = "Adyen Checkout Pay by Bank US component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "paybybank-us"
++    name = "Adyen Pay by Bank US component"
++    description = "Adyen Checkout Pay by Bank US component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.paybybankus'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/paybybank/build.gradle b/paybybank/build.gradle
+index e39bd2f..5149cae 100644
+--- a/paybybank/build.gradle
++++ b/paybybank/build.gradle
+@@ -1,27 +1,16 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "paybybank"
+-ext.mavenArtifactName = "Adyen Pay by Bank component"
+-ext.mavenArtifactDescription = "Adyen Checkout Pay by Bank component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "paybybank"
++    name = "Adyen Pay by Bank component"
++    description = "Adyen Checkout Pay by Bank component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.paybybank'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/payeasy/build.gradle b/payeasy/build.gradle
+index 5b436e3..d17cf62 100644
+--- a/payeasy/build.gradle
++++ b/payeasy/build.gradle
+@@ -1,27 +1,16 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "payeasy"
+-ext.mavenArtifactName = "Adyen Pay Easy Component"
+-ext.mavenArtifactDescription = "Adyen checkout Pay Easy Component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "payeasy"
++    name = "Adyen Pay Easy Component"
++    description = "Adyen checkout Pay Easy Component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.payeasy'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/payto/build.gradle b/payto/build.gradle
+index 54140a3..3dfe613 100644
+--- a/payto/build.gradle
++++ b/payto/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "payto"
+-ext.mavenArtifactName = "Adyen checkout PayTo component"
+-ext.mavenArtifactDescription = "Adyen checkout PayTo component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "payto"
++    name = "Adyen checkout PayTo component"
++    description = "Adyen checkout PayTo component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.payto'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/qr-code/build.gradle b/qr-code/build.gradle
+index f7ca3fd..659dd07 100644
+--- a/qr-code/build.gradle
++++ b/qr-code/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "qr-code"
+-ext.mavenArtifactName = "Adyen checkout QR code component"
+-ext.mavenArtifactDescription = "Adyen checkout QR code component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "qr-code"
++    name = "Adyen checkout QR code component"
++    description = "Adyen checkout QR code component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.qrcode'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/redirect/build.gradle b/redirect/build.gradle
+index 7a72b97..434f0d9 100644
+--- a/redirect/build.gradle
++++ b/redirect/build.gradle
+@@ -7,29 +7,20 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "redirect"
+-ext.mavenArtifactName = "Adyen checkout redirect component"
+-ext.mavenArtifactDescription = "Adyen checkout redirect component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "redirect"
++    name = "Adyen checkout redirect component"
++    description = "Adyen checkout redirect component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.redirect'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+ 
+     defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-
+         // Get scheme for redirect result
+         buildConfigField "String", "checkoutRedirectScheme", "\"$rootProject.ext.checkoutRedirectScheme\""
+     }
+diff --git a/redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt b/redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt
+index a844e69..3e11b94 100644
+--- a/redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt
++++ b/redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt
+@@ -30,10 +30,10 @@ import com.adyen.checkout.components.core.internal.util.bufferedChannel
+ import com.adyen.checkout.core.AdyenLogLevel
+ import com.adyen.checkout.core.exception.CheckoutException
+ import com.adyen.checkout.core.exception.ComponentException
+-import com.adyen.checkout.core.exception.HttpException
+ import com.adyen.checkout.core.exception.ModelSerializationException
+ import com.adyen.checkout.core.internal.data.model.getStringOrNull
+ import com.adyen.checkout.core.internal.util.adyenLog
++import com.adyen.checkout.core.internal.util.runSuspendCatching
+ import com.adyen.checkout.redirect.internal.data.api.NativeRedirectService
+ import com.adyen.checkout.redirect.internal.data.model.NativeRedirectRequest
+ import com.adyen.checkout.redirect.internal.data.model.NativeRedirectResponse
+@@ -187,17 +187,17 @@ constructor(
+                 redirectData = nativeRedirectData,
+                 returnQueryString = details.getStringOrNull(RETURN_URL_QUERY_STRING_PARAMETER).orEmpty(),
+             )
+-            try {
++            runSuspendCatching {
+                 val response = nativeRedirectService.makeNativeRedirect(request, componentParams.clientKey)
+-                val detailsJson = NativeRedirectResponse.SERIALIZER.serialize(response)
+-                emitDetails(detailsJson)
+-            } catch (e: HttpException) {
+-                trackNativeRedirectError("Network error")
+-                emitError(e)
+-            } catch (e: ModelSerializationException) {
+-                trackNativeRedirectError("Serialization error")
+-                emitError(e)
+-            }
++                NativeRedirectResponse.SERIALIZER.serialize(response)
++            }.fold(
++                onSuccess = ::emitDetails,
++                onFailure = { e ->
++                    val message = if (e is ModelSerializationException) "Serialization error" else "Network error"
++                    trackNativeRedirectError(message)
++                    emitError(e as? CheckoutException ?: ComponentException("Native redirect request failed.", e))
++                },
++            )
+         }
+     }
+ 
+diff --git a/sepa/build.gradle b/sepa/build.gradle
+index fd76c28..dc76741 100644
+--- a/sepa/build.gradle
++++ b/sepa/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "sepa"
+-ext.mavenArtifactName = "Adyen checkout SEPA component"
+-ext.mavenArtifactDescription = "Adyen checkout SEPA component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "sepa"
++    name = "Adyen checkout SEPA component"
++    description = "Adyen checkout SEPA component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.sepa'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/sessions-core/build.gradle b/sessions-core/build.gradle
+index dfa2829..511588a 100644
+--- a/sessions-core/build.gradle
++++ b/sessions-core/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "sessions-core"
+-ext.mavenArtifactName = "Adyen Checkout sessions core module"
+-ext.mavenArtifactDescription = "Core module for Adyen Checkout sessions."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "sessions-core"
++    name = "Adyen Checkout sessions core module"
++    description = "Core module for Adyen Checkout sessions."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.sessions.core'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ }
+ 
+ dependencies {
+diff --git a/settings.gradle b/settings.gradle
+index 3d70a6c..4cfc8e4 100644
+--- a/settings.gradle
++++ b/settings.gradle
+@@ -1,4 +1,5 @@
+ pluginManagement {
++    includeBuild("build-logic")
+     repositories {
+         google()
+         mavenCentral()
+@@ -8,7 +9,7 @@ pluginManagement {
+ 
+ plugins {
+     // this has to be declared here directly because settings.gradle cannot reference version catalogs
+-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
++    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+ }
+ 
+ // Apply local.gradle if it exists (used for local testing configurations)
+diff --git a/seven-eleven/build.gradle b/seven-eleven/build.gradle
+index c105ae9..64c0fc8 100644
+--- a/seven-eleven/build.gradle
++++ b/seven-eleven/build.gradle
+@@ -1,27 +1,16 @@
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "seven-eleven"
+-ext.mavenArtifactName = "Adyen Seven Eleven Component"
+-ext.mavenArtifactDescription = "Adyen checkout Seven Eleven Component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "seven-eleven"
++    name = "Adyen Seven Eleven Component"
++    description = "Adyen checkout Seven Eleven Component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.seveneleven'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/twint-action/build.gradle b/twint-action/build.gradle
+index 9891e4a..95ecd5a 100644
+--- a/twint-action/build.gradle
++++ b/twint-action/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "twint-action"
+-ext.mavenArtifactName = "Adyen checkout Twint action component"
+-ext.mavenArtifactDescription = "Adyen checkout Twint action component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "twint-action"
++    name = "Adyen checkout Twint action component"
++    description = "Adyen checkout Twint action component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.twint.action'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/twint/build.gradle b/twint/build.gradle
+index 00dcd47..815a1db 100644
+--- a/twint/build.gradle
++++ b/twint/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "twint"
+-ext.mavenArtifactName = "Adyen checkout Twint component"
+-ext.mavenArtifactDescription = "Adyen checkout Twint component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "twint"
++    name = "Adyen checkout Twint component"
++    description = "Adyen checkout Twint component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.twint'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/ui-core/build.gradle b/ui-core/build.gradle
+index 1a1b20d..c2c3b0d 100644
+--- a/ui-core/build.gradle
++++ b/ui-core/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "ui-core"
+-ext.mavenArtifactName = "Adyen checkout base UI component"
+-ext.mavenArtifactDescription = "Adyen checkout base UI component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "ui-core"
++    name = "Adyen checkout base UI component"
++    description = "Adyen checkout base UI component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.ui.core'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/view/AdyenTextInputEditText.kt b/ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/view/AdyenTextInputEditText.kt
+index f9c363b..417613b 100644
+--- a/ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/view/AdyenTextInputEditText.kt
++++ b/ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/view/AdyenTextInputEditText.kt
+@@ -28,9 +28,6 @@ open class AdyenTextInputEditText @JvmOverloads constructor(
+     open val rawValue: String
+         get() = text?.toString() ?: ""
+ 
+-    /**
+-     * Constructor of AdyenTextInputEditText.
+-     */
+     init {
+         this.addTextChangedListener(textWatcher)
+     }
+diff --git a/upi/build.gradle b/upi/build.gradle
+index 8e55d51..465642a 100644
+--- a/upi/build.gradle
++++ b/upi/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "upi"
+-ext.mavenArtifactName = "Adyen checkout UPI component"
+-ext.mavenArtifactDescription = "Adyen checkout UPI component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "upi"
++    name = "Adyen checkout UPI component"
++    description = "Adyen checkout UPI component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.upi'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/voucher/build.gradle b/voucher/build.gradle
+index 65a102b..f4f64ff 100644
+--- a/voucher/build.gradle
++++ b/voucher/build.gradle
+@@ -7,29 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-// Maven artifact
+-ext.mavenArtifactId = "voucher"
+-ext.mavenArtifactName = "Adyen Checkout Voucher component"
+-ext.mavenArtifactDescription = "Adyen checkout voucher component for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "voucher"
++    name = "Adyen Checkout Voucher component"
++    description = "Adyen checkout voucher component for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.voucher'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     buildFeatures {
+         viewBinding true
+diff --git a/wechatpay/build.gradle b/wechatpay/build.gradle
+index f1d00f5..9da204a 100644
+--- a/wechatpay/build.gradle
++++ b/wechatpay/build.gradle
+@@ -7,28 +7,18 @@
+  */
+ 
+ plugins {
+-    alias libs.plugins.android.library
+-    alias libs.plugins.kotlin.android
++    alias libs.plugins.checkout.android.library
+     alias libs.plugins.kotlin.parcelize
+ }
+ 
+-ext.mavenArtifactId = "wechatpay"
+-ext.mavenArtifactName = "Adyen Checkout WeChat Pay component"
+-ext.mavenArtifactDescription = "Adyen checkout WeChat Pay component client for Adyen's Checkout API."
+-
+-apply from: "${rootDir}/config/gradle/sharedTasks.gradle"
++checkoutPublishing {
++    id = "wechatpay"
++    name = "Adyen Checkout WeChat Pay component"
++    description = "Adyen checkout WeChat Pay component client for Adyen's Checkout API."
++}
+ 
+ android {
+     namespace 'com.adyen.checkout.wechatpay'
+-    compileSdk libs.versions.compile.sdk.get().toInteger()
+-
+-    defaultConfig {
+-        minSdk libs.versions.min.sdk.get().toInteger()
+-        targetSdk libs.versions.target.sdk.get().toInteger()
+-
+-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+-        consumerProguardFiles "consumer-rules.pro"
+-    }
+ 
+     testOptions {
+         unitTests.returnDefaultValues = true

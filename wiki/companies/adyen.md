@@ -51,6 +51,10 @@ This wrapper is independently versioned from the shopper-facing `AdyenWeChatPay`
 
 ## Native Android checkout surface
 
+Full additive `adyen-android@5.22.0` evidence (2026-10-30 release, ingested 2026-11-07) adds OkHttp `4.12.1` and shared image-loader/bitmap-ownership changes. Release notes claim protection against eight compromised eMudhra intermediates on non-Play-services devices; dependency blocklist internals and actual device rejection remain unverified here. All earlier Android history remains in [[source-github-adyen-android]] and [[changelog-github-adyen-android]].
+
+Full additive `adyen-android@5.21.0` evidence (2026-10-27 release, ingested 2026-11-07) adds address-lookup save-card-switch restoration, broader native-redirect error reporting and Adyen 3DS2 `2.2.28`. Broad repository build updates retain Android Java target 11 while moving separate build/tooling settings to 17; repository Kotlin/AGP pins are not universal consumer minimums. All older history remains in [[source-github-adyen-android]] and [[changelog-github-adyen-android]]. This does not update the independently pinned React Native wrapper or independently audited 3DS2 source.
+
 The retained `adyen-android@5.20.0` baseline provides View and Jetpack Compose variants of modular Drop-in, Components, Sessions, cards, actions, encryption, local payment methods, and external SDK adapters. Sessions can own setup, payments, additional details, partial-payment orders, and stored-method removal; advanced integrations implement the corresponding merchant-server calls.
 
 Card support includes BIN lookup, dual-brand selection, installments, address fields, storage choice, scanning, and public-key encryption. Google Pay, Cash App Pay, Twint, WeChat Pay, and 3DS2 cross separately versioned runtime boundaries and require independent eligibility and dependency evidence.

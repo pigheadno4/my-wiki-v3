@@ -6,6 +6,16 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-07] ingest | Adyen Android `5.22.0`
+
+- Approved full additive ingest with focused reading, exact SHA `73df6558fa5868a2c14449ac2e0c6379fc349798`, serially after completed `5.21.0`; all prior history preserved. Upstream eMudhra security claim attributed to release notes, OkHttp/logging `4.12.1` confirmed; URL image saving uses shared cached loader and recycling is scoped to the view-created bitmap path.
+- Concept updated first, followed by source/changelog/company/catalog/logs; no source-count change. Dependency blocklist internals, universal TLS/cancellation safety and device rejection not claimed. Receipt: `tracking/github/repos/adyen/adyen-android/ingest-review-2026-11-07.md`. No upstream execution, commit or push.
+
+## [2026-11-07] ingest | Adyen Android `5.21.0`
+
+- Approved full additive ingest with focused reading, exact SHA `405b582a7b2060aceac756eae7b6bd3757e0c084`, preserving all `5.20.0` history. Card storage-switch restoration, native-redirect error handling, 3DS2/dependency updates and convention-build migration; five exact-SHA supplemental files distinguish Android Java target 11 from tooling target 17.
+- Concept updated before source/changelog; company/catalog/logs updated without adding source pages or modifying source_count. Snapshot/attachment identities checked; no upstream Gradle/Android/device/security/payment execution. Receipt: `tracking/github/repos/adyen/adyen-android/ingest-review-2026-11-07.md`. No commit/push.
+
 ## [2026-11-07] ingest | Adyen API Explorer C69
 
 - All 47 exact-manifest complete-body API Explorer sources independently approved and promoted: 47 pages across ten API families references. First full-review approvals 43/47; 4 targeted correction reviews. Full raw reads, 3–5 located quotes and coordinator-only approved concept-before-source promotion.

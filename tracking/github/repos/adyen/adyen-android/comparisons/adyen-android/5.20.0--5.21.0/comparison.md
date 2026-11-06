@@ -1,0 +1,143 @@
+# GitHub package comparison
+
+- Repository: `adyen/adyen-android`
+- Package: `adyen-android`
+- From: `5.20.0` (`5314fad1389a8def9d8e3377f27f7405e303faba`)
+- To: `5.21.0` (`405b582a7b2060aceac756eae7b6bd3757e0c084`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `3ds2/build.gradle`
+- `ach/build.gradle`
+- `action-core/build.gradle`
+- `action-core/src/main/java/com/adyen/checkout/action/core/internal/ActionHandlingPaymentMethodConfigurationBuilder.kt`
+- `await/build.gradle`
+- `bacs/build.gradle`
+- `bcmc/build.gradle`
+- `blik/build.gradle`
+- `boleto/build.gradle`
+- `build.gradle`
+- `card-scanning/build.gradle`
+- `card/build.gradle`
+- `card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt`
+- `cashapppay/build.gradle`
+- `checkout-core/build.gradle`
+- `components-compose/build.gradle`
+- `components-core/build.gradle`
+- `components-core/src/main/java/com/adyen/checkout/components/core/internal/BaseConfigurationBuilder.kt`
+- `convenience-stores-jp/build.gradle`
+- `cse/build.gradle`
+- `dotpay/build.gradle`
+- `drop-in-compose/build.gradle`
+- `drop-in/build.gradle`
+- `econtext/build.gradle`
+- `entercash/build.gradle`
+- `eps/build.gradle`
+- `example-app/build.gradle`
+- `example-app/src/main/java/com/adyen/checkout/example/ui/bacs/BacsFragment.kt`
+- `example-app/src/main/java/com/adyen/checkout/example/ui/card/CardActivity.kt`
+- `giftcard/build.gradle`
+- `giftcard/src/main/java/com/adyen/checkout/giftcard/SessionsGiftCardComponentCallback.kt`
+- `googlepay/build.gradle`
+- `gradle.properties`
+- `gradle/libs.versions.toml`
+- `ideal/build.gradle`
+- `instant/build.gradle`
+- `issuer-list/build.gradle`
+- `lint/build.gradle`
+- `mbway/build.gradle`
+- `meal-voucher-fr/build.gradle`
+- `molpay/build.gradle`
+- `online-banking-core/build.gradle`
+- `online-banking-cz/build.gradle`
+- `online-banking-jp/build.gradle`
+- `online-banking-pl/build.gradle`
+- `online-banking-sk/build.gradle`
+- `openbanking/build.gradle`
+- `paybybank-us/build.gradle`
+- `paybybank/build.gradle`
+- `payeasy/build.gradle`
+- `payto/build.gradle`
+- `qr-code/build.gradle`
+- `redirect/build.gradle`
+- `redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt`
+- `sepa/build.gradle`
+- `sessions-core/build.gradle`
+- `settings.gradle`
+- `seven-eleven/build.gradle`
+- `twint-action/build.gradle`
+- `twint/build.gradle`
+- `ui-core/build.gradle`
+- `ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/view/AdyenTextInputEditText.kt`
+- `upi/build.gradle`
+- `voucher/build.gradle`
+- `wechatpay/build.gradle`
+
+## Upstream changes
+
+- `modified`: `3ds2/build.gradle`
+- `modified`: `ach/build.gradle`
+- `modified`: `action-core/build.gradle`
+- `modified`: `action-core/src/main/java/com/adyen/checkout/action/core/internal/ActionHandlingPaymentMethodConfigurationBuilder.kt`
+- `modified`: `await/build.gradle`
+- `modified`: `bacs/build.gradle`
+- `modified`: `bcmc/build.gradle`
+- `modified`: `blik/build.gradle`
+- `modified`: `boleto/build.gradle`
+- `modified`: `build.gradle`
+- `modified`: `card-scanning/build.gradle`
+- `modified`: `card/build.gradle`
+- `modified`: `card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt`
+- `modified`: `cashapppay/build.gradle`
+- `modified`: `checkout-core/build.gradle`
+- `modified`: `components-compose/build.gradle`
+- `modified`: `components-core/build.gradle`
+- `modified`: `components-core/src/main/java/com/adyen/checkout/components/core/internal/BaseConfigurationBuilder.kt`
+- `modified`: `convenience-stores-jp/build.gradle`
+- `modified`: `cse/build.gradle`
+- `modified`: `dotpay/build.gradle`
+- `modified`: `drop-in-compose/build.gradle`
+- `modified`: `drop-in/build.gradle`
+- `modified`: `econtext/build.gradle`
+- `modified`: `entercash/build.gradle`
+- `modified`: `eps/build.gradle`
+- `modified`: `example-app/build.gradle`
+- `modified`: `example-app/src/main/java/com/adyen/checkout/example/ui/bacs/BacsFragment.kt`
+- `modified`: `example-app/src/main/java/com/adyen/checkout/example/ui/card/CardActivity.kt`
+- `modified`: `giftcard/build.gradle`
+- `modified`: `giftcard/src/main/java/com/adyen/checkout/giftcard/SessionsGiftCardComponentCallback.kt`
+- `modified`: `googlepay/build.gradle`
+- `modified`: `gradle.properties`
+- `modified`: `gradle/libs.versions.toml`
+- `modified`: `ideal/build.gradle`
+- `modified`: `instant/build.gradle`
+- `modified`: `issuer-list/build.gradle`
+- `modified`: `lint/build.gradle`
+- `modified`: `mbway/build.gradle`
+- `modified`: `meal-voucher-fr/build.gradle`
+- `modified`: `molpay/build.gradle`
+- `modified`: `online-banking-core/build.gradle`
+- `modified`: `online-banking-cz/build.gradle`
+- `modified`: `online-banking-jp/build.gradle`
+- `modified`: `online-banking-pl/build.gradle`
+- `modified`: `online-banking-sk/build.gradle`
+- `modified`: `openbanking/build.gradle`
+- `modified`: `paybybank-us/build.gradle`
+- `modified`: `paybybank/build.gradle`
+- `modified`: `payeasy/build.gradle`
+- `modified`: `payto/build.gradle`
+- `modified`: `qr-code/build.gradle`
+- `modified`: `redirect/build.gradle`
+- `modified`: `redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt`
+- `modified`: `sepa/build.gradle`
+- `modified`: `sessions-core/build.gradle`
+- `modified`: `settings.gradle`
+- `modified`: `seven-eleven/build.gradle`
+- `modified`: `twint-action/build.gradle`
+- `modified`: `twint/build.gradle`
+- `modified`: `ui-core/build.gradle`
+- `modified`: `ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/view/AdyenTextInputEditText.kt`
+- `modified`: `upi/build.gradle`
+- `modified`: `voucher/build.gradle`
+- `modified`: `wechatpay/build.gradle`

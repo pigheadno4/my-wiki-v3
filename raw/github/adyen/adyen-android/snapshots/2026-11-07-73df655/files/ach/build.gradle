@@ -1,0 +1,42 @@
+plugins {
+    alias libs.plugins.checkout.android.library
+    alias libs.plugins.kotlin.parcelize
+}
+
+checkoutPublishing {
+    id = "ach"
+    name = "Adyen checkout ACH Direct Debit component"
+    description = "Adyen checkout ACH Direct Debit component client for Adyen's Checkout API."
+}
+
+android {
+    namespace 'com.adyen.checkout.ach'
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    api project(':action-core')
+    api project(':ui-core')
+    api project(':cse')
+    api project(':sessions-core')
+
+    // Dependencies
+    implementation libs.material
+
+    //Tests
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation testFixtures(project(':components-core'))
+    testImplementation testFixtures(project(':cse'))
+    testImplementation testFixtures(project(':ui-core'))
+    testImplementation libs.json
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.kotlin.coroutines.test
+    testImplementation libs.bundles.mockito
+}

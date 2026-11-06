@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-11-07] ingest | Adyen Android `5.22.0`
+
+Approved focused-reading full additive ingest after `5.21.0`, preserving all history: attributed eMudhra security release claim, OkHttp `4.12.1`, shared image loading and bitmap-ownership change. No independent blocklist/device-rejection proof; source_count unchanged by this ingest. Details [[adyen-log]], [[source-github-adyen-android]] and [[changelog-github-adyen-android]]. No upstream execution, commit or push.
+
+## [2026-11-07] ingest | Adyen Android `5.21.0`
+
+Approved focused-reading full additive ingest preserves all `5.20.0` history: card storage-switch restoration, native-redirect failure callbacks and broad dependency/build migration. Exact-SHA supplement distinguishes Android Java 11 from tooling 17. Source_count unchanged by this ingest; details [[adyen-log]], [[source-github-adyen-android]] and [[changelog-github-adyen-android]]. No upstream execution, commit or push.
+
 ## [2026-11-07] ingest | Adyen API Explorer C69
 
 - All 47 remaining complete-body local API Explorer sources independently approved; 10 concepts touched (0 new). Source_count 3206 = 2547 General Docs + 643 API Explorer + 16 GitHub. Remaining 27 title-only stubs excluded; raw unchanged. 94 actual query answers, three full-read exemplars and validation: `tracking/ingest/adyen/adyen-campaign-69/`; details [[adyen-log]]. No commit/push.

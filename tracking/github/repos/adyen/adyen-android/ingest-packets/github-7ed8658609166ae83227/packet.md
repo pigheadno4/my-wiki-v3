@@ -1,0 +1,294 @@
+# GitHub ingest packet
+
+- Repository: `adyen/adyen-android`
+- Work item: `github-7ed8658609166ae83227`
+- Snapshot: `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `adyen-android`
+
+- Version: `5.20.0` -> `5.21.0`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `1134`
+
+### Required reading
+
+- `raw/github/adyen/adyen-android/releases/adyen-android/5.21.0/2026-11-07/manifest.json`
+- `raw/github/adyen/adyen-android/releases/adyen-android/5.21.0/2026-11-07/release-notes.md`
+- `raw/github/adyen/adyen-android/snapshots/2026-08-01-5314fad/manifest.json`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/3ds2/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/ach/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/action-core/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/action-core/src/main/java/com/adyen/checkout/action/core/internal/ActionHandlingPaymentMethodConfigurationBuilder.kt`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/await/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/bacs/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/bcmc/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/blik/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/boleto/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/card-scanning/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/card/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/cashapppay/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/checkout-core/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/components-compose/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/components-core/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/components-core/src/main/java/com/adyen/checkout/components/core/internal/BaseConfigurationBuilder.kt`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/convenience-stores-jp/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/cse/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/dotpay/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/drop-in-compose/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/drop-in/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/econtext/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/entercash/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/eps/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/example-app/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/example-app/src/main/java/com/adyen/checkout/example/ui/bacs/BacsFragment.kt`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/example-app/src/main/java/com/adyen/checkout/example/ui/card/CardActivity.kt`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/giftcard/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/giftcard/src/main/java/com/adyen/checkout/giftcard/SessionsGiftCardComponentCallback.kt`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/googlepay/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/gradle.properties`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/gradle/libs.versions.toml`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/ideal/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/instant/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/issuer-list/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/lint/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/mbway/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/meal-voucher-fr/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/molpay/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/online-banking-core/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/online-banking-cz/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/online-banking-jp/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/online-banking-pl/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/online-banking-sk/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/openbanking/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/paybybank-us/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/paybybank/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/payeasy/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/payto/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/qr-code/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/redirect/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/sepa/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/sessions-core/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/settings.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/seven-eleven/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/twint-action/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/twint/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/ui-core/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/view/AdyenTextInputEditText.kt`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/upi/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/voucher/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/files/wechatpay/build.gradle`
+- `raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/manifest.json`
+- `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.20.0--5.21.0/comparison.json`
+- `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.20.0--5.21.0/comparison.md`
+- `tracking/github/repos/adyen/adyen-android/comparisons/adyen-android/5.20.0--5.21.0/diff.patch`
+
+### Upstream changes
+
+- `added` `.agents/skills/android-update-dependencies-v5/DIFFERENCES.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.agents/skills/android-update-dependencies-v5/SKILL.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.editorconfig`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/ISSUE_TEMPLATE/ask_question.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/ISSUE_TEMPLATE/bug_report.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/ISSUE_TEMPLATE/feature_request.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/ci-gradle.properties`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/pull_request_template.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/release_notes_dependency_list.toml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/add_pr_label.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/workflows/assemble.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/build_and_test.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/check.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/check_dependency_changes.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/check_labels.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/check_pr.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/check_v5.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/workflows/code_analysis.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/codeql.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/create_github_release.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/create_release_notes_pr.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/finalize_release.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/generate_dependency_graph.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/generate_release_notes.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/generate_version_name.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/get_dependency_list.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/prepare_release.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/publish_docs.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/publish_to_maven_central.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/release_acceptance_app.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/workflows/run_tests.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/workflows/run_ui_tests.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/workflows/sonar_cloud.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/workflows/stale_issues.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/update_release_notes.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/update_verification_metadata.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/validate_dependencies.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/validate_public_api.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `3ds2/api/3ds2.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `3ds2/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `ach/api/ach.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `ach/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `action-core/api/action-core.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `action-core/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `action-core/src/main/java/com/adyen/checkout/action/core/internal/ActionHandlingPaymentMethodConfigurationBuilder.kt`: `retained-evidence` (snapshot-file)
+- `modified` `action/build.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `await/api/await.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `await/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `bacs/api/bacs.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `bacs/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `bcmc/api/bcmc.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `bcmc/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `blik/api/blik.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `blik/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `boleto/api/boleto.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `boleto/build.gradle`: `retained-evidence` (snapshot-file)
+- `added` `build-logic/convention/build.gradle.kts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/AggregateDependencyListsPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/CheckoutAndroidLibraryPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/DetektConventionPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/DokkaConventionPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/GenerateDependencyListPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/JavaConventionPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/KoverConventionPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/KtlintConventionPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/PublishConventionPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/ResolveDependenciesPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/SonarConventionPlugin.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/com/adyen/checkout/AggregateDependencyListsTask.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/com/adyen/checkout/CoverageExclusions.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/com/adyen/checkout/GenerateDependencyListTask.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/com/adyen/checkout/ProjectExtensions.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/convention/src/main/kotlin/com/adyen/checkout/ResolveDependenciesTask.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/gradle.properties`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `build-logic/settings.gradle.kts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `card-scanning/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `card/api/card.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `card/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `card/src/main/java/com/adyen/checkout/card/internal/ui/view/CardView.kt`: `retained-evidence` (snapshot-file)
+- `modified` `cashapppay/api/cashapppay.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `cashapppay/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `checkout-core/api/checkout-core.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `checkout-core/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `components-compose/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `components-core/api/components-core.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `components-core/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `components-core/src/main/java/com/adyen/checkout/components/core/internal/BaseConfigurationBuilder.kt`: `retained-evidence` (snapshot-file)
+- `modified` `components-core/src/test/java/com/adyen/checkout/components/core/internal/util/CurrencyUtilsTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/artifacts.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/buildConfig.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/codeQuality.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/dependencyList.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/detekt.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/dokka.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/dokkaRoot.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/kover.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/ktlint.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/release.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/sharedTasks.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/sonarcloud.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/gradle/sources.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/module/create_module.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/module/new_payment_method.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/module/template/build.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `config/module/template/src/main/AndroidManifest.xml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `convenience-stores-jp/api/convenience-stores-jp.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `convenience-stores-jp/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `cse/api/cse.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `cse/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `dotpay/api/dotpay.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dotpay/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `drop-in-compose/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `drop-in/api/drop-in.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `drop-in/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `econtext/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `entercash/api/entercash.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `entercash/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `eps/api/eps.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `eps/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `example-app/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `example-app/ci.local.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example-app/example.local.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example-app/src/main/java/com/adyen/checkout/example/ui/bacs/BacsFragment.kt`: `retained-evidence` (snapshot-file)
+- `modified` `example-app/src/main/java/com/adyen/checkout/example/ui/card/CardActivity.kt`: `retained-evidence` (snapshot-file)
+- `modified` `giftcard/api/giftcard.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `giftcard/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `giftcard/src/main/java/com/adyen/checkout/giftcard/SessionsGiftCardComponentCallback.kt`: `retained-evidence` (snapshot-file)
+- `modified` `googlepay/api/googlepay.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `googlepay/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `gradle.properties`: `retained-evidence` (snapshot-file)
+- `modified` `gradle/libs.versions.toml`: `retained-evidence` (snapshot-file)
+- `modified` `gradle/verification-metadata.xml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `gradle/wrapper/gradle-wrapper.jar`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `gradle/wrapper/gradle-wrapper.properties`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `gradlew`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `gradlew.bat`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `ideal/api/ideal.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `ideal/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `instant/api/instant.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `instant/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `issuer-list/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `lint/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `mbway/api/mbway.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `mbway/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `meal-voucher-fr/api/meal-voucher-fr.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `meal-voucher-fr/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `molpay/api/molpay.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `molpay/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `online-banking-core/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `online-banking-cz/api/online-banking-cz.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `online-banking-cz/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `online-banking-jp/api/online-banking-jp.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `online-banking-jp/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `online-banking-pl/api/online-banking-pl.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `online-banking-pl/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `online-banking-sk/api/online-banking-sk.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `online-banking-sk/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `openbanking/api/openbanking.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `openbanking/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `paybybank-us/api/paybybank-us.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `paybybank-us/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `paybybank/api/paybybank.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `paybybank/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `payeasy/api/payeasy.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `payeasy/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `payto/api/payto.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `payto/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `qr-code/api/qr-code.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `qr-code/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `redirect/api/redirect.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `redirect/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `redirect/src/main/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegate.kt`: `retained-evidence` (snapshot-file)
+- `modified` `redirect/src/test/java/com/adyen/checkout/redirect/internal/ui/DefaultRedirectDelegateTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `renovate.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/check_dependency_changes.py`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/drop_all_open_ossrh_repositories.py`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/generate_release_notes.py`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/move_ossrh_repository_to_central_portal.py`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/process_api_changes.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `scripts/validate_dependencies_for_release_notes.py`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sepa/api/sepa.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sepa/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `sessions-core/api/sessions-core.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `sessions-core/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `sessions-core/src/test/java/com/adyen/checkout/sessions/core/internal/SessionComponentEventHandlerTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `settings.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `seven-eleven/api/seven-eleven.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `seven-eleven/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `test-core/build.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `twint-action/api/twint-action.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `twint-action/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `twint/api/twint.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `twint/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `ui-core/api/ui-core.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `ui-core/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `ui-core/src/main/java/com/adyen/checkout/ui/core/internal/ui/view/AdyenTextInputEditText.kt`: `retained-evidence` (snapshot-file)
+- `modified` `upi/api/upi.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `upi/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `voucher/api/voucher.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `voucher/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `wechatpay/api/wechatpay.api`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `wechatpay/build.gradle`: `retained-evidence` (snapshot-file)

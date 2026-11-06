@@ -1,0 +1,36 @@
+plugins {
+    alias libs.plugins.checkout.android.library
+    alias libs.plugins.kotlin.parcelize
+}
+
+checkoutPublishing {
+    id = "paybybank-us"
+    name = "Adyen Pay by Bank US component"
+    description = "Adyen Checkout Pay by Bank US component client for Adyen's Checkout API."
+}
+
+android {
+    namespace 'com.adyen.checkout.paybybankus'
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':action-core')
+    api project(':components-core')
+    api project(':sessions-core')
+
+    // Dependencies
+    implementation libs.material
+
+    //Tests
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation testFixtures(project(':components-core'))
+    testImplementation testFixtures(project(':ui-core'))
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.mockito
+    testImplementation libs.bundles.kotlin.coroutines.test
+}

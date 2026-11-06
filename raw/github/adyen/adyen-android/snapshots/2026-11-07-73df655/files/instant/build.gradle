@@ -1,0 +1,34 @@
+plugins {
+    alias libs.plugins.checkout.android.library
+    alias libs.plugins.kotlin.parcelize
+}
+
+checkoutPublishing {
+    id = "instant"
+    name = "Adyen Instant Payment Component"
+    description = "Adyen checkout Instant Payment component client for Adyen's Checkout API."
+}
+
+android {
+    namespace 'com.adyen.checkout.instant'
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+dependencies {
+    // Checkout
+    api project(':action-core')
+    api project(':sessions-core')
+
+    // Dependencies
+    implementation libs.material
+
+    //Tests
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation testFixtures(project(':components-core'))
+    testImplementation testFixtures(project(':ui-core'))
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.mockito
+    testImplementation libs.bundles.kotlin.coroutines.test
+}

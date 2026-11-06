@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2019 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by caiof on 8/2/2019.
+ */
+
+plugins {
+    alias libs.plugins.checkout.android.library
+    alias libs.plugins.kotlin.parcelize
+}
+
+checkoutPublishing {
+    id = "components-core"
+    name = "Adyen Checkout Components Core"
+    description = "Adyen checkout Components Core module."
+}
+
+android {
+    namespace 'com.adyen.checkout.components.core'
+
+    testFixtures {
+        enable = true
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':checkout-core')
+
+    // Dependencies
+    api libs.androidx.activity
+    api libs.androidx.fragment
+    api libs.bundles.androidx.lifecycle
+
+    //Tests
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation libs.json
+    testImplementation libs.bundles.junit
+    testImplementation libs.androidx.test.lifecycle
+    testImplementation libs.bundles.kotlin.coroutines.test
+    testImplementation libs.bundles.mockito
+    testImplementation libs.robolectric
+
+    androidTestImplementation libs.bundles.androidx.test
+    androidTestImplementation libs.bundles.mockito.android
+    androidTestImplementation libs.bundles.espresso
+
+    testFixturesImplementation libs.bundles.junit
+    testFixturesImplementation libs.bundles.mockito
+}

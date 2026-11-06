@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2022 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by atef on 20/9/2022.
+ */
+
+plugins {
+    alias libs.plugins.checkout.android.library
+    alias libs.plugins.kotlin.parcelize
+}
+
+checkoutPublishing {
+    id = "online-banking-core"
+    name = "Adyen checkout Online Banking core module"
+    description = "Adyen checkout Online Banking core module component client for Adyen's Checkout API."
+}
+
+android {
+    namespace 'com.adyen.checkout.onlinebankingcore'
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':action-core')
+    api project(':ui-core')
+    api project(':sessions-core')
+
+    // Dependencies
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.recyclerview
+    implementation libs.material
+    implementation libs.androidx.browser
+
+    //Tests
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation testFixtures(project(':components-core'))
+    testImplementation testFixtures(project(':ui-core'))
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.kotlin.coroutines.test
+    testImplementation libs.bundles.mockito
+
+}

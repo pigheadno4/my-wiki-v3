@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2022 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by oscars on 10/5/2023.
+ */
+
+plugins {
+    alias libs.plugins.checkout.android.library
+    alias libs.plugins.kotlin.parcelize
+}
+
+checkoutPublishing {
+    id = "action-core"
+    name = "Adyen Checkout Action Core component"
+    description = "Adyen Checkout Action Core module."
+}
+
+android {
+    namespace 'com.adyen.checkout.action.core'
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    testFixtures {
+        enable = true
+    }
+}
+
+dependencies {
+    // Checkout
+    compileOnly project(':3ds2')
+    api project(':await')
+    api project(':qr-code')
+    api project(':redirect')
+    compileOnly project(':twint-action')
+    api project(':voucher')
+    compileOnly project(':wechatpay')
+
+    //Tests
+    testImplementation project(':3ds2')
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation project(':twint-action')
+    testImplementation project(':wechatpay')
+    testImplementation testFixtures(project(':components-core'))
+    testImplementation testFixtures(project(':ui-core'))
+    testImplementation libs.json
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.mockito
+    testImplementation libs.bundles.kotlin.coroutines.test
+}

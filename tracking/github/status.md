@@ -3202,6 +3202,32 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.4.1/2026-07-31/manifest.json)
   Comparison: Not applicable
 
+## `github-7ed8658609166ae83227`
+
+- Repository: `adyen/adyen-android`
+- SHA: `405b582a7b2060aceac756eae7b6bd3757e0c084`
+- Collection date: `2026-11-07`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-android/snapshots/2026-11-07-405b582/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-android/ingest-packets/github-7ed8658609166ae83227/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-android/evidence-attachments/github-7ed8658609166ae83227/attachment.json)
+- Review priority: `high`
+- Required reading: `81` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-android@5.21.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-android/releases/adyen-android/5.21.0/2026-11-07/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-android/comparisons/adyen-android/5.20.0--5.21.0/comparison.json)
+
 ## `github-8048e778dfc5ff78b746`
 
 - Repository: `adyen/adyen-sdk-automation`
@@ -4411,6 +4437,31 @@
 - `stripe-android@23.19.0` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.19.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.18.0--23.19.0/comparison.json)
+
+## `github-a2920dfadabf8c5faa3b`
+
+- Repository: `adyen/adyen-android`
+- SHA: `73df6558fa5868a2c14449ac2e0c6379fc349798`
+- Collection date: `2026-11-07`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-android/snapshots/2026-11-07-73df655/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-android/ingest-packets/github-a2920dfadabf8c5faa3b/packet.md)
+- Review priority: `high`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-android@5.22.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-android/releases/adyen-android/5.22.0/2026-11-07/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-android/comparisons/adyen-android/5.21.0--5.22.0/comparison.json)
 
 ## `github-a2a0fe409a7c3a95ab90`
 

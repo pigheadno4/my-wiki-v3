@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2019 Adyen N.V.
+ *
+ * This file is open source and available under the MIT license. See the LICENSE file for more info.
+ *
+ * Created by arman on 15/2/2019.
+ */
+
+plugins {
+    alias libs.plugins.checkout.android.library
+    alias libs.plugins.kotlin.parcelize
+}
+
+checkoutPublishing {
+    id = "card"
+    name = "Adyen Checkout Card component"
+    description = "Adyen checkout Card component client for Adyen's Checkout API."
+}
+
+android {
+    namespace 'com.adyen.checkout.card'
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    // Checkout
+    api project(':3ds2')
+    api project(':action-core')
+    api project(':cse')
+    api project(':ui-core')
+    api project(':sessions-core')
+    compileOnly project(':card-scanning')
+
+    // Dependencies
+    implementation libs.material
+
+    //Tests
+    testImplementation testFixtures(project(':test-core'))
+    testImplementation testFixtures(project(':action-core'))
+    testImplementation testFixtures(project(':components-core'))
+    testImplementation testFixtures(project(':cse'))
+    testImplementation testFixtures(project(':ui-core'))
+    testImplementation libs.json
+    testImplementation libs.bundles.junit
+    testImplementation libs.bundles.kotlin.coroutines.test
+    testImplementation libs.bundles.mockito
+}
