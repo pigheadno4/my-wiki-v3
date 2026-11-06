@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweepexecution-failed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen balance-account sweep execution failed webhook\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.failed\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.failed/2026-11-07.md\"\ntags: [adyen, balance-platform, webhooks, sweeps]\n---\n\n## Overview\n\nCaptured incoming `balancePlatform.balanceAccountSweepExecution.failed` webhook reference. Adyen sends this event when a balance-account sweep execution fails. It reports an execution outcome, distinct from creating or deleting the sweep configuration and from a booked transfer or bank receipt. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request-body table marks `data`, `environment` (`test` or `live`) and `type` required; it does not separately mark the whole body required. Within `data`, balance-account ID, sweep-configuration ID, balance-platform ID, execution resource `id`, `result`, `resultDetails`, optional `transferId` and `triggeredAt` are all optional schema fields.\n- `result` permits `succeeded`, `failed` and `skipped` in the shared execution payload, although this event type is specifically for failure. Optional `resultDetails` can carry reason, reason code and a boolean indicating a disabled sweep configuration. The example's `missingCapabilities` reason is illustrative, not an exhaustive failure rule.\n- The event's `timestamp` is when it was queued; `triggeredAt` is when execution was triggered. The optional transfer ID does not itself establish transfer booking or payout arrival.\n- Respond with any HTTP `2xx` to accept the webhook. The listed `200` response body has optional `notificationResponse`; acceptance is acknowledgement of delivery, not recovery, retry, successful payout, or funds movement. No authentication, retry, idempotency, or reversal contract is specified on this page.\n\n## Detail locators\n\n- Event name and trigger: raw lines 5\u20137.\n- Request schema and identity/result fields: raw lines 9\u201328.\n- Illustrative failed TEST payload: raw lines 30\u201351.\n- Webhook acceptance response: raw lines 52\u201360.\n\n## Related\n\n- [[adyen-platforms]] \u2014 balance-account sweep and payout context.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.failed/2026-11-07|Sweep execution failed webhook, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a sweep execution fails.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "|   - balanceAccountSweepId | string | No | The unique identifier of the sweep configuration. |",
+      "location": "raw line 16"
+    },
+    {
+      "text": "|   - result | string | No | The outcome of the sweep execution.  Possible results:  - **succeeded**: The sweep payout was completed successfully.  - **failed**: The sweep payout was not completed due to an error.  - **skipped**: The sweep payout was not triggered as expected. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "| environment | string | Yes | The environment from which the webhook originated.  Possible values: **test**, **live**. |",
+      "location": "raw line 26"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-sweep-execution-failed-platforms-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweepexecution-failed]] \u2014 2026-11-07-captured incoming failed sweep-execution webhook with optional execution IDs and reason fields; 2xx accepts delivery without proving recovery, transfer booking or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.failed/2026-11-07.md",
+  "raw_sha256": "ee0b19434802f566c32f346621d060181b8a7bb7761724da926b42b8594e7914",
+  "status": "candidate_ready"
+}

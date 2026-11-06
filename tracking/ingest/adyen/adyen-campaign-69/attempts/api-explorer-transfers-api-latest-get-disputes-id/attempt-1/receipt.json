@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-transfers-api-latest-get-disputes-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Raise disputes API v4: get an Issuing dispute by ID\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes/(id)\"\nraw_files:\n  - \"adyen/api-explorer/transfers-api/latest/get/disputes/(id)/2026-11-07.md\"\ntags: [adyen, issuing, disputes, raise-disputes-api, api-explorer]\n---\n\n## Overview\n\nThis 2026-11-07 `GET /disputes/{id}` reference reads a raised dispute by its required dispute ID. Although its URL contains `transfers-api`, the companion overview identifies this `/btl/api/v4` family as **Raise disputes API v4** for Adyen-issued-card transaction disputes and fraud reporting, separate from funds-movement Transfers API and merchant acquiring dispute defense. [[adyen]] [[adyen-issuing]] [[source-adyen-api-explorer-transfers-api-latest-overview]]\n\n## Key takeaways\n\n- The operation lists TEST and Live `/btl/api/v4` servers and one required path `id`, the unique raised-dispute identifier. It states no request body, query parameter, default, pagination, or idempotency rule. The companion overview describes Adyen-provided API credentials with `X-API-Key` or basic authentication and an additional role set up by Adyen; this operation does not name a finer-grained role. [[source-adyen-api-explorer-transfers-api-latest-overview]]\n- `200` means the read succeeded. The response schema requires `transactionId` and dispute `type` but marks `id`, `status`, ARN, description, disputed amount, and reason-specific detail objects optional. Its status enum is `draft`, `submitted`, `closed`, `won`, `chargeback`, or `secondPresentment`; creation may set only `draft`, while update may set `submitted` or `closed`. A returned status describes the dispute record at lookup time, not an initiated or completed new action by this GET.\n- Reason-specific objects are top-level optional in the response table but prose says each is required for its matching `type`; nested required and conditional fields vary by reason. The raw table is the locator for cancelled, duplicate, fraud, not-as-described, and not-delivered detail. `fraudInfo.reportOnly=true` is described as fraud reporting without further chargeback or fee-reversal action, with `false` as the stated default. Do not infer that a report-only record achieved a chargeback or reversal.\n- This capture lists `cancelled`, `duplicate`, `fraud`, `notAsDescribed`, `notDelivered`, and `other` as types, but explicitly says `other` is deprecated and must not be created or submitted. It lists `401` authentication-required, `403` insufficient-permissions, and `422` validation responses with optional error-envelope fields. No success or error JSON examples appear in this pinned page.\n\n> [!warning] Contradiction\n> This November 2026 detail reference calls `other` deprecated and lists `cancelled` and `notAsDescribed`. The separately captured September 2026 `POST /disputes` reference calls `other` beta and omits those two types from its type enum. Both warn against creating or submitting `other`; the snapshots do not establish current creation support for every type. [[source-adyen-api-explorer-transfers-api-latest-post-disputes]]\n\n## Detail locators\n\n- Purpose, TEST/Live bases, required dispute ID and success meaning: [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/(id)/2026-11-07#L5|raw lines 5\u201327]].\n- Optional response fields, reason-specific conditional detail, status/type enums and deprecation: [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/(id)/2026-11-07#L29|raw lines 29\u2013107]].\n- `401`, `403`, `422` error schemas: [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/(id)/2026-11-07#L110|raw lines 110\u2013164]].\n- Companion API identity/authentication: [[raw/adyen/api-explorer/transfers-api/latest/overview/2026-09-15#L5|overview raw lines 5\u201347]]. Earlier POST type wording: [[raw/adyen/api-explorer/transfers-api/latest/post/disputes/2026-09-15#L49|POST raw lines 49\u201355]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 issued-card dispute context.\n- [[source-adyen-api-explorer-transfers-api-latest-overview]] \u2014 Raise disputes API v4 family identity and authentication.\n- [[source-adyen-api-explorer-transfers-api-latest-post-disputes]] \u2014 older dispute creation contract and type-wording conflict.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/(id)/2026-11-07|Captured Raise disputes API v4 GET dispute detail reference]]\n",
+  "quotes": [
+    {
+      "text": "Get a raised dispute by ID.",
+      "location": "line 7"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the raised dispute. |",
+      "location": "line 22"
+    },
+    {
+      "text": "Set to **true** to report fraud to Adyen with no further action, such as a request for a chargeback or fee reversal. The default value is **false**.",
+      "location": "line 66"
+    },
+    {
+      "text": "| status | string | No | The current status of the dispute.  When you create a dispute, you can only set the `status` to **draft**. When you update a dispute, you can set the `status` to **submitted** or **closed**.  Possible values: **draft**, **submitted**, **closed**, **won**, **chargeback**, **secondPresentment**. |",
+      "location": "line 105"
+    },
+    {
+      "text": "**Note:** The **other** dispute `type` is deprecated. Do not create or submit any disputes for this dispute `type`.",
+      "location": "line 107"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-issuing-dispute-detail-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-api-latest-get-disputes-id]] \u2014 2026-11-07-captured Raise disputes API v4 GET of one Issuing dispute by ID, with optional status and reason details; `other` is marked deprecated and cannot be newly created/submitted. The older POST reference calls `other` beta and lists fewer types, so current creation support is unresolved.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Older POST /disputes capture calls other beta and omits cancelled/notAsDescribed; source includes contradiction warning and requires reciprocal warning on older POST source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers-api/latest/get/disputes/(id)/2026-11-07.md",
+  "raw_sha256": "d9afc9c5e38bad89aaec62e9b77021fecb0d2c2eb4fbf40fea703e55c5795582",
+  "status": "candidate_ready"
+}

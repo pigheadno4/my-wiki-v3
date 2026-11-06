@@ -1,71 +1,67 @@
-# Adyen C69 API Explorer collection-first preparation
+# Adyen C69 collected API Explorer ingestion selection
 
-Status: **AWAITING EXACT COLLECTION APPROVAL — no ingestion-ready manifest**. Prepared 2026-11-07 after C68 publication `e40a2886f63e40cfd77d13c4cd00fa9b08eaecbd`.
+Status: **COMPLETE — all 47 sources approved and validated**. Prepared 2026-11-07.
 
-C68 ingested all 50 Management pages. Current totals: **3,159 sources = 2,547 General Docs + 596 API Explorer + 16 GitHub**. All locally collected complete-body API Explorer pages are ingested. The only 27 unreferenced local raw pages are excluded title-only stubs, retried in C63 and still title-only. No repeated stub retries proposed here.
+Approved collection completed for all47 exact URLs: **47 HTTP200 substantive Markdown pages**, no failed, title-only or mismatched documents. Families: **47 pages across ten API families**. Every response body is preserved byte-for-byte after collection metadata in a new dated2026-11-07 raw file. All prior Adyen raw/wiki hashes are unchanged; concurrent unrelated work is recorded separately. These title/body/byte checks are collection screening, not full semantic reads. [Collection manifest](../../../collections/adyen/c69-collection-2026-11-07/manifest.md), [summary](../../../collections/adyen/c69-collection-2026-11-07/summary.json). Original proposal retained in [collection-selection-review.md](collection-selection-review.md).
 
-## Pinned catalog reconciliation
+Exact proposed ingestion: **47 source units**, **94 fixed answers**, **three predetermined distinct full-read audits**. All hashes, URL/target uniqueness, absent canonical targets and unreferenced pins verified. Size: **47,181 whitespace words, 6,007 raw lines, 305,279 bytes**. Source generation begins only after separate exact ingestion approval.
 
-The official API Explorer catalog captured 2026-11-02 contains **670 distinct normalized documentation URLs** (623 operation references and 47 overview references). Exact-URL reconciliation on 2026-11-07 finds 623 local raw URLs: 596 with ingested raw and 27 excluded title-only stubs. **47 catalog URLs have no local raw**. All 623 local URLs occur in the pinned catalog. [Complete reconciliation](catalog-reconciliation.json) retains its SHA256 and all missing URLs.
+Current baseline **3,159 = 2,547 General Docs +596 API Explorer +16 GitHub**. Successful ingestion of all47 gives **3,206 = 2,547 General Docs +643 API Explorer +16 GitHub**. API Explorer now has670 local raw pages:596 ingested substantive pages,47 newly collected and27 excluded title-only stubs. Unreferenced local raw would decline74→27 after successful ingestion. The captured670-URL catalog has **0 URLs still without local raw**; the27 stub exclusions remain separate. This is captured-catalog coverage, not a current upstream completeness claim.
 
-This is reconciliation against an immutable captured catalog, not a refreshed upstream inventory or a claim about present page availability. No network requests or semantic reads of the proposed pages were made. Titles and paths identify navigation scope only.
+[Proposed provider authorization](dispatch-contract.md) retains ten shared rolling child slots, medium gpt-6-sol workers/different high initial reviewers, full numbered reads of every schema/example,3–5locatedquotes, concept audit first, max3attempts, coordinator-only serial approved concept-before-source promotion and aggregate close once. [94 original fixed prompts](proposed-queries.md) require actual independently checked answers. Full raw reads apply to every captured schema, authentication/security qualification and example, including minimal references.
 
-## Exact next collection proposal
+Fixed coordinator audit jobs: `api-explorer-management-latest-get-merchants-merchantid-terminalthemes-id`, `api-explorer-transfers-latest-get-transfers-id`, `api-explorer-cloud-device-api-latest-get-merchants-merchantaccount-devices-deviceid-status`. Material partial/fail expands to all47. No ingestion runtime, dispatch, canonical wiki source generation, commit or push. Await separate exact C69 ingestion approval.
 
-Propose **47 exact official Markdown URLs**: all 47 remaining uncollected references across the catalog families in captured order. Metadata scope covers the remaining references; family counts are recorded in the proposal. All navigation labels are listed below for inspection. No behavior is inferred from these names. Every selected URL has a pinned catalog-line locator; the documented duplicated API Explorer prefix is collapsed, retaining official case and parenthesized parameters. Every raw directory and provisional source target is absent and all URLs/targets are unique. [Exact 47-target proposal](collection-proposal.json).
+| # | Family | Operation | Words | Raw lines |
+| --- | --- | --- | ---: | ---: |
+| 1 | Webhooks | POST /REVERSAL | 389 | 32 |
+| 2 | cloud-device-api | POST /merchants/{merchantAccount}/devices/{deviceId}/sync | 228 | 45 |
+| 3 | cloud-device-api | POST /merchants/{merchantAccount}/devices/{deviceId}/async | 260 | 45 |
+| 4 | cloud-device-api | GET /merchants/{merchantAccount}/devices/{deviceId}/status | 698 | 123 |
+| 5 | cloud-device-api | GET /merchants/{merchantAccount}/connectedDevices | 709 | 133 |
+| 6 | payments-app | POST /merchants/{merchantId}/generatePaymentsAppBoardingToken | 1,371 | 151 |
+| 7 | payments-app | GET /merchants/{merchantId}/paymentsApps | 1,270 | 143 |
+| 8 | payments-app | POST /merchants/{merchantId}/paymentsApps/{installationId}/revoke | 743 | 89 |
+| 9 | payments-app | POST /merchants/{merchantId}/stores/{storeId}/generatePaymentsAppBoardingToken | 1,384 | 152 |
+| 10 | payments-app | GET /merchants/{merchantId}/stores/{storeId}/paymentsApps | 1,283 | 144 |
+| 11 | Management | GET /merchants/{merchantId}/terminalThemes/{id} | 502 | 147 |
+| 12 | Management | POST /merchants/{merchantId}/terminalThemes | 549 | 192 |
+| 13 | Management | POST /merchants/{merchantId}/terminalThemes/{id}/assets | 875 | 210 |
+| 14 | Management | POST /merchants/{merchantId}/terminalThemes/{id}/assets/replace | 885 | 213 |
+| 15 | Management | DELETE /merchants/{merchantId}/terminalThemes/{id}/assets | 457 | 129 |
+| 16 | Management | PATCH /merchants/{merchantId}/terminalThemes/{id} | 463 | 171 |
+| 17 | Management | POST /merchants/{merchantId}/terminalThemes/{id}/apply | 257 | 97 |
+| 18 | Management | POST /merchants/{merchantId}/terminalThemes/unapply | 310 | 109 |
+| 19 | Management | DELETE /merchants/{merchantId}/terminalThemes/{id} | 271 | 113 |
+| 20 | Management | POST /stores/{storeId}/terminalThemes/{id}/apply | 252 | 97 |
+| 21 | Management | POST /stores/{storeId}/terminalThemes/unapply | 298 | 109 |
+| 22 | Management | POST /terminals/{terminalId}/terminalThemes/{id}/apply | 287 | 115 |
+| 23 | Management | POST /terminals/{terminalId}/terminalThemes/unapply | 325 | 127 |
+| 24 | BalanceControl | GET /balanceOverview/companies/{companyAccountCode}/balances | 1,138 | 168 |
+| 25 | BalanceControl | GET /balanceOverview/merchants/{merchantAccountCode}/balances | 1,111 | 167 |
+| 26 | transfers | POST /transfers/{transferId}/returns | 1,996 | 171 |
+| 27 | transfers | GET /transfers/{id} | 5,236 | 363 |
+| 28 | transfers | GET /transactions/{id} | 1,521 | 168 |
+| 29 | transfers | GET /grants/{id} | 1,867 | 173 |
+| 30 | transfers-api | GET /disputes/{disputeId}/attachments | 675 | 84 |
+| 31 | transfers-api | POST /disputes/{disputeId}/attachments | 830 | 97 |
+| 32 | transfers-api | GET /disputes/{disputeId}/attachments/{attachmentId} | 820 | 93 |
+| 33 | transfers-api | DELETE /disputes/{disputeId}/attachments/{attachmentId} | 692 | 85 |
+| 34 | transfers-api | GET /disputes/{id} | 3,374 | 164 |
+| 35 | transfers-api | PATCH /disputes/{id} | 3,692 | 178 |
+| 36 | capital | POST /dynamicOffers/{id}/calculate | 807 | 83 |
+| 37 | capital | POST /dynamicOffers/{id}/grantOffer | 807 | 84 |
+| 38 | capital | GET /grantOffers/{id} | 890 | 89 |
+| 39 | capital | GET /grants/{grantId} | 865 | 86 |
+| 40 | capital | GET /grants/{grantId}/disbursements | 899 | 90 |
+| 41 | capital | GET /grants/{grantId}/disbursements/{disbursementId} | 944 | 93 |
+| 42 | capital | PATCH /grants/{grantId}/disbursements/{disbursementId} | 1,024 | 101 |
+| 43 | capital | GET /grantAccounts/{id} | 719 | 80 |
+| 44 | open-banking | GET /accountVerification/reports/{code} | 2,017 | 325 |
+| 45 | balanceplatform-webhooks | POST balancePlatform.balanceAccountSweepExecution.succeeded | 394 | 59 |
+| 46 | balanceplatform-webhooks | POST balancePlatform.balanceAccountSweepExecution.failed | 397 | 60 |
+| 47 | balanceplatform-webhooks | POST balancePlatform.balanceAccountSweepExecution.skipped | 400 | 60 |
 
-Approval authorizes documentation collection for these 47 URLs only. Stage each response, retain status/headers/body/hash and final URL, omit server-set cookies from published metadata, and classify substantive/failed/title-only results separately. Preserve substantive body bytes verbatim in new dated immutable raw snapshots. No whole-corpus refresh, code/rule/validator changes, General Docs, GitHub, stub retries, provider/account/security/device/payment operations, automatic ingestion or further publication. Endpoint action names describe documentation targets, not authorized API calls.
+User approved exact C69 ingestion on2026-11-07 after47hash/count checks. Historical preparation statements above retain their pre-approval meaning. No commit/push.
 
-After all 47 selected URLs reach recorded outcomes, reconcile results and prepare an exact ingestion manifest only from recovered complete-body evidence: raw SHA256 pins, actual fixed query prompts, three distinct audit samples and explicit provider review authorization. Obtain separate ingestion approval per rules/psp-collection.md. Do not pad failed or incomplete results or waive body/schema presence. If all 47 collect successfully, zero captured-catalog URLs would still lack raw; source counts rise only after approved ingestion.
-
-C69 is **PREPARED ONLY / awaiting approval**. No runtime, dispatch, candidates, raw collection or canonical sources created. Publishing this proposal does not authorize execution.
-
-| Item | Family | Catalog label | Exact Markdown URL |
-| --- | --- | --- | --- |
-| c69-01 | Webhooks | POST /REVERSAL | `https://docs.adyen.com/api-explorer/Webhooks/latest/post/REVERSAL.md` |
-| c69-02 | cloud-device-api | POST /merchants/{merchantAccount}/devices/{deviceId}/sync | `https://docs.adyen.com/api-explorer/cloud-device-api/latest/post/merchants/(merchantAccount)/devices/(deviceId)/sync.md` |
-| c69-03 | cloud-device-api | POST /merchants/{merchantAccount}/devices/{deviceId}/async | `https://docs.adyen.com/api-explorer/cloud-device-api/latest/post/merchants/(merchantAccount)/devices/(deviceId)/async.md` |
-| c69-04 | cloud-device-api | GET /merchants/{merchantAccount}/devices/{deviceId}/status | `https://docs.adyen.com/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status.md` |
-| c69-05 | cloud-device-api | GET /merchants/{merchantAccount}/connectedDevices | `https://docs.adyen.com/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/connectedDevices.md` |
-| c69-06 | payments-app | POST /merchants/{merchantId}/generatePaymentsAppBoardingToken | `https://docs.adyen.com/api-explorer/payments-app/latest/post/merchants/(merchantId)/generatePaymentsAppBoardingToken.md` |
-| c69-07 | payments-app | GET /merchants/{merchantId}/paymentsApps | `https://docs.adyen.com/api-explorer/payments-app/latest/get/merchants/(merchantId)/paymentsApps.md` |
-| c69-08 | payments-app | POST /merchants/{merchantId}/paymentsApps/{installationId}/revoke | `https://docs.adyen.com/api-explorer/payments-app/latest/post/merchants/(merchantId)/paymentsApps/(installationId)/revoke.md` |
-| c69-09 | payments-app | POST /merchants/{merchantId}/stores/{storeId}/generatePaymentsAppBoardingToken | `https://docs.adyen.com/api-explorer/payments-app/latest/post/merchants/(merchantId)/stores/(storeId)/generatePaymentsAppBoardingToken.md` |
-| c69-10 | payments-app | GET /merchants/{merchantId}/stores/{storeId}/paymentsApps | `https://docs.adyen.com/api-explorer/payments-app/latest/get/merchants/(merchantId)/stores/(storeId)/paymentsApps.md` |
-| c69-11 | Management | GET /merchants/{merchantId}/terminalThemes/{id} | `https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/(id).md` |
-| c69-12 | Management | POST /merchants/{merchantId}/terminalThemes | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes.md` |
-| c69-13 | Management | POST /merchants/{merchantId}/terminalThemes/{id}/assets | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets.md` |
-| c69-14 | Management | POST /merchants/{merchantId}/terminalThemes/{id}/assets/replace | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace.md` |
-| c69-15 | Management | DELETE /merchants/{merchantId}/terminalThemes/{id}/assets | `https://docs.adyen.com/api-explorer/Management/latest/delete/merchants/(merchantId)/terminalThemes/(id)/assets.md` |
-| c69-16 | Management | PATCH /merchants/{merchantId}/terminalThemes/{id} | `https://docs.adyen.com/api-explorer/Management/latest/patch/merchants/(merchantId)/terminalThemes/(id).md` |
-| c69-17 | Management | POST /merchants/{merchantId}/terminalThemes/{id}/apply | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/apply.md` |
-| c69-18 | Management | POST /merchants/{merchantId}/terminalThemes/unapply | `https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/unapply.md` |
-| c69-19 | Management | DELETE /merchants/{merchantId}/terminalThemes/{id} | `https://docs.adyen.com/api-explorer/Management/latest/delete/merchants/(merchantId)/terminalThemes/(id).md` |
-| c69-20 | Management | POST /stores/{storeId}/terminalThemes/{id}/apply | `https://docs.adyen.com/api-explorer/Management/latest/post/stores/(storeId)/terminalThemes/(id)/apply.md` |
-| c69-21 | Management | POST /stores/{storeId}/terminalThemes/unapply | `https://docs.adyen.com/api-explorer/Management/latest/post/stores/(storeId)/terminalThemes/unapply.md` |
-| c69-22 | Management | POST /terminals/{terminalId}/terminalThemes/{id}/apply | `https://docs.adyen.com/api-explorer/Management/latest/post/terminals/(terminalId)/terminalThemes/(id)/apply.md` |
-| c69-23 | Management | POST /terminals/{terminalId}/terminalThemes/unapply | `https://docs.adyen.com/api-explorer/Management/latest/post/terminals/(terminalId)/terminalThemes/unapply.md` |
-| c69-24 | BalanceControl | GET /balanceOverview/companies/{companyAccountCode}/balances | `https://docs.adyen.com/api-explorer/BalanceControl/latest/get/balanceOverview/companies/(companyAccountCode)/balances.md` |
-| c69-25 | BalanceControl | GET /balanceOverview/merchants/{merchantAccountCode}/balances | `https://docs.adyen.com/api-explorer/BalanceControl/latest/get/balanceOverview/merchants/(merchantAccountCode)/balances.md` |
-| c69-26 | transfers | POST /transfers/{transferId}/returns | `https://docs.adyen.com/api-explorer/transfers/latest/post/transfers/(transferId)/returns.md` |
-| c69-27 | transfers | GET /transfers/{id} | `https://docs.adyen.com/api-explorer/transfers/latest/get/transfers/(id).md` |
-| c69-28 | transfers | GET /transactions/{id} | `https://docs.adyen.com/api-explorer/transfers/latest/get/transactions/(id).md` |
-| c69-29 | transfers | GET /grants/{id} | `https://docs.adyen.com/api-explorer/transfers/latest/get/grants/(id).md` |
-| c69-30 | transfers-api | GET /disputes/{disputeId}/attachments | `https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments.md` |
-| c69-31 | transfers-api | POST /disputes/{disputeId}/attachments | `https://docs.adyen.com/api-explorer/transfers-api/latest/post/disputes/(disputeId)/attachments.md` |
-| c69-32 | transfers-api | GET /disputes/{disputeId}/attachments/{attachmentId} | `https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId).md` |
-| c69-33 | transfers-api | DELETE /disputes/{disputeId}/attachments/{attachmentId} | `https://docs.adyen.com/api-explorer/transfers-api/latest/delete/disputes/(disputeId)/attachments/(attachmentId).md` |
-| c69-34 | transfers-api | GET /disputes/{id} | `https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes/(id).md` |
-| c69-35 | transfers-api | PATCH /disputes/{id} | `https://docs.adyen.com/api-explorer/transfers-api/latest/patch/disputes/(id).md` |
-| c69-36 | capital | POST /dynamicOffers/{id}/calculate | `https://docs.adyen.com/api-explorer/capital/latest/post/dynamicOffers/(id)/calculate.md` |
-| c69-37 | capital | POST /dynamicOffers/{id}/grantOffer | `https://docs.adyen.com/api-explorer/capital/latest/post/dynamicOffers/(id)/grantOffer.md` |
-| c69-38 | capital | GET /grantOffers/{id} | `https://docs.adyen.com/api-explorer/capital/latest/get/grantOffers/(id).md` |
-| c69-39 | capital | GET /grants/{grantId} | `https://docs.adyen.com/api-explorer/capital/latest/get/grants/(grantId).md` |
-| c69-40 | capital | GET /grants/{grantId}/disbursements | `https://docs.adyen.com/api-explorer/capital/latest/get/grants/(grantId)/disbursements.md` |
-| c69-41 | capital | GET /grants/{grantId}/disbursements/{disbursementId} | `https://docs.adyen.com/api-explorer/capital/latest/get/grants/(grantId)/disbursements/(disbursementId).md` |
-| c69-42 | capital | PATCH /grants/{grantId}/disbursements/{disbursementId} | `https://docs.adyen.com/api-explorer/capital/latest/patch/grants/(grantId)/disbursements/(disbursementId).md` |
-| c69-43 | capital | GET /grantAccounts/{id} | `https://docs.adyen.com/api-explorer/capital/latest/get/grantAccounts/(id).md` |
-| c69-44 | open-banking | GET /accountVerification/reports/{code} | `https://docs.adyen.com/api-explorer/open-banking/latest/get/accountVerification/reports/(code).md` |
-| c69-45 | balanceplatform-webhooks | POST balancePlatform.balanceAccountSweepExecution.succeeded | `https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.succeeded.md` |
-| c69-46 | balanceplatform-webhooks | POST balancePlatform.balanceAccountSweepExecution.failed | `https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.failed.md` |
-| c69-47 | balanceplatform-webhooks | POST balancePlatform.balanceAccountSweepExecution.skipped | `https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.skipped.md` |
+C69 closed: 3206 total sources; 643 API Explorer sources. Remaining 27 API raw pages are excluded title-only stubs. No commit/push.

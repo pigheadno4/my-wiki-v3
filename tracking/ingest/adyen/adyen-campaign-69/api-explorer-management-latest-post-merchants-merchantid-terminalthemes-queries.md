@@ -1,0 +1,9 @@
+# C69 original query answers: merchant terminal-theme metadata creation
+
+## Q1
+
+The 2026-11-07 capture documents Management API `latest` on a Test v3 server for `POST /merchants/{merchantId}/terminalThemes`. It creates basic Android payment-terminal theme metadata for the merchant account named by required path `merchantId`. The API credential needs the Management API - Terminal themes read and write role. Required body fields are `mode` (`dark` or `light`) and `name` (at most 255 characters, unique within that merchant account); other merchant accounts may reuse the name. No default is specified. A `201` response gives Adyen-generated theme `id`, `name`, and `mode`. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes]] [Captured reference](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes); raw lines 5–18, 20–32, 43–53.
+
+## Q2
+
+A `201 Success` establishes creation of the basic theme metadata. The page explicitly places model-specific image/video assets and applying or activating the theme in later steps, so neither assets nor on-device display follow from this response. The credential role is specified, but the capture gives no authentication header or idempotency rule. It lists `400`, `401`, `403`, `404`, `422` and `500` errors; its `422` examples show a blank name and an account-duplicate name, while the `403` and `404` examples show account access failures. It provides no propagation timing, asynchronous approval/review, deletion, reversal or version-conflict contract. The Test v3 server and 2026-11-07 snapshot do not establish live availability, present device state, compliance or any payment/financial outcome. [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes]] [Captured reference](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes); raw lines 1–2, 7–18, 43–77, 92–180.

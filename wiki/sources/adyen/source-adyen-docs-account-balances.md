@@ -17,6 +17,9 @@ This dated Adyen balances guide (2021-11-22 last-modified metadata; captured 202
 
 - Balances belong to the business and are held in Adyen merchant accounts. The company view is described as the sum of balances in its merchant accounts. The page links Customer Area/Balance Control API viewing and management, plus a merchant-account activity log. It does not itself specify user roles, API credentials, or how to aggregate different currencies; use the separate view/manage guides for those. [Raw lines 17–35]
 - **Available funds** are defined here as balances the merchant can adjust: **pending** gross sales/refunds not yet settled by scheme or payment method; **next payout**, a changing amount to be settled to the bank at the next payout; **reserve**, merchant-configured cover for refunds, chargebacks and other expenses when in-process funds are insufficient; and **negative refund allowance**, additional refund capacity only if Adyen grants eligibility. The stated formula is the sum of those four components when the allowance applies. None of that formula alone records completed bank receipt. [Raw lines 37–49]
+
+> [!warning] Contradiction
+> This guide's total available-funds formula includes unsettled Pending, Next payout, Reserve, and conditional Negative refund allowance. The 2026-11-07-captured Balance Control API v2 company and merchant balance GET references instead describe available funds as settled and available for use and list not-yet-settled pending balance separately. The captures do not define how their `availableFund` response fields map to this guide's broader total. [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-companies-companyaccountcode-balances]] [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-merchants-merchantaccountcode-balances]] [[raw/adyen/docs/account/balances/2026-09-15#L37|guide raw lines 37–49]] [[raw/adyen/api-explorer/BalanceControl/latest/get/balanceOverview/companies/(companyAccountCode)/balances/2026-11-07#L7|operation raw lines 7–17]]
 - **Deposit** is separate from available funds. Adyen withholds it against potential processing losses/liabilities, calculates its requirement daily using factors including processing volume and chargebacks/refunds, and can raise or lower that requirement. An increase books sales funds to deposit; a decrease releases excess deposit into next payout. The merchant configures reserve but cannot set the deposit amount. [Raw lines 51–59]
 - The **Activity log** is a history of balance adjustments, including transfers, payouts, currency exchange and top-ups. It helps trace adjustments; it does not substitute for a bank posting or reconcile an individual payment on this page. [Raw lines 61–63]
 
@@ -30,6 +33,8 @@ This dated Adyen balances guide (2021-11-22 last-modified metadata; captured 202
 
 - [[adyen-account-structure]]
 - [[adyen]]
+- [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-companies-companyaccountcode-balances]]
+- [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-merchants-merchantaccountcode-balances]]
 - [[source-adyen-docs-account-view-your-balances]]
 
 ## Raw Sources

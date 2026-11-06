@@ -1,0 +1,93 @@
+# POST /disputes/{disputeId}/attachments - Add an attachment to a dispute
+
+Add supporting information as an attachment for the raised dispute. Upload receipts, communication, or any other documentation to support the dispute.
+
+## Servers
+
+**Test Environment**
+- https://balanceplatform-api-test.adyen.com/btl/api/v4
+
+**Live Environment**
+- https://balanceplatform-api-live.adyen.com/btl/api/v4
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| disputeId | string | Yes | The unique identifier of the raised dispute. |
+
+
+### Request body
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| attachmentType | string | Yes | The type of information contained in the attachment: **receipt**, **correspondence**, **other**. |
+| content | string | Yes | The content of the image. An attachment must be base64-encoded data. Make sure that all base64-encoded data strings are generated without line breaks or "wrapping". For example, do not use `Base64.NO_WRAP` in Java, or its equivalent in other languages. Newline characters at the end of the base64-encoded data string will also result in a malformed input error. |
+| fileName | string | Yes | The name of the attachment, including its filename extension. Supported filename extensions: **jpeg**, **pdf**, **tiff**. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| attachmentId | string | No | The unique identifier of the attachment. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |

@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-capital-latest-post-dynamicoffers-id-calculate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Capital API: calculate a preliminary dynamic offer\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/post/dynamicOffers/(id)/calculate\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/post/dynamicOffers/(id)/calculate/2026-11-07.md\"\ntags: [adyen, capital, dynamic-offers, api-explorer]\n---\n\n## Overview\n\nThis 2026-11-07 Capital API `latest` v1 reference describes `POST /dynamicOffers/{id}/calculate`: calculate a preliminary offer from a user's selected financing amount and a dynamic-offer ID. **The result is informational only and cannot initiate a grant.** The captured TEST and LIVE servers are `/capital/v1` at the respective balance-platform API hosts. See [[adyen]] and [[adyen-capital]].\n\n## Key takeaways\n\n- Required path `id` identifies the dynamic offer. The request body requires `amount`, including ISO currency and integer value in minor units. No additional body inputs or amount range are stated here. The page lists 120 requests per minute for each of TEST and LIVE.\n- A 200 preliminary result requires account-holder ID, proposed payout amount, `loan` or `cashAdvance` contract type, start/end validity times, fee amount, and repayment basis points. APR basis points, term and threshold are optional parents or fields; if term is present its estimated days are required, while maximum days applies only to a loan. The response describes hypothetical offer and grant terms, not a grant resource or payout.\n- The reference lists 422 request validation error with optional problem fields; it does not specify authentication role, idempotency, approval, grant creation, or disbursement behavior for this calculation.\n\n## Detail locators\n\n- Purpose, rate limits, servers, and required request: pinned raw lines 5\u201336.\n- 200 offer terms and nested requiredness: pinned raw lines 38\u201364.\n- 422 validation problem schema: pinned raw lines 67\u201383.\n\n## Related\n\n- [[adyen-capital]] \u2014 financing lifecycle.\n- [[source-adyen-api-explorer-capital-latest-get-dynamicoffers]] \u2014 dynamic-offer inventory.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/post/dynamicOffers/(id)/calculate/2026-11-07|Dynamic-offer calculation API Explorer snapshot]]",
+  "quotes": [
+    {
+      "text": "The preliminary offer is for informational purposes only and cannot be used to initiate a grant.",
+      "location": "raw line 7, introduction"
+    },
+    {
+      "text": "Live environments: 120 requests per minute.",
+      "location": "raw line 11, rate limits"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the dynamic offer from which the user selected the financing amount. |",
+      "location": "raw line 28, Path parameters"
+    },
+    {
+      "text": "| amount | object | Yes | The financing amount that the user selected from a dynamic offer. Adyen uses this amount to calculate a preliminary offer. |",
+      "location": "raw line 34, Request body"
+    },
+    {
+      "text": "|     - maximumDays | integer | No | The maximum duration of the repayment term, in days. Only applies when `contractType` is **loan**. |",
+      "location": "raw line 61, 200 repayment term"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-dynamic-offer-calculate-reciprocal",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-post-dynamicoffers-id-calculate]] \u2014 2026-11-07 Capital API v1 TEST/LIVE preliminary calculation from a dynamic offer and selected amount; informational result cannot initiate a grant.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/post/dynamicOffers/(id)/calculate/2026-11-07.md",
+  "raw_sha256": "7bfba235c7ed209491e90cc646e62f8b648861322da4eff6fa226de73b1131a5",
+  "status": "candidate_ready"
+}

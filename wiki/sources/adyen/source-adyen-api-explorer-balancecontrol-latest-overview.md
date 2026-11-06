@@ -21,6 +21,9 @@ This 2026-09-15 API Explorer snapshot identifies **Balance Control API v2** as a
 - The endpoint table summarizes `GET /balanceOverview/companies/{companyAccountCode}/balances` as available balances for all merchant accounts under a company, `GET /balanceOverview/merchants/{merchantAccountCode}/balances` as balances for a merchant account, and `POST /balanceTransfers` as performing a balance transfer. The overview gives no POST request/response schema, required fields, limits, transfer eligibility, acceptance/state machine, timing, reversal or settlement/receipt rule. A listed endpoint is not evidence of an executed transfer or bank receipt.
 - The page labels itself v2 but gives no v1 comparison, migration or deprecation rule. It supplies no device, terminal or session identity.
 
+> [!warning] Contradiction
+> The September overview Going live prose (raw line 30) gives `https://balance-control-live.adyen.com/api/v2`, while its Servers section (line 38) and the November company and merchant balance operations (raw line 25) give `https://balance-control-live.adyen.com/balance-control/api/v2`. These captures do not resolve the applicable Live base path. [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-companies-companyaccountcode-balances]]; [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-merchants-merchantaccountcode-balances]]
+
 ## Detail locators
 
 - Identity/purpose and authentication: raw lines 5–20.

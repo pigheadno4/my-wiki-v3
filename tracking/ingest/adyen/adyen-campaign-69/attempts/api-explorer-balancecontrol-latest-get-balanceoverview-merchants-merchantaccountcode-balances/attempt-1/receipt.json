@@ -1,0 +1,55 @@
+{
+  "job_id": "api-explorer-balancecontrol-latest-get-balanceoverview-merchants-merchantaccountcode-balances",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Control API: merchant balance overview\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/BalanceControl/latest/get/balanceOverview/merchants/(merchantAccountCode)/balances\"\nraw_files:\n  - \"adyen/api-explorer/BalanceControl/latest/get/balanceOverview/merchants/(merchantAccountCode)/balances/2026-11-07.md\"\ntags: [adyen, balance-control, merchant-accounts, balances]\n---\n\n## Overview\n\nCaptured [[adyen]] Balance Control API v2 `GET /balanceOverview/merchants/{merchantAccountCode}/balances` reference. It describes a merchant-account balance overview for a required merchant account code and required `currency` query parameter. The named balance categories are available funds, pending balance, next payout, reserve, and deposit; they have different meanings and must not be collapsed into a single spendable or bank-received amount.\n\n## Key takeaways\n\n- The response table marks `availableFund`, `pendingBalance`, `nextPayout`, `reserve`, `deposit`, and `merchantAccount` optional. When an amount object is present, its `currency` and integer `value` are required within that object; the value is in minor units.\n- Available funds are described as settled and available for use. Pending balance is unsettled; next payout is an amount described for the next bank-account payout, not proof of bank receipt. Reserve covers specified operational expenses and deposit is Adyen-withheld coverage for potential losses and liabilities.\n- The documented statuses are 200 success, 401 authentication required, 403 insufficient permissions, and 422 request validation error. The error-body properties are optional; `invalidFields` children are required only when that optional array has items.\n\n> [!warning] Contradiction\n> The path and response table describe one merchant account with flat optional balance fields, but the 200 example instead contains `merchantBalancesOverview` with two merchant accounts. The capture does not settle the actual response envelope or whether this example belongs to the company-scoped route. Use the table and example as conflicting evidence, not a guarantee of either shape.\n\n> [!warning] Contradiction\n> This endpoint's Servers list gives live `https://balance-control-live.adyen.com/balance-control/api/v2`. The captured [[source-adyen-api-explorer-balancecontrol-latest-overview]] also lists that server but its Going live paragraph gives `https://balance-control-live.adyen.com/api/v2`. These snapshots do not resolve which live base path applies.\n\n## Detail locators\n\n- Balance definitions, test/live servers, required path and query inputs: raw lines 5\u201338.\n- Success amount schema and optional parent versus required child fields: raw lines 40\u201363.\n- 401/403/422 structured error schemas: raw lines 66\u2013120. The 200 example and scope/envelope conflict are at lines 122\u2013167.\n\n## Related\n\n- [[adyen-account-structure]] \u2014 merchant versus company account and balance terminology.\n- [[source-adyen-api-explorer-balancecontrol-latest-overview]] \u2014 v2 endpoint overview and live-path conflict.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/BalanceControl/latest/get/balanceOverview/merchants/(merchantAccountCode)/balances/2026-11-07|Merchant balance overview, 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Returns an overview of the different balances available for the merchant account. This includes details about the following:",
+      "location": "line 7"
+    },
+    {
+      "text": "- https://balance-control-live.adyen.com/balance-control/api/v2",
+      "location": "line 25"
+    },
+    {
+      "text": "| merchantAccountCode | string | Yes | The unique identifier of your merchant account. |",
+      "location": "line 32"
+    },
+    {
+      "text": "| currency | string | Yes | The currency for which you want a balances overview. |",
+      "location": "line 38"
+    },
+    {
+      "text": "    \"merchantBalancesOverview\": [",
+      "location": "line 129"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-merchant-balance-overview-link",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-merchants-merchantaccountcode-balances]] \u2014 2026-11-07 Balance Control API v2 merchant/currency balance GET; optional balance objects and minor-unit amounts, with response-envelope and live-base-path conflicts.\n\n> [!warning] Contradiction\n> This merchant-scoped endpoint's flat response table conflicts with its two-merchant `merchantBalancesOverview` example. Its listed live base path also conflicts with the Going live paragraph in [[source-adyen-api-explorer-balancecontrol-latest-overview]]. Neither discrepancy is resolved by these captures.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The 200 example contains two merchant accounts under merchantBalancesOverview, unlike the merchant-scoped path and flat response table.",
+          "The endpoint live server differs from the overview's Going live paragraph; the counterpart source needs a reciprocal conflict warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/BalanceControl/latest/get/balanceOverview/merchants/(merchantAccountCode)/balances/2026-11-07.md",
+  "raw_sha256": "7a868e1bb7d675edc90ac67a8cb222126823c4386cfae514aaa063acd49f7ced",
+  "status": "candidate_ready"
+}

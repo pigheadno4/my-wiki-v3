@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-payments-app-latest-get-merchants-merchantid-stores-storeid-paymentsapps",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"List store Payments App instances\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/payments-app/latest/get/merchants/(merchantId)/stores/(storeId)/paymentsApps\"\nraw_files:\n  - \"adyen/api-explorer/payments-app/latest/get/merchants/(merchantId)/stores/(storeId)/paymentsApps/2026-11-07.md\"\ntags: [adyen, payments-app, mobile-pos, api-explorer]\n---\n\n## Overview\n\nCaptured Payments App API v1 GET reference for listing Payments App instances under a specified merchant account and store. It concerns the separate Android Payments App, not an app installed on an Adyen terminal. See [[adyen]] and [[adyen-mobile-pos]].\n\n## Key takeaways\n\n- The path requires `merchantId` (merchant account identifier) and `storeId` (store identifier). The API credential needs the Adyen Payments App role. Captured live and test servers are `management-live.adyen.com/v1` and `management-test.adyen.com/v1`.\n- Optional `offset` and `limit` paginate the list. Optional comma-separated `statuses` filters by `BOARDING`, `BOARDED`, or `REVOKED`; without a status value, the list returns all statuses. The raw gives no numeric pagination limits or default values.\n- A 200 response has a required `paymentsApps` array. Each listed instance has required `installationId`, `merchantAccountCode`, and `status`; `merchantStoreCode` is optional. These are instance readback fields, not boarding-token or payment results.\n- The reference lists 400, 401, 403, 422, and 500 error responses. A successful list read does not establish current account eligibility, a newly completed boarding transition, payment authorization, capture or settlement. This dated reference gives no propagation timing or revocation reversal contract.\n\n## Detail locators\n\n- Operation, role and v1 test/live servers: raw lines 5\u201319.\n- Path and optional query parameters, including status values: raw lines 21\u201335.\n- 200 response fields and requiredness: raw lines 37\u201349.\n- Error response schemas: raw lines 52\u2013144.\n\n## Related\n\n- [[adyen-mobile-pos]] \u2014 mobile-device Payments App context.\n- [[source-adyen-api-explorer-payments-app-latest-overview]] \u2014 Payments App API v1 endpoint index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/payments-app/latest/get/merchants/(merchantId)/stores/(storeId)/paymentsApps/2026-11-07|Store Payments Apps GET reference, captured 2026-11-07]]",
+  "quotes": [
+    {
+      "text": "Returns the list of Payments App instances for the store identified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "- Adyen Payments App role",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| statuses | string | No | The status of the Payments App. Comma-separated list of one or more values. If no value is provided, the list returns all statuses.  Possible values:  **BOARDING**  **BOARDED**  **REVOKED** |",
+      "location": "raw line 35"
+    },
+    {
+      "text": "|   - installationId | string | Yes | The unique identifier of the Payments App instance. |",
+      "location": "raw line 46"
+    },
+    {
+      "text": "|   - merchantStoreCode | string | No | The store code associated with the Payments App instance. |",
+      "location": "raw line 48"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-payments-app-store-list-mobile-pos",
+        "target_path": "wiki/concepts/adyen-mobile-pos.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-payments-app-latest-get-merchants-merchantid-stores-storeid-paymentsapps]] \u2014 2026-11-07-captured Payments App API v1 store-scoped instance list, with optional status filter and instance IDs; listing does not establish a new boarding or payment outcome.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/payments-app/latest/get/merchants/(merchantId)/stores/(storeId)/paymentsApps/2026-11-07.md",
+  "raw_sha256": "798bb04e45b58e0f6eb09fee5ad1107b6889d13d69b8c16052fabb7282dadd29",
+  "status": "candidate_ready"
+}

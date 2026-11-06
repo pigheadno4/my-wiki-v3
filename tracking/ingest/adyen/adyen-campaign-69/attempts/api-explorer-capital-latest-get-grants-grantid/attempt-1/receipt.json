@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-capital-latest-get-grants-grantid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Get Capital grant details by grant ID\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/get/grants/(grantId)\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/get/grants/(grantId)/2026-11-07.md\"\ntags: [adyen, capital, grants, api-explorer]\n---\n\n## Overview\n\nCaptured Capital API v1 GET reference for details of one grant selected by `grantId`. This is a grant read, separate from a grant offer, grant account and disbursement. See [[adyen]] and [[adyen-capital]].\n\n## Key takeaways\n\n- The required path `grantId` is the unique grant-reference identifier. Captured TEST and LIVE bases are `https://balanceplatform-api-test.adyen.com/capital/v1` and `https://balanceplatform-api-live.adyen.com/capital/v1`.\n- A 200 body requires `balances` with currency, fee, principal and total; `total` is fee plus principal. It also requires `grantAccountId`, selected `grantOfferId`, grant `id`, and `status.code`. Optional `counterparty` can identify an account holder, disbursement balance account or transfer instrument, with stated ownership relationships. Optional `status.actions` supplies action codes and resolved flags. Exact schema and status values are in the raw.\n- Status codes include Pending, Active, Repaid, WrittenOff, Failed, Revoked, Requested, Reviewing, Approved, Rejected and Cancelled. A readback of these fields is not itself proof of disbursement, bank receipt, repayment booking or current eligibility. The operation documents 404 entity not found and 422 validation errors; it gives no state-transition, idempotency or propagation contract.\n\n## Detail locators\n\n- Purpose, v1 TEST/LIVE servers and required ID: raw lines 5\u201322.\n- 200 grant balances, IDs, optional recipient and status/action fields: raw lines 24\u201348.\n- 404 and 422 error schemas: raw lines 51\u201386.\n\n## Related\n\n- [[adyen-capital]] \u2014 financing product and evidence boundaries.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/get/grants/(grantId)/2026-11-07|Capital grant detail GET, captured 2026-11-07]]",
+  "quotes": [
+    {
+      "text": "Returns the details of the specified grant.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| grantId | string | Yes | The unique identifier of the grant reference. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "|   - total | integer | Yes | The total amount of the grant that the user must repay. It is the sum of the fee amount and the principal amount. |",
+      "location": "raw line 36"
+    },
+    {
+      "text": "| grantOfferId | string | Yes | The unique identifier of the selected offer. Adyen uses the details of the selected offer to create a grant. |",
+      "location": "raw line 42"
+    },
+    {
+      "text": "|   - code |  | Yes | The code for the status of the grant. Possible values:  - **Pending**  - **Active**  - **Repaid**  - **WrittenOff**  - **Failed**  - **Revoked**  - **Requested**  - **Reviewing**  - **Approved**  - **Rejected**  - **Cancelled** |",
+      "location": "raw line 48"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-capital-grant-detail",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-get-grants-grantid]] \u2014 2026-11-07-captured Capital API v1 grant-detail GET by grant ID, with balances, offer/grant-account IDs, optional recipient and status/actions; readback alone is not disbursement or bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/get/grants/(grantId)/2026-11-07.md",
+  "raw_sha256": "c6146e240a793a43282027da8c082e9513ffda58c82728f205cfcf99ae17fc62",
+  "status": "candidate_ready"
+}

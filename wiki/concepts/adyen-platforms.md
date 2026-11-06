@@ -18,6 +18,21 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweepexecution-failed]] — 2026-11-07-captured incoming failed sweep-execution webhook with optional execution IDs and reason fields; 2xx accepts delivery without proving recovery, transfer booking or bank receipt.
+
+
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweepexecution-succeeded]] — 2026-11-07 Balance Platform incoming sweep-execution-succeeded event; optional execution and transfer IDs, with 2xx receiver acknowledgement distinct from bank receipt.
+
+
+- [[source-adyen-api-explorer-transfers-latest-get-transactions-id]] — 2026-11-07-captured Transfers API v4 TEST transaction-by-ID read for balance-account pending/booked state, amount, dates and related identifiers; booking does not prove external bank receipt.
+
+
+- [[source-adyen-api-explorer-transfers-latest-get-transfers-id]] — 2026-11-07 Transfers API v4 TEST detail read by transfer ID, with status and optional event/accounting/review data; booking is distinct from bank receipt.
+
+
+- [[source-adyen-api-explorer-transfers-latest-post-transfers-transferid-returns]] — 2026-11-07-captured Transfers API v4 TEST return initiation by original transfer ID, with optional Authorised/Declined status readback; this does not prove a booked return or bank receipt.
+
+
 - [[source-adyen-api-explorer-legalentity-latest-post-legalentities-id-onboardinglinks]] — 2026-11-03-captured Legal Entity Management API v4 TEST reference for a one-use, four-minute hosted-onboarding URL tied to a legal-entity ID; link issuance is not onboarding or verification approval.
 
 

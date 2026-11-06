@@ -1,0 +1,9 @@
+# C69 original query answers: one raised-dispute attachment
+
+## Q1
+
+The 2026-11-07 capture is `GET /disputes/{disputeId}/attachments/{attachmentId}` at a `transfers-api/latest` URL with Balance Platform API v4 Test and Live servers. It searches for one attachment: required path `disputeId` identifies the raised dispute, and required `attachmentId` identifies the attachment. No query parameters, body, defaults or limits are specified. The `200` response table requires `attachmentType` (`receipt`, `correspondence`, `other`), Base64 `content`, and `fileName` with `jpeg`, `pdf`, or `tiff` extension; `id` is optional. Its Base64 prose conflicts on using `Base64.NO_WRAP` despite demanding no line breaks, so the capture does not settle an encoder choice. [[source-adyen-api-explorer-transfers-api-latest-get-disputes-disputeid-attachments-attachmentid]] [Captured reference](https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)); raw lines 5–36.
+
+## Q2
+
+A `200 Success` indicates this attachment retrieval request succeeded. It does not submit evidence, decide or close the dispute, reverse a transaction, or establish a payment, transfer, settlement or bank receipt. The page lists `401` authentication required, `403` insufficient permissions, and `422` validation error, but specifies no particular credential role or authentication header here. It defines no idempotency, attachment lifecycle/deletion, propagation, review/approval/activation, retry, version-conflict or asynchronous outcome contract. Its Test/Live v4 URLs and 2026-11-07 capture are a documentation snapshot, not proof of current account permissions or dispute status. [[source-adyen-api-explorer-transfers-api-latest-get-disputes-disputeid-attachments-attachmentid]] [Captured reference](https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)); raw lines 1–2, 7–15, 25–36, 39–93.

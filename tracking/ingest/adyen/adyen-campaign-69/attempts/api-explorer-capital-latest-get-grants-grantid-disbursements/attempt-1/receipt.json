@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-capital-latest-get-grants-grantid-disbursements",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital API v1: list a grant's disbursements\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/get/grants/(grantId)/disbursements\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/get/grants/(grantId)/disbursements/2026-11-07.md\"\ntags: [adyen, capital, grants, disbursements]\n---\n\n## Overview\n\nThis 2026-11-07-captured Capital API `latest` `/capital/v1` GET reference lists disbursements related to one grant. The page lists both Test and Live server bases. This is a lookup of grant-disbursement records, not a request to create a grant or disburse funds. See [[adyen]] and [[adyen-capital]].\n\n## Key takeaways\n\n- The only documented input is required string path `grantId`, the grant-reference identifier. No query parameters or request body are shown. The `200` response marks `disbursements` required as an array of related records; the page gives no pagination, default, or count limit.\n- Each listed record's required fields include account-holder recipient ID, balance-account recipient ID, disbursement `id`, `grantId`, `amount`, `balances`, `fee`, and `repayment`. `amount.value` is an integer in minor units with a three-character currency; `balances` includes currency, fee, principal, and total repayable, where total is fee plus principal. `repayment.basisPoints` represents the configured share of incoming net volume deducted for repayment. The full nested schema is in the pinned raw.\n- `fundsCollections` is optional and describes accounts Adyen uses to collect repayment-related funds, with optional `accountIdentification` and `fundsCollectionType` (`UnscheduledRepayment` or `Revocation`). Its absence does not establish the absence of repayment obligations.\n- The listed errors are 404 entity not found and 422 validation error. A `200` readback documents the returned disbursement records and repayment configuration; it does not independently prove transfer booking, external bank receipt, current grant eligibility, or repayment completion. This endpoint page does not specify an authentication role or idempotency contract.\n\n## Detail locators\n\n- Pinned raw, lines 5\u201322: lookup purpose, Test/Live `/capital/v1` servers, and path input.\n- Pinned raw, lines 24\u201352: `200` response, recipient/grant/disbursement identities, minor-unit amounts, balances, fee, optional collection accounts, and repayment basis points.\n- Pinned raw, lines 55\u201390: 404 and 422 responses, with optional problem fields and nested validation-error fields. There are no JSON examples in this capture.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/get/grants/(grantId)/disbursements/2026-11-07|Capital grant-disbursements GET reference, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Returns the disbursements of a specified grant.",
+      "location": "line 7"
+    },
+    {
+      "text": "Contains a list of all disbursements related to the specified grant.",
+      "location": "line 32, `disbursements` row"
+    },
+    {
+      "text": "The unique identifier of the balance account that received the disbursement.",
+      "location": "line 37, `balanceAccountId` row"
+    },
+    {
+      "text": "The total amount of the grant that the user must repay. It is the sum of the fee amount and the principal amount.",
+      "location": "line 42, `balances.total` row"
+    },
+    {
+      "text": "The percentage of your user's incoming net volume that is deducted for repaying the grant. The percentage expressed in [basis points](https://www.investopedia.com/terms/b/basispoint.asp).",
+      "location": "line 51, `repayment.basisPoints` row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-capital-grant-disbursements-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-get-grants-grantid-disbursements]] \u2014 2026-11-07-captured Capital API v1 Test/Live GET of a grant's disbursement records, recipient balance-account IDs, amounts and repayment configuration; readback is not external bank receipt or repayment completion proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/get/grants/(grantId)/disbursements/2026-11-07.md",
+  "raw_sha256": "276615996482a16fa2699cf143d9674e224108faa69dc5bc2d5e49e74d817e9e",
+  "status": "candidate_ready"
+}

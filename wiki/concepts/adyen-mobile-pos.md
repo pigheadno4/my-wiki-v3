@@ -40,6 +40,21 @@ Release announcements and stale 3.21.0 README documentation links are preserved 
 
 ## Sources
 
+- [[source-adyen-api-explorer-payments-app-latest-post-merchants-merchantid-paymentsapps-installationid-revoke]] — Payments App API v1 merchant/installation revocation operation (captured 2026-11-07); authentication-management endpoint with a required Payments App role and no specified propagation timing or payment result.
+
+
+- [[source-adyen-api-explorer-payments-app-latest-get-merchants-merchantid-stores-storeid-paymentsapps]] — 2026-11-07-captured Payments App API v1 store-scoped instance list, with optional status filter and instance IDs; listing does not establish a new boarding or payment outcome.
+
+
+- [[source-adyen-api-explorer-payments-app-latest-post-merchants-merchantid-stores-storeid-generatepaymentsappboardingtoken]] — Payments App API v1 store-level boarding-token creation reference (captured 2026-11-07) for Android app installation authentication.
+
+
+- [[source-adyen-api-explorer-payments-app-latest-get-merchants-merchantid-paymentsapps]] — 2026-11-07 Payments App API v1 merchant-level instance list reference; optional status filter and per-instance installation, merchant account, optional store, and status fields.
+
+
+- [[source-adyen-api-explorer-payments-app-latest-post-merchants-merchantid-generatepaymentsappboardingtoken]] — 2026-11-07-captured Payments App API v1 merchant-level boarding-token creation for a request token; returned token and installation ID do not prove app boarding or payment execution.
+
+
 - [[source-adyen-api-explorer-possdk-latest-post-sessions]] — 2026-09-15 POS Mobile SDK `v68` test `POST /sessions` contract for mobile in-person communication-session creation and SDK response-authentication data.
 
 

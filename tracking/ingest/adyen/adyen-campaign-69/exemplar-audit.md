@@ -1,0 +1,9 @@
+# C69 coordinator exemplar audit
+
+**PASS** — three predetermined full-read audits. Coordinator read every numbered raw line, schema, error and example in bounded chunks, then compared final source, located quotes, approved reciprocal and actual original answers. No material partial/fail in these samples; all47 audit expansion not triggered.
+
+- api-explorer-management-latest-get-merchants-merchantid-terminalthemes-id: Full numbered raw1–147, finalsource, five exact quotes, approved TerminalManagement reciprocal and originalQ1Q2 compared. Requiredmerchant/themeIDs,Testv3,requiredassets/id/mode/name,24hCDNtokenURLs,logo permissionfallback and themesrole versus403settingsrole contradiction preserved. Readback notdeviceapplication. PASS.
+
+- api-explorer-transfers-latest-get-transfers-id: Full numbered raw1–363 in bounded contiguous chunks including allschemas/errors/completeexample. Finalsource, fivequotes, Platformsreciprocal and originalQ1Q2 compared. Testbtlv4 requiredid, required200amount/category/status versusoptionalparents/conditionalchildren, issuedCardeventId, accountingtransactionIdonlybalancechanges,30dayexecution/Amsterdamtimezone and receivedpendinguntilscheduled retained. Bookedbalanceaccountdeduction distinctbankreceipt; exampleinternal progression notuniversal. Verifiedrawlocators retainroutinecategory/risk/review/tracing/error detail. PASS.
+
+- api-explorer-cloud-device-api-latest-get-merchants-merchantaccount-devices-deviceid-status: Full numbered raw1–123, finalsource, fivequotes, TerminalAPI reciprocal and originalQ1Q2 compared. RequiredmerchantAccount+deviceId terminalmodelserial orSDKinstallation,CloudDeviceAPIrole,v1regionalservers, optional200deviceId/status, ONLINE/OFFLINE activecloudconnection only.401/403optionalerrorparents/conditionalchildren retained; connection notpaymentreadiness. PASS.

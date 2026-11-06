@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-transfers-latest-get-grants-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Transfers API v4: get grant reference details\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/get/grants/(id)\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/get/grants/(id)/2026-11-07.md\"\ntags: [adyen, transfers-api, capital, grants, api-reference]\n---\n\n## Overview\n\nThis captured Transfers API v4 TEST `GET /grants/{id}` reference returns grant-reference details for the required grant ID in the path. The 200 schema includes the grant reference ID, grant account ID, selected grant offer ID, balances, and current grant status. This is grant readback, not proof of disbursement, bank receipt, or completed repayment. See [[adyen]] and [[adyen-capital]].\n\n> [!warning] Contradiction\n> The endpoint title and path identify grant-reference lookup, and the path table calls `id` a grant ID, but the introductory sentence says it returns a \"capital account\" and the 404 description says \"The payment was not found.\" Those statements conflict with the grant-specific 200 schema; this capture does not resolve the mismatched wording.\n\n## Key takeaways\n\n- The sole input is required path `id`; the page lists `https://balanceplatform-api-test.adyen.com/btl/v4` and no live server.\n- The 200 schema marks `balances`, `grantAccountId`, `grantOfferId`, `id`, and `status` required. The status enum is `Pending`, `Active`, `Repaid`, `WrittenOff`, `Failed`, or `Revoked`. It does not define transition timing or state-specific payout evidence.\n- `amount`, `counterparty`, `fee`, and `repayment` are optional parent objects; nested fields marked required apply within their present parent. `amount` and `fee` values are in minor units, and `repayment.basisPoints` describes a daily deduction from incoming net volume. The optional repayment term's `maximumDays` applies only for a loan contract type.\n- The listed errors are 400, 401, 403, 404, 422, and 500.\n\n## Detail locators\n\n- Endpoint identity, server, and path input: raw lines 5\u201317.\n- Success schema, optional objects, and status values: raw lines 19\u201353.\n- Error definitions and response schemas: raw lines 56\u2013173.\n\n## Related\n\n- [[adyen-capital]] \u2014 Capital offer, grant, and repayment context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/get/grants/(id)/2026-11-07|Transfers API v4 GET grant reference (2026-11-07)]]\n",
+  "quotes": [
+    {
+      "text": "# GET /grants/{id} - Get grant reference details",
+      "location": "raw line 5, endpoint title"
+    },
+    {
+      "text": "Returns the details of a capital account specified in the path.",
+      "location": "raw line 7, endpoint description"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the grant. |",
+      "location": "raw line 17, Path parameters"
+    },
+    {
+      "text": "| status | string | Yes | The current status of the grant. Possible values: **Pending**, **Active**, **Repaid**, **WrittenOff**, **Failed**, **Revoked**. |",
+      "location": "raw line 53, 200 response body"
+    },
+    {
+      "text": "The payment was not found",
+      "location": "raw lines 116\u2013117, 404 Client Error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-transfers-grant-id-capital-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-get-grants-id]] \u2014 2026-11-07-captured Transfers API v4 TEST grant-reference lookup by ID, with grant balances and status readback; neither lookup nor status alone proves disbursement or bank receipt.\n\n> [!warning] Contradiction\n> This grant-reference endpoint's title, path parameter, and 200 schema concern a grant, while its introduction says \"capital account\" and its 404 description says \"payment.\" The capture does not resolve these mismatches. [[source-adyen-api-explorer-transfers-latest-get-grants-id]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source has internal object-identity conflicts in its introductory and 404 wording; preserve the warning with the source route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/get/grants/(id)/2026-11-07.md",
+  "raw_sha256": "9b0fdfc48fa2daa05dfaaba123fa8e7018648266038bec710442fc9a963ae944",
+  "status": "candidate_ready"
+}

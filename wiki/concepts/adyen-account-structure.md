@@ -30,6 +30,18 @@ This is a 2023-last-modified Adyen page captured 2026-09-15. It does not identif
 
 ## Sources
 
+- [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-merchants-merchantaccountcode-balances]] — 2026-11-07 Balance Control API v2 merchant/currency balance GET; optional minor-unit balance objects, with available-funds definition, response-envelope and live-base-path conflicts.
+
+> [!warning] Contradiction
+> This API page describes available funds as settled, while [[source-adyen-docs-account-balances]] defines available funds as an adjustable aggregate including unsettled Pending, Next payout, Reserve and conditional Negative refund allowance. Do not equate API `availableFund` with that aggregate. This merchant-scoped endpoint's flat response table also conflicts with its two-merchant `merchantBalancesOverview` example; its listed live base path conflicts with the Going live paragraph in [[source-adyen-api-explorer-balancecontrol-latest-overview]]. The captures do not resolve these differences.
+
+
+- [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-companies-companyaccountcode-balances]] — 2026-11-07-captured Balance Control API v2 company-path GET for per-merchant balance categories and required currency; optional row/amount fields and prospective next payout are not bank-receipt proof. The operation lists a Live `/balance-control/api/v2` base, while the family overview also states a shorter Live `/api/v2` base in prose.
+
+> [!warning] Contradiction
+> The Balance Control API v2 company and merchant balance GET references describe available funds as settled and pending balance as separate and unsettled; the account-balances guide defines total available funds as including unsettled Pending, Next payout, Reserve, and conditional Negative refund allowance. The captures do not reconcile the API `availableFund` field with the guide's broader total. [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-companies-companyaccountcode-balances]] [[source-adyen-api-explorer-balancecontrol-latest-get-balanceoverview-merchants-merchantaccountcode-balances]] [[source-adyen-docs-account-balances]]
+
+
 - [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-paymentmethodsettings-paymentmethodid]] — 2026-11-05-captured Management API v3 Test, role-gated read of one merchant-account payment-method setting by merchant and method IDs; optional `allowed`, `enabled`, and `verificationStatus` readback remain distinct from a payment outcome.
 
 

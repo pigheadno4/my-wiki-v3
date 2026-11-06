@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-cloud-device-api-latest-get-merchants-merchantaccount-devices-deviceid-status",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cloud Device API: get a device's cloud connection status\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status\"\nraw_files:\n  - \"adyen/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status/2026-11-07.md\"\ntags: [adyen, cloud-device-api, point-of-sale, device-status]\n---\n\n## Overview\n\nThis November 2026 capture of the Cloud Device API v1 reference describes `GET /merchants/{merchantAccount}/devices/{deviceId}/status`: check whether a specified payment terminal or Mobile-solution SDK installation ID has an active cloud connection. This is connection state, not a Terminal API transaction or payment outcome. [[adyen]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- The API credential needs the **Cloud Device API role**. Both path parameters are required: `merchantAccount` identifies the merchant account; `deviceId` is a terminal ID in `[terminal model]-[serial number]` format for a payment terminal, or the SDK installation ID for a Mobile solution. No request body, query parameter, default, or idempotency rule is stated in this reference.\n- The listed servers use `/v1`: one TEST endpoint and Live endpoints for Australia, East Asia, Europe, and the United States. The reference does not say that a listed endpoint proves account-specific Live availability.\n- A `200` response can report `deviceId` and `status`, but the response table marks both fields optional. The listed status values are `ONLINE` and `OFFLINE`, indicating an active cloud connection or its absence; the `ONLINE` example is illustrative. Neither value establishes payment authorization, capture, settlement, or device readiness for a particular transaction.\n- The reference lists `401 Unauthorized` and `403 Forbidden`, each with an optional error-body envelope and conditionally present validation fields. It does not define retry, reversal, asynchronous processing, or a connection-state propagation guarantee.\n\n## Detail locators\n\n- Purpose, required role and TEST/regional Live `/v1` servers: [[raw/adyen/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status/2026-11-07#L5|raw lines 5\u201328]].\n- Required path identities and optional `200` response fields/status values: [[raw/adyen/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status/2026-11-07#L30|raw lines 30\u201347]].\n- `401`/`403` response schemas and `200`/error examples: [[raw/adyen/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status/2026-11-07#L50|raw lines 50\u2013123]].\n\n## Related\n\n- [[adyen-terminal-api]] \u2014 Cloud Device transport and Terminal API message boundary.\n- [[source-adyen-api-explorer-cloud-device-api-latest-overview]] \u2014 API family and transport overview.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status/2026-11-07|Captured Cloud Device API v1 GET device status reference]]\n",
+  "quotes": [
+    {
+      "text": "Check if the specified payment terminal or SDK installation ID (in an IPP Mobile solution) has an active cloud connection.",
+      "location": "line 7"
+    },
+    {
+      "text": "- **Cloud Device API role**",
+      "location": "line 11"
+    },
+    {
+      "text": "| deviceId | string | Yes | The unique identifier of the device.  For a payment terminal, use the terminal ID in the format *[terminal model]-[serial number]*, for example, **P400\u2011123456789**. In a Mobile solution, use the installation ID of the SDK. |",
+      "location": "line 35"
+    },
+    {
+      "text": "| status | string | No | Indicates if the device has an active cloud connection. Possible values:  - **ONLINE**  - **OFFLINE** |",
+      "location": "line 47"
+    },
+    {
+      "text": "### 403 Client Error",
+      "location": "line 69"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-cloud-device-status-route",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-api-explorer-cloud-device-api-latest-get-merchants-merchantaccount-devices-deviceid-status]] \u2014 2026-11-07-captured Cloud Device API v1 GET connection-status reference for a merchant's payment terminal or Mobile SDK installation; optional `ONLINE`/`OFFLINE` readback describes cloud connectivity, not a payment outcome.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/cloud-device-api/latest/get/merchants/(merchantAccount)/devices/(deviceId)/status/2026-11-07.md",
+  "raw_sha256": "7f8d937ae5f3b75ec97b44716d7e412ed9f0237467c19bfc2039715da9f3f315",
+  "status": "candidate_ready"
+}

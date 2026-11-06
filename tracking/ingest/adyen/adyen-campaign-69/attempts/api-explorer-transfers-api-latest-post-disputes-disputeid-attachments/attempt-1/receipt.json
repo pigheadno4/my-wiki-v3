@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-transfers-api-latest-post-disputes-disputeid-attachments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Raise disputes API v4: add an attachment to an Issuing dispute\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers-api/latest/post/disputes/(disputeId)/attachments\"\nraw_files:\n  - \"adyen/api-explorer/transfers-api/latest/post/disputes/(disputeId)/attachments/2026-11-07.md\"\ntags: [adyen, issuing, disputes, attachments, transfers-api]\n---\n\n## Overview\n\nThis 2026-11-07-captured `transfers-api` `latest` `/btl/api/v4` reference adds supporting information to an already raised dispute, such as receipts or correspondence. Its Test and Live server bases are listed. This is the Issuing raised-dispute attachment route, not a funds transfer or an acquiring dispute-defense submission. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The path requires `disputeId`, the unique identifier of the raised dispute. The request-body table marks `attachmentType` (`receipt`, `correspondence`, or `other`), `content`, and `fileName` required. `content` is Base64-encoded image data, and the filename must include one of the supported extensions: `jpeg`, `pdf`, or `tiff`. The page says line breaks, wrapping, and even a trailing newline in the encoded string cause malformed input.\n- A `200` response says the request succeeded, but its response table marks `attachmentId` optional. Neither status nor an attachment ID establishes dispute submission, review, approval, chargeback, fee reversal, or a won outcome.\n- The listed failures are 401 authentication required, 403 insufficient permissions, and 422 request validation error. Their problem fields are table-optional; within an optional `invalidFields` array, `message`, `name`, and `value` are required per item. No file-size limit, idempotency contract, or subsequent dispute status is stated here.\n\n> [!warning] Contradiction\n> The `content` description instructs callers to generate Base64 without line breaks or wrapping, then says not to use Java `Base64.NO_WRAP` or its equivalent. The capture does not reconcile those encoding instructions; it separately says trailing newlines cause malformed input.\n\n## Detail locators\n\n- Pinned raw, lines 5\u201315: purpose and Test/Live v4 server bases.\n- Pinned raw, lines 19\u201330: dispute ID and complete request-body fields, types, extensions, and Base64 instructions.\n- Pinned raw, lines 32\u201397: `200` with optional attachment ID and 401/403/422 problem-body schemas. The pinned page has no request or response example.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers-api/latest/post/disputes/(disputeId)/attachments/2026-11-07|Raised-dispute attachment API reference, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Add supporting information as an attachment for the raised dispute. Upload receipts, communication, or any other documentation to support the dispute.",
+      "location": "line 7"
+    },
+    {
+      "text": "The type of information contained in the attachment: **receipt**, **correspondence**, **other**.",
+      "location": "line 28, `attachmentType` row"
+    },
+    {
+      "text": "Make sure that all base64-encoded data strings are generated without line breaks or \"wrapping\". For example, do not use `Base64.NO_WRAP` in Java, or its equivalent in other languages. Newline characters at the end of the base64-encoded data string will also result in a malformed input error.",
+      "location": "line 29, `content` row"
+    },
+    {
+      "text": "The name of the attachment, including its filename extension. Supported filename extensions: **jpeg**, **pdf**, **tiff**.",
+      "location": "line 30, `fileName` row"
+    },
+    {
+      "text": "The unique identifier of the attachment.",
+      "location": "line 40, optional `attachmentId` row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-issuing-dispute-attachment-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-api-latest-post-disputes-disputeid-attachments]] \u2014 2026-11-07-captured Raise disputes API v4 Test/Live route for attaching Base64 evidence to a raised Issuing dispute; `200` has an optional attachment ID and does not establish submission or dispute outcome.\n\n> [!warning] Contradiction\n> The `content` field says Base64 must have no line breaks or wrapping, yet also says not to use Java `Base64.NO_WRAP` or its equivalent. The capture does not reconcile those instructions. [[source-adyen-api-explorer-transfers-api-latest-post-disputes-disputeid-attachments]]",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "The same content row pairs no-wrapping instruction with a prohibition of Base64.NO_WRAP; do not resolve by inference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers-api/latest/post/disputes/(disputeId)/attachments/2026-11-07.md",
+  "raw_sha256": "6f0ed71aa9ff68d553698a304e7fb5a5ff77b0d4b4e2369c19368d4bcbc7186c",
+  "status": "candidate_ready"
+}

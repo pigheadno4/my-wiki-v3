@@ -1,0 +1,7 @@
+## Q1
+
+[[source-adyen-api-explorer-capital-latest-get-grantoffers-id]] at https://docs.adyen.com/api-explorer/capital/latest/get/grantOffers/(id) is the captured Capital API v1 `GET /grantOffers/{id}` reference for one static offer. Required path `id` identifies the offer; the page lists TEST `https://balanceplatform-api-test.adyen.com/capital/v1` and live `https://balanceplatform-api-live.adyen.com/capital/v1` hosts (raw lines 5–22). No caller role, body, default, or limit is stated. A 200 requires `accountHolderId`, identifying the recipient account holder. Optional response fields include offer `id`, `amount` in minor units, `contractType` (loan or cashAdvance), `startsAt`/`expiresAt`, fee, and repayment details. Optional parent objects have required nested fields only when present; loan-only `maximumDays` is conditional (raw lines 24–51).
+
+## Q2
+
+A 200 from [[source-adyen-api-explorer-capital-latest-get-grantoffers-id]] at https://docs.adyen.com/api-explorer/capital/latest/get/grantOffers/(id) establishes retrieval of static offer details, not offer selection, grant execution, disbursement, bank receipt, or repayment (raw lines 5–7, 24–51). The endpoint documents 404 entity not found and 422 validation error (raw lines 54–89). It states no idempotency, deletion, propagation, asynchronous review or approval, activation, failure reversal, or status transition behavior. The TEST/live server listings and 2026-11-07 `latest` snapshot are endpoint documentation, not proof of a particular account's current eligibility or an executable offer.

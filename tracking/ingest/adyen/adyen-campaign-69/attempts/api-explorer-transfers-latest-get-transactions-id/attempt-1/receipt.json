@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-transfers-latest-get-transactions-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API transaction detail\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/get/transactions/(id)\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/get/transactions/(id)/2026-11-07.md\"\ntags: [adyen, transfers-api, transactions, balance-platform]\n---\n\n## Overview\n\nCaptured Transfers API v4 TEST `GET /transactions/{id}` reference for reading one balance-account transaction by its transaction ID. This is a transaction record, distinct from a transfer request and from recipient-bank receipt. Versions 1 and 2 of the Transfers API are marked deprecated in this reference. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- Required path `id` is the unique transaction identifier. The captured server is `https://balanceplatform-api-test.adyen.com/btl/v4`. This GET reference gives no request body, query inputs, defaults, limits, idempotency rule, or operation-specific API role.\n- The `200` schema requires `accountHolder`, `amount` (currency and signed numeric value in minor units), `balanceAccount`, `balancePlatform`, `bookingDate`, transaction `id`, `status`, and `valueDate`. Nested holder/account IDs are optional in the table. Optional `paymentInstrument`, `transfer`, beneficiary reference, creation date and description provide context when present; the optional transfer object's `reference` is marked required within that object.\n- Transaction `status` is `pending` or `booked`; booked means booked to the balance account. `bookingDate` names the booking date and `valueDate` the date the transfer amount becomes available in the balance account. The schema lists both dates as required even though `pending` is possible; it does not explain their values for a pending record. A booked balance-account transaction is not proof of external recipient-bank receipt.\n- Documented errors are 401 authentication required, 403 insufficient permissions, 422 request validation, and 500 server processing failure. Consult the raw tables for error-body requiredness and nested validation fields. The `200` example is illustrative, not a guarantee of transfer category, amount, status or optional identifiers.\n\n## Detail locators\n\n- Identity, deprecation notice and TEST v4 server: raw lines 5\u201312.\n- Required transaction path ID: raw lines 14\u201319.\n- Success schema, identity, status and dates: raw lines 21\u201356.\n- Error schemas and conditions: raw lines 59\u2013136.\n- Illustrative booked transaction: raw lines 138\u2013168.\n\n## Related\n\n- [[adyen-platforms]] \u2014 balance-account and transfer context.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/get/transactions/(id)/2026-11-07|Transfers API transaction detail, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Versions 1 and 2 of the Transfers API are deprecated. If you are just starting your implementation, use the latest version.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the transaction. |",
+      "location": "raw line 19"
+    },
+    {
+      "text": "|   - value | integer | Yes | The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units). |",
+      "location": "raw line 35"
+    },
+    {
+      "text": "| status | string | Yes | The status of the transaction.  Possible values:  **pending**: The transaction is still pending.  **booked**: The transaction has been booked to the balance account. |",
+      "location": "raw line 51"
+    },
+    {
+      "text": "| valueDate | string | Yes | The date the transfer amount becomes available in the balance account. |",
+      "location": "raw line 56"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-transfers-transaction-detail-platforms-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-get-transactions-id]] \u2014 2026-11-07-captured Transfers API v4 TEST transaction-by-ID read for balance-account pending/booked state, amount, dates and related identifiers; booking does not prove external bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/get/transactions/(id)/2026-11-07.md",
+  "raw_sha256": "4fa4f76b7c84e1f73e999147c8f6d6978883bf2fbc768748a7ff7985d05aec16",
+  "status": "candidate_ready"
+}

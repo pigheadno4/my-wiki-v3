@@ -1,0 +1,82 @@
+# GET /grants/{grantId} - Get the details of a grant
+
+Returns the details of the specified grant.
+
+## Servers
+
+**Test Environment**
+- https://balanceplatform-api-test.adyen.com/capital/v1
+
+**Live Environment**
+- https://balanceplatform-api-live.adyen.com/capital/v1
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| grantId | string | Yes | The unique identifier of the grant reference. |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| balances | object | Yes | Contains information about the balances of the grant. |
+|   - currency | string | Yes | The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). |
+|   - fee | integer | Yes | The amount of the grant fee. |
+|   - principal | integer | Yes | The grant amount that is paid out to the user for business financing. |
+|   - total | integer | Yes | The total amount of the grant that the user must repay. It is the sum of the fee amount and the principal amount. |
+| counterparty | object | No | Contains the details of the party that receives the grant. |
+|   - accountHolderId | string | No | The unique identifier of the account holder that receives the grant. |
+|   - balanceAccountId | string | No | The unique identifier of the balance account where the funds are disbursed. The balance account must belong to the specified account holder. |
+|   - transferInstrumentId | string | No | The unique identifier of the transfer instrument where the funds are disbursed. The transfer instrument must belong to the legal entity of the specified account holder. |
+| grantAccountId | string | Yes | The unique identifier of the grant account that tracks this grant. |
+| grantOfferId | string | Yes | The unique identifier of the selected offer. Adyen uses the details of the selected offer to create a grant. |
+| id | string | Yes | The unique identifier of the grant reference. |
+| status | object | Yes | Contains the status of the grant. |
+|   - actions | array of object | No | A list of actions that need to be completed to proceed with the grant. |
+|     - actionCode | string | Yes | The code identifying the action that needs to be completed. |
+|     - resolved | boolean | Yes | Indicates whether this action has been successfully completed. |
+|   - code |  | Yes | The code for the status of the grant. Possible values:  - **Pending**  - **Active**  - **Repaid**  - **WrittenOff**  - **Failed**  - **Revoked**  - **Requested**  - **Reviewing**  - **Approved**  - **Rejected**  - **Cancelled** |
+
+
+### 404 Client Error
+The entity was not found.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |

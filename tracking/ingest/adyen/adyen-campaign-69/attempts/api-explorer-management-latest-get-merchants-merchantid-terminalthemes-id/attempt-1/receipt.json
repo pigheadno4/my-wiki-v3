@@ -1,0 +1,53 @@
+{
+  "job_id": "api-explorer-management-latest-get-merchants-merchantid-terminalthemes-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: get a merchant terminal theme\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/(id)\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/(id)/2026-11-07.md\"\ntags: [adyen, management-api, terminal-themes, point-of-sale]\n---\n\n## Overview\n\nThis 2026-11-07-captured Management API `latest` v3 TEST reference reads one terminal theme by merchant-account `merchantId` and theme `id`. A `200` response returns theme metadata and CDN URLs for added assets. See [[adyen]] and [[adyen-terminal-management]].\n\n## Key takeaways\n\n- Both path identifiers are required strings. The documented request has no query parameters or body. Its access instructions name the `Management API - Terminal themes read and write` API-credential role.\n- The `200` response table marks `id`, `name`, `mode` (`dark` or `light`), and `assets` required. Each listed asset has required `model`, `type` (`logo`, `homeScreen`, `idleScreen`, `afterPaymentScreen`, or `shopperEngagementScreen`), and `url`. Asset CDN URLs include a `?token=` query parameter and are valid for 24 hours; do not treat an example URL as durable. If the theme lacks permission to customize terminal logos, its logo URL leads to the Adyen logo.\n- The listed errors are 400, 401, 403, 404, and 500. The 404 example says no theme was found for the given ID and account. A theme readback establishes the returned theme data, not that assets are applied or visible on a terminal, or that a payment can be processed.\n\n> [!warning] Contradiction\n> The access instructions require `Management API - Terminal themes read and write`, but the 403 example says `Missing required role: Management API - Terminal settings read and write`. This capture does not resolve which role the endpoint enforces.\n\n## Detail locators\n\n- Pinned raw, lines 5\u201315: purpose, logo-permission behavior, role instruction, and TEST v3 server.\n- Pinned raw, lines 19\u201339: required path parameters and `200` response fields, asset types, tokenized 24-hour URLs.\n- Pinned raw, lines 42\u201359: response-status list; lines 61\u201384: illustrative success response; lines 86\u2013147: illustrative error responses, including conflicting 403 role wording and account-scoped 404 detail.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/(id)/2026-11-07|Merchant terminal-theme GET reference, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of the terminal theme specified in the path. The response includes the metadata of the theme and the content delivery network (CDN) URLs for all assets that have been added to the theme.",
+      "location": "line 7"
+    },
+    {
+      "text": "The URL for the logo of the theme will lead to the Adyen logo if the theme is not associated with the permission to customize terminal logos.",
+      "location": "line 8"
+    },
+    {
+      "text": "- Management API - Terminal themes read and write",
+      "location": "line 12"
+    },
+    {
+      "text": "The CDN URL for this asset, including the token as a query parameter (?token=). This URL is valid for 24 hours.",
+      "location": "line 36, asset `url` row"
+    },
+    {
+      "text": "\"detail\": \"Missing required role: Management API - Terminal settings read and write\",",
+      "location": "line 117, 403 example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-merchant-terminal-theme-get-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalthemes-id]] \u2014 2026-11-07-captured Management API v3 TEST merchant terminal-theme read, with theme metadata and tokenized asset CDN URLs valid for 24 hours; readback does not establish on-device display.\n\n> [!warning] Contradiction\n> This GET reference's access instructions name `Management API - Terminal themes read and write`, while its 403 example names `Management API - Terminal settings read and write`. The capture does not settle the enforced role. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalthemes-id]]",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Role required in prose conflicts with 403 example; preserve both and do not choose an enforced role."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/get/merchants/(merchantId)/terminalThemes/(id)/2026-11-07.md",
+  "raw_sha256": "8ce2e8cc9af0fd21d5325834ddcc4dddcd9dea6ab052ff9c2e9f87382845d007",
+  "status": "candidate_ready"
+}

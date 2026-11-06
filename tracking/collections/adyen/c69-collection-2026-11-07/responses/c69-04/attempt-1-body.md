@@ -1,0 +1,119 @@
+# GET /merchants/{merchantAccount}/devices/{deviceId}/status - Get the connection status of a device
+
+Check if the specified payment terminal or SDK installation ID (in an IPP Mobile solution) has an active cloud connection.
+
+To make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#api-permissions):
+
+- **Cloud Device API role**
+
+## Servers
+
+**Test environment**
+- https://device-api-test.adyen.com/v1
+
+**Live environment for Australia**
+- https://device-api-live-au.adyen.com/v1
+
+**Live environment for East Asia**
+- https://device-api-live-apse.adyen.com/v1
+
+**Live environment for Europe**
+- https://device-api-live.adyen.com/v1
+
+**Live environment for United States of America**
+- https://device-api-live-us.adyen.com/v1
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| deviceId | string | Yes | The unique identifier of the device.  For a payment terminal, use the terminal ID in the format *[terminal model]-[serial number]*, for example, **P400‑123456789**. In a Mobile solution, use the installation ID of the SDK. |
+| merchantAccount | string | Yes | The unique identifier of the merchant account. |
+
+## Responses
+
+### 200 Success
+Successful operation
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| deviceId | string | No | The unique identification of the device. This can be a payment terminal ID in the format *[terminal model]-[serial number]* (for example, P400‑123456789), or an SDK installation ID as used in Mobile solutions. |
+| status | string | No | Indicates if the device has an active cloud connection. Possible values:  - **ONLINE**  - **OFFLINE** |
+
+
+### 401 Client Error
+Unauthorized
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+|   - message | string | Yes | Description of the validation error. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 403 Client Error
+Forbidden
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+|   - message | string | Yes | Description of the validation error. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+## Response examples
+
+### 200 Success
+
+**connected-device-status-200**
+```json
+{
+  "deviceId": "AMS1-000168242800763",
+  "status": "ONLINE"
+}
+```
+
+### 401 Client Error
+
+**connected-device-status-401**
+```json
+{
+  "type": "https://docs.adyen.com/errors/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "errorCode": "00_401"
+}
+```
+
+### 403 Client Error
+
+**connected-device-status-403**
+```json
+{
+  "type": "https://docs.adyen.com/errors/forbidden",
+  "errorCode": "00_403",
+  "title": "Forbidden",
+  "detail": "User doesn't have access to all token policy resources",
+  "requestId": "d42c493b5176df89e51516c6060cc34c",
+  "status": 403
+}
+```

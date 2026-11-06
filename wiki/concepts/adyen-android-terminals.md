@@ -15,6 +15,21 @@ The 2026-09-15 overview's terminal-model and Android-version table is a snapshot
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-post-terminals-terminalid-terminalthemes-id-apply]] — 2026-11-07-captured Management API v3 TEST theme apply to one Android terminal by theme and terminal IDs; the terminal must be deployed or boarded, and `200 OK` supplies no on-device confirmation or propagation timing.
+
+
+- [[source-adyen-api-explorer-management-latest-post-stores-storeid-terminalthemes-id-apply]] — 2026-11-07-captured Management API v3 TEST store theme apply; individual-terminal themes take precedence, the 403 example gives an ownership condition, and 200 has no on-device readback.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes-id-apply]] — 2026-11-07 Management API v3 TEST merchant-level terminal-theme apply; store/terminal overrides remain and `200 OK` gives no device-state readback.
+
+
+- [[source-adyen-api-explorer-management-latest-patch-merchants-merchantid-terminalthemes-id]] — 2026-11-07-captured Management API v3 TEST merchant terminal-theme name/dark-light metadata PATCH; the 200 metadata response does not show asset changes or on-device application.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes]] — 2026-11-07-captured Management API v3 TEST creation of merchant Android-terminal theme metadata: account-unique name and dark/light mode; assets and application follow separately, so `201` does not prove device display.
+
+
 - [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalthemes]] — 2026-11-07-captured Management API v3 Test merchant terminal-theme metadata list, with search/pagination and separate detail GET for assets; listing does not prove on-device application.
 
 

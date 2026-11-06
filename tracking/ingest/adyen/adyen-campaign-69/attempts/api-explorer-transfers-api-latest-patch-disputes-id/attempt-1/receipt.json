@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-transfers-api-latest-patch-disputes-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: update a raised dispute\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers-api/latest/patch/disputes/(id)\"\nraw_files:\n  - \"adyen/api-explorer/transfers-api/latest/patch/disputes/(id)/2026-11-07.md\"\ntags: [adyen, issuing, raised-disputes, transfers-api]\n---\n\n## Overview\n\nCaptured [[adyen]] `PATCH /disputes/{id}` reference at a `transfers-api` URL with Balance Platform BTL v4 test and live servers. It updates information for a raised Issuing dispute identified by required path `id`, or changes its status from draft to submitted or closed. This raised-cardholder-dispute route is distinct from merchant chargeback defense and funds-movement transfer operations.\n\n## Key takeaways\n\n- **Submitted and closed are final for updates.** Upload all supporting attachments through `POST /disputes/{id}/attachments` before submission. Submitting sends the raised dispute to the card scheme for review and acquirer defense; closing ends card-scheme review eligibility.\n- The request table marks reason-specific `*Info` objects and `status` optional, while prose requires the matching information object for each dispute `type`. The `other` type is deprecated and must not be created or submitted. See the raw for the exact conditional fields; response-only fields must not be assumed to be PATCH inputs.\n- A 200 says the request succeeded and returns a dispute representation with optional status and other fields. It does not establish a card-scheme decision, chargeback or fee reversal, or financial booking. The reference also documents 401 authentication required, 403 insufficient permissions, and 422 validation error.\n\n> [!warning] Contradiction\n> The PATCH request table labels `status` as an **object** while describing draft/submitted/closed values; the 200 response table labels `status` as a **string**. The capture provides no request example or nested request-status schema to resolve the input representation. Do not infer the PATCH JSON shape from the response table.\n\n## Detail locators\n\n- Final status effects, attachment prerequisite, servers, and path ID: raw lines 5\u201324.\n- PATCH body table, optional top-level entries, conditional reason information, deprecated `other`, and status type: raw lines 27\u201336.\n- 200 representation and reason-specific nested conditions: raw lines 38\u2013121. Its required `transactionId` and `type` are response fields, not declared PATCH-body requirements.\n- Structured 401/403/422 error schemas: raw lines 124\u2013178.\n\n## Related\n\n- [[adyen-issuing]] \u2014 raised disputes for issued-card transactions.\n- [[source-adyen-api-explorer-transfers-api-latest-post-disputes]] \u2014 separate draft creation reference.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers-api/latest/patch/disputes/(id)/2026-11-07|Raised-dispute PATCH, 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Update information related to a raised dispute, or change a dispute's status from **draft** to **submitted** or **closed**.",
+      "location": "line 7"
+    },
+    {
+      "text": "**Note:** Changing the status of a dispute to **submitted** or **closed** is a final action. You cannot make updates to a **submitted** or **closed** dispute. Make sure to upload all supporting attachments using the `POST /disputes/{id}/attachments` endpoint before you submit a dispute. When you update a dispute to **submitted**, Adyen sends the raised dispute to the card scheme for review and acquirer defense. When you update a raised dispute to **closed**, Adyen closes the dispute, and the dispute is no longer eligible for review by the card scheme.",
+      "location": "line 9"
+    },
+    {
+      "text": "| otherInfo | object | No | Additional information for raising a dispute of `type` **other**. Required for disputes of `type` **other**.  **Note:** The **other** dispute `type` is deprecated. Do not create or submit any disputes for this dispute `type`. |",
+      "location": "line 35"
+    },
+    {
+      "text": "| status | object | No | The current status of the dispute.  When you create a dispute, you can only set the `status` to **draft**. When you update a dispute, you can set the `status` to **submitted** or **closed**.  Possible values: **draft**, **submitted**, **closed**, **won**, **chargeback**, **secondPresentment**. |",
+      "location": "line 36"
+    },
+    {
+      "text": "| status | string | No | The current status of the dispute.  When you create a dispute, you can only set the `status` to **draft**. When you update a dispute, you can set the `status` to **submitted** or **closed**.  Possible values: **draft**, **submitted**, **closed**, **won**, **chargeback**, **secondPresentment**. |",
+      "location": "line 119"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-issuing-raised-dispute-patch",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-api-latest-patch-disputes-id]] \u2014 2026-11-07 Issuing raised-dispute PATCH at a Transfers API v4 BTL URL: draft information update or irreversible submit/close, with attachments before submit; 200 is not a scheme or financial outcome.\n\n> [!warning] Contradiction\n> The PATCH request table calls `status` an object while the 200 response table calls it a string; the captured reference does not resolve the input representation. [[source-adyen-api-explorer-transfers-api-latest-patch-disputes-id]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Request status type object conflicts with response status type string; no PATCH request example or nested input schema resolves representation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers-api/latest/patch/disputes/(id)/2026-11-07.md",
+  "raw_sha256": "6258f3114834262c3e221b3ac14b53f607fb0b6a8f987e0c1ed74f1fb67679ab",
+  "status": "candidate_ready"
+}

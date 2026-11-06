@@ -15,6 +15,9 @@ The captured overview conditions eligibility on user entity type, supported oper
 
 ## Sources
 
+- [[source-adyen-api-explorer-open-banking-latest-get-accountverification-reports-code]] — 2026-11-07-captured Open Banking Gateway v1 Test/Live report GET by callback code for an external individual's bank-account details; report readback is not Business Account opening or payment proof, and its ACH example repeats one account ID across distinct accounts.
+
+
 - [[source-adyen-api-explorer-balanceplatform-latest-get-balanceplatforms-id-transferlimits]] — 2026-11-03-captured Balance Platform API v2 TEST GET reference for filtered balance-platform transfer-limit readback, including status, scope, amount and SCA state; listing does not approve a limit or prove a funds-transfer outcome.
 
 > [!warning] Contradiction

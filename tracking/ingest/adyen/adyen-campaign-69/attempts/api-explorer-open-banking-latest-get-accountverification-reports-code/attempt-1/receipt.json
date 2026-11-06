@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-open-banking-latest-get-accountverification-reports-code",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Open Banking account verification report retrieval\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/open-banking/latest/get/accountVerification/reports/(code)\"\nraw_files:\n  - \"adyen/api-explorer/open-banking/latest/get/accountVerification/reports/(code)/2026-11-07.md\"\ntags: [adyen, open-banking, account-verification, bank-accounts]\n---\n\n## Overview\n\nThis 2026-11-07-captured Open Banking Gateway `latest` v1 Test/Live reference documents `GET /accountVerification/reports/{code}`. The required path `code` is received in the `redirectUrl` query after a successful open banking flow; this endpoint reads the resulting account verification report. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- A `200` response requires report `id`, `country` (where the third-party individual's bank account is registered), and an `accounts` array. Each account entry requires its own `accountId`, account name/number/type, currency, identifiers object and associated parties. Regional identifier objects under `identifiers` are optional; see the raw schema and ACH, BSB, EFT and IBAN examples for detail.\n- The report supplies identity and bank-account details after a successful connection. The response schema has no approval, account eligibility, payment, balance, booking, or settlement outcome field. Retrieving it does not itself open a Business Account, authorize a payout, or prove bank receipt.\n- The page lists `400` malformed request, `401` invalid credential or wrong permissions, `404` missing entity, `422` validation, `429` rate limit, and `500` server error. It states no code lifetime, use count, idempotency rule, report freshness guarantee, or specific caller role.\n\n> [!warning] Contradiction\n> The response table calls `accountId` a unique bank-account identifier (raw line 33), but the ACH example repeats the same `accountId` for two entries with different account numbers and bank names (raw lines 177\u2013200). The example does not establish that distinct bank accounts can safely be keyed by that repeated value.\n\n## Detail locators\n\n- Purpose, Test/Live v1 servers and redirect callback code: raw lines 5\u201322.\n- Success response and regional identifier/party schema: raw lines 24\u201350.\n- Error meanings and optional problem-body fields: raw lines 53\u2013164.\n- ACH, BSB, EFT and IBAN examples, including the duplicate ACH account ID: raw lines 166\u2013325.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Open Banking account-verification route.\n- [[adyen]] \u2014 provider page.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/open-banking/latest/get/accountVerification/reports/(code)/2026-11-07|Account verification report GET, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Get the account verification report using a unique code from a successful open banking connection. This report provides identity verification and bank account details.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| code | string | Yes | The unique code you receive after a successful open banking flow that is included as a query parameter in the `redirectUrl` callback. |",
+      "location": "raw line 22"
+    },
+    {
+      "text": "| accounts | array of object | Yes | A list of bank accounts with their respective information. |",
+      "location": "raw line 32"
+    },
+    {
+      "text": "|   - accountId | string | Yes | The unique identifier for the bank account. |",
+      "location": "raw line 33"
+    },
+    {
+      "text": "| country | string | Yes | The location where the third-party individual's bank account is registered. |",
+      "location": "raw line 49"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-open-banking-report-business-accounts",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-open-banking-latest-get-accountverification-reports-code]] \u2014 2026-11-07-captured Open Banking Gateway v1 Test/Live report GET by callback code for an external individual's bank-account details; report readback is not Business Account opening or payment proof, and its ACH example repeats one account ID across distinct accounts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The ACH response example repeats an accountId across two different bank accounts, conflicting with the unique-account-ID schema description."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/open-banking/latest/get/accountVerification/reports/(code)/2026-11-07.md",
+  "raw_sha256": "66c53f710cfb08316ac9d72f66e7627e42bfa17bd03f8acacd88086c987ebc6f",
+  "status": "candidate_ready"
+}

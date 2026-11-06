@@ -16,6 +16,12 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweepexecution-skipped]] — 2026-11-07-captured Balance Platform skipped sweep-execution event payload and receiver acknowledgment contract; acceptance does not trigger a transfer.
+
+
+- [[source-adyen-api-explorer-webhooks-latest-post-reversal]] — 2026-11-07-captured Webhooks `latest` inbound REVERSAL result notification; `modification.action` describes cancellation/refund outcomes, while HTTP status governs receiver acceptance.
+
+
 - [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-webhooks]] — 2026-11-05-captured Management API v3 TEST paged read of merchant webhook configurations, excluding parent-company configurations; listed `active` state and test/HMAC links are not delivery or payment proof.
 
 > [!warning] Contradiction

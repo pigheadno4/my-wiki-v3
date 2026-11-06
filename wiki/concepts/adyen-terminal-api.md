@@ -89,6 +89,18 @@ Terminal API defines terminal messages. Adyen's Cloud Device API, represented se
 
 ## Related
 
+- [[source-adyen-api-explorer-cloud-device-api-latest-get-merchants-merchantaccount-connecteddevices]] — 2026-11-07 Cloud Device API v1 merchant-scoped list of terminal or Mobile SDK installation IDs with active cloud connections; optional store filter, not a payment outcome.
+
+
+- [[source-adyen-api-explorer-cloud-device-api-latest-get-merchants-merchantaccount-devices-deviceid-status]] — 2026-11-07-captured Cloud Device API v1 GET connection-status reference for a merchant's payment terminal or Mobile SDK installation; optional `ONLINE`/`OFFLINE` readback describes cloud connectivity, not a payment outcome.
+
+
+- [[source-adyen-api-explorer-cloud-device-api-latest-post-merchants-merchantaccount-devices-deviceid-async]] — Cloud Device API v1 reference, captured 2026-11-07, for asynchronous Terminal API request dispatch to a merchant device and webhook result delivery.
+
+
+- [[source-adyen-api-explorer-cloud-device-api-latest-post-merchants-merchantaccount-devices-deviceid-sync]] — 2026-11-07-captured Cloud device API v1 synchronous Terminal API transport reference, with required merchant/device IDs, POIID match, credential role and regional endpoints; HTTP success alone does not establish a payment outcome.
+
+
 - [[source-adyen-api-explorer-cloud-device-api-latest-overview]] — 2026-09-15 Cloud device API v1 overview of Terminal API cloud transport, sync/async response routing, connection checks and region-specific endpoints; transport/connection state is separate from payment outcome.
 
 

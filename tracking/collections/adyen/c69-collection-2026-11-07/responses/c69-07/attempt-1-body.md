@@ -1,0 +1,139 @@
+# GET /merchants/{merchantId}/paymentsApps - Get a list of Payments Apps - merchant level
+
+Returns the list of Payments App instances for the merchant account identified in the path.
+
+To make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#api-permissions):
+
+- Adyen Payments App role
+
+## Servers
+
+**Live Environment**
+- https://management-live.adyen.com/v1
+
+**Test Environment**
+- https://management-test.adyen.com/v1
+
+## Parameters
+
+### Path parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| merchantId | string | Yes | The unique identifier of the merchant account. |
+
+
+### Query parameters
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| offset | integer | No | The number of items to skip. |
+| limit | integer | No | The number of items to return. |
+| statuses | string | No | The status of the Payments App. Comma-separated list of one or more values. If no value is provided, the list returns all statuses.  Possible values:  **BOARDING**  **BOARDED**  **REVOKED** |
+
+## Responses
+
+### 200 Success
+The request has succeeded.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| paymentsApps | array of object | Yes | List of Payments Apps. |
+|   - installationId | string | Yes | The unique identifier of the Payments App instance. |
+|   - merchantAccountCode | string | Yes | The account code associated with the Payments App instance. |
+|   - merchantStoreCode | string | No | The store code associated with the Payments App instance. |
+|   - status | string | Yes | The status of the Payments App instance. |
+
+
+### 400 Client Error
+A problem reading or understanding the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 401 Client Error
+Authentication required.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 403 Client Error
+Insufficient permissions to process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 422 Client Error
+A request validation error.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |
+
+
+### 500 Server Error
+The server could not process the request.
+
+**Response body**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| detail | string | No | A human-readable explanation specific to this occurrence of the problem. |
+| errorCode | string | No | Unique business error code. |
+| instance | string | No | A URI that identifies the specific occurrence of the problem if applicable. |
+| invalidFields | array of object | No | Array of fields with validation errors when applicable. |
+|   - message | string | Yes | Description of the validation error. |
+|   - name | string | Yes | The field that has an invalid value. |
+|   - value | string | Yes | The invalid value. |
+| requestId | string | No | The unique reference for the request. |
+| status | integer | No | The HTTP status code. |
+| title | string | No | A short, human-readable summary of the problem type. |
+| type | string | No | A URI that identifies the validation error type. It points to human-readable documentation for the problem type. |

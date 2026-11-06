@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweepexecution-skipped",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Balance Platform webhook: sweep execution skipped\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.skipped\"\nraw_files:\n  - \"adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.skipped/2026-11-07.md\"\ntags: [adyen, balance-platform, webhooks, sweeps]\n---\n\n## Overview\n\nThis captured Balance Platform webhook reference describes an inbound `balancePlatform.balanceAccountSweepExecution.skipped` event that Adyen sends when a sweep execution is skipped. It is a notification to the receiver, not an outbound sweep command. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The request schema requires top-level `data`, `environment` (`test` or `live`), and `type`. Within required `data`, balance account, sweep configuration, platform and resource identifiers, `result`, `resultDetails`, and `triggeredAt` are all marked optional. `timestamp`, when present, is when the event was queued.\n- The `result` enum distinguishes `succeeded`, `failed`, and `skipped`; `skipped` means the sweep payout was not triggered as expected. Optional `resultDetails` can carry a reason, reason code, disabled-configuration flag, or transfer ID. The sample's `noBalanceToPayOut` reason is illustrative, not a universal skipped cause.\n- The documented 200 response schema has optional `notificationResponse` and says to respond with any `2xx` HTTP status to accept the webhook. Receiver acceptance does not change the sweep result or prove any payout, transfer booking, settlement, or bank receipt.\n\n## Detail locators\n\n- Event purpose and request-body field table: raw lines 5\u201328.\n- Illustrative skipped event payload: raw lines 30\u201351.\n- Receiver response and acknowledgment: raw lines 52\u201360.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 Adyen webhook receipt and acknowledgment.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.skipped/2026-11-07|Balance Platform skipped sweep-execution webhook (2026-11-07)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends this webhook when a sweep execution is skipped.",
+      "location": "raw line 7, event description"
+    },
+    {
+      "text": "| data | object | Yes | Contains event details. |",
+      "location": "raw line 14, Request body"
+    },
+    {
+      "text": "|   - result | string | No | The outcome of the sweep execution.  Possible results:  - **succeeded**: The sweep payout was completed successfully.  - **failed**: The sweep payout was not completed due to an error.  - **skipped**: The sweep payout was not triggered as expected. |",
+      "location": "raw line 19, data.result"
+    },
+    {
+      "text": "| environment | string | Yes | The environment from which the webhook originated.  Possible values: **test**, **live**. |",
+      "location": "raw line 26, Request body"
+    },
+    {
+      "text": "| notificationResponse | string | No | Respond with any **2xx** HTTP status code to [accept the webhook](https://docs.adyen.com/development-resources/webhooks/#accept-webhooks). |",
+      "location": "raw line 60, 200 response body"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-sweep-skipped-webhook-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-balanceplatform-webhooks-latest-post-balanceplatform-balanceaccountsweepexecution-skipped]] \u2014 2026-11-07-captured Balance Platform skipped sweep-execution event payload and receiver acknowledgment contract; acceptance does not trigger a transfer.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.balanceAccountSweepExecution.skipped/2026-11-07.md",
+  "raw_sha256": "c528512c79fbae4ba31cdf9a30623c00fb67207b715638760db758433e1e7183",
+  "status": "candidate_ready"
+}

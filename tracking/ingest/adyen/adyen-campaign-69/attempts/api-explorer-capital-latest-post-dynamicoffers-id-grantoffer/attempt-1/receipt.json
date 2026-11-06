@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-capital-latest-post-dynamicoffers-id-grantoffer",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital static offer from dynamic selection\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/post/dynamicOffers/(id)/grantOffer\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/post/dynamicOffers/(id)/grantOffer/2026-11-07.md\"\ntags: [adyen, capital, grant-offers, api-explorer]\n---\n\n## Overview\n\nCaptured Capital API v1 `POST /dynamicOffers/{id}/grantOffer` reference for creating a static offer from a financing amount selected by a user within a dynamic offer. This creates an offer, not a grant request or disbursement. See [[adyen]] and [[adyen-capital]].\n\n## Key takeaways\n\n- Required path `id` identifies the source dynamic offer. The request-body schema marks `amount` required, with required three-character ISO `currency` and integer `value` in minor units. The page does not state a separate body-required flag, financing-range validation rule, idempotency behavior or operation-specific API role.\n- Both TEST and live Capital v1 servers are listed. Each environment has a stated limit of 30 requests per minute.\n- A `200` success response describes the static offer. `accountHolderId` is required; offer `id`, payout `amount`, `contractType` (`loan` or `cashAdvance`), validity times, `fee`, and `repayment` are optional top-level fields. Required members under optional objects apply when those objects are present. The fee APR and repayment percentage use basis points; estimated term is in days, and maximum term applies only to loans.\n- `200` does not establish user acceptance, eligibility, grant creation, disbursement, settlement, bank receipt or repayment. The documented failure is `422` request validation; its error-body top-level fields are optional and `invalidFields` members are required only when an entry is present.\n\n## Detail locators\n\n- Purpose and rate limit: raw lines 5\u201313.\n- TEST/live Capital v1 servers: raw lines 15\u201321.\n- Dynamic-offer path ID and selected-amount schema: raw lines 23\u201336.\n- Success offer/term schema: raw lines 38\u201365.\n- Validation error schema: raw lines 68\u201384.\n\n## Related\n\n- [[adyen-capital]] \u2014 Capital offers and grant lifecycle.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/post/dynamicOffers/(id)/grantOffer/2026-11-07|Static offer from dynamic selection, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Creates a static offer for the financing amount that the user selected from the [dynamic offer](https://docs.adyen.com/capital/get-grant-offers/dynamic-offers/).",
+      "location": "raw line 7"
+    },
+    {
+      "text": "Live environments: 30 requests per minute.",
+      "location": "raw line 11"
+    },
+    {
+      "text": "| id | string | Yes | The unique identifier of the dynamic offer from which the user selected the financing amount. |",
+      "location": "raw line 28"
+    },
+    {
+      "text": "| amount | object | Yes | The financing amount that the user selected from the dynamic offer. Adyen uses this amount to create a static offer. |",
+      "location": "raw line 34"
+    },
+    {
+      "text": "| accountHolderId | string | Yes | The unique identifier of the account holder to which the grant is offered. |",
+      "location": "raw line 46"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-capital-dynamic-to-static-offer-link",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-post-dynamicoffers-id-grantoffer]] \u2014 2026-11-07-captured Capital API v1 dynamic-offer amount selection to static-offer creation, with TEST/live 30-per-minute limits; an offer is not a grant or disbursement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/post/dynamicOffers/(id)/grantOffer/2026-11-07.md",
+  "raw_sha256": "9120cef4b7abc5fb85ba405b65aa3c739cf287e8c589834198f52699fe2ff649",
+  "status": "candidate_ready"
+}

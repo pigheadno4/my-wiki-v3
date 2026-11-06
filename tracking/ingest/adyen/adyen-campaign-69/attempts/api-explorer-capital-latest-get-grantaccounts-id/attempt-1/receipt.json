@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-capital-latest-get-grantaccounts-id",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital API v1: get a grant account\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/capital/latest/get/grantAccounts/(id)\"\nraw_files:\n  - \"adyen/api-explorer/capital/latest/get/grantAccounts/(id)/2026-11-07.md\"\ntags: [adyen, capital, grant-account, api-explorer]\n---\n\n## Overview\n\nThis November 2026 Capital API v1 `GET /grantAccounts/{id}` reference returns details of one grant account, which tracks existing grants in a marketplace or platform. It is a grant-account read, distinct from an individual grant, offer, disbursement, transfer or payment outcome. [[adyen]] [[adyen-capital]]\n\n## Key takeaways\n\n- The required path `id` is the grant-account ID. The operation lists TEST and Live `/capital/v1` servers and specifies no query parameter, request body, default, pagination, idempotency or operation-specific role. The separate Capital API v1 overview requires `X-API-Key`, both Capital configuration and grant-initiation credential roles, and a Live key for Live calls. [[source-adyen-api-explorer-capital-latest-overview]]\n- `200` means the lookup succeeded. Its `balances`, `fundingBalanceAccountId`, grant-account `id`, and `limits` fields are all optional in the response schema. `balances` summarizes grants tracked by this account by currency; if a balance item appears, its currency, fee, principal, and total are required, and total is described as principal plus fee. The table describes principal as a grant amount paid out to the user; readback alone does not verify a particular disbursement or repayment.\n- `fundingBalanceAccountId` identifies the balance account used to fund the grant. `limits` describes maximum grant-disbursement funds; if a limit's optional `amount` appears, currency and minor-unit integer value are required within it. A limit is not an approved offer or evidence of funds actually disbursed.\n- The reference lists `404` entity not found and `422` validation error, with optional problem-detail fields. It gives no success/error JSON examples, status lifecycle, timing or bank-receipt guarantee. A separate Balance Platform API v2 TEST reference also has a `/grantAccounts/{id}` route; its API family and server are different, so route names must not be interchanged. [[source-adyen-api-explorer-balanceplatform-latest-get-grantaccounts-id]]\n\n## Detail locators\n\n- Purpose, Capital `/v1` TEST/Live servers and required ID: [[raw/adyen/api-explorer/capital/latest/get/grantAccounts/(id)/2026-11-07#L5|raw lines 5\u201322]].\n- Optional `200` parent fields and nested balance/limit fields: [[raw/adyen/api-explorer/capital/latest/get/grantAccounts/(id)/2026-11-07#L24|raw lines 24\u201342]].\n- `404` and `422` error descriptions and envelope schemas: [[raw/adyen/api-explorer/capital/latest/get/grantAccounts/(id)/2026-11-07#L45|raw lines 45\u201380]].\n- Companion family authentication/roles and Live key: [[raw/adyen/api-explorer/capital/latest/overview/2026-09-15#L17|overview raw lines 17\u201348]].\n\n## Related\n\n- [[adyen-capital]] \u2014 Capital resource and financing lifecycle context.\n- [[source-adyen-api-explorer-capital-latest-overview]] \u2014 Capital API v1 family, roles and routes.\n- [[source-adyen-api-explorer-balanceplatform-latest-get-grantaccounts-id]] \u2014 separate Balance Platform API v2 grant-account lookup.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/capital/latest/get/grantAccounts/(id)/2026-11-07|Captured Capital API v1 GET grant-account reference]]\n",
+  "quotes": [
+    {
+      "text": "Returns the details of the specified grant account. This account tracks existing grants in your marketplace or platform.",
+      "location": "line 7"
+    },
+    {
+      "text": "| balances | array of object | No | Contains the sum of the balances of all grants tracked by this grant account. The balances are separated by currency. |",
+      "location": "line 32"
+    },
+    {
+      "text": "|   - principal | integer | Yes | The grant amount that is paid out to the user for business financing. |",
+      "location": "line 35"
+    },
+    {
+      "text": "|   - total | integer | Yes | The total amount of the grant that the user must repay. It is the sum of the fee amount and the principal amount. |",
+      "location": "line 36"
+    },
+    {
+      "text": "| limits | array of object | No | Contains the maximum amount of funds that you can disburse for grants. |",
+      "location": "line 39"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-capital-grant-account-detail-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-capital-latest-get-grantaccounts-id]] \u2014 2026-11-07-captured Capital API v1 TEST/Live grant-account detail by ID, with optional per-currency aggregate balances, funding balance-account ID and limits; readback does not prove a specific grant disbursement, repayment or bank receipt, and is distinct from the Balance Platform API v2 route of the same relative path.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/capital/latest/get/grantAccounts/(id)/2026-11-07.md",
+  "raw_sha256": "9c4b9cc596f11d22970f3f5ef541430c72e6772b82682136c6a32d09e476701c",
+  "status": "candidate_ready"
+}

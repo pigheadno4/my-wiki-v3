@@ -1,0 +1,50 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-terminalthemes-id-assets",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: add a merchant terminal-theme asset\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/2026-11-07.md\"\ntags: [adyen, management-api, terminal-management, terminal-themes]\n---\n\n## Overview\n\nThis captured Management API v3 reference adds an image or video asset to a terminal theme owned by the merchant account identified by `merchantId`; `id` identifies the theme. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- Required query parameters `type` and `model` choose the screen element and Android terminal model. Upload the asset as multipart/form-data with one required `file` part declaring a supported, specific Content-Type. The type/model/media combinations are constrained: `logo` uses `All`; `idleScreen`, `shopperEngagementScreen`, and video are limited to SFO1 or M450. See the raw mapping for the remaining image formats and model constraints.\n- The size limit is 100 MB for SFO1 or M450, and 10 MB for other models. A generic or missing file Content-Type is rejected with `422`. Adding a duplicate `type`/`model` combination fails; use the separate replace endpoint.\n- The credential needs **Management API - Terminal themes read and write**. This endpoint is rate limited; the captured server is `https://management-test.adyen.com/v3`.\n- `201 Created` returns required `model`, `type`, and a CDN `url` with a token query parameter, valid for 24 hours. The creation response does not establish that a theme has been applied to a terminal or displayed on a device.\n\n## Detail locators\n\n- Purpose, media mapping, limits, duplicate behavior and credential role: raw lines 5\u201327.\n- Test server, required path and query parameters, and multipart file field: raw lines 29\u201351.\n- `201` response schema, error statuses and illustrative response bodies: raw lines 53\u2013210, including duplicate and file-size `422` examples at lines 157\u2013185.\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 Terminal fleet administration and theme context.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/2026-11-07|Management API v3 merchant terminal-theme asset add reference]]\n",
+  "quotes": [
+    {
+      "text": "Adds an image or video (an 'asset') to a terminal theme owned by the merchant account specified in the path.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** and **M450**, or 10 MB for all other `model` values.",
+      "location": "raw line 21"
+    },
+    {
+      "text": "If the theme already has an asset for the same combination of `type` and `model`, the request fails",
+      "location": "raw line 23"
+    },
+    {
+      "text": "A request with a generic or missing Content-Type such as application/octet-stream is rejected with response code **422**.",
+      "location": "raw line 51"
+    },
+    {
+      "text": "This URL is valid for 24 hours.",
+      "location": "raw line 63"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-merchant-terminal-theme-asset-add-link",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes-id-assets]] \u2014 2026-11-07-captured Management API v3 TEST reference for adding a merchant terminal-theme image or video asset by type/model; duplicates require replacement, and creation does not prove device display.\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/2026-11-07.md",
+  "raw_sha256": "2c2ed6dfce9e8cc1347893e5d9e5251a6f2539a84978c84a643c1f368d602374",
+  "status": "candidate_ready"
+}

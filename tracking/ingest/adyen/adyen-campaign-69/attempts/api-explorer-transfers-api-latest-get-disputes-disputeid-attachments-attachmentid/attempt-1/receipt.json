@@ -1,0 +1,54 @@
+{
+  "job_id": "api-explorer-transfers-api-latest-get-disputes-disputeid-attachments-attachmentid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: get one dispute attachment\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)\"\nraw_files:\n  - \"adyen/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)/2026-11-07.md\"\ntags: [adyen, issuing, disputes, attachments, api-explorer]\n---\n\n## Overview\n\nThis 2026-11-07-captured `GET /disputes/{disputeId}/attachments/{attachmentId}` reference retrieves one attachment associated with a raised dispute. It appears under a `transfers-api` URL with Balance Platform v4 Test and Live servers; the retrieved attachment is evidence data, not a dispute decision or funds-movement result. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Both path IDs are required: `disputeId` identifies the raised dispute and `attachmentId` identifies its attachment. No query parameters or body are specified on this page.\n- `200 Success` describes a successful request. The response table requires `attachmentType` (`receipt`, `correspondence`, or `other`), Base64 `content`, and `fileName` with a supported `jpeg`, `pdf`, or `tiff` extension; `id` is optional in that table.\n- The page lists `401` authentication required, `403` insufficient permissions, and `422` request validation error. Error-object fields are optional at the parent level, while `invalidFields` child entries have required fields if that optional array is present. No attachment upload, submission, dispute outcome, settlement or bank receipt is established by this read.\n\n> [!warning] Contradiction\n> The `content` description says Base64 strings must have no line breaks, then says not to use Java's `Base64.NO_WRAP` or an equivalent. The capture does not resolve this conflicting encoding guidance; do not infer a working encoder choice from it.\n\n## Detail locators\n\n- Endpoint purpose, Test/Live v4 servers and required path IDs: [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)/2026-11-07#L5|raw lines 5\u201323]].\n- `200` response fields, allowed types/extensions and conflicting Base64 text: [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)/2026-11-07#L25|raw lines 25\u201336]].\n- Authentication, permission and validation errors with optional error-object fields: [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)/2026-11-07#L39|raw lines 39\u201393]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing dispute context.\n- [[source-adyen-api-explorer-transfers-api-latest-overview]] \u2014 separate Raise disputes API v4 catalog.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)/2026-11-07|Adyen dispute-attachment GET reference capture, 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Search for a single attachment, providing the specific dispute ID and attachment ID.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "The unique identifier of the attachment.",
+      "location": "raw line 22"
+    },
+    {
+      "text": "The unique identifier of the raised dispute.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "The content of the image. An attachment must be base64-encoded data. Make sure that all base64-encoded data strings are generated without line breaks or \"wrapping\". For example, do not use `Base64.NO_WRAP` in Java, or its equivalent in other languages. Newline characters at the end of the base64-encoded data string will also result in a malformed input error.",
+      "location": "raw line 34"
+    },
+    {
+      "text": "The name of the attachment, including its filename extension. Supported filename extensions: **jpeg**, **pdf**, **tiff**.",
+      "location": "raw line 35"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-issuing-dispute-attachment-get-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-api-latest-get-disputes-disputeid-attachments-attachmentid]] \u2014 2026-11-07-captured Raise disputes API v4 GET of one attachment by dispute and attachment IDs; the response has type, Base64 content and filename, not dispute outcome or payment proof.\n\n> [!warning] Contradiction\n> This attachment GET reference says Base64 content must have no line breaks but also says not to use Java's `Base64.NO_WRAP` or equivalent. The capture does not resolve the encoder guidance. [[source-adyen-api-explorer-transfers-api-latest-get-disputes-disputeid-attachments-attachmentid]]",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw content description contradicts itself on line-break-free Base64 versus the instruction against Base64.NO_WRAP; retain warning in source and concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers-api/latest/get/disputes/(disputeId)/attachments/(attachmentId)/2026-11-07.md",
+  "raw_sha256": "0b66612f2231324dd180cc827d827c5a7ca8126b6b3a545f61ac72e2c7e3f832",
+  "status": "candidate_ready"
+}

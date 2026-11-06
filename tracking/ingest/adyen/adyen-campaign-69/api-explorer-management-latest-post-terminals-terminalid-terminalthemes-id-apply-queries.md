@@ -1,0 +1,9 @@
+# C69 original query answers: terminal-scoped theme apply
+
+## Q1
+
+The 2026-11-07 capture documents Management API `latest` on a Test v3 server for `POST /terminals/{terminalId}/terminalThemes/{id}/apply`. It applies the theme identified by required path `id` to the Android terminal identified by required path `terminalId`; the terminal must be deployed or boarded. The API credential needs the Management API - Terminal themes read and write role. The page specifies no body, default or limit. Its `200 Success` description is simply `OK`, with no returned fields. [[source-adyen-api-explorer-management-latest-post-terminals-terminalid-terminalthemes-id-apply]] [Captured reference](https://docs.adyen.com/api-explorer/Management/latest/post/terminals/(terminalId)/terminalThemes/(id)/apply); raw lines 5–27.
+
+## Q2
+
+A `200 OK` indicates the apply request succeeded according to this reference; there is no response body confirming the terminal displayed the theme or showing propagation timing or later device state. The deployed/boarded prerequisite is explicit, and a `422` example illustrates failure without it. A `403` example says the theme must be owned by the terminal/store's merchant account or its company; the page also lists `401`, `404` and `500` errors. It specifies the credential role but no authentication header or idempotency, asynchronous review/approval, retry, reversal, deletion or version-conflict contract. This Test v3 snapshot establishes no present account/device eligibility, compliance, payment or financial outcome. [[source-adyen-api-explorer-management-latest-post-terminals-terminalid-terminalthemes-id-apply]] [Captured reference](https://docs.adyen.com/api-explorer/Management/latest/post/terminals/(terminalId)/terminalThemes/(id)/apply); raw lines 1–2, 7–14, 24–47, 63–103.

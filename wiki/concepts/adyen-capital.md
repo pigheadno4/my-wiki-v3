@@ -15,6 +15,39 @@ The landing page lists supported regions with specific inclusions and exclusions
 
 ## Sources
 
+- [[source-adyen-api-explorer-capital-latest-patch-grants-grantid-disbursements-disbursementid]] — 2026-11-07-captured Capital API v1 TEST/LIVE reference for updating a grant disbursement's repayment basis points; the response describes configuration and disbursement balances, not booked repayment or bank receipt.
+
+> [!warning] Contradiction
+> This source's operation description says net income, but its request and response `basisPoints` rows say incoming net volume. The capture does not resolve the repayment base. [[source-adyen-api-explorer-capital-latest-patch-grants-grantid-disbursements-disbursementid]]
+
+
+- [[source-adyen-api-explorer-capital-latest-get-grantaccounts-id]] — 2026-11-07-captured Capital API v1 TEST/Live grant-account detail by ID, with optional per-currency aggregate balances, funding balance-account ID and limits; readback does not prove a specific grant disbursement, repayment or bank receipt, and is distinct from the Balance Platform API v2 route of the same relative path.
+
+
+- [[source-adyen-api-explorer-capital-latest-get-grants-grantid-disbursements-disbursementid]] — 2026-11-07-captured Capital API v1 GET of a disbursement by grant and disbursement IDs, with recipient, amount, fee, repayment and optional collection fields; readback is not bank receipt or completed repayment proof.
+
+
+- [[source-adyen-api-explorer-capital-latest-get-grants-grantid-disbursements]] — 2026-11-07-captured Capital API v1 Test/Live GET of a grant's disbursement records, recipient balance-account IDs, amounts and repayment configuration; readback is not external bank receipt or repayment completion proof.
+
+
+- [[source-adyen-api-explorer-capital-latest-get-grants-grantid]] — 2026-11-07-captured Capital API v1 grant-detail GET by grant ID, with balances, offer/grant-account IDs, optional recipient and status/actions; readback alone is not disbursement or bank-receipt proof.
+
+
+- [[source-adyen-api-explorer-capital-latest-get-grantoffers-id]] — 2026-11-07-captured Capital API v1 TEST/live static grant-offer lookup by ID, with optional amount, fee, validity, contract and repayment details; lookup does not prove acceptance or funding.
+
+
+- [[source-adyen-api-explorer-capital-latest-post-dynamicoffers-id-grantoffer]] — 2026-11-07-captured Capital API v1 dynamic-offer amount selection to static-offer creation, with TEST/live 30-per-minute limits; an offer is not a grant or disbursement.
+
+
+- [[source-adyen-api-explorer-capital-latest-post-dynamicoffers-id-calculate]] — 2026-11-07 Capital API v1 TEST/LIVE preliminary calculation from a dynamic offer and selected amount; informational result cannot initiate a grant.
+
+
+- [[source-adyen-api-explorer-transfers-latest-get-grants-id]] — 2026-11-07-captured Transfers API v4 TEST grant-reference lookup by ID, with grant balances and status readback; neither lookup nor status alone proves disbursement or bank receipt.
+
+> [!warning] Contradiction
+> This grant-reference endpoint's title, path parameter, and 200 schema concern a grant, while its introduction says "capital account" and its 404 description says "payment." The capture does not resolve these mismatches. [[source-adyen-api-explorer-transfers-latest-get-grants-id]]
+
+
 - [[source-adyen-api-explorer-balanceplatform-latest-get-grantoffers-grantofferid]] — 2026-11-03-captured Balance Platform API v2 test-server reference for one grant offer by offer ID, with account-holder identity, optional amount/fee/repayment terms and validity; lookup is not acceptance, funding or repayment proof.
 
 

@@ -1,0 +1,51 @@
+{
+  "job_id": "api-explorer-management-latest-post-merchants-merchantid-terminalthemes-id-assets-replace",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Management API: replace a merchant terminal-theme asset\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace\"\nraw_files:\n  - \"adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace/2026-11-07.md\"\ntags: [adyen, management-api, terminal-themes, terminal-assets, point-of-sale]\n---\n\n## Overview\n\nThis 2026-11-07-captured Management API `latest` reference describes replacing an existing image or video asset in a terminal theme owned by the merchant account in the path. The listed server is TEST `/v3`; the endpoint is rate limited in Live. [[adyen]] [[adyen-terminal-management]]\n\n## Key takeaways\n\n- Required path parameters are merchant-account `merchantId` and terminal-theme `id`. Required query parameters `type` and `model` select the existing asset. Replacement works only when the theme already has that exact type/model combination; otherwise the request fails and the separate asset-add endpoint is needed. This POST is replacement, not theme creation or application to devices.\n- The credential needs `Management API - Terminal themes read and write`. Upload one required multipart/form-data `file` part with a supported, specific Content-Type. Generic or missing Content-Type, including `application/octet-stream`, is rejected with `422`. Supported media types depend on type/model: SVG is only for `logo`/`All`; MP4 or QuickTime only for SFO1/M450; JPEG/JPG or PNG for models other than `All`; GIF excludes SFO1/M450. The model limit is 100 MB for SFO1/M450 and 10 MB for all other models.\n- The query table restricts `logo` to `All`, `idleScreen` and `shopperEngagementScreen` to SFO1/M450, and other screen types to a single Android terminal model. Read the raw table for the full type list. No default model/type or idempotency rule is stated.\n- `200` returns required `type`, `model`, and `url`; the URL is a CDN link containing a token and is valid for 24 hours. This readback establishes the replacement response, not on-device theme application, current account eligibility, or payment processing. The reference lists `400`, `401`, `403`, `404`, `422`, `429`, and `500` errors; examples illustrate missing theme/asset, unauthorized logo change, file-size validation, and rate limit, without guaranteeing those are the only causes.\n\n## Detail locators\n\n- Purpose, existing type/model requirement, supported Content-Types, model-size limits, role and TEST server: [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace/2026-11-07#L5|raw lines 5\u201332]].\n- Required path/query/file fields, `200` body, and error codes: [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace/2026-11-07#L34|raw lines 34\u201393]].\n- Success and error examples: [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace/2026-11-07#L95|raw lines 95\u2013213]].\n\n## Related\n\n- [[adyen-terminal-management]] \u2014 terminal administration and application boundary.\n- [[adyen]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace/2026-11-07|Captured Management API merchant terminal-theme asset replacement reference]]\n",
+  "quotes": [
+    {
+      "text": "You can upload an asset using this endpoint if the theme already has an asset with the specified combination of `type` and `model`. If that is not the case, the request fails and you need to use the endpoint `/merchants/{merchantId}/terminalThemes/{id}/assets` instead.",
+      "location": "line 25"
+    },
+    {
+      "text": "- Management API - Terminal themes read and write",
+      "location": "line 29"
+    },
+    {
+      "text": "| model | string | Yes | The Android terminal model that the asset is for. Use **All** only if the `type` is **logo**. For every other screen type specify a single Android terminal model such as **AMS1**. |",
+      "location": "line 46"
+    },
+    {
+      "text": "A request with a generic or missing Content-Type such as application/octet-stream is rejected with response code **422**.",
+      "location": "line 53"
+    },
+    {
+      "text": "| url | string | Yes | The CDN URL for this asset, including the token as a query parameter (?token=). This URL is valid for 24 hours. |",
+      "location": "line 65"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-merchant-theme-asset-replace-route",
+        "target_path": "wiki/concepts/adyen-terminal-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes-id-assets-replace]] \u2014 2026-11-07-captured Management API v3 TEST merchant terminal-theme asset replacement for an existing type/model pair, with model-specific upload constraints and 24-hour CDN URL; replacement response does not prove device application.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/Management/latest/post/merchants/(merchantId)/terminalThemes/(id)/assets/replace/2026-11-07.md",
+  "raw_sha256": "26b10eeaaf336b281ecad9bf60d2374d3acf0195efd2fb7eb4ccda49714ac1d3",
+  "status": "candidate_ready"
+}

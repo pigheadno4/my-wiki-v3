@@ -1,0 +1,52 @@
+{
+  "job_id": "api-explorer-transfers-latest-post-transfers-transferid-returns",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API v4 return a transfer\"\ntype: source\ndate_ingested: 2026-11-07\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/api-explorer/transfers/latest/post/transfers/(transferId)/returns\"\nraw_files:\n  - \"adyen/api-explorer/transfers/latest/post/transfers/(transferId)/returns/2026-11-07.md\"\ntags: [adyen, transfers-api, transfer-returns, balance-platform]\n---\n\n## Overview\n\nThis 2026-11-07-captured Transfers API `latest` reference documents `POST /transfers/{transferId}/returns` on the v4 Test server. It initiates a return of previously transferred funds without creating a new `transferId`; the path identifies the original transfer. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The request requires an `amount` object with three-character ISO `currency` and integer `value` in minor units. The page states no minimum, maximum, or relationship between the requested amount and the original transfer; this absence does not establish that partial returns are allowed.\n- Optional `reference` is the caller's internal reference for the return; Adyen generates a unique reference if omitted and uses it in instruction-status communication. The reference recommends unique values per instruction. Optional `Idempotency-Key` is a unique message identifier with a maximum of 64 characters; the page does not define retry or deduplication behavior.\n- The `200` response schema marks `id` (return identifier), `reference`, `status` (`Authorised` or `Declined`), and `transferId` (original transfer identifier) optional. The `Authorised` example is illustrative. A successful HTTP response or `Authorised` value is not evidence of booked funds, completed return, beneficiary receipt, or bank settlement.\n- The reference lists `401` authentication, `403` permission, `422` validation, and `500` server-processing errors. It does not state a required caller role, eligibility/capability gate, lifecycle timing, reversal route, asynchronous event contract, or version-conflict behavior. This Test snapshot does not establish current Live availability or a completed financial outcome.\n\n## Detail locators\n\n- Return purpose, v4 Test server and original-transfer path ID: raw lines 5\u201317.\n- Optional idempotency header, request fields, reference generation and example: raw lines 20\u201345.\n- `200` response fields and example: raw lines 46\u201357, 159\u2013171.\n- Error status meanings and schemas: raw lines 60\u2013157.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform transfer and payout source route.\n- [[adyen]] \u2014 provider page.\n\n## Raw Sources\n\n- [[raw/adyen/api-explorer/transfers/latest/post/transfers/(transferId)/returns/2026-11-07|Transfers API return POST, captured 2026-11-07]]\n",
+  "quotes": [
+    {
+      "text": "Initiates the return of previously transferred funds without creating a new `transferId`.",
+      "location": "raw line 7"
+    },
+    {
+      "text": "| Idempotency-Key | string | No | A unique identifier for the message with a maximum of 64 characters (we recommend a UUID). |",
+      "location": "raw line 23"
+    },
+    {
+      "text": "| amount | object | Yes | Contains information about the amount to be returned. |",
+      "location": "raw line 29"
+    },
+    {
+      "text": "| reference | string | No | Your internal reference for the return. If you don't provide this in the request, Adyen generates a unique reference. This reference is used in all communication with you about the instruction status.  We recommend using a unique value per instruction. If you need to provide multiple references for a transaction, separate them with hyphens (\"-\"). |",
+      "location": "raw line 32"
+    },
+    {
+      "text": "| status | string | No | The resulting status of the return.  Possible values: **Authorised**, **Declined**. |",
+      "location": "raw line 56"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c69-transfer-return-platforms",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-api-explorer-transfers-latest-post-transfers-transferid-returns]] \u2014 2026-11-07-captured Transfers API v4 TEST return initiation by original transfer ID, with optional Authorised/Declined status readback; this does not prove a booked return or bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/api-explorer/transfers/latest/post/transfers/(transferId)/returns/2026-11-07.md",
+  "raw_sha256": "d6e23495f2f1aad1c871efe49cbbb4c0992d86f3e49bb780e00f7bffa33aeb7d",
+  "status": "candidate_ready"
+}

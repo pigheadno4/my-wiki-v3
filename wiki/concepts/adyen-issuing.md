@@ -15,6 +15,33 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-api-explorer-transfers-api-latest-patch-disputes-id]] — 2026-11-07 Issuing raised-dispute PATCH in the Raise disputes API v4 at a `transfers-api` BTL URL: draft information update or irreversible submit/close, with attachments before submit; 200 is not a scheme or financial outcome.
+
+> [!warning] Contradiction
+> The PATCH request table calls `status` an object while the 200 response table calls it a string; the captured reference does not resolve the input representation. [[source-adyen-api-explorer-transfers-api-latest-patch-disputes-id]]
+
+
+- [[source-adyen-api-explorer-transfers-api-latest-get-disputes-id]] — 2026-11-07-captured Raise disputes API v4 GET of one Issuing dispute by ID, with optional status and reason details; `other` is marked deprecated and cannot be newly created/submitted. The older POST reference calls `other` beta and lists fewer types, so current creation support is unresolved.
+
+
+- [[source-adyen-api-explorer-transfers-api-latest-delete-disputes-disputeid-attachments-attachmentid]] — 2026-11-07-captured Raise disputes API v4 reference at a `transfers-api` URL for removing an attachment from a raised dispute; Adyen may retain the file for compliance.
+
+
+- [[source-adyen-api-explorer-transfers-api-latest-get-disputes-disputeid-attachments-attachmentid]] — 2026-11-07-captured Raise disputes API v4 GET of one attachment by dispute and attachment IDs; the response has type, Base64 content and filename, not dispute outcome or payment proof.
+
+> [!warning] Contradiction
+> This attachment GET reference says Base64 content must have no line breaks but also says not to use Java's `Base64.NO_WRAP` or equivalent. The capture does not resolve the encoder guidance. [[source-adyen-api-explorer-transfers-api-latest-get-disputes-disputeid-attachments-attachmentid]]
+
+
+- [[source-adyen-api-explorer-transfers-api-latest-post-disputes-disputeid-attachments]] — 2026-11-07-captured Raise disputes API v4 Test/Live route for attaching Base64 evidence to a raised Issuing dispute; `200` has an optional attachment ID and does not establish submission or dispute outcome.
+
+> [!warning] Contradiction
+> The `content` field says Base64 must have no line breaks or wrapping, yet also says not to use Java `Base64.NO_WRAP` or its equivalent. The capture does not reconcile those instructions. [[source-adyen-api-explorer-transfers-api-latest-post-disputes-disputeid-attachments]]
+
+
+- [[source-adyen-api-explorer-transfers-api-latest-get-disputes-disputeid-attachments]] — 2026-11-07-captured Raise disputes API v4 GET list of attachments for a raised Issuing dispute ID, at a `transfers-api` URL; 200 has no response-body schema and does not establish chargeback or payment outcome.
+
+
 - [[source-adyen-api-explorer-balanceplatform-latest-delete-registereddevices-id]] — 2026-11-03-captured Balance Platform API v2 TEST DELETE of an SCA-device registration for a specified payment instrument, with required device and instrument IDs; bodyless 204 does not document wider association propagation or authentication outcome.
 
 

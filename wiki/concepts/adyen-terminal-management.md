@@ -15,6 +15,33 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-api-explorer-management-latest-post-terminals-terminalid-terminalthemes-unapply]] — 2026-11-07-captured Management API v3 TEST reference for resetting one deployed or boarded Android terminal's theme assignment to a higher-level custom or default theme without deleting the theme; `200` also covers no direct custom assignment.
+
+
+- [[source-adyen-api-explorer-management-latest-post-stores-storeid-terminalthemes-unapply]] — 2026-11-07-captured Management API v3 TEST store-theme unapply: remove the store assignment without deleting the theme; Android terminals inherit a higher-level/default theme except where individually themed, and `200` does not prove on-device propagation.
+
+
+- [[source-adyen-api-explorer-management-latest-delete-merchants-merchantid-terminalthemes-id]] — 2026-11-07-captured Management API v3 TEST reference for merchant terminal-theme deletion, including the in-use unapply prerequisite.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes-unapply]] — 2026-11-07-captured Management API v3 TEST merchant terminal-theme unapply; restores company/default fallback subject to store and terminal overrides without deleting the theme.
+
+
+- [[source-adyen-api-explorer-management-latest-delete-merchants-merchantid-terminalthemes-id-assets]] — 2026-11-07 Management API v3 TEST deletion of one merchant terminal-theme asset by required type/model, with logo-owner edit restriction; 204 deletion does not establish on-device display.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes-id-assets-replace]] — 2026-11-07-captured Management API v3 TEST merchant terminal-theme asset replacement for an existing type/model pair, with model-specific upload constraints and 24-hour CDN URL; replacement response does not prove device application.
+
+
+- [[source-adyen-api-explorer-management-latest-post-merchants-merchantid-terminalthemes-id-assets]] — 2026-11-07-captured Management API v3 TEST reference for adding a merchant terminal-theme image or video asset by type/model; duplicates require replacement, and creation does not prove device display.
+
+
+- [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalthemes-id]] — 2026-11-07-captured Management API v3 TEST merchant terminal-theme read, with theme metadata and tokenized asset CDN URLs valid for 24 hours; readback does not establish on-device display.
+
+> [!warning] Contradiction
+> This GET reference's access instructions name `Management API - Terminal themes read and write`, while its 403 example names `Management API - Terminal settings read and write`. The capture does not settle the enforced role. [[source-adyen-api-explorer-management-latest-get-merchants-merchantid-terminalthemes-id]]
+
+
 - [[source-adyen-api-explorer-management-latest-post-companies-companyid-terminalthemes-id-assets]] — 2026-11-07-captured Management API v3 TEST reference for adding a company terminal-theme asset by type/model; duplicates require the replace endpoint, and creation does not prove device display.
 
 

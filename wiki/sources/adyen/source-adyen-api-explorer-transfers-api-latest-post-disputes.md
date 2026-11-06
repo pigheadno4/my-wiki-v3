@@ -20,6 +20,9 @@ This 2026-09-15 Transfers API `latest` POST /disputes reference describes raisin
 - Optional `status` may be set only to `draft` on creation. `submitted` and `closed` are update states, although the schema also lists `won`, `chargeback` and `secondPresentment` as possible status values. A 200 response documents the dispute representation and marks `id` optional in the response table, while the introductory prose says raising a dispute returns an ID; retain that prose/table qualification rather than assuming every 200 body has an ID.
 - The response sections list 401 authentication-required, 403 insufficient-permissions and 422 request-validation errors. The repeated error-body tables make top-level problem fields optional; within an optional `invalidFields` array, `message`, `name` and `value` are required per item. These HTTP responses do not establish later chargeback or card-scheme outcome.
 
+> [!warning] Contradiction
+> This 2026-09-15 POST reference calls `other` beta and lists only `duplicate`, `fraud`, `notDelivered`, and `other` types. The 2026-11-07 GET /disputes/{id} reference calls `other` deprecated and also lists `cancelled` and `notAsDescribed`. Both prohibit creating or submitting `other`; the captures do not establish current creation support for every type. [[source-adyen-api-explorer-transfers-api-latest-get-disputes-id]]
+
 ## Detail locators
 
 - Purpose, follow-on uses of a dispute ID, and test/live `/btl/api/v4` server bases: raw lines 5–17. Full request schema: raw lines 19–55. The not-delivered branch has conditionally required location, return and lateness fields: raw lines 37–48.
