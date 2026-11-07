@@ -9,7 +9,20 @@ tags: [adyen, react-native, mobile, sdk, drop-in, components, sessions, apple-pa
 
 `@adyen/react-native` is Adyen's cross-platform wrapper for the native Adyen iOS and Android checkout SDKs. It offers two primary integration choices: Drop-in for a prebuilt payment-method flow and Components for payment-method-specific experiences inside a merchant-owned flow.
 
-## Latest ingested delta: `2.13.0`
+## `2.14.0` full additive update
+
+`@adyen/react-native@2.14.0`, exact SHA `08e15ac5e38d925780895093844edc7ca4cdb811`, advances the wrapper's native pins to Android `5.22.0` and iOS `5.27.0`. Both native repositories retain independent evidence histories. This 2026-11-07 full additive ingest uses approved focused reading and preserves the `2.13.0` and `2.12.0` sections below. See [[source-github-adyen-react-native]] and [[changelog-github-adyen-react-native]] for exact files and release evidence.
+
+For Android, upstream now supports React Native `>=0.79` and Expo SDK `>=54`. Its compatibility guide calls for compile API 36 or newer, target API 36 and consuming-app AGP `>=8.9.1`; use Kotlin `2.3.0` for bare React Native and Expo 55-57, but `2.2.20` for Expo 54's KSP constraint. Preserve newer SDK/build-tool versions: Expo 58+ already compiles against API 37 and must not be lowered to 36. Bare RN 0.79 needs the documented app-level AGP pin. Kotlin plugin classpath configuration must actually reference the configured Kotlin version.
+
+> [!warning] Contradiction
+> The retained tag's peer ranges remain React Native `>=0.76.0` and optional Expo `>=52`, below the newly documented Android support floors. Its library buildscript also still declares AGP `8.7.3`, below the consuming-app minimum. Do not infer supported Android operation or automatic app migration from those metadata/defaults. Published npm manifest generation, Gradle resolution, AAR metadata and the upstream tested matrix were not independently executed or inspected here. The legacy RN 0.73/0.72 notes remain historical unsupported guidance, not exceptions to the new floors. The cumulative source records the same conflict.
+
+The AGP 9 fix applies `kotlin-android` only when no Kotlin extension exists. The Expo config plugin rewrites a matching unversioned Kotlin classpath in Groovy project Gradle files to use `android.kotlinVersion`; already versioned/parameterized declarations remain unchanged. It is not demonstrated Kotlin DSL coverage or automatic toolchain selection.
+
+On iOS, embedded CardView now consumes the existing native `AdyenAppearance` provider's `formComponent` style, falling back to `FormComponentStyle()`. This is not a new React `style` prop for card-field appearance. CardView's TypeScript layout refactor preserves width and native-reported height, and the Apple Pay edits are formatting-only, not new wallet callbacks or payment capabilities. The wrapper still uses a CocoaPods podspec; the native CocoaPods announcement does not establish wrapper SPM support. No native build, device or payment test was performed.
+
+## Historical delta: `2.13.0`
 
 `@adyen/react-native@2.13.0` at `68acfa3ab6976482fd4f9e3a0c075eb649b75d70` advances the native dependencies to Android `5.20.0` and iOS `5.26.0`. It adds Android-only `googlepay.merchantInfo` with optional `merchantName` and Google-issued `merchantId`; neither replaces Adyen's `merchantAccount` or Google Pay registration. Android library defaults move compile/target SDK levels to 36, but the consuming application controls its own build settings.
 
@@ -17,7 +30,7 @@ The package publicly exports `ApplePayAuthorizationResult` (an existing bridge p
 
 The example now injects API/configuration providers. Its Netlify client does not implement stored-method removal, balance checks or partial-payment orders, and its direct Session-result mode skips the example's extra lookup; neither demonstrates production payment verification. The direct example still uses an API key on-device and is not a production credential-handling template. The native iOS CocoaPods sunset note does not mean this wrapper has migrated to SPM: its retained README still uses `pod install`, and its podspec still pins Adyen `5.26.0`.
 
-These are additive findings from [[source-github-adyen-react-native]] and [[changelog-github-adyen-react-native]]. The following `2.12.0` baseline and native-version limitations remain historical evidence, not the current `2.13.0` dependency pins.
+These are additive findings from [[source-github-adyen-react-native]] and [[changelog-github-adyen-react-native]]. The following `2.12.0` baseline and native-version limitations remain historical evidence; the `2.14.0` section above owns the newer dependency pins and Android support requirements.
 
 ## Historical `2.12.0` baseline
 
@@ -50,7 +63,7 @@ Configuration covers environment, client key, locale, return URL, amount, countr
 
 ## Platform requirements
 
-React Native New Architecture support requires React Native `0.76.0` or later. Older supported setups use the old architecture or disable bridgeless mode; versions below `0.74` have additional compatibility requirements. Expo Go is not supported. Expo integrations use Continuous Native Generation and can configure the Apple Pay merchant identifier and iOS framework imports through the package plugin.
+Historical `2.12.0`/`2.13.0` guidance: React Native New Architecture support requires React Native `0.76.0` or later. Older supported setups use the old architecture or disable bridgeless mode; versions below `0.74` have additional compatibility requirements. This does not override the `2.14.0` Android support floors above. Expo Go is not supported. Expo integrations use Continuous Native Generation and can configure the Apple Pay merchant identifier and iOS framework imports through the package plugin.
 
 iOS integrations register custom URL or universal-link return handling and separately enable Apple Pay. Android integrations register the launcher Activity, a redirect intent filter and return handler, and use a Material Components theme.
 
@@ -60,7 +73,7 @@ The wrapper exposes Apple Pay and Google Pay configuration and native buttons. A
 
 An Apple Pay recurring request describes what the native sheet presents. It is not evidence that this wrapper creates a recurring billing schedule, stores a reusable credential, or performs later merchant-initiated charges. Those server-side capabilities require separate product and API evidence.
 
-Runtime payment behavior delegates to Adyen iOS `5.25.1` and Adyen Android `5.19.0`. The independently ingested Android page is currently `5.20.0`, so Android behavior introduced only in `5.20.0` must not be attributed to this wrapper baseline. Delegated wallet, 3DS2, and payment-method SDK behavior also needs its own version-qualified evidence.
+The historical `2.12.0` runtime delegates to Adyen iOS `5.25.1` and Adyen Android `5.19.0`. At that baseline's ingest, the independently ingested Android page was `5.20.0`; behavior introduced only in that newer native release must not be attributed to the older wrapper baseline. The `2.13.0` and `2.14.0` pins are recorded separately above. Delegated wallet, 3DS2, and payment-method SDK behavior also needs its own version-qualified evidence.
 
 ## `2.12.0` release boundary
 

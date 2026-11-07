@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-07] ingest | Adyen React Native `2.14.0`
+
+Approved focused-reading full additive ingest preserves all earlier history: Android support/toolchain migration, AGP9/Expo classpath fixes, iOS embedded CardView appearance and native Android 5.22.0 / iOS 5.27.0 pins. Metadata/support contradictions qualified; source_count unchanged. Details [[adyen-log]], [[source-github-adyen-react-native]] and [[changelog-github-adyen-react-native]]. No SDK/device/payment execution, commit or push.
+
 ## [2026-11-07] ingest | Adyen iOS `5.27.0`
 
 Approved focused-reading full additive ingest after the notes delta: VoiceOver controls/format, guarded submission, scanner constraints and corrected CocoaPods notice. All older source/notes history preserved; source_count unchanged. Details [[adyen-log]], [[source-github-adyen-ios]] and [[changelog-github-adyen-ios]]. No runtime execution, commit or push.

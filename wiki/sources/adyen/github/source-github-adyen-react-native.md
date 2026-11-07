@@ -2,9 +2,11 @@
 title: "GitHub: Adyen/adyen-react-native"
 type: source
 date_ingested: 2026-10-04
-date_updated: 2026-10-21
+date_updated: 2026-11-07
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-react-native/releases/react-native/2.14.0/2026-11-07/manifest.json"
+  - "github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/manifest.json"
   - "github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json"
   - "github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json"
   - "github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json"
@@ -20,7 +22,9 @@ Repository: <https://github.com/Adyen/adyen-react-native>
 
 ## Evidence boundary
 
-Latest ingested delta: `@adyen/react-native@2.13.0`, released 2026-10-16, exact SHA `68acfa3ab6976482fd4f9e3a0c075eb649b75d70`. Its 305-file capsule has six added, 43 modified, two deleted and 256 unchanged paths relative to the 301-file `2.12.0` capsule. The following baseline bullets and original implementation sections describe `2.12.0`; newer behavior is qualified in the `2.13.0` section below. Historical evidence is preserved, not replaced.
+Latest ingested full additive update: `@adyen/react-native@2.14.0`, released 2026-11-02, exact SHA `08e15ac5e38d925780895093844edc7ca4cdb811`, ingested 2026-11-07 with approved focused reading. Its 306-file capsule has one added, 12 modified and 293 unchanged retained paths relative to `2.13.0`, with none removed. Supported Android baselines/toolchain requirements change even though the collector recommended delta. Read the version-qualified `2.14.0` section for current pins and support floors; baseline sections remain historical, not latest-only guidance.
+
+Previous delta: `@adyen/react-native@2.13.0`, released 2026-10-16, exact SHA `68acfa3ab6976482fd4f9e3a0c075eb649b75d70`. Its 305-file capsule has six added, 43 modified, two deleted and 256 unchanged paths relative to the 301-file `2.12.0` capsule. The following baseline bullets and original implementation sections describe `2.12.0`; newer behavior is qualified in the `2.13.0` and `2.14.0` sections below. Historical evidence is preserved, not replaced.
 
 - The complete retained capsule contains 301 public, production, configuration, documentation, example, and story files. Tests, generated output, binaries, and lockfiles are excluded by policy.
 - The immutable GitHub release, tag, and package record establish `@adyen/react-native@2.12.0`. The tagged tree's `package.json` still contains the release-build placeholder `2.0.0-local.1`, so that local field is not used as the release identity.
@@ -53,14 +57,15 @@ Latest ingested delta: `@adyen/react-native@2.13.0`, released 2026-10-16, exact 
 
 | Package | Latest ingested release | Exact SHA | Native baselines |
 | --- | --- | --- | --- |
-| `@adyen/react-native` | `2.13.0` (latest ingested) | `68acfa3ab6976482fd4f9e3a0c075eb649b75d70` | iOS `5.26.0`; Android `5.20.0` |
+| `@adyen/react-native` | `2.14.0` (latest ingested) | `08e15ac5e38d925780895093844edc7ca4cdb811` | iOS `5.27.0`; Android `5.22.0` |
+| `@adyen/react-native` | `2.13.0` | `68acfa3ab6976482fd4f9e3a0c075eb649b75d70` | iOS `5.26.0`; Android `5.20.0` |
 | `@adyen/react-native` | `2.12.0` | `2912c913266b2d1df73882980303b563ea04ab63` | iOS `5.25.1`; Android `5.19.0` |
 
 This table reports wiki ingest progress, not the latest version currently published upstream.
 
-The package exports React Native source from `src/index.ts`, built CommonJS and module artifacts from `lib/`, and generated TypeScript declarations. It declares React Native `>=0.76.0`, optional Expo `>=52`, and New Architecture code generation for embedded card and platform-pay views.
+The package exports React Native source from `src/index.ts`, built CommonJS and module artifacts from `lib/`, and generated TypeScript declarations. Its retained tag declares React Native `>=0.76.0`, optional Expo `>=52`, and New Architecture code generation for embedded card and platform-pay views. For `2.14.0`, those peer ranges do not describe supported Android floors; see the contradiction and migration section below.
 
-New Architecture support requires React Native `0.76.0` or later. Older supported applications use the old architecture or disable bridgeless mode, with extra compatibility requirements below `0.74`. Expo Go is unsupported; Expo integrations use Continuous Native Generation. Manual iOS and Android setup must register redirect return handling, and Android requires a Material Components theme.
+Historical `2.12.0`/`2.13.0` guidance: New Architecture support requires React Native `0.76.0` or later. Older supported applications use the old architecture or disable bridgeless mode, with extra compatibility requirements below `0.74`. This is not support for older Android applications on `2.14.0`. Expo Go is unsupported; Expo integrations use Continuous Native Generation. Manual iOS and Android setup must register redirect return handling, and Android requires a Material Components theme.
 
 ## Integration modes and server boundary
 
@@ -96,7 +101,7 @@ Payment-method constants distinguish native Components from explicitly unsupport
 
 ## Native dependency boundary
 
-The iOS podspec pins `Adyen` `5.25.1`; Android build metadata pins `com.adyen.checkout:drop-in` `5.19.0`. The independently retained [[source-github-adyen-ios]] baseline matches `5.25.1`. The independently retained [[source-github-adyen-android]] baseline is newer at `5.20.0`, so its API 36 release change is not inherited by this wrapper.
+For historical `2.12.0`, the iOS podspec pins `Adyen` `5.25.1`; Android build metadata pins `com.adyen.checkout:drop-in` `5.19.0`. At that baseline's ingest, independently retained [[source-github-adyen-ios]] matched `5.25.1` and [[source-github-adyen-android]] was newer at `5.20.0`, so its API 36 release change was not inherited by this older wrapper. Later wrapper pins are recorded separately in the table and version sections; native and wrapper evidence histories remain independent.
 
 UPI Smart Intent on both platforms and iOS Bizum are recorded in the `2.12.0` note as consequences of native dependency upgrades. Those claims establish the wrapper release boundary but require native SDK evidence for implementation-level detail.
 
@@ -113,6 +118,79 @@ The revised upstream note adds a dependency table linking Adyen Android `5.19.0`
 Both dated release-note records remain available below; [[changelog-github-adyen-react-native]] records the revision separately from the original release.
 
 ## Integration guidance
+
+### `2.14.0` full additive update (2026-11-02)
+
+**Scope:** User-approved full override of the collector's delta/high recommendation because supported Android platforms and consuming-app build requirements change. Focused reading covers all 13 added/modified retained files, all 12 available prior versions, affected dependencies, release/comparison evidence and complete cumulative wiki source/changelog. The 293 unchanged current files and generated inventories were verified mechanically; full mode is unchanged. All `2.12.0` and `2.13.0` history remains available, and no SDK build, install, device or payment test was performed.
+
+#### Native pins and Android migration
+
+The wrapper advances Android `5.20.0` -> `5.22.0` and iOS `5.26.0` -> `5.27.0`. Those versions already have independent histories in [[source-github-adyen-android]] and [[source-github-adyen-ios]]. A wrapper pin establishes its declared dependency, not a merchant's resolved binary or independent proof of all delegated behavior.
+
+The release note and exact-SHA compatibility guide announce Android support from React Native `0.79` and Expo SDK `54`. They require compile API 36 or newer, target API 36 and consuming-app AGP `8.9.1` or newer. The wrapper's fallback Kotlin version rises from `2.0.21` to `2.3.0`; its compile/target defaults were already 36 in `2.13.0` and do not newly change here.
+
+| Consuming application | Kotlin configuration from retained guide | Android configuration |
+| --- | --- | --- |
+| Bare RN 0.79 | `2.3.0`; classpath must reference `${kotlinVersion}` | API/build tools 36; explicit app AGP `8.9.1` pin |
+| Bare RN 0.80 | `2.3.0`; explicit classpath version reference | API/build tools 36; guide says template AGP is sufficient |
+| Bare RN 0.81+ | `2.3.0`; explicit classpath version reference | Preserve existing API/build tools 36 or newer |
+| Expo 54 | `2.2.20` due to its KSP-version constraint | `expo-build-properties`, compile/target 36 |
+| Expo 55-57 | `2.3.0` | `expo-build-properties`, compile/target 36 |
+| Expo 58+ | `2.3.0` | Preserve compile 37 and target 36; do not downgrade compile SDK to 36 |
+
+For bare RN 0.79, the retained guide's relevant dependency lines are:
+
+```groovy
+classpath("com.android.tools.build:gradle:8.9.1")
+classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+```
+
+Set the root buildscript `kotlinVersion` and SDK/build-tools values as documented; merely changing a property unused by the Kotlin plugin classpath is insufficient. Keep versions already newer than the guide's snippet. The guide describes native Kotlin metadata, AndroidX/AAR constraints and a tested RN/Expo matrix; these remain upstream claims, not our compiler/artifact/build verification. Its Google Play policy statement is not independently verified current policy guidance.
+
+> [!warning] Contradiction
+> At this tag, `package.json` still permits React Native `>=0.76.0` and optional Expo `>=52`, below the newly documented Android floors of 0.79/54. `android/build.gradle` still declares library buildscript AGP `8.7.3`, below the documented consuming-app minimum `8.9.1`. Peer-range satisfaction or that library literal does not establish supported Android builds or automatic app migration. The tag still uses `2.0.0-local.1`; the published npm manifest/generation script and resolved consumer Gradle graph were not independently audited. The retained RN 0.73/0.72 notes are unsupported historical guidance, not valid exceptions. [[adyen-react-native-sdk]] preserves the same qualifications. This Android-specific support change does not establish an equivalent new iOS RN/Expo minimum.
+
+#### AGP 9 and bounded Expo configuration fix
+
+`android/build.gradle` now applies `kotlin-android` only if `project.extensions.findByName('kotlin') == null`, avoiding the duplicate extension when AGP 9 provides built-in Kotlin. This guard does not by itself select AGP 9 or prove every RN/toolchain combination builds.
+
+New `setKotlinGradlePlugin.ts` rewrites a matching unversioned Kotlin plugin classpath into a conditional declaration using `findProperty('android.kotlinVersion')`; if absent, it falls back to the unversioned classpath. `withAdyenAndroid.ts` invokes it through `withProjectBuildGradle` only for Groovy files. The intended Expo 54-57 prebuild path makes the property written by `expo-build-properties` affect the plugin, matching the guide's Expo 58+ pattern. Already versioned or parameterized declarations remain unchanged; Kotlin DSL, arbitrary formatting and unsupported Expo versions are not demonstrated coverage. Excluded upstream test text in the comparison was not executed here.
+
+#### iOS embedded CardView appearance and non-feature changes
+
+Before `2.14.0`, the card configuration parser initializes the default form style and the embedded proxy did not apply the merchant appearance. The proxy now defaults its internal appearance provider to `AdyenAppearanceLoader.findStyle` and assigns:
+
+```swift
+cardConfig.style = Self.appearanceProvider()?.formComponent ?? FormComponentStyle()
+```
+
+The existing native loader looks for an `AdyenAppearance` class conforming to `AdyenAppearanceProvider`, obtains its `DropInComponent.Style`, and uses its `formComponent` style for embedded CardView. If the provider cannot be found, default form styling remains. This fixes native appearance propagation, not a new public React style/configuration prop. Verify linked native appearance setup and inline-card layout on the actual device.
+
+`CardView.tsx` extracts the existing `width: '100%'` into `StyleSheet.create` and keeps native-reported dynamic height. `ApplePayModule.swift` cleanup and the Apple Pay type-union edits are formatting-only; no new wallet callback, saved-payment/return-buyer flow or payment capability follows. The iOS pin still uses a CocoaPods podspec and README `pod install`; the native distribution notice does not establish wrapper SPM integration.
+
+#### Grounding excerpts for `2.14.0`
+
+All locations below are relative to `raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/`.
+
+> "Supported versions are React Native 0.79 and newer, and Expo SDK 54 and newer."
+>
+> `docs/Compatibility.md:9`
+
+> "Keep any version that is already newer than the snippet."
+>
+> `docs/Compatibility.md:42`
+
+> `if (project.extensions.findByName('kotlin') == null) {`
+>
+> `android/build.gradle:23`
+
+> `cardConfig.style = Self.appearanceProvider()?.formComponent ?? FormComponentStyle()`
+>
+> `ios/Views/CardView/CardComponentViewProxy.swift:148`
+
+> "The `formComponent` style of the returned `Adyen.DropInComponent.Style` also styles the embedded `CardView`."
+>
+> `docs/Customization.md:19`
 
 ### `2.13.0` additive delta (2026-10-16)
 
@@ -209,6 +287,13 @@ The `2.13.0` note repeats the native iOS `5.26.0` CocoaPods sunset notice. This 
 
 ## Raw sources
 
+- [2.14.0 release manifest](../../../../raw/github/adyen/adyen-react-native/releases/react-native/2.14.0/2026-11-07/manifest.json) and [[raw/github/adyen/adyen-react-native/releases/react-native/2.14.0/2026-11-07/release-notes|release notes]]
+- [2.14.0 snapshot manifest](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/manifest.json)
+- [2.13.0 to 2.14.0 comparison](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.13.0--2.14.0/comparison.json) and [retained diff](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.13.0--2.14.0/diff.patch)
+- [Android compatibility guide](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/docs/Compatibility.md), [library buildscript](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/android/build.gradle), [Kotlin/SDK defaults](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/android/gradle.properties) and [tag package metadata](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/package.json)
+- [Expo Kotlin classpath helper](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/src/plugin/setKotlinGradlePlugin.ts) and [Groovy-only plugin hook](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/src/plugin/withAdyenAndroid.ts)
+- [iOS CardView proxy](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/ios/Views/CardView/CardComponentViewProxy.swift), [native appearance loader](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/ios/Components/AdyenApperance.swift) and [customization guide](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/docs/Customization.md)
+- [Native iOS pin](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/adyen-react-native.podspec) and [native Android pin](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/files/android/dependencies.gradle)
 - [2.13.0 release manifest](../../../../raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json) and [[raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/release-notes|release notes]]
 - [2.13.0 snapshot manifest](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json)
 - [2.12.0 to 2.13.0 comparison](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/comparison.json) and [retained diff](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/diff.patch)

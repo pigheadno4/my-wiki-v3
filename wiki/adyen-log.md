@@ -6,6 +6,12 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-07] ingest | Adyen React Native `2.14.0`
+
+- Approved full additive ingest with focused reading, `github-01b194e7c644e7ff1f60`, SHA `08e15ac5e38d925780895093844edc7ca4cdb811`; explicit full override for new supported Android/toolchain baselines. Native pins Android 5.22.0 / iOS 5.27.0; bounded AGP9/Expo classpath fixes and native iOS embedded CardView appearance propagation.
+- Preserved all 2.12.0/2.13.0 history. Android peer-range/AGP-literal mismatch, Expo 54 Kotlin exception, Expo 58 compile-37 preservation and wrapper-vs-native distribution/runtime boundaries recorded. All 13 changed/new retained files and available prior versions read; all 611 file identities verified, 293 unchanged checked mechanically. Concept first, then cumulative source/changelog/company/catalog/logs; source_count unchanged at 3206.
+- No SDK install/build, upstream/device/payment tests, additional collection, commit or push. Receipt: `tracking/github/repos/adyen/adyen-react-native/ingest-review-2.14.0-2026-11-07.md`. Details [[source-github-adyen-react-native]], [[changelog-github-adyen-react-native]] and [[adyen-react-native-sdk]].
+
 ## [2026-11-07] ingest | Adyen iOS `5.27.0`
 
 - Approved full additive ingest with focused reading, `github-2e39da6002199c52091d`, exact SHA `15167f660094853d204dc6cd25a068eddf1bc2b2`, serially after the completed `5.26.0` notes delta. VoiceOver controls/format/headers, guarded submit activation, scanner constraints and version-qualified CocoaPods announcement; SPI/payment/device/compliance boundaries retained.

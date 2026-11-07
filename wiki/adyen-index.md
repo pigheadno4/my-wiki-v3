@@ -3439,8 +3439,8 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-ios]] — package-qualified Adyen iOS ledger through `5.27.0`, including the original/revised `5.26.0` distribution notes and full additive history (github-repo, updated 2026-11-07)
 - [[source-github-adyen-android]] — cumulative through `adyen-android@5.22.0`: security-note/OkHttp and image-loading changes; `5.21.0` checkout/build migration and all `5.20.0` native checkout history preserved (github-repo, 2026-11-07)
 - [[changelog-github-adyen-android]] — package-qualified Adyen Android release ledger, `5.20.0` -> `5.21.0` -> `5.22.0`, full additive history, exact build supplement and security evidence limits (github-repo, 2026-11-07)
-- [[source-github-adyen-react-native]] — cumulative `@adyen/react-native@2.13.0` delta: Google Pay merchant info, Apple Pay type export, iOS layout fixes and native pins; complete `2.12.0` history retained (github-repo, updated 2026-10-21)
-- [[changelog-github-adyen-react-native]] — package-qualified `2.12.0` -> `2.13.0` release ledger, demo-client boundaries and preserved `2.12.0` note revision (github-repo, updated 2026-10-21)
+- [[source-github-adyen-react-native]] — cumulative full additive history through `@adyen/react-native@2.14.0`: Android support/toolchain migration, bounded AGP9/Expo fixes, iOS embedded-card appearance and native pins; peer-range/buildscript qualifications and all earlier history retained (github-repo, updated 2026-11-07)
+- [[changelog-github-adyen-react-native]] — package-qualified `2.12.0` -> `2.13.0` -> `2.14.0` ledger, full/delta modes, compatibility migration, demo-client boundaries and preserved note revisions (github-repo, updated 2026-11-07)
 - [[source-github-adyen-node-api-library]] — cumulative server history through `@adyen/api-library@32.2.0`: Session updates, model/multipart compatibility and HTTPS agent reuse; `32.0.0` preserved (github-repo, 2026-10-04)
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 

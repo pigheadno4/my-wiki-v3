@@ -1,5 +1,30 @@
 # GitHub repository ingest status
 
+## `github-01b194e7c644e7ff1f60`
+
+- Repository: `adyen/adyen-react-native`
+- SHA: `08e15ac5e38d925780895093844edc7ca4cdb811`
+- Collection date: `2026-11-07`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-react-native/ingest-packets/github-01b194e7c644e7ff1f60/packet.md)
+- Review priority: `high`
+- Required reading: `22` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/react-native@2.14.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-react-native/releases/react-native/2.14.0/2026-11-07/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-react-native/comparisons/react-native/2.13.0--2.14.0/comparison.json)
+
 ## `github-024fc77b5961ca8ac047`
 
 - Repository: `stripe/stripe-ios`

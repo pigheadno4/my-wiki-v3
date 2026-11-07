@@ -1,0 +1,314 @@
+import type { Configuration } from './configurations/Configuration';
+import type { ResultCode } from './constants';
+
+/**
+ * {@link https://docs.adyen.com/api-explorer/Checkout/70/post/payments#responses-200-action API Explorer /payments action}
+ */
+export interface PaymentAction {
+  /**
+   * General type of action that needs to be taken by the client
+   */
+  type: string;
+
+  /**
+   * Refinement of type of action that needs to be taken by the client (currently only applies to the new 'threeDS2' type)
+   */
+  subtype?: string;
+
+  /**
+   * Specifies the payment method.
+   */
+  paymentMethodType: string;
+
+  /**
+   * When non-empty, contains a value that you must submit to the /payments/details endpoint. In some cases, required for polling.
+   */
+  paymentData?: string; // comes from the /payments endpoint
+
+  // Redirect Actions
+
+  /**
+   * Specifies the HTTP method, for example GET or POST.
+   */
+  method?: string;
+
+  /**
+   * Specifies the URL to redirect to.
+   */
+  url?: string;
+
+  // Vouchers
+
+  alternativeReference?: string;
+  downloadUrl?: string;
+  entity?: string;
+  expiresAt?: string;
+  instructionsUrl?: string;
+  issuer?: string;
+  maskedTelephoneNumber?: string;
+  merchantName?: string;
+  merchantReference?: string;
+  reference?: string;
+  shopperEmail?: string;
+  shopperName?: string;
+
+  // QR Code
+
+  qrCodeData?: string;
+
+  // 3DS2
+
+  /**
+   * A token to pass to the 3DS2 Component to get the fingerprint/challenge.
+   */
+  token?: string;
+
+  /**
+   * A token needed to authorise a payment. Comes from the /submitThreeDS2Fingerprint endpoint
+   */
+  authorisationToken?: string;
+
+  // SDK
+
+  /**
+   * An object containing data to be used in external SDKs like PayPal Buttons SDK.
+   */
+  sdkData?: {
+    [key: string]: any;
+  };
+}
+
+export interface PaymentMethod {
+  /**
+   * The unique payment method code.
+   */
+  type: string;
+
+  /**
+   * The displayable name of this payment method.
+   */
+  name: string;
+
+  /**
+   * All input details to be provided to complete the payment with this payment method.
+   */
+  details?: object;
+
+  /**
+   * Configuration props as set by the merchant in the CA and received in the PM object in the /paymentMethods response
+   */
+  configuration?: object;
+
+  /**
+   * Brand for the selected gift card. For example: plastix, hmclub.
+   */
+  brand?: string;
+
+  /**
+   * List of possible brands. For example: visa, mc.
+   */
+  brands?: string[];
+
+  /**
+   * The funding source of the payment method.
+   */
+  fundingSource?: string;
+
+  /**
+   * The group where this payment method belongs to.
+   */
+  group?: PaymentMethodGroup;
+}
+
+/**
+ * The group where this payment method belongs to.
+ */
+export interface PaymentMethodGroup {
+  /**
+   * The name of the group.
+   */
+  name: string;
+
+  /**
+   * Echo data to be used if the payment method is displayed as part of this group.
+   */
+  paymentMethodData: string;
+
+  /**
+   * The unique code of the group.
+   */
+  type: string;
+}
+
+export interface StoredPaymentMethod extends PaymentMethod {
+  /**
+   * The supported shopper interactions for this stored payment method.
+   */
+  supportedShopperInteractions: string[];
+
+  /**
+   * A unique identifier of this stored payment method.
+   */
+  id: string;
+}
+
+/**
+ * List of the available payment methods
+ * {@link https://docs.adyen.com/api-explorer/Checkout/70/post/paymentMethods#responses-200 API Explorer /paymentMethods}.
+ */
+export interface PaymentMethodsResponse {
+  /**
+   * Detailed list of payment methods required to generate payment forms.
+   */
+  paymentMethods: PaymentMethod[];
+
+  /**
+   * List of all stored payment methods.
+   */
+  storedPaymentMethods?: StoredPaymentMethod[];
+}
+
+/**
+ * {@link https://docs.adyen.com/api-explorer/Checkout/70/post/payments#request-amount API Explorer /payments amount}
+ */
+export interface PaymentAmount {
+  value: number;
+  currency: string;
+}
+
+/**
+ * Use this object as basis for
+ * {@link https://docs.adyen.com/api-explorer/Checkout/70/post/payments API Explorer /payments request}
+ */
+export interface PaymentMethodData {
+  paymentMethod: {
+    type: string;
+    [key: string]: any;
+    checkoutAttemptId?: string;
+  };
+  browserInfo?: {
+    userAgent: string;
+  };
+  /**
+   * 	Contains passed-throught value for iOS or `adyencheckout://${DeviceInfo.getBundleId()}` for Android
+   */
+  returnUrl: string;
+}
+
+/**
+ * Use this object as basis for
+ * {@link https://docs.adyen.com/api-explorer/Checkout/70/post/payments/details API Explorer /payments/details request}
+ */
+export interface PaymentDetailsData {
+  details: any;
+  paymentData?: string;
+  authenticationData?: any;
+}
+
+/**
+ * Session configuration
+ */
+export interface SessionConfiguration {
+  id: string;
+  sessionData: string;
+}
+
+/**
+ * Reason for payment termination
+ */
+export interface AdyenError {
+  message: string;
+  errorCode: string;
+}
+
+export interface SubmitModel {
+  paymentData: PaymentMethodData;
+  extra?: any;
+}
+
+export interface Balance {
+  /**
+   * The balance for the payment method.
+   */
+  balance?: PaymentAmount;
+
+  /**
+   * The maximum spendable balance for a single transaction. Applicable to some gift cards.
+   */
+  transactionLimit?: PaymentAmount;
+}
+
+export interface Order {
+  /** The encrypted order data. */
+  orderData: string;
+
+  /** The pspReference that belongs to the order. */
+  pspReference: string;
+
+  /** The remaining amount to complete the order. */
+  remainingAmount?: PaymentAmount;
+}
+
+/**
+ * Represents the response structure specifically for session flow.
+ */
+export type SessionsResult = {
+  /**
+   * The session ID.
+   */
+  sessionId: string;
+  /**
+   * An encoded string that can be used to get the payment outcome on your server.
+   * @description Use this value with the new `/sessions/id` endpoint as a query string on your server to get a synchronous result for your payment.
+   */
+  sessionResult: string;
+  /**
+   * The primary result code indicating the overall status of the session operation.
+   */
+  resultCode: ResultCode;
+  /**
+   * The session data.
+   */
+  sessionData: string;
+};
+
+/**
+ * Options for dismissing the payment component.
+ */
+export interface HideOption {
+  /** Alert message after dismiss. Used for Android DropIn and Components only */
+  message?: string;
+}
+
+/**
+ * Universal interface for an Adyen Native module.
+ */
+export interface AdyenComponent {
+  /**
+   * Dismiss the component from the screen.
+   * @param success - Indicates whether the component was dismissed successfully.
+   * @param option - Additional options for dismissing the component (optional).
+   */
+  hide(success: boolean, option?: HideOption): void;
+}
+
+/**
+ * Describes an Adyen Component capable of handling payment actions.
+ */
+export interface AdyenActionComponent extends AdyenComponent {
+  /**
+   * Handle a payment action received by the component.
+   * @param action - The payment action to be handled.
+   */
+  handle(action: PaymentAction): void;
+}
+
+/**
+ * Describes an Adyen Component capable of handling payment action if specific conditions are met.
+ */
+export interface ConditionalPaymentComponent {
+  isAvailable(
+    paymentMethods: PaymentMethod,
+    configuration: Configuration
+  ): Promise<boolean>;
+}

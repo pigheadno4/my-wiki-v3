@@ -2,9 +2,11 @@
 title: "GitHub changelog: Adyen/adyen-react-native"
 type: source
 date_ingested: 2026-10-04
-date_updated: 2026-10-21
+date_updated: 2026-11-07
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-react-native/releases/react-native/2.14.0/2026-11-07/manifest.json"
+  - "github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/manifest.json"
   - "github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json"
   - "github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json"
   - "github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json"
@@ -15,6 +17,35 @@ tags: [adyen, react-native, mobile-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `Adyen/adyen-react-native`. Cumulative implementation knowledge belongs in [[source-github-adyen-react-native]] and the linked immutable evidence.
+
+## `@adyen/react-native@2.14.0` (2026-11-02)
+
+| Package | From | To | Exact SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@adyen/react-native` | `@adyen/react-native@2.13.0` | `@adyen/react-native@2.14.0` | `08e15ac5e38d925780895093844edc7ca4cdb811` | Full additive, approved focused reading |
+
+**Ingested:** 2026-11-07. Explicit full override of the script's delta/high recommendation because supported Android baselines/toolchain requirements change. All earlier implementation and dated notes remain preserved.
+
+**Dependencies:** Android `5.20.0` -> `5.22.0`; iOS `5.26.0` -> `5.27.0`. Independently ingested native histories remain separate from the wrapper pin and do not prove the consumer's resolved binary or payment outcome.
+
+**Android migration:** Upstream support floors are RN 0.79 and Expo 54. Compile API 36 or newer, target API 36 and consuming-app AGP >=8.9.1 are documented. Bare RN uses Kotlin 2.3.0 and must reference the configured version in its plugin classpath; RN 0.79 additionally needs the explicit app AGP pin. Expo 54 uses Kotlin 2.2.20, Expo 55-57 uses 2.3.0, and Expo 58+ must retain compile SDK 37. Preserve already newer values. The library Kotlin fallback rises 2.0.21 -> 2.3.0; compile/target defaults were already 36.
+
+**Build fixes:** AGP 9's built-in Kotlin extension is detected before applying `kotlin-android`. A new Groovy-only Expo project-build hook parameterizes matching unversioned Kotlin classpaths using `android.kotlinVersion`; already versioned/parameterized declarations remain unchanged. No Kotlin DSL or arbitrary-format coverage is established.
+
+**iOS fix:** Embedded CardView now receives the existing native `AdyenAppearance.formComponent` style with a default-style fallback. This is not a new public React style prop. TypeScript CardView layout extraction preserves existing width/dynamic height; Apple Pay cleanup/type edits are formatting-only, not new capabilities. The podspec/README still use CocoaPods; no wrapper SPM migration is established.
+
+**Qualifications/testing:** Retained tag peer ranges still allow RN >=0.76.0 and Expo >=52, while its library AGP literal remains 8.7.3. The cumulative source and concept flag these against the new Android support guidance; published npm rewriting and consumer Gradle resolution were not audited. Upstream AAR/compiler/tested-matrix claims remain attributed, and legacy unsupported RN notes do not override current floors. Regression-test app builds, Expo prebuild output, wallets/actions and iOS inline-card appearance/layout; no SDK build, upstream tests, device or payment execution was performed here.
+
+**Read/evidence scope:** All 13 changed/new retained files and 12 available prior versions, affected dependencies, notes, comparison and cumulative wiki history read fully. Both snapshots' 611 sizes/SHA-256/Git blob identities pass; 293 unchanged files and generated inventories mechanically verified. All 36 upstream dispositions reconcile (13 retained, 23 exclusions); no packet gaps. Full effective assignment 315 paths / 958,275 bytes. Concept-first update; company/catalog/logs updated with no new source page or count change.
+
+**Updated sections:** evidence boundary, package/platform table, native-dependency historical scope, 2.14.0 Android support/migration, bounded build-plugin fixes, iOS appearance, contradiction qualifications and raw evidence links. Prior 2.13.0/2.12.0 findings remain retrievable below.
+
+### `2.14.0` evidence
+
+- [Release identity](../../../../raw/github/adyen/adyen-react-native/releases/react-native/2.14.0/2026-11-07/manifest.json) and [[raw/github/adyen/adyen-react-native/releases/react-native/2.14.0/2026-11-07/release-notes|release notes]]
+- [Exact-SHA snapshot](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-11-07-08e15ac/manifest.json)
+- [Comparison](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.13.0--2.14.0/comparison.json) and [retained patch](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.13.0--2.14.0/diff.patch)
+- [[source-github-adyen-react-native]] - implementation, migration table, grounding excerpts and all historical knowledge
 
 ## `@adyen/react-native@2.13.0` (2026-10-16)
 
