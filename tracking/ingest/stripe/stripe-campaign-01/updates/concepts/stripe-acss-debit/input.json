@@ -1,0 +1,95 @@
+{
+  "target_path": "wiki/concepts/stripe-acss-debit.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-acss-debit/base.md",
+  "base_sha256": "cb6c49a5b5fd2b5bc2c20cf3df44907ca790afaa962170e5e61a72f75df67feb",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-acss-debit::acss-subscriptions-retry-rule",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "**Checkout NOT supported** (waitlist only). **No auto-retry** \u2014 ACSS payments never retried.",
+      "new_text": "**Checkout subscription mode not yet supported** in the 2026-11-07 guide (waitlist). With Direct Debit retries enabled, Stripe can automatically retry Canadian PAD subscription payments that fail for insufficient funds; availability or enablement for a particular account is unverified.\n\n> [!warning] Contradiction\n> The 2026-05-13 subscription guide said Canadian PAD payments were never automatically retried. The 2026-11-07 guide documents this conditional insufficient-funds retry path; see [[source-stripe-subscriptions-acss-debit]].",
+      "reason": "Directly replace absolute no-retry claim while preserving old/new dated contradiction and private-preview uncertainty in adjacent Billing Retries section.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Direct Debit retries eligibility and account enablement remain unverified."
+      ],
+      "original_update_id": "acss-subscriptions-retry-rule",
+      "job_id": "billing-subscriptions-acss-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/receipt.json",
+      "receipt_sha256": "376c208657a1102099a25cf7421d6942f25d6168aaabc8397b1397c85440254f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "303acc2b5dc0628624e85477ff5f38f5c981226c0687c0ae5cc0fbcc58838385",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-acss-debit::acss-subscriptions-create-sample",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "Create with `payment_behavior=default_incomplete` + `payment_method_types=['acss_debit']`. Client uses `stripe.confirmAcssDebitPayment` \u2014 opens modal, collects bank + mandate acknowledgment. Customer acknowledges once; subsequent charges need no re-authorization.",
+      "new_text": "Create with `payment_behavior=default_incomplete`; the 2026-05-13 Node.js example explicitly sets `payment_method_types=['acss_debit']`, while the 2026-11-07 curl sample omits that field. Client uses `stripe.confirmAcssDebitPayment` to collect bank details and mandate acknowledgment in an on-page modal. Later charges need no new mandate acknowledgment, but payment success must still be checked.",
+      "reason": "Date the sample-only payment-method selection and avoid implying that mandate reuse guarantees charge success.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "acss-subscriptions-create-sample",
+      "job_id": "billing-subscriptions-acss-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/receipt.json",
+      "receipt_sha256": "376c208657a1102099a25cf7421d6942f25d6168aaabc8397b1397c85440254f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "303acc2b5dc0628624e85477ff5f38f5c981226c0687c0ae5cc0fbcc58838385",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-acss-debit::acss-subscriptions-fulfillment",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "**Default PM must be set manually** after `invoice.payment_succeeded` + `billing_reason=subscription_create`.",
+      "new_text": "**Fulfillment:** before supplying goods or services, verify the related subscription is `active` and either `invoice.paid` occurred or the underlying PaymentIntent is `succeeded`; `active` alone can precede first-payment completion. **Future default PM in the paid initial-invoice flow:** separately, after `invoice.payment_succeeded` for a new subscription (`billing_reason=subscription_create`), set `subscription.default_payment_method` from the paid invoice's method. For the trial `pending_setup_intent` path, successful verification automatically sets the subscription default.",
+      "reason": "Keep the fulfillment check distinct from default-method setup, and scope the manual webhook to a paid initial invoice; successful trial SetupIntent verification auto-sets the subscription default.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "acss-subscriptions-fulfillment",
+      "job_id": "billing-subscriptions-acss-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/receipt.json",
+      "receipt_sha256": "376c208657a1102099a25cf7421d6942f25d6168aaabc8397b1397c85440254f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "303acc2b5dc0628624e85477ff5f38f5c981226c0687c0ae5cc0fbcc58838385",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-acss-debit::acss-subscriptions-source-route",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "- [[source-stripe-subscriptions-acss-debit]] \u2014 ACSS subscription: Checkout NOT supported, no auto-retry, manual default PM webhook, 10-day microdeposit window, trial SetupIntent flow",
+      "new_text": "- [[source-stripe-subscriptions-acss-debit]] \u2014 Canadian PAD subscription guide (2026-05-13 and 2026-11-07 captures): conditional insufficient-funds retries, payment-confirmed fulfillment, default-PM webhook, and microdeposit/trial flows",
+      "reason": "Correct the contradictory reciprocal source label.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "acss-subscriptions-source-route",
+      "job_id": "billing-subscriptions-acss-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/receipt.json",
+      "receipt_sha256": "376c208657a1102099a25cf7421d6942f25d6168aaabc8397b1397c85440254f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "303acc2b5dc0628624e85477ff5f38f5c981226c0687c0ae5cc0fbcc58838385",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-acss-debit::acss-subscriptions-retry-rule",
+    "billing-subscriptions-acss-debit::acss-subscriptions-create-sample",
+    "billing-subscriptions-acss-debit::acss-subscriptions-fulfillment",
+    "billing-subscriptions-acss-debit::acss-subscriptions-source-route"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-acss-debit/auto-candidate.md",
+  "auto_candidate_sha256": "022b60155e20695c2c80f5c1860ea02eae900ea541136b2dabd0d88f987fd2ff",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-acss-debit-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-acss-debit-concept-review.json"
+}

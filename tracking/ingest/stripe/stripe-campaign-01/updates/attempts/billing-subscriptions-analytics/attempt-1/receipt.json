@@ -1,0 +1,164 @@
+{
+  "job_id": "billing-subscriptions-analytics",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md",
+  "raw_sha256": "5acef37780d4af7dfb9c8fd860e6253582e9d589854f5768724c4381583631e2",
+  "source_before_sha256": "5db12c2bb210a11ea287a1a05cebe5161588f5ea8f7b97d197992c50b7ad745e",
+  "source_page": "---\ntitle: \"Stripe Billing \u2014 Analytics\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/analytics\"\nraw_files:\n  - \"stripe-billing-subscriptions-analytics-2026-11-07.md\"\n  - \"stripe-billing-analytics-2026.md\"\ntags: [stripe, billing, analytics, mrr, churn, subscribers, ltv, arpu, cohort, reports]\n---\n\n## Summary\n\nStripe Billing's Dashboard analytics guide defines recurring-revenue, subscriber, trial, churn, retention, and usage metrics. The 2026-11-07 capture distinguishes item-level trial offers from legacy subscription-level trials, adds AR aging and two CSV export routes, and keeps Usage MRR in preview-request status. These are documented analytics definitions, not observed merchant totals or settled revenue.\n\n## Usage MRR preview\n\nBoth captures list Usage MRR and reporting as a preview feature. The November page provides a signup link and registration example to **request** access (new lines 16\u201334); it does not establish account eligibility, accepted registration, or inclusion of metered products in ordinary MRR. Ordinary MRR still excludes metered products (new line 113).\n\n## Accounts receivable aging (2026-11-07)\n\n**Billing overview > Collections** shows current unpaid invoice balances grouped by age **as of today**. AR aging for a supported past reporting date requires Revenue Recognition; the captured page does not enumerate supported historical dates. See new lines 36\u201338.\n\n## CSV export routes (2026-11-07)\n\n- **Individual metric details:** on Revenue, Subscribers, Trials, Churn, or Usage, open a metric and choose **Export**. The **Summary table** downloads aggregated time-series data reflecting the current date range, filters, grouping, and comparison where applicable. **Data results** downloads underlying rows for the selected period and filters only where the metric supports that option (new lines 40\u201351).\n- **Prebuilt reports:** in live mode, use **Report downloads** on Billing overview. These reports have fixed schemas independent of an individual metric's detail-page filters or grouping (new lines 53\u201361).\n\n| November 2026 prebuilt report | Listed contents |\n|---|---|\n| MRR per subscriber per month | Each subscriber's MRR at each month end |\n| Subscription metrics per month | MRR and subscriber roll-forwards, retention, and customer value by month |\n| Customer MRR changes | Customer MRR change log for new subscribers, upgrades, downgrades, reactivations, and churn |\n\nPrebuilt report date columns use **UTC**, while Billing Analytics charts use the account time zone; monthly totals can therefore differ (new lines 63\u201365). The May capture instead lists **Subscription metrics summary**, with MRR and active-subscriber roll-forwards, trial conversion, and lifetime value (old lines 23\u201331). The newer row does not prove that the older label is unavailable on every Stripe surface.\n\n## Configurable metrics\n\nFrom Billing overview, **Configure** changes calculation choices for MRR, Churn, and Active Subscribers. Changes take **24\u201348 hours to appear in the configuration** (old line 35; new line 69), not a proven payment or cash-collection effect.\n\n**Discounts in MRR:**\n- Subtract recurring discounts: optional.\n- Subtract one-time discounts: optional.\n- Permanent recurring discounts: always subtracted (old lines 37\u201346; new lines 71\u201380).\n\n**Active subscriber timing:**\n- At subscription start, when the first billing period begins: the **most common** option, not an established product default.\n- When first payment is received (old lines 48\u201353; new lines 82\u201387).\n\n## Metric definitions\n\n### MRR\n\nMRR sums the monthly-normalized value of `active` and `past_due` subscriptions. Taxes, free plans, and metered products are excluded; a `canceled` or `unpaid` subscription ceases to count (new lines 111\u2013115). The May capture described subscription-level trial exclusion (old line 79). The November capture makes this variant boundary explicit:\n\n- For **item-level trial offers**, only the items currently trialing are excluded. Non-trial items in the same subscription still contribute.\n- For a **legacy `trial_end` free trial**, the entire subscription is excluded during its trial (new line 115).\n\nExample: 100 subscribers at $100/month plus 50 at $600/year gives $12,500 MRR in the page's simplified example (old line 81; new line 117). This is illustrative arithmetic, not a merchant result.\n\n### MRR growth\n\nBeginning MRR plus new, reactivation, and expansion MRR, less contraction and churn MRR, with FX adjustment (old lines 85\u201397; new lines 121\u2013133).\n\n### Active subscribers\n\nCustomers with positive MRR on at least one `active` or `past_due` subscription; multiple active subscriptions count once per customer. Free plans and trials without positive MRR do not count. If discounts are subtracted and a 100% coupon reduces MRR to zero, the subscriber is counted as churned and can reactivate when the coupon is removed (old lines 131\u2013139; new lines 167\u2013175).\n\n### ARPU and LTV\n\nARPU = MRR \u00f7 active subscribers. Estimated subscriber LTV = ARPU \u00f7 subscriber churn rate, based on values at a point in time (old lines 149\u2013159; new lines 185\u2013195).\n\n### Trials and trial conversion\n\n**New trials** count trial periods started in the selected period. Under item-level trial offers, each trialing subscription item counts separately; under legacy `trial_end`, each subscription trial counts separately, so one customer may count more than once (new lines 199\u2013205). The May capture's subscription-level language describes the older variant (old lines 163\u2013168).\n\n**Trial conversion rate** = trials converted to paid in the last 30 days \u00f7 trials ended in the last 30 days. Item-level offers track conversion for each trialing item; legacy `trial_end` tracks at subscription level. It may exceed 100% if some convert after their trial ended (old lines 170\u2013174; new lines 207\u2013211).\n\n### Churn\n\nSubscriber churn rate = churned subscribers in the past 30 days \u00f7 (active subscribers 30 days ago + new subscribers in those 30 days). Churned revenue = churned MRR + contraction MRR (old lines 176\u2013188; new lines 213\u2013225).\n\n### Retention by cohort\n\nCohorts start when subscribers first generate positive MRR. Subscriber retention tracks remaining active subscribers; revenue retention tracks remaining MRR, which can exceed 100% after expansion (old lines 190\u2013212; new lines 227\u2013249).\n\n### Usage metrics\n\n**Aggregate usage** follows the meter's SUM or COUNT aggregation; the Dashboard does not display meters with other aggregation formulas. **Usage revenue** is the amount generated from usage events across meters in a period, excluding taxes and discounts; the documented example multiplies a metered product price by usage within an active subscription's billing period (old lines 99\u2013129; new lines 135\u2013165). These metrics do not imply ordinary MRR includes metered products.\n\n## Dashboard features\n\n- **Explore:** drill down into data points and, where cells are clickable, underlying events. Available for a subset of billing metrics (old lines 55\u201361; new lines 89\u201395).\n- **Product/Price filtering and grouping:** available for a subset and unavailable with subscription volume in multiple currencies (old lines 63\u201369; new lines 97\u2013103).\n- **Benchmarking:** the guide lists comparison with similar Stripe businesses (old lines 8\u201313; new lines 9\u201314). See [[source-stripe-billing-benchmarks]] for separate benchmark detail.\n\n## Related pages\n\n- [[stripe-billing-analytics]] \u2014 concept route\n- [[stripe-subscriptions]] \u2014 subscription concept\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-analytics-2026-11-07|2026-11-07 Stripe Billing analytics capture]]\n- [[raw/stripe-billing-analytics-2026|2026-05-13 Stripe Billing analytics capture]]\n",
+  "quotes": [
+    {
+      "text": "This view reflects your balances as of today. To view AR aging data for a supported past reporting date, you need Revenue Recognition.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:38"
+    },
+    {
+      "text": "In live mode, use **Report downloads** on the [Billing overview](https://dashboard.stripe.com/billing) page to download prebuilt reports. These reports have fixed schemas and aren\u2019t tied to the filters or grouping on an individual metric\u2019s details page.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:55"
+    },
+    {
+      "text": "Date columns in prebuilt reports use UTC. Billing Analytics charts use your account\u2019s time zone, so monthly totals might not match exactly.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:65"
+    },
+    {
+      "text": "For [trial offers](https://docs.stripe.com/billing/subscriptions/trials.md) (item-level trials), only the subscription items currently in a trial period are excluded from MRR. If a subscription has multiple items and only some have an active trial offer, the non-trial items still contribute to MRR. Legacy free trials (using `trial_end`) exclude the entire subscription from MRR for the duration of the trial.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:115"
+    },
+    {
+      "text": "For [trial offers](https://docs.stripe.com/billing/subscriptions/trials.md) (item-level trials), conversion is tracked independently for each subscription item with a trial offer. For legacy free trials (using `trial_end`), conversion is tracked at the subscription level.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:209"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "MRR calculations exclude subscriptions in trial periods, any taxes applied to the subscription, any subscribers on free plans, and any metered (usage based) products.",
+      "location": "raw/stripe-billing-analytics-2026.md:79"
+    },
+    {
+      "text": "**New trials** shows the sum of subscriptions that started a trial during the period. We count the number of trials at the subscription level rather than at the customer level, so a single customer can count as multiple trials.",
+      "location": "raw/stripe-billing-analytics-2026.md:165"
+    },
+    {
+      "text": "| Subscription metrics summary | A summary of your monthly subscription metrics. The report includes your MRR roll-forward report, active subscriber roll-forward report, trial conversion metrics, and lifetime value metrics.",
+      "location": "raw/stripe-billing-analytics-2026.md:30"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-analytics-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 249
+      }
+    ],
+    "raw/stripe-billing-analytics-2026.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 212
+      }
+    ],
+    "wiki/sources/source-stripe-billing-analytics.md": [
+      {
+        "start": 1,
+        "end": 88
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ae794cf804323c02f447f41a/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 162
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "billing-subscriptions-analytics-overview",
+      "target_path": "wiki/concepts/stripe-billing-analytics.md",
+      "old_text": "Stripe Billing Dashboard analytics tracks recurring revenue metrics. Configurable definitions, drill-down exploration, product/price filtering, and 3 downloadable CSV reports. Benchmarking against similar businesses available.",
+      "new_text": "Stripe Billing Dashboard analytics tracks recurring-revenue, subscriber, trial, churn, retention, and usage metrics. It offers configurable definitions, scoped drill-downs and filtering, metric-level CSV exports, and three listed prebuilt CSV reports in live mode. See [[source-stripe-billing-analytics]] for the 2026-05-13 and 2026-11-07 variants.",
+      "reason": "Include the newly documented export distinction and avoid implying all Dashboard features are universally available.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-subscriptions-analytics-mrr-trials",
+      "target_path": "wiki/concepts/stripe-billing-analytics.md",
+      "old_text": "**Excluded from MRR**: trials, taxes, free plans, metered/usage-based products.",
+      "new_text": "**Excluded from ordinary MRR**: taxes, free plans, and metered products. For item-level trial offers, only trialing items are excluded; non-trial items in a mixed subscription still contribute. A legacy `trial_end` free trial excludes the whole subscription during the trial. See [[source-stripe-billing-analytics]] (2026-11-07 lines 111\u2013115); the 2026-05-13 capture used subscription-level trial language.",
+      "reason": "Prevent a false zero-MRR answer for a partly trialing item-level offer.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-subscriptions-analytics-trial-count",
+      "target_path": "wiki/concepts/stripe-billing-analytics.md",
+      "old_text": "`trials converted \u00f7 trials ended (last 30 days)` \u2014 can exceed 100% if conversions happen after trial end.",
+      "new_text": "`trials converted \u00f7 trials ended (last 30 days)` \u2014 can exceed 100% if conversions happen after trial end. Item-level trial offers count new trials and conversions per trialing subscription item; legacy `trial_end` counts at the subscription level. See [[source-stripe-billing-analytics]] (2026-11-07 lines 199\u2013209; 2026-05-13 lines 163\u2013172).",
+      "reason": "Restore the counting identity for trial offers and legacy trials.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-subscriptions-analytics-timing",
+      "target_path": "wiki/concepts/stripe-billing-analytics.md",
+      "old_text": "## Configurable settings (24-48h to apply)",
+      "new_text": "## Configurable settings (24\u201348h to appear in configuration)",
+      "reason": "Both captures say when changes appear in configuration, not when all downstream results take effect.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-subscriptions-analytics-common",
+      "target_path": "wiki/concepts/stripe-billing-analytics.md",
+      "old_text": "- Start of subscription (most common / default)",
+      "new_text": "- Start of subscription (most common option; no product default established by these captures)",
+      "reason": "Remove unsupported default claim while preserving the documented common option.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-subscriptions-analytics-reports",
+      "target_path": "wiki/concepts/stripe-billing-analytics.md",
+      "old_text": "## Downloadable CSV reports\n\n| Report | Contents |\n|---|---|\n| MRR per subscriber per month | MRR per subscriber at month end |\n| Subscription metrics summary | MRR roll-forward, subscriber roll-forward, trial conversion, LTV |\n| Customer MRR changes | Log of every MRR change (new/upgrade/downgrade/reactivation/churn) |",
+      "new_text": "## CSV exports and prebuilt reports\n\nThe 2026-11-07 capture distinguishes individual-metric exports, whose summary tables reflect selected date range, filters, grouping, and comparison, from live-mode prebuilt reports with fixed schemas. Data-result rows are available only for supported metrics. Prebuilt report dates use UTC; charts use the account time zone. See [[source-stripe-billing-analytics]] (new lines 40\u201365).\n\n| November 2026 prebuilt report | Listed contents |\n|---|---|\n| MRR per subscriber per month | MRR per subscriber at month end |\n| Subscription metrics per month | MRR and subscriber roll-forwards, retention, customer value |\n| Customer MRR changes | Customer MRR change log (new/upgrade/downgrade/reactivation/churn) |\n\nThe 2026-05-13 capture instead listed **Subscription metrics summary**, with MRR and active-subscriber roll-forwards, trial conversion, and lifetime value. The later page does not establish that the older report is unavailable elsewhere.",
+      "reason": "Replace undated old report row with dated new row while retaining historical description and export qualifications.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-subscriptions-analytics-ar-aging",
+      "target_path": "wiki/concepts/stripe-billing-analytics.md",
+      "old_text": "## Dashboard features\n\n- **Explore**:",
+      "new_text": "## Dashboard features\n\n- **AR aging**: Billing overview > Collections shows current unpaid invoice balances by age as of today. Supported past reporting dates require Revenue Recognition; see [[source-stripe-billing-analytics]] (2026-11-07 lines 36\u201338).\n- **Explore**:",
+      "reason": "Add a reciprocal route for the newly documented AR-aging feature without asserting historical-date coverage.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/analytics, [[source-stripe-billing-analytics]] is the existing source route for both May and November captures. It defines Dashboard recurring-revenue metrics, configurations, and reports (old lines 4\u201379, 85\u2013212; new lines 5\u2013115, 121\u2013249). The November page distinguishes item-level trial offers, where non-trial items in a mixed subscription contribute to MRR, from legacy `trial_end`, which excludes the whole subscription; it also counts new trials and conversions at item versus subscription level respectively (new lines 113\u2013115, 199\u2013209; old lines 79, 163\u2013172). It documents export and AR-aging UI paths, not actual merchant totals or settlement.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/analytics, [[source-stripe-billing-analytics]] now needs a dated November account of current AR aging versus Revenue Recognition for supported past dates (new line 38), metric-level versus live-mode fixed-schema report CSV exports and UTC versus account-time-zone dates (new lines 40\u201365), and the item-level versus legacy trial counting and MRR exclusion boundary (new lines 115, 199\u2013209; old lines 79, 163\u2013172). The May 'Subscription metrics summary' row is historical (old line 30), while November lists 'Subscription metrics per month' with different contents (new line 60); no capture proves the old title was removed everywhere. Usage MRR remains a preview access request (old lines 15\u201321; new lines 16\u201334), not proven eligibility, successful signup, metered inclusion in ordinary MRR, or collected cash."
+  },
+  "status": "candidate_ready"
+}

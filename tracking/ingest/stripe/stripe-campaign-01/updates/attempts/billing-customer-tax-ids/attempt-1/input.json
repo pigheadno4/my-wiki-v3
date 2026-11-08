@@ -1,0 +1,96 @@
+{
+  "job_id": "billing-customer-tax-ids",
+  "queue_id": 9,
+  "canonical_url": "https://docs.stripe.com/billing/customer/tax-ids",
+  "raw_path": "raw/stripe-billing-customer-tax-ids-2026-11-07.md",
+  "raw_sha256": "12b5c55d8b93a1664fa5db1330adeba7cfa0147f8d253a9d2ddfea671d0f04d8",
+  "prior_raw_path": "raw/stripe-billing-customer-tax-ids-2026.md",
+  "prior_raw_sha256": "84ce913e89fb269ad4e526480eba018f653db0326a30a4c9aa9a9aff4fb1ae7c",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/6b7f0522b5169b9d2ef018cb/content.diff",
+  "diff_sha256": "153a2049963730db86989199b85b97facc4b23c9b096cc84d9c0fa6752919602",
+  "source_targets": [
+    "wiki/sources/source-stripe-billing-customer-tax-ids.md"
+  ],
+  "source_before_sha256": "e1ee986df3d1eb4f552186307d8796e1d30582239c8948c4fe853248d04d42c8",
+  "section": "billing",
+  "new_words": 3276,
+  "new_lines": 295,
+  "old_words": 2758,
+  "old_lines": 253,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-billing-customer-tax-ids.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-customer-tax-ids/attempt-1/receipt.json",
+  "receipt_sha256": "b396bdabfe014b34a168a983ca760ea829cd69a8e1cbc495a5f5b55ef98a87a4",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-customer-tax-ids/attempt-1/review.json",
+  "review_sha256": "9ef45a3f85af4f101391b81893a763e21d5f5b5c5a499d0470e8d21f5d24329b",
+  "affected_concepts": [
+    "wiki/concepts/stripe-tax.md"
+  ],
+  "new_raw": "raw/stripe-billing-customer-tax-ids-2026-11-07.md",
+  "new_raw_sha256": "12b5c55d8b93a1664fa5db1330adeba7cfa0147f8d253a9d2ddfea671d0f04d8",
+  "prior_raw": "raw/stripe-billing-customer-tax-ids-2026.md",
+  "findings": [
+    "The 2026-11-07 capture retains the core guide: customer tax IDs appear in invoice and credit note PDF headers (new 11; old 10), IDs are managed in Dashboard, customer portal, or Tax ID API (new 251; old 209), and updates are delete plus create (new 266; old 224). Keep the same source route with both dated raw captures.",
+    "Correct current source line 42: 'AU ABN ... Validates format only' conflicts with government ABR validation in new 203 and old 172. ABR validates ID validity, while customer name, address and GST registration matching remain the user's responsibility; EU VAT/VIES and GB VAT/HMRC have similarly qualified government checks (new 207-219).",
+    "Replace current source line 46's generic webhook claim with object-specific routing. New 233-240 distinguishes Customer snapshot customer.tax_id.updated with status in data.object from customer-configured Account thin v1.customer.tax_id.updated requiring retrieval via related_object; statuses are pending, verified, unverified, unavailable. The new text says an event is sent when verification finishes, so avoid claiming every status transition generates one.",
+    "Qualify current source lines 13 and 19. The Yes flag's footnote (new 182; old 162) says Stripe Tax won't apply tax in line with relevant laws; new 242 further says reverse charge or zero rate depends on applicable laws and required number format regardless of government verification result. Do not turn the table into an unconditional B2B exemption or government-verified eligibility claim.",
+    "The table gains supported enums such as au_acn and au_wpn (new 27-29 versus old 25-27), cz_dic (new 64 versus old 59), fr_siren/fr_siret/fr_spi (new 79-82 versus old 73-74), and others. The supported-type table and examples should be located in the dated raw; do not assert present-day account eligibility from this capture.",
+    "Preserve the distinct v1 Customer and v2 customer-configured Account example owners (new 268-288; old 226-246). Current source line 32's ACCOUNT_ID placeholder should be aligned with the captured CUSTOMERACCOUNT_ID example and should not imply any Account is a customer-configured Account. No API call or payment outcome was tested."
+  ],
+  "substantive_changes": [
+    "New explicit comparison table and prose separate government-database checks for AU ABN, EU VAT and GB VAT from format-only checks for all other types (new 184-219; old 164-184 covered the three government cases without the comparison).",
+    "New object-specific validation webhook instructions, four verification status values, manual handling of unavailable results, and qualified Stripe Tax treatment (new 231-242 versus old 196-205).",
+    "Expanded supported-tax-ID table and some changed examples, including ng_tin old 117 to new 132; individual enum additions need dated row-level navigation rather than a broad eligibility statement."
+  ],
+  "conflicts": [
+    "Existing source line 42 says ABN validation is format only; both dated captures say Stripe automatically checks ABNs with ABR (old 172, new 203).",
+    "Existing source line 46 reduces validation notification to one Customer event and says it fires on status change; new 233-240 separates Customer snapshot and customer-configured Account thin events and describes verification completion.",
+    "Existing source lines 13 and 19 render the Yes flag as a generic reverse-charge/B2B exemption; the raw footnote and new 242 make tax outcome conditional on relevant laws and number format."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the 2026-05-13 capture as dated evidence, including its earlier support email at old 8; the 2026-11-07 page instead routes additional-type requests to Stripe support at new 9, without proving that the prior address stopped working.",
+    "The old capture's ABR/VIES/HMRC validation scope and responsibility caveats (old 166-184) remain compatible with new 186-219; validation is not continuously repeated (old 168; new 190).",
+    "The three sandbox/test magic IDs and restriction to AU ABN, EU VAT or GB VAT remain (old 186-194; new 221-229), as do invoice PDF display and delete/create update instructions."
+  ],
+  "unresolved_questions": [
+    "The captured page does not establish current account availability or API-version rollout for the customer-configured Account path; the linked v2 event reference includes api-version=preview (new 236).",
+    "The capture does not explain exactly which verification status transitions emit events beyond its statement about verification finishing, or prove tax treatment for any particular customer or jurisdiction."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw3",
+  "reviewer_agent": "/root/s01ur6",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-customer-tax-ids-2026-11-07.md",
+      "sha256": "12b5c55d8b93a1664fa5db1330adeba7cfa0147f8d253a9d2ddfea671d0f04d8",
+      "lines": 295
+    },
+    {
+      "path": "raw/stripe-billing-customer-tax-ids-2026.md",
+      "sha256": "84ce913e89fb269ad4e526480eba018f653db0326a30a4c9aa9a9aff4fb1ae7c",
+      "lines": 253
+    },
+    {
+      "path": "wiki/sources/source-stripe-billing-customer-tax-ids.md",
+      "sha256": "e1ee986df3d1eb4f552186307d8796e1d30582239c8948c4fe853248d04d42c8",
+      "lines": 69
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/6b7f0522b5169b9d2ef018cb/content.diff",
+      "sha256": "153a2049963730db86989199b85b97facc4b23c9b096cc84d9c0fa6752919602",
+      "lines": 442
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-customer-tax-ids-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-customer-tax-ids-review.json"
+}

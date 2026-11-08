@@ -1,0 +1,110 @@
+{
+  "job_id": "billing-subscriptions-build-subscriptions",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-build-subscriptions-2026-11-07.md",
+  "raw_sha256": "bd9f122aa46d0d1cb465cd532b79bd78e243e8885b777666ef01570241f78192",
+  "prior_raw_path": "raw/stripe-build-subscriptions-2026.md",
+  "prior_raw_sha256": "12a71e01a0fab84008ee34cd40f417ecec782b914bd7f419b6ecdf881ee6144f",
+  "source_target": "wiki/sources/source-stripe-build-subscriptions.md",
+  "source_before_sha256": "4308310fb0edc3c204193e94ee5c569a891fee544670a5c8e8e5e8418bef05f1",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-build-subscriptions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "raw/stripe-build-subscriptions-2026.md": [
+      {
+        "start": 1,
+        "end": 10049
+      }
+    ],
+    "wiki/sources/source-stripe-build-subscriptions.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d1e1fa1b91e64180760a761b/content.diff": [
+      {
+        "start": 1,
+        "end": 10059
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Create and manage subscriptions to accept recurring payments.",
+      "location": "raw/stripe-billing-subscriptions-build-subscriptions-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-build-subscriptions-2026-11-07.md:11"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/build-subscriptions.md?payment-ui=checkout&ui=stripe-hosted)",
+      "location": "raw/stripe-billing-subscriptions-build-subscriptions-2026-11-07.md:14"
+    },
+    {
+      "text": "[Subscriptions API](https://docs.stripe.com/billing/subscriptions/build-subscriptions.md?payment-ui=elements&api-integration=paymentintents)",
+      "location": "raw/stripe-billing-subscriptions-build-subscriptions-2026-11-07.md:18"
+    },
+    {
+      "text": "[React Native](https://docs.stripe.com/billing/subscriptions/build-subscriptions.md?payment-ui=mobile&platform=react-native)",
+      "location": "raw/stripe-billing-subscriptions-build-subscriptions-2026-11-07.md:22"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This is a Full hosted page for when platform is web and ui is stripe-hosted.",
+      "location": "raw/stripe-build-subscriptions-2026.md:26"
+    },
+    {
+      "text": "You must use the [Stripe API version 2025-06-30.basil](https://docs.stripe.com/upgrades.md) or later.",
+      "location": "raw/stripe-build-subscriptions-2026.md:267"
+    },
+    {
+      "text": "The Checkout Sessions API provides built-in support for tax calculation, discounts, shipping, and currency conversion, reducing the amount of custom code you need to write. This is the recommended approach for most integrations.",
+      "location": "raw/stripe-build-subscriptions-2026.md:1045"
+    },
+    {
+      "text": "On the back end, create the subscription with an `incomplete` status using `payment_behavior=default_incomplete`.",
+      "location": "raw/stripe-build-subscriptions-2026.md:2519"
+    }
+  ],
+  "proposed_disposition": "no_substantive_update",
+  "findings": [
+    "The 2026-11-07 base URL capture is a 22-line variant index. It names two Checkout web variants, two Elements integration variants, and three mobile variants (new raw:11-22). It does not document implementation prerequisites, identities, API behavior, subscription state, webhook outcomes, or payment finality.",
+    "The 2026-05-12 matched raw is a 10,049-line combined guide with the corresponding hosted, embedded, Elements Checkout Sessions, Elements Payment Intents/Subscriptions API, iOS, Android, and React Native sections (old raw:20-26,497-501,1025-1045,2133-2149,4021-4028,6036-6041,7944-7949). The new index redirects readers to variant URLs; omission of the old body is not evidence of behavior removal.",
+    "The current source is explicitly dated 2026-05-12, cites only the old full raw, and describes three web UI paths (source:4-7,13-21,43-45). Keep those claims as a scoped historical summary. Its unqualified 'three UI paths' wording and the concept's matching source annotation (stripe-subscriptions:216) under-describe the old guide's two Elements and three mobile variants; this is a preexisting coverage issue, not a new Stripe change.",
+    "The old guide separates server-created Checkout Sessions, client UI, webhook-based provisioning, and direct Subscriptions API payment confirmation (old raw:255-267,310-314,378-384,2519-2525). The index links alone cannot verify any of those flows today. Root and Stripe indexes route to the existing subscription concept and source, and the concept retains dated webhook, flexible-billing, and customer-model context (wiki/index.md:7, wiki/stripe-index.md:792, wiki/concepts/stripe-subscriptions.md:55-74,110-121,196-216)."
+  ],
+  "substantive_changes": [
+    "No substantive subscription implementation change is established by this same-URL capture. The observed change is collection/rendering shape: the base .md route now returns an index of seven query-parameter variants in place of the old combined guide (diff:3-11,10050-10059; new raw:9-22)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-05-12 old raw and source's hosted/embedded/Elements examples as historical, variant-scoped evidence; do not replace its factual raw_files link with the navigation-only 2026-11-07 index (source:4-7,13-25,43-45).",
+    "Preserve the old guide's flexible billing prerequisite as dated guidance: setting billing_mode type flexible requires Stripe API version 2025-06-30.basil or later in that guide (old raw:267,2521; source:25). The new index does not reconfirm present eligibility or defaults.",
+    "Preserve the old hosted Checkout webhook and identity distinction: invoice.paid versus invoice.payment_failed are payment outcomes, and the record says to store Subscription plus Customer or Account IDs (old raw:310-314,378-384). Do not equate checkout completion, a subscription status, or mobile PaymentSheet completion with final settlement.",
+    "Preserve the old direct Subscriptions API's default_incomplete/first-invoice confirmation_secret and save_default_payment_method after successful payment as a separate Elements variant (old raw:2519-2525), and the mobile iOS digital-goods platform caveat as a dated, region-dependent note (old raw:4021-4028)."
+  ],
+  "conflicts": [
+    "Source:13-21 and stripe-subscriptions concept:216 say 'three UI paths' or present one Custom Elements path, while old raw:1025-1045 and 2133-2149 distinguish Checkout Sessions versus Payment Intents/Subscriptions API under Elements and old raw:4021-4028,6036-6041,7944-7949 also includes mobile. Annotate reciprocal scope if later revising those summaries; do not silently collapse the variants or say the new index removes them.",
+    "The current source's source:27 and concept:60,80,83 can read as immediate provision on checkout.session.completed; the old hosted guide:312-314 also instructs invoice.paid for monthly continuation and invoice.payment_failed response. Preserve the event/outcome boundary and avoid claiming completion itself proves recurring payment success.",
+    "The concept's source annotation:216 repeats the source's three-path framing while the 2026-11-07 index:13-22 explicitly lists seven route variants. The index confirms current navigation categories only; the old full guide supports historical behavior. Both sides need date and scope labels if a later coordinator-approved correction is made."
+  ],
+  "unresolved_questions": [
+    "What do the seven query-parameter variant pages contain on 2026-11-07, and do any materially revise flexible billing, identity, client/server, lifecycle, or payment-outcome rules? Those variant pages were not captured in this assigned evidence and cannot be inferred from their links.",
+    "If the repository later refreshes this source, should its title/summary explicitly scope 'three UI paths' to the selected web variants and link separate mobile/Elements variant captures? The current index does not supply enough content to rewrite the implementation summary."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md",
+    "wiki/concepts/stripe-checkout.md",
+    "wiki/concepts/stripe-inapp-payments.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/build-subscriptions, the complete 2026-11-07 capture establishes only navigation: its variant notice at new raw:11 routes to two Checkout, two Elements, and three mobile choices at new raw:13-22. It states no current implementation prerequisite, account identity, payment status, or finality rule. The matched 2026-05-12 guide instead documented hosted Checkout, embedded Checkout, Elements with Checkout Sessions, direct Subscriptions/Payment Intents, and mobile variants at old raw:20-26,497-501,1025-1045,2133-2149,4021-4028,6036-6041,7944-7949. [[source-stripe-build-subscriptions]] is a dated summary of that old full guide, not proof that its behavior was reconfirmed by the new index.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/build-subscriptions, the substantive behavior delta is unestablished; the visible change is navigation and rendering of seven variant links at new raw:9-22 and diff:3-11,10050-10059. Preserve [[source-stripe-build-subscriptions]] as 2026-05-12 evidence: flexible billing's Basil API minimum at old raw:267, server webhook and Customer-or-Account ID handling at old raw:310-314, direct API default_incomplete/confirmation at old raw:2519-2525, and platform-qualified mobile caveats at old raw:4021-4028. Source:13-21 and the concept's three-path annotation understate the old variant breadth and merit reciprocal scoped wording, but an index omission cannot prove removal, current eligibility, a payment outcome, or a new client/server contract."
+  }
+}

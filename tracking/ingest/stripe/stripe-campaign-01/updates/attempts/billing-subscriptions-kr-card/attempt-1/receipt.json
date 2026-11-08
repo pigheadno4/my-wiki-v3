@@ -1,0 +1,115 @@
+{
+  "job_id": "billing-subscriptions-kr-card",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md",
+  "raw_sha256": "1dc7d2740476923df10de728371ff0d1c06d20415c8d4b0e666776b6cc0cddea",
+  "source_before_sha256": "ed7777da50139594ad01cda0de8914801111cfba0942776a9d181f3ee0c8e31c",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up South Korean Card (KR Card) Subscription\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/kr-card\"\nraw_files:\n  - \"stripe-subscriptions-kr-card-2026.md\"\ntags: [stripe, billing, subscriptions, kr-card, south-korea, krw, setup-intents, mandate]\n---\n\n## Overview\n\nStripe's 2026-05-13 capture explains three `kr_card` subscription integration variants: SetupIntents, direct Subscriptions API with PaymentIntent confirmation, and a Stripe-hosted Checkout page. Its SetupIntents section says prices must be converted to KRW for this method. The 100,000 KRW monthly stock-photo subscription is an example, not a minimum or universal price. See [[stripe]] and [[stripe-korea-payment-methods]].\n\nThe 2026-11-07 capture at the same URL contains only a title and links to the three query-parameter variants. It supplies navigation, not evidence that the May flows were removed, deprecated, or still unchanged in their current variant pages. The current contents of those variants need separately pinned captures before making current behavior claims.\n\n## May 2026 integration paths\n\n| Variant | Steps shown in the May capture |\n| --- | --- |\n| SetupIntents API | Server creates and confirms a SetupIntent to save a `kr_card` payment method. Its `client_secret` goes to Stripe.js for customer redirect to the local processor and mandate authorization. A later server-side subscription creation uses the SetupIntent response's PaymentMethod ID as `default_payment_method`. |\n| Subscriptions API | Server creates a subscription using `payment_behavior=default_incomplete` and `payment_settings.save_default_payment_method=on_subscription` in the example, expands `latest_invoice.payments` and `latest_invoice.confirmation_secret`, then confirms a PaymentIntent. The client can receive the confirmation secret; `requires_action` calls for local-processor authentication. |\n| Stripe-hosted Checkout | Server creates a `subscription`-mode Checkout Session; the example lists `card` and `kr_card` and redirects the customer to the returned URL. The guide says the customer must authorize future use and describes a successful test transition from `requires_action` to `succeeded`. |\n\nThe SetupIntents command includes `usage=off_session`, `mandate_data`, and a later subscription example includes `off_session: true`. The Subscriptions API confirmation command also includes `mandate_data`. These are path-specific examples in the May capture; the captured prose does not establish them as universal requirements across all three paths. The hosted Checkout example does not show those parameters. See May raw lines 34\u201372, 115\u2013156, and 182\u2013210.\n\n> [!warning] Contradiction\n> The May SetupIntents opening says its first API call creates a Subscription and PaymentIntent, but the following heading, command, and explanation show a SetupIntent before subscription creation (May lines 12 and 34\u201356). Follow the concrete path as dated example evidence; the capture does not resolve the opening sentence.\n\n> [!warning] Contradiction\n> Both May direct-confirm sections say in prose to set `payment_method_types` to `kr_card` (lines 79 and 143), while their PaymentIntent confirmation commands use `payment_method_data` fields (lines 81\u201387 and 145\u2013154). These passages do not establish one universal required confirmation parameter. The November index cannot resolve the discrepancy.\n\nA `requires_action` response means customer authentication remains; it is not proof of payment success. The May text describes an active subscription **after successful payment**. The SetupIntents redirect passage does not itself guarantee a `succeeded` SetupIntent before the later subscription call. No account eligibility, local-processor completion, or recurring-payment outcome was verified from these captures.\n\n## Detail locators\n\n- May raw lines 14\u201332: product/price setup and KRW statement.\n- May raw lines 34\u201389: SetupIntent, Stripe.js redirect, subscription example, and confirmation discrepancy.\n- May raw lines 91\u2013156: direct subscription and PaymentIntent confirmation example.\n- May raw lines 158\u2013214: hosted Checkout example and successful test case.\n\n## Related\n\n- [[stripe-korea-payment-methods]] \u2014 Korean payment-method concept\n- [[stripe-subscriptions]] \u2014 broader subscription concept\n\n## Related raw API references\n\n- [[raw/stripe-billing-subscriptions-kr-card-2026-11-07|2026-11-07 variant index: SetupIntents, Subscriptions API, and hosted Checkout]] \u2014 navigation only; variant contents were not captured here.\n\n## Raw Sources\n\n- [[raw/stripe-subscriptions-kr-card-2026|KR card subscription variants, captured 2026-05-13]]\n",
+  "quotes": [
+    {
+      "text": "Set up a subscription with local South Korean cards",
+      "location": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md:5"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md:9"
+    },
+    {
+      "text": "[SetupIntents API](https://docs.stripe.com/billing/subscriptions/kr-card.md?api-integration=setupintents)",
+      "location": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md:11"
+    },
+    {
+      "text": "[Subscriptions API](https://docs.stripe.com/billing/subscriptions/kr-card.md?api-integration=subscription)",
+      "location": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md:12"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/kr-card.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md:13"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You must convert your prices to KRW to use the payment method.",
+      "location": "raw/stripe-subscriptions-kr-card-2026.md:32"
+    },
+    {
+      "text": "Set the value of the `default_payment_method` parameter to the PaymentMethod ID from the SetupIntent response.",
+      "location": "raw/stripe-subscriptions-kr-card-2026.md:56"
+    },
+    {
+      "text": "The PaymentIntent response includes the status `requires_action`, which indicates that the customer must authenticate with our local processor to complete the payment.",
+      "location": "raw/stripe-subscriptions-kr-card-2026.md:156"
+    },
+    {
+      "text": "Create a Checkout Session in `subscription` mode to collect the required information.",
+      "location": "raw/stripe-subscriptions-kr-card-2026.md:199"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 13
+      }
+    ],
+    "raw/stripe-subscriptions-kr-card-2026.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 214
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-kr-card.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f37ad6257496eac3422e3be8/content.diff": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 218
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "kr-card-subscription-route",
+      "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+      "old_text": "- [[source-stripe-subscriptions-kr-card]] \u2014 KR card subscription: KRW-only, 3 paths (SetupIntents/Subscriptions API/Checkout), off_session+mandate_data required, local processor redirect",
+      "new_text": "- [[source-stripe-subscriptions-kr-card]] \u2014 KR card subscriptions (May 2026 detailed variants; November 2026 variant index): KRW pricing, SetupIntents, direct Subscriptions API, and hosted Checkout paths; path-specific mandate and off-session examples\n\n> [!warning] Contradiction\n> The May SetupIntents opening describes a first Subscriptions API call, while its steps begin with a SetupIntent. Its confirmation prose names `payment_method_types` while the commands use `payment_method_data`. Neither the examples nor the November index establish universal `off_session` or `mandate_data` requirements across all three paths. See the dated [[source-stripe-subscriptions-kr-card]].",
+      "reason": "Remove unsupported universal parameter requirement from the reciprocal route and expose the dated May internal discrepancies without inferring current variant behavior.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The November capture is navigation only; its variant contents are not pinned.",
+        "The May direct-confirm prose and commands disagree on parameter form."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/kr-card, the 2026-11-07 raw is a thirteen-line index naming SetupIntents, Subscriptions API, and Stripe-hosted Checkout variants (new lines 5\u201313). The completed [[source-stripe-subscriptions-kr-card]] candidate retains the May capture as factual evidence for the three distinct historical paths (old lines 8\u201389, 91\u2013156, 158\u2013214): KRW pricing, a SetupIntent and local-processor redirect before the depicted subscription call, a direct subscription followed by PaymentIntent confirmation, and hosted Checkout. It narrows the old source's blanket off_session and mandate_data requirements (source lines 19\u201320) to example parameters. The May SetupIntents opening conflicts with its own steps (old line 12 versus 34\u201356), and requires_action does not establish successful payment.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/kr-card, the visible November change is a variant index (new lines 9\u201313) replacing May's combined detailed page (old lines 8\u2013214). The completed [[source-stripe-subscriptions-kr-card]] candidate keeps May behavioral provenance and places November under navigation-only related raw references, so it does not infer deprecation or current variant instructions. It removes the unsupported Revolut Pay comparison and narrows source claims that off_session=true or mandate_data are universally required (old example lines 38\u201372, 145\u2013154; hosted Checkout sample lines 199\u2013210 omits them). It warns that May prose says payment_method_types but confirmation commands use payment_method_data (old lines 79\u201387, 143\u2013154). The proposed [[stripe-korea-payment-methods]] route removes its blanket requirement. Example 100,000 KRW pricing and requires_action are not proof of live eligibility or payment finality."
+  },
+  "status": "candidate_ready"
+}

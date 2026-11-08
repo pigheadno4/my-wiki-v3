@@ -1,0 +1,143 @@
+{
+  "job_id": "billing-subscriptions-klarna",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md",
+  "raw_sha256": "641565acd4dfa03866a5516ef57de61592f5d9676f099913c10b06c947c966bb",
+  "source_before_sha256": "b518d0613b786b890ce154c1b2b4c26077f85f7fe2237729f89b758e7e4d24c4",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up Klarna Subscription\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/klarna\"\nraw_files:\n  - \"stripe-subscriptions-klarna-2026.md\"\ntags: [stripe, billing, subscriptions, klarna, bnpl, checkout, payment-element, mandate]\n---\n\n## Summary\n\nThe 2026-05-13 Klarna subscription guide contains two paths: Stripe-hosted Checkout, which it recommends for saving Klarna as a payment method, and an advanced Payment Element integration. The 2026-11-07 capture at the same canonical URL is only an index linking to those two variants. Its loss of inline detail is a navigation change, not evidence of deprecation, altered authorization, mandate or capture behavior, or a successful payment. Current contents of the linked variants were not fetched for this update.\n\nThe May guide says Klarna payment options vary by use case and buyer country. Its 23-country tables are sandbox test data from that date, not proof of current country or merchant eligibility.\n\n## Two integration paths in the 2026-05-13 capture\n\n### Path 1: Stripe-hosted Checkout (recommended in the May guide)\n\nThe guide starts with a Stripe account, Product and existing Price. Create a server-side Checkout Session with `mode='subscription'` and at least one recurring Price; one-time Prices can be added alongside recurring Prices. Redirect the buyer to the Session URL. The dated sample omits `payment_method_types`; that omission does not establish a universal no-override rule or account-specific Klarna availability. Adding a one-time line item does not make it a recurring mandate or establish manual-capture support.\n\nThe guide describes configuring a free trial with `subscription_data` length or end-date settings. To retrieve a created subscription, handle `checkout.session.completed` and record the Session's subscription ID. A returning buyer can also supply the Session ID on a success page and retrieve the Session server-side with `expand=['subscription']`.\n\n**A visit to `success_url` is not payment evidence.** The May guide warns that someone can open that URL without paying, while a buyer who has paid can close the tab before the redirect. Use the webhook or retrieve and verify server-side Session and payment state before granting access; the redirect alone does not prove payment.\n\n> [!warning] Contradiction\n> The May guide instructs creating the Checkout Session in `mode='subscription'` (lines 66\u201383), but its illustrative `checkout.session.completed` payload shows `mode: \"setup\"` (line 128). Treat the payload as an inconsistent example, not a different subscription-mode instruction.\n\n### Path 2: Payment Element (advanced in the May guide)\n\nCreate an incomplete subscription server-side using a Customer and Price with `payment_behavior=default_incomplete`; the example sets `payment_settings.save_default_payment_method='on_subscription'` and expands the first invoice's payment and confirmation-secret fields. On the client, mount the Payment Element using the returned client secret. The dated `stripe.confirmPayment` example passes `elements` and `confirmParams` containing `return_url` and `mandate_data.customer_acceptance`, then redirects to Klarna. This sample does not make its `mandate_data` shape a universal requirement for hosted Checkout.\n\nAfter return, query the PaymentIntent status. The guide calls payment successful and the subscription active **if** that status is `succeeded`; form submission or redirect alone is not success evidence.\n\n## Klarna characteristics and dated testing\n\n- Klarna payment options vary by use case and buyer country; check the relevant option before integration.\n- The May guide's sandbox section gives approved and denied identity/email examples for 23 customer countries. It says Klarna uses cookies for session tracking, so log out between different country tests.\n- In those sandbox examples, an arbitrary six-digit authentication code succeeds and `999999` fails. The guide also supplies test repayment values for Direct Debit, bank transfer, credit card and debit card.\n- The 23-country data, approval/denial emails and repayment values are test instructions from the May snapshot, not a live coverage guarantee, a successful transaction receipt, or proof of future recurring collection.\n\nPer-country test inputs remain in the full dated raw at lines 164\u2013520 and 683\u20131038. Neither capture supplies a general Klarna subscription manual-capture contract, actual account eligibility, completed live authorization, successful live charge, settlement, or future recurring payment evidence.\n\n## Related pages\n\n- [[stripe-klarna]] \u2014 Klarna concept\n- [[stripe-subscriptions]] \u2014 subscription concept\n- [[stripe]] \u2014 company page\n\n## Related raw API references\n\n- [[raw/stripe-billing-subscriptions-klarna-2026-11-07|2026-11-07 Klarna subscription variant index; navigation only]]\n- [Stripe-hosted page variant](https://docs.stripe.com/billing/subscriptions/klarna.md?api-integration=checkout) \u2014 linked by November index; target not fetched here\n- [Advanced integration variant](https://docs.stripe.com/billing/subscriptions/klarna.md?api-integration=elements) \u2014 linked by November index; target not fetched here\n\n## Raw Sources\n\n- [[raw/stripe-subscriptions-klarna-2026|Klarna subscription guide, captured 2026-05-13; hosted and advanced paths plus sandbox data]]\n",
+  "quotes": [
+    {
+      "text": "# Set up a subscription with Klarna",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:5"
+    },
+    {
+      "text": "Learn how to create and charge for a subscription with Klarna.",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/klarna.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Advanced integration](https://docs.stripe.com/billing/subscriptions/klarna.md?api-integration=elements)",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Available Klarna payment options vary by use case and buyer country",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:10"
+    },
+    {
+      "text": "Create a Checkout Session with the ID of an existing [Price](https://docs.stripe.com/api/prices.md). Set the mode to `subscription` and pass at least one recurring price. You can add one-time prices in addition to recurring prices.",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:66"
+    },
+    {
+      "text": "Don\u2019t rely on the redirect to the `success_url` alone for detecting payment initiation",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:89"
+    },
+    {
+      "text": "Below, we have specially selected test data for the currently supported customer countries. In a sandbox, Klarna approves or denies a transaction based on the supplied email address.",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:168"
+    },
+    {
+      "text": "After the user has been redirected, query the PaymentIntent to check its status. If the status is `succeeded`, the payment was successful and your subscription is now active.",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:681"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-klarna-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-subscriptions-klarna-2026.md": [
+      {
+        "start": 1,
+        "end": 1038
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-klarna.md": [
+      {
+        "start": 1,
+        "end": 52
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3994dafbb87a6478361ce50a/content.diff": [
+      {
+        "start": 1,
+        "end": 1040
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "klarna-concept-coverage-lead",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "Klarna is a Buy Now Pay Later (BNPL) payment method available on Stripe across 23 countries. Customers authenticate and select repayment options (Pay Now, Pay Later, Pay in installments) via a Klarna-hosted redirect. Supports subscriptions.",
+      "new_text": "Klarna is a Buy Now Pay Later (BNPL) payment method on Stripe. Customers authenticate and select repayment options (Pay Now, Pay Later, Pay in installments) through a Klarna-hosted redirect, subject to their use case and buyer country. The 2026-05-13 subscription guide includes sandbox test data for 23 customer countries; this does not establish current merchant or buyer eligibility. The guide describes subscription integrations.",
+      "reason": "Remove current universal 23-country coverage from the subscription evidence and preserve buyer/use-case qualification.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "klarna-concept-country-list",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "## Supported countries (23)\n\nAU, AT, BE, CA, CZ, DK, FI, FR, DE, GR, IE, IT, NL, NZ, NO, PL, PT, RO, ES, SE, CH, UK, US",
+      "new_text": "## May 2026 sandbox country data (23)\n\nThe dated subscription guide gives test inputs for AU, AT, BE, CA, CZ, DK, FI, FR, DE, GR, IE, IT, NL, NZ, NO, PL, PT, RO, ES, SE, CH, UK and US. This is a sandbox test list, not a current eligibility matrix; Klarna options vary by use case and buyer country.",
+      "reason": "Correct the heading and list so dated sandbox examples are not presented as current support coverage.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "klarna-concept-checkout-proof",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "Enable Klarna from Dashboard payment methods settings. Create Checkout Session with `mode='subscription'`. Retrieve subscription via `checkout.session.completed` webhook or by expanding the session.",
+      "new_text": "The May 2026 guide creates a Checkout Session with `mode='subscription'` and at least one recurring Price; its sample omits `payment_method_types`, without establishing a universal override rule. Retrieve the created subscription through `checkout.session.completed`, or retrieve and verify the Session server-side if the buyer returns. A visit to `success_url` alone does not prove payment or justify access.\n\n> [!warning] Contradiction\n> The guide's Session-creation request uses `mode='subscription'`, but its illustrative `checkout.session.completed` payload says `mode: \"setup\"`. Treat the payload as an inconsistent example, not a subscription-mode instruction. See [[source-stripe-subscriptions-klarna]].",
+      "reason": "Qualify success URL and hosted sample, and surface the guide's internal mode discrepancy at the concept flow.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "klarna-concept-advanced-proof",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "Create subscription with `payment_behavior=default_incomplete` + `save_default_payment_method='on_subscription'` \u2192 mount Payment Element \u2192 `stripe.confirmPayment({ return_url, mandate_data })` \u2192 Klarna redirects customer \u2192 on return check PaymentIntent status.",
+      "new_text": "In the May 2026 advanced example, create an incomplete subscription with `payment_behavior=default_incomplete` and `save_default_payment_method='on_subscription'`, then mount the Payment Element. Its `stripe.confirmPayment` call passes `elements` and `confirmParams` with `return_url` and example `mandate_data`; Klarna redirects the buyer. On return, check the PaymentIntent and call payment successful and the subscription active only if its status is `succeeded`. The example does not impose those confirm parameters on hosted Checkout.",
+      "reason": "Make the client API shape and post-redirect payment-success condition explicit without generalizing example mandate data.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "klarna-concept-source-label",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "- [[source-stripe-subscriptions-klarna]] \u2014 Stripe docs: Klarna subscription integration guide (Checkout + Payment Element, 23-country test data)",
+      "new_text": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data",
+      "reason": "Keep the reciprocal source route and distinguish the factual May guide from the navigation-only November index.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/klarna, the 2026-11-07 capture contains a purpose statement and two variant links only (new 5\u201314). [[source-stripe-subscriptions-klarna]] retains the detailed 2026-05-13 guidance: hosted Checkout uses a recurring Price in `subscription` mode and may include additional one-time Prices (old 49\u201387); the advanced path creates a `default_incomplete` subscription and uses a Payment Element, redirect, and post-return PaymentIntent check (old 556\u2013681). The guide warns Klarna options vary by buyer country and use case (old 10\u201312). These captures do not establish current account eligibility or completed payment.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/klarna, the November change is a navigation index linking hosted and advanced variants (new 9\u201314) in place of the May inline guidance (old 16\u20131038), with no evidenced deprecation or altered mandate/capture contract. [[source-stripe-subscriptions-klarna]] keeps the May detail dated, including its warning that visiting `success_url` is not payment proof (old 85\u2013109) and its advanced instruction to call payment successful only after a `succeeded` PaymentIntent (old 644\u2013681). The 23-country values are sandbox test data (old 164\u2013168, 683\u20131038), not current eligibility. The hosted sample omits `payment_method_types` (old 68\u201383), and its sample webhook payload inconsistently says `mode: setup` (old 128) despite the subscription-mode creation request (old 66\u201383). Current linked variant content, live authorization, capture eligibility and settlement remain unverified."
+  },
+  "status": "candidate_ready"
+}

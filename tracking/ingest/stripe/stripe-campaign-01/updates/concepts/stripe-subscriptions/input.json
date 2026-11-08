@@ -1,0 +1,983 @@
+{
+  "target_path": "wiki/concepts/stripe-subscriptions.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions/base.md",
+  "base_sha256": "bc7180b3b6867e774b6c26e39175484fa09408857c55023bf249a21616b820ca",
+  "patches": [
+    {
+      "update_id": "billing-billing-apis::billing-billing-apis-chain",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "**Billing object chain**: `Subscription` \u2192 auto-generates `Invoice` each billing cycle \u2192 `Invoice` auto-creates `PaymentIntent` \u2192 `PaymentIntent` collects from stored `PaymentMethod`.",
+      "new_text": "**Billing object chain**: The 2026-11-07 Billing APIs overview says a `Subscription` generates an `Invoice` each cycle and describes `PaymentIntent` creation when an invoice has an amount due; automatically charged subscriptions use the subscription or customer default payment method. See [[source-stripe-billing-apis]].\n\n> [!warning] Contradiction\n> The same November snapshot's PaymentIntent table says invoices automatically create PaymentIntents without the amount-due condition; the May capture also uses broad wording. Treat this as unresolved documentation tension, not a universal runtime rule.",
+      "reason": "Replace the unqualified existing chain with the November narrative and explicit same-capture conflict while preserving May history.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "November raw line 25 and line 190 conflict; no universal runtime rule is established."
+      ],
+      "original_update_id": "billing-billing-apis-chain",
+      "job_id": "billing-billing-apis",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/receipt.json",
+      "receipt_sha256": "9e8460bfb50f331cf1097f5fe5cac9ab67beaa93366dd547504911ac42566c8f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/candidate.md",
+      "source_candidate_sha256": "1a7b9f73936794e1622292fb6ec58e127ca2921db22ace4c5a516535101e0e80",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-billing-apis::billing-billing-apis-entitlements",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- **Entitlements**: auto-created when subscription is created (one per Feature in the subscribed Product); use `customer.activeEntitlements` to gate features \u2014 don't re-query subscription/product/feature chain; listen to `entitlement.active_entitlement_summary.updated` to provision/deprovision",
+      "new_text": "- **Entitlements**: For a subscription to a recurring service Product with associated Features, the Billing APIs overview says an active Entitlement is created for each associated Feature. Retrieve active entitlements or listen to the Active Entitlement Summary event for provisioning; see [[source-stripe-billing-apis]].",
+      "reason": "Narrow auto-creation to associated features and replace the unsupported accessor with the raw-supported provisioning methods.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Out-of-scope counterpart for coordinator review: wiki/sources/source-stripe-build-subscriptions-elements.md contains customer.activeEntitlements, but its pinned raw/stripe-build-subscriptions-elements-2025.md has no such accessor."
+      ],
+      "original_update_id": "billing-billing-apis-entitlements",
+      "job_id": "billing-billing-apis",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/receipt.json",
+      "receipt_sha256": "9e8460bfb50f331cf1097f5fe5cac9ab67beaa93366dd547504911ac42566c8f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/candidate.md",
+      "source_candidate_sha256": "1a7b9f73936794e1622292fb6ec58e127ca2921db22ace4c5a516535101e0e80",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-billing-apis::billing-billing-apis-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-billing-apis]] \u2014 Billing API objects overview: Subscription\u2192Invoice\u2192PaymentIntent chain, 11 objects, Entitlements model, Account v2 vs Customer v1",
+      "new_text": "- [[source-stripe-billing-apis]] \u2014 Billing API objects overview (May and November 2026 captures): 11 objects, customer model variants, entitlements, and the qualified Invoice \u2192 PaymentIntent narrative/table conflict",
+      "reason": "Keep the existing reciprocal route but qualify its description so navigation does not repeat the unqualified chain.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "November narrative and table conflict on PaymentIntent creation."
+      ],
+      "original_update_id": "billing-billing-apis-source-route",
+      "job_id": "billing-billing-apis",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/receipt.json",
+      "receipt_sha256": "9e8460bfb50f331cf1097f5fe5cac9ab67beaa93366dd547504911ac42566c8f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/candidate.md",
+      "source_candidate_sha256": "1a7b9f73936794e1622292fb6ec58e127ca2921db22ace4c5a516535101e0e80",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-billing-apis/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-collection-method::billing-collection-method-payment-behavior",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "**Payment behavior**: `default_incomplete` (recommended; collect payment after creation), `allow_incomplete` (immediate attempt), `error_if_incomplete` (fails entirely on payment failure).",
+      "new_text": "**Payment behavior**: `default_incomplete` (recommended; if the first invoice requires payment, initializes as `incomplete` and its PaymentIntent needs separate confirmation), `allow_incomplete` (with `collection_method=charge_automatically`, immediately attempts payment and marks an unsuccessful initial attempt `incomplete`), `error_if_incomplete` (fails entirely on payment failure).",
+      "reason": "Restore the collection-method condition and first-invoice requirement to the existing shorthand; retain other-source recommendation and error_if_incomplete claim.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "billing-collection-method-payment-behavior",
+      "job_id": "billing-collection-method",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/receipt.json",
+      "receipt_sha256": "83fd3a957e1d375fcdae3b955199deefc6d9d4dec6228637db524a1995ab3d17",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/candidate.md",
+      "source_candidate_sha256": "720c5521bddac1c15df4941a2873b8e7fa6ef0d80666d3d47492545f36bb8ac9",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-collection-method::billing-collection-method-first-invoice-23h",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "**23-hour first payment window**: customer must pay within 23h (on-session assumption); after 23h \u2192 `incomplete_expired`; create new subscription for returning customer.",
+      "new_text": "**23-hour first invoice window**: in the `allow_incomplete` / `default_incomplete` path, if the first invoice requires payment and remains unpaid after 23 hours, the subscription becomes final `incomplete_expired`, voiding the open invoice and preventing future invoices. The subscription overview advises creating a new subscription for a returning customer.",
+      "reason": "Bound the 23-hour claim to an unpaid first invoice rather than any subscription or payment; preserve the returning-customer guidance as attributed to the separate overview.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "billing-collection-method-first-invoice-23h",
+      "job_id": "billing-collection-method",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/receipt.json",
+      "receipt_sha256": "83fd3a957e1d375fcdae3b955199deefc6d9d4dec6228637db524a1995ab3d17",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/candidate.md",
+      "source_candidate_sha256": "720c5521bddac1c15df4941a2873b8e7fa6ef0d80666d3d47492545f36bb8ac9",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-collection-method::billing-collection-method-reciprocal",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-overview]] \u2014 Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix",
+      "new_text": "- [[source-stripe-subscriptions-overview]] \u2014 Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix\n- [[source-stripe-billing-collection-method]] \u2014 Billing collection-method guide (2026-11-07 capture): invoice and subscription collection choices, first-payment and failed-payment conditions",
+      "reason": "Add the missing reciprocal source route in the concept's Sources section without displacing existing entries.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "billing-collection-method-reciprocal",
+      "job_id": "billing-collection-method",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/receipt.json",
+      "receipt_sha256": "83fd3a957e1d375fcdae3b955199deefc6d9d4dec6228637db524a1995ab3d17",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/candidate.md",
+      "source_candidate_sha256": "720c5521bddac1c15df4941a2873b8e7fa6ef0d80666d3d47492545f36bb8ac9",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-collection-method/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-quickstart::billing-quickstart-subscriptions-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-checkout-subscriptions-quickstart]] \u2014 Checkout subscription quickstart: lookup_key pattern, customer portal, 5 webhook events, trial/billing-anchor/auto-tax",
+      "new_text": "- [[source-stripe-checkout-subscriptions-quickstart]] \u2014 May and November 2026 hosted Checkout subscription quickstart: recurring Price lookup key, customer portal, webhook and active-status access check; dated variants and optional features in source",
+      "reason": "Update the existing reciprocal route to the dated revised source without presenting flattened variants as a runnable flow.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "billing-quickstart-subscriptions-route",
+      "job_id": "billing-quickstart",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/receipt.json",
+      "receipt_sha256": "fccc1d0c1f38a6546e8cc4a73a904dcb410d91ab583b62a289f31754d834da2f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/candidate.md",
+      "source_candidate_sha256": "27c3852452bd613824054859a4c4780cd3f5371bfb940dd3f696b7d782be4284",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-quickstart::billing-quickstart-subscriptions-provisioning",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "4. On `checkout.session.completed`: save `customer.id` + `subscription.id`, provision access\n5. On `invoice.paid`: renew access each billing period\n6. On `invoice.payment_failed`: notify + redirect to Customer Portal\n\n## Provisioning Pattern\n\nCheck `product.id` (not `price.id`) in subscription event handlers \u2014 decouples access from pricing:\n\n```text\ncustomer.subscription.created/updated/deleted\n  \u2514\u2500 items[0].price.product \u2192 product_id\n  \u2514\u2500 status \u2192 active | past_due | canceled | ...\n```\n\nStore: `{ product_id, subscription_id, subscription_status, customer_id }`\n\n## Key Webhook Events\n\n| Event | Action |\n| --- | --- |\n| `checkout.session.completed` | Initial provision |\n| `invoice.paid` | Renew access |\n| `invoice.payment_failed` | Notify + portal |\n| `customer.subscription.created` | Grant access |\n| `customer.subscription.updated` | Adjust access level |\n| `customer.subscription.deleted` | Revoke access |",
+      "new_text": "4. On `checkout.session.completed`: save the customer and subscription identities, then check the relevant payment and subscription state before provisioning access. The hosted Billing quickstart's post-payment example specifically verifies `active` subscription status; delayed payment methods also require their later success event. See [[source-stripe-checkout-subscriptions-quickstart]] and [[stripe-checkout]].\n5. On `invoice.paid`: renew access each billing period\n6. On `invoice.payment_failed`: notify + redirect to Customer Portal\n\n## Provisioning Pattern\n\nCheck `product.id` (not `price.id`) in subscription event handlers \u2014 decouples access from pricing:\n\n```text\ncustomer.subscription.created/updated/deleted\n  \u2514\u2500 items[0].price.product \u2192 product_id\n  \u2514\u2500 status \u2192 active | past_due | canceled | ...\n```\n\nStore: `{ product_id, subscription_id, subscription_status, customer_id }`\n\n## Key Webhook Events\n\n| Event | Action |\n| --- | --- |\n| `checkout.session.completed` | Record identities; check payment and subscription state before initial access. For delayed methods, wait for the later success event. |\n| `checkout.session.async_payment_succeeded` | For delayed methods, recheck state and provision eligible access idempotently. |\n| `invoice.paid` | Renew access |\n| `invoice.payment_failed` | Notify + portal |\n| `customer.subscription.created` | Check subscription and payment or entitlement state before granting access; creation alone is insufficient. |\n| `customer.subscription.updated` | Adjust access level |\n| `customer.subscription.deleted` | Revoke access |",
+      "reason": "Correct the main Checkout step and the two unconditional access-grant rows together; preserve the invoice and revocation context and explicitly route delayed-payment success through a state check.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The Billing quickstart's active-status instruction is sample-specific; broader webhook and asynchronous payment guidance remains in [[stripe-checkout]].",
+        "The quickstart's event-handler snippets log events or leave handling calls commented; they do not implement provisioning."
+      ],
+      "original_update_id": "billing-quickstart-subscriptions-provisioning",
+      "job_id": "billing-quickstart",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/receipt.json",
+      "receipt_sha256": "fccc1d0c1f38a6546e8cc4a73a904dcb410d91ab583b62a289f31754d834da2f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/candidate.md",
+      "source_candidate_sha256": "27c3852452bd613824054859a4c4780cd3f5371bfb940dd3f696b7d782be4284",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-acss-debit::subscriptions-acss-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-acss-debit]] \u2014 Canadian PAD (acss_debit) subscription: Checkout NOT supported, no auto-retry, manual default PM webhook, 10-day microdeposit window",
+      "new_text": "- [[source-stripe-subscriptions-acss-debit]] \u2014 Canadian PAD subscription guide (2026-05-13 and 2026-11-07): Checkout subscription-mode waitlist, conditional insufficient-funds retries, payment-confirmed fulfillment, default-PM webhook, 10-day microdeposit window",
+      "reason": "Correct the absolute no-retry label and route to the material new fulfillment check.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "subscriptions-acss-source-route",
+      "job_id": "billing-subscriptions-acss-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/receipt.json",
+      "receipt_sha256": "376c208657a1102099a25cf7421d6942f25d6168aaabc8397b1397c85440254f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "303acc2b5dc0628624e85477ff5f38f5c981226c0687c0ae5cc0fbcc58838385",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-acss-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-amazon-pay::amazon-pay-subscriptions-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-amazon-pay]] \u2014 Amazon Pay subscription: 3 integration paths (SetupIntents/PaymentIntents/Checkout), mandate_data required, off_session, redirect flow",
+      "new_text": "- [[source-stripe-subscriptions-amazon-pay]] \u2014 May 2026 Amazon Pay subscription guide: SetupIntents, PaymentIntents and hosted Checkout paths; November 2026 capture is a variant index",
+      "reason": "Correct the overly broad mandate_data and off_session labels in the existing reciprocal source route.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "amazon-pay-subscriptions-source-route",
+      "job_id": "billing-subscriptions-amazon-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-amazon-pay/attempt-1/receipt.json",
+      "receipt_sha256": "905eabf0fa3ea33cae1edd828193d51a47c4fed7a6354b3b4a5bdc422e5c0d98",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-amazon-pay/attempt-1/candidate.md",
+      "source_candidate_sha256": "69de0ba52960708ac409ef3a7e759869df922782f0e542b1bed2e30de3a2d30f",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-amazon-pay/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-au-becs-debit::au-becs-subscriptions-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-becs-debit]] \u2014 BECS subscription (AU): SetupIntents + DDR mandate compliance, no-retry rule, mandatory mandate URL sharing",
+      "new_text": "- [[source-stripe-subscriptions-becs-debit]] \u2014 AU BECS subscription guide (May/November 2026): SetupIntent and DDR, first-payment check, conditional insufficient-funds retry, mandate URL sharing",
+      "reason": "Correct the existing subscription concept's source route without generalizing retry availability.",
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "au-becs-subscriptions-route",
+      "job_id": "billing-subscriptions-au-becs-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-au-becs-debit/attempt-1/receipt.json",
+      "receipt_sha256": "7b7e16fc4447b1a14bb64d14231ebae6e210b712095495a5a4f09015a0a0d509",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-au-becs-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "bd26f2a5bfe8e060a055924199e9c1315db27738f25e225c1ee9e950b2521fed",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-au-becs-debit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-billing-cycle::billing-cycle-concept-anchor",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- `subscription_data.billing_cycle_anchor` \u2014 Unix timestamp; sets first full invoice date + all future dates",
+      "new_text": "- `subscription_data.billing_cycle_anchor` in Checkout subscription mode \u2014 Unix timestamp that aligns future billing-cycle dates. The first full invoice can precede a config-derived anchor; see [[source-stripe-subscriptions-billing-cycle]] (2026-05-12 lines 112\u2013114; 2026-11-07 lines 83\u201385).",
+      "reason": "The anchor can be later than the first full invoice, so it is not always that invoice's date.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "billing-cycle-concept-anchor",
+      "job_id": "billing-subscriptions-billing-cycle",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/receipt.json",
+      "receipt_sha256": "bd6493648f0c859794a1a13c0378e4ebe144bd5554a23282f711d8cdb5099eb3",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/candidate.md",
+      "source_candidate_sha256": "a8f61813db20115984615a82fd0174b570eeb33b7b425ffdef5c8055d2d2c74a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-billing-cycle::billing-cycle-concept-checkout-trial",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- **Limitations**: trials + anchor mutually exclusive; `none` + one-time prices incompatible; `amount_off` coupons incompatible with `create_prorations`",
+      "new_text": "- **Checkout limitations**: Checkout cannot combine a trial with a billing-cycle anchor, and its `proration_behavior=none` cannot be used with one-time prices. The Subscriptions API does document `trial_end` with an anchor; see [[source-stripe-subscriptions-billing-cycle]] (2026-05-12 lines 160\u2013207; 2026-11-07 lines 115\u2013149). The existing `amount_off` coupon restriction with `create_prorations` remains a separate Checkout limitation, not established by this billing-cycle guide.",
+      "reason": "The existing trial restriction was stated globally, contradicting the documented Subscriptions API combination; preserve other-source coupon qualification without reasserting it from this guide.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "billing-cycle-concept-checkout-trial",
+      "job_id": "billing-subscriptions-billing-cycle",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/receipt.json",
+      "receipt_sha256": "bd6493648f0c859794a1a13c0378e4ebe144bd5554a23282f711d8cdb5099eb3",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/candidate.md",
+      "source_candidate_sha256": "a8f61813db20115984615a82fd0174b570eeb33b7b425ffdef5c8055d2d2c74a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-billing-cycle::billing-cycle-concept-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-billing-cycle]] \u2014 Billing cycle anchor: billing_cycle_anchor_config (monthly/yearly), direct timestamp, reset to now, trial-as-anchor, auto-reset scenarios",
+      "new_text": "- [[source-stripe-subscriptions-billing-cycle]] \u2014 Billing-cycle guide (2026-05-12 and 2026-11-07): new-subscription config or timestamp, versioned reset-to-now behavior, private-preview flexible-mode timestamp reset, trial-as-anchor, and automatic reset cases",
+      "reason": "Make the new preview and versioned update discoverable from the existing concept route.",
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "billing-cycle-concept-route",
+      "job_id": "billing-subscriptions-billing-cycle",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/receipt.json",
+      "receipt_sha256": "bd6493648f0c859794a1a13c0378e4ebe144bd5554a23282f711d8cdb5099eb3",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/candidate.md",
+      "source_candidate_sha256": "a8f61813db20115984615a82fd0174b570eeb33b7b425ffdef5c8055d2d2c74a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-cycle/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-billing-mode::billing-subscriptions-billing-mode-correct-fixed-default",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "`subscription_data.billing_mode: { type: 'flexible' }` \u2014 enhanced, more predictable billing behavior. Default is `'fixed'`. Requires API version `2025-06-30.basil` or later.",
+      "new_text": "This guide documents two subscription billing modes, `classic` and `flexible`; `fixed` is not one of them. When an API create request omits `billing_mode`, flexible is the documented default for `2025-08-27.preview` and later preview versions or `2025-09-30.clover` GA and later GA versions; other API versions default to classic. Full API modification of flexible subscriptions requires `2025-06-30.basil` or later; Dashboard creation and classic-to-flexible updates have a separate version boundary. See [[source-stripe-subscriptions-billing-mode]] for the dated guide and migration/schedule limits.",
+      "reason": "Correct a pre-existing concept default that names an undocumented mode, and keep API defaults and Dashboard version scope explicit.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "billing-subscriptions-billing-mode-correct-fixed-default",
+      "job_id": "billing-subscriptions-billing-mode",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode/attempt-1/receipt.json",
+      "receipt_sha256": "ae54e4d7be19c0252aa7ef49445f8691d8edfd014cd515facd6b2cb368a93f15",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode/attempt-1/candidate.md",
+      "source_candidate_sha256": "c618a6412031811a4f1d854a669e18f18deef287e259022b654c19b00b522aea",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-billing-mode-compare::billing-mode-compare-price-anchor",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "**Billing period on price change**: same `interval`+`interval_count` \u2192 dates unchanged; different intervals \u2192 resets to date of change; adding a trial also resets dates (to trial conclusion).\n\n**Zero-amount edge cases**: zero-amount price \u2192 non-zero generates invoice + resets billing period. Zero-quantity \u2192 non-zero does NOT generate invoice or reset billing period.",
+      "new_text": "**Billing period on price change**: The separate [[source-stripe-subscriptions-change-price]] guide says a same-interval change keeps dates, a different interval resets the billing period, and adding a trial moves it to trial end. The November [[source-stripe-subscriptions-billing-mode-compare]] qualifies the interval statement by mode: classic can reset its anchor for an interval change, while flexible preserves the anchor for that change unless `billing_cycle_anchor` is explicitly reset or `trial_end` is updated.\n\n**Zero-amount edge cases**: The price-change guide says zero-amount to non-zero generates an invoice and resets the period, while zero quantity to non-zero does neither. For the flexible free-to-paid scenario, the November comparison instead says charges remain pending until the next cycle unless `proration_behavior=always_invoice` or `billing_cycle_anchor=now` is used for immediate invoicing. Keep each source\u2019s mode and scenario qualification.",
+      "reason": "The generic concept lines 106\u2013108 imply classic reset/immediate-invoice behavior across both billing modes; qualify the mode and preserve the distinct zero-quantity route.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "May comparison had explicit-anchor-only wording; November adds trial_end reset."
+      ],
+      "original_update_id": "billing-mode-compare-price-anchor",
+      "job_id": "billing-subscriptions-billing-mode-compare",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/receipt.json",
+      "receipt_sha256": "c3a8cdb2ceaad7641c933b826c2a3fa6be51316d2aa4d0df897ed3afdc419927",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/candidate.md",
+      "source_candidate_sha256": "9bc4e09b56bd1365b47388109e7763fb9e3499c099773d95b1fb5292b76728a7",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-billing-mode-compare::billing-mode-compare-warning",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "`subscription_data.billing_mode: { type: 'flexible' }` \u2014 enhanced, more predictable billing behavior. Default is `'fixed'`. Requires API version `2025-06-30.basil` or later.",
+      "new_text": "`subscription_data.billing_mode: { type: 'flexible' }` \u2014 enhanced, more predictable billing behavior. Requires API version `2025-06-30.basil` or later. For billing-mode defaults by creation route and API version, see [[source-stripe-subscriptions-billing-mode]].\n\n> [!warning] Contradiction\n> The May 2026 [[source-stripe-subscriptions-billing-mode-compare]] capture says flexible mode resets the anchor only when explicitly set, and broadly calls pending invoice items always included. Its own pending-items prose/table differ. The November capture adds a `trial_end` reset exception and limits pending-item behavior by update and `payment_behavior`. Use the dated comparison for the relevant scenario.",
+      "reason": "Replace the unsupported fixed-default claim with the dedicated billing-mode guide route, while retaining the May/November anchor and pending-item contradiction warning.",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "May anchor statement and May pending-items table cannot be used as unconditional current rules."
+      ],
+      "original_update_id": "billing-mode-compare-warning",
+      "job_id": "billing-subscriptions-billing-mode-compare",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/receipt.json",
+      "receipt_sha256": "c3a8cdb2ceaad7641c933b826c2a3fa6be51316d2aa4d0df897ed3afdc419927",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/candidate.md",
+      "source_candidate_sha256": "9bc4e09b56bd1365b47388109e7763fb9e3499c099773d95b1fb5292b76728a7",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-billing-mode-compare::billing-mode-compare-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-billing-mode-compare]] \u2014 Classic vs flexible: 12-row comparison (prorations, usage, cancellation, trials, mixed intervals)",
+      "new_text": "- [[source-stripe-subscriptions-billing-mode-compare]] \u2014 Classic vs flexible billing comparison (May and November 2026 captures): prorations, usage, anchors, pending items, cancellations, trials, mixed intervals, and item limits; scenario-specific differences",
+      "reason": "Refresh the reciprocal source route for the expanded dated comparison without an inaccurate row count.",
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "billing-mode-compare-route",
+      "job_id": "billing-subscriptions-billing-mode-compare",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/receipt.json",
+      "receipt_sha256": "c3a8cdb2ceaad7641c933b826c2a3fa6be51316d2aa4d0df897ed3afdc419927",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/candidate.md",
+      "source_candidate_sha256": "9bc4e09b56bd1365b47388109e7763fb9e3499c099773d95b1fb5292b76728a7",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-billing-mode-compare/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-cash-app-pay::subscriptions-cashapp-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-cash-app-pay]] \u2014 Cash App Pay subscription: 3 paths (SetupIntents/Subscriptions API/Checkout), QR code + redirect auth, mandate_data required",
+      "new_text": "- [[source-stripe-subscriptions-cash-app-pay]] \u2014 Cash App Pay subscription guide: three detailed paths in the 2026-05-13 capture; 2026-11-07 base capture is a variant index. Direct API examples show QR/redirect authentication.",
+      "reason": "Remove universal mandate-data requiredness from the reciprocal subscriptions route.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "subscriptions-cashapp-source-route",
+      "job_id": "billing-subscriptions-cash-app-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cash-app-pay/attempt-2/receipt.json",
+      "receipt_sha256": "abc7d62f7574e40839b1e00df6569ce074fdce2aff5d42fd40becb65c8aca524",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cash-app-pay/attempt-2/candidate.md",
+      "source_candidate_sha256": "4eeeedcc746fdda8e97f0a5335fcbec6abf9ca1cef0d7676543d259d6b2e824e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cash-app-pay/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-change-price::change-price-conditional-proration-concept",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- **Billing-related updates** \u2014 create prorations and can generate invoices: price, quantity, billing period, add/remove items.",
+      "new_text": "- **Billing-related updates** \u2014 can create prorations and generate invoices, depending on the change and settings: price, quantity, billing period, add/remove items.",
+      "reason": "The unconditional proration wording misstates price changes: both dated guides say they often result in prorations and show that proration can be disabled (new raw 130; old raw 163). Preserve the other update categories and the existing source route.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "change-price-conditional-proration-concept",
+      "job_id": "billing-subscriptions-change-price",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-change-price/attempt-2/receipt.json",
+      "receipt_sha256": "05cfa2701d61016ad5474cd50445ea2be1330498fec0340ea032507006e3da24",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-change-price/attempt-2/candidate.md",
+      "source_candidate_sha256": "8853dac3c6a994199bfd69c71b7ec7c993c0a633ba9e240b6d626d254f98881f",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-change-price/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-ideal::subscriptions-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-ideal]] \u2014 iDEAL\u2192SEPA subscription: Checkout + Direct API, iDEAL captures IBAN then generates SEPA PM, off_session updates, 6 test patterns",
+      "new_text": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 iDEAL\u2192SEPA variants: hosted Checkout first payment or refunded 0.01 EUR trial collection; Direct API refunded setup collection, generated SEPA method, and off_session update guidance. 2026-11-07 capture is a variant index only.",
+      "reason": "Qualify the formerly merged subscription route by May UI variant and November evidence limit.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Current linked variant bodies were not captured."
+      ],
+      "original_update_id": "subscriptions-source-route",
+      "job_id": "billing-subscriptions-ideal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-ideal/attempt-1/receipt.json",
+      "receipt_sha256": "51c136554635ae7f7a06dc2bb297eedeba61d1f4ef93d8d5212a009a63148310",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-ideal/attempt-1/candidate.md",
+      "source_candidate_sha256": "4fd40f003faa585d5793a9acda24fb5a7dbac546f33df55f9ac1d712ba2e9f51",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-ideal/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-import-subscriptions::import-subscriptions-concept-migration-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-migration-api]] \u2014 API migration: Subscription Schedules (>30d future), legacy pricing via price_data, mid-cycle continuity, test clocks",
+      "new_text": "- [[source-stripe-subscriptions-migration-api]] \u2014 API migration: Subscription API permitted, Schedules recommended for future starts; default payment method for automatic collection, conditional legacy price_data, ID and mid-cycle mapping, sandbox test clocks\n\n> [!warning] Contradiction\n> The 2026-05-12 API migration capture lists a one-year legacy-price interval limit; the 2026-11-07 capture lists three years. They are dated documentation claims, not a live API validation. Both prose examples denote June 1, 2022 at 00:00 UTC, but their unchanged `start_date=1654066801` denotes 07:00:01 UTC. The intended sample time is unresolved. See [[source-stripe-subscriptions-migration-api]] and its preserved raw captures.",
+      "reason": "Correct the concept's migration source route and add a dated contradiction callout reciprocal to the source; do not turn the old and new documentation into an unqualified live limit or treat the sample epoch as the prose time.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Source is documentation evidence only; no migration execution, payment collection, or account-specific interval validation was observed."
+      ],
+      "original_update_id": "import-subscriptions-concept-migration-route",
+      "job_id": "billing-subscriptions-import-subscriptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions/attempt-2/receipt.json",
+      "receipt_sha256": "9efba7f58018522255fa453899ac6b5dfab9d054b82b4adc16472c5fc5b37278",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions/attempt-2/candidate.md",
+      "source_candidate_sha256": "9f726f9ed4a6b5014b783f51f3cf57ba37c17a03f604da0d6cb2e182601d27c6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-import-subscriptions-toolkit::migration-toolkit-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-migration-toolkit]] \u2014 Toolkit detail: 3 CSV types, 24h go-live buffer, 10h cancel window, timing advice, validation errors",
+      "new_text": "- [[source-stripe-subscriptions-migration-toolkit]] \u2014 Billing migration toolkit (May and November 2026 captures): three CSV paths, scheduled-start and cancellation windows, collection validation, toolkit-specific proration default, and tax/sample contradictions\n\n> [!warning] Contradiction\n> The May toolkit capture said blank/omitted `proration_behavior` defaults to `create_prorations` and blank external-tax fields would follow the Billing integration after go-live. The November capture says this toolkit CSV defaults to `none` and blank tax fields do not enable future automatic tax. Its unchanged Basic example also says 20 USD in prose but puts 50 in the one-time amount field. See the dated [[source-stripe-subscriptions-migration-toolkit]]; do not treat sample rows as verified upload templates.",
+      "reason": "Update the reciprocal source route and surface consequential dated contradictions where subscription migration is indexed.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Toolkit CSV default differs from separate Subscription Schedule API settings.",
+        "The 20 USD prose/50 field mismatch remains unresolved in both captures."
+      ],
+      "original_update_id": "migration-toolkit-source-route",
+      "job_id": "billing-subscriptions-import-subscriptions-toolkit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-1/receipt.json",
+      "receipt_sha256": "14e35983ab1b9ae83f0e60d2d3e8fe9a0172d925f396c8482467c5fd0f14cd5d",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-1/candidate.md",
+      "source_candidate_sha256": "20c65d406a165d234c4031c7a4e36b2e804ecd540845638bcb73748d12f6534b",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-overview::overview-concept-payment-conditions",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "**Payment behavior**: `default_incomplete` (recommended; collect payment after creation), `allow_incomplete` (immediate attempt), `error_if_incomplete` (fails entirely on payment failure).\n\n**23-hour first payment window**: customer must pay within 23h (on-session assumption); after 23h \u2192 `incomplete_expired`; create new subscription for returning customer.\n\n**Async payment methods** (ACH etc.): skip `incomplete`, go directly to `active`; if payment fails later, invoice voided but subscription stays `active`.",
+      "new_text": "**Payment behavior**: The 2026-05-12 overview describes `default_incomplete` for post-creation collection, `allow_incomplete` for an immediate attempt, and `error_if_incomplete` for failed creation on payment failure. The 2026-11-07 overview says defaults depend on payment method and API `payment_behavior` can override them; it does not establish a universal recommendation.\n\n**23-hour first payment window**: For an initial `charge_automatically` payment, the subscription can be `incomplete` while its open invoice awaits payment for 23 hours; after expiry it becomes `incomplete_expired` and a returning customer needs a new subscription. `send_invoice` without a trial can start `active` with the first invoice unpaid.\n\n**Delayed-confirmation payment methods** (for example ACH): a subscription can bypass `incomplete` and become `active` while PaymentIntent is `processing`; a later failure can void the invoice while the subscription remains `active`. This path does not prove final settlement.",
+      "reason": "Remove an unqualified payment-behavior recommendation, universal 23-hour rule, and categorical asynchronous transition; preserve the May options as dated evidence.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "The overview describes possible delayed-confirmation paths, not all payment methods or account configurations."
+      ],
+      "original_update_id": "overview-concept-payment-conditions",
+      "job_id": "billing-subscriptions-overview",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/receipt.json",
+      "receipt_sha256": "826fee4f1ef3431c3056d257c1037f41abdd70fc372add8d7055ebb2d0a16249",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/candidate.md",
+      "source_candidate_sha256": "d366bc17920eaad67d18fcffd1bbf958a4422b61c8f98fb243a5b70f875d6bd4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-overview::overview-concept-status-resolution",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "**8 subscription statuses**: `trialing`, `active`, `incomplete` (awaiting first payment or 3DS), `incomplete_expired`, `past_due`, `canceled` (terminal), `unpaid`, `paused` (trial ended without PM + `missing_payment_method=pause`).",
+      "new_text": "**8 subscription statuses**: `trialing`, `active`, `incomplete` (awaiting initial payment or action), `incomplete_expired`, `past_due`, `canceled` (terminal in this overview), `unpaid`, `paused` (trial-end missing-method path in this overview). For reactivation from `past_due` or `unpaid`, the captured default uses the most recent non-voided invoice; an all-invoices setting requires all applicable outstanding invoices to be settled. `active` does not prove every invoice is paid. See [[source-stripe-subscriptions-overview]].",
+      "reason": "Add the central configurable status-resolution condition and retain the overview-specific paused-status scope beside existing SDK pause warnings.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Status and payment finality are distinct; the all-invoices setting can keep a subscription past_due or unpaid after one invoice is paid."
+      ],
+      "original_update_id": "overview-concept-status-resolution",
+      "job_id": "billing-subscriptions-overview",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/receipt.json",
+      "receipt_sha256": "826fee4f1ef3431c3056d257c1037f41abdd70fc372add8d7055ebb2d0a16249",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/candidate.md",
+      "source_candidate_sha256": "d366bc17920eaad67d18fcffd1bbf958a4422b61c8f98fb243a5b70f875d6bd4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-overview::overview-concept-checkout-provision",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "4. On `checkout.session.completed`: save `customer.id` + `subscription.id`, provision access\n5. On `invoice.paid`: renew access each billing period\n6. On `invoice.payment_failed`: notify + redirect to Customer Portal",
+      "new_text": "4. On `checkout.session.completed`: save `customer.id` and `subscription.id`; a `trialing` subscription can receive trial access, while paid access after an initial `incomplete` payment requires active subscription status or active entitlements\n5. On `invoice.paid`: for paid access or recovery, check governing subscription status or active entitlements before granting or renewing access\n6. On `invoice.payment_failed`: notify and handle initial `incomplete` collection directly; later recurring failures may use configured retries and Customer Portal recovery",
+      "reason": "Prevent Checkout completion, invoice.paid, or failed-payment webhook from being treated as sufficient access or automatic initial-retry guarantees.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "This concept's Checkout steps also draw on other sources; the change only narrows the unqualified access and retry actions to the overview's lifecycle gate."
+      ],
+      "original_update_id": "overview-concept-checkout-provision",
+      "job_id": "billing-subscriptions-overview",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/receipt.json",
+      "receipt_sha256": "826fee4f1ef3431c3056d257c1037f41abdd70fc372add8d7055ebb2d0a16249",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/candidate.md",
+      "source_candidate_sha256": "d366bc17920eaad67d18fcffd1bbf958a4422b61c8f98fb243a5b70f875d6bd4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-overview::overview-concept-webhook-actions",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "| `checkout.session.completed` | Initial provision |\n| `invoice.paid` | Renew access |\n| `invoice.payment_failed` | Notify + portal |\n| `customer.subscription.created` | Grant access |\n| `customer.subscription.updated` | Adjust access level |\n| `customer.subscription.deleted` | Revoke access |",
+      "new_text": "| `checkout.session.completed` | Save identifiers; allow trial access when subscription is `trialing`, and check active status or entitlements for paid access |\n| `invoice.paid` | For paid access or recovery, check subscription status or active entitlements before renewal |\n| `invoice.payment_failed` | Notify; collect initial `incomplete` payment directly or follow configured recurring recovery |\n| `customer.subscription.created` | Record state; allow trial access when `trialing`, and grant paid access when subscription or entitlements are active |\n| `customer.subscription.updated` | Recheck `trialing` or active status and entitlements to adjust trial or paid access |\n| `customer.subscription.deleted` | Revoke access |",
+      "reason": "Narrow unconditional webhook action rows to the November activation and initial-versus-recurring recovery conditions.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The webhook name alone does not prove a successful or finally settled payment."
+      ],
+      "original_update_id": "overview-concept-webhook-actions",
+      "job_id": "billing-subscriptions-overview",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/receipt.json",
+      "receipt_sha256": "826fee4f1ef3431c3056d257c1037f41abdd70fc372add8d7055ebb2d0a16249",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/candidate.md",
+      "source_candidate_sha256": "d366bc17920eaad67d18fcffd1bbf958a4422b61c8f98fb243a5b70f875d6bd4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-overview::overview-concept-entitlement-timing",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- **Entitlements**: auto-created when subscription is created (one per Feature in the subscribed Product); use `customer.activeEntitlements` to gate features \u2014 don't re-query subscription/product/feature chain; listen to `entitlement.active_entitlement_summary.updated` to provision/deprovision",
+      "new_text": "- **Entitlements**: the 2026-11-07 overview says active entitlements for subscribed product features are created when the subscription becomes `active`; use `customer.activeEntitlements` to gate paid features and listen to `entitlement.active_entitlement_summary.updated` to provision/deprovision. Its status table separately says `trialing` is safe to provision for trial access. The 2026-05-12 overview instead described active entitlements as created on subscription creation; see [[source-stripe-subscriptions-overview]].",
+      "reason": "Correct the creation-timed active-entitlement assertion while retaining the existing access-gating pattern and dated discrepancy.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "This page's older creation-timed claim conflicts with the November overview; do not grant access solely on creation."
+      ],
+      "original_update_id": "overview-concept-entitlement-timing",
+      "job_id": "billing-subscriptions-overview",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/receipt.json",
+      "receipt_sha256": "826fee4f1ef3431c3056d257c1037f41abdd70fc372add8d7055ebb2d0a16249",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/candidate.md",
+      "source_candidate_sha256": "d366bc17920eaad67d18fcffd1bbf958a4422b61c8f98fb243a5b70f875d6bd4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-overview::overview-concept-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-overview]] \u2014 Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix",
+      "new_text": "- [[source-stripe-subscriptions-overview]] \u2014 Dated subscription lifecycle: collection-method split, 8 statuses, configurable invoice-based status resolution, initial versus recurring recovery, active-entitlement provisioning\n\n> [!warning] Contradiction\n> The 2026-05-12 overview describes active entitlements at subscription creation and a paid invoice as unconditionally activating a subscription; the 2026-11-07 overview ties entitlements to activation and makes status depend on governing invoices. The newer overview also excludes Smart Retries for an initial `incomplete` payment despite the older generic retry advice. Preserve the May capture as dated evidence and consult [[source-stripe-subscriptions-overview]] for the captured conditions.",
+      "reason": "Make the reciprocal route discoverable and place a dated contradiction warning on the concept as well as the source.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The warning addresses dated documentation differences; it does not establish account-specific payment outcomes."
+      ],
+      "original_update_id": "overview-concept-source-route",
+      "job_id": "billing-subscriptions-overview",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/receipt.json",
+      "receipt_sha256": "826fee4f1ef3431c3056d257c1037f41abdd70fc372add8d7055ebb2d0a16249",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/candidate.md",
+      "source_candidate_sha256": "d366bc17920eaad67d18fcffd1bbf958a4422b61c8f98fb243a5b70f875d6bd4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-overview/attempt-3/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-paypal::subscriptions-concept-paypal-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-paypal]] \u2014 PayPal subscription: Checkout + Direct API (SetupIntents), off_session=true required, billing agreement ID, mandate.updated on revoke",
+      "new_text": "- [[source-stripe-subscriptions-paypal]] \u2014 May 2026 PayPal subscription guide: Stripe-hosted Checkout + Direct API SetupIntent; billing agreement, update off_session guidance, mandate.updated on revoke; November 2026 index links variants only",
+      "reason": "Preserve relevant source route while qualifying the old all-creates off_session wording and noting navigation-only new capture.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "subscriptions-concept-paypal-route",
+      "job_id": "billing-subscriptions-paypal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/receipt.json",
+      "receipt_sha256": "8b8ced699aa5e87577d93fe8b4e2470b0ba7a68496dbc15412146fb5140cf4bf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/candidate.md",
+      "source_candidate_sha256": "990963591a8417f778781241dc76f6e9dacad51382dffda7653d037aec155278",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-pix::pix-subscriptions-concept-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-pix]] \u2014 Pix subscription (Brazil/BRL): Pix Autom\u00e1tico mandate, 3 paths, tax_id required, mandate_options.amount tip, 6 email test scenarios",
+      "new_text": "- [[source-stripe-subscriptions-pix]] \u2014 Pix subscription: November variant index; May combined guide covers three mandate-based paths, cross-border tax-ID statement, setup versus payment outcomes and six sandbox email patterns",
+      "reason": "Remove the unsupported universal country/currency and tax-ID assertions from the reciprocal subscription source entry.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer present-day eligibility or variant behavior from the navigation index."
+      ],
+      "original_update_id": "pix-subscriptions-concept-route",
+      "job_id": "billing-subscriptions-pix",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pix/attempt-2/receipt.json",
+      "receipt_sha256": "643e63b1600c91bc13276e8b2f48129c54db077f624329ee5f04d2d8de9204e9",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pix/attempt-2/candidate.md",
+      "source_candidate_sha256": "4f106d8a6c7edd178c56e4c25cfa9650cd87e7850a1c1478352ead4fd7b57c15",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pix/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-subscriptions-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-prebilling]] \u2014 Prebilling (public preview): bill_until, applies_to, 8 limitations, invoice timing via proration_behavior",
+      "new_text": "- [[source-stripe-subscriptions-prebilling]] \u2014 May 2026 preview and November 2026 prebilling guides: `billing_schedules`, `bill_until`, licensed-item scope, updated API prerequisite and total-cycle limit, invoice timing by `proration_behavior`",
+      "reason": "Keep general subscription concept's reciprocal route accurate without repeating stale preview-only and fixed limitation-count claims.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "prebilling-subscriptions-route",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-revolut-pay::revolut-subscriptions-source-label",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-revolut-pay]] \u2014 Revolut Pay subscription: 3 paths (SetupIntents/Subscriptions API/Checkout), off_session required, mandate_data, redirect auth",
+      "new_text": "- [[source-stripe-subscriptions-revolut-pay]] \u2014 Revolut Pay subscription: May 2026 guide covers three paths; `usage=off_session` on SetupIntent creation and `off_session=true` on SetupIntents-path subscription creation; November capture is variant navigation only",
+      "reason": "Avoid a global off_session requirement in the subscriptions concept's source label.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The May Checkout sample does not explicitly include off_session or mandate_data."
+      ],
+      "original_update_id": "revolut-subscriptions-source-label",
+      "job_id": "billing-subscriptions-revolut-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/receipt.json",
+      "receipt_sha256": "066a3079523f6dab93fd0748d11ca90982158796b7c180f68cb0dd8c809e5445",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/candidate.md",
+      "source_candidate_sha256": "8a1a843f1ffd7fb02269a35324a487f8d95314c6e8e58de1f10684755c54d235",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-stablecoins::stablecoin-subscriptions-source-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-stablecoins]] \u2014 Stablecoin subscription: 3 paths (Checkout/PaymentIntents/SetupIntents), crypto PM type, USDC native currency, testnet via MetaMask+Amoy",
+      "new_text": "- [[source-stripe-subscriptions-stablecoins]] \u2014 Stablecoin subscription: May 2026 three-path guide with crypto method examples; Payment Intents uses a USDC price example, Checkout and Setup Intents use USD examples; MetaMask and Amoy are recommended sandbox tools; November capture is variant navigation only",
+      "reason": "Correct unqualified native-currency and mandatory-test-stack implications in reciprocal source label.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The guide does not establish current account eligibility, production token/network matrix, or settlement asset."
+      ],
+      "original_update_id": "stablecoin-subscriptions-source-scope",
+      "job_id": "billing-subscriptions-stablecoins",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-stablecoins/attempt-1/receipt.json",
+      "receipt_sha256": "92fa3458cd7fd86fe607d9d36d3061b58577ab1bf3e34c24e1ead089bc6f713e",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-stablecoins/attempt-1/candidate.md",
+      "source_candidate_sha256": "ea4d4113ce2ddb4b73820b315fb8b397c8599d4ca5e557f3b1c7264e939907a3",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-stablecoins/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-third-party-payment-processing::subscriptions-third-party-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-third-party]] \u2014 billing with 3rd party processors: custom PMs + payment records (recommended) vs out-of-band (legacy), 23h window, retry logic",
+      "new_text": "- [[source-stripe-subscriptions-third-party]] \u2014 May 2026 guide for own-processor custom PaymentMethods/PaymentRecords and separate out-of-band invoices, including its 23-hour reporting window; November 2026 base capture is a variant index only",
+      "reason": "Keep subscription route but date the 23-hour rule and avoid unqualified current recommendation.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "subscriptions-third-party-route",
+      "job_id": "billing-subscriptions-third-party-payment-processing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+      "receipt_sha256": "4d06157bf487898bc95e2712d03cdb15fda45495cbe194d8d3283681e26b35ce",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/candidate.md",
+      "source_candidate_sha256": "79a9f72a3edb5131d0c029a98a4bc6a6cad13d27a233b170963c3e449eac8fcf",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-trials-free-trials::legacy-checkout-trial-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "## Free Trials\n\n- `subscription_data.trial_period_days` or `subscription_data.trial_end` (Unix timestamp)",
+      "new_text": "## Free Trials\n\nStripe's May and November 2026 guides label the `trial_end`/`trial_period_days` free-trial period a legacy integration path and recommend separate Trial Offers for new integrations. Trial Offers have their own preview and flexible-billing constraints; Checkout's documented no-payment-method trial path here remains the legacy period path. [[source-stripe-subscriptions-free-trials]]\n\n- `subscription_data.trial_period_days` or `subscription_data.trial_end` (Unix timestamp)",
+      "reason": "Concept presents Checkout trial without legacy or separate Trial Offers scope.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Do not imply Trial Offers universally replace Checkout legacy trial periods."
+      ],
+      "original_update_id": "legacy-checkout-trial-scope",
+      "job_id": "billing-subscriptions-trials-free-trials",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/receipt.json",
+      "receipt_sha256": "f14536a808a94a604999de707fcbb7a351e19a24ef332c3a83d7d8523967a254",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/candidate.md",
+      "source_candidate_sha256": "55a6e66970b3831f5bae6f666c0ed06748abb61ba685c2853f3a63c50a0431bb",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-trials-free-trials::pause-resume-paid-gate",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "  - Pause = no invoices, resumes on PM add via portal; can pause indefinitely",
+      "new_text": "  - Pause = no invoices and can remain paused indefinitely. A payment method may be added through the portal, but resume and payment of the resumption invoice are required before reactivation; the API can begin resume without a method attached. The 23-hour auto-void applies only if the invoice's PaymentIntent has no attached method and remains unconfirmed. [[source-stripe-subscriptions-free-trials]]",
+      "reason": "Adding a method alone is not the documented reactivation gate; void is conditional.",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "pause-resume-paid-gate",
+      "job_id": "billing-subscriptions-trials-free-trials",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/receipt.json",
+      "receipt_sha256": "f14536a808a94a604999de707fcbb7a351e19a24ef332c3a83d7d8523967a254",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/candidate.md",
+      "source_candidate_sha256": "55a6e66970b3831f5bae6f666c0ed06748abb61ba685c2853f3a63c50a0431bb",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-trials-free-trials::checkout-if-required-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- **No PM at signup**: `payment_method_collection: 'if_required'`",
+      "new_text": "- **No PM in this Checkout Session**: `payment_method_collection: 'if_required'` makes payment-information collection optional; set `subscription_data.trial_settings.end_behavior.missing_payment_method` to `cancel` or `pause` for the documented Checkout end behavior. [[source-stripe-subscriptions-free-trials]]",
+      "reason": "Keep if_required scoped to Checkout and pair it with end behavior.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "checkout-if-required-scope",
+      "job_id": "billing-subscriptions-trials-free-trials",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/receipt.json",
+      "receipt_sha256": "f14536a808a94a604999de707fcbb7a351e19a24ef332c3a83d7d8523967a254",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/candidate.md",
+      "source_candidate_sha256": "55a6e66970b3831f5bae6f666c0ed06748abb61ba685c2853f3a63c50a0431bb",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-trials-free-trials::trial-source-list-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-free-trials]] \u2014 Legacy trial_end: trial_period_days, missing_payment_method (cancel/pause/create_invoice), resume flow, combine with billing anchor",
+      "new_text": "- [[source-stripe-subscriptions-free-trials]] \u2014 Legacy trial_end/trial_period_days (May and November 2026): no-PM end choices, paid-invoice resume gate, conditional 23-hour void, billing-anchor example",
+      "reason": "Reflect corrected resume boundary in source list.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "trial-source-list-scope",
+      "job_id": "billing-subscriptions-trials-free-trials",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/receipt.json",
+      "receipt_sha256": "f14536a808a94a604999de707fcbb7a351e19a24ef332c3a83d7d8523967a254",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/candidate.md",
+      "source_candidate_sha256": "55a6e66970b3831f5bae6f666c0ed06748abb61ba685c2853f3a63c50a0431bb",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-twint::twint-subscriptions-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-twint]] \u2014 TWINT subscription: CHF only, 3 paths (Checkout/SetupIntents/Subscriptions API), mandate_data+return_url required, QR via redirect",
+      "new_text": "- [[source-stripe-subscriptions-twint]] \u2014 dated May 2026 TWINT subscription examples for Checkout, Setup Intents and Subscriptions API; November 2026 variant index. Direct API examples include mandate_data and return_url, while the Checkout example does not; setup success and first-payment success are distinct.",
+      "reason": "Correct unqualified cross-path field requirements and distinguish setup from payment outcomes.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The November index does not include variant bodies or establish current API requiredness."
+      ],
+      "original_update_id": "twint-subscriptions-route",
+      "job_id": "billing-subscriptions-twint",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-twint/attempt-1/receipt.json",
+      "receipt_sha256": "ef1af43463341ca9e162bd0a7edb4ed06a5fdc6c23e9628c5b86f1f358b40580",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-twint/attempt-1/candidate.md",
+      "source_candidate_sha256": "210df00b8e8c251b9e20e45f8e3265c5d6c50f93f71948310695f30576162609",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-twint/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-billing-apis::billing-billing-apis-chain",
+    "billing-billing-apis::billing-billing-apis-entitlements",
+    "billing-billing-apis::billing-billing-apis-source-route",
+    "billing-collection-method::billing-collection-method-payment-behavior",
+    "billing-collection-method::billing-collection-method-first-invoice-23h",
+    "billing-collection-method::billing-collection-method-reciprocal",
+    "billing-quickstart::billing-quickstart-subscriptions-route",
+    "billing-quickstart::billing-quickstart-subscriptions-provisioning",
+    "billing-subscriptions-acss-debit::subscriptions-acss-source-route",
+    "billing-subscriptions-amazon-pay::amazon-pay-subscriptions-source-route",
+    "billing-subscriptions-au-becs-debit::au-becs-subscriptions-route",
+    "billing-subscriptions-billing-cycle::billing-cycle-concept-anchor",
+    "billing-subscriptions-billing-cycle::billing-cycle-concept-checkout-trial",
+    "billing-subscriptions-billing-cycle::billing-cycle-concept-route",
+    "billing-subscriptions-billing-mode::billing-subscriptions-billing-mode-correct-fixed-default",
+    "billing-subscriptions-billing-mode-compare::billing-mode-compare-price-anchor",
+    "billing-subscriptions-billing-mode-compare::billing-mode-compare-warning",
+    "billing-subscriptions-billing-mode-compare::billing-mode-compare-route",
+    "billing-subscriptions-cash-app-pay::subscriptions-cashapp-source-route",
+    "billing-subscriptions-change-price::change-price-conditional-proration-concept",
+    "billing-subscriptions-ideal::subscriptions-source-route",
+    "billing-subscriptions-import-subscriptions::import-subscriptions-concept-migration-route",
+    "billing-subscriptions-import-subscriptions-toolkit::migration-toolkit-source-route",
+    "billing-subscriptions-overview::overview-concept-payment-conditions",
+    "billing-subscriptions-overview::overview-concept-status-resolution",
+    "billing-subscriptions-overview::overview-concept-checkout-provision",
+    "billing-subscriptions-overview::overview-concept-webhook-actions",
+    "billing-subscriptions-overview::overview-concept-entitlement-timing",
+    "billing-subscriptions-overview::overview-concept-source-route",
+    "billing-subscriptions-paypal::subscriptions-concept-paypal-route",
+    "billing-subscriptions-pix::pix-subscriptions-concept-route",
+    "billing-subscriptions-prebilling::prebilling-subscriptions-route",
+    "billing-subscriptions-revolut-pay::revolut-subscriptions-source-label",
+    "billing-subscriptions-stablecoins::stablecoin-subscriptions-source-scope",
+    "billing-subscriptions-third-party-payment-processing::subscriptions-third-party-route",
+    "billing-subscriptions-trials-free-trials::legacy-checkout-trial-scope",
+    "billing-subscriptions-trials-free-trials::pause-resume-paid-gate",
+    "billing-subscriptions-trials-free-trials::checkout-if-required-scope",
+    "billing-subscriptions-trials-free-trials::trial-source-list-scope",
+    "billing-subscriptions-twint::twint-subscriptions-route"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions/auto-candidate.md",
+  "auto_candidate_sha256": "80d46f57cf6d2c9dba5e3893fc1c80a51c01ce2caf5ba367aad905b8ba189730",
+  "conflict_clusters": [
+    [
+      {
+        "start": 1083,
+        "end": 1271,
+        "old_text": "**Payment behavior**: `default_incomplete` (recommended; collect payment after creation), `allow_incomplete` (immediate attempt), `error_if_incomplete` (fails entirely on payment failure).",
+        "new_text": "**Payment behavior**: `default_incomplete` (recommended; if the first invoice requires payment, initializes as `incomplete` and its PaymentIntent needs separate confirmation), `allow_incomplete` (with `collection_method=charge_automatically`, immediately attempts payment and marks an unsuccessful initial attempt `incomplete`), `error_if_incomplete` (fails entirely on payment failure).",
+        "ids": [
+          "billing-collection-method::billing-collection-method-payment-behavior"
+        ]
+      },
+      {
+        "start": 1083,
+        "end": 1597,
+        "old_text": "**Payment behavior**: `default_incomplete` (recommended; collect payment after creation), `allow_incomplete` (immediate attempt), `error_if_incomplete` (fails entirely on payment failure).\n\n**23-hour first payment window**: customer must pay within 23h (on-session assumption); after 23h \u2192 `incomplete_expired`; create new subscription for returning customer.\n\n**Async payment methods** (ACH etc.): skip `incomplete`, go directly to `active`; if payment fails later, invoice voided but subscription stays `active`.",
+        "new_text": "**Payment behavior**: The 2026-05-12 overview describes `default_incomplete` for post-creation collection, `allow_incomplete` for an immediate attempt, and `error_if_incomplete` for failed creation on payment failure. The 2026-11-07 overview says defaults depend on payment method and API `payment_behavior` can override them; it does not establish a universal recommendation.\n\n**23-hour first payment window**: For an initial `charge_automatically` payment, the subscription can be `incomplete` while its open invoice awaits payment for 23 hours; after expiry it becomes `incomplete_expired` and a returning customer needs a new subscription. `send_invoice` without a trial can start `active` with the first invoice unpaid.\n\n**Delayed-confirmation payment methods** (for example ACH): a subscription can bypass `incomplete` and become `active` while PaymentIntent is `processing`; a later failure can void the invoice while the subscription remains `active`. This path does not prove final settlement.",
+        "ids": [
+          "billing-subscriptions-overview::overview-concept-payment-conditions"
+        ]
+      },
+      {
+        "start": 1273,
+        "end": 1442,
+        "old_text": "**23-hour first payment window**: customer must pay within 23h (on-session assumption); after 23h \u2192 `incomplete_expired`; create new subscription for returning customer.",
+        "new_text": "**23-hour first invoice window**: in the `allow_incomplete` / `default_incomplete` path, if the first invoice requires payment and remains unpaid after 23 hours, the subscription becomes final `incomplete_expired`, voiding the open invoice and preventing future invoices. The subscription overview advises creating a new subscription for a returning customer.",
+        "ids": [
+          "billing-collection-method::billing-collection-method-first-invoice-23h"
+        ]
+      }
+    ],
+    [
+      {
+        "start": 5825,
+        "end": 6041,
+        "old_text": "4. On `checkout.session.completed`: save `customer.id` + `subscription.id`, provision access\n5. On `invoice.paid`: renew access each billing period\n6. On `invoice.payment_failed`: notify + redirect to Customer Portal",
+        "new_text": "4. On `checkout.session.completed`: save `customer.id` and `subscription.id`; a `trialing` subscription can receive trial access, while paid access after an initial `incomplete` payment requires active subscription status or active entitlements\n5. On `invoice.paid`: for paid access or recovery, check governing subscription status or active entitlements before granting or renewing access\n6. On `invoice.payment_failed`: notify and handle initial `incomplete` collection directly; later recurring failures may use configured retries and Customer Portal recovery",
+        "ids": [
+          "billing-subscriptions-overview::overview-concept-checkout-provision"
+        ]
+      },
+      {
+        "start": 5825,
+        "end": 6744,
+        "old_text": "4. On `checkout.session.completed`: save `customer.id` + `subscription.id`, provision access\n5. On `invoice.paid`: renew access each billing period\n6. On `invoice.payment_failed`: notify + redirect to Customer Portal\n\n## Provisioning Pattern\n\nCheck `product.id` (not `price.id`) in subscription event handlers \u2014 decouples access from pricing:\n\n```text\ncustomer.subscription.created/updated/deleted\n  \u2514\u2500 items[0].price.product \u2192 product_id\n  \u2514\u2500 status \u2192 active | past_due | canceled | ...\n```\n\nStore: `{ product_id, subscription_id, subscription_status, customer_id }`\n\n## Key Webhook Events\n\n| Event | Action |\n| --- | --- |\n| `checkout.session.completed` | Initial provision |\n| `invoice.paid` | Renew access |\n| `invoice.payment_failed` | Notify + portal |\n| `customer.subscription.created` | Grant access |\n| `customer.subscription.updated` | Adjust access level |\n| `customer.subscription.deleted` | Revoke access |",
+        "new_text": "4. On `checkout.session.completed`: save the customer and subscription identities, then check the relevant payment and subscription state before provisioning access. The hosted Billing quickstart's post-payment example specifically verifies `active` subscription status; delayed payment methods also require their later success event. See [[source-stripe-checkout-subscriptions-quickstart]] and [[stripe-checkout]].\n5. On `invoice.paid`: renew access each billing period\n6. On `invoice.payment_failed`: notify + redirect to Customer Portal\n\n## Provisioning Pattern\n\nCheck `product.id` (not `price.id`) in subscription event handlers \u2014 decouples access from pricing:\n\n```text\ncustomer.subscription.created/updated/deleted\n  \u2514\u2500 items[0].price.product \u2192 product_id\n  \u2514\u2500 status \u2192 active | past_due | canceled | ...\n```\n\nStore: `{ product_id, subscription_id, subscription_status, customer_id }`\n\n## Key Webhook Events\n\n| Event | Action |\n| --- | --- |\n| `checkout.session.completed` | Record identities; check payment and subscription state before initial access. For delayed methods, wait for the later success event. |\n| `checkout.session.async_payment_succeeded` | For delayed methods, recheck state and provision eligible access idempotently. |\n| `invoice.paid` | Renew access |\n| `invoice.payment_failed` | Notify + portal |\n| `customer.subscription.created` | Check subscription and payment or entitlement state before granting access; creation alone is insufficient. |\n| `customer.subscription.updated` | Adjust access level |\n| `customer.subscription.deleted` | Revoke access |",
+        "ids": [
+          "billing-quickstart::billing-quickstart-subscriptions-provisioning"
+        ]
+      },
+      {
+        "start": 6450,
+        "end": 6744,
+        "old_text": "| `checkout.session.completed` | Initial provision |\n| `invoice.paid` | Renew access |\n| `invoice.payment_failed` | Notify + portal |\n| `customer.subscription.created` | Grant access |\n| `customer.subscription.updated` | Adjust access level |\n| `customer.subscription.deleted` | Revoke access |",
+        "new_text": "| `checkout.session.completed` | Save identifiers; allow trial access when subscription is `trialing`, and check active status or entitlements for paid access |\n| `invoice.paid` | For paid access or recovery, check subscription status or active entitlements before renewal |\n| `invoice.payment_failed` | Notify; collect initial `incomplete` payment directly or follow configured recurring recovery |\n| `customer.subscription.created` | Record state; allow trial access when `trialing`, and grant paid access when subscription or entitlements are active |\n| `customer.subscription.updated` | Recheck `trialing` or active status and entitlements to adjust trial or paid access |\n| `customer.subscription.deleted` | Revoke access |",
+        "ids": [
+          "billing-subscriptions-overview::overview-concept-webhook-actions"
+        ]
+      }
+    ],
+    [
+      {
+        "start": 8455,
+        "end": 8628,
+        "old_text": "`subscription_data.billing_mode: { type: 'flexible' }` \u2014 enhanced, more predictable billing behavior. Default is `'fixed'`. Requires API version `2025-06-30.basil` or later.",
+        "new_text": "This guide documents two subscription billing modes, `classic` and `flexible`; `fixed` is not one of them. When an API create request omits `billing_mode`, flexible is the documented default for `2025-08-27.preview` and later preview versions or `2025-09-30.clover` GA and later GA versions; other API versions default to classic. Full API modification of flexible subscriptions requires `2025-06-30.basil` or later; Dashboard creation and classic-to-flexible updates have a separate version boundary. See [[source-stripe-subscriptions-billing-mode]] for the dated guide and migration/schedule limits.",
+        "ids": [
+          "billing-subscriptions-billing-mode::billing-subscriptions-billing-mode-correct-fixed-default"
+        ]
+      },
+      {
+        "start": 8455,
+        "end": 8628,
+        "old_text": "`subscription_data.billing_mode: { type: 'flexible' }` \u2014 enhanced, more predictable billing behavior. Default is `'fixed'`. Requires API version `2025-06-30.basil` or later.",
+        "new_text": "`subscription_data.billing_mode: { type: 'flexible' }` \u2014 enhanced, more predictable billing behavior. Requires API version `2025-06-30.basil` or later. For billing-mode defaults by creation route and API version, see [[source-stripe-subscriptions-billing-mode]].\n\n> [!warning] Contradiction\n> The May 2026 [[source-stripe-subscriptions-billing-mode-compare]] capture says flexible mode resets the anchor only when explicitly set, and broadly calls pending invoice items always included. Its own pending-items prose/table differ. The November capture adds a `trial_end` reset exception and limits pending-item behavior by update and `payment_behavior`. Use the dated comparison for the relevant scenario.",
+        "ids": [
+          "billing-subscriptions-billing-mode-compare::billing-mode-compare-warning"
+        ]
+      }
+    ],
+    [
+      {
+        "start": 12467,
+        "end": 12761,
+        "old_text": "- **Entitlements**: auto-created when subscription is created (one per Feature in the subscribed Product); use `customer.activeEntitlements` to gate features \u2014 don't re-query subscription/product/feature chain; listen to `entitlement.active_entitlement_summary.updated` to provision/deprovision",
+        "new_text": "- **Entitlements**: For a subscription to a recurring service Product with associated Features, the Billing APIs overview says an active Entitlement is created for each associated Feature. Retrieve active entitlements or listen to the Active Entitlement Summary event for provisioning; see [[source-stripe-billing-apis]].",
+        "ids": [
+          "billing-billing-apis::billing-billing-apis-entitlements"
+        ]
+      },
+      {
+        "start": 12467,
+        "end": 12761,
+        "old_text": "- **Entitlements**: auto-created when subscription is created (one per Feature in the subscribed Product); use `customer.activeEntitlements` to gate features \u2014 don't re-query subscription/product/feature chain; listen to `entitlement.active_entitlement_summary.updated` to provision/deprovision",
+        "new_text": "- **Entitlements**: the 2026-11-07 overview says active entitlements for subscribed product features are created when the subscription becomes `active`; use `customer.activeEntitlements` to gate paid features and listen to `entitlement.active_entitlement_summary.updated` to provision/deprovision. Its status table separately says `trialing` is safe to provision for trial access. The 2026-05-12 overview instead described active entitlements as created on subscription creation; see [[source-stripe-subscriptions-overview]].",
+        "ids": [
+          "billing-subscriptions-overview::overview-concept-entitlement-timing"
+        ]
+      }
+    ],
+    [
+      {
+        "start": 15248,
+        "end": 15407,
+        "old_text": "- [[source-stripe-subscriptions-overview]] \u2014 Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix",
+        "new_text": "- [[source-stripe-subscriptions-overview]] \u2014 Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix\n- [[source-stripe-billing-collection-method]] \u2014 Billing collection-method guide (2026-11-07 capture): invoice and subscription collection choices, first-payment and failed-payment conditions",
+        "ids": [
+          "billing-collection-method::billing-collection-method-reciprocal"
+        ]
+      },
+      {
+        "start": 15248,
+        "end": 15407,
+        "old_text": "- [[source-stripe-subscriptions-overview]] \u2014 Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix",
+        "new_text": "- [[source-stripe-subscriptions-overview]] \u2014 Dated subscription lifecycle: collection-method split, 8 statuses, configurable invoice-based status resolution, initial versus recurring recovery, active-entitlement provisioning\n\n> [!warning] Contradiction\n> The 2026-05-12 overview describes active entitlements at subscription creation and a paid invoice as unconditionally activating a subscription; the 2026-11-07 overview ties entitlements to activation and makes status depend on governing invoices. The newer overview also excludes Smart Retries for an initial `incomplete` payment despite the older generic retry advice. Preserve the May capture as dated evidence and consult [[source-stripe-subscriptions-overview]] for the captured conditions.",
+        "ids": [
+          "billing-subscriptions-overview::overview-concept-source-route"
+        ]
+      }
+    ]
+  ],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-subscriptions-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-subscriptions-concept-review.json"
+}

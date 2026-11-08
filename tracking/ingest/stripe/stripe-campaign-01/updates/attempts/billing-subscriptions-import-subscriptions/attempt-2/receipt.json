@@ -1,0 +1,98 @@
+{
+  "job_id": "billing-subscriptions-import-subscriptions",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md",
+  "raw_sha256": "cc4efc31c64c1999dbfe9da1b958a9472caaa735ecc042def1499a474b5c08fe",
+  "source_before_sha256": "e123ce259c753d7440fe2ed5cf2f1bd03a61f8b7ebee28f695ca29b4e4897cb5",
+  "source_page": "---\ntitle: \"Stripe \u2014 Migrate Subscriptions Using Stripe APIs\"\ntype: source\ndate_ingested: 2026-11-08\ncanonical_url: https://docs.stripe.com/billing/subscriptions/import-subscriptions\noriginal_format: webpage\nraw_files:\n  - \"stripe-billing-subscriptions-import-subscriptions-2026-11-07.md\"\n  - \"stripe-subscriptions-migration-api-2026.md\"\ntags: [stripe, subscriptions, migration, api, subscription-schedules, legacy-pricing, test-clocks]\n---\n\n## Summary\n\nAPI-based guide for migrating subscriptions from another processor, an in-house system, or an existing Stripe account into Stripe Billing. Prepare customers and prices, map source IDs and billing dates, test in a sandbox, and create Subscription or Subscription Schedule objects. Schedules are recommended for future starts and phase controls; the guide does not establish that any particular migration has run or collected payment.\n\n## Key Patterns\n\n**Prerequisites**: Review migration stages and set up a Stripe Billing integration once. Request a payments-data/PAN import when moving from another processor; this is unnecessary for Stripe-to-Stripe migration. For third-party card data, complete the PAN import before setting default payment methods. These are instructions, not evidence that an import occurred.\n\n**Automatic collection**: Customers the merchant wants to charge automatically need a default payment source; without one, subscription invoices cannot collect payment. Create or retrieve a PaymentMethod, attach it to the Customer if needed, then set `invoice_settings.default_payment_method` on the applicable Customer. An attached method that only lacks default status need not be recreated. This prerequisite was explicit in the 2026-11-07 capture, not in the earlier prerequisite list.\n\n**Legacy pricing (conditional)**: If legacy plans must continue, create a placeholder product such as `Legacy plan` and use `items.price_data` where needed to override the legacy price. The 2026-05-12 Node.js example and the 2026-11-07 curl example illustrate this pattern; it is not a universal migration prerequisite. The newer legacy-price table states a maximum recurring interval of 3 years, 36 months, or 156 weeks; it also says to set only one of `unit_amount` and `unit_amount_decimal`. This is the captured documentation limit, not a validated account or API-version result.\n\n**Identity and mid-cycle continuity**: Map source customer IDs to Stripe Customer IDs and source price IDs to Stripe Price IDs. Align a schedule's `current_phase.start_date`, `billing_cycle_anchor`, and `start_date` with the remaining source term. Preserve relevant third-party metadata and tax IDs or settings as appropriate.\n\n**Subscription creation**: The Subscription API can create subscriptions, while the guide recommends Subscription Schedules for future starts, including monthly subscriptions more than 30 days ahead, and for phase-specific tax, collection, and coupon settings. A future start permits review before production billing; it does not prove that a scheduled subscription has started.\n\n**Sandbox validation**: Run the pricing-model import in a sandbox before live mode. Remap script IDs after wiping sandbox data and when moving to live mode because price IDs differ. Test clocks simulate time progression in the sandbox; this capture does not demonstrate a production billing outcome.\n\n**Existence check**: Listing Subscriptions with a `created` filter checks whether Subscription objects exist. It does not by itself verify source-to-Stripe mapping, schedule start, invoice payment, collectability, or completed reconciliation. The older Node.js `stripe.subscriptions.list({ created: { gt: timestamp } })` and newer curl call express the same narrow check.\n\n> [!warning] Contradiction\n> The 2026-05-12 raw guide states a maximum legacy-price interval of 1 year (12 months or 52 weeks), while the 2026-11-07 capture states 3 years (36 months or 156 weeks). Retain the old statement as dated evidence; do not treat either captured table as live account validation. Both captures also label their schedule example as June 1, 2022 at 00:00 UTC (the newer prose says May 31 at 17:00 GMT-7), but both retain `start_date=1654066801`, which resolves to June 1, 2022 at 07:00:01 UTC. The intended example time remains unresolved; preserve the literal timestamp and do not infer changed scheduling behavior from the prose revision.\n\n## Related Pages\n\n- [[stripe]] \u2014 company page\n- [[stripe-subscriptions]] \u2014 concept page\n- [[source-stripe-subscriptions-migration-toolkit]] \u2014 toolkit (no-code) migration\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07]] \u2014 2026-11-07 guide, including the default-payment-source prerequisite, curl examples, and three-year table (142 lines)\n- [[raw/stripe-subscriptions-migration-api-2026]] \u2014 2026-05-12 guide, including the Node.js examples and one-year table (160 lines)\n",
+  "quotes": [
+    {
+      "text": "Make sure the customers you want to charge automatically have a default payment source (a [payment method](https://docs.stripe.com/api/payment_methods.md)), or [add a default](https://docs.stripe.com/billing/subscriptions/import-subscriptions.md#add-missing-payment-source). Without a default payment source, subscription invoices can\u2019t collect payment.",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md:16"
+    },
+    {
+      "text": "If a customer is missing a default payment source, you need to set one before creating subscriptions. If the customer already has a payment method attached but it isn\u2019t set as the default, you can set it directly without creating a new one.",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md:47"
+    },
+    {
+      "text": "The maximum interval is 3 years (3 years, 36 months, or 156 weeks).",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md:95"
+    },
+    {
+      "text": "While you can use the [Subscription](https://docs.stripe.com/api/subscriptions.md) API to create subscriptions, we recommend using the [Subscription Schedules](https://docs.stripe.com/api/subscription_schedules.md) API.",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md:113"
+    },
+    {
+      "text": "Here\u2019s how to create subscriptions that start on May 31, 2022 at 5:00 PM GMT-7.",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md:117"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The maximum interval is 1 year (1 year, 12 months, or 52 weeks).",
+      "location": "raw/stripe-subscriptions-migration-api-2026.md:93"
+    },
+    {
+      "text": "While you can use the [Subscription](https://docs.stripe.com/api/subscriptions.md) API to create subscriptions, we recommend using the [Subscription Schedules](https://docs.stripe.com/api/subscription_schedules.md) API.",
+      "location": "raw/stripe-subscriptions-migration-api-2026.md:111"
+    },
+    {
+      "text": "Here\u2019s how to create subscriptions that start on June 1, 2022 at 12:00 AM UTC.",
+      "location": "raw/stripe-subscriptions-migration-api-2026.md:115"
+    },
+    {
+      "text": "start_date: 1654066801,",
+      "location": "raw/stripe-subscriptions-migration-api-2026.md:136"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 142
+      }
+    ],
+    "raw/stripe-subscriptions-migration-api-2026.md": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-migration-api.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/acdf011880e5a135f4e4177c/content.diff": [
+      {
+        "start": 1,
+        "end": 215
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "import-subscriptions-concept-migration-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-migration-api]] \u2014 API migration: Subscription Schedules (>30d future), legacy pricing via price_data, mid-cycle continuity, test clocks",
+      "new_text": "- [[source-stripe-subscriptions-migration-api]] \u2014 API migration: Subscription API permitted, Schedules recommended for future starts; default payment method for automatic collection, conditional legacy price_data, ID and mid-cycle mapping, sandbox test clocks\n\n> [!warning] Contradiction\n> The 2026-05-12 API migration capture lists a one-year legacy-price interval limit; the 2026-11-07 capture lists three years. They are dated documentation claims, not a live API validation. Both prose examples denote June 1, 2022 at 00:00 UTC, but their unchanged `start_date=1654066801` denotes 07:00:01 UTC. The intended sample time is unresolved. See [[source-stripe-subscriptions-migration-api]] and its preserved raw captures.",
+      "reason": "Correct the concept's migration source route and add a dated contradiction callout reciprocal to the source; do not turn the old and new documentation into an unqualified live limit or treat the sample epoch as the prose time.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Source is documentation evidence only; no migration execution, payment collection, or account-specific interval validation was observed."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/import-subscriptions, the 2026-11-07 capture guides API migration from a third-party, in-house system, or existing Stripe account into Stripe Billing: prepare customers and prices, map source customer and price IDs, align schedule start and billing anchors with remaining terms, and test in a sandbox (new lines 9-16, 63-83, 102-115). For customers to be charged automatically, it requires a default payment source; without one, subscription invoices cannot collect (new 16, 45-61). Third-party PAN import must precede setting defaults, but the processor-import prerequisite is unnecessary for Stripe-to-Stripe migration (new 15, 59-61). Both captures permit Subscription API creation and recommend Schedules for future starts (new 113; old 111). [[source-stripe-subscriptions-migration-api]] now states these boundaries; the final list-Subscriptions call checks object existence only (new 128-138), not completed billing, payment, or reconciliation.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/import-subscriptions, the meaningful change from the 2026-05-12 capture is the explicit default-payment-source prerequisite and attach/default workflow for automatic collection (new 16, 45-61 versus old 10-14), plus the legacy-price table's stated maximum of 3 years, 36 months, or 156 weeks instead of the old 1 year, 12 months, or 52 weeks (new 95; old 93). [[source-stripe-subscriptions-migration-api]] preserves both dated limits and corrects its unsupported 'not Subscriptions API' wording: both captures permit direct Subscription creation but recommend Schedules (new 113; old 111). The newer curl examples replace Node.js examples without demonstrating changed API behavior. Old prose June 1, 2022 00:00 UTC (old 115) equals new prose May 31, 2022 17:00 GMT-7 (new 117), but unchanged `start_date=1654066801` (old 136; new 125) means June 1, 2022 07:00:01 UTC; the intended sample time is unresolved. Neither capture proves a live import, account-specific interval acceptance, scheduled start, invoice payment, or reconciliation."
+  },
+  "status": "candidate_ready"
+}

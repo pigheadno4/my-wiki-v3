@@ -1,0 +1,146 @@
+--- raw/stripe-subscriptions-change-price-2026.md
++++ raw/stripe-billing-subscriptions-change-price-2026-11-07.md
+@@ -12,14 +12,10 @@
+ 
+ Regardless of the method you choose, you need to provide identifiers for the objects you’re updating. Use the [list subscriptions](https://docs.stripe.com/api/subscriptions/list.md) method with a relevant filter (such as the ID of the customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/object.md) or [Customer](https://docs.stripe.com/api/customers/object.md) object) to find the subscription and item to update.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptions = await stripe.subscriptions.list({
+-  customer: "{{CUSTOMER_ID}}",
+-});
++```curl
++curl -G https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d customer={{CUSTOMER_ID}}
+ ```
+ 
+ The returns the set of subscriptions for the specified customer, from which you can retrieve the subscription ID (`id`), any subscription item IDs (`items.data.id`) and the subscription items price ID (`items.data.price.id`).
+@@ -59,49 +55,31 @@
+ }
+ ```
+ 
+-## Update the subscription
++## Update the subscription 
+ 
+ [Update a subscription](https://docs.stripe.com/api.md#update_subscription) including the following parameters:
+ 
+-- `item ID`: You must specify the subscription item to replace the current price with the new price. Otherwise, updating the subscription with a new price _adds_ a new subscription item so both prices are active for the subscription.
++- `item ID`: You must specify the subscription item to replace the current price with the new price. Otherwise, updating the subscription with a new price *adds* a new subscription item so both prices are active for the subscription.
+ - `item price`: Provide the identifier for the replacement price.
+ - `item quantity`: Updating a subscription price automatically reverts the quantity to the default value of `1`. If the existing subscription quantity is anything other than `1` and you want to preserve that value, you must include it in the update.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.update("sub_xxxxxxxxx", {
+-  items: [
+-    {
+-      id: "{{SUB_ITEM_ID}}",
+-      price: "{{NEW_PRICE_ID}}",
+-    },
+-  ],
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "items[0][id]={{SUB_ITEM_ID}}" \
++  -d "items[0][price]={{NEW_PRICE_ID}}"
+ ```
+ 
+-> You must specify the subscription item to replace the current price with the new price. Failing to do so results in _adding_ the new price so both prices are active for the subscription.
++> You must specify the subscription item to replace the current price with the new price. Failing to do so results in *adding* the new price so both prices are active for the subscription.
+ 
+ Alternatively, you can delete the current subscription item and create a new subscription item with the updated price.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.update("sub_xxxxxxxxx", {
+-  items: [
+-    {
+-      id: "{{SUB_ITEM_ID}}",
+-      deleted: true,
+-    },
+-    {
+-      price: "{{NEW_PRICE_ID}}",
+-    },
+-  ],
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "items[0][id]={{SUB_ITEM_ID}}" \
++  -d "items[0][deleted]=true" \
++  -d "items[1][price]={{NEW_PRICE_ID}}"
+ ```
+ 
+ ## Update the subscription item
+@@ -113,14 +91,10 @@
+ 
+ Use this option if you don’t need to make any other changes at the subscription level.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionItem = await stripe.subscriptionItems.update("si_xxxxxxxxx", {
+-  price: "{{NEW_PRICE_ID}}",
+-});
++```curl
++curl https://api.stripe.com/v1/subscription_items/{{SUBSCRIPTIONITEM_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d price={{NEW_PRICE_ID}}
+ ```
+ 
+ ## Billing periods
+@@ -139,33 +113,25 @@
+ 
+ If you have a metered price backed by legacy usage records and update to a new usage records price, the usage is transferred to the new price.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.update("sub_xxxxxxxxx", {
+-  items: [
+-    {
+-      id: "{{SUB_ITEM_ID}}",
+-      price: "{{NEW_PRICE_ID}}",
+-      clear_usage: true,
+-    },
+-  ],
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "items[0][id]={{SUB_ITEM_ID}}" \
++  -d "items[0][price]={{NEW_PRICE_ID}}" \
++  -d "items[0][clear_usage]=true"
+ ```
+ 
+ ## Proration
+ 
+ Changing a subscription often results in a [proration](https://docs.stripe.com/billing/subscriptions/prorations.md) to apply the new price to the remaining days in the billing period. You can prepare your customer for any additional expense resulting from a price change by [previewing a proration](https://docs.stripe.com/billing/subscriptions/prorations.md#preview-proration). Alternatively, you can [disable prorations](https://docs.stripe.com/billing/subscriptions/prorations.md#disable-prorations).
+ 
+-### Immediate payment
++### Immediate payment 
+ 
+ Stripe immediately attempts payment when a subscription’s billing cycle anchor is reset. Learn more about [resetting a subscription’s billing cycle anchor](https://docs.stripe.com/billing/subscriptions/billing-cycle.md#changing).
+ 
+ When billing is performed immediately, but the required payment fails, the subscription change request succeeds and the subscription transitions to `past_due`.
+ 
+-To bill a customer immediately for a change to a subscription on the same billing period, set `proration_behavior` to `always_invoice`. This calculates the proration, then immediately generates an _invoice_ (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) after making the switch. Combine this setting with [pending updates](https://docs.stripe.com/billing/subscriptions/pending-updates.md) so the subscription doesn’t update unless payment succeeds on the new invoice.
++To bill a customer immediately for a change to a subscription on the same billing period, set `proration_behavior` to `always_invoice`. This calculates the proration, then immediately generates an *invoice* (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) after making the switch. Combine this setting with [pending updates](https://docs.stripe.com/billing/subscriptions/pending-updates.md) so the subscription doesn’t update unless payment succeeds on the new invoice.
+ 
+ ### Credit prorations
+ 

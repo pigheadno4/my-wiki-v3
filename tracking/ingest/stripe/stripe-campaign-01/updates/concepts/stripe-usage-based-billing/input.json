@@ -1,0 +1,385 @@
+{
+  "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-usage-based-billing/base.md",
+  "base_sha256": "e58295adff404152808a353699428ff2d739ff255cb23381ed0f187a5127ed4b",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages::flat-fee-overages-model-meter-api",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "| **Flat fee + overages** | Flat base rate + arrears usage charges | Legacy `usage-based-v1` (not Meter API) |",
+      "new_text": "| **Flat fee + overages** | Flat base rate + arrears usage charges | This captured `usage-based-v1` guide uses `/v1/billing/meters`, `recurring.meter`, and `/v1/billing/meter_events`; the URL name alone does not establish a legacy `aggregate_usage` flow. See [[source-stripe-usage-based-billing-flat-fee-overages]]. |",
+      "reason": "The existing non-Meter classification conflicts with the page's Meter API examples in both captures.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "flat-fee-overages-model-meter-api",
+      "job_id": "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/receipt.json",
+      "receipt_sha256": "5ceebf68e3fb9df104a484c9f4a559b57e70717d5173ed09d3619aa8327d50ad",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/candidate.md",
+      "source_candidate_sha256": "41c831af79f280d41f05349d5f3e8ee64015b7f34cd8042b0843c351cb7c0587",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages::flat-fee-overages-model-detail-and-rate-warning",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "> [!info] Flat fee and overages implementation uses two products on one subscription: (1) graduated tiered metered price for overages (`billing_scheme: 'tiered'`, `tiers_mode: 'graduated'`), (2) flat licensed price for base fee (`usage_type: 'licensed'`). `Decimal.from()` required for tier monetary values.",
+      "new_text": "> [!info] The captured flat fee and overages example uses two prices on one subscription: (1) a graduated metered price tied to a Billing Meter, with the first 1,000 units included, and (2) a $100 monthly licensed price. The May Node example uses `Decimal.from()`; the November curl example uses numeric form values, so `Decimal.from()` is not a general requirement. The guide's first-invoice caveat about metered lines should not erase the separate upfront licensed charge. See [[source-stripe-usage-based-billing-flat-fee-overages]].\n\n> [!warning] Contradiction\n> The May and November guide prose says 0.04 USD per hundred units, but the Dashboard tier says 0.04 USD per unit and the API tier has `unit_amount_decimal=4` in USD. Confirm the intended basis before implementing the sample rate; the captures contain no executed invoice result.",
+      "reason": "Directly replaces the outdated universal Decimal claim and qualifies the internally contradictory rate and initial-invoice reading.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "The guide's rate prose conflicts with its Dashboard/API tier examples in both captures."
+      ],
+      "original_update_id": "flat-fee-overages-model-detail-and-rate-warning",
+      "job_id": "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/receipt.json",
+      "receipt_sha256": "5ceebf68e3fb9df104a484c9f4a559b57e70717d5173ed09d3619aa8327d50ad",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/candidate.md",
+      "source_candidate_sha256": "41c831af79f280d41f05349d5f3e8ee64015b7f34cd8042b0843c351cb7c0587",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages::flat-fee-overages-source-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-flat-fee-overages]] \u2014 flat fee + overages: two-product approach (graduated tiered metered + licensed flat), Decimal.from() for tiers, invoice timing",
+      "new_text": "- [[source-stripe-usage-based-billing-flat-fee-overages]] \u2014 captured flat fee + overages example: Meter API, graduated metered and licensed prices, scoped Accounts v2/Customers v1 routes, contradictory rate wording, and qualified invoice timing",
+      "reason": "Keeps the source route accurate after updating the example-specific syntax and scoped customer identity paths.",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "flat-fee-overages-source-route",
+      "job_id": "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/receipt.json",
+      "receipt_sha256": "5ceebf68e3fb9df104a484c9f4a559b57e70717d5173ed09d3619aa8327d50ad",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/candidate.md",
+      "source_candidate_sha256": "41c831af79f280d41f05349d5f3e8ee64015b7f34cd8042b0843c351cb7c0587",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-alerts::usage-alert-concept-threshold-and-timing",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- **Usage alerts** \u2014 notify when a customer exceeds a meter usage threshold (max **25 per meter+customer**; evaluation includes pre-alert historical data; don't work with test clocks). Use cases: email users, deprovision access, upsell sales team.",
+      "new_text": "- **Usage alerts** \u2014 notify when a customer meets the configured meter usage threshold (the example uses `gte=100`). Evaluation happens on usage reported **after** alert creation and includes prior reported usage; creation alone is not described as an immediate trigger. Max **25 per meter+customer**; alerts don't work with test clocks. Use cases: email users, deprovision access, upsell sales team. See [[source-stripe-usage-based-billing-alerts-setup]].",
+      "reason": "Clarify comparator and post-creation evaluation while retaining existing limit and concept examples.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The 100-call value is an example, not a universal threshold."
+      ],
+      "original_update_id": "usage-alert-concept-threshold-and-timing",
+      "job_id": "billing-subscriptions-usage-based-alerts",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/receipt.json",
+      "receipt_sha256": "e45c355672105b0ffd7b0a78d8e64b90e570bf4370010b934cb0ddbf5e862739",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/candidate.md",
+      "source_candidate_sha256": "6af198148ab445f8b4823981fdb4b517cc08d0f6b2192424fd4a5ebe6b86786a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-alerts::usage-alert-concept-once",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Alert API**: `stripe.billing.alerts.create({ title, alert_type: 'usage_threshold', usage_threshold: { filters: [{ type: 'customer', customer }], meter, gte: 100, recurrence: 'one_time' } })`. Alert type `One-time per-customer` \u2014 fires once when customer first exceeds threshold, never re-triggers. Webhook event: `billing.alert.triggered`.",
+      "new_text": "**Alert API example**: `stripe.billing.alerts.create({ title, alert_type: 'usage_threshold', usage_threshold: { filters: [{ type: 'customer', customer }], meter, gte: 100, recurrence: 'one_time' } })`. This is a **customer-filtered** example; the captured API examples do not establish the all-customer request shape. `One-time per-customer` fires once when the customer meets the configured threshold and does not retrigger for later usage. Webhook event: `billing.alert.triggered`. The Dashboard separately defaults to **Any customer** and offers **Specific customer**. See [[source-stripe-usage-based-billing-alerts-setup]].",
+      "reason": "Preserve API example and once-per-customer behavior while separating Dashboard all-customer control from unverified API filter omission.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Do not infer an API filters-omission rule from the Dashboard default."
+      ],
+      "original_update_id": "usage-alert-concept-once",
+      "job_id": "billing-subscriptions-usage-based-alerts",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/receipt.json",
+      "receipt_sha256": "e45c355672105b0ffd7b0a78d8e64b90e570bf4370010b934cb0ddbf5e862739",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/candidate.md",
+      "source_candidate_sha256": "6af198148ab445f8b4823981fdb4b517cc08d0f6b2192424fd4a5ebe6b86786a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-alerts::usage-alert-concept-preview-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "## Monitoring and Alerts\n\nTwo mechanisms:",
+      "new_text": "## Monitoring and Alerts\n\nThe November 7, 2026 usage-alert guide invites requests for Usage Analytics API preview and early access to spend and credit balance alerts. Those invitations do not establish account access or describe those alerts' API behavior. See [[source-stripe-usage-based-billing-alerts-setup]] and https://docs.stripe.com/billing/subscriptions/usage-based/alerts.\n\nTwo mechanisms:",
+      "reason": "Add a scoped reciprocal route for newly documented preview invitations.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "No access was requested or granted as part of this source update."
+      ],
+      "original_update_id": "usage-alert-concept-preview-route",
+      "job_id": "billing-subscriptions-usage-based-alerts",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/receipt.json",
+      "receipt_sha256": "e45c355672105b0ffd7b0a78d8e64b90e570bf4370010b934cb0ddbf5e862739",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/candidate.md",
+      "source_candidate_sha256": "6af198148ab445f8b4823981fdb4b517cc08d0f6b2192424fd4a5ebe6b86786a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-alerts/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-billing-credits::credits-concept-preview-scope",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "Credit grants let customers pre-purchase a monetary credit amount that applies to metered-price subscription items. Credits burn down at invoice finalization. Advanced UBB (private preview) burns in real time.",
+      "new_text": "The matched Billing Credits guide describes prepaid or promotional Credit Grants that can apply to eligible metered-price subscription items at invoice finalization. Its 2026-05-05 capture carried a Public preview banner; the 2026-11-07 capture omits it, which does not establish general availability or account eligibility. Advanced UBB (private preview) burns in real time under separately sourced guidance.",
+      "reason": "Keep the different Advanced UBB claim scoped to its other source while date-qualifying this guide's preview banner and finalization rule.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "credits-concept-preview-scope",
+      "job_id": "billing-subscriptions-usage-based-billing-credits",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/receipt.json",
+      "receipt_sha256": "667fc271e0edcf928bf02b4103e239c787c2fa683fcbf7be4ee695d8cedcb385",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/candidate.md",
+      "source_candidate_sha256": "66938a44cbb0a9d6d4c00e4e9fbd89d30f7cd93dc94dc886f9b9d9b8a18d5e19",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-billing-credits::credits-concept-approved-use-scope",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Use cases**: prepayment (paid credits) and promotional (free, often with expiry). **Prohibited**: gift cards, stored value, third-party payments, digital wallet linking.",
+      "new_text": "**Use cases in the Billing Credits guide**: paid or free credits for memberships, pay-as-you-go plans, subscriptions, or specific merchant products and services. **Prohibited**: gift cards, stored value outside those approved merchant offerings, third-party payments, and digital-wallet linking.",
+      "reason": "Preserve the complete approved-use list and the specific stored-value boundary in new 29-39 and old 21-31.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "credits-concept-approved-use-scope",
+      "job_id": "billing-subscriptions-usage-based-billing-credits",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/receipt.json",
+      "receipt_sha256": "667fc271e0edcf928bf02b4103e239c787c2fa683fcbf7be4ee695d8cedcb385",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/candidate.md",
+      "source_candidate_sha256": "66938a44cbb0a9d6d4c00e4e9fbd89d30f7cd93dc94dc886f9b9d9b8a18d5e19",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-billing-credits::credits-concept-effective-at-tension",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Credit grant states**:\n\n| State | Description |\n| --- | --- |\n| Pending | `available_balance` not yet usable |\n| Granted | Eligible based on `effective_at`; effective immediately if not set |\n| Depleted | Balance fully used |\n| Expired | Reached `expires_at` or manually expired |\n| Voided | Never applied to any invoice; can't be applied to future invoices |",
+      "new_text": "**Credit grant states**:\n\n| State | Description |\n| --- | --- |\n| Pending | `available_balance` not yet usable |\n| Granted | Eligible based on `effective_at`; effective immediately if omitted, as the captured guide states |\n| Depleted | Balance fully used |\n| Expired | Reached `expires_at` or manually expired |\n| Voided | Never applied to any invoice; can't be applied to future invoices |\n\n> [!warning] Contradiction\n> Both captures say `effective_at` must occur in the future and also say omitting it makes the grant effective immediately (new line 48; old line 40). This source does not establish a universal future-only validation rule.",
+      "reason": "Surface the exact captured wording tension without inventing timestamp validation.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Both captures' Granted row contains future-versus-omitted-immediate wording; validation remains unresolved."
+      ],
+      "original_update_id": "credits-concept-effective-at-tension",
+      "job_id": "billing-subscriptions-usage-based-billing-credits",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/receipt.json",
+      "receipt_sha256": "667fc271e0edcf928bf02b4103e239c787c2fa683fcbf7be4ee695d8cedcb385",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/candidate.md",
+      "source_candidate_sha256": "66938a44cbb0a9d6d4c00e4e9fbd89d30f7cd93dc94dc886f9b9d9b8a18d5e19",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-billing-credits::credits-concept-ledger-balance",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Ledger vs available balance**: ledger is immutable/append-only; available = ledger minus expired/unrecorded. Unused grant limit is based on **ledger balance** (not available). Max **100 unused grants per customer**.",
+      "new_text": "**Ledger vs available balance**: the grant is backed by an immutable, append-only ledger of transactions, while its **ledger balance changes** as credits and debits are recorded. Available balance is the usable amount after expired credits or unrecorded transactions. The **100 unused-grants-per-customer** cap uses ledger balance, not available balance: a pending grant or a non-expired, non-voided grant with positive ledger balance counts, even if available balance is zero. A grant stops counting when a finalized invoice's credit application depletes ledger balance to zero, or the grant expires or is voided; invoice finalization alone does not suffice.",
+      "reason": "Correct the object of immutability and state exact unused count/stopping conditions from new 103-110,119-145 and old 95-102,111-137.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "credits-concept-ledger-balance",
+      "job_id": "billing-subscriptions-usage-based-billing-credits",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/receipt.json",
+      "receipt_sha256": "667fc271e0edcf928bf02b4103e239c787c2fa683fcbf7be4ee695d8cedcb385",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/candidate.md",
+      "source_candidate_sha256": "66938a44cbb0a9d6d4c00e4e9fbd89d30f7cd93dc94dc886f9b9d9b8a18d5e19",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-billing-credits::credits-concept-source-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-credits-overview]] \u2014 billing credits overview: prohibited uses, 5 states, eligibility rules, priority ordering, ledger vs available balance, 100-grant limit, void/credit note behavior",
+      "new_text": "- [[source-stripe-usage-based-billing-credits-overview]] \u2014 Billing Credits overview: May 2026 Public preview label; November 2026 capture adds a rendered relationship diagram and preserves eligibility, priority, ledger-balance cap, and void/Credit Note rules without proving GA",
+      "reason": "Keep reciprocal route and label the precise old/new status and content boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "credits-concept-source-route",
+      "job_id": "billing-subscriptions-usage-based-billing-credits",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/receipt.json",
+      "receipt_sha256": "667fc271e0edcf928bf02b4103e239c787c2fa683fcbf7be4ee695d8cedcb385",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/candidate.md",
+      "source_candidate_sha256": "66938a44cbb0a9d6d4c00e4e9fbd89d30f7cd93dc94dc886f9b9d9b8a18d5e19",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-billing-credits/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-configure-grace-period::grace-concept-eligibility",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Cycling invoices** (end-of-period) include usage reported during the grace period. **Threshold invoices** do not \u2014 they reflect usage only up to the creation moment.",
+      "new_text": "**Subscription-cycle invoices** and **subscription-schedule phase-transition invoices that modify metered items** can include usage reported during the finalization grace period. Other invoices, including **threshold invoices**, use usage recorded before invoice creation.\n\n> [!warning] Contradiction\n> The May capture and former summary named only cycling versus threshold invoices. The November guide adds qualifying phase transitions and warns that a mid-cycle subscription-item price change skips finalization recomputation: grace-period usage then appears on neither current nor subsequent invoices in classic or flexible subscriptions using billing meters. See [[source-stripe-usage-based-billing-configure-grace-period]].",
+      "reason": "Correct the principal invoice eligibility boundary and add consequential price-change exception.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "The guide does not document a recovery path for dropped usage."
+      ],
+      "original_update_id": "grace-concept-eligibility",
+      "job_id": "billing-subscriptions-usage-based-configure-grace-period",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/receipt.json",
+      "receipt_sha256": "8577da220e99955ea1b6c863f08555bc82243717994a83c9e5c4a80a69bdfb5b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/candidate.md",
+      "source_candidate_sha256": "e75eb223d37870ae3f32284746726e4ee6e4732eed51266b4f2ffb8adeff407b",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-configure-grace-period::grace-concept-first-invoice",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "The first invoice of any subscription always finalizes immediately, regardless of rules.",
+      "new_text": "The first invoice of a subscription using `charge_automatically` finalizes immediately regardless of these rules; the captures do not extend this statement to first `send_invoice` invoices.",
+      "reason": "Restore the collection-method condition present in both captures.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "grace-concept-first-invoice",
+      "job_id": "billing-subscriptions-usage-based-configure-grace-period",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/receipt.json",
+      "receipt_sha256": "8577da220e99955ea1b6c863f08555bc82243717994a83c9e5c4a80a69bdfb5b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/candidate.md",
+      "source_candidate_sha256": "e75eb223d37870ae3f32284746726e4ee6e4732eed51266b4f2ffb8adeff407b",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-configure-grace-period::grace-concept-timestamps",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "Usage timestamps must fall within the service period of the draft invoice. Usage timestamped after the draft invoice's creation goes to the next invoice.",
+      "new_text": "For ordinary eligible draft-invoice processing, usage timestamps must fall within that invoice's service period; a timestamp after draft creation routes usage to the next invoice. This does not override the November exceptions: usage reported beyond grace may appear in meter summaries but not the finalized or next invoice, and a mid-cycle subscription-item price change can omit grace-period usage from both current and subsequent invoices.",
+      "reason": "Keep the timestamp rule conditional rather than a universal next-invoice fallback.",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "grace-concept-timestamps",
+      "job_id": "billing-subscriptions-usage-based-configure-grace-period",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/receipt.json",
+      "receipt_sha256": "8577da220e99955ea1b6c863f08555bc82243717994a83c9e5c4a80a69bdfb5b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/candidate.md",
+      "source_candidate_sha256": "e75eb223d37870ae3f32284746726e4ee6e4732eed51266b4f2ffb8adeff407b",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-configure-grace-period::grace-concept-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-configure-grace-period]] \u2014 invoice finalization grace period: default 1h, max 72h, cycling vs threshold, rules system, draft invoice usage behavior",
+      "new_text": "- [[source-stripe-usage-based-billing-configure-grace-period]] \u2014 May and November 2026 invoice-finalization guide: 1h default, up to 72h rules, eligible cycle/phase invoices, timestamp and price-change limits",
+      "reason": "Refresh reciprocal source route for the updated dated guide.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "grace-concept-route",
+      "job_id": "billing-subscriptions-usage-based-configure-grace-period",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/receipt.json",
+      "receipt_sha256": "8577da220e99955ea1b6c863f08555bc82243717994a83c9e5c4a80a69bdfb5b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/candidate.md",
+      "source_candidate_sha256": "e75eb223d37870ae3f32284746726e4ee6e4732eed51266b4f2ffb8adeff407b",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-configure-grace-period::grace-concept-service-period-advice",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "Default: **1 hour**. Configurable up to **72 hours (3 days)** via Dashboard \u2192 Invoice settings. Must not exceed the service period length.",
+      "new_text": "Default: **1 hour**. Configurable up to **72 hours (3 days)** via Dashboard \u2192 Invoice settings. Stripe advises against setting the grace period longer than the service period; for daily service, it says not to use a grace period of 24 hours or more.",
+      "reason": "Preserve the documented 72-hour configurable limit while expressing the service-period relationship as advice, not an API prohibition.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "grace-concept-service-period-advice",
+      "job_id": "billing-subscriptions-usage-based-configure-grace-period",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/receipt.json",
+      "receipt_sha256": "8577da220e99955ea1b6c863f08555bc82243717994a83c9e5c4a80a69bdfb5b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/candidate.md",
+      "source_candidate_sha256": "e75eb223d37870ae3f32284746726e4ee6e4732eed51266b4f2ffb8adeff407b",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-how-it-works::usage-based-definition-routing",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "Stripe's usage-based billing lets you charge customers based on actual product consumption \u2014 API calls, data processed, seats used, etc. The current approach uses the **Meter API** (billing v2), which is distinct from the legacy `aggregate_usage` metered price approach.",
+      "new_text": "Stripe's usage-based billing lets you charge customers based on actual product consumption \u2014 API calls, data processed, seats used, etc. This page details the **basic Billing Meters API** path (billing v2), distinct from the legacy `aggregate_usage` metered price approach. In the 2026-11-07 guide, Stripe recommends Metronome for new usage-based integrations unless maintaining an existing Billing Meters integration; that recommendation is not Meter API deprecation or forced migration.\n\n> [!warning] Contradiction\n> The earlier \u201ccurrent approach\u201d wording reflected the Meter-based guide, while the November guide now recommends Metronome for new integrations. The capture does not establish account-specific Metronome eligibility or removal of Billing Meters.",
+      "reason": "Replace unqualified current Meter recommendation with dated path selection while retaining legacy distinction.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The comparative Metronome page was linked but not pinned in this job."
+      ],
+      "original_update_id": "usage-based-definition-routing",
+      "job_id": "billing-subscriptions-usage-based-how-it-works",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-how-it-works/attempt-1/receipt.json",
+      "receipt_sha256": "94f5a24042a1bee48f797a60a42a4c65a9c279e69ba330db9cb51485c2e35d7e",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-how-it-works/attempt-1/candidate.md",
+      "source_candidate_sha256": "5f6ee445cf21d21da61edde8126ec651d200e93f630e14adbd6a737d47750ed6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-how-it-works/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-usage-based-how-it-works::usage-based-source-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-how-it-works]] \u2014 lifecycle overview, six core concept definitions, Meter/meter event/meter event summary explained",
+      "new_text": "- [[source-stripe-usage-based-billing-how-it-works]] \u2014 dated basic Billing Meters lifecycle and six definitions, with Stripe's 2026-11-07 Metronome recommendation for new integrations and asynchronous summary qualification",
+      "reason": "Reciprocal route to updated source and its scope distinction.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "usage-based-source-route",
+      "job_id": "billing-subscriptions-usage-based-how-it-works",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-how-it-works/attempt-1/receipt.json",
+      "receipt_sha256": "94f5a24042a1bee48f797a60a42a4c65a9c279e69ba330db9cb51485c2e35d7e",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-how-it-works/attempt-1/candidate.md",
+      "source_candidate_sha256": "5f6ee445cf21d21da61edde8126ec651d200e93f630e14adbd6a737d47750ed6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-how-it-works/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages::flat-fee-overages-model-meter-api",
+    "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages::flat-fee-overages-model-detail-and-rate-warning",
+    "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages::flat-fee-overages-source-route",
+    "billing-subscriptions-usage-based-alerts::usage-alert-concept-threshold-and-timing",
+    "billing-subscriptions-usage-based-alerts::usage-alert-concept-once",
+    "billing-subscriptions-usage-based-alerts::usage-alert-concept-preview-route",
+    "billing-subscriptions-usage-based-billing-credits::credits-concept-preview-scope",
+    "billing-subscriptions-usage-based-billing-credits::credits-concept-approved-use-scope",
+    "billing-subscriptions-usage-based-billing-credits::credits-concept-effective-at-tension",
+    "billing-subscriptions-usage-based-billing-credits::credits-concept-ledger-balance",
+    "billing-subscriptions-usage-based-billing-credits::credits-concept-source-route",
+    "billing-subscriptions-usage-based-configure-grace-period::grace-concept-eligibility",
+    "billing-subscriptions-usage-based-configure-grace-period::grace-concept-first-invoice",
+    "billing-subscriptions-usage-based-configure-grace-period::grace-concept-timestamps",
+    "billing-subscriptions-usage-based-configure-grace-period::grace-concept-route",
+    "billing-subscriptions-usage-based-configure-grace-period::grace-concept-service-period-advice",
+    "billing-subscriptions-usage-based-how-it-works::usage-based-definition-routing",
+    "billing-subscriptions-usage-based-how-it-works::usage-based-source-route"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-usage-based-billing/auto-candidate.md",
+  "auto_candidate_sha256": "840a04cb1df085110548bbb7b7c66e9f243ed98193592c7ca00cd654d50bbd01",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-usage-based-billing-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-usage-based-billing-concept-review.json"
+}

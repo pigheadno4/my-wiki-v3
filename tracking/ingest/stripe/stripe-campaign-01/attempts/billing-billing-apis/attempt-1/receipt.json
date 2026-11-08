@@ -1,0 +1,124 @@
+{
+  "job_id": "billing-billing-apis",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-billing-apis-2026-11-07.md",
+  "raw_sha256": "72fb116a9bc8d32af02a2d7f05a5a97cd835d121dea1845747c3097f9b89960c",
+  "prior_raw_path": "raw/stripe-billing-apis-2026.md",
+  "prior_raw_sha256": "912cfdb96215db48531e6e56a84e70863cd0ecc144a4889de18ca99545d60ca1",
+  "source_target": "wiki/sources/source-stripe-billing-apis.md",
+  "source_before_sha256": "713dc69a64bfad3be4ec974b3d1be72e09ce4090ebdeb27fc0008a69cd93bc89",
+  "read_ranges": {
+    "raw/stripe-billing-billing-apis-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 218
+      }
+    ],
+    "raw/stripe-billing-apis-2026.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "wiki/sources/source-stripe-billing-apis.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f19853233160c7f59974d4d8/content.diff": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 251
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "If an `Invoice` has an amount due, Stripe creates a *PaymentIntent*",
+      "location": "raw/stripe-billing-billing-apis-2026-11-07.md:25"
+    },
+    {
+      "text": "For subscriptions that charge automatically, Stripe charges the default payment method on the subscription or customer.",
+      "location": "raw/stripe-billing-billing-apis-2026-11-07.md:25"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-billing-billing-apis-2026-11-07.md:17"
+    },
+    {
+      "text": "You can determine which features to provision for a customer by [retrieving their active entitlements or listening to the Active Entitlement Summary event]",
+      "location": "raw/stripe-billing-billing-apis-2026-11-07.md:208"
+    },
+    {
+      "text": "When your customer completes the session, Stripe creates the subscription, creates a customer if you didn\u2019t provide one, and collects any payment that\u2019s due.",
+      "location": "raw/stripe-billing-billing-apis-2026-11-07.md:212"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Each `Invoice` automatically creates a _`PaymentIntent`_",
+      "location": "raw/stripe-billing-apis-2026.md:10"
+    },
+    {
+      "text": "Stripe then creates the customer, activates the subscription, and handles payment",
+      "location": "raw/stripe-billing-apis-2026.md:8"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-billing-apis-2026.md:20"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Same captured URL, https://docs.stripe.com/billing/billing-apis; new raw is the 2026-11-07 snapshot, old raw the 2026-05-12 snapshot. Current source is a May summary and must retain dated provenance while linking the new capture as new evidence.",
+    "New raw lines 23-25 document Subscription\u2192Invoice each cycle; PaymentIntent creation only when the invoice has an amount due; invoice payments list tracks it; automatic collection charges the default payment method on subscription or customer. Current source lines 13 and 17 and concept stripe-subscriptions line 14 state the chain unconditionally.",
+    "New raw lines 9-21 retain Product, Price and a customer-configured Account or Customer as subscription object relationships, with Accounts v2 general availability for Connect, preview/version requirement for other Stripe users, and a new Dashboard preview enablement instruction. This is documentation of variant/access prerequisites, not proof of account eligibility.",
+    "New raw lines 29-177 expand both Accounts v2 and Customer v1 diagrams into text. The example fields customer_account versus customer identify alternate model variants; sample active, open and processing statuses do not establish a completed payment or general lifecycle guarantee.",
+    "New raw lines 179-208 preserve the 11-object reference and entitlements example substantially. It says retrieve active entitlements or listen to the Active Entitlement Summary event for provisioning. Current source line 40's customer.activeEntitlements accessor is not evidenced in either capture.",
+    "New raw lines 210-212 move and qualify the Checkout Sessions recommendation: on completed session, creates subscription, creates a customer if none was supplied, and collects payment if due. The old line 8 said Stripe creates customer and activates subscription, which must remain dated and must not be carried forward as an unconditional current claim."
+  ],
+  "substantive_changes": [
+    "Conditional PaymentIntent creation for invoices with amount due, invoice payments list tracking, and default payment method source for automatic collection (new line 25 versus old line 10).",
+    "Checkout outcome and identity wording: customer created only if none provided, collects payment only if due, and no unconditional activation assertion (new line 212 versus old line 8).",
+    "Accounts v2 preview Dashboard enablement action is now explicit, while Connect GA/non-Connect preview and preview-version boundaries persist (new lines 17-21 versus old lines 20-24)."
+  ],
+  "historical_claims_to_preserve": [
+    "May 2026 raw line 10 and current source lines 13/17 contain the unconditional Invoice\u2192PaymentIntent formulation; retain only as dated historical wording when comparing snapshots, not as current universal behavior.",
+    "May 2026 raw line 8 says Checkout creates the customer and activates the subscription; preserve as historical snapshot wording, not an outcome guaranteed by November line 212.",
+    "Accounts v2 Connect GA, other-user public preview and preview-version requirement appear in both dated captures; preserve those scope qualifications (old line 20, new line 17)."
+  ],
+  "conflicts": [
+    "Current source lines 13/17 and wiki/concepts/stripe-subscriptions.md:14 say each Invoice auto-creates PaymentIntent; new raw line 25 limits that to an invoice with amount due. Update source and reciprocal concept wording or add a dated warning.",
+    "Current source line 40 states check customer.activeEntitlements; new raw line 208 and old raw line 61 instead say retrieve active entitlements or listen to Active Entitlement Summary event. Remove unsupported accessor claim.",
+    "Current source line 33 says Entitlement auto-created when subscription starts, while both raw tables tie creation to creating a subscription for a recurring service product with associated features (old line 40, new line 187). Narrow wording to feature-associated subscriptions."
+  ],
+  "unresolved_questions": [
+    "The capture does not verify actual Accounts v2 preview enrollment or version availability for any particular merchant account.",
+    "The overview does not resolve payment finality or exact subscription status after a completed Checkout Session; the old activation statement conflicts with the new, narrower outcome wording.",
+    "The text diagram's example status values are illustrative and cannot establish a live transaction or universal status transition."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/billing-apis, the new capture says each subscription has Product, Price, and either a customer-configured Account or Customer (new lines 9-13). It creates an invoice each cycle and a PaymentIntent when that invoice has an amount due, tracked in invoice payments; automatic collection uses a default payment method (new line 25). Accounts v2 is Connect GA and public preview otherwise, with a preview version required in preview (new line 17). The old capture stated every invoice automatically created a PaymentIntent (old line 10), and [[source-stripe-billing-apis]] currently repeats that unconditional chain (source lines 13-17).",
+    "Q2": "For https://docs.stripe.com/billing/billing-apis, the substantive revisions are conditional PaymentIntent creation and payment tracking (new line 25 versus old line 10), qualified Checkout customer creation and payment due (new line 212 versus old line 8), and explicit preview enablement (new line 19). Expanded variant diagrams and table formatting are largely presentation; the entitlements link query and See also links are navigation (new lines 208, 214-218). [[source-stripe-billing-apis]] should preserve old activation and unconditional PaymentIntent wording as dated evidence, correct its unsupported customer.activeEntitlements claim (source line 40), and align the reciprocal subscriptions concept. Neither the sample diagram statuses (new lines 39-94, 113-169) nor Checkout completion proves payment finality or current account eligibility."
+  }
+}

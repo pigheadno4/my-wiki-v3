@@ -1,0 +1,154 @@
+{
+  "target_path": "wiki/concepts/stripe-billing-third-party.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-billing-third-party/base.md",
+  "base_sha256": "e0517ebd6eef5e0279f06640936f6d0deeb35d57f46538485da769cbc554ddcc",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-third-party-payment-processing::third-party-concept-dated-overview",
+      "target_path": "wiki/concepts/stripe-billing-third-party.md",
+      "old_text": "Stripe Billing supports processing subscription payments through non-Stripe payment processors. Two approaches: (1) **Own processor** using Custom Payment Methods + Payment Records API (`charge_automatically`-compatible, webhook-driven); (2) **Out-of-band** (legacy, `send_invoice` + `paid_out_of_band`).",
+      "new_text": "The May 2026 Stripe guide documented two ways to use Billing subscriptions with non-Stripe processors: (1) **own processor**, using custom PaymentMethods and PaymentRecords with `charge_automatically` invoices; and (2) **out-of-band invoices**, using `send_invoice` and `paid_out_of_band`. The 2026-11-07 canonical capture lists these routes only and does not reverify current behavior or availability. The details below describe the May guide.",
+      "reason": "Date the concept's shared behavioral scope and avoid treating the two-label November index as current API evidence.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "third-party-concept-dated-overview",
+      "job_id": "billing-subscriptions-third-party-payment-processing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+      "receipt_sha256": "4d06157bf487898bc95e2712d03cdb15fda45495cbe194d8d3283681e26b35ce",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/candidate.md",
+      "source_candidate_sha256": "79a9f72a3edb5131d0c029a98a4bc6a6cad13d27a233b170963c3e449eac8fcf",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-third-party-payment-processing::third-party-concept-recommendation-heading",
+      "target_path": "wiki/concepts/stripe-billing-third-party.md",
+      "old_text": "## Approach 1: Own processor (recommended)",
+      "new_text": "## Approach 1: Own processor (May 2026 guide)",
+      "reason": "The May guide presents the PaymentRecord path as an alternative that removes the need to mark paid out of band, but does not make an unqualified current product recommendation.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "third-party-concept-recommendation-heading",
+      "job_id": "billing-subscriptions-third-party-payment-processing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+      "receipt_sha256": "4d06157bf487898bc95e2712d03cdb15fda45495cbe194d8d3283681e26b35ce",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/candidate.md",
+      "source_candidate_sha256": "79a9f72a3edb5131d0c029a98a4bc6a6cad13d27a233b170963c3e449eac8fcf",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-third-party-payment-processing::third-party-concept-payment-state-warning",
+      "target_path": "wiki/concepts/stripe-billing-third-party.md",
+      "old_text": "5. **Must report within 23 hours** or subscription \u2192 `incomplete_expired`",
+      "new_text": "5. The May guide says to report a payment within **23 hours** of subscription creation or the subscription becomes `incomplete_expired`.\n\n> [!warning] Contradiction\n> The May guide says attaching a PaymentRecord marks the invoice paid and subscription active (old line 340), but its asynchronous example attaches an initiated record before the processor outcome is reported (old lines 252\u2013317). The exact status timing in that example is unresolved; a Stripe record is not proof of third-party settlement.",
+      "reason": "Preserve the 23-hour boundary while exposing May's asynchronous initiation versus paid-status ambiguity in the concept and source.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "May line 340 and May asynchronous example lines 252\u2013317 do not resolve the exact status transition for an initiated attached record."
+      ],
+      "original_update_id": "third-party-concept-payment-state-warning",
+      "job_id": "billing-subscriptions-third-party-payment-processing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+      "receipt_sha256": "4d06157bf487898bc95e2712d03cdb15fda45495cbe194d8d3283681e26b35ce",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/candidate.md",
+      "source_candidate_sha256": "79a9f72a3edb5131d0c029a98a4bc6a6cad13d27a233b170963c3e449eac8fcf",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-third-party-payment-processing::third-party-concept-example-version",
+      "target_path": "wiki/concepts/stripe-billing-third-party.md",
+      "old_text": "Uses `2026-04-22.dahlia` for Payment Records API.",
+      "new_text": "Several May 2026 Node examples set `apiVersion: '2026-04-22.dahlia'` for PaymentRecord calls; the guide does not state that this is a universal minimum or verify current account/API availability. One May example has a malformed version string ending in a semicolon (old line 324).",
+      "reason": "Restrict version to the May examples (old 185,259,353,538,561) and avoid copying malformed old line 324 as a requirement.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "third-party-concept-example-version",
+      "job_id": "billing-subscriptions-third-party-payment-processing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+      "receipt_sha256": "4d06157bf487898bc95e2712d03cdb15fda45495cbe194d8d3283681e26b35ce",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/candidate.md",
+      "source_candidate_sha256": "79a9f72a3edb5131d0c029a98a4bc6a6cad13d27a233b170963c3e449eac8fcf",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-third-party-payment-processing::third-party-concept-source-route",
+      "target_path": "wiki/concepts/stripe-billing-third-party.md",
+      "old_text": "- [[source-stripe-subscriptions-third-party]] \u2014 Stripe docs: full integration guide (custom PMs, payment records, webhook handler, retry logic, refunds, out-of-band legacy)",
+      "new_text": "- [[source-stripe-subscriptions-third-party]] \u2014 May 2026 combined own-processor and out-of-band guide; November 2026 canonical capture is a variant index only",
+      "reason": "Keep reciprocal route with dated source type and new navigation boundary.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "third-party-concept-source-route",
+      "job_id": "billing-subscriptions-third-party-payment-processing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+      "receipt_sha256": "4d06157bf487898bc95e2712d03cdb15fda45495cbe194d8d3283681e26b35ce",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/candidate.md",
+      "source_candidate_sha256": "79a9f72a3edb5131d0c029a98a4bc6a6cad13d27a233b170963c3e449eac8fcf",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-third-party-payment-processing::third-party-concept-out-of-band-setup-conditions",
+      "target_path": "wiki/concepts/stripe-billing-third-party.md",
+      "old_text": "**Setup**: disable invoice emails in Dashboard; disable customer portal PM management; create subscription with `collection_method=send_invoice`, `days_until_due=30`; store 3rd party tokens in Customer metadata.",
+      "new_text": "**Setup in the May 2026 out-of-band guide**: create a customer-configured Account v2 or Customer v1 and a subscription with `collection_method=send_invoice`. Choose `days_until_due` long enough for external recovery; **30 days is the guide\u2019s example**, not a fixed requirement. Disable finalized-invoice emails only if all emailed subscription invoices use a third-party processor, because this setting also affects other `send_invoice` subscriptions. If using the customer portal, the guide says to disable payment-method view/update and plan switching. Store only non-sensitive third-party references in the selected Account or Customer metadata.",
+      "reason": "Replace unconditional global email setting, fixed 30-day implication, and Customer-only identity with old 819-825,831-899,913-950 conditions.",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "third-party-concept-out-of-band-setup-conditions",
+      "job_id": "billing-subscriptions-third-party-payment-processing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+      "receipt_sha256": "4d06157bf487898bc95e2712d03cdb15fda45495cbe194d8d3283681e26b35ce",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/candidate.md",
+      "source_candidate_sha256": "79a9f72a3edb5131d0c029a98a4bc6a6cad13d27a233b170963c3e449eac8fcf",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-third-party-payment-processing::third-party-concept-out-of-band-success-gate",
+      "target_path": "wiki/concepts/stripe-billing-third-party.md",
+      "old_text": "**Payment**: listen for `invoice.finalized` \u2192 collect at 3rd party \u2192 `invoices.pay(id, { paid_out_of_band: true })`.",
+      "new_text": "**Payment in the May 2026 out-of-band guide**: listen for `invoice.finalized`, collect through the third-party processor, and **only after that external payment succeeds** call `invoices.pay(id, { paid_out_of_band: true })`. An attempted or pending processor payment is not a paid Stripe invoice; the guide says to mark it paid before the subscription due date.",
+      "reason": "Make the external-success condition explicit before marking the Stripe invoice paid (old 955-979).",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "third-party-concept-out-of-band-success-gate",
+      "job_id": "billing-subscriptions-third-party-payment-processing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+      "receipt_sha256": "4d06157bf487898bc95e2712d03cdb15fda45495cbe194d8d3283681e26b35ce",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/candidate.md",
+      "source_candidate_sha256": "79a9f72a3edb5131d0c029a98a4bc6a6cad13d27a233b170963c3e449eac8fcf",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-third-party-payment-processing::third-party-concept-dated-overview",
+    "billing-subscriptions-third-party-payment-processing::third-party-concept-recommendation-heading",
+    "billing-subscriptions-third-party-payment-processing::third-party-concept-payment-state-warning",
+    "billing-subscriptions-third-party-payment-processing::third-party-concept-example-version",
+    "billing-subscriptions-third-party-payment-processing::third-party-concept-source-route",
+    "billing-subscriptions-third-party-payment-processing::third-party-concept-out-of-band-setup-conditions",
+    "billing-subscriptions-third-party-payment-processing::third-party-concept-out-of-band-success-gate"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-billing-third-party/auto-candidate.md",
+  "auto_candidate_sha256": "f9660f7347b000a0975e872b6cb56cde9b615dd36d6be7adaec03060890a9919",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-billing-third-party-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-billing-third-party-concept-review.json"
+}

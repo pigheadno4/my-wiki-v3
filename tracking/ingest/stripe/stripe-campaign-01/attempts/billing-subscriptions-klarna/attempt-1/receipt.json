@@ -1,0 +1,109 @@
+{
+  "job_id": "billing-subscriptions-klarna",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md",
+  "raw_sha256": "641565acd4dfa03866a5516ef57de61592f5d9676f099913c10b06c947c966bb",
+  "prior_raw_path": "raw/stripe-subscriptions-klarna-2026.md",
+  "prior_raw_sha256": "95d04c2eca0106bd102db4956be195f5eeed5d37d4efcdda8cd8a8da771e6a39",
+  "source_target": "wiki/sources/source-stripe-subscriptions-klarna.md",
+  "source_before_sha256": "b518d0613b786b890ce154c1b2b4c26077f85f7fe2237729f89b758e7e4d24c4",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-klarna-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-subscriptions-klarna-2026.md": [
+      {
+        "start": 1,
+        "end": 1038
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-klarna.md": [
+      {
+        "start": 1,
+        "end": 52
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3994dafbb87a6478361ce50a/content.diff": [
+      {
+        "start": 1,
+        "end": 1040
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Set up a subscription with Klarna",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:5"
+    },
+    {
+      "text": "Learn how to create and charge for a subscription with Klarna.",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/klarna.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Advanced integration](https://docs.stripe.com/billing/subscriptions/klarna.md?api-integration=elements)",
+      "location": "raw/stripe-billing-subscriptions-klarna-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Available Klarna payment options vary by use case and buyer country",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:10"
+    },
+    {
+      "text": "Create a Checkout Session with the ID of an existing [Price](https://docs.stripe.com/api/prices.md). Set the mode to `subscription` and pass at least one recurring price. You can add one-time prices in addition to recurring prices.",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:66"
+    },
+    {
+      "text": "Don\u2019t rely on the redirect to the `success_url` alone for detecting payment initiation",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:89"
+    },
+    {
+      "text": "After the user has been redirected, query the PaymentIntent to check its status. If the status is `succeeded`, the payment was successful and your subscription is now active.",
+      "location": "raw/stripe-subscriptions-klarna-2026.md:681"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "At https://docs.stripe.com/billing/subscriptions/klarna, the 2026-11-07 capture retains the title and purpose but is only an index linking Stripe-hosted page and Advanced integration variants (new raw lines 5-14). It says nothing about current country eligibility, authorization, mandate handling, capture, payment options or payment outcome.",
+    "The matched 2026-05-13 capture includes the full hosted Checkout and Payment Element variants, with setup and sandbox examples (old raw lines 8-1038). The collection diff removes the inline variants and adds two links; that presentation change does not prove deprecation or any new subscription behavior. Keep the old capture dated and do not add the navigation-only new raw to factual raw_files.",
+    "The old hosted guide recommends Checkout for saving Klarna, requires an existing Price and at least one recurring price for a subscription-mode Checkout Session, and permits one-time prices in addition (old raw lines 14 and 49-87). Adding a one-time price to a subscription Session does not turn the one-time line item into a recurring mandate or establish one-time capture behavior. The guide says payment options vary by use case and buyer country (old raw lines 10-12), so its 23 country sandbox data tables are not a current eligibility guarantee.",
+    "The old Checkout flow says a customer may never reach success_url after successful payment and a malicious visitor could reach it without paying; the guide recommends using checkout.session.completed webhook to retrieve the Subscription rather than relying on redirect alone (old raw lines 85-109). The current source lines 19 and concept lines 24-26 list success URL retrieval without that payment-proof qualification. A correction is warranted because the omission can mislead access or fulfillment decisions.",
+    "The old advanced path creates a default_incomplete subscription server-side with a Customer and Price and saves a method when activated; client Stripe.js Payment Element uses confirmPayment with a return_url and a mandate_data customer-acceptance example (old raw lines 556-580 and 626-679). The buyer redirects to Klarna; after return, check PaymentIntent status and call the payment successful/subscription active only if status is succeeded (old raw lines 644-681). The example does not establish mandate_data as a universal requirement for hosted Checkout or prove completed recurring authorization.",
+    "The current source says Checkout needs no payment_method_types override (source line 19), but the old Checkout sample merely omits that parameter (old raw lines 68-83); omission alone does not prove an override is never needed across configuration or account contexts. The old guide also does not set capture_method or document subscription manual capture. Separate Klarna one-time payment/capture references cannot supply that missing subscription guarantee."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "As of 2026-05-13, Checkout was the recommended hosted route for saving Klarna, while the Payment Element offered an advanced custom UI route (old raw lines 14-18 and 521-525); the 2026-11-07 index still names both variants.",
+    "For the old hosted path, a Stripe account and product/recurring Price precede subscription-mode Checkout; a one-time price can accompany the recurring price, and webhook retrieval avoids redirect drop-off (old raw lines 20-47 and 49-109). A success URL visit alone does not prove payment.",
+    "For the old advanced path, server subscription creation with default_incomplete precedes client Payment Element confirmation; activation follows a successful first PaymentIntent rather than the mere redirect or form submission (old raw lines 556-681). The sample supplies mandate_data and return_url in confirmPayment.",
+    "The 23 country tables, approved/denied email values, cookie-session reset, six-digit authentication code and repayment test values are sandbox data from the old capture, not a live coverage or bank receipt statement (old raw lines 164-520 and 683-1038)."
+  ],
+  "conflicts": [
+    "Current source line 19 and the reciprocal Klarna concept line 24 present success URL retrieval as an alternative without the old guide's warning that redirect alone cannot establish payment, because the URL is directly reachable and a successful buyer can close the tab before return (old raw lines 85-109). Qualify fulfillment with server-side verification or webhook state.",
+    "Current source line 19 says no payment_method_types override is needed for hosted Checkout; the old guide's sample at lines 68-83 omits that field but does not state a general no-override rule. Narrow this to what the dated sample shows.",
+    "Current source line 33 and Klarna concept lines 10/14-16 frame 23 countries as supported coverage, whereas this pinned subscription guide gives test data for currently supported customer countries and warns payment options vary by use case and buyer country (old raw lines 10-12 and 166-168). Preserve the date/sandbox and option qualification; do not infer current eligibility from the new index.",
+    "The old example checkout.session.completed payload says mode setup (old raw line 128), while the instructed Session creation uses mode subscription (old raw lines 66-83). Treat the example as an inconsistent illustration, not evidence that subscription-mode Checkout should use setup or that the flow changed."
+  ],
+  "unresolved_questions": [
+    "The new variant targets at new raw lines 13-14 were not fetched under this review-only order. Their current contents, account eligibility, payment-option matrix and any altered mandate or capture rules remain unverified.",
+    "Neither pinned subscription capture establishes a general manual-capture contract for Klarna subscriptions, completed live authorization, a successful live charge, repayment selection, settlement or future recurring collection."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-klarna.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/klarna, the complete 2026-11-07 capture establishes only a Klarna subscription purpose and links to Stripe-hosted and Advanced integration variants (new raw lines 5-14). The 2026-05-13 capture supplies the detailed routes: hosted Checkout requires a recurring Price in subscription mode and can add one-time prices, while the advanced server-created incomplete subscription uses client Payment Element confirmation and post-redirect PaymentIntent status (old raw lines 49-109 and 556-681). The old guide warns options vary by buyer country and use case (old raw lines 10-12). [[source-stripe-subscriptions-klarna]] summarizes that dated evidence; the index proves no current eligibility or completed charge.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/klarna, the observed change is navigation only: new raw lines 9-14 replace inline hosted and advanced variants contained at old raw lines 16-1038. There is no demonstrated deprecation or new authorization, mandate or capture contract. Keep [[source-stripe-subscriptions-klarna]] tied to the 2026-05-13 guide, including sandbox-only country tests and the advanced path's conditional PaymentIntent succeeded check (old raw lines 164-168 and 644-681). Correct the source and reciprocal concept's success-URL wording: old raw lines 85-109 say redirect alone is not payment proof. The hosted sample's omitted payment_method_types is not a universal override rule; one-time price add-ons do not establish recurring mandate or manual capture support. The uncaptured variant pages and live account outcomes remain unresolved."
+  }
+}

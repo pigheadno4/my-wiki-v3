@@ -1,0 +1,360 @@
+--- raw/stripe-subscriptions-invoices-2026.md
++++ raw/stripe-billing-invoices-subscription-2026-11-07.md
+@@ -2,15 +2,13 @@
+ 
+ Learn how to manage subscription invoices.
+ 
+-If your integration uses [customer-configured Accounts](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer), replace `Customer` and event references in the code examples with the equivalent Accounts v2 API references. For more information, see [Represent customers with Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md).
+-
+-_Invoices_ (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) are core resources in Stripe, representing the amount a customer owes. Stripe generates an invoice for every subscription billing period. You can also manually generate invoices through the Dashboard or API for off-cycle or one-time payments. Learn more about the lifecycle for [standalone invoices](https://docs.stripe.com/invoicing/overview.md#invoice-lifecycle) and [subscription-generated invoices](https://docs.stripe.com/billing/invoices/subscription.md#sub-invoice-lifecycle).
+-
+-## Subscription invoice lifecycle
++*Invoices* (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) are core resources in Stripe, representing the amount a customer owes. Stripe generates an invoice for every subscription billing period. You can also manually generate invoices through the Dashboard or API for off-cycle or one-time payments. Learn more about the lifecycle for [standalone invoices](https://docs.stripe.com/invoicing/overview.md#invoice-lifecycle) and [subscription-generated invoices](https://docs.stripe.com/billing/invoices/subscription.md#sub-invoice-lifecycle).
++
++## Subscription invoice lifecycle 
+ 
+ The following sections describe how Stripe handles an invoice throughout a subscription lifecycle.
+ 
+-### New subscription invoices
++### New subscription invoices 
+ 
+ When you create a subscription for a customer, Stripe:
+ 
+@@ -27,7 +25,19 @@
+ 
+ With a finalized invoice, you can’t add invoice items or make other modifications that affect the amount due. However, you can still add invoice items to the customer. The added items apply to the next invoice.
+ 
+-### Subscription renewal invoices
++### Edit finalized subscription invoices
++
++The ability to edit finalized subscription invoices is in preview. If you'd like access, submit your email address below.
++
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/billing/invoices/subscription" \
++  -d '{"email": "EMAIL", "preview": "subscription_invoice_revisions_preview"}'
++```
++
++### Subscription renewal invoices 
+ 
+ When subscriptions renew, Stripe:
+ 
+@@ -47,18 +57,47 @@
+ 
+ When trying to collect payment on an invoice, Stripe uses the first available payment method in this list, in this order:
+ 
+-| Priority | Payment method                           | API attribute                                                                                                                                               |
+-| -------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| 1        | Invoice default payment method           | [invoice.default_payment_method](https://docs.stripe.com/api/invoices/object.md#invoice_object-default_payment_method)                                      |
+-| 2        | Subscription default payment method      | [subscription.default_payment_method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-default_payment_method)                       |
+-| 3        | Customer invoice default payment method  | [customer.invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object.md#customer_object-invoice_settings-default_payment_method) |
+-| 4        | (Legacy) Customer default payment source | [customer.default_source](https://docs.stripe.com/api/customers/object.md#customer_object-default_source)                                                   |
++| Priority | Payment method | API attribute |
++| --- | --- | --- |
++| 1 | Invoice default payment method | [invoice.default_payment_method](https://docs.stripe.com/api/invoices/object.md#invoice_object-default_payment_method) |
++| 2 | Subscription default payment method | [subscription.default_payment_method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-default_payment_method) |
++| 3 | Customer default payment method | [customer.invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object.md#customer_object-invoice_settings-default_payment_method) (for `Customer` objects) or [configuration.customer.billing.default_payment_method](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-configuration-customer-billing-default_payment_method) (for customer-configured `Account` objects) |
++| 4 | (Legacy) Customer default payment source | [customer.default_source](https://docs.stripe.com/api/customers/object.md#customer_object-default_source) |
++
++You can set a subscription’s [default_payment_method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-default_payment_method), or the legacy [default_source](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-default_source), to specify the saved payment method to use for that subscription. To control which payment method types its invoices accept, [configure payment method types per subscription](https://docs.stripe.com/billing/subscriptions/payment-methods-setting.md).
++
++#### Save a payment method as the subscription default
++
++Set [payment_settings.save_default_payment_method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-payment_settings-save_default_payment_method) to `on_subscription` to save the payment method from a successful subscription payment as `subscription.default_payment_method`. The setting defaults to `off`.
++
++This subscription setting is separate from the Dashboard’s **Save customer payment information** setting. For information about saving payment methods entered on the Hosted Invoice Page, see [Payment method persistence](https://docs.stripe.com/invoicing/hosted-invoice-page.md#payment-method-persistence).
++
++#### Enable customers to update their payment method 
++
++From the Dashboard, you can generate single-use links that let customers update the payment method on an automatically billed subscription.
++
++You can generate an update link from two places:
++
++- On the **Subscription details** page for the subscription, click the **Actions** menu and select **Share payment update link**.
++- On the [Subscriptions page](https://dashboard.stripe.com/subscriptions), find the subscription and click its overflow menu (⋯), then select **Share payment update link**.
++
++In the **Share payment update link** dialog, you can email the link directly to the customer or copy it to share another way. You can also deactivate all of the subscription’s existing payment update links.
++
++You can generate links only for subscriptions that have Billing set to `Auto`. The menu item doesn’t appear for subscriptions with Billing set to `Send`.
++
++Subscription payment update links have the following restrictions:
++
++- A link can only update the payment method on the associated subscription, and can’t change the customer’s default payment method.
++- The subscription’s status must be `active`, `past_due`, or `trialing`. It can’t be `unpaid` or ended.
++- The new payment method must be a card.
++- Each link only allows a customer to update their payment details one time.
++- If unused, a link expires after 30 days.
+ 
+ #### Retry payments
+ 
+ Stripe offers several options for dealing with [failed payments](https://docs.stripe.com/invoicing/automatic-collection.md), including machine-learning powered [Smart Retries](https://docs.stripe.com/invoicing/automatic-collection.md#smart-retries).
+ 
+-## Manage subscription invoices
++## Manage subscription invoices 
+ 
+ #### Dashboard
+ 
+@@ -68,50 +107,57 @@
+ 
+ Stripe automatically creates an [invoice](https://docs.stripe.com/invoicing/dashboard.md#create-invoice) for subscriptions at the end of each billing cycle. We finalize and send the invoice in one hour. Before the invoice is finalized, you can edit it. Read more about making changes in the [Invoice details page](https://docs.stripe.com/invoicing/dashboard/manage-invoices.md#invoice-details-page).
+ 
+-### Preview upcoming invoices
++### Preview upcoming invoices 
+ 
+ The [Retrieve an invoice](https://docs.stripe.com/api.md#retrieve_invoice) API provides a mechanism for viewing an existing invoice. Stripe also provides an endpoint for [creating a preview invoice](https://docs.stripe.com/api/invoices/create_preview.md). This preview reflects the base price, pending invoice items, discounts, and any existing customer credit balance.
+ 
+ When fetching the preview, you can also model what the invoice would look like if you changed the subscription in one of these ways:
+ 
+-- Swapping the underlying price.
+-
+-- Altering the quantity.
+-
+-- Applying a trial period.
+-
+-- Adding a coupon.
++- Swapping the underlying price
++- Altering the quantity
++- Applying a trial period
++- Adding a coupon
++
++### Retrieve the full subscription from the invoice
++
++By default, retrieving an invoice returns only the Subscription ID. To retrieve the full Subscription object, use the [expand](https://docs.stripe.com/api/expanding_objects.md) parameter:
++
++- **API version 2025-03-31.basil or later**: Expand [parent.subscription_details.subscription](https://docs.stripe.com/api/invoices/object.md#invoice_object-parent-subscription_details-subscription)
++
++  ```curl
++  curl -G https://api.stripe.com/v1/invoices/{{INVOICE_ID}} \
++    -u "<<YOUR_SECRET_KEY>>:" \
++    -d "expand[]=parent.subscription_details.subscription"
++  ```
++
++- **API versions before 2025-03-31.basil**: Expand [subscription](https://docs.stripe.com/api/invoices/object.md?api-version=2025-02-24.acacia#invoice_object-subscription)
++
++  ```curl
++  curl -G https://api.stripe.com/v1/invoices/{{INVOICE_ID}} \
++    -u "<<YOUR_SECRET_KEY>>:" \
++    -d "expand[]=subscription"
++  ```
+ 
+ #### API
+ 
+ To invoice a customer for a one-time charge such as a setup fee, create an [invoice item](https://docs.stripe.com/api.md#invoiceitems) by passing the customer ID, currency, and price:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const invoiceItem = await stripe.invoiceItems.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  pricing: {
+-    price: "{{PRICE_ID}}",
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/invoiceitems \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "pricing[price]={{PRICE_ID}}"
+ ```
+ 
+ You can now create an invoice for your customer and it adds the invoice item automatically:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const invoice = await stripe.invoices.create({
+-  customer: "{{CUSTOMER_ID}}",
+-});
+-```
+-
+-## Update the first invoice of a subscription
++```curl
++curl https://api.stripe.com/v1/invoices \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}"
++```
++
++## Update the first invoice of a subscription 
+ 
+ How you edit the first invoice of a subscription depends on the setting for the customer’s payment method for the subscription. If unsure, you can check the payment method setting using the API or the Dashboard.
+ 
+@@ -127,14 +173,14 @@
+ 
+ #### Charge default payment method
+ 
+-Stripe immediately finalizes the initial invoice and charges the customer. Consequently, there is no one hour period in which you can update the initial invoice before finalization.
++Stripe immediately finalizes the initial invoice and charges the customer. Consequently, there isn’t a one hour period in which you can update the initial invoice before finalization.
+ 
+ There are a few options available to make changes to the initial invoice:
+ 
+ - Create the subscription with `trial_end` set several seconds into the future. The subscription first generates a 0.00 USD invoice, and after the trial is over Stripe creates a non-zero invoice with a one hour draft period. The initial status of this subscription is `trialing` and transitions to either `active` or `past_due`, depending on the payment outcome.
+-- Create the subscription through a [subscription schedule](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md#start-subscription-future). When the schedule starts, the subscription’s initial status is `active` with an initial draft invoice scheduled to finalize in an hour. Depending on whether payment of the initial invoice is successful or not, the subscription either stays `active` or transitions to `past_due`.
+-
+-## Customize invoices
++- Create the subscription through a [subscription schedule](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md#start-subscription-future). When the schedule starts, Stripe creates the first invoice with a one hour draft period. The initial status of this subscription is `active` and either stays `active` or transitions to `past_due`, depending on the payment outcome.
++
++## Customize invoices 
+ 
+ You can customize invoices in several ways, including:
+ 
+@@ -146,26 +192,20 @@
+ - [Pause a subscription invoice for review](https://docs.stripe.com/billing/invoices/subscription.md#holding-review)
+ - [Issue a subscription invoice with configurable item prices](https://docs.stripe.com/billing/invoices/subscription.md#invoice-item-prices)
+ 
+-### Add extra invoice items to a future invoice
++### Add extra invoice items to a future invoice 
+ 
+ You can add up to 250 invoice items to an invoice. To [add extra invoice items](https://docs.stripe.com/api/invoiceitems/create.md) to the next invoice in the cycle:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const invoiceItem = await stripe.invoiceItems.create({
+-  pricing: {
+-    price: "price_CBb6IXqvTLXp3f",
+-  },
+-  customer: "cus_4fdAW5ftNQow1a",
+-});
++```curl
++curl https://api.stripe.com/v1/invoiceitems \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "pricing[price]={{PRICE_ID}}" \
++  -d "customer={{CUSTOMER_ID}}"
+ ```
+ 
+ These one-off items are added to the next invoice created for this customer. To make sure this is added to a specific subscription, use the optional `subscription` parameter to apply it to that subscription.
+ 
+-#### Invoice pending items more frequently
++#### Invoice pending items more frequently 
+ 
+ Other than [changing the billing period](https://docs.stripe.com/billing/subscriptions/billing-cycle.md), there are a few ways to invoice these items without adjusting the normal subscription service period:
+ 
+@@ -175,81 +215,69 @@
+ 
+ - Use [pending_invoice_item_interval](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-pending_invoice_item_interval) to specify an interval for how often to bill for any pending invoice items. This is equivalent to having Stripe create a [one-off invoice](https://docs.stripe.com/invoicing/dashboard.md) for the subscription on a recurring basis.
+ 
+-### Add an extra charge on a subscription’s first invoice
++### Add an extra charge on a subscription’s first invoice 
+ 
+ Include a one-time charge to the first subscription invoice using `add_invoice_items`:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{RECURRING_PRICE_ID}}",
+-    },
+-  ],
+-  add_invoice_items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  payment_behavior: "default_incomplete",
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d customer={{CUSTOMER_ID}} \
++  -d "items[0][price]={{RECURRING_PRICE_ID}}" \
++  -d "add_invoice_items[0][price]={{PRICE_ID}}" \
++  -d payment_behavior=default_incomplete
+ ```
+ 
+ > If you’re using [Checkout](https://docs.stripe.com/payments/checkout.md) to create subscriptions, add extra charges by specifying [line_items](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-line_items) with the [client and server integration](https://docs.stripe.com/billing/subscriptions/build-subscriptions.md).
+ 
+-### Add invoice items to a draft subscription invoice
+-
+-When a subscription renews and creates an invoice, Stripe sends the `invoice.created` _webhook_ (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. Stripe [waits approximately one hour](https://docs.stripe.com/billing/subscriptions/webhooks.md#understand) before finalizing the invoice and attempting payment, or sending an email.
++### Add invoice items to a draft subscription invoice 
++
++When a subscription renews and creates an invoice, Stripe sends the `invoice.created` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. Stripe [waits approximately one hour](https://docs.stripe.com/billing/subscriptions/webhooks.md#understand) before finalizing the invoice and attempting payment, or sending an email.
+ 
+ During that delay, the invoice is a [draft](https://docs.stripe.com/api/invoices/object.md#invoice_object-status) and is editable. You can [create invoice items](https://docs.stripe.com/api/invoiceitems/create.md) on that invoice. Make sure to provide the [invoice](https://docs.stripe.com/api/invoiceitems/create.md#create_invoiceitem-invoice) parameter when you create these invoice items. Otherwise, they’re added as pending items and are included in the next subscription period.
+ 
+ These invoice items behave slightly differently than invoice items automatically generated by Stripe:
+ 
+-- Pending invoice items are always charged when the billing period ends for any canceled subscription. Canceling a customer’s subscription prevents them from being billed again _if no invoice items exist_.
++- Pending invoice items are always charged when the billing period ends for any canceled subscription. Canceling a customer’s subscription prevents them from being billed again *if no invoice items exist*.
+ 
+ - Pending invoice items aren’t prorated when a customer’s subscription changes.
+ 
+ If pending invoice items remain after a subscription cancels, Stripe generates an invoice and attempts to bill the customer for them at the end of the next billing period. These invoice items are (similarly) not prorated when a subscription changes.
+ 
+-#### Manage pending invoice items
++#### Manage pending invoice items 
+ 
+ You can see a customer’s pending invoice items by navigating to the [Customers page](https://dashboard.stripe.com/customers), and clicking on their name. If the customer has a pending invoice item, it appears under **Pending invoice items**. An invoice item appears as pending if it’s not attached to any invoice.
+ 
+ Under **Pending invoice items**, you can also choose to create a new invoice item, or instantly invoice everything listed. When you click **Invoice now**, a dialog appears that lets you select whether to charge the default source or email the invoice to the customer. Additionally, the dialog gives you the option to calculate tax automatically.
+ 
+-### Generate an invoice for subscription items outside the billing period
++### Generate an invoice for subscription items outside the billing period 
+ 
+ You can invoice pending invoice items outside of the regular billing period by [generating a one-off invoice](https://docs.stripe.com/invoicing/dashboard.md). Generating a one-off invoice pulls in any pending invoice items that would have been added to the regularly scheduled invoice.
+ 
+ > When you manually generate an invoice, Stripe doesn’t apply the [tax rates](https://docs.stripe.com/tax/tax-rates.md) you might have established on the subscription. If taxes apply, you must explicitly [add the tax rates](https://docs.stripe.com/invoicing/taxes/tax-rates.md) to the invoice.
+ 
+-### Pause a subscription invoice for review
++### Pause a subscription invoice for review 
+ 
+ Rather than automatically attempting payment at the end of a billing period, you can pause the invoice for review or corrections. To pause an invoice:
+ 
+ 1. Pause automatic collection within one hour of receiving the `invoice.created` event. You can do this by setting `auto_advance=false` in the API, or by going to [Subscriptions and emails](https://dashboard.stripe.com/settings/billing/automatic) in the Dashboard. Locate the pause payment section, and click **Set up** to make changes. This feature prevents Stripe from automatically attempting payment from your customer for the invoice amount, and from emailing the invoice.
+ 
+-1. Review the invoice.
+-
+-1. After you’re ready to charge the customer, resume automatic collection. You can this by either setting [auto_advance=true](https://docs.stripe.com/api/invoices/update.md#update_invoice-auto_advance), or by updating the pause payment options in the Dashboard.
+-
+-### Issue a subscription invoice with configurable item prices
+-
+-You can issue invoices with line item prices that exclude inclusive tax. Tax-exclusive prices are only shown in the invoice PDF. That means, when using inclusive tax, the Hosted Invoice Page and invoice emails show tax-inclusive prices. You can define the settings for net prices in the Dashboard or API.
++2. Review the invoice.
++
++3. After you’re ready to charge the customer, resume automatic collection. You can this by either setting [auto_advance=true](https://docs.stripe.com/api/invoices/update.md#update_invoice-auto_advance), or by updating the pause payment options in the Dashboard.
++
++### Issue a subscription invoice with configurable item prices 
++
++You can issue invoices with line item prices that exclude inclusive tax. Tax-exclusive prices are only shown in the invoice PDF. That means, when using inclusive tax, the hosted invoice page and invoice emails show tax-inclusive prices. You can define the settings for net prices in the Dashboard or API.
+ 
+ - **Include inclusive tax**—The invoice PDF displays line item prices including the inclusive tax. (This is the default.)
+ - **Exclude tax**—The invoice PDF displays line item prices excluding tax.
+ 
+ > #### Order precedence
+->
++> 
+ > If you set a default for line item prices at the customer level, it takes precedence over account-level settings.
+ 
+-## Void an invoice generated by a subscription
++## Void an invoice generated by a subscription 
+ 
+ ### Void the first invoice of a subscription
+ 
+@@ -270,12 +298,12 @@
+ 
+ If no invoices match any of these criteria, the subscription status changes to `active`.
+ 
+-## Subscription metadata
++## Subscription metadata 
+ 
+ After a subscription creates an invoice, it includes the subscription’s `metadata` in the following ways:
+ 
+ - The invoice’s [subscription_details.metadata](https://docs.stripe.com/api/invoices/object.md#invoice_object-subscription_details-metadata) attribute always contains the subscription’s `metadata` at the time of invoice creation, even if the subscription `metadata` is later modified.
+-- The [metadata](https://docs.stripe.com/api/invoice/line_item.md#invoice_line_item_object-metadata) attribute of [invoice line items](https://docs.stripe.com/api/invoice-line-item/object.md) with [parent.type=“subscription_item_details”](https://docs.stripe.com/api/invoices/object.md#invoice_object-lines-data-parent-type) reflects the most recent subscription `metadata` at the time of retrieving the invoice, meaning it might differ from the `metadata` at the time of invoice creation.
++- The [metadata](https://docs.stripe.com/api/invoice-line-item/object.md#invoice_line_item_object-metadata) attribute of [invoice line items](https://docs.stripe.com/api/invoice-line-item/object.md) with [parent.type=“subscription_item_details”](https://docs.stripe.com/api/invoices/object.md#invoice_object-lines-data-parent-type) reflects the most recent subscription `metadata` at the time of retrieving the invoice, meaning it might differ from the `metadata` at the time of invoice creation.
+ - Invoice line items with [parent.type=“invoice_item_details”](https://docs.stripe.com/api/invoices/object.md#invoice_object-lines-data-parent-type) don’t contain the subscription’s `metadata`.
+ 
+ When you modify a subscription invoice line item’s `metadata` directly, either with the [invoice line update](https://docs.stripe.com/api/invoice-line-item/update.md) or the [bulk invoice line update](https://docs.stripe.com/invoicing/bulk-update-line-item.md) endpoint, the update request declares the invoice line item `metadata`. Any “inherited” Subscription `metadata` isn’t preserved implicitly.

@@ -1,0 +1,95 @@
+{
+  "job_id": "billing-subscriptions-pause-payment",
+  "queue_id": 38,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/pause-payment",
+  "raw_path": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md",
+  "raw_sha256": "8f3bd29e02079f75cd4372982c3b23cf14f6324e2cd4ef4724f5b9df4aeb26a9",
+  "prior_raw_path": "raw/stripe-subscriptions-pause-payment-2026.md",
+  "prior_raw_sha256": "bd2930ffb7abc3a46ff608d4a1f10b9f9e56456a252fdc8c383f373e8549456d",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a60ea9f71a4b4c0e495d8f84/content.diff",
+  "diff_sha256": "5e4858e32cf4541ad0b4f6fa0a129370fb133c65661f720653ed558a6e5e5c05",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-pause-payment.md"
+  ],
+  "source_before_sha256": "34b0e5b03189490fa2cca9c69edda081acb3c333bba9ec020d80db0f4a97e65c",
+  "section": "billing",
+  "new_words": 936,
+  "new_lines": 140,
+  "old_words": 949,
+  "old_lines": 118,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-pause-payment.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-pause-payment/attempt-1/receipt.json",
+  "receipt_sha256": "d2337a9475f7105e67057a20b02050255729f9b3cfac212e95a022fe84e85fab",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-pause-payment/attempt-1/review.json",
+  "review_sha256": "888be3f38c6d86f22b5dd890cb8adaba69ad3cf5e8bf4bd817a4db21d196cfaf",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-pause.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md",
+  "new_raw_sha256": "8f3bd29e02079f75cd4372982c3b23cf14f6324e2cd4ef4724f5b9df4aeb26a9",
+  "prior_raw": "raw/stripe-subscriptions-pause-payment-2026.md",
+  "findings": [
+    "The same URL documents pause_collection on a Subscription, not the separate true-pause lifecycle operation. With payment collection paused, the Subscription remains active, invoices keep generating, and customer service access continues (new 5-17; old 8-24, 38, 58, 78). Both captures distinguish prior invoices: those created before pausing remain subject to retry unless separately voided (new 17; old 20). Current source 13-22 generally preserves this distinction, but its concept comparison should be treated as a separate dated true-pause claim.",
+    "The three pause_collection[behavior] modes remain keep_as_draft, mark_uncollectible, and void (new 25-33, 66-72; old 12-16, 22-94). Draft invoices have auto_advance=false and can be finalized/collected later; custom invoice-finalization logic may conflict (new 28-30; old 58-64). Under mark_uncollectible, an existing customer balance can still pay the full amount and yield status paid, otherwise status uncollectible (new 31-32; old 92-94). The page's broad 'doesn\u2019t collect payment' description is thus qualified by the customer-balance exception; neither capture demonstrates a charge or bank receipt.",
+    "The new page explicitly presents Dashboard steps and a subscription update API example for pausing, with optional resumes_at for automatic future resumption and unset pause_collection for manual resumption (new 21-23, 35-78, 82-105). Old 10, 24, 40, 44, 60, 96, 98-114 already support Dashboard/API and manual versus timed resume, although the old page organized them as use cases. Source 46-50 gets the indefinite/default boundary, but source 60's unqualified 'must manually unpause' for scheduled subscriptions needs narrowing because resumes_at can automatically resume; a schedule phase change itself does not clear a directly set pause_collection (new 80).",
+    "Resuming subscription collection affects future invoice creation/collection but does not by itself advance invoices retained as drafts. For each draft invoice to collect, set auto_advance=true, using the subscription ID and status=draft to find IDs if needed (new 107-135; old 62-73, 114-118). The new Dashboard 'Turn on automatic collection' path changes that invoice property (new 111-117). This is an invoice-level action, not a guarantee that payment was actually collected or that an invoice became paid.",
+    "The captured new page ends with a See also link to the separate Pause subscriptions guide (new 138-140). The source and concept already route that distinction, but the concept's comparison table calls pause payment collection 'Manual API' at line 17 while the old page allowed Dashboard or API (old 10) and the new page explicitly provides both (new 21, 37-58). A reciprocal concept correction is warranted without importing unreviewed true-pause behavior into this URL's evidence."
+  ],
+  "substantive_changes": [
+    "New 80 states specifically that a subscription schedule phase transition does not automatically remove pause_collection set directly on the Subscription; old 116-118 said scheduled updates continue and manual unpause is needed, but did not distinguish the phase-transition mechanism.",
+    "New 11 and 15-16 more directly contrast active status, continued invoices/access, true pause, and cancellation. These clarify retained behavior already present in the old use-case prose rather than establish a new lifecycle transition.",
+    "New 82-135 consolidates subscription-level resume and separate draft-invoice auto_advance handling, including a Dashboard invoice action. It preserves the older separation of future invoices from existing drafts (old 62-73, 98-118)."
+  ],
+  "conflicts": [
+    "Current source 60 says scheduled subscriptions 'must manually unpause' without distinguishing optional resumes_at automatic resumption (new 23, 58, 74-80). Scheduled phase transitions do not themselves clear directly set pause_collection (new 80); source wording should specify that boundary.",
+    "wiki/concepts/stripe-subscriptions-pause.md:17 lists pause payment collection as 'Manual API' only, although both old 10 and new 21, 37-58 document Dashboard and API paths. Its true-pause comparison needs reciprocal correction of this row only.",
+    "Current source 26-27 describes void invoices as 'immediately voided' based on old 24, 38. New 33 and 52 say invoices are voided but omit an explicit immediacy claim; keep the old timing dated rather than infer that the new wording changes or confirms timing."
+  ],
+  "historical_claims_to_preserve": [
+    "The 2026-05-13 capture's use-case table maps void, keep_as_draft, and mark_uncollectible to free periods and possible later collection (old 12-16, 22-94); the new page uses one combined behavior table (new 25-33, 66-72), with no evidence that those modes were removed.",
+    "Keep the prior-invoice retry warning, existing customer-balance paid exception, draft auto_advance=false/custom-finalizer caveat, indefinite pause when resumes_at is omitted, and invoice-level work after unpausing (old 20, 40, 58-64, 94, 114-118; new 17, 28-32, 78, 107-135).",
+    "The old examples use Node.js, while the new ones use curl and add Dashboard step lists (old 26-35, 46-55, 80-89, 104-112; new 37-64, 88-105, 111-135). Code-language and navigation changes alone do not prove an API behavior change."
+  ],
+  "unresolved_questions": [
+    "Neither capture establishes a particular customer's pause_collection configuration, an actual timed resumption, invoice finalization, payment attempt, paid invoice, or bank settlement. A status or API example is not an execution result.",
+    "This page does not establish true-pause endpoint availability, preview/API-version requirements, or all service-entitlement behavior. Those belong to the separate Pause subscriptions evidence; the observed access statement here applies to pause payment collection only."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw4",
+  "reviewer_agent": "/root/s01ur1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md",
+      "sha256": "8f3bd29e02079f75cd4372982c3b23cf14f6324e2cd4ef4724f5b9df4aeb26a9",
+      "lines": 140
+    },
+    {
+      "path": "raw/stripe-subscriptions-pause-payment-2026.md",
+      "sha256": "bd2930ffb7abc3a46ff608d4a1f10b9f9e56456a252fdc8c383f373e8549456d",
+      "lines": 118
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-pause-payment.md",
+      "sha256": "34b0e5b03189490fa2cca9c69edda081acb3c333bba9ec020d80db0f4a97e65c",
+      "lines": 71
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a60ea9f71a4b4c0e495d8f84/content.diff",
+      "sha256": "5e4858e32cf4541ad0b4f6fa0a129370fb133c65661f720653ed558a6e5e5c05",
+      "lines": 220
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-pause-payment-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-pause-payment-review.json"
+}

@@ -1,0 +1,110 @@
+{
+  "job_id": "billing-subscriptions-billing-mode-compare",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md",
+  "raw_sha256": "7e087658df959bf8f490d39dff5ac11cad917205d0e1578a3b1603e6d6929299",
+  "prior_raw_path": "raw/stripe-subscriptions-billing-mode-compare-2026.md",
+  "prior_raw_sha256": "bbc559ac4099bd3651e2c7e117888a86fa2743a57a40c12ba206ffe83d9fe492",
+  "source_target": "wiki/sources/source-stripe-subscriptions-billing-mode-compare.md",
+  "source_before_sha256": "6e8a82032fce4ebe8e48415265cdd4974377b75443129056c790e3ff3d0dfc6e",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 279
+      }
+    ],
+    "raw/stripe-subscriptions-billing-mode-compare-2026.md": [
+      {
+        "start": 1,
+        "end": 218
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-billing-mode-compare.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6d5f62ab5f201651ef6239fe/content.diff": [
+      {
+        "start": 1,
+        "end": 277
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You can\u2019t migrate a subscription from flexible billing mode to classic billing mode.",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md:11"
+    },
+    {
+      "text": "Update `trial_end`. This sets the anchor to the new trial end, even if the anchor was previously set to a later date.",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md:88"
+    },
+    {
+      "text": "To immediately generate an invoice on a free-to-paid upgrade, pass `proration_behavior=always_invoice` or explicitly reset the billing cycle anchor by setting `billing_cycle_anchor=now`.",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md:96"
+    },
+    {
+      "text": "Setting `proration_behavior=always_invoice` alone doesn\u2019t create an immediate update invoice.",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md:249"
+    },
+    {
+      "text": "| Supports up to 20 subscription items. | Supports up to 100 subscription items. |",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md:279"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Flexible billing mode only resets your [billing cycle anchor](https://docs.stripe.com/billing/subscriptions/billing-cycle.md) on subscription updates when you explicitly set `billing_cycle_anchor` to a value other than `unchanged`.",
+      "location": "raw/stripe-subscriptions-billing-mode-compare-2026.md:84"
+    },
+    {
+      "text": "| Billing cycle anchor reset invoices include pending items only when `proration behavior` isn\u2019t `always_invoice`. | Pending invoice items are always included on all invoices a subscription generates. |",
+      "location": "raw/stripe-subscriptions-billing-mode-compare-2026.md:210"
+    },
+    {
+      "text": "Flexible billing mode lets you disable prorations for a truncated first billing period (when setting `cancel_at` on creation) using the `proration_behavior` parameter set to `none`.",
+      "location": "raw/stripe-subscriptions-billing-mode-compare-2026.md:112"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures at https://docs.stripe.com/billing/subscriptions/billing-mode/compare compare classic with flexible subscription billing and warn that a flexible subscription cannot migrate back (old 4-10; new 5-13). The current [[source-stripe-subscriptions-billing-mode-compare]] is discoverable via wiki/index.md:7 \u2192 wiki/stripe-index.md:628 and the existing stripe-subscriptions concept source link at 231. The November page materially expands the comparison; retain the May capture separately rather than replacing its dated claims.",
+    "Core shared distinctions remain: credit prorations based on original debits in flexible mode; proportional per-item discounts; usage price at reporting; conditional removal of unbilled usage; consolidated renewal invoice on usage-based schedule transitions; portal cancel_at behavior; trial field differences; and mixed intervals (old 12-218; new 15-271). The current source table compresses several conditions and examples into broad claims.",
+    "November adds trial_end as an explicit anchor-reset exception and says free-to-paid upgrades leave pending invoice items for the next cycle unless always_invoice or anchor=now is selected (new 83-96). It also details net proration behavior when an anchor resets without item changes, with proration_behavior-specific immediate invoicing and an item-change exception (98-120).",
+    "November specifies that a first shortened period under cancel_at creation plus proration_behavior=none produces no flexible invoice and latest_invoice=null, and restricts analogous update behavior to updates that create an invoice (142-150). It adds no-credit-after-no-debit backdate behavior (179-185), item limits 20 versus 100 (273-279), and more precise pending-item cases (241-263).",
+    "Line 245's one-time add_invoice_items behavior is limited to a mid-period update or schedule transition where no item, price or quantity change independently creates an invoice; flexible mode leaves items pending despite always_invoice alone (245-253). Line 257's pending inclusion applies to update-generated invoices with always_invoice except pending_if_incomplete, not to every subscription invoice (255-263)."
+  ],
+  "substantive_changes": [
+    "Anchor reset: May says flexible only resets on explicit billing_cycle_anchor update (old 84-88); November adds trial_end update as another reset cause (new 85-92) and free-to-paid invoice timing/overrides (94-96).",
+    "Prorations and backdating: November adds a no-item-change anchor-reset netting table with create_prorations, always_invoice and none outcomes plus an item-change exception (98-120), and a later-credit distinction after an uncharged backdate (179-185).",
+    "First truncated period: May gives a short general comparison (old 110-116); November states exact creation condition, no flexible invoice/latest_invoice=null with none, and an update condition (new 142-150).",
+    "Pending invoice items: May's old prose/table at 204-210 is internally broad and inconsistent; November distinguishes one-time-only additions with no other invoicing trigger (243-253) from eligible pending items on update-generated invoices under always_invoice, with pending_if_incomplete exception (255-263).",
+    "November adds explicit subscription item limits, classic 20 and flexible 100 (273-279). Table spacing, list numbering, and section framing changes elsewhere in the diff are presentational (diff 1-277)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep May 13, 2026 source as dated same-URL evidence for shared differences, including the irreversible migration warning (old 8-10), zero-amount line suppression except cycling (old 32-42), conditional unbilled usage (old 69-80), and multi-period backdating with 250-line limit (old 118-145).",
+    "May explicitly said flexible anchor resets only when billing_cycle_anchor is set and never automatically (old 84-88). Preserve as May wording, but do not use it as the current unconditional rule in view of November's trial_end exception (new 85-92).",
+    "May pending-item section stated both a narrow billing-cycle-anchor condition and an overbroad always-included table cell (old 204-210). Preserve it as dated documentation with this ambiguity noted; use November's scoped rules for the refreshed summary."
+  ],
+  "conflicts": [
+    "Current source line 24 says flexible billing-cycle anchor is 'Never automatically reset'; November expressly says updating trial_end sets the anchor to the new trial end (85-92). Replace the absolute with explicit exceptions. The related stripe-subscriptions concept's generic price-change reset at line 106 is not mode-qualified; do not project that generic line onto flexible mode without its own source context.",
+    "Current source line 30 says flexible pending invoice items are 'Always included' and classic 'Only when proration_behavior \u2260 always_invoice'. November says classic anchor-reset invoices include eligible pending items, other always_invoice update invoices exclude pre-existing items when the update produces invoice items; flexible update-generated invoices include eligible pending items except pending_if_incomplete (255-263). The May prose/table already conflict at 204-210, so a dated warning is warranted.",
+    "Current source line 22 says classic charges the 'Most recent price only'; the cited example actually bills only usage reported since changing to the current price, whereas flexible bills usage at its reporting-time price (old 44-67; new 47-69). Narrow the summary to that price-change example rather than a universal classic-price rule.",
+    "Current source line 21 omits the cycling exception to flexible zero-amount line-item suppression (new 35-45; old 32-42). Source line 23 compresses API removal and schedule proration_behavior branches (new 71-81); source line 25's two-versus-one invoices applies to renewal phase transitions with usage-based items (new 122-130). Restore conditions where those rows guide implementation.",
+    "Current source line 26's fixed cancel_at refers specifically to Customer Portal scheduled cancellation in flexible mode, not every cancellation route (new 132-140; old 100-108)."
+  ],
+  "unresolved_questions": [
+    "The comparison page has no standalone API-version or merchant-eligibility declaration; the related billing-mode guide/source indicates version prerequisites, so do not infer universal availability or which mode a specific account defaults to from this capture alone.",
+    "No invoice creation, debit, credit, customer eligibility or live migration was executed; examples and table scenarios are documentation evidence, not receipts."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/billing-mode/compare, [[source-stripe-subscriptions-billing-mode-compare]] should describe documented classic versus flexible subscription billing behavior: original-debit credit prorations, usage and discount treatment, anchor resets, schedules, trials, pending items and mixed intervals (new 15-271; old 12-218). The November capture newly states that trial_end updates reset a flexible anchor, free-to-paid upgrades normally defer pending charges, one-time-only additions may stay pending despite always_invoice, and pending_if_incomplete excludes prior items (new 85-96, 243-263). It also adds 20-versus-100 item limits (new 273-279). May already warned migration cannot reverse (old 8-10); current source lines 24 and 30 state overbroad absolutes. These are mode and scenario-specific documented rules, not evidence of any account's selected mode or a paid invoice.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/billing-mode/compare, [[source-stripe-subscriptions-billing-mode-compare]] needs a dated source update: November adds a trial_end anchor exception, anchor-reset proration cases, no-credit-after-uncharged-backdate behavior, conditional one-time pending items and item limits (new 85-120, 179-185, 241-263, 273-279), while table spacing and numbering changes are presentational (diff 1-277). Preserve May's dated 2026 wording, especially its explicit-anchor-only statement and internally broad pending-item section (old 84-88, 204-210), with reciprocal warning rather than silently treating them as unchanged current rules. Narrow source lines 21-26 and 30 to their cycling, price-change, usage-transition, Portal and pending_if_incomplete conditions. The compare page does not independently prove API-version eligibility, defaults, invoice creation, credit, payment, or successful migration."
+  }
+}

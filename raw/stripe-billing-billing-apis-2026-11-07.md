@@ -1,0 +1,218 @@
+<!-- Source URL: https://docs.stripe.com/billing/billing-apis -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# How the Billing APIs work
+
+Learn how the Billing API objects work together to create and manage subscriptions.
+
+A *subscription* (A Subscription represents the product details associated with the plan that your customer subscribes to. Allows you to charge the customer on a recurring basis) connects the objects that define what you sell, who buys it, and how you collect payment. Each subscription has:
+
+- A *Product* (Products represent what your business sells—whether that's a good or a service) that models what you sell.
+- A *Price* (Prices define how much and how often to charge for products. This includes how much the product costs, what currency to use, and the interval if the price is for subscriptions) that defines the billing interval and amount to charge.
+- An object that represents the customer and stores the *payment methods* (PaymentMethods represent your customer's payment instruments, used with the Payment Intents or Setup Intents APIs) used for each recurring payment. Depending on how you represent your customers, this object is either a [customer-configured Account](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-configuration-customer-applied) or a [Customer](https://docs.stripe.com/api/customers.md).
+
+> #### Use the Accounts v2 API to represent customers
+> 
+> The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you’re part of the Accounts v2 preview, you need to specify a [preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.
+> 
+> To join the Accounts v2 preview, go to [Account previews and features](https://dashboard.stripe.com/settings/previews) in your Dashboard and enable **Reusable payment methods for Global Payouts**.
+> 
+> For most use cases, we recommend [modeling your customers as customer-configured Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md) instead of using [Customer](https://docs.stripe.com/api/customers.md) objects.
+
+## How subscription billing works
+
+When you create a subscription, Stripe generates an *Invoice* (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) object for each billing cycle. If an `Invoice` has an amount due, Stripe creates a *PaymentIntent* (API object that represents your intent to collect payment from a customer, tracking charge attempts and payment state changes throughout the process) object to collect it and tracks the payment in the invoice’s `payments` list. For subscriptions that charge automatically, Stripe charges the default payment method on the subscription or customer.
+
+The following diagram shows how these objects reference each other.
+
+#### Accounts v2
+
+A diagram illustrating common billing objects and their relationships (See full diagram at https://docs.stripe.com/billing/billing-apis)
+
+```text
++---------------------------------+
+| Subscription object             |
++---------------------------------+
+| id: sub_1234                    |
+| status: active                  |
+| latest_invoice: in_1234         |
+| default_payment_method: pm_1234 |
+| customer_account: acct_1234     |
+| items.data.price: price_1234    |
++---------------------------------+
+
++----------------+
+| Invoice object |
++----------------+
+| id: in_1234    |
+| currency: usd  |
+| status: open   |
++----------------+
+
++----------------------+
+| PaymentMethod object |
++----------------------+
+| id: pm_1234          |
+| type: card           |
+| card[brand]: visa    |
++----------------------+
+
++---------------------------------------+
+| Customer-configured Account object    |
++---------------------------------------+
+| id: acct_1234                         |
+| display_name: Jenny Rosen             |
+| contact_email: jennyrosen@example.com |
++---------------------------------------+
+
++--------------------+
+| Price object       |
++--------------------+
+| id: price_1234     |
+| product: prod_1234 |
+| type: recurring    |
++--------------------+
+
++---------------------------+
+| Product object            |
++---------------------------+
+| id: prod_1234             |
+| active: true              |
+| name: Widget, blue        |
+| default_price: price_1234 |
++---------------------------+
+
++-----------------------------+
+| PaymentIntent               |
++-----------------------------+
+| id: pi_1234                 |
+| amount: 1000                |
+| customer_account: acct_1234 |
+| invoice: in_1234            |
+| status: processing          |
++-----------------------------+
+
+[Subscription object.latest_invoice] --> [Invoice object]
+[Subscription object.default_payment_method] --> [PaymentMethod object]
+[Subscription object.customer_account] --> [Customer-configured Account object]
+[Subscription object.items.data.price] --> [Price object]
+[Price object.product] --> [Product object]
+[PaymentIntent.invoice] --> [Invoice object]
+```
+
+#### Customer v1
+
+A diagram illustrating common billing objects and their relationships (See full diagram at https://docs.stripe.com/billing/billing-apis)
+
+```text
++---------------------------------+
+| Subscription object             |
++---------------------------------+
+| id: sub_1234                    |
+| status: active                  |
+| latest_invoice: in_1234         |
+| default_payment_method: pm_1234 |
+| customer: cus_1234              |
+| items.data.price: price_1234    |
++---------------------------------+
+
++----------------+
+| Invoice object |
++----------------+
+| id: in_1234    |
+| currency: usd  |
+| status: open   |
++----------------+
+
++----------------------+
+| PaymentMethod object |
++----------------------+
+| id: pm_1234          |
+| type: card           |
+| card[brand]: visa    |
++----------------------+
+
++-------------------------------+
+| Customer object               |
++-------------------------------+
+| id: cus_1234                  |
+| name: Jenny Rosen             |
+| email: jennyrosen@example.com |
++-------------------------------+
+
++--------------------+
+| Price object       |
++--------------------+
+| id: price_1234     |
+| product: prod_1234 |
+| type: recurring    |
++--------------------+
+
++---------------------------+
+| Product object            |
++---------------------------+
+| id: prod_1234             |
+| active: true              |
+| name: Widget, blue        |
+| default_price: price_1234 |
++---------------------------+
+
++--------------------+
+| PaymentIntent      |
++--------------------+
+| id: pi_1234        |
+| amount: 1000       |
+| customer: cus_1234 |
+| invoice: in_1234   |
+| status: processing |
++--------------------+
+
+[Subscription object.latest_invoice] --> [Invoice object]
+[Subscription object.default_payment_method] --> [PaymentMethod object]
+[Subscription object.customer] --> [Customer object]
+[Subscription object.items.data.price] --> [Price object]
+[Price object.product] --> [Product object]
+[PaymentIntent.invoice] --> [Invoice object]
+```
+
+## API object definitions
+
+The following table describes the objects that subscriptions use, including the objects for feature entitlements.
+
+| Resource | Definition |
+| --- | --- |
+| [Account configured as a customer](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer) | Represents a customer in the Accounts v2 API who purchases a subscription. Configure an `Account` object as a customer and associate it with a subscription to make and track recurring charges and to manage the products that they subscribe to. For more information, see the [Use Accounts as customers guide](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md). |
+| [Customer](https://docs.stripe.com/api/customers.md) | Represents a customer in the Customers API who purchases a subscription. Use the `Customer` object associated with a subscription to make and track recurring charges and to manage the products that they subscribe to. |
+| [Entitlement](https://docs.stripe.com/api/entitlements/active-entitlement.md) | Represents a customer’s access to a feature included in a service product that they subscribe to. When you create a subscription for a customer’s recurring purchase of a product, an active entitlement is automatically created for each feature associated with that product. When a customer accesses your services, use their active entitlements to enable the features included in their subscription. |
+| [Feature](https://docs.stripe.com/api/entitlements/feature.md) | Represents a function or ability that your customers can access when they subscribe to a service product. You can include features in a product by creating ProductFeatures. |
+| [Invoice](https://docs.stripe.com/api/invoices.md) | A statement of amounts a customer owes that tracks payment statuses from draft through paid or otherwise finalized. Subscriptions automatically generate invoices. |
+| [PaymentIntent](https://docs.stripe.com/api/payment_intents.md) | A way to build dynamic payment flows. A PaymentIntent tracks the lifecycle of a customer checkout flow and triggers additional authentication steps when required by regulatory mandates, custom Radar fraud rules, or redirect-based payment methods. Invoices automatically create PaymentIntents. |
+| [PaymentMethod](https://docs.stripe.com/api/payment_methods.md) | A customer’s payment methods that they use to pay for your products. For example, you can store a credit card on a customer-configured `Account` or `Customer` object and use it to make recurring payments for that customer. Typically used with the Payment Intents or Setup Intents APIs. |
+| [Price](https://docs.stripe.com/api/prices.md) | Defines the unit price, currency, and billing cycle for a product. |
+| [Product](https://docs.stripe.com/api/products.md) | A good or service that your business sells. A service product can include one or more features. |
+| [ProductFeature](https://docs.stripe.com/api/product-feature.md) | Represents a single feature’s inclusion in a single product. Each product is associated with a ProductFeature for each feature that it includes, and each feature is associated with a ProductFeature for each product that includes it. |
+| [Subscription](https://docs.stripe.com/api/subscriptions.md) | Represents a customer’s scheduled recurring purchase of a product. Use a subscription to collect payments and provide repeated delivery of or continuous access to a product. |
+
+Here’s an example of how products, features, and entitlements work together. Imagine that you want to set up a recurring service that offers two tiers: a standard product with basic functionality, and an advanced product that adds extended functionality.
+
+1. You create two features: `basic_features` and `extended_features`.
+2. You create two products: `standard_product` and `advanced_product`.
+3. For the standard product, you create one ProductFeature that associates `basic_features` with `standard_product`.
+4. For the advanced product, you create two ProductFeatures: one that associates `basic_features` with `advanced_product` and one that associates `extended_features` with `advanced_product`.
+
+A customer, `first_customer`, subscribes to the standard product. When you create the subscription, Stripe automatically creates an Entitlement that associates `first_customer` with `basic_features`.
+
+Another customer, `second_customer`, subscribes to the advanced product. When you create the Subscription, Stripe automatically creates two Entitlements: one that associates `second_customer` with `basic_features`, and one that associates `second_customer` with `extended_features`.
+
+You can determine which features to provision for a customer by [retrieving their active entitlements or listening to the Active Entitlement Summary event](https://docs.stripe.com/billing/entitlements.md?dashboard-or-api=api#entitlements). You don’t have to retrieve their subscriptions, products, and features.
+
+## Create a subscription
+
+We recommend using the [Checkout Sessions API to create subscriptions](https://docs.stripe.com/billing/quickstart.md). A Checkout Session gives your customer a payment page where they enter their payment details. When your customer completes the session, Stripe creates the subscription, creates a customer if you didn’t provide one, and collects any payment that’s due.
+
+## See also
+
+- [Customers](https://docs.stripe.com/billing/customer.md)
+- [Represent customers using Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md)
+- [Subscription invoices](https://docs.stripe.com/billing/invoices/subscription.md)

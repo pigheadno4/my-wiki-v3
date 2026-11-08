@@ -1,0 +1,175 @@
+{
+  "job_id": "billing-subscriptions-bacs-debit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-bacs-debit-2026-11-07.md",
+  "raw_sha256": "320637487d8889b76d66fae855304e96054e08da05941575952b03a3a9794ba4",
+  "prior_raw_path": "raw/stripe-subscriptions-bacs-debit-2026.md",
+  "prior_raw_sha256": "f49262a7e505cdd8447226bdf3cfd808c6faed8b82d625361b56bac5968a6ad4",
+  "source_target": "wiki/sources/source-stripe-subscriptions-bacs-debit.md",
+  "source_before_sha256": "dfedf4ddf239596b7cf3aeea98045028c64c6b995aa52d02f167b326703e5744",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-bacs-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 430
+      },
+      {
+        "start": 431,
+        "end": 521
+      }
+    ],
+    "raw/stripe-subscriptions-bacs-debit-2026.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 470
+      },
+      {
+        "start": 471,
+        "end": 580
+      },
+      {
+        "start": 581,
+        "end": 692
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-bacs-debit.md": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2b9f26541e0941ce1ee228ee/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 770
+      },
+      {
+        "start": 771,
+        "end": 892
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You can copy the same sandbox product to live mode more than once. Each copy creates a separate live product, and subsequent updates to the sandbox product aren\u2019t reflected in existing live copies.",
+      "location": "raw/stripe-billing-subscriptions-bacs-debit-2026-11-07.md:52"
+    },
+    {
+      "text": "Make sure that mode is set to `subscription` and you pass at least one recurring price.",
+      "location": "raw/stripe-billing-subscriptions-bacs-debit-2026-11-07.md:100"
+    },
+    {
+      "text": "Don\u2019t use the subscription status alone because a subscription can become `active` while its first payment is still processing.",
+      "location": "raw/stripe-billing-subscriptions-bacs-debit-2026-11-07.md:128"
+    },
+    {
+      "text": "The payment fails with a `debit_not_authorized` failure code and the Invoice transitions to `open`. The Mandate becomes `inactive` and the PaymentMethod can\u2019t be used again.",
+      "location": "raw/stripe-billing-subscriptions-bacs-debit-2026-11-07.md:278"
+    },
+    {
+      "text": "`line_items.dynamic_tax_rates` is deprecated. Use [Stripe Tax](https://docs.stripe.com/tax.md) or [line_items.tax_rates](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-line_items-tax_rates) instead.",
+      "location": "raw/stripe-billing-subscriptions-bacs-debit-2026-11-07.md:458"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You can only do this once for each product created in a sandbox. Subsequent updates to the test product aren\u2019t reflected for the live product.",
+      "location": "raw/stripe-subscriptions-bacs-debit-2026.md:46"
+    },
+    {
+      "text": "Because of this, delay order _fulfillment_ (Fulfillment is the process of providing the goods or services purchased by a customer, typically after payment is collected) until the funds are available.",
+      "location": "raw/stripe-subscriptions-bacs-debit-2026.md:142"
+    },
+    {
+      "text": "payment_method_types: [\"bacs_debit\"],",
+      "location": "raw/stripe-subscriptions-bacs-debit-2026.md:325"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "This is a Checkout-based Bacs subscription guide at the same URL in the May and November captures (new 5-11; old 4-10). The client button calls a server endpoint to create a subscription-mode Checkout Session with at least one recurring price (new 79-110; old 79-124). The page's scope does not prove Bacs subscriptions have no other integration path.",
+    "Bacs is delayed notification. In the November wording, subscription status may be active while the first payment is processing; before fulfillment, wait for invoice.paid or confirm underlying PaymentIntent succeeded and also verify the related subscription is active (new 124-128). checkout.session.completed only means debit authorization, while async success/failure and invoice events carry later outcomes (new 139-155; old 153-169). Redirect or authorization alone does not prove payment, available funds, or bank receipt.",
+    "The November capture reverses the May sandbox-product copy limit: more than one copy is allowed, each is a separate live product, and later sandbox edits do not update those live copies (new 52; old 46). The current source line 71 says copy only once and requires correction with May wording retained as dated history.",
+    "The new capture labels line_items.dynamic_tax_rates deprecated and points to Stripe Tax or line_items.tax_rates, while retaining legacy mechanics and incompatibility with fixed rates (new 454-479; old 589-622). The current source line 44 presents dynamic_tax_rates without the deprecation qualification.",
+    "The May Node Checkout examples explicitly include payment_method_types: ['bacs_debit'] (old 325, 420, 450 and following examples); the November curl samples omit that parameter (new 104-110, 296-305 and later). The November prose instructs enabling desired methods in Dashboard (new 117), but omission from examples cannot establish that Bacs is automatically selected, the parameter is removed, or Node support is deprecated.",
+    "New and old test tables preserve distinct sandbox outcomes: debit_not_authorized makes the mandate inactive and PaymentMethod unusable, insufficient_funds leaves it active and reusable, and some delayed tests take three minutes (new 270-288; old 293-311). The source line 52 claim that all test transactions settle instantly is overbroad even for its May evidence.",
+    "Account v2 customer_account and Customer v1 customer variants and email prefill after successful payment remain (new 340-376; old 403-463). One-time prices apply only to the initial invoice, while inline pricing, trial, coupon, tax and promotion-code branches remain documented (new 290-521; old 313-692). Ruby/curl versus Node samples and changed links/images are variant or navigation differences, not method removal."
+  ],
+  "substantive_changes": [
+    "Sandbox product copy limit changes from May once-only to November repeatable copy with a separate live product per copy (old 46; new 52).",
+    "Fulfillment guidance is more specific: a subscription may be active before first Bacs payment succeeds, so require the payment-success signal or succeeded PaymentIntent plus active subscription (new 128 versus old 142).",
+    "line_items.dynamic_tax_rates gains an explicit deprecation notice and alternatives Stripe Tax or line_items.tax_rates (new 456-458 versus old 589-591)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve May's once-only sandbox product copying statement as dated May evidence (old 46), while correcting the current source line 71 to November's repeatable-copy rule (new 52).",
+    "Preserve May's Node payment_method_types: ['bacs_debit'] examples as dated language-variant evidence (old 325, 420, 450), without inferring a November deprecation from their absence in curl examples (new 104-110).",
+    "Keep the May delayed-fulfillment warning, webhook ordering caveat, test-account distinctions, and sandbox email exclusion with their original provenance (old 132-169, 209-232, 293-311; new 119-155, 197-217, 270-288)."
+  ],
+  "conflicts": [
+    "wiki/sources/source-stripe-subscriptions-bacs-debit.md:71 says sandbox products can be copied to live only once; the November capture at line 52 explicitly permits more than one copy. Correct the source and explain the older May line 46 as historical.",
+    "wiki/sources/source-stripe-subscriptions-bacs-debit.md:44 lists line_items.dynamic_tax_rates as a normal optional feature, while the November capture at lines 456-458 labels it deprecated. Attach the warning and alternatives before retaining any legacy usage locator.",
+    "wiki/sources/source-stripe-subscriptions-bacs-debit.md:52 says test transactions settle instantly, but both test tables contain three-minute delayed-success, delayed-failure and disputed scenarios (old 300-305; new 277-282). Correct the sandbox statement.",
+    "wiki/sources/source-stripe-subscriptions-bacs-debit.md:13,15 and wiki/concepts/stripe-bacs-direct-debit.md:105-107 say Checkout-only or no Elements/custom UI variant. The captured page is a Checkout integration guide (new 11, 79-100), not an exclusivity statement; the concept separately lists Bacs Elements product support at line 76. Narrow these routes to this guide's Checkout scope rather than infer universal subscription-path exclusion.",
+    "wiki/sources/source-stripe-subscriptions-bacs-debit.md:33 describes async_payment_succeeded as funds confirmed, but new line 128 distinguishes delayed funds availability from payment success and requires related subscription active. Use payment succeeded wording and preserve the active-subscription check."
+  ],
+  "unresolved_questions": [
+    "The capture does not prove which Bacs payment methods appear for a specific account or Session when the November curl examples omit payment_method_types; consult current configuration/API authority before an eligibility claim.",
+    "The capture's Checkout scope does not decide whether another Bacs subscription UI or API path is supported; no exclusivity inference follows from this page.",
+    "A payment-success event or succeeded PaymentIntent is the guide's fulfillment gate, but this documentation snapshot does not verify actual bank receipt, availability of funds, or any merchant's live outcome."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bacs-direct-debit.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/bacs-debit, the November guide documents a Checkout-based Bacs subscription: create a server-side Session with mode subscription and at least one recurring Price, with a client button calling that endpoint (new lines 79-100; old lines 79-100). The delayed debit requires payment success, indicated by invoice.paid or a succeeded PaymentIntent, and an active subscription before fulfillment; active status alone can precede first payment completion (new line 128, compared with old line 142). Authorization at checkout.session.completed is only an early state (new 143-149; old 157-163). [[source-stripe-subscriptions-bacs-debit]] already covers the flow and test cases, but its exclusive-path, instant-sandbox, and funds-confirmed wording is too broad (source 13, 33, 52). Customer Account v2 and Customer v1 are separate existing-customer variants (new 342-364; old 405-439).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/bacs-debit, substantive November changes are repeatable sandbox-to-live product copies rather than May's once-only rule (new line 52; old line 46), a payment-success plus active-subscription fulfillment gate (new line 128; old line 142), and deprecation of line_items.dynamic_tax_rates with alternatives (new 456-458; old 589-591). [[source-stripe-subscriptions-bacs-debit]] should correct lines 44, 52 and 71, retain May claims as dated evidence, and narrow its Checkout-only wording (source 13-15) because this guide's scope does not prove other paths absent. Node examples explicitly select bacs_debit (old 325), while November curl samples omit the parameter and point to Dashboard method settings (new 104-117); neither omission nor language change proves parameter removal or universal Bacs availability. Test table outcomes remain differentiated by failure and mandate state (new 276-284; old 299-307); redirect, active subscription, and sample success do not verify bank receipt. The reciprocal [[stripe-bacs-direct-debit]] route should carry the same scope and fulfillment qualification."
+  }
+}

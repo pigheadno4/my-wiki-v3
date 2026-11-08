@@ -1,18 +1,22 @@
 ---
 title: "Stripe Subscriptions — Set Up Bacs Direct Debit Subscription"
 type: source
-date_ingested: 2026-05-13
+date_ingested: 2026-11-08
 original_format: webpage
+canonical_url: "https://docs.stripe.com/billing/subscriptions/bacs-debit"
 raw_files:
+  - "stripe-billing-subscriptions-bacs-debit-2026-11-07.md"
   - "stripe-subscriptions-bacs-debit-2026.md"
 tags: [stripe, billing, subscriptions, bacs, uk, direct-debit, checkout]
 ---
 
 ## Summary
 
-Integration guide for Bacs Direct Debit subscriptions via Stripe Checkout. Checkout-only path — no Elements/custom UI variant. Covers test accounts, delayed notification webhooks, inline pricing, trials, tax rates, coupons, and setup fees.
+Stripe's Bacs Direct Debit subscription guide uses Checkout: a client checkout button calls a server endpoint that creates a subscription-mode Checkout Session with at least one recurring Price. This page does not establish that other Bacs subscription integration paths are unavailable. It covers delayed-payment webhooks, test accounts, optional pricing, trials, taxes, coupons, and one-time setup fees. The 2026-11-07 capture adds an explicit payment-success plus active-subscription fulfillment check, allows repeat sandbox-to-live product copies, and deprecates `line_items.dynamic_tax_rates`.
 
-## Integration: Checkout only
+## Integration: Checkout path in this guide
+
+The 2026-05-13 Node.js example below explicitly selects `bacs_debit`. The 2026-11-07 curl examples omit `payment_method_types` while the prose directs enabling desired payment methods in the Dashboard; the omission alone does not establish automatic Bacs selection, parameter removal, or eligibility for a particular account.
 
 ```js
 stripe.checkout.sessions.create({
@@ -25,14 +29,14 @@ stripe.checkout.sessions.create({
 
 ## Delayed notification — key webhook events
 
-Bacs is async. Do NOT fulfill on `checkout.session.completed` alone:
+Bacs is a delayed-notification method. `checkout.session.completed` records debit authorization, not payment success. In the 2026-11-07 guide, a subscription can be `active` while its first payment is processing. Before fulfilling goods or services, verify the related subscription is `active` and wait for `invoice.paid` or confirm that the underlying PaymentIntent is `succeeded`. Payment success does not itself prove funds are already available or a bank receipt.
 
 | Event | Action |
 |---|---|
 | `checkout.session.completed` | Customer authorized debit — wait |
-| `checkout.session.async_payment_succeeded` | Funds confirmed → fulfill |
+| `checkout.session.async_payment_succeeded` | Delayed payment succeeded; verify related subscription is `active` before fulfillment |
 | `checkout.session.async_payment_failed` | Email customer to retry |
-| `invoice.paid` | Subscription renewal succeeded → fulfill |
+| `invoice.paid` | Payment succeeded; verify related subscription is `active` before fulfillment |
 | `invoice.payment_failed` | Contact customer |
 
 ## Optional features via Checkout
@@ -41,7 +45,7 @@ Bacs is async. Do NOT fulfill on `checkout.session.completed` alone:
 - **Inline pricing**: use `price_data` + `product_data` to create products/prices inline without pre-registering them
 - **Trial**: `subscription_data.trial_period_days` or `trial_end`
 - **Fixed tax rates**: `subscription_data.default_tax_rates` or `line_items.tax_rates`
-- **Dynamic tax rates**: `line_items.dynamic_tax_rates` (cannot mix with fixed)
+- **Dynamic tax rates (deprecated)**: the 2026-11-07 guide labels `line_items.dynamic_tax_rates` deprecated; use Stripe Tax or `line_items.tax_rates` instead. For legacy use, it cannot be combined with `subscription_data.default_tax_rates` or `line_items.tax_rates`.
 - **Coupons**: `discounts: [{coupon: id}]` on session
 - **Promo codes**: `allow_promotion_codes: true`
 - **Existing customer**: pass `customer` or `customer_account` to pre-fill email
@@ -49,7 +53,7 @@ Bacs is async. Do NOT fulfill on `checkout.session.completed` alone:
 ## Sandbox behavior
 
 - Bacs debit notification emails are **NOT sent** in sandboxes
-- Test transactions settle instantly (live transactions take multiple days)
+- Sandbox test outcomes vary: some payment-success and failure cases take about three minutes, and one success case immediately creates a dispute. Do not read a test payment outcome as proof of live settlement.
 - Use **delayed test accounts** (3-min processing) to better simulate live behavior
 
 ## Test accounts (sort code `10-88-00`)
@@ -68,7 +72,10 @@ Bacs is async. Do NOT fulfill on `checkout.session.completed` alone:
 
 ## Product sandbox→live note
 
-Sandbox products can be copied to live once via Dashboard ("Copy to live mode"). Subsequent updates to sandbox product do NOT sync to live.
+The 2026-11-07 guide allows copying the same sandbox product to live mode more than once. Each copy is a separate live product; later sandbox changes do not update existing live copies.
+
+> [!warning] Contradiction
+> The 2026-05-13 capture said a sandbox product could be copied to live only once. The 2026-11-07 capture explicitly permits repeat copies. Preserve the old limit as dated historical wording, not a current restriction.
 
 ## Related pages
 
@@ -78,4 +85,5 @@ Sandbox products can be copied to live once via Dashboard ("Copy to live mode").
 
 ## Raw Sources
 
-- [[stripe-subscriptions-bacs-debit-2026]] — verbatim Stripe docs webpage (692 lines, 1 image reused)
+- [[raw/stripe-billing-subscriptions-bacs-debit-2026-11-07|2026-11-07 Bacs subscription guide]] — Checkout path, payment confirmation, sandbox-copy and tax updates
+- [[raw/stripe-subscriptions-bacs-debit-2026|2026-05-13 Bacs subscription guide]] — historical Node.js rendering and once-only copy statement

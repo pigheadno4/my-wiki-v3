@@ -1,0 +1,133 @@
+{
+  "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-prorations/base.md",
+  "base_sha256": "4e6b98698c0ec52439f9d74ee544514fbcfca5657f02191db64d9f153af2560d",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-prorations::prorations-concept-overview",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "When a Stripe subscription changes mid-period, Stripe creates proration invoice items to charge customers accurately for partial use. A proration consists of a credit for unused time at the old price and a debit for remaining time at the new price.",
+      "new_text": "Stripe can create proration invoice items when a subscription changes, with credits or debits depending on the operation. The November guide classifies items by the generating operation, using Invoice item `proration` or Invoice line item `parent.subscription_item_details.proration`; partial duration alone does not decide classification. A single operation can create proration and non-proration items. The familiar unused-time credit plus remaining-time debit is one price-change example, not every proration.\n\n> [!warning] Contradiction\n> This page's former definition treated every mid-period change as a paired credit and debit. The November classification includes credit-only, debit-only and mixed-item operations; see [[source-stripe-subscriptions-prorations]] for the dated same-URL evidence.",
+      "reason": "Correct the principal definition and explicitly resolve the old universal credit/debit claim.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "prorations-concept-overview",
+      "job_id": "billing-subscriptions-prorations",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/receipt.json",
+      "receipt_sha256": "c1d7c567c346724293f4e6e4099235b3cfbbdaad83b6530952796ee19b1e5778",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/candidate.md",
+      "source_candidate_sha256": "f4a2cc90bc367d0b3feefeb09d2c9c0ca0607320ff4fd763bba6fdd9eaa40142",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prorations::prorations-concept-behavior",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "| `create_prorations` (default) | Creates proration items; invoiced at period end or on anchor reset |\n| `always_invoice` | Creates prorations and immediately generates an invoice |\n| `none` | No prorations; customer billed full new price at next invoice |",
+      "new_text": "| `create_prorations` (default) | Creates applicable proration items; immediate invoicing occurs only under certain conditions, without a guaranteed period-end outcome from this setting alone |\n| `always_invoice` | Calculates prorations and immediately generates an invoice; payment success is not established |\n| `none` | Disables prorations on that request, but regular renewal or full-period non-proration items can still be created; the guide says the full new price is billed when the next invoice is generated |\n\nFor cancellation, the November guide permits disabling proration only when `cancel_at` falls within the current billing period. `none` must be passed on each relevant request to suppress future prorations.",
+      "reason": "Scope invoice versus payment outcomes and add none/cancellation boundaries.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "prorations-concept-behavior",
+      "job_id": "billing-subscriptions-prorations",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/receipt.json",
+      "receipt_sha256": "c1d7c567c346724293f4e6e4099235b3cfbbdaad83b6530952796ee19b1e5778",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/candidate.md",
+      "source_candidate_sha256": "f4a2cc90bc367d0b3feefeb09d2c9c0ca0607320ff4fd763bba6fdd9eaa40142",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prorations::prorations-concept-credit",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "| Classic | Current (new, unbilled) price | May credit more than customer paid |\n| Flexible | Last **actually-billed** price | Accurate to what customer paid |",
+      "new_text": "| Classic | Current (new, unbilled) price | May credit based on a price that was not billed |\n| Flexible | Last **billed** price | Example credits based on the prior billed price; payment is not established |",
+      "reason": "Preserve billed-versus-paid distinction in the classic/flexible example.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "prorations-concept-credit",
+      "job_id": "billing-subscriptions-prorations",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/receipt.json",
+      "receipt_sha256": "c1d7c567c346724293f4e6e4099235b3cfbbdaad83b6530952796ee19b1e5778",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/candidate.md",
+      "source_candidate_sha256": "f4a2cc90bc367d0b3feefeb09d2c9c0ca0607320ff4fd763bba6fdd9eaa40142",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prorations::prorations-concept-payment",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "Flexible is more accurate to actual customer payment.",
+      "new_text": "The flexible example uses proportional `discount_amounts` from the original invoice and shows a different credit total. These sample totals do not establish actual customer payment or a refund. See [[source-stripe-subscriptions-prorations]].",
+      "reason": "Remove unsupported claim that sample invoice totals show paid amounts.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "prorations-concept-payment",
+      "job_id": "billing-subscriptions-prorations",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/receipt.json",
+      "receipt_sha256": "c1d7c567c346724293f4e6e4099235b3cfbbdaad83b6530952796ee19b1e5778",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/candidate.md",
+      "source_candidate_sha256": "f4a2cc90bc367d0b3feefeb09d2c9c0ca0607320ff4fd763bba6fdd9eaa40142",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prorations::prorations-concept-source",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "- [[source-stripe-subscriptions-prorations]] \u2014 Stripe docs: full prorations guide (triggers, non-triggers, classic vs flexible, preview, unpaid invoice handling)",
+      "new_text": "- [[source-stripe-subscriptions-prorations]] \u2014 May and November 2026 Stripe guide captures: item classification, behavior controls, credit attribution, classic/flexible examples, preview and unpaid-invoice handling",
+      "reason": "Refresh reciprocal source route for new classification and attribution material.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "prorations-concept-source",
+      "job_id": "billing-subscriptions-prorations",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/receipt.json",
+      "receipt_sha256": "c1d7c567c346724293f4e6e4099235b3cfbbdaad83b6530952796ee19b1e5778",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/candidate.md",
+      "source_candidate_sha256": "f4a2cc90bc367d0b3feefeb09d2c9c0ca0607320ff4fd763bba6fdd9eaa40142",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prorations::prorations-concept-manual",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "To calculate prorations outside Stripe, pass `add_invoice_items` with a negative `unit_amount` to: CreateSubscription, UpdateSubscription, CreateSubscriptionSchedule, UpdateSubscriptionSchedule.",
+      "new_text": "To calculate an adjustment outside Stripe, pass `add_invoice_items` with a negative `unit_amount` to CreateSubscription, UpdateSubscription, CreateSubscriptionSchedule, or UpdateSubscriptionSchedule. A manually created negative invoice item is not automatically classified as a Stripe proration; see [[source-stripe-subscriptions-prorations]].",
+      "reason": "Avoid conflating manual negative invoice items with Stripe-classified prorations.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "prorations-concept-manual",
+      "job_id": "billing-subscriptions-prorations",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/receipt.json",
+      "receipt_sha256": "c1d7c567c346724293f4e6e4099235b3cfbbdaad83b6530952796ee19b1e5778",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/candidate.md",
+      "source_candidate_sha256": "f4a2cc90bc367d0b3feefeb09d2c9c0ca0607320ff4fd763bba6fdd9eaa40142",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prorations/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-prorations::prorations-concept-overview",
+    "billing-subscriptions-prorations::prorations-concept-behavior",
+    "billing-subscriptions-prorations::prorations-concept-credit",
+    "billing-subscriptions-prorations::prorations-concept-payment",
+    "billing-subscriptions-prorations::prorations-concept-source",
+    "billing-subscriptions-prorations::prorations-concept-manual"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-prorations/auto-candidate.md",
+  "auto_candidate_sha256": "5c6305e63f46b364d51607d6c141f3ff872864be4e43d63d1dfbcedaa86bbd02",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-subscriptions-prorations-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-subscriptions-prorations-concept-review.json"
+}

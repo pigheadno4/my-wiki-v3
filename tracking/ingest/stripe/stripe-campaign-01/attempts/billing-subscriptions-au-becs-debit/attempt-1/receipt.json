@@ -1,0 +1,106 @@
+{
+  "job_id": "billing-subscriptions-au-becs-debit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md",
+  "raw_sha256": "6ce211b766f501ffe0a84dbebddc4c0fc51ff7f772445bc2cb16f74c76c9b4f4",
+  "prior_raw_path": "raw/stripe-subscriptions-becs-debit-2026.md",
+  "prior_raw_sha256": "06dfa74f0bf6441439851c55109a4e8d46182492ee8b05545a8e6e2e0ac591f4",
+  "source_target": "wiki/sources/source-stripe-subscriptions-becs-debit.md",
+  "source_before_sha256": "775a50ab170d0b5a4e6847851f84bbf9858acaa504a1f123ce03d8b1f9740dc0",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 789
+      }
+    ],
+    "raw/stripe-subscriptions-becs-debit-2026.md": [
+      {
+        "start": 1,
+        "end": 843
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 76
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f21f7d1ade9af189a6f182a5/content.diff": [
+      {
+        "start": 1,
+        "end": 891
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Create a [SetupIntent](https://docs.stripe.com/api/setup_intents.md) on your server. [Enable the payment method](https://dashboard.stripe.com/settings/payment_methods) in your Dashboard. Stripe displays eligible payment methods automatically.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:35"
+    },
+    {
+      "text": "Make sure the accepted DDR and its accompanying [DDR service agreement](https://stripe.com/au-becs-dd-service-agreement/legal) can be shared with your customer at all times, either as a printed or non-changeable electronic copy (such as email). Stripe hosts this for you.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:90"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:590"
+    },
+    {
+      "text": "A subscription can become `active` while its first payment is still processing, so don\u2019t use the subscription status alone to determine whether the payment succeeded.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:716"
+    },
+    {
+      "text": "If you enable [Direct Debit retries](https://docs.stripe.com/billing/revenue-recovery/smart-retries.md#direct-debit-retries), Stripe can automatically retry AU BECS Direct Debit payments that fail because of insufficient funds.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:720"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "BECS Direct Debit payments are never automatically retried, even if you have a [retry schedule](https://docs.stripe.com/invoicing/automatic-collection.md) configured for other payment methods.",
+      "location": "raw/stripe-subscriptions-becs-debit-2026.md:742"
+    },
+    {
+      "text": "Create a [SetupIntent](https://docs.stripe.com/api/setup_intents.md) on your server with [payment_method_types](https://docs.stripe.com/api/setup_intents/create.md#create_setup_intent-payment_method_types) set to `au_becs_debit`:",
+      "location": "raw/stripe-subscriptions-becs-debit-2026.md:34"
+    },
+    {
+      "text": "When the initial payment succeeds, the status of the _subscription_",
+      "location": "raw/stripe-subscriptions-becs-debit-2026.md:740"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same-URL 2026-11-07 guide still covers an Australian BECS subscription path: Dashboard product/price, server SetupIntent and client secret, client AuBankAccount Element or React component, DDR authorization, confirmAuBecsDebitSetup, customer default payment method, then server subscription creation (new lines 9-95, 169-205, 287-295, 384-435, 584-712). The May guide covers the same principal sequence (old lines 8-110, 176-212, 294-298, 386-438, 594-736).",
+    "Both captures distinguish a customer-configured Account v2 from Customer v1. The new text adds the practical preview enrollment instruction and shows Stripe-Version 2026-10-28.preview in the Account v2 curl example (new lines 584-613); it still says generally available for Connect, public preview for other Stripe users, and a preview version is needed for preview participants (old lines 598-608; new lines 588-598).",
+    "Mandate duties persist: collect account holder name, BSB and account number, display DDR service agreement and authorization text, and make the accepted DDR plus service agreement shareable at all times (new lines 75-95, 265-285; old lines 86-106, 272-292). The guide says to share the mandate URL after setup and recommends including business name, amount/schedule and link (new lines 418-425, 569-576).",
+    "The current source is routed through wiki/index.md to wiki/stripe-index.md:659 and wiki/concepts/stripe-au-becs-debit.md:103; both concept links and the source's no-retry rule need reciprocal correction because the new capture permits a bounded retry case."
+  ],
+  "substantive_changes": [
+    "The new guide says enabled Direct Debit retries can automatically retry AU BECS payments failed for insufficient funds (new line 720), replacing the older absolute never-retried sentence (old line 742). This is conditional on enablement, failure reason, and actual availability; it does not prove an account has the feature.",
+    "The new guide warns active subscription status can precede completion of the first payment; before fulfillment it requires invoice.paid or underlying PaymentIntent succeeded together with related subscription active (new line 716). The old guide's line 740 said initial successful payment makes the subscription active and no further action is needed.",
+    "The new server SetupIntent example enables automatic_payment_methods after Dashboard payment-method enablement (new lines 35-45); the old Node.js example explicitly supplied payment_method_types au_becs_debit (old lines 34-56). This is a changed documented sample and setup instruction, not proof that BECS eligibility is universal or that explicit selection is invalid.",
+    "Other changed details include dahlia to endive Stripe.js path, Node.js to curl sample rendering, an Accounts v2 preview enrollment path and example version, corrected React JSX formatting, links, and whitespace (new lines 59-73, 287-380, 588-613; old lines 70-84, 294-384, 598-624). These do not by themselves establish new payment capability."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the May 2026 explicit payment_method_types au_becs_debit Node.js SetupIntent pattern and absolute no-auto-retry statement as dated old evidence, not current unqualified guidance (old lines 34-56, 740-742).",
+    "Retain unchanged requirement to make the accepted DDR and service agreement shareable, mandate URL after successful setup, account-object-specific default payment method, saved method before recurring subscription creation, and trial/billing-anchor examples, with May and November capture dates separated (old lines 98-110, 417-424, 594-736, 761-843; new lines 87-99, 418-425, 584-712, 739-789)."
+  ],
+  "conflicts": [
+    "Current source lines 13 and 33-35, wiki/concepts/stripe-au-becs-debit.md lines 94 and 103, wiki/concepts/stripe-subscriptions.md line 246, and wiki/stripe-index.md line 659 assert no auto-retry. New raw line 720 contradicts the absolute claim for enabled Direct Debit retries on insufficient-funds failures. The AU BECS concept's adjacent Billing Retries section at lines 76-78 already labels it private preview; preserve that dated availability qualification rather than implying universal eligibility.",
+    "Current source lines 17 and 39-45 show the May explicit payment_method_types Node.js sample. New raw lines 35-43 instruct Dashboard enablement and automatic_payment_methods; retain the old sample only with an old-capture label or update the summary to describe both dated sample variants, without inferring a changed API requirement.",
+    "Current source line 30 and AU BECS concept line 96 call all mandate URL, business name, amount/schedule and DDR link sharing mandatory. New raw lines 418-425 and 569-576 say share the mandate URL and recommend the additional details; separate this from the firm requirement that accepted DDR and service agreement remain shareable at all times (new lines 89-95)."
+  ],
+  "unresolved_questions": [
+    "The static guide does not establish whether any given account has Direct Debit retries enabled, whether Accounts v2 preview is available to it, or whether BECS is eligible among automatically displayed payment methods.",
+    "The new guide has a general sentence saying the Dashboard subscription becomes Active after first successful payment (line 712), followed by a more precise warning that active can precede first-payment completion (line 716); use the latter as the fulfillment check rather than treating the summary sentence as proof of bank receipt."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-au-becs-debit.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/au-becs-debit, the November capture describes a BECS subscription flow using a server SetupIntent, client AuBankAccount Element and confirmAuBecsDebitSetup, a customer-shareable DDR and mandate, then an Account v2 or Customer v1 with the saved method set as default before subscription creation (new lines 31-95, 384-435, 584-712). The May capture documents the same core sequence but uses explicit au_becs_debit in its SetupIntent example (old lines 30-56) and says payments are never retried (old line 742). Current [[source-stripe-subscriptions-becs-debit]] summarizes the older path, but its absolute retry claim and fulfillment assumptions need correction against new lines 716-720.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/au-becs-debit, the substantive November changes are conditional insufficient-funds retries when Direct Debit retries is enabled, a warning that active can precede first-payment success, and a SetupIntent example using Dashboard enablement plus automatic_payment_methods (new lines 35-43, 716-720; old lines 34-56, 740-742). [[source-stripe-subscriptions-becs-debit]] and reciprocal AU BECS concept routes should preserve the May no-retry sentence as dated history and distinguish mandatory DDR shareability from recommended ancillary confirmation details (new lines 89-95, 418-425). Node.js/curl rendering, dahlia/endive paths, and Account v2 preview examples require version and object-identity qualifications; no static capture proves eligibility, settlement, or a bank receipt."
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "target_path": "wiki/concepts/stripe-klarna.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-klarna/base.md",
+  "base_sha256": "8bd6a93b2fe66189d818f0d2dd22baa04711e0b3818c991cc9b7ebad3b4d161d",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-klarna::klarna-concept-coverage-lead",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "Klarna is a Buy Now Pay Later (BNPL) payment method available on Stripe across 23 countries. Customers authenticate and select repayment options (Pay Now, Pay Later, Pay in installments) via a Klarna-hosted redirect. Supports subscriptions.",
+      "new_text": "Klarna is a Buy Now Pay Later (BNPL) payment method on Stripe. Customers authenticate and select repayment options (Pay Now, Pay Later, Pay in installments) through a Klarna-hosted redirect, subject to their use case and buyer country. The 2026-05-13 subscription guide includes sandbox test data for 23 customer countries; this does not establish current merchant or buyer eligibility. The guide describes subscription integrations.",
+      "reason": "Remove current universal 23-country coverage from the subscription evidence and preserve buyer/use-case qualification.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "klarna-concept-coverage-lead",
+      "job_id": "billing-subscriptions-klarna",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/receipt.json",
+      "receipt_sha256": "e7e057005784cb928f07aa379e2195aeaac417a250ad0e3fb3aa7eff319c2e08",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/candidate.md",
+      "source_candidate_sha256": "7c537e1a4daf50598b60238fde8373102c4b5da32a1415c27a4fc17b81b12d89",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-klarna::klarna-concept-country-list",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "## Supported countries (23)\n\nAU, AT, BE, CA, CZ, DK, FI, FR, DE, GR, IE, IT, NL, NZ, NO, PL, PT, RO, ES, SE, CH, UK, US",
+      "new_text": "## May 2026 sandbox country data (23)\n\nThe dated subscription guide gives test inputs for AU, AT, BE, CA, CZ, DK, FI, FR, DE, GR, IE, IT, NL, NZ, NO, PL, PT, RO, ES, SE, CH, UK and US. This is a sandbox test list, not a current eligibility matrix; Klarna options vary by use case and buyer country.",
+      "reason": "Correct the heading and list so dated sandbox examples are not presented as current support coverage.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "klarna-concept-country-list",
+      "job_id": "billing-subscriptions-klarna",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/receipt.json",
+      "receipt_sha256": "e7e057005784cb928f07aa379e2195aeaac417a250ad0e3fb3aa7eff319c2e08",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/candidate.md",
+      "source_candidate_sha256": "7c537e1a4daf50598b60238fde8373102c4b5da32a1415c27a4fc17b81b12d89",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-klarna::klarna-concept-checkout-proof",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "Enable Klarna from Dashboard payment methods settings. Create Checkout Session with `mode='subscription'`. Retrieve subscription via `checkout.session.completed` webhook or by expanding the session.",
+      "new_text": "The May 2026 guide creates a Checkout Session with `mode='subscription'` and at least one recurring Price; its sample omits `payment_method_types`, without establishing a universal override rule. Retrieve the created subscription through `checkout.session.completed`, or retrieve and verify the Session server-side if the buyer returns. A visit to `success_url` alone does not prove payment or justify access.\n\n> [!warning] Contradiction\n> The guide's Session-creation request uses `mode='subscription'`, but its illustrative `checkout.session.completed` payload says `mode: \"setup\"`. Treat the payload as an inconsistent example, not a subscription-mode instruction. See [[source-stripe-subscriptions-klarna]].",
+      "reason": "Qualify success URL and hosted sample, and surface the guide's internal mode discrepancy at the concept flow.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "klarna-concept-checkout-proof",
+      "job_id": "billing-subscriptions-klarna",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/receipt.json",
+      "receipt_sha256": "e7e057005784cb928f07aa379e2195aeaac417a250ad0e3fb3aa7eff319c2e08",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/candidate.md",
+      "source_candidate_sha256": "7c537e1a4daf50598b60238fde8373102c4b5da32a1415c27a4fc17b81b12d89",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-klarna::klarna-concept-advanced-proof",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "Create subscription with `payment_behavior=default_incomplete` + `save_default_payment_method='on_subscription'` \u2192 mount Payment Element \u2192 `stripe.confirmPayment({ return_url, mandate_data })` \u2192 Klarna redirects customer \u2192 on return check PaymentIntent status.",
+      "new_text": "In the May 2026 advanced example, create an incomplete subscription with `payment_behavior=default_incomplete` and `save_default_payment_method='on_subscription'`, then mount the Payment Element. Its `stripe.confirmPayment` call passes `elements` and `confirmParams` with `return_url` and example `mandate_data`; Klarna redirects the buyer. On return, check the PaymentIntent and call payment successful and the subscription active only if its status is `succeeded`. The example does not impose those confirm parameters on hosted Checkout.",
+      "reason": "Make the client API shape and post-redirect payment-success condition explicit without generalizing example mandate data.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "klarna-concept-advanced-proof",
+      "job_id": "billing-subscriptions-klarna",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/receipt.json",
+      "receipt_sha256": "e7e057005784cb928f07aa379e2195aeaac417a250ad0e3fb3aa7eff319c2e08",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/candidate.md",
+      "source_candidate_sha256": "7c537e1a4daf50598b60238fde8373102c4b5da32a1415c27a4fc17b81b12d89",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-klarna::klarna-concept-source-label",
+      "target_path": "wiki/concepts/stripe-klarna.md",
+      "old_text": "- [[source-stripe-subscriptions-klarna]] \u2014 Stripe docs: Klarna subscription integration guide (Checkout + Payment Element, 23-country test data)",
+      "new_text": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data",
+      "reason": "Keep the reciprocal source route and distinguish the factual May guide from the navigation-only November index.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "klarna-concept-source-label",
+      "job_id": "billing-subscriptions-klarna",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/receipt.json",
+      "receipt_sha256": "e7e057005784cb928f07aa379e2195aeaac417a250ad0e3fb3aa7eff319c2e08",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/candidate.md",
+      "source_candidate_sha256": "7c537e1a4daf50598b60238fde8373102c4b5da32a1415c27a4fc17b81b12d89",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-klarna/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-klarna::klarna-concept-coverage-lead",
+    "billing-subscriptions-klarna::klarna-concept-country-list",
+    "billing-subscriptions-klarna::klarna-concept-checkout-proof",
+    "billing-subscriptions-klarna::klarna-concept-advanced-proof",
+    "billing-subscriptions-klarna::klarna-concept-source-label"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-klarna/auto-candidate.md",
+  "auto_candidate_sha256": "4eba78c63d3aeb89a6061fa6ce213e7f67172854aa87c7b953fbf1062be24e5d",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-klarna-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-klarna-concept-review.json"
+}

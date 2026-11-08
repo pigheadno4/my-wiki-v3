@@ -1,0 +1,128 @@
+{
+  "job_id": "billing-quickstart",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-quickstart-2026-11-07.md",
+  "raw_sha256": "fab2d77d796715d5b509e669e8a771c0af87f805f1461720df3b8593a8509c57",
+  "source_before_sha256": "d8ef848e3ec833d9fc2e848639802350059c7a747805c81cf5f6d0c277c0fdb7",
+  "source_page": "---\ntitle: \"Stripe \u2014 Prebuilt Subscription Page with Checkout (Quickstart)\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/quickstart\"\nraw_files:\n  - \"stripe-billing-quickstart-2026-11-07.md\"\n  - \"stripe-checkout-subscriptions-quickstart-2026.md\"\ntags: [stripe, subscriptions, checkout, billing, quickstart, entitlements, customer-portal, trial, automatic-tax]\n---\n\n## Overview\n\nStripe Billing's hosted [[stripe-checkout]] subscription quickstart demonstrates a product with a recurring Price, a Checkout Session in `subscription` mode, a customer portal, and webhook and entitlement guidance. Its event-handler snippets log events or leave fulfillment calls commented; they do not implement entitlement grants. It is a sample integration, not a separate product or proof of successful payment. The 2026-11-07 webpage capture expands the visible instructions and snippets; the 2026-05-12 structured-UI capture remains separate historical evidence. See [[stripe-subscriptions]] and [[stripe-entitlements]].\n\n## Key takeaways\n\n- For the November sample, create or select a Product with a recurring Price and set the Price's lookup key. The server resolves that key to a Price ID for the Checkout Session. Keep authoritative price, availability, and other sensitive inventory information on the server; the client submits a lookup key, not a trusted amount. Set `mode: 'subscription'` and redirect to the returned hosted Session URL. The success URL must be publicly accessible; the sample puts `session_id={CHECKOUT_SESSION_ID}` in its query string.\n- The sample presents either a customer-configured Account or a Customer identity. Its portal flow creates a portal Session for the corresponding identity and redirects to that Session's URL. The example derives the customer from the Checkout Session ID, while recommending that production integrations store the identity with the authenticated user. The May capture called Accounts v2 \u201crecommended in most cases\u201d; that is dated May wording, absent from the November capture, not evidence of reversal.\n- A success-page message or redirect is not an access decision. The November quickstart says that after successful payment and redirect, the sample should verify the subscription is `active` before granting subscribed products and features. For feature entitlements it directs listening to active-entitlement summary events and using the list active entitlements API for the customer. Its `/webhook` instruction calls for the signing secret in `STRIPE_WEBHOOK_SECRET`. See [[stripe-checkout]] for the broader webhook and delayed-payment fulfillment pattern.\n- The May capture's detailed React client and Node.js/Express excerpt is one visible choice, while its structured-UI header also lists HTML/React frontends and Ruby, Node.js, PHP, Python, Go, .NET, and Java backends. The November flattened capture exposes more language and UI variants, but repeats `success_url`, `subscription_data`, `customer`/`customer_account`, and portal creation alternatives in adjacent code. These are not a single copy-paste runnable program. The May Node portal excerpt retrieves a Checkout Session but does not create the portal Session before redirecting to `portalSession.url`.\n\n## Detail locators\n\n- November setup and flow: Product, recurring Price, lookup key, features and payment methods (raw lines 23\u201341); preview, Checkout, success, and portal pages (43\u201363); server-side Price selection, subscription mode, success URL, redirects and active-status check (211\u2013249).\n- November code variants: library setup (65\u2013209); HTML/React and multi-language snippets (427\u20131530); duplicated Node identity/portal branches (620\u2013665); run variants (1531\u20131718). Use the interactive builder's chosen variant rather than combining the flattened alternatives.\n- November optional features and tests: three test-card scenarios (387\u2013395); trial days must be at least 1, with `pause` or `cancel` for a trial without a payment method at its end (401\u2013409); billing-cycle anchor (411\u2013417); activate Stripe Tax before enabling automatic tax (419\u2013425).\n- May historical capture: structured UI choices (3\u20134), Accounts v2 wording (12), five named webhook events and signature-verification description (68\u201378), test cards (80\u201390), optional trial/anchor/tax notes (92\u201396), React excerpt (98\u2013182), Node excerpt and incomplete portal branch (184\u2013285).\n\n## Related\n\n- [[stripe]] \u2014 company\n- [[stripe-subscriptions]] \u2014 subscription lifecycle and provisioning\n- [[stripe-checkout]] \u2014 hosted Checkout and broader fulfillment states\n- [[stripe-entitlements]] \u2014 feature access and active-entitlement routes\n- [[source-stripe-subscriptions-overview]] \u2014 lifecycle and status guide\n\n## Raw Sources\n\n- [[raw/stripe-billing-quickstart-2026-11-07|Stripe Billing hosted subscription quickstart \u2014 captured 2026-11-07]]\n- [[raw/stripe-checkout-subscriptions-quickstart-2026|Structured-UI quickstart and React/Node excerpt \u2014 captured 2026-05-12]]\n",
+  "quotes": [
+    {
+      "text": "Set a lookup key for the price, then replace the following placeholders in the sample code:",
+      "location": "raw/stripe-billing-quickstart-2026-11-07.md:25"
+    },
+    {
+      "text": "Always keep sensitive information about your product inventory, such as price and availability, on your server to prevent customer manipulation from the client.",
+      "location": "raw/stripe-billing-quickstart-2026-11-07.md:221"
+    },
+    {
+      "text": "You can represent customers in your integration either as [customer-configured Account](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer) objects or as [Customer](https://docs.stripe.com/api/customers/object.md) objects.",
+      "location": "raw/stripe-billing-quickstart-2026-11-07.md:17"
+    },
+    {
+      "text": "Listen to the [active entitlements summary events](https://docs.stripe.com/billing/entitlements.md#webhooks) for your [event destination](https://docs.stripe.com/events/how-events-work.md#event-destinations), and use the [list active entitlements API](https://docs.stripe.com/api/entitlements/active-entitlement/list.md) for a given customer to fulfill your customer\u2019s entitlements.",
+      "location": "raw/stripe-billing-quickstart-2026-11-07.md:37"
+    },
+    {
+      "text": "After a successful payment and redirect to the success page, verify that the subscription status is `active` and grant your customer access to the products and features they subscribed to.",
+      "location": "raw/stripe-billing-quickstart-2026-11-07.md:245"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<!-- Frontend: HTML / React \u2014 Backend: Ruby / Node.js / PHP / Python / Go / .NET / Java -->",
+      "location": "raw/stripe-checkout-subscriptions-quickstart-2026.md:4"
+    },
+    {
+      "text": "You can model customers in your integration either as customer-configured Account objects using the Accounts v2 API (recommended in most cases) or as Customer objects using the Customers v1 API.",
+      "location": "raw/stripe-checkout-subscriptions-quickstart-2026.md:12"
+    },
+    {
+      "text": "const checkoutSession = await stripe.checkout.sessions.retrieve(session_id);",
+      "location": "raw/stripe-checkout-subscriptions-quickstart-2026.md:226"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-quickstart-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 1731
+      }
+    ],
+    "raw/stripe-checkout-subscriptions-quickstart-2026.md": [
+      {
+        "start": 1,
+        "end": 285
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-subscriptions-quickstart.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/83bb81806f91e919f01da680/content.diff": [
+      {
+        "start": 1,
+        "end": 1851
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "billing-quickstart-subscriptions-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-checkout-subscriptions-quickstart]] \u2014 Checkout subscription quickstart: lookup_key pattern, customer portal, 5 webhook events, trial/billing-anchor/auto-tax",
+      "new_text": "- [[source-stripe-checkout-subscriptions-quickstart]] \u2014 May and November 2026 hosted Checkout subscription quickstart: recurring Price lookup key, customer portal, webhook and active-status access check; dated variants and optional features in source",
+      "reason": "Update the existing reciprocal route to the dated revised source without presenting flattened variants as a runnable flow.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-quickstart-subscriptions-provisioning",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "4. On `checkout.session.completed`: save `customer.id` + `subscription.id`, provision access\n5. On `invoice.paid`: renew access each billing period\n6. On `invoice.payment_failed`: notify + redirect to Customer Portal\n\n## Provisioning Pattern\n\nCheck `product.id` (not `price.id`) in subscription event handlers \u2014 decouples access from pricing:\n\n```text\ncustomer.subscription.created/updated/deleted\n  \u2514\u2500 items[0].price.product \u2192 product_id\n  \u2514\u2500 status \u2192 active | past_due | canceled | ...\n```\n\nStore: `{ product_id, subscription_id, subscription_status, customer_id }`\n\n## Key Webhook Events\n\n| Event | Action |\n| --- | --- |\n| `checkout.session.completed` | Initial provision |\n| `invoice.paid` | Renew access |\n| `invoice.payment_failed` | Notify + portal |\n| `customer.subscription.created` | Grant access |\n| `customer.subscription.updated` | Adjust access level |\n| `customer.subscription.deleted` | Revoke access |",
+      "new_text": "4. On `checkout.session.completed`: save the customer and subscription identities, then check the relevant payment and subscription state before provisioning access. The hosted Billing quickstart's post-payment example specifically verifies `active` subscription status; delayed payment methods also require their later success event. See [[source-stripe-checkout-subscriptions-quickstart]] and [[stripe-checkout]].\n5. On `invoice.paid`: renew access each billing period\n6. On `invoice.payment_failed`: notify + redirect to Customer Portal\n\n## Provisioning Pattern\n\nCheck `product.id` (not `price.id`) in subscription event handlers \u2014 decouples access from pricing:\n\n```text\ncustomer.subscription.created/updated/deleted\n  \u2514\u2500 items[0].price.product \u2192 product_id\n  \u2514\u2500 status \u2192 active | past_due | canceled | ...\n```\n\nStore: `{ product_id, subscription_id, subscription_status, customer_id }`\n\n## Key Webhook Events\n\n| Event | Action |\n| --- | --- |\n| `checkout.session.completed` | Record identities; check payment and subscription state before initial access. For delayed methods, wait for the later success event. |\n| `checkout.session.async_payment_succeeded` | For delayed methods, recheck state and provision eligible access idempotently. |\n| `invoice.paid` | Renew access |\n| `invoice.payment_failed` | Notify + portal |\n| `customer.subscription.created` | Check subscription and payment or entitlement state before granting access; creation alone is insufficient. |\n| `customer.subscription.updated` | Adjust access level |\n| `customer.subscription.deleted` | Revoke access |",
+      "reason": "Correct the main Checkout step and the two unconditional access-grant rows together; preserve the invoice and revocation context and explicitly route delayed-payment success through a state check.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The Billing quickstart's active-status instruction is sample-specific; broader webhook and asynchronous payment guidance remains in [[stripe-checkout]].",
+        "The quickstart's event-handler snippets log events or leave handling calls commented; they do not implement provisioning."
+      ]
+    },
+    {
+      "update_id": "billing-quickstart-checkout-route",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "- [[source-stripe-checkout-build-subscriptions]] \u2014 End-to-end subscription integration: product catalog, Checkout Session, webhooks, portal",
+      "new_text": "- [[source-stripe-checkout-build-subscriptions]] \u2014 End-to-end subscription integration: product catalog, Checkout Session, webhooks, portal\n- [[source-stripe-checkout-subscriptions-quickstart]] \u2014 May and November 2026 hosted subscription sample; recurring Price lookup key, portal identity and active-status check",
+      "reason": "Add the reciprocal hosted Checkout sample route next to the existing subscription integration source.",
+      "quote_indexes": [
+        0,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-quickstart-entitlements-route",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)",
+      "new_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)\n- [[source-stripe-checkout-subscriptions-quickstart]] \u2014 Hosted subscription sample using active-entitlement summary events and list API for access",
+      "reason": "Add a reciprocal route for the quickstart's explicit feature-fulfillment example without repeating entitlement rules.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/quickstart, [[source-stripe-checkout-subscriptions-quickstart]] is the dated Stripe Billing plus hosted Checkout subscription sample. The 2026-11-07 capture has a recurring Price lookup key resolved server-side, a subscription-mode Session and hosted redirect, customer-matched portal Session, and post-payment `active` status check before access (new 25, 211\u2013245, 653\u2013665). The 2026-05-12 capture already has the core hosted flow and both Account/Customer choices (old 8\u201312, 36\u201378). The source corrects its old unqualified 'Full' React/Node label; documentation does not prove a real payment or paid renewal. Its November sample webhook branches log events or leave fulfillment calls commented (new 700\u2013741, 1005\u20131019), so the source does not assert implemented entitlement provisioning.",
+    "Q2": "For https://docs.stripe.com/billing/quickstart, [[source-stripe-checkout-subscriptions-quickstart]] now needs the explicit server-held inventory warning and active-status access qualification (new 221, 245), plus the November portal identity variants (new 17, 653\u2013665). May already named HTML/React and seven backend choices while retaining detailed React/Node code (old 3\u20134, 98\u2013285); November expands visible variants (new 65\u2013209, 427\u20131530), not proven new language support. The old Accounts v2 recommendation remains May-dated (old 12); November omission (new 17) is not a reversal. New duplicate code branches (620\u2013665) and May's incomplete portal excerpt (224\u2013229) prevent a copy-paste runnable claim. Interactive builder selection, account eligibility, asynchronous settlement, and production behavior remain unverified. The revised subscription concept also conditions its completion and creation event rows on payment/subscription or entitlement state and a delayed-payment success path; this is guidance, not execution verified by the sample."
+  },
+  "status": "candidate_ready"
+}

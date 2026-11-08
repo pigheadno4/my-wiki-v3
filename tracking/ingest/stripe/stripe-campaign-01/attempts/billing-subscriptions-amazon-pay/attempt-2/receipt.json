@@ -1,0 +1,107 @@
+{
+  "job_id": "billing-subscriptions-amazon-pay",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md",
+  "raw_sha256": "7849a9ab15a72a6e0bb28bfcbd4b82f5ac7bbecfaa60418a7b7d194517d03f83",
+  "prior_raw_path": "raw/stripe-subscriptions-amazon-pay-2026.md",
+  "prior_raw_sha256": "ea967cf2f72cc8482b190d08df393d7d83aae5223d3e5b9f97aeab89fc731acb",
+  "source_target": "wiki/sources/source-stripe-subscriptions-amazon-pay.md",
+  "source_before_sha256": "50b064042a66c2ee5fd46165718d3c5aa5c26fb513579a2000b69731caba6c1d",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-subscriptions-amazon-pay-2026.md": [
+      {
+        "start": 1,
+        "end": 342
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-amazon-pay.md": [
+      {
+        "start": 1,
+        "end": 68
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e8e3f5f56e7a1347a5afab42/content.diff": [
+      {
+        "start": 1,
+        "end": 345
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Set up a subscription with Amazon Pay",
+      "location": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md:5"
+    },
+    {
+      "text": "Learn how to create and charge for a subscription with Amazon Pay.",
+      "location": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Setup Intents API](https://docs.stripe.com/billing/subscriptions/amazon-pay.md?api-integration=setupintents)",
+      "location": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Payment Intents API](https://docs.stripe.com/billing/subscriptions/amazon-pay.md?api-integration=subscription)",
+      "location": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Create a SetupIntent on your server with [payment_method_types](https://docs.stripe.com/api/setup_intents/create.md#create_setup_intent-payment_method_types) set to `amazon_pay` and specify the Customer\u2019s ID and [usage=off_session](https://docs.stripe.com/api/setup_intents/create.md#create_setup_intent-usage) or `usage=on_session`.",
+      "location": "raw/stripe-subscriptions-amazon-pay-2026.md:54"
+    },
+    {
+      "text": "The PaymentIntent response includes the status `requires_action`, which indicates that your users must authenticate with Amazon Pay to complete the PaymentIntent. After a successful payment, the subscription becomes active and saves the payment method as the default payment method.",
+      "location": "raw/stripe-subscriptions-amazon-pay-2026.md:284"
+    },
+    {
+      "text": "Your customer must authorize you to use their Amazon account for future payments through Stripe Checkout.",
+      "location": "raw/stripe-subscriptions-amazon-pay-2026.md:312"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "At the pinned URL, the 2026-11-07 capture now has only a title, purpose and three variant links: Setup Intents API, Payment Intents API and Stripe-hosted page (new raw lines 5-15). It does not provide replacement parameter requirements, customer/account eligibility, payment states or a live success result.",
+    "The 2026-05-13 capture contains all three full variants (old raw lines 10-342). The diff removes their inline content and adds variant links. This is an observed presentation/navigation change, not evidence that Amazon Pay subscriptions or any path were deprecated.",
+    "The current source is grounded in the dated old capture (source lines 4-8 and 66-68) and keeps the three-path structure (lines 13-51). Do not replace that content with the index or add the new navigation-only raw as factual raw_files.",
+    "A correction to the current source is warranted independently of the new index: its general Key parameters at lines 55-56 say mandate_data and return_url are required for Amazon Pay without a path qualifier. The old SetupIntent/PaymentIntent API steps provide those values (old raw lines 56-70, 171-188 and 273-284), but the hosted Checkout variant instead shows a subscription-mode Checkout Session with success_url, price, quantity and payment_method_types plus customer authorization on the hosted path (old raw lines 310-342). Do not impose API-only parameter names on the hosted path.",
+    "The SetupIntents section and concept should not imply off_session is the only allowed SetupIntent usage: the old text explicitly permits usage=off_session or usage=on_session (old raw line 54), while its sample chooses off_session (old raw line 61). Preserve sample versus requirement.",
+    "The old PaymentIntents path has an internal wording/example discrepancy: its confirm-call prose says to set payment_method_types to amazon_pay (old raw line 271), while the adjacent POST example uses payment_method_data[type]=amazon_pay and does not show payment_method_types on that request (old raw lines 273-281). The current source line 37 follows the example. This is unresolved documentation inconsistency, not proof that the source's example is an invalid API call or that the 2026-11-07 variant index changed the confirm contract. Keep the subscription creation setting at old raw lines 259-263 separate from this confirm-call issue."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "The 2026-05-13 SetupIntents path requires a Stripe Customer for saving the Amazon Pay payment method for future use, creates a SetupIntent on the server and passes its client_secret to Stripe.js for buyer authorization; the example then creates a subscription with the resulting default PaymentMethod (old raw lines 34-70, 171-216).",
+    "The old PaymentIntents path creates a default_incomplete subscription with an invoice PaymentIntent, describes a server-side PaymentIntent confirm call, receives requires_action for Amazon authentication, and says the subscription activates and saves the method only after successful payment (old raw lines 242-284). Its confirm-call parameter prose and adjacent example disagree (old raw lines 271 and 273-281), so keep the method-name choice dated and unresolved.",
+    "The old hosted path uses a server-created Checkout Session in subscription mode, redirects to the returned URL, and requires the customer to authorize future payments using their Amazon account through Checkout (old raw lines 286-342). The documented test success moves the PaymentIntent from requires_action to succeeded; it is a test description, not a live transaction receipt.",
+    "The old guide's 15 USD monthly stock-photo subscription is an illustrative product and price, not a general Amazon Pay price, currency or billing interval requirement (old raw lines 20-32, 228-240 and 296-308)."
+  ],
+  "conflicts": [
+    "Current source lines 55-56 and concept lines 15-16/49-50 make mandate_data and return_url sound required for every flow. The old hosted Checkout variant at lines 310-342 uses a Checkout Session and customer authorization, with success_url rather than those API-path parameters. Source and concept should qualify requirements by integration path.",
+    "Current source line 19 and concept lines 17/27 frame usage=off_session as the SetupIntent path, whereas old raw line 54 allows off_session or on_session; old raw line 61 is an off_session example. Retain recurring off-session purpose without turning that example into universal requiredness.",
+    "The old SetupIntents text combines a server-side confirm=true sample (old raw lines 56-68) with a later client-side confirmAmazonPaySetup step (old raw lines 171-188). The capture does not resolve whether both confirmation calls belong in one runnable sequence; the current source line 19-20 should not promise that sequence succeeds as written.",
+    "The old PaymentIntents confirm prose says payment_method_types=amazon_pay (old raw line 271), but its adjacent POST example sends payment_method_data[type]=amazon_pay and does not show payment_method_types there (old raw lines 273-281). Current source line 37 follows the example. Treat this as an internal guide inconsistency, not a verified API correction; payment_settings.payment_method_types on subscription creation (old raw lines 259-263), SetupIntent payment_method_types (old raw lines 54/64), and Checkout Session payment_method_types (old raw lines 335-337) are distinct contexts."
+  ],
+  "unresolved_questions": [
+    "The three 2026-11-07 variant targets at new raw lines 13-15 were not fetched under this review-only order, so their current detailed behavior, version-specific parameters and availability are unverified.",
+    "No account eligibility, merchant setup, customer authorization completion, successful real payment, settlement or future billing outcome was tested or established by the captured index.",
+    "Which parameter wording is intended for the PaymentIntent confirm call is unresolved by this capture: old raw line 271 names payment_method_types, while the adjacent request at old raw lines 273-281 supplies payment_method_data[type]. The new variant index at lines 9-15 does not adjudicate the discrepancy."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-amazon-pay.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/amazon-pay, the complete 2026-11-07 capture establishes a subscription-with-Amazon-Pay purpose and three variant routes, but no detailed flow or outcome (new raw lines 5-15). The matched 2026-05-13 guide describes SetupIntents, PaymentIntents and hosted Checkout separately (old raw lines 10-342). Its API paths involve a Stripe Customer, product/price and Amazon authorization; PaymentIntent requires_action is not payment success, and subscription activation is conditional on successful payment (old raw lines 34-54, 242-284). [[source-stripe-subscriptions-amazon-pay]] summarizes those older paths and should remain tied to that dated capture. The old PaymentIntents confirm prose and request example disagree on the named Amazon Pay parameter (old raw lines 271 and 273-281), without resolving the API contract.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/amazon-pay, the observed change is navigation/rendering: new raw lines 9-15 link the three variants formerly inlined at old raw lines 10-342. No substantive deprecation or changed payment contract is shown. Preserve [[source-stripe-subscriptions-amazon-pay]] as historical guidance, including Checkout's hosted authorization (old raw lines 310-342) and the PaymentIntents requires_action versus successful-payment boundary (old raw line 284). Correct the source and reciprocal concept's unqualified mandate_data/return_url claims for Checkout, and distinguish the off_session sample from old raw line 54's on_session option. Flag that old raw line 271 names payment_method_types for confirm, whereas the adjacent POST example at lines 273-281 uses payment_method_data[type]; source line 37 follows that example. This inconsistency is unresolved, and the new index does not prove either parameter contract wrong. Current variant details, client/server execution and actual payment outcome remain unverified."
+  }
+}

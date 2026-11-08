@@ -1,0 +1,15 @@
+<!-- Source URL: https://docs.stripe.com/billing/subscriptions/twint -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Set up a subscription with TWINT
+
+Learn how to create and charge for a subscription with TWINT.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/twint.md?api-integration=checkout)
+- [Setup Intents API](https://docs.stripe.com/billing/subscriptions/twint.md?api-integration=setupintents)
+- [Subscriptions API](https://docs.stripe.com/billing/subscriptions/twint.md?api-integration=subscription)

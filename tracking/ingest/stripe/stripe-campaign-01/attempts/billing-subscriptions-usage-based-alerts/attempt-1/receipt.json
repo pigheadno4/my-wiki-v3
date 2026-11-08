@@ -1,0 +1,112 @@
+{
+  "job_id": "billing-subscriptions-usage-based-alerts",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-alerts-2026-11-07.md",
+  "raw_sha256": "752bb6e7791de08ba7d598c806e19c4a19c86f07f2f14367aa6f1241b3e05eb0",
+  "prior_raw_path": "raw/stripe-usage-based-billing-alerts-setup-2025.md",
+  "prior_raw_sha256": "b05e814ece9d2166fc329452490155bb719b00ee21ee9c584ae3ccbd9c809b4f",
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-alerts-setup.md",
+  "source_before_sha256": "8a26cabdac07649003d4335ac76fdc44afa3e69b6db1299925933dea14a15f3a",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-alerts-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 141
+      }
+    ],
+    "raw/stripe-usage-based-billing-alerts-setup-2025.md": [
+      {
+        "start": 1,
+        "end": 129
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-alerts-setup.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5def8c5acb4d8cfb6ff89f6d/content.diff": [
+      {
+        "start": 1,
+        "end": 196
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The new Usage Analytics API lets you build analytics dashboards for your end users. [Request to join the preview.]",
+      "location": "raw/stripe-billing-subscriptions-usage-based-alerts-2026-11-07.md:9"
+    },
+    {
+      "text": "Interested in getting early access to spend and credit balance alerts",
+      "location": "raw/stripe-billing-subscriptions-usage-based-alerts-2026-11-07.md:11"
+    },
+    {
+      "text": "You must [create a meter](https://docs.stripe.com/billing/subscriptions/usage-based/implementation-guide.md#create-meter) before you create an alert.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-alerts-2026-11-07.md:27"
+    },
+    {
+      "text": "only triggers one time per customer, regardless of future usage.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-alerts-2026-11-07.md:35"
+    },
+    {
+      "text": "We evaluate alerts when you report usage data after you create the alert. However, the evaluation includes usage data that you reported before you created the alert.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-alerts-2026-11-07.md:134"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The new Usage Analytics API lets you build analytics dashboards for your end users.",
+      "location": "raw/stripe-usage-based-billing-alerts-setup-2025.md:8"
+    },
+    {
+      "text": "You must [create a meter](https://docs.stripe.com/billing/subscriptions/usage-based/implementation-guide.md#create-meter) before you create an alert.",
+      "location": "raw/stripe-usage-based-billing-alerts-setup-2025.md:14"
+    },
+    {
+      "text": "Only triggers if it matches to at least one Stripe customer.",
+      "location": "raw/stripe-usage-based-billing-alerts-setup-2025.md:103"
+    },
+    {
+      "text": "We evaluate alerts when you report usage data after you create the alert. However, the evaluation includes usage data that you reported before you created the alert.",
+      "location": "raw/stripe-usage-based-billing-alerts-setup-2025.md:127"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November 2026 page at https://docs.stripe.com/billing/subscriptions/usage-based/alerts is a full 141-line usage alert guide, not a variant index. Its central behavior remains consistent with the May 2026 old capture: meter prerequisite; Dashboard/API alert creation for specific or all customers; one-time per-customer usage alert; billing.alert.triggered webhook; post-creation usage report evaluation including previously reported usage; max 25 alerts per meter/customer combination; no test-clock support (new lines 23\u201335, 39\u201360, 110\u2013136; old lines 10\u201322, 26\u201355, 101\u2013103, 127\u2013129).",
+    "The new material addition is an invitation to request preview access to the Usage Analytics API and early access to spend and credit balance alerts, including a registration curl example (new lines 9\u201321; old line 8 only mentions Usage Analytics). The registration snippet is documentation content, not evidence that access was granted or that spend/credit-balance alerts are generally available or usable through the usage-alert endpoint. No registration action was taken.",
+    "The new API code example is curl instead of old Node, but both sample the same billing alert endpoint/alert_type=usage_threshold, customer filter, meter, gte=100, recurrence=one_time (new lines 49\u201361; old lines 35\u201357). The customer filter is an example scope, whereas the Dashboard defaults to Any customer and permits Specific customer (new lines 39\u201347). Do not infer that all-customer alerts require a customer filter or that 100 API calls is a required threshold.",
+    "The new webhook handler example is Ruby instead of old Node (new lines 63\u2013118; old lines 59\u2013111). The narrative still tells the application to verify the signature (new line 67). The Ruby sample verifies only if STRIPE_WEBHOOK_SECRET is nonempty and otherwise constructs an event from unsigned JSON (new lines 80\u2013104); this branch must not be copied as proof of authenticated webhook delivery. billing.alert.triggered is the alert-specific event (new lines 110\u2013113), not a PaymentIntent status check despite the generic code comment at new line 105.",
+    "Threshold wording uses both 'exceeds' and 'reaches' in prose; the API example explicitly uses usage_threshold[gte]=100 (new lines 23, 33\u201335, 59). Preserve the configured gte comparator and one-time per-customer recurrence rather than asserting a strict >100 boundary. The alert is evaluated when usage is reported after creation, but that evaluation includes pre-creation usage data (new line 134), so 'retroactive' should not be read as an immediate event at creation.",
+    "The current source captures the meter prerequisite, example API, webhook, and test-clock limitation (source lines 13\u201344), but omits the 25-per-meter/customer limit and post-creation-report evaluation condition retained in both raw versions. The new preview invitations also warrant a dated source update with no claim of live account entitlement."
+  ],
+  "substantive_changes": [
+    "New preview-access documentation for Usage Analytics and early access to spend/credit-balance alerts (new lines 9\u201321 versus old line 8). This is a documented invitation, not an enabled alert capability.",
+    "No demonstrated change to the core one-time usage alert behavior, meter prerequisite, customer scoping, alert webhook, or limits (new lines 23\u2013136; old lines 10\u2013129). Node-to-curl alert API and Node-to-Ruby webhook examples are presentation/language changes (new lines 49\u2013118; old lines 35\u2013111)."
+  ],
+  "historical_claims_to_preserve": [
+    "The May 2026 one-time per-customer usage alert and meter prerequisite, with Dashboard all-customer or specific-customer selection and customer-filtered API example (old lines 10\u201355).",
+    "The May 2026 billing.alert.triggered event, signature-verification instruction, post-creation usage reporting trigger with prior data included, 25 meter/customer maximum, and test-clock incompatibility (old lines 59\u201363, 101\u2013103, 123\u2013129).",
+    "The distinction between usage alerts that notify and billing thresholds that can trigger invoices; the introductory sentence mentions both, but this page's procedure implements usage alerts (old lines 10\u201322; new lines 23\u201335)."
+  ],
+  "conflicts": [
+    "New line 105 says the webhook event type 'checks the status of PaymentIntents', but the branch at new lines 110\u2013113 is billing.alert.triggered for a meter alert. Do not restate the generic comment as this alert's semantic effect.",
+    "New Ruby sample lines 80\u2013104 parses unsigned JSON when STRIPE_WEBHOOK_SECRET is empty, whereas new line 67 directs signature verification. If a source summary discusses webhook authenticity, use the prose requirement and flag this sample fallback; do not recommend it as a secure production pattern.",
+    "Source line 19 and reciprocal wiki/concepts/stripe-usage-based-billing.md:142 say a customer 'first exceeds' threshold, while API sample uses gte=100 (new lines 35, 59). Keep prose tied to the configured gte threshold, and do not infer strict > rather than >=.",
+    "Source line 44 calls Usage Analytics merely mentioned; new line 9 offers preview access, while new lines 11\u201321 invite early access to distinct spend/credit-balance alerts. A source update should keep both preview/early-access qualifiers and avoid conflating them with the generally described meter usage alert.",
+    "Source line 42 retains test-clock limitation but omits the adjacent max-25 and post-creation usage-report condition (new lines 134\u2013136; old lines 127\u2013129). Reciprocal concept lines 139\u2013142 include these limits and should remain consistent if source wording changes."
+  ],
+  "unresolved_questions": [
+    "The invitation does not prove that a particular account received Usage Analytics preview access, or that spend and credit balance alerts are available. The page gives no schema or fulfillment behavior for those early-access alert types.",
+    "The page does not establish immediate alert firing at creation for historical usage; it only says a report after creation triggers evaluation that includes earlier reported usage."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/usage-based/alerts, the November capture establishes a meter prerequisite, Dashboard/API creation of one-time per-customer usage alerts, optional specific-customer scope, billing.alert.triggered notification, and limits (new lines 23\u201360, 110\u2013136). The older May guide behind [[source-stripe-usage-based-billing-alerts-setup]] describes the same behavior (old lines 10\u201355, 101\u2013129). Evaluation occurs when usage is reported after alert creation and includes previously reported usage; at most 25 alerts apply per meter/customer combination, and alerts do not work with test clocks (new lines 134\u2013136). The new preview invitations are access requests, not proof of entitlement (new lines 9\u201321).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/usage-based/alerts, the substantive documentation addition is preview request and early-access language for Usage Analytics and spend/credit-balance alerts (new lines 9\u201321; old line 8 mentioned Usage Analytics without an access link). [[source-stripe-usage-based-billing-alerts-setup]] should keep those dated qualifications and add the shared 25-alert limit and post-creation-report evaluation condition (new lines 134\u2013136; old lines 127\u2013129). The alert example changes from Node to curl and webhook example from Node to Ruby without changing the core usage-alert flow (new lines 49\u2013118; old lines 35\u2013111). The Ruby unsigned fallback conflicts with signature-verification prose, and gte=100 must not become a strict greater-than promise (new lines 59, 67, 80\u2013113)."
+  }
+}

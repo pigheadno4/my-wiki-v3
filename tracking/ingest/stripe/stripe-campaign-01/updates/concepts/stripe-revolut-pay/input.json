@@ -1,0 +1,135 @@
+{
+  "target_path": "wiki/concepts/stripe-revolut-pay.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-revolut-pay/base.md",
+  "base_sha256": "1dee5515794617c764485980c1ce92f079e3d5328c0997ad2164d05ec6e98504",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-revolut-pay::revolut-concept-overview-comparison",
+      "target_path": "wiki/concepts/stripe-revolut-pay.md",
+      "old_text": "Revolut Pay is a redirect-based payment method on Stripe. Customers authenticate via Revolut's app or web interface. Supports subscriptions via mandate authorization. Three integration paths identical in structure to Amazon Pay and Cash App Pay.",
+      "new_text": "Revolut Pay is a redirect-based payment method on Stripe. Customers authenticate via Revolut's app or web interface. The May 2026 subscription guide describes mandate authorization and three paths: SetupIntents API, direct Subscriptions API, and Stripe-hosted Checkout. The November 7 capture at https://docs.stripe.com/billing/subscriptions/revolut-pay is a variant index, not a new path-specific specification. See [[source-stripe-subscriptions-revolut-pay]].",
+      "reason": "Remove unsupported structural-identity comparison and date the available three-path evidence.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The November variant targets were not read; their current steps and eligibility are unverified."
+      ],
+      "original_update_id": "revolut-concept-overview-comparison",
+      "job_id": "billing-subscriptions-revolut-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/receipt.json",
+      "receipt_sha256": "066a3079523f6dab93fd0748d11ca90982158796b7c180f68cb0dd8c809e5445",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/candidate.md",
+      "source_candidate_sha256": "8a1a843f1ffd7fb02269a35324a487f8d95314c6e8e58de1f10684755c54d235",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-revolut-pay::revolut-concept-setup-intent-status",
+      "target_path": "wiki/concepts/stripe-revolut-pay.md",
+      "old_text": "Create SetupIntent \u2192 `confirm=true`, `usage=off_session`, `payment_method_data[type]=revolut_pay`, `mandate_data` \u2192 customer redirected to Revolut Pay \u2192 SetupIntent `succeeded` \u2192 create subscription with `default_payment_method` + **`off_session=true`**",
+      "new_text": "The May guide's SetupIntent-create example sets `confirm=true`, `usage=off_session`, Revolut Pay method fields, `mandate_data`, and `return_url`. It says to pass the SetupIntent `client_secret` to Stripe.js for buyer redirect and mandate authorization, then shows subscription creation with the returned PaymentMethod as `default_payment_method` and **`off_session=true`** on that SetupIntents-path subscription-create request. The passage does not explicitly verify a `succeeded` SetupIntent status. See [[source-stripe-subscriptions-revolut-pay]].",
+      "reason": "Remove unsupported definite SetupIntent status while retaining the correctly scoped off_session parameters.",
+      "quote_indexes": [],
+      "warnings": [
+        "The old test paragraph reports a PaymentIntent status, not a SetupIntent status."
+      ],
+      "original_update_id": "revolut-concept-setup-intent-status",
+      "job_id": "billing-subscriptions-revolut-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/receipt.json",
+      "receipt_sha256": "066a3079523f6dab93fd0748d11ca90982158796b7c180f68cb0dd8c809e5445",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/candidate.md",
+      "source_candidate_sha256": "8a1a843f1ffd7fb02269a35324a487f8d95314c6e8e58de1f10684755c54d235",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-revolut-pay::revolut-concept-direct-success",
+      "target_path": "wiki/concepts/stripe-revolut-pay.md",
+      "old_text": "Create subscription: `default_incomplete`, `save_default_payment_method='on_subscription'` \u2192 confirm PaymentIntent with `payment_method_data[type]=revolut_pay` + `mandate_data` + `return_url` \u2192 `requires_action` \u2192 customer authenticates \u2192 activates",
+      "new_text": "The May direct path creates a subscription with `default_incomplete` and `save_default_payment_method='on_subscription'`, then shows a PaymentIntent confirmation example with `payment_method_data[type]=revolut_pay`, `mandate_data`, and `return_url`. `requires_action` calls for customer authentication; the guide says the subscription becomes active and saves the default method **after successful payment**. See [[source-stripe-subscriptions-revolut-pay]].",
+      "reason": "Restore the successful-payment condition on activation.",
+      "quote_indexes": [],
+      "warnings": [
+        "The May prose and cURL disagree on the payment-method parameter used for confirmation."
+      ],
+      "original_update_id": "revolut-concept-direct-success",
+      "job_id": "billing-subscriptions-revolut-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/receipt.json",
+      "receipt_sha256": "066a3079523f6dab93fd0748d11ca90982158796b7c180f68cb0dd8c809e5445",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/candidate.md",
+      "source_candidate_sha256": "8a1a843f1ffd7fb02269a35324a487f8d95314c6e8e58de1f10684755c54d235",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-revolut-pay::revolut-concept-parameter-scope",
+      "target_path": "wiki/concepts/stripe-revolut-pay.md",
+      "old_text": "| `mandate_data` | Required \u2014 captures customer acceptance |\n| `return_url` | Required \u2014 redirect destination after auth |\n| `usage=off_session` | For recurring charges without customer present |\n| `off_session=true` | Required on subscription create (SetupIntents path) |",
+      "new_text": "| `mandate_data` | Shown for customer acceptance in the May SetupIntent-create and direct PaymentIntent-confirm examples; not shown explicitly in the Checkout sample |\n| `return_url` | Shown on those two direct API requests for redirect; not shown explicitly in the Checkout sample |\n| `usage=off_session` | Set on SetupIntent creation in the May SetupIntents path |\n| `off_session=true` | Required on subscription create (SetupIntents path) |\n\n> [!warning] Contradiction\n> The May direct-confirm prose says `payment_method_types=revolut_pay`, while its cURL example uses `payment_method_data[type]=revolut_pay`. The provided capture does not resolve which exact request to run. See [[source-stripe-subscriptions-revolut-pay]].",
+      "reason": "Narrow overbroad global requirements while preserving correct SetupIntents-path off_session scope; expose the prose/sample discrepancy.",
+      "quote_indexes": [],
+      "warnings": [
+        "A field omitted from the Checkout example is not necessarily prohibited or defaulted."
+      ],
+      "original_update_id": "revolut-concept-parameter-scope",
+      "job_id": "billing-subscriptions-revolut-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/receipt.json",
+      "receipt_sha256": "066a3079523f6dab93fd0748d11ca90982158796b7c180f68cb0dd8c809e5445",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/candidate.md",
+      "source_candidate_sha256": "8a1a843f1ffd7fb02269a35324a487f8d95314c6e8e58de1f10684755c54d235",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-revolut-pay::revolut-concept-unsupported-comparison",
+      "target_path": "wiki/concepts/stripe-revolut-pay.md",
+      "old_text": "## vs Amazon Pay / Cash App Pay\n\nStructurally identical 3-path integration. See [[stripe-amazon-pay]] and [[stripe-cash-app-pay]] for comparison.",
+      "new_text": "## Related payment methods\n\nSee [[stripe-amazon-pay]] and [[stripe-cash-app-pay]] for their separately sourced integration guides. The Revolut Pay captures alone do not establish structural identity.",
+      "reason": "Remove unsupported comparison while retaining navigation.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "revolut-concept-unsupported-comparison",
+      "job_id": "billing-subscriptions-revolut-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/receipt.json",
+      "receipt_sha256": "066a3079523f6dab93fd0748d11ca90982158796b7c180f68cb0dd8c809e5445",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/candidate.md",
+      "source_candidate_sha256": "8a1a843f1ffd7fb02269a35324a487f8d95314c6e8e58de1f10684755c54d235",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-revolut-pay::revolut-concept-source-label",
+      "target_path": "wiki/concepts/stripe-revolut-pay.md",
+      "old_text": "- [[source-stripe-subscriptions-revolut-pay]] \u2014 Stripe docs: Revolut Pay subscription integration (3 paths: SetupIntents, Subscriptions API, Checkout)",
+      "new_text": "- [[source-stripe-subscriptions-revolut-pay]] \u2014 May 2026 full three-path Revolut Pay guide, plus November 2026 variant-index navigation; path details remain dated May evidence",
+      "reason": "Qualify reciprocal source route to separate factual guide from navigation-only index.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "revolut-concept-source-label",
+      "job_id": "billing-subscriptions-revolut-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/receipt.json",
+      "receipt_sha256": "066a3079523f6dab93fd0748d11ca90982158796b7c180f68cb0dd8c809e5445",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/candidate.md",
+      "source_candidate_sha256": "8a1a843f1ffd7fb02269a35324a487f8d95314c6e8e58de1f10684755c54d235",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-revolut-pay/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-revolut-pay::revolut-concept-overview-comparison",
+    "billing-subscriptions-revolut-pay::revolut-concept-setup-intent-status",
+    "billing-subscriptions-revolut-pay::revolut-concept-direct-success",
+    "billing-subscriptions-revolut-pay::revolut-concept-parameter-scope",
+    "billing-subscriptions-revolut-pay::revolut-concept-unsupported-comparison",
+    "billing-subscriptions-revolut-pay::revolut-concept-source-label"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-revolut-pay/auto-candidate.md",
+  "auto_candidate_sha256": "6848cb487530301b1a0ea00381e3afa9ae16c9338e083084d7fe38f6f824b4ca",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-revolut-pay-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-revolut-pay-concept-review.json"
+}

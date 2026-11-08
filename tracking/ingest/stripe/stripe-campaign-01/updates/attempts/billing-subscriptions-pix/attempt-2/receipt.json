@@ -1,0 +1,197 @@
+{
+  "job_id": "billing-subscriptions-pix",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-pix-2026-11-07.md",
+  "raw_sha256": "77415ef8a2881643bcb38823c6987bfbc8df88afe3151b3f8f5e9f9394dbc973",
+  "source_before_sha256": "555b089b100688e996ad1744e5b6cc6cf20f62ce2e30e2eb0c893d9d161f20d0",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up Pix Subscription\"\ntype: source\ndate_ingested: 2026-11-08\ncanonical_url: https://docs.stripe.com/billing/subscriptions/pix\noriginal_format: webpage\nraw_files:\n  - \"stripe-subscriptions-pix-2026.md\"\ntags: [stripe, billing, subscriptions, pix, pix-automatico, brazil, brl, mandate, qr-code, setup-intents]\n---\n\n## Summary\n\nThe 2026-11-07 capture of this canonical URL is a 15-line navigation index pointing to Stripe-hosted Checkout, Setup Intents API, and Subscriptions API variants. It contains no current variant instructions. The 2026-05-13 full combined capture describes Pix Autom\u00e1tico customer-authorized mandates and three distinct subscription flows below. Treat those instructions as dated evidence, not as verified present-day request schemas, eligibility or payment outcomes. Its 20 BRL monthly stock-photo price is an example, not a universal BRL-only rule.\n\n## Pix Autom\u00e1tico and Mandate Scope \u2014 May 2026 Capture\n\nPix Autom\u00e1tico uses a customer-authorized mandate for recurring charges. The older Checkout and SetupIntent examples include `mandate_options.amount` and `payment_schedule`; the older Subscriptions API prose expressly makes mandate options optional and its example supplies `amount` without `payment_schedule`. Thus these examples do not prove both fields are universally required for all Pix subscription requests. The hosted guide suggests setting an amount above the current price to accommodate a possible future upgrade without returning on-session, but an increase above the mandate amount might fail, and Stripe says it cannot see a customer-set limit. A stricter mandate schedule than a changed subscription interval can also make recurring payments fail.\n\nThe old guide models customer identity with `customer_account` for customer-configured Accounts v2 or `customer` for Customers v1. Its May text says Accounts v2 was generally available for Connect and in public preview for other Stripe users, with a preview-version condition. This historical example is not a current eligibility determination. The guide's live example says a Brazilian Pix-enabled bank account is needed to complete or cancel that flow; it does not establish a universal account, country or currency eligibility rule.\n\n## Three Integration Paths \u2014 May 2026 Capture\n\n**Stripe-hosted Checkout**: Create a `mode: 'subscription'` Checkout Session with Pix and mandate options, then redirect to its URL. In that variant's prose, banking-app mandate authorization leads to subscription activation and later automatic invoice charges. The captured example uses `amount: 2000` and `payment_schedule: 'monthly'`; do not generalize those values to a required schema.\n\n**Setup Intents API**: Create a Pix SetupIntent for a Customer or customer-configured Account, use `stripe.confirmPixSetup` and its return URL, and verify SetupIntent status on the return page. `succeeded` means setup authorization and a PaymentMethod attached to the Customer; the SetupIntent itself makes no initial payment. Create a subscription with that PaymentMethod as `default_payment_method` afterward. The old guide says the subscription becomes Active after successful payment, not merely when the setup QR is scanned.\n\n**Subscriptions API**: Create an initially `incomplete` Subscription with `payment_behavior: 'default_incomplete'` and `save_default_payment_method: 'on_subscription'`; mandate options are optional in this variant's prose. The response includes the first Invoice's PaymentIntent and confirmation secret. Use `stripe.confirmPixPayment` on the client and verify PaymentIntent status on return. The old guide describes active subscription and saved default payment method after successful payment. QR display or redirect alone is not proof of success.\n\n## Customer Details, QR and Testing \u2014 May 2026 Capture\n\nThe SetupIntents and Subscriptions API example forms mark name, email and `tax_id` inputs required. Their tables say the Brazilian government requires CPF/CNPJ when buyers complete **cross-border transactions**; the captured guide does not establish a government tax-ID requirement for every Pix subscription or buyer. `000.000.000-00` is a test identifier only. For manual QR display, the SetupIntent and PaymentIntent examples use `handleActions: false` and expose `next_action.pix_display_qr_code` data, image URLs, expiry and hosted instructions. The six email patterns simulate approval, expiry and recurring failure or success in a testing environment; their timings are not production promises.\n\n## Revocation, Changes and Failure \u2014 May 2026 Capture\n\nA customer can revoke the mandate in the banking app; the guide says Stripe sends `mandate.updated` and instructs the integration to bring the customer on-session for a replacement mandate. Increasing the subscription above the mandate amount might fail, and a more frequent new billing cycle than the mandate permits causes recurring failures in the old guide. Its scheme restriction allows charging a Pix payment method only once per specified mandate cycle; an add-on requiring immediate payment uses a separate on-session, one-time payment. It describes retry exhaustion and Customer Portal or one-time-payment recovery options. These are dated historical limits; the November index does not confirm their present-day status.\n\n> [!warning] Contradiction\n> The former source summary treated `mandate_options.amount` and `payment_schedule` as universally required, CPF/CNPJ as universally government-required, and a QR scan as sufficient to activate the direct API subscription. The May guide itself says Subscriptions API mandate options are optional, limits the stated government tax-ID rule to cross-border transactions, and requires successful payment for direct API activation. The November index has no variant bodies to resolve current requirements.\n\n## Related raw API references\n\n- [[raw/stripe-billing-subscriptions-pix-2026-11-07]] \u2014 2026-11-07 navigation-only index (15 lines); it is not factual provenance for the older flow\n- [Stripe-hosted page variant](https://docs.stripe.com/billing/subscriptions/pix.md?api-integration=checkout) \u2014 linked by the index; body unread in this comparison\n- [Setup Intents API variant](https://docs.stripe.com/billing/subscriptions/pix.md?api-integration=setupintents) \u2014 linked by the index; body unread in this comparison\n- [Subscriptions API variant](https://docs.stripe.com/billing/subscriptions/pix.md?api-integration=subscription) \u2014 linked by the index; body unread in this comparison\n\n## Related pages\n\n- [[stripe-pix]] \u2014 concept page\n- [[stripe-subscriptions]] \u2014 concept page\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-subscriptions-pix-2026]] \u2014 2026-05-13 combined guide (1059 lines)\n",
+  "quotes": [
+    {
+      "text": "# Set up a subscription with Pix",
+      "location": "raw/stripe-billing-subscriptions-pix-2026-11-07.md:5"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-pix-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/pix.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-pix-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Setup Intents API](https://docs.stripe.com/billing/subscriptions/pix.md?api-integration=setupintents)",
+      "location": "raw/stripe-billing-subscriptions-pix-2026-11-07.md:14"
+    },
+    {
+      "text": "- [Subscriptions API](https://docs.stripe.com/billing/subscriptions/pix.md?api-integration=subscription)",
+      "location": "raw/stripe-billing-subscriptions-pix-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Pix subscriptions use [Pix Autom\u00e1tico](https://docs.stripe.com/payments/pix/pix-automatico.md) to create a customer-authorized mandate for automatic recurring charges.",
+      "location": "raw/stripe-subscriptions-pix-2026.md:8"
+    },
+    {
+      "text": "Optionally, provide the [Pix Autom\u00e1tico mandate options](https://docs.stripe.com/payments/pix/pix-automatico.md#pix-automtico-customization).",
+      "location": "raw/stripe-subscriptions-pix-2026.md:692"
+    },
+    {
+      "text": "The Brazilian government requires that buyers provide a tax identifier (CPF or CNPJ) when completing cross-border transactions.",
+      "location": "raw/stripe-subscriptions-pix-2026.md:323"
+    },
+    {
+      "text": "After a successful payment, the subscription becomes active and saves the payment method as the default payment method.",
+      "location": "raw/stripe-subscriptions-pix-2026.md:924"
+    },
+    {
+      "text": "Due to scheme restrictions, you can only charge a Pix payment method once per cycle specified in",
+      "location": "raw/stripe-subscriptions-pix-2026.md:1056"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-pix-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-subscriptions-pix-2026.md": [
+      {
+        "start": 1,
+        "end": 1059
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-pix.md": [
+      {
+        "start": 1,
+        "end": 92
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8e2752de96676b2b50aeb569/content.diff": [
+      {
+        "start": 1,
+        "end": 1062
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "pix-concept-eligibility-boundary",
+      "target_path": "wiki/concepts/stripe-pix.md",
+      "old_text": "Pix is Brazil's instant payment system. On Stripe, Pix subscriptions use **Pix Autom\u00e1tico** \u2014 a customer-authorized mandate that enables automatic recurring charges without requiring customer action for each payment. Brazil only, BRL currency only.",
+      "new_text": "Pix is Brazil's instant payment system. The 2026-05-13 Stripe Pix subscription guide uses **Pix Autom\u00e1tico**, a customer-authorized mandate for recurring charges, and illustrates a 20 BRL monthly price. It says a Brazilian Pix-enabled bank account is needed for its live example. These captures do not establish universal merchant, country or currency eligibility; the 2026-11-07 page is only a variant index. See [[source-stripe-subscriptions-pix]].",
+      "reason": "Remove unsupported universal Brazil/BRL eligibility from this matched guide while retaining the Brazil/Pix identity and dated example boundary.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Separate authority may establish eligibility; this matched pair does not."
+      ]
+    },
+    {
+      "update_id": "pix-concept-mandate-scope",
+      "target_path": "wiki/concepts/stripe-pix.md",
+      "old_text": "Pix Autom\u00e1tico is a mandate-based extension of Pix for recurring payments. The customer scans a QR code once in their banking app to authorize the mandate. All subsequent subscription charges happen automatically.\n\n**Key fields**:\n- `payment_method_options.pix.mandate_options.amount` \u2014 maximum amount that can be charged per period. Can be set higher than current price to allow future upgrades without re-authorization.\n- `payment_method_options.pix.mandate_options.payment_schedule` \u2014 `monthly`, `weekly`, etc.",
+      "new_text": "Pix Autom\u00e1tico is a mandate-based extension of Pix for recurring payments. The customer authorizes a mandate in their banking app; later charges can be automatic within the mandate's conditions, but can fail or the mandate can be revoked.\n\n**Example mandate fields (2026-05-13 guide)**:\n- `payment_method_options.pix.mandate_options.amount` \u2014 the example's mandate amount. A higher amount may accommodate a future upgrade without returning on-session, but charges above the mandate or a customer-set limit can fail.\n- `payment_method_options.pix.mandate_options.payment_schedule` \u2014 the example's monthly schedule; a more frequent new billing interval can fail. The older direct Subscriptions API prose makes mandate options optional and its example omits this field. Pix charging is limited to once per specified mandate cycle in that guide.",
+      "reason": "Qualify automatic charges, upgrade suggestion and example fields by mandate conditions and variant; retain material dated scheme limits.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "The November index does not verify current mandate schemas or scheme restrictions."
+      ]
+    },
+    {
+      "update_id": "pix-concept-tax-scope",
+      "target_path": "wiki/concepts/stripe-pix.md",
+      "old_text": "## Required customer fields\n\n| Field | Requirement |\n|---|---|\n| `name` | Full name of account holder |\n| `email` | Email address |\n| `tax_id` | CPF (individual) or CNPJ (business) \u2014 required by Brazilian government |",
+      "new_text": "## Customer fields in the May 2026 example forms\n\n| Field | Example form input |\n|---|---|\n| `name` | Full name; marked required in the SetupIntents and Subscriptions API example forms |\n| `email` | Email; marked required in those example forms |\n| `tax_id` | CPF (individual) or CNPJ (business); marked required in those example forms. The guide states a government requirement for cross-border transactions, not every Pix buyer. |",
+      "reason": "Preserve example form requirements while narrowing the government rule to the captured cross-border condition.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "No current variant body was read; the index alone cannot establish a universal tax-ID rule."
+      ]
+    },
+    {
+      "update_id": "pix-concept-path-outcomes",
+      "target_path": "wiki/concepts/stripe-pix.md",
+      "old_text": "SetupIntent \u2192 `stripe.confirmPixSetup(clientSecret, { payment_method: { billing_details: { name, email, tax_id } }, return_url })` \u2192 customer scans QR \u2192 `succeeded` \u2192 create subscription with `default_payment_method`.",
+      "new_text": "In the 2026-05-13 SetupIntents example, `stripe.confirmPixSetup` and banking-app authorization can make the **SetupIntent** `succeeded` and attach its PaymentMethod; this is setup without an initial payment. Create a subscription with that `default_payment_method` and check its separate payment outcome. The return page verifies SetupIntent status, not invoice payment.",
+      "reason": "Keep setup success distinct from subscription payment success and avoid QR scan as a standalone proof.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "These are dated May guide steps; current variant body unread."
+      ]
+    },
+    {
+      "update_id": "pix-concept-direct-outcome",
+      "target_path": "wiki/concepts/stripe-pix.md",
+      "old_text": "Create subscription with `default_incomplete` + mandate options \u2192 display QR \u2192 customer scans \u2192 activates.",
+      "new_text": "In the 2026-05-13 Subscriptions API example, create an initially `incomplete` subscription with `default_incomplete`; mandate options are optional in that variant's prose. Confirm the first-invoice PaymentIntent with Pix and verify its status on return. The guide describes activation and saving the default PaymentMethod **after successful payment**, not from displaying or scanning the QR alone.",
+      "reason": "Correct the direct API activation condition and universal mandate-options implication.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The November index provides no current payment-result semantics."
+      ]
+    },
+    {
+      "update_id": "pix-concept-source-route",
+      "target_path": "wiki/concepts/stripe-pix.md",
+      "old_text": "- [[source-stripe-subscriptions-pix]] \u2014 Stripe docs: Pix subscription guide (Checkout + SetupIntents + Subscriptions API, Pix Autom\u00e1tico, 6 test email patterns)",
+      "new_text": "- [[source-stripe-subscriptions-pix]] \u2014 2026-11-07 Pix subscription variant index and retained 2026-05-13 combined Checkout, SetupIntents and Subscriptions API guide; mandate, payment and sandbox conditions are dated\n\n> [!warning] Contradiction\n> Earlier concept wording treated both mandate options as universal requirements, CPF/CNPJ as universally government-required, and a QR scan as sufficient for direct API activation. The May guide itself says direct API mandate options are optional, limits the stated tax-ID rule to cross-border transactions, and activates after successful payment. The November index does not resolve current variant rules; see [[source-stripe-subscriptions-pix]].",
+      "reason": "Provide the reciprocal route and a dated contradiction warning for the source/concept overclaims.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The three current variant bodies were not included in this approved comparison."
+      ]
+    },
+    {
+      "update_id": "pix-subscriptions-concept-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-pix]] \u2014 Pix subscription (Brazil/BRL): Pix Autom\u00e1tico mandate, 3 paths, tax_id required, mandate_options.amount tip, 6 email test scenarios",
+      "new_text": "- [[source-stripe-subscriptions-pix]] \u2014 Pix subscription: November variant index; May combined guide covers three mandate-based paths, cross-border tax-ID statement, setup versus payment outcomes and six sandbox email patterns",
+      "reason": "Remove the unsupported universal country/currency and tax-ID assertions from the reciprocal subscription source entry.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not infer present-day eligibility or variant behavior from the navigation index."
+      ]
+    },
+    {
+      "update_id": "pix-concept-checkout-example-date",
+      "target_path": "wiki/concepts/stripe-pix.md",
+      "old_text": "## Subscription integration paths\n\n### Checkout",
+      "new_text": "## Subscription integration paths\n\n### Checkout \u2014 2026-05-13 guide example\n\nThe 2026-11-07 page only links to a Checkout variant; its request body is unread in this comparison. The code below is the retained May example, not a verified current recipe.",
+      "reason": "Date the remaining unqualified Checkout request code and state the November index's navigation-only boundary without changing the historical example.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Current Checkout variant fields and requirements were not verified by this four-file comparison."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/pix, the 2026-11-07 capture is a 15-line index linking three variants: Stripe-hosted Checkout, Setup Intents API, and Subscriptions API (new lines 5-15). It supplies no current mandate fields, tax rules, payment outcomes or eligibility. The retained 2026-05-13 combined guide (1059 lines) describes Pix Autom\u00e1tico mandates and those three flows: the SetupIntent path authorizes a payment method without initial payment (old 192-198,474,531-577), while direct Subscriptions API confirmation requires a successful PaymentIntent/payment before the guide calls the subscription active (old 688-692,905-924). [[source-stripe-subscriptions-pix]] now separates navigation from dated behavior, and its raw route supports the detailed May examples.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/pix, the observed change is presentation: a former 1059-line combined guide became a 15-line navigation index with three variant URLs (new 9-15; old 10-14,122-126,618-622). [[source-stripe-subscriptions-pix]] retains May behavior as dated evidence and corrects the previous source's unsupported universal claims: the old direct API prose calls mandate options optional and its example omits payment_schedule (old 692,701-750); the old tax-ID tables state a government requirement for cross-border transactions, though example forms mark inputs required (old 317-337,764-784); and QR display or scanning alone does not show payment success (old 458-474,905-924). The old guide also warns of revocation, above-mandate or stricter-schedule failures, and one Pix charge per mandate cycle (old 983-985,1020-1059). The Checkout code in [[stripe-pix]] is explicitly dated to the 2026-05-13 guide rather than presented as a currently verified recipe. The November variant bodies were not part of this comparison, so current eligibility, schema, and outcomes remain unresolved."
+  },
+  "status": "candidate_ready"
+}

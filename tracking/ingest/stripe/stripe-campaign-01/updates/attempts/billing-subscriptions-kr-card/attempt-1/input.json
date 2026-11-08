@@ -1,0 +1,95 @@
+{
+  "job_id": "billing-subscriptions-kr-card",
+  "queue_id": 33,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/kr-card",
+  "raw_path": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md",
+  "raw_sha256": "1dc7d2740476923df10de728371ff0d1c06d20415c8d4b0e666776b6cc0cddea",
+  "prior_raw_path": "raw/stripe-subscriptions-kr-card-2026.md",
+  "prior_raw_sha256": "30161d44e2bf35d9a24d2c5b8e40811d057c7bf4698e9579bf81d611d05427a4",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/f37ad6257496eac3422e3be8/content.diff",
+  "diff_sha256": "eec949be60abc4b98dd6fcc50a8770e81c22774fcd2d112ac628cc93229a57b4",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-kr-card.md"
+  ],
+  "source_before_sha256": "ed7777da50139594ad01cda0de8914801111cfba0942776a9d181f3ee0c8e31c",
+  "section": "billing",
+  "new_words": 54,
+  "new_lines": 13,
+  "old_words": 1785,
+  "old_lines": 214,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-kr-card.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-kr-card/attempt-1/receipt.json",
+  "receipt_sha256": "e5a707ccb5971b3f857569713308845a38ab4868abcf6bd85495a3cca1acef9e",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-kr-card/attempt-1/review.json",
+  "review_sha256": "d4b745c5d834c3b6c9ff44b83f9724c887f9ead88bdadacfbc0540ac88a3b8d2",
+  "affected_concepts": [
+    "wiki/concepts/stripe-korea-payment-methods.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md",
+  "new_raw_sha256": "1dc7d2740476923df10de728371ff0d1c06d20415c8d4b0e666776b6cc0cddea",
+  "prior_raw": "raw/stripe-subscriptions-kr-card-2026.md",
+  "findings": [
+    "The same URL's November capture contains only title and three variant links (new 5-13), replacing a May capture that rendered all three detailed variants (old 4-214). This is an upstream variant-index rendering change. It does not establish removal, deprecation, changed eligibility, or changed behavior for SetupIntents, Subscriptions API, or hosted Checkout. The new index is navigation-only and should not be added as a factual raw_files source.",
+    "The May SetupIntents variant creates/confirms a SetupIntent to save a payment method, passes its client_secret to Stripe.js for local-processor authorization, then creates a subscription with the resulting default_payment_method (old 8-56). Its example includes usage=off_session, mandate_data, and subscription off_session:true (old 38-72), but the captured prose does not call all example fields universal requirements. The current source lines 19-20 make that unsupported leap.",
+    "The May SetupIntents variant contains a prose inconsistency: its opening claims the first call creates a Subscription and PaymentIntent (old 12), whereas the actual heading, command and following explanation create a SetupIntent before the subscription call (old 34-56). Summarize the concrete path with the inconsistency noted, rather than treating the opening sentence as a proven sequence.",
+    "The May Subscriptions API variant creates a subscription with payment_behavior=default_incomplete and save_default_payment_method=on_subscription in the shown example, expands latest_invoice.payments and confirmation_secret, then confirms a PaymentIntent; requires_action means local-processor authentication remains (old 115-156). Do not collapse this path into the SetupIntent path or infer payment success from requires_action.",
+    "The May hosted Checkout variant asks the customer to authorize future use, creates a subscription-mode Checkout Session with card and kr_card in the sample, and tests a successful redirect/authentication transition from requires_action to succeeded (old 158-214). The 100,000 KRW monthly price is explicitly a stock-photo-service example (old 168-180), while the SetupIntents section states KRW conversion for the method (old 32).",
+    "May confirmation prose says set payment_method_types to kr_card in both direct-confirm paths (old 79, 143), but the SetupIntents confirm command instead contains payment_method_data[]=type and payment_method_data[]=kr_card (old 81-87), and the Subscriptions confirm command sets payment_method_data[type]=kr_card with mandate_data (old 145-154). These snippets cannot establish a single required confirmation parameter; preserve the discrepancy as a source warning.",
+    "Current source line 13 claims 'same structure as Revolut Pay' without support in either assigned capture, and line 20 says mandate_data required without limiting it to the depicted calls. The concept's source route at wiki/concepts/stripe-korea-payment-methods.md:141 repeats the blanket off_session+mandate_data requirement. A narrow correction is warranted despite no substantive November behavior update."
+  ],
+  "substantive_changes": [],
+  "conflicts": [
+    "Current source lines 19-20 and wiki/concepts/stripe-korea-payment-methods.md:141 say off_session=true and mandate_data are required generally. Old raw shows them in path-specific examples only (old 38-49, 63-72, 145-154), and hosted Checkout's sample lacks those parameters (old 199-210). Narrow to the depicted paths; the November index cannot arbitrate API requiredness.",
+    "Old raw line 12 describes a first Subscriptions API call in the SetupIntents section, while old lines 34-56 show an initial SetupIntent call. Old raw lines 79/143 also name payment_method_types in prose while their respective confirm commands use payment_method_data fields (old 81-87, 145-154). Do not silently resolve either discrepancy into a new behavioral rule.",
+    "Current source line 13 says 'same structure as Revolut Pay' but that comparison is unsupported by the assigned KR card captures. Remove or separately source it; it is not evidence of interchangeable payment-method requirements.",
+    "Current source line 36 presents SetupIntent succeeded before subscription creation as an unconditional transition, while old raw lines 52-56 explain client redirect and later subscription creation without an explicit SetupIntent status guarantee in this passage. Preserve the redirect and authorization step without inventing that status outcome."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve May's three integration variants and their distinct examples as dated 2026-05-13 evidence (old 8-89, 91-156, 158-214); November's index-only capture supplies routing, not replacement behavioral evidence (new 9-13).",
+    "Preserve the May KRW requirement from the SetupIntents section and its successful-payment/active outcome qualification, without promoting the example's 100,000 KRW amount or every command parameter to universal requirements (old 18-32, 75-89, 168-180).",
+    "Retain the May source's client/server separation and local processor authentication boundary: server creates/sets up objects, Stripe.js client redirect authorizes the mandate, and requires_action is not payment success (old 34-52, 77-89, 115-156)."
+  ],
+  "unresolved_questions": [
+    "The navigation-only November capture does not show the current contents of its three query-parameter variant targets. Their current instructions and eligibility need separately pinned variant captures before updating behavior claims.",
+    "The old SetupIntents opening/steps and payment_method_types prose versus command discrepancies remain unresolved within the pinned old capture; this review cannot decide exact API requiredness from examples alone.",
+    "The capture does not verify live account eligibility, local-processor authentication completion, recurring payment success, or that every South Korean method shares these parameters."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw1",
+  "reviewer_agent": "/root/s01ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-kr-card-2026-11-07.md",
+      "sha256": "1dc7d2740476923df10de728371ff0d1c06d20415c8d4b0e666776b6cc0cddea",
+      "lines": 13
+    },
+    {
+      "path": "raw/stripe-subscriptions-kr-card-2026.md",
+      "sha256": "30161d44e2bf35d9a24d2c5b8e40811d057c7bf4698e9579bf81d611d05427a4",
+      "lines": 214
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-kr-card.md",
+      "sha256": "ed7777da50139594ad01cda0de8914801111cfba0942776a9d181f3ee0c8e31c",
+      "lines": 59
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/f37ad6257496eac3422e3be8/content.diff",
+      "sha256": "eec949be60abc4b98dd6fcc50a8770e81c22774fcd2d112ac628cc93229a57b4",
+      "lines": 218
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-kr-card-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-kr-card-review.json"
+}

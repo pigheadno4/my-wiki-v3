@@ -138,9 +138,12 @@ PaymentSheet release notes announce PAYCO, Korean cards, Naver Pay and Kakao Pay
 - [[source-stripe-korea-payment-methods]] — South Korea overview: local processor model, payment methods, installments, refunds, disputes, subscription rules
 - [[source-stripe-kr-card-accept-payment]] — KR card integration: kr_card, 100 KRW minimum, NICEPAY disclosure required, confirmPayment(), redirect flow
 - [[source-stripe-kr-card-set-up-future-payments]] — KR card save/recurring: Accounts v2 + v1, confirmKrCardSetup(), setup_future_usage, automatic capture only for recurring
-- [[source-stripe-subscriptions-kr-card]] — KR card subscription: KRW-only, 3 paths (SetupIntents/Subscriptions API/Checkout), off_session+mandate_data required, local processor redirect
-- [[source-stripe-subscriptions-kakao-pay]] — Kakao Pay subscription: identical structure to KR card, kakao_pay PM type, KRW-only
-- [[source-stripe-subscriptions-naver-pay]] — Naver Pay subscription: identical structure, naver_pay PM type, KRW-only
+- [[source-stripe-subscriptions-kr-card]] — KR card subscriptions (May 2026 detailed variants; November 2026 variant index): KRW pricing, SetupIntents, direct Subscriptions API, and hosted Checkout paths; path-specific mandate and off-session examples
+
+> [!warning] Contradiction
+> The May SetupIntents opening describes a first Subscriptions API call, while its steps begin with a SetupIntent. Its confirmation prose names `payment_method_types` while the commands use `payment_method_data`. Neither the examples nor the November index establish universal `off_session` or `mandate_data` requirements across all three paths. See the dated [[source-stripe-subscriptions-kr-card]].
+- [[source-stripe-subscriptions-kakao-pay]] — Kakao Pay subscription: 2026-05-13 full guide with SetupIntents, Subscriptions API, and Checkout variants and a dated KRW instruction; 2026-11-07 capture is a three-link variant index only. The comparison with KR card is limited to the three-path organization.
+- [[source-stripe-subscriptions-naver-pay]] — Naver Pay subscription: 2026-05-13 full guide with SetupIntents, Subscriptions API, and Checkout variants plus a dated KRW instruction; 2026-11-07 capture is a three-link variant index only. Comparison with the other Korean guides here is limited to three-path organization.
 - [[source-stripe-kakao-pay-accept-payment]] — Kakao Pay integration: kakao_pay, buyer email required, 100 KRW min/2M KRW stored value max, not in SG, NICEPAY disclosure
 - [[source-stripe-kakao-pay-set-up-future-payments]] — Kakao Pay save/recurring: Accounts v2 + v1, confirmKakaoPaySetup(), NICEPAY account authorization, automatic capture only
 - [[source-stripe-naver-pay-accept-payment]] — Naver Pay integration: naver_pay, funding source card/points, 28 countries (incl. SG), NICEPAY disclosure, branding guidelines

@@ -1,0 +1,99 @@
+{
+  "job_id": "billing-subscriptions-kakao-pay",
+  "queue_id": 31,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/kakao-pay",
+  "raw_path": "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md",
+  "raw_sha256": "f3f026488524b421894e1d10c6b9a259871ed6ea0d834c0422094a63ddeb0c69",
+  "prior_raw_path": "raw/stripe-subscriptions-kakao-pay-2026.md",
+  "prior_raw_sha256": "3d36d95362986f4f8704884fb05308f137c9014dbcc39358e0f987d0203d4ebf",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/6d25eda53fbf3e740e4e984d/content.diff",
+  "diff_sha256": "df86208d181fc7d7645ff0cf5970fcf68b0596136a0f68a83ba05b729bdee928",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-kakao-pay.md"
+  ],
+  "source_before_sha256": "abe796b76e77f1f8e33cf44ab89775598ffdcb53edacaffe2f9be370db1e09e1",
+  "section": "billing",
+  "new_words": 52,
+  "new_lines": 13,
+  "old_words": 1773,
+  "old_lines": 217,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-kakao-pay.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-kakao-pay/attempt-2/receipt.json",
+  "receipt_sha256": "0f0904382d80ec00c3b3cbc46688bfcea632dde628299a3e09209f101b72e599",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-kakao-pay/attempt-2/review.json",
+  "review_sha256": "db979810d35d816eb307a30e4004c2826a1a6644366f1508c815e6622715795b",
+  "affected_concepts": [
+    "wiki/concepts/stripe-korea-payment-methods.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md",
+  "new_raw_sha256": "f3f026488524b421894e1d10c6b9a259871ed6ea0d834c0422094a63ddeb0c69",
+  "prior_raw": "raw/stripe-subscriptions-kakao-pay-2026.md",
+  "findings": [
+    "The 2026-11-07 capture at the same canonical URL is an index, not a full Kakao Pay subscription guide: it identifies three variant links, SetupIntents API, Subscriptions API and Stripe-hosted page (new 5-13). It contains no parameter contract, payment state, currency rule or deprecation statement. The omission of the old detailed content does not prove that a path or requirement was removed; the three linked variant URLs were not read and must serve as navigation only.",
+    "The 2026-05-13 full capture remains the behavioral evidence for those three paths (old 8-89 SetupIntents-labeled section, 91-159 Subscriptions API, 161-217 Checkout). Preserve it as dated evidence in the existing source, and add the new index only as a dated navigation reference rather than replacing the old guide or treating its index text as an API specification.",
+    "Current source 13 says the paths share off_session=true and mandate_data requirements, source 19-20 marks these as requirements, and source 26 presents usage=off_session in a path summary. The May guide shows usage=off_session in its SetupIntent-create example at old 43, off_session=true in the SetupIntent-path subscription-create example at old 71, and mandate_data in SetupIntent-create at old 47-49 and direct PaymentIntent-confirm at old 153-156. These are path- and request-specific examples; the guide does not separately establish either off_session setting as universal for every SetupIntent-path implementation. Its Checkout sample at old 185-213 does not show those fields. Narrow the source claims accordingly, without inferring a prohibition or default from absent sample fields.",
+    "The old SetupIntents-labeled section has internal prose/example tension: line 12 describes the first call as Subscriptions API creation of a Subscription and PaymentIntent, but lines 34-52 show a SetupIntent first, followed by subscription creation at 54-73. Do not turn that prose into the path's definitive sequence. Old 79 and 146 say to set payment_method_types on PaymentIntent confirmation, while their sample commands show different payment_method_data forms at 81-87 and 148-157; old 81-87 also has unusual array-shaped payment_method_data parameters. Flag these as unresolved guide inconsistencies, not verified runnable requests.",
+    "Old 18-32 uses a 100,000 KRW monthly example and expressly says to convert prices to KRW for this payment method; the new index gives no currency statement. Current source's KRW claim can be retained as dated old-guide evidence, but the new index does not independently confirm present account eligibility or all possible currency behavior. The old successful-payment-to-Active prose (old 75, 89, 159) is conditional and does not establish successful live payment, final settlement, or that an Active subscription alone proves payment success.",
+    "The route through wiki/index.md to wiki/stripe-index.md and wiki/concepts/stripe-korea-payment-methods.md already points to the existing source. Source 13 and 39 and the Korea concept source-list label at concept 142 assert 'identical structure to KR card'; the Kakao captures support only the observed three-path organization, not identical parameters or eligibility. Narrow those comparisons to three-path organization unless a separately read KR-card source proves more. A reciprocal summary should label the old full guide's date and the new index's navigation-only purpose.",
+    "Source 30 compresses the direct path's requires_action, customer authentication and activation into an unconditional arrow. Old 159 says the subscription becomes active and saves the default payment method after a successful payment; old 89 gives the same success condition in the SetupIntents-labeled path. Revise source 30 to preserve successful payment after required customer authentication. Neither requires_action nor an authentication attempt alone establishes payment success, and the new index reports no transaction outcome."
+  ],
+  "substantive_changes": [
+    "No Kakao Pay subscription API or payment-behavior change is established by the new 13-line capture; it is a variant index with three target URLs (new 7-13).",
+    "The existing source needs factual corrections independent of that navigation change: source 13/19-20/26 generalize path-specific off_session, usage and mandate_data examples (old 38-73, 120-159, 185-213); source 30 omits the successful-payment condition before Active (old 89, 159); source 13/39 and concept 142 overstate the KR-card comparison beyond the observed three-path organization."
+  ],
+  "conflicts": [
+    "Current source 13 and 19-20 generalize off_session=true and mandate_data to all three paths, while source 26 risks making usage=off_session universal within the SetupIntent path. The May guide shows usage=off_session at old 43 and off_session=true at old 71 as separate request examples; Checkout at old 185-213 does not show them. No universal requirement for every SetupIntent-path implementation follows from those examples.",
+    "Source 30's unconditional requires_action \u2192 customer authenticates \u2192 activates arrow loses the successful-payment condition explicitly stated at old 159 (also old 89). The new variant index contains no payment outcome.",
+    "Source 13/39 and concept 142 say Kakao Pay is identical in structure to KR card. The Kakao captures establish three path labels, not identity of parameter or eligibility rules; narrow to three-path organization absent separately read KR-card proof.",
+    "Old SetupIntents-labeled prose at 12 describes a Subscription/PaymentIntent-first path, while the same section's concrete steps at 34-73 begin with a SetupIntent. The new index offers no resolution.",
+    "Old PaymentIntent-confirm prose at 79 and 146 calls for payment_method_types, but the shown commands at 81-87 and 148-157 use payment_method_data-shaped fields; no request was executed."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the old 2026-05-13 three-path guide, including its KRW statement, SetupIntent and Subscription examples, requires_action/authentication condition, and Checkout subscription-mode example, with their original path and date qualifications (old 8-217).",
+    "Keep old-guide prose/sample tensions visible rather than silently resolving them: SetupIntents section line 12 versus 34-73, and PaymentIntent-confirm wording at 79/146 versus sample parameters at 81-87/148-157.",
+    "The old guide's success-to-Active statements are conditional documentation: requires_action calls for customer completion or authentication, then only after successful payment does the subscription become active and save the default method (old 75, 89, 159). This is not proof that a specific payment completed, mandate was authorized, or future recurring payment will succeed."
+  ],
+  "unresolved_questions": [
+    "The three 2026-11-07 variant target URLs were not read, so their current parameters, currency eligibility, client/server sequence, states and payment outcomes remain unverified by this assigned index capture.",
+    "The old guide's internal SetupIntent sequence and confirm-request parameter inconsistencies require separate path-specific authority before any runnable implementation claim.",
+    "Neither capture demonstrates a merchant's Kakao Pay eligibility, a successful live authorization, settlement, or recurring payment."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw5",
+  "reviewer_agent": "/root/s01ur6",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md",
+      "sha256": "f3f026488524b421894e1d10c6b9a259871ed6ea0d834c0422094a63ddeb0c69",
+      "lines": 13
+    },
+    {
+      "path": "raw/stripe-subscriptions-kakao-pay-2026.md",
+      "sha256": "3d36d95362986f4f8704884fb05308f137c9014dbcc39358e0f987d0203d4ebf",
+      "lines": 217
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-kakao-pay.md",
+      "sha256": "abe796b76e77f1f8e33cf44ab89775598ffdcb53edacaffe2f9be370db1e09e1",
+      "lines": 45
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/6d25eda53fbf3e740e4e984d/content.diff",
+      "sha256": "df86208d181fc7d7645ff0cf5970fcf68b0596136a0f68a83ba05b729bdee928",
+      "lines": 221
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-kakao-pay-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-kakao-pay-review.json"
+}

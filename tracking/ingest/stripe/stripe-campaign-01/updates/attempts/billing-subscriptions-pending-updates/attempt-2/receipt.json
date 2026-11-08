@@ -1,0 +1,184 @@
+{
+  "job_id": "billing-subscriptions-pending-updates",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-pending-updates-2026-11-07.md",
+  "raw_sha256": "5e795f4f6b65173a68b6eea5b954152d85eedea8dd610120bdddf7793d1c6c55",
+  "source_before_sha256": "9c0e56ae9bc9f421b6ca064af876c2363b272fce36548626d07e6977791379ed",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Pending Updates\"\ntype: source\ndate_ingested: 2026-11-08\ncanonical_url: https://docs.stripe.com/billing/subscriptions/pending-updates\noriginal_format: webpage\nraw_files:\n  - \"stripe-billing-subscriptions-pending-updates-2026-11-07.md\"\n  - \"stripe-subscriptions-pending-updates-2026.md\"\ntags: [stripe, billing, subscriptions, pending-updates, payment-failure, webhooks]\n---\n\n## Summary\n\nStripe's pending updates normally defer an invoice-generating subscription change until payment succeeds. The November 7, 2026 capture states an exception: when a resumption attempt moves a paused subscription to `active` or `past_due`, Stripe applies a matching pending update even if payment fails. A populated `pending_update` means changes have not applied yet; it does not alone establish payment failure. This is documentation behavior, not proof of an individual account's eligibility or payment outcome.\n\n> [!warning] Contradiction\n> The May 13 capture describes payment success as an unconditional gate and a populated `pending_update` as failed payment. The November 7 capture qualifies both claims with the paused-subscription resumption exception and possible Billing with Payment Records processing. Use the invoice outcome and the applied event for dependent actions.\n\n## When an update generates an invoice\n\nThe November guide lists first payment (for example trial end), a changed billing period, and a proration with `proration_behavior=always_invoice` as invoice triggers. Many other changes apply immediately without a `pending_update`; if no invoice is created, Stripe makes no payment attempt. Examples include payment-method, tax, and retry configuration, billing threshold adjustments, and setting `cancel_at_period_end=true`.\n\n`add_invoice_items` alone, when no other part of the update independently creates an invoice, is in that non-invoicing group. In classic billing mode, `proration_behavior=always_invoice` creates an invoice, so that combination is excluded from the non-invoicing example. In flexible mode, the one-time charges remain pending even with `always_invoice`. Pending invoice items and the subscription's `pending_update` are distinct.\n\nThe May capture also names metadata changes and coupons or promotion codes for future invoices as examples of changes without a new invoice. Its November successor omits those examples from this section but lists metadata and discount fields among supported pending-update attributes. The list alone does not establish that a standalone change to one of these fields generates an invoice or pending update.\n\n## Default behavior, prerequisites, and request\n\nBy default, Stripe applies subscription updates regardless of payment outcome on the new invoice; rollback after failure is manual. With `payment_behavior=pending_if_incomplete`, the payment gate normally applies, subject to the paused-resumption exception above. The guide requires `collection_method=charge_automatically` and a payment method on its supported list. That documentation list is not evidence every method is enabled for a particular account or customer.\n\nSet `payment_behavior=pending_if_incomplete` on update subscription, create subscription item, or update subscription item calls. The May capture shows a Node.js update example; the November capture renders a cURL example. Both use `proration_behavior=always_invoice` for an invoice-generating price change. The change of example format does not establish removal of Node.js support.\n\n```js\n// May 13, 2026 documentation example, abbreviated\nstripe.subscriptions.update(subId, {\n  payment_behavior: 'pending_if_incomplete',\n  proration_behavior: 'always_invoice',\n  items: [{ id: subItemId, price: newPriceId }]\n})\n```\n\n## Observe and resolve a pending update\n\nThe returned Subscription object might not yet reflect an applied update. A failed card payment is one example in which it contains `pending_update`, including `expires_at`. More generally, a populated hash means the update has not applied yet, not necessarily that payment failed. Billing with Payment Records might still be processing a reported payment, so inspect payment outcome on the invoice before handling it as failure.\n\nFor a card decline, attach a new payment method and pay the generated invoice with the invoice pay endpoint. For required customer authentication, follow the `requires_action` flow. A successful payment marks the invoice `paid` and causes Stripe to apply the change. With Billing and Payment Records, those steps might finish in different API requests. Wait for `customer.subscription.pending_update_applied` before provisioning or other dependent actions. On repeated payment failure, the pending update retains its original expiry.\n\nStripe suspends invoices scheduled by `pending_invoice_item_interval` while `pending_update` is populated. Interval invoicing resumes after application, cancellation, or expiry.\n\n## Cancel or replace\n\nVoid the invoice identified by `subscription.latest_invoice` to cancel a pending update. Updating a subscription with replacement values voids the previous invoice and creates a new invoice. Successful payment applies the most recent values; failure produces a new pending update and expiration.\n\n## Supported attributes\n\nThe November guide lists these for the update-subscription endpoint: `expand`, `payment_behavior`, `proration_behavior`, `proration_date`, `billing_cycle_anchor`, `items` (`price`, `quantity`, `discounts`), `trial_end`, `trial_from_plan`, `metadata`, `discounts`, `cancel_at_period_end`, `coupon`, `promotion_code`, and `add_invoice_items`. Create/update subscription item supports `expand`, `payment_behavior`, `proration_behavior`, `proration_date`, `price`, `quantity`, and `discounts`. These are endpoint-specific lists in the pending-updates guide, not a claim that every standalone field change invoices or is held pending. Configuration changes are non-invoicing examples above.\n\n## Expiration and automatic removal\n\nThe `expires_at` time is the first trial end or earliest subscription-item current-period end if one falls within 23 hours of the update request; otherwise it is 23 hours after the request. The May prose spells this `expired_at`, while its JSON example and the November prose use `expires_at`.\n\nStripe also voids the invoice and removes the pending update if a billing threshold is reached or a linked subscription schedule enters a new phase. A later update with `billing_cycle_anchor`, a nonempty `items` list, `trial_end`, or `trial_from_plan=true` removes it even when values match. Conflicting discount or cancellation updates can also remove it: `discounts`, legacy `coupon` or `promotion_code`, `cancel_at_period_end`, or `cancel_at`. For discount conflicts, Stripe compares discount IDs and order; resubmitting even the same coupon or promotion code creates a new discount, while reusing the same discount IDs in the same order does not conflict.\n\n## Events and schedules\n\nThe same event names apply to Customer objects and customer-configured Account objects: `customer.subscription.updated` to inspect changes, `customer.subscription.pending_update_applied` to confirm application before dependent actions, and `customer.subscription.pending_update_expired` for expiry or automatic void. A schedule phase change discards the pending update and voids its invoice; retry after that transition if needed.\n\n## Metered usage and existing invoice items\n\nThe pending-update invoice bills outstanding metered usage. If the pending update expires unpaid, that usage is discarded and is not billed on later invoices. Usage reported between creation of a pending update that removes a metered price and payment of its invoice is also disregarded; the November guide qualifies that flexible billing charges usage when removing the metered price.\n\nExisting pending invoice items have separate inclusion rules. In flexible mode, update invoices normally include eligible pending items, but `payment_behavior=pending_if_incomplete` excludes pre-existing pending items, even on billing-cycle-anchor reset, leaving them pending. In classic mode, anchor-reset invoices include eligible pending items; other `always_invoice` update invoices exclude them when the update itself produces invoice items such as prorations.\n\n## Related pages\n\n- [[stripe-subscriptions-pending-updates]] \u2014 concept page\n- [[stripe-subscriptions-prorations]] \u2014 proration behavior options\n- [[stripe-subscriptions]] \u2014 concept page\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[stripe-billing-subscriptions-pending-updates-2026-11-07]] \u2014 Stripe guide captured November 7, 2026\n- [[stripe-subscriptions-pending-updates-2026]] \u2014 Stripe guide captured May 13, 2026\n",
+  "quotes": [
+    {
+      "text": "With pending updates, changes normally only apply if payment on the resulting invoice succeeds. However, when a resumption attempt moves a paused subscription to `active` or `past_due`, Stripe applies a matching pending update even if the payment doesn\u2019t succeed.",
+      "location": "raw/stripe-billing-subscriptions-pending-updates-2026-11-07.md:28"
+    },
+    {
+      "text": "A populated `pending_update` hash means your subscription update isn\u2019t applied yet. It doesn\u2019t always mean that the payment failed.",
+      "location": "raw/stripe-billing-subscriptions-pending-updates-2026-11-07.md:95"
+    },
+    {
+      "text": "If you use Billing with Payment Records, invoice payment and application of the subscription changes might not complete in the same API request.",
+      "location": "raw/stripe-billing-subscriptions-pending-updates-2026-11-07.md:102"
+    },
+    {
+      "text": "- `metadata`\n- `discounts`\n- `cancel_at_period_end`\n- `coupon`\n- `promotion_code`\n- `add_invoice_items`",
+      "location": "raw/stripe-billing-subscriptions-pending-updates-2026-11-07.md:131-136"
+    },
+    {
+      "text": "- A later subscription update includes `billing_cycle_anchor`, a nonempty `items` list, `trial_end`, or `trial_from_plan=true`. These parameters remove the existing pending update, even if their values match the pending changes.",
+      "location": "raw/stripe-billing-subscriptions-pending-updates-2026-11-07.md:159"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "A populated `pending_update` hash means the payment failed and your subscription update isn\u2019t applied.",
+      "location": "raw/stripe-subscriptions-pending-updates-2026.md:104"
+    },
+    {
+      "text": "A successful payment immediately applies the changes in the `pending_update` hash and updates the invoice to `paid`.",
+      "location": "raw/stripe-subscriptions-pending-updates-2026.md:111"
+    },
+    {
+      "text": "- Metadata updates on subscriptions or subscription items\n- Adding or updating coupons or promotion codes that apply to future invoices",
+      "location": "raw/stripe-subscriptions-pending-updates-2026.md:17-18"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-pending-updates-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 188
+      }
+    ],
+    "raw/stripe-subscriptions-pending-updates-2026.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 181
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-pending-updates.md": [
+      {
+        "start": 1,
+        "end": 94
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d53da8e57f683108956b326c/content.diff": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 135
+      },
+      {
+        "start": 136,
+        "end": 179
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "pending-updates-payment-gate",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "Pending updates is a Stripe feature that makes subscription changes conditional on successful payment. Without it, Stripe applies changes regardless of whether the new invoice pays \u2014 rollback on failure is a manual process. With pending updates, changes are held in a `pending_update` hash until the invoice succeeds or expires.\n\n## When to use\n\nUse pending updates for any invoice-generating subscription change where you want the update to only apply if payment succeeds.",
+      "new_text": "Pending updates normally hold an invoice-generating subscription change until payment succeeds. Without them, Stripe applies changes regardless of whether the new invoice pays, and rollback after failure is manual. A populated `pending_update` means the change has not yet applied. The November 7, 2026 guide states an exception: a resumption attempt that moves a paused subscription to `active` or `past_due` applies a matching pending update even if payment fails. See [[source-stripe-subscriptions-pending-updates]] and https://docs.stripe.com/billing/subscriptions/pending-updates.\n\n> [!warning] Contradiction\n> The May 13 guide described payment success as an unconditional gate; the November guide adds the paused-resumption exception and clarifies that a populated `pending_update` is not itself proof of payment failure.\n\n## When to use\n\nUse pending updates for invoice-generating subscription changes whose application should normally wait for payment, subject to that paused-resumption exception.",
+      "reason": "Qualify unconditional payment-gate statements and retain dated contradiction.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "The guide does not establish any individual account's eligibility."
+      ]
+    },
+    {
+      "update_id": "pending-updates-async-application",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "- **Payment succeeds**: subscription updated immediately, invoice marked `paid`\n- **Payment fails**: `pending_update` hash on subscription holds changes; subscription unchanged",
+      "new_text": "- **Payment succeeds**: invoice becomes `paid` and Stripe applies the changes; with Billing and Payment Records these may finish in separate API requests. Use `customer.subscription.pending_update_applied` before dependent provisioning.\n- **`pending_update` populated**: changes have not applied yet. Check invoice payment outcome before treating this as a failure; a reported payment might still be processing.",
+      "reason": "Remove failed-payment inference and same-request timing guarantee.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Payment Records can be asynchronous; the guide does not say every application is delayed."
+      ]
+    },
+    {
+      "update_id": "pending-updates-supported-attributes",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "Only attributes that control proration or generate invoices: `items` (price, quantity), `trial_end`, `trial_from_plan`, `billing_cycle_anchor`, `proration_behavior`, `proration_date`, `add_invoice_items`. Config and metadata attributes are NOT supported.",
+      "new_text": "The update-subscription list includes `items` (price, quantity, discounts), trial and billing-cycle fields, proration fields, `add_invoice_items`, `metadata`, `discounts`, `cancel_at_period_end`, `coupon`, and `promotion_code`; subscription-item create/update also list `discounts`. This list does not mean every standalone field change invoices or becomes a pending update. The November guide still lists configuration changes as non-invoicing examples. For `add_invoice_items`, classic `always_invoice` can create an invoice while flexible mode leaves charges pending even with that setting. See [[source-stripe-subscriptions-pending-updates]] and https://docs.stripe.com/billing/subscriptions/pending-updates.",
+      "reason": "Correct unsupported metadata/discount assertion and qualify invoice triggers by mode.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not infer that metadata or discount-only updates independently create an invoice."
+      ]
+    },
+    {
+      "update_id": "pending-updates-auto-void",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "Auto-voided (update discarded) if: billing threshold hit, or subscription schedule phase transition.",
+      "new_text": "Auto-voided (update discarded) on billing threshold or schedule phase transition. A later update with `billing_cycle_anchor`, nonempty `items`, `trial_end`, or `trial_from_plan=true` also removes the pending update, as can conflicting discount or cancellation changes. Stripe compares discount IDs and order for those conflicts. See [[source-stripe-subscriptions-pending-updates]].",
+      "reason": "Add newly documented later-update removal triggers without treating every discount change as a conflict.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The source has more detailed discount ID and order rules."
+      ]
+    },
+    {
+      "update_id": "pending-updates-invoice-item-separation",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "- Exception: `billing_mode=flexible` bills usage when removing a metered price regardless",
+      "new_text": "- Exception: `billing_mode=flexible` bills usage when removing a metered price regardless\n\nExisting pending invoice items are separate from metered-usage loss and from the subscription's `pending_update`. The November guide says flexible-mode update invoices normally include eligible pending items, but `pending_if_incomplete` excludes pre-existing items, even on anchor reset. Classic anchor-reset invoices include eligible pending items; other `always_invoice` update invoices exclude them when the update itself produces invoice items. See [[source-stripe-subscriptions-pending-updates]].",
+      "reason": "Keep metered warning while distinguishing newly documented pending-invoice-item rules.",
+      "quote_indexes": [],
+      "warnings": [
+        "Do not generalize these invoice-item rules across billing modes."
+      ]
+    },
+    {
+      "update_id": "pending-updates-applied-event-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "| `customer.subscription.pending_update_applied` | Provision/deprovision services after successful payment |",
+      "new_text": "| `customer.subscription.pending_update_applied` | Confirm the pending update was applied before dependent provisioning or deprovisioning; the paused-resumption exception can apply it even if payment fails |",
+      "reason": "The event signals application of the pending update, not payment success in every case; paused-subscription resumption to active or past_due is an explicit failed-payment exception.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Check invoice payment outcome separately; this webhook row must not imply successful payment for every application."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 guide at https://docs.stripe.com/billing/subscriptions/pending-updates and [[source-stripe-subscriptions-pending-updates]] says an invoice-generating update with `pending_if_incomplete` normally waits for successful payment, but a paused-subscription resumption to `active` or `past_due` applies a matching pending update even if payment fails (new 26\u201328). The May 13 capture stated the payment gate without this exception (old 25); the source and concept now state the qualification. The `customer.subscription.pending_update_applied` event confirms application for dependent provisioning, including the paused-resumption exception; it does not itself guarantee payment success (new 28, 170).",
+    "Q2": "The November 7 guide at https://docs.stripe.com/billing/subscriptions/pending-updates and [[source-stripe-subscriptions-pending-updates]] says populated `pending_update` means not yet applied, not necessarily failed; Payment Records may still process payment and invoice payment and application can finish separately (new 95, 102). May said populated meant failed and application was immediate (old 104, 111). The revised source also covers classic/flexible `add_invoice_items`, supported fields, interval-invoice suspension, later-update voiding, and existing pending invoice items (new 20, 106, 131\u2013147, 159\u2013161, 183\u2013188), without claiming standalone metadata or discounts generate an invoice."
+  },
+  "status": "candidate_ready"
+}

@@ -1,0 +1,107 @@
+{
+  "job_id": "billing-subscriptions-import-subscriptions-toolkit",
+  "queue_id": 30,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/import-subscriptions-toolkit",
+  "raw_path": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md",
+  "raw_sha256": "72dbd05cc01e4f453f1c8693859cf716fb6883800c419cfa5eae823b0e790431",
+  "prior_raw_path": "raw/stripe-subscriptions-migration-toolkit-2026.md",
+  "prior_raw_sha256": "9462737e1abeefcba2d06e9947a6f7cc2d67c940483fe2e3a60f1b7e8887109f",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/d8d1b9c1bb09c3fc52444264/content.diff",
+  "diff_sha256": "5f08661692440fba820a270ef870a7552233637d7a7560f46e262d2ea9294f16",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-migration-toolkit.md"
+  ],
+  "source_before_sha256": "474e460df13e652b01497ee8fb17097a0e5c0be6e54b999e6d31c5876573c3e1",
+  "section": "billing",
+  "new_words": 7823,
+  "new_lines": 514,
+  "old_words": 6882,
+  "old_lines": 459,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-migration-toolkit.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-2/receipt.json",
+  "receipt_sha256": "43762dfd68ad6d46b2a2c951f347b697f3fc20c8224ae602ebc01f7d3ae1217f",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-2/review.json",
+  "review_sha256": "bc83043b1abbc8a249abb1f4bf6c881e7a92f38f84bb0f5ffce3e9c5fe476bf6",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md",
+    "wiki/concepts/stripe-subscriptions-schedules.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md",
+  "new_raw_sha256": "72dbd05cc01e4f453f1c8693859cf716fb6883800c419cfa5eae823b0e790431",
+  "prior_raw": "raw/stripe-subscriptions-migration-toolkit-2026.md",
+  "findings": [
+    "The 2026-11-07 page documents CSV upload for creating scheduled Stripe subscriptions from third-party, home-grown, or another Stripe account data; the toolkit does not itself move payments or prove collection. Set up Billing first; payments-data/PAN import is only required when moving from another processor; third-party/home-grown operators create Stripe subscriptions before canceling old ones, then cancel before the old charge (new raw:9-20).",
+    "The three CSV alternatives remain Basic, multi-price items, and recurring ad-hoc pricing. The base identity is a destination Stripe Customer ID and a future start_date; choose a recurring price, items.x.price, or ad-hoc amount/product/interval/currency for the applicable template, not all three simultaneously (new raw:34-50,75-84,107-116,476-490). start_date is at least 24 hours ahead, or 1 hour in sandbox; backdate_start_date must be past and requires proration_behavior none (new raw:49,60,481,500).",
+    "A material same-URL correction changes the toolkit-specific omitted/blank proration_behavior default from old create_prorations (old raw:52,77,111,449) to new none (new raw:57,89,127,497). Explicit create_prorations remains the documented choice for a past-due unpaid-cycle example to create a prorated invoice and enter dunning if still unpaid (new raw:377-383). This is not the general Subscription Schedule API default.",
+    "New Advanced settings leave 'Allow subscriptions without a default payment source' unchecked by default, blocking charge_automatically rows lacking a customer default; send_invoice rows are exempt, with email and days_until_due required for that route (new raw:153-163,465-467,498,502). Opting in permits import but leaves invoices unable to collect at billing time. Missing-source validation adds a processing_error type and Dashboard/API repair path, including invoice_settings[default_payment_method], before revised upload (new raw:238-286). An attached method that is not default can be selected without creating a new one.",
+    "New text clarifies add_invoice_items.0.amount/product/currency are optional one-time extras, separate from recurring adhoc_items. Omit all three for recurring-only import; copying the recurring amount creates a second charge (new raw:63-67,95-99,133-137,504-510). Both dated captures' Basic add-on example says 20 USD in prose (old raw:255; new raw:316) but gives 50 in the add_invoice_items.0.amount CSV row (old raw:260; new raw:320). The new specification defines that field as a separate one-time amount in major currency units (new raw:504); the sample row is not a verified runnable 20 USD template, and operators must reconcile the intended amount before copying 50. This unchanged mismatch is separate from the valid 9.99+9.99=19.98 illustration at new raw:510, itself before taxes, discounts, or credits.",
+    "The 2026-05-12 external-tax example said blank automatic_tax and default_tax_rate fields would automatically follow the Billing integration's tax workflow once subscriptions went live (old raw:362-366). The 2026-11-07 same-URL guidance explicitly contradicts that automatic-follow claim: blank fields do not enable automatic tax for future invoices; a configured third-party tax app plus automatic_tax=true is the documented future-invoice route, and installing or selecting the app alone is insufficient (new raw:412-416,493). Keep this toolkit-scoped and dated; no actual tax calculation or account configuration was observed.",
+    "The existing source still accurately dates and summarizes the 120 MB CSV limit, 24-hour schedule buffer/1-hour sandbox exception, and 10-hour toolkit cancellation window (source:4-7,13,25-40; new raw:149,187-202,220-225). It omits the new toolkit default, validation exception, optional one-time field meaning, and tax clarification, so a coordinator-approved update is warranted while preserving the 2026-05-12 raw."
+  ],
+  "substantive_changes": [
+    "Toolkit-specific omitted or blank proration_behavior now defaults to none, reversing the old page's create_prorations statement (old raw:449; new raw:497). Explicit create_prorations is still available for the unpaid-cycle example (new raw:377-383).",
+    "Added default payment source validation with default unchecked allow-missing option, charge_automatically-only blocking, send_invoice exception, missing-source error and repair workflow; allowing missing sources permits subscription import but collection fails later if no default is set (new raw:153-163,248-286).",
+    "Added explicit one-time add_invoice_items triad to Basic and full CSV specification, with recurring-only omission rule and double-charge example (new raw:63-67,504-510). The old and new Basic sample's 20 USD prose versus 50 amount row is an unchanged internal error, not a new pricing behavior (old raw:255,260; new raw:316,320).",
+    "Reversed the older external-tax example's automatic-follow inference: blank automatic_tax and default_tax_rate no longer enable future automatic tax; a configured third-party tax app requires automatic_tax=true on the migrated subscription in the new guidance (old raw:362-366; new raw:412-416).",
+    "Changed a prior PAN-specific prerequisite label to payments data import while retaining the conditional other-processor requirement (old raw:14; new raw:15); added explicit default-source prerequisite and ordered migration timing (new raw:16-20)."
+  ],
+  "conflicts": [
+    "Old raw:52,77,111,449 explicitly says toolkit proration_behavior defaults to create_prorations; new raw:57,89,127,497 says omitted/blank defaults to none. Any retained old-source or concept mention of the older default needs a dated reciprocal warning. The schedule concept:35-42 also says top-level/per-phase schedule proration settings default to create_prorations; that concerns different API settings and must not be used to override the toolkit CSV default.",
+    "New CSV prerequisites:461 says all customers need a default payment method, but new validation section:155-161 limits the check to charge_automatically, exempts send_invoice, and permits an explicit opt-out that imports without successful collection. Interpret the blanket table wording in that scoped context; do not claim every send_invoice migration is blocked.",
+    "New raw:14 points to the build-subscriptions base page, whose same-day capture is only a variant index in the assigned campaign. That link is navigation, not proof that a Billing integration was set up or that any specific UI/SDK flow worked.",
+    "New raw:350-354 says set start_date to the current renewal date and charge immediately, while new raw:49,481 and error row:251 require future 24-hour start_date (1 hour in sandbox). Treat the January 1 examples/timestamps as illustrative historical dates and retain the current upload-time buffer prerequisite; do not promise immediate same-day migration.",
+    "New raw:54-59 and 498 describes send_invoice as marking the subscription active, but invoice sending and active subscription creation do not establish that an invoice was paid. The automatic collection path only attempts payment and must be monitored (new raw:197-202).",
+    "Old raw:362-366 claimed blank tax columns would automatically follow the configured integration after go-live; new raw:412-416 says blanks do not enable future automatic tax and sets the configured third-party tax app plus automatic_tax=true condition. Date and warn on both sides rather than carrying forward the old automatic-follow assertion or claiming observed tax calculation.",
+    "The Basic add-on example contradicts itself in both captures: its prose says a 20 USD fee (old raw:255; new raw:316), but add_invoice_items.0.amount is 50 (old raw:260; new raw:320). The new spec:504 interprets that number as a one-time amount in major currency units. Do not treat the row as a verified 20 USD template or copy 50 without resolving the intended amount; the separate 9.99+9.99 example at new raw:510 is coherent."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the old raw's May 2026 create_prorations default as dated, superseded toolkit documentation (old raw:52,449), never as the November toolkit default or as proof of a general API default.",
+    "Keep source:25-27 and source:32-36 timing and buffer facts with their route scope: start_date at least 24 hours ahead or 1 hour in sandbox; schedules permit 24-hour pre-live buffer, toolkit cancellation only for 10 hours, then API/Dashboard cancellation. Scheduled subscriptions cannot be changed in the toolkit or canceled by customers in portal; monitor live invoices after go-live (new raw:187-202,220-225).",
+    "Keep Stripe-to-Stripe destination account IDs (new raw:431-442,474) and the third-party-only payments-data import requirement (new raw:15,282-286). Source:28 uses metadata.source wording while new full spec:491 uses metadata_source; treat the distinction as a CSV-field ambiguity to verify, not a transformed account identity.",
+    "Keep one-coupon limit and the future-anchor plus proration-none coupon-unset caveat, plus send_invoice email/days_until_due and automatic-tax location prerequisites (new raw:420,460-474). These are qualified parent conditions, not universal blockers across every collection method.",
+    "Preserve old raw:362-366 only as May 2026 external-tax guidance that said blank tax columns would automatically follow an existing Billing tax integration. It is superseded for this toolkit route by the November capture at new raw:412-416, which says blanks do not enable automatic tax on future invoices and requires a configured third-party tax app plus automatic_tax=true."
+  ],
+  "unresolved_questions": [
+    "Does metadata.source in the template prose versus metadata_source in the full CSV specification map to the same accepted CSV header? The capture is internally inconsistent; do not silently normalize the field in a runnable template (new raw:52,122,491; source:28).",
+    "The worked sample tables use 2024 epoch dates, and at least one ad-hoc/multi-item sample row is column-misaligned (new raw:310-311,329-330). The Basic add-on row also says 50 where prose says 20 (new raw:316,320). Which current template export represents the valid exact upload schema and intended sample amount? No upload or account test was authorized.",
+    "Does the toolkit's documented blank/omitted none behavior hold for the user's actual account configuration? The captured documentation supports the statement, but no Dashboard, API, or billing execution was performed."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw1",
+  "reviewer_agent": "/root/s01ur4",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md",
+      "sha256": "72dbd05cc01e4f453f1c8693859cf716fb6883800c419cfa5eae823b0e790431",
+      "lines": 514
+    },
+    {
+      "path": "raw/stripe-subscriptions-migration-toolkit-2026.md",
+      "sha256": "9462737e1abeefcba2d06e9947a6f7cc2d67c940483fe2e3a60f1b7e8887109f",
+      "lines": 459
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-migration-toolkit.md",
+      "sha256": "474e460df13e652b01497ee8fb17097a0e5c0be6e54b999e6d31c5876573c3e1",
+      "lines": 49
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/d8d1b9c1bb09c3fc52444264/content.diff",
+      "sha256": "5f08661692440fba820a270ef870a7552233637d7a7560f46e262d2ea9294f16",
+      "lines": 645
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-import-subscriptions-toolkit-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-import-subscriptions-toolkit-review.json"
+}

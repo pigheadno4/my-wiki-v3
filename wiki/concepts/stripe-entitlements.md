@@ -7,7 +7,7 @@ tags: [stripe, billing, entitlements, subscriptions, feature-flags, provisioning
 
 ## Overview
 
-Stripe Entitlements is a feature-gating layer built into Stripe Billing. It lets you map internal product features to Stripe Products so that Stripe automatically tracks which customers should have access to which capabilities based on their active subscription status — without custom database tables or manual provisioning logic.
+Stripe Entitlements is a feature-gating layer built into Stripe Billing. In the 2026-05-13 guide, mapping internal product features to Stripe Products lets Stripe track customer entitlements through subscriptions; the application still handles provisioning and de-provisioning from entitlement signals.
 
 Core value prop: decouple pricing changes from code changes. When you restructure your plan tiers, you update product-feature mappings in Stripe rather than deploying new feature flag logic.
 
@@ -18,7 +18,7 @@ Core value prop: decouple pricing changes from code changes. When you restructur
 | `entitlements.feature` | A named capability with a unique `lookup_key`. Created once; referenced by product attachments. |
 | `product_feature` | The join between a feature and a product. One feature can attach to many products. |
 | `entitlements.active_entitlement` | A live entitlement for a customer. Exists as long as the customer has an active subscription to a product that includes the feature. |
-| `entitlements.active_entitlement_summary` | The full entitlement snapshot for a customer; returned in webhook payloads and the polling API. |
+| `entitlements.active_entitlement_summary` | Customer entitlement summary in the webhook payload. Its `entitlements.data` array holds at most 10 items; use `entitlements.url` for the complete paginated list when the customer has more than 10 active entitlements. |
 
 ## Lookup key
 
@@ -34,8 +34,8 @@ The `lookup_key` is the stable, code-facing identifier for a feature (e.g. `prem
 2. Attach to products via `stripe.products.createFeature(productId, { entitlement_feature: featureId })`
 3. When customer subscribes → Stripe creates active entitlements
 4. Listen to `entitlements.active_entitlement_summary.updated` webhook
-5. **Grant**: feature present in `entitlements.data` → enable access
-6. **Revoke**: feature absent from `entitlements.data` → disable access
+5. **Grant**: enable a feature listed in `entitlements.data`
+6. **Revoke**: before disabling a feature absent from `entitlements.data`, reconcile against the complete active-entitlement list when the summary may be truncated; for a customer with more than 10 entitlements, fetch all pages through `entitlements.url`
 
 ## Billing period lag
 
@@ -43,7 +43,7 @@ Changes to product-feature mappings apply to **existing subscriptions at the sta
 
 ## Webhook: `entitlements.active_entitlement_summary.updated`
 
-Fires whenever a customer's entitlements change (subscribe, upgrade, downgrade, cancel). Payload is the full current entitlement state.
+In the 2026-05-13 API guide, this event signals entitlement changes through subscriptions. The payload gives a current summary; `entitlements.data` can omit active features when the customer has more than 10 entitlements, so fetch the complete paginated list before absence-based revocation.
 
 - `entitlements.data`: up to **10 items** max. If customer has >10 active entitlements, use `entitlements.url` to fetch the full paginated list.
 - `previous_attributes.entitlements.data`: prior state, useful for diffing what was added or removed.
@@ -67,9 +67,10 @@ Stripe recommends persisting entitlements locally for faster resolution.
 |---|---|
 | Edit | Name and metadata editable; lookup key is immutable |
 | Remove from product | Detaches; existing subscriber entitlements change at next billing period |
-| Archive | Irreversible. Still generates entitlements on existing product attachments. Lookup key can be reused after archiving. |
+| Archive | In the 2026-05-13 Dashboard guide, archived features cannot be edited, attached to new products, or unarchived. Existing product attachments still create entitlements; the lookup key can be reused. |
 
 ## Sources
 
-- [[source-stripe-billing-entitlements]] — Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)
+- [[source-stripe-billing-entitlements]] — Stripe Entitlements guide, captured in full on 2026-05-13; the 2026-11-07 capture is a Dashboard/API variant index.
+- [[source-stripe-checkout-subscriptions-quickstart]] — Hosted subscription sample using active-entitlement summary events and list API for access
 - [[source-stripe-billing-ios-sdk]] — BillingSDK for iOS: entitlement checking via hasEntitlement/getActiveEntitlements, change listener, unauthenticated behavior

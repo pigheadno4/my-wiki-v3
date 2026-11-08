@@ -1,0 +1,175 @@
+{
+  "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-prebilling/base.md",
+  "base_sha256": "9ce303cce910625bf349aec818cb030584f41d1c506f67328d4163554ecc4137",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-concept-overview-version",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "Prebilling (public preview) lets you charge customers now for multiple future service periods \u2014 bill upfront for 2 months, send a renewal invoice early, or cover a custom date range. Requires `billing_mode=flexible` and API version `2025-09-30.preview` or later.\n\n## Prerequisites\n\n- `billing_mode=flexible` \u2014 required; cannot use on subs migrated classic \u2192 flexible\n- API version `2025-09-30.preview` or later",
+      "new_text": "Prebilling invoices licensed-price items for multiple future service periods through subscription `billing_schedules`; invoice creation does not establish payment. The 2026-11-07 guide requires `billing_mode=flexible` and API version `2026-05-27.dahlia` or later. The 2026-05-13 public-preview guide stated `2025-09-30.preview` or later. The newer page's omission of \u201cpublic preview\u201d does not establish general availability or account eligibility.\n\n## Prerequisites\n\n- `billing_mode=flexible` \u2014 required; existing subscriptions must already use flexible mode before prebilling is added\n- API version `2026-05-27.dahlia` or later in the 2026-11-07 guide\n\n> [!warning] Contradiction\n> The May public-preview guide stated `2025-09-30.preview` and barred subscriptions migrated from classic to flexible. November states `2026-05-27.dahlia` and omits that migration restriction. The omission is not proof that a migrated subscription is eligible.",
+      "reason": "Replace outdated present-version and migrated-classic assertions with dated reciprocal guidance.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Availability and migrated-subscription eligibility remain unverified."
+      ],
+      "original_update_id": "prebilling-concept-overview-version",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-concept-endrules",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "| Minimum | At least 1 full cycle of the shortest billing period on the subscription |\n| Maximum | At most 12 cycles of the shortest billing period |\n\nExample: monthly subscription \u2192 minimum 1 month, maximum 12 months.",
+      "new_text": "| Minimum | At least one full billing period from the start; November's example is one month from a monthly period start. Which item controls the minimum for mixed intervals is unspecified. |\n| Maximum | At most 50 prebilled cycles **across all items**, not 50 per item. |\n| Five-year guidance | November advises against an end date more than five years in the future; this is not an established API rejection limit. |\n\nIf the end date splits a period, the part before it is prebilled and the remainder follows the subscription configuration.\n\n> [!warning] Contradiction\n> The May public-preview guide instead used the shortest billing period for both a one-cycle minimum and a 12-cycle maximum. Those dated rules must not be used as November's mixed-interval minimum or total cap.",
+      "reason": "Correct outdated shortest-period and 12-cycle rules without inventing the mixed-interval minimum or hardening five-year advice.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Mixed-interval minimum is unresolved in the November capture."
+      ],
+      "original_update_id": "prebilling-concept-endrules",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-concept-item-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "- Omit `applies_to` \u2192 all licensed (non-usage-based) items are prebilled",
+      "new_text": "- Omit `applies_to` \u2192 all applicable licensed-price items that cycle before the prebilling end date are selected; metered usage items remain excluded",
+      "reason": "Narrow the existing all-items claim to the guide's cycling and licensed-price condition.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "prebilling-concept-item-scope",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-concept-duration",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "| `duration` | `interval` + `interval_count` | Relative from billing cycle start (e.g. 2 months) |",
+      "new_text": "| `duration` | `interval` + `interval_count` | November 2026 describes it as from the current date; exact off-anchor or mixed-interval arithmetic is not supplied. May 2026 used cycle-start wording and mixed that with \u201ccurrent time\u201d in a later paragraph. |",
+      "reason": "Correct the duration anchor to November's current-date wording while retaining May as qualified history.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not infer an exact existing-subscription end timestamp from the prose alone."
+      ],
+      "original_update_id": "prebilling-concept-duration",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-concept-limitations",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "## Limitations (public preview)\n\n1. Not available for subscription schedules or schedule-backed subscriptions\n2. Only `percent_off` coupons with `duration=once` or `forever`\n3. Applied immediately on create/update when `billing_schedules` is configured\n4. Cannot use on subscriptions migrated from classic \u2192 flexible billing mode\n5. Cannot prebill if ALL items are usage-based\n6. `proration_behavior` cannot be `none`\n7. If subscription has scheduled cancellation, prebilling cannot extend past that date\n8. Cannot use with `payment_behavior=pending_if_incomplete`",
+      "new_text": "## Limitations (2026-11-07 guide)\n\n1. Incompatible with subscription schedules or schedule-backed subscriptions; clear expired `billing_schedules` before later attaching a schedule.\n2. Only `percent_off` coupons with `duration=once` or `forever` are compatible.\n3. Metered usage items are excluded; a subscription with only usage-based items cannot enable prebilling.\n4. A requested end date beyond scheduled cancellation is automatically capped at that cancellation date.\n5. `payment_behavior=pending_if_incomplete` is barred when **updating a subscription with an active billing schedule**.\n6. Invoice timing depends on `proration_behavior`: `always_invoice` generates and finalizes immediately; `create_prorations` generates at the next natural billing cycle.\n\nThe May public-preview guide also barred migrated classic-to-flexible subscriptions and `proration_behavior=none`. November omits those statements; their omission is not evidence of support. Its broader May `pending_if_incomplete` wording is not the November condition.",
+      "reason": "Replace categorical old preview limits and blanket immediacy with November's scoped limitations, while preserving unresolved May-only restrictions.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "No claim that migrated subscriptions or proration_behavior=none are now supported."
+      ],
+      "original_update_id": "prebilling-concept-limitations",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-concept-route",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "- [[source-stripe-subscriptions-prebilling]] \u2014 Stripe docs: prebilling guide (public preview, billing_schedules API, limitations, invoice timing)",
+      "new_text": "- [[source-stripe-subscriptions-prebilling]] \u2014 May 2026 public-preview and November 2026 prebilling guides: version, item scope, end-date and duration rules, conditional invoice timing and payment-event distinctions",
+      "reason": "Reciprocal source route to both dated captures and their substantive differences.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "prebilling-concept-route",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-concept-example-item-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "billing_schedules[0][applies_to][0][price]={{PRICE_ID}}   # omit to apply to all licensed items",
+      "new_text": "billing_schedules[0][applies_to][0][price]={{PRICE_ID}}   # omit applies_to for applicable licensed items cycling before bill_until",
+      "reason": "Qualify the code comment so it matches the approved item-scope bullet and the November guide's cycle-before-end condition.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "prebilling-concept-example-item-scope",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-prebilling::prebilling-concept-documented-usecase",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "- Annual subscription: collect 2 years upfront",
+      "new_text": "- Monthly price: invoice 12 months upfront without changing the price to an annual interval (November 2026 example); payment success is a separate outcome",
+      "reason": "Replace an unsupported annual-subscription, two-year payment claim with the documented monthly-price invoicing example.",
+      "quote_indexes": [],
+      "warnings": [
+        "The use-case example does not prove a paid invoice."
+      ],
+      "original_update_id": "prebilling-concept-documented-usecase",
+      "job_id": "billing-subscriptions-prebilling",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+      "receipt_sha256": "72886279fc42d3c5a5ecd01088f427134ae525c0be216f81408a418645d42436",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/candidate.md",
+      "source_candidate_sha256": "1dab9bb4fdd06d46c5cb0de97a27211d21babce945a585e326466bca42fd4d49",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-prebilling/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-prebilling::prebilling-concept-overview-version",
+    "billing-subscriptions-prebilling::prebilling-concept-endrules",
+    "billing-subscriptions-prebilling::prebilling-concept-item-scope",
+    "billing-subscriptions-prebilling::prebilling-concept-duration",
+    "billing-subscriptions-prebilling::prebilling-concept-limitations",
+    "billing-subscriptions-prebilling::prebilling-concept-route",
+    "billing-subscriptions-prebilling::prebilling-concept-example-item-scope",
+    "billing-subscriptions-prebilling::prebilling-concept-documented-usecase"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-prebilling/auto-candidate.md",
+  "auto_candidate_sha256": "7537bb5a7e7f5bcd833a29e6faa326c1152f1d7258bb78742c155f32004c95ea",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-subscriptions-prebilling-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-subscriptions-prebilling-concept-review.json"
+}

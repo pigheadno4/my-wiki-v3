@@ -1,0 +1,107 @@
+{
+  "job_id": "billing-customer-tax-ids",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-customer-tax-ids-2026-11-07.md",
+  "raw_sha256": "12b5c55d8b93a1664fa5db1330adeba7cfa0147f8d253a9d2ddfea671d0f04d8",
+  "prior_raw_path": "raw/stripe-billing-customer-tax-ids-2026.md",
+  "prior_raw_sha256": "84ce913e89fb269ad4e526480eba018f653db0326a30a4c9aa9a9aff4fb1ae7c",
+  "source_target": "wiki/sources/source-stripe-billing-customer-tax-ids.md",
+  "source_before_sha256": "e1ee986df3d1eb4f552186307d8796e1d30582239c8948c4fe853248d04d42c8",
+  "read_ranges": {
+    "raw/stripe-billing-customer-tax-ids-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 295
+      }
+    ],
+    "raw/stripe-billing-customer-tax-ids-2026.md": [
+      {
+        "start": 1,
+        "end": 253
+      }
+    ],
+    "wiki/sources/source-stripe-billing-customer-tax-ids.md": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6b7f0522b5169b9d2ef018cb/content.diff": [
+      {
+        "start": 1,
+        "end": 442
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Stripe only checks the format of tax ID types other than AU ABN, EU VAT, and GB VAT, and doesn\u2019t validate them against government databases.",
+      "location": "raw/stripe-billing-customer-tax-ids-2026-11-07.md:186"
+    },
+    {
+      "text": "For a [Customer](https://docs.stripe.com/api/customers/object.md), listen for the [customer.tax_id.updated](https://docs.stripe.com/api/events/types.md#event_types-customer.tax_id.updated) snapshot event. Inspect [data.object.verification.status](https://docs.stripe.com/api/tax_ids/object.md#tax_id_object-verification-status) in the event.",
+      "location": "raw/stripe-billing-customer-tax-ids-2026-11-07.md:235"
+    },
+    {
+      "text": "For a [customer-configured Account](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-configuration-customer), listen for the [v1.customer.tax_id.updated](https://docs.stripe.com/api/v2/core/events/event-types.md?api-version=preview#v2_event_types-v1.customer.tax_id.updated) thin event. Retrieve the Tax ID referenced by `related_object`, then inspect its [verification.status](https://docs.stripe.com/api/tax_ids/object.md#tax_id_object-verification-status).",
+      "location": "raw/stripe-billing-customer-tax-ids-2026-11-07.md:236"
+    },
+    {
+      "text": "Stripe reports the verification result, and you\u2019re responsible for determining how to handle an `unverified` tax ID, based on your own compliance requirements. When automatic validation is `unavailable`, you must manually verify the tax ID.",
+      "location": "raw/stripe-billing-customer-tax-ids-2026-11-07.md:240"
+    },
+    {
+      "text": "If you use Stripe Tax, Stripe Tax applies the reverse charge or zero rate according to applicable laws when the tax ID has the required number format, regardless of the government verification result.",
+      "location": "raw/stripe-billing-customer-tax-ids-2026-11-07.md:242"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Because this validation process happens asynchronously, the [customer.tax_id.updated](https://docs.stripe.com/api/events/types.md#event_types-customer.tax_id.updated) webhook notifies you of validation updates.",
+      "location": "raw/stripe-billing-customer-tax-ids-2026.md:198"
+    },
+    {
+      "text": "Stripe automatically validates all Australian Business Numbers (ABNs) with the [Australian Business Register (ABR)](https://abr.gov.au/).",
+      "location": "raw/stripe-billing-customer-tax-ids-2026.md:172"
+    },
+    {
+      "text": "When automatic validation isn\u2019t available, you must manually verify these IDs.",
+      "location": "raw/stripe-billing-customer-tax-ids-2026.md:205"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 capture retains the core guide: customer tax IDs appear in invoice and credit note PDF headers (new 11; old 10), IDs are managed in Dashboard, customer portal, or Tax ID API (new 251; old 209), and updates are delete plus create (new 266; old 224). Keep the same source route with both dated raw captures.",
+    "Correct current source line 42: 'AU ABN ... Validates format only' conflicts with government ABR validation in new 203 and old 172. ABR validates ID validity, while customer name, address and GST registration matching remain the user's responsibility; EU VAT/VIES and GB VAT/HMRC have similarly qualified government checks (new 207-219).",
+    "Replace current source line 46's generic webhook claim with object-specific routing. New 233-240 distinguishes Customer snapshot customer.tax_id.updated with status in data.object from customer-configured Account thin v1.customer.tax_id.updated requiring retrieval via related_object; statuses are pending, verified, unverified, unavailable. The new text says an event is sent when verification finishes, so avoid claiming every status transition generates one.",
+    "Qualify current source lines 13 and 19. The Yes flag's footnote (new 182; old 162) says Stripe Tax won't apply tax in line with relevant laws; new 242 further says reverse charge or zero rate depends on applicable laws and required number format regardless of government verification result. Do not turn the table into an unconditional B2B exemption or government-verified eligibility claim.",
+    "The table gains supported enums such as au_acn and au_wpn (new 27-29 versus old 25-27), cz_dic (new 64 versus old 59), fr_siren/fr_siret/fr_spi (new 79-82 versus old 73-74), and others. The supported-type table and examples should be located in the dated raw; do not assert present-day account eligibility from this capture.",
+    "Preserve the distinct v1 Customer and v2 customer-configured Account example owners (new 268-288; old 226-246). Current source line 32's ACCOUNT_ID placeholder should be aligned with the captured CUSTOMERACCOUNT_ID example and should not imply any Account is a customer-configured Account. No API call or payment outcome was tested."
+  ],
+  "substantive_changes": [
+    "New explicit comparison table and prose separate government-database checks for AU ABN, EU VAT and GB VAT from format-only checks for all other types (new 184-219; old 164-184 covered the three government cases without the comparison).",
+    "New object-specific validation webhook instructions, four verification status values, manual handling of unavailable results, and qualified Stripe Tax treatment (new 231-242 versus old 196-205).",
+    "Expanded supported-tax-ID table and some changed examples, including ng_tin old 117 to new 132; individual enum additions need dated row-level navigation rather than a broad eligibility statement."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the 2026-05-13 capture as dated evidence, including its earlier support email at old 8; the 2026-11-07 page instead routes additional-type requests to Stripe support at new 9, without proving that the prior address stopped working.",
+    "The old capture's ABR/VIES/HMRC validation scope and responsibility caveats (old 166-184) remain compatible with new 186-219; validation is not continuously repeated (old 168; new 190).",
+    "The three sandbox/test magic IDs and restriction to AU ABN, EU VAT or GB VAT remain (old 186-194; new 221-229), as do invoice PDF display and delete/create update instructions."
+  ],
+  "conflicts": [
+    "Existing source line 42 says ABN validation is format only; both dated captures say Stripe automatically checks ABNs with ABR (old 172, new 203).",
+    "Existing source line 46 reduces validation notification to one Customer event and says it fires on status change; new 233-240 separates Customer snapshot and customer-configured Account thin events and describes verification completion.",
+    "Existing source lines 13 and 19 render the Yes flag as a generic reverse-charge/B2B exemption; the raw footnote and new 242 make tax outcome conditional on relevant laws and number format."
+  ],
+  "unresolved_questions": [
+    "The captured page does not establish current account availability or API-version rollout for the customer-configured Account path; the linked v2 event reference includes api-version=preview (new 236).",
+    "The capture does not explain exactly which verification status transitions emit events beyond its statement about verification finishing, or prove tax treatment for any particular customer or jurisdiction."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-tax.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/customer/tax-ids, the new capture establishes invoice and credit-note PDF display, a dated supported-type table, and customer tax-ID management by Dashboard, portal, or Tax ID API (new 11, 13-180, 249-295). ABN, EU VAT and GB VAT receive government checks; other types receive format checks (new 186-219). Customer snapshot and customer-configured Account thin events have different status-reading paths (new 233-240). The old capture already documented PDF display, the three government checks and owner-specific create examples (old 10, 170-184, 226-246), but [[source-stripe-billing-customer-tax-ids]] currently misstates ABN validation and collapses webhook routing (source 42, 46). Neither capture establishes successful tax or payment execution.",
+    "Q2": "At https://docs.stripe.com/billing/customer/tax-ids, substantive changes include additional table rows, explicit format-versus-government validation, separate Customer and customer-configured Account event handling, four verification states and qualified Stripe Tax treatment (new 27-180, 186-219, 233-242; old 16-160, 196-205). Support contact changed from an email (old 8) to a support link (new 9), while markdown/table spacing, heading spacing, and Dashboard list numbering are presentational. [[source-stripe-billing-customer-tax-ids]] should keep the old capture dated, correct its ABN conflict at source 42, narrow its webhook and reverse-charge claims at source 13, 19, 46, and retain the v1/v2 owner identity boundary (new 268-288; old 226-246). The capture gives no proof of current account eligibility, tax determination in a specific jurisdiction, or a bank or payment receipt."
+  }
+}

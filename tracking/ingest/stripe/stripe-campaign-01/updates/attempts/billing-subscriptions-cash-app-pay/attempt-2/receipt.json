@@ -1,0 +1,178 @@
+{
+  "job_id": "billing-subscriptions-cash-app-pay",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-cash-app-pay-2026-11-07.md",
+  "raw_sha256": "58a0a5e9d74eebb2c53eb491cf21f9dbdf05ef6759700a02d1cee192171d4522",
+  "source_before_sha256": "e2a4a227300952bc8bc18608ef98883db08c5686ca03dde98a0b3ded58a9249c",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up Cash App Pay Subscription\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/cash-app-pay\"\nraw_files:\n  - \"stripe-subscriptions-cash-app-pay-2026.md\"\ntags: [stripe, billing, subscriptions, cash-app-pay, setup-intents, payment-intents, checkout, qr-code]\n---\n\n## Summary\n\nThe 2026-05-13 combined guide describes three Cash App Pay subscription paths: Setup Intents API (save a payment method, then subscribe), Subscriptions API (create and confirm separately), and a Stripe-hosted Checkout page. Direct API examples use QR display or mobile redirect for authentication. The 2026-11-07 capture at the same canonical URL is only an index linking these three variants; it does not verify their current fields, eligibility, or runtime results.\n\n## Three integration paths\n\n### Path 1: SetupIntents API\n\n1. In the 2026-05-13 Node.js example, the server creates a SetupIntent with `confirm=true`, `usage='off_session'`, `payment_method_types=['cashapp']`, `mandate_data`, and `return_url`. The example does not establish each field as a requirement for every SetupIntent integration.\n2. Status \u2192 `requires_action` \u2192 use `next_action.cashapp_handle_redirect_or_display_qr_code` to redirect (mobile) or show QR (desktop)\n3. The May guide describes the SetupIntent reaching `succeeded` after customer authentication; a QR display or redirect by itself is not a success signal.\n4. Server: Create subscription with `default_payment_method` from SetupIntent PM\n\n```js\n// Step 4 - create subscription\nstripe.subscriptions.create({\n  customer: customerId,\n  items: [{ price: priceId }],\n  default_payment_method: paymentMethodId\n})\n```\n\n### Path 2: Subscriptions API (PaymentIntents)\n\n1. Server: Create subscription with `payment_behavior=default_incomplete`, `payment_settings.save_default_payment_method='on_subscription'`; expand `latest_invoice.confirmation_secret`\n2. The May confirm-step prose names `payment_method_types=cashapp`, while its adjacent curl example sends `payment_method_data[type]=cashapp`, `mandate_data`, and `return_url`. This capture does not resolve the intended confirm parameter; do not transpose the SetupIntent or Checkout Session fields into this request.\n3. The PaymentIntent can return `requires_action`; the customer then authenticates through redirect or QR. The May guide states that the PaymentIntent moves to `succeeded` after authentication and the subscription becomes active **after a successful payment**, not merely after a QR display or redirect.\n\n### Path 3: Checkout (hosted)\n\n```js\nstripe.checkout.sessions.create({\n  payment_method_types: ['card', 'cashapp'],\n  line_items: [{ price: priceId, quantity: 1 }],\n  mode: 'subscription',\n  success_url: '...'\n})\n```\n\n## Authentication UX: QR code + redirect\n\n- **Direct API examples, mobile**: customer is redirected to Cash App; after authentication, the guide describes a redirect to the example `return_url`.\n- **Direct API examples, desktop**: `next_action.cashapp_handle_redirect_or_display_qr_code` can display a QR code for Cash App authentication.\n- **`mandate_data` and `return_url`**: shown in the May SetupIntent and PaymentIntent-confirm examples. The May Checkout Session example omits both; these captures do not establish universal requiredness across all three paths.\n\n## Testing\n\nIn the 2026-05-13 Checkout variant:\n\n- **Mobile sandbox**: tapping Subscribe opens a test approval/decline page.\n- **Desktop sandbox**: scanning the QR opens a test approval/decline URL.\n- **Live mode**: the guide says there is no test approval/decline choice after redirect or scan. This describes its flow, not a verified payment or account outcome.\n\n## Related pages\n\n- [[stripe-cash-app-pay]] \u2014 concept page\n- [[stripe-amazon-pay]] \u2014 Amazon Pay subscriptions (similar 3-path structure)\n- [[stripe-subscriptions]] \u2014 concept page\n- [[stripe]] \u2014 company page\n\n## Related raw API references\n\n- [[raw/stripe-billing-subscriptions-cash-app-pay-2026-11-07|2026-11-07 variant index]] \u2014 links to Setup Intents API, Subscriptions API, and Stripe-hosted page variants; their current content was not captured here.\n\n## Raw Sources\n\n- [[raw/stripe-subscriptions-cash-app-pay-2026|2026-05-13 combined Cash App Pay subscription guide]] \u2014 detailed historical evidence for all three variants\n",
+  "quotes": [
+    {
+      "text": "# Set up a subscription with Cash App Pay",
+      "location": "raw/stripe-billing-subscriptions-cash-app-pay-2026-11-07.md:5"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-cash-app-pay-2026-11-07.md:11"
+    },
+    {
+      "text": "[Setup Intents API](https://docs.stripe.com/billing/subscriptions/cash-app-pay.md?api-integration=setupintents)",
+      "location": "raw/stripe-billing-subscriptions-cash-app-pay-2026-11-07.md:13"
+    },
+    {
+      "text": "[Subscriptions API](https://docs.stripe.com/billing/subscriptions/cash-app-pay.md?api-integration=subscription)",
+      "location": "raw/stripe-billing-subscriptions-cash-app-pay-2026-11-07.md:14"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/cash-app-pay.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-cash-app-pay-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This is a Setup Intents API for when api-integration is setupintents.",
+      "location": "raw/stripe-subscriptions-cash-app-pay-2026.md:12"
+    },
+    {
+      "text": "This is a Subscriptions API for when api-integration is subscription.",
+      "location": "raw/stripe-subscriptions-cash-app-pay-2026.md:95"
+    },
+    {
+      "text": "This is a Stripe-hosted page for when api-integration is checkout.",
+      "location": "raw/stripe-subscriptions-cash-app-pay-2026.md:170"
+    },
+    {
+      "text": "After a successful payment, the subscription becomes active and saves the payment method as the default payment method.",
+      "location": "raw/stripe-subscriptions-cash-app-pay-2026.md:166"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-cash-app-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-subscriptions-cash-app-pay-2026.md": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 241
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-cash-app-pay.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8f3f42dd64dad4df5eb7748b/content.diff": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 244
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "cashapp-subscription-characteristics",
+      "target_path": "wiki/concepts/stripe-cash-app-pay.md",
+      "old_text": "- **Mandate required**: must collect `mandate_data` for recurring use\n- `return_url` required \u2014 Cash App redirects here after authentication\n- `next_action.cashapp_handle_redirect_or_display_qr_code` used to handle the auth step\n- `usage='off_session'` for recurring charges without customer present",
+      "new_text": "- The 2026-05-13 direct SetupIntent and PaymentIntent-confirm examples include `mandate_data` and `return_url`; its Checkout Session example omits both. These examples do not establish requirements across all three paths.\n- `next_action.cashapp_handle_redirect_or_display_qr_code` appears in the May direct API authentication flows.\n- `usage='off_session'` appears in the May SetupIntent example for future use; its path-wide requiredness is not established by that example.",
+      "reason": "Remove universal requiredness inferred from path-specific examples.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "cashapp-subscription-setup-example",
+      "target_path": "wiki/concepts/stripe-cash-app-pay.md",
+      "old_text": "1. Create SetupIntent: `confirm=true`, `usage='off_session'`, `payment_method_types=['cashapp']`, `mandate_data`, `return_url`",
+      "new_text": "1. The 2026-05-13 Node.js example creates a SetupIntent with `confirm=true`, `usage='off_session'`, `payment_method_types=['cashapp']`, `mandate_data`, and `return_url`; it does not prove all values are required for every SetupIntent path.",
+      "reason": "Date and qualify the example rather than presenting its fields as universal requirements.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "cashapp-subscription-confirm-tension",
+      "target_path": "wiki/concepts/stripe-cash-app-pay.md",
+      "old_text": "2. Confirm PaymentIntent: `POST /v1/payment_intents/:id/confirm` with `payment_method_data[type]=cashapp`, `mandate_data`, `return_url`\n3. Status \u2192 `requires_action` \u2192 redirect/QR \u2192 subscription activates on success",
+      "new_text": "2. Confirm the PaymentIntent separately. The May prose names `payment_method_types=cashapp`, but its adjacent curl example sends `payment_method_data[type]=cashapp`, `mandate_data`, and `return_url`; the intended confirm parameter remains unresolved by these captures.\n3. If the PaymentIntent requires customer action, use the QR or redirect path. The May guide places PaymentIntent `succeeded` after authentication and states that the subscription becomes active after successful payment; QR display or redirect alone is not activation.",
+      "reason": "Keep the prose/example parameter conflict visible and state the payment-success condition.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "cashapp-subscription-key-parameters",
+      "target_path": "wiki/concepts/stripe-cash-app-pay.md",
+      "old_text": "| `mandate_data` | Required for recurring; captures customer acceptance |\n| `return_url` | Where Cash App redirects after authentication |\n| `usage='off_session'` | Enables recurring charges without customer present |",
+      "new_text": "| `mandate_data` | Included in the May direct SetupIntent and PaymentIntent-confirm examples for customer acceptance; absent from its Checkout Session example |\n| `return_url` | Included in those May direct examples as the post-authentication return destination; absent from its Checkout Session example |\n| `usage='off_session'` | Value shown in the May SetupIntent example for future use; not proven path-wide required |",
+      "reason": "Correct the table's universal requiredness and keep each field tied to its example.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "cashapp-subscription-comparison",
+      "target_path": "wiki/concepts/stripe-cash-app-pay.md",
+      "old_text": "Very similar 3-path structure to [[stripe-amazon-pay]]. Key difference: Cash App uses QR code (desktop) while Amazon uses a redirect-only flow. Both require `mandate_data` and `return_url`.",
+      "new_text": "The May Cash App Pay guide has three subscription paths, like the routed [[stripe-amazon-pay]] concept. Its direct API examples show a desktop QR flow and mobile redirect; this Cash App capture does not establish `mandate_data` or `return_url` as requirements for all three paths.",
+      "reason": "Remove another blanket requiredness claim while preserving the comparison route.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "cashapp-subscription-source-route",
+      "target_path": "wiki/concepts/stripe-cash-app-pay.md",
+      "old_text": "- [[source-stripe-subscriptions-cash-app-pay]] \u2014 Stripe docs: Cash App Pay subscription integration (3 paths: SetupIntents, Subscriptions API, Checkout)",
+      "new_text": "- [[source-stripe-subscriptions-cash-app-pay]] \u2014 Cash App Pay subscription guide: three detailed variants captured 2026-05-13; the 2026-11-07 base capture is a variant index.",
+      "reason": "Provide precise reciprocal source provenance.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "subscriptions-cashapp-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-cash-app-pay]] \u2014 Cash App Pay subscription: 3 paths (SetupIntents/Subscriptions API/Checkout), QR code + redirect auth, mandate_data required",
+      "new_text": "- [[source-stripe-subscriptions-cash-app-pay]] \u2014 Cash App Pay subscription guide: three detailed paths in the 2026-05-13 capture; 2026-11-07 base capture is a variant index. Direct API examples show QR/redirect authentication.",
+      "reason": "Remove universal mandate-data requiredness from the reciprocal subscriptions route.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "cashapp-subscription-authentication-ux-table",
+      "target_path": "wiki/concepts/stripe-cash-app-pay.md",
+      "old_text": "| Mobile | Redirect to Cash App app; after auth, app redirects to `return_url` |\n| Desktop | Display QR code; customer scans with Cash App \u2192 redirects to `return_url` |",
+      "new_text": "| Mobile | In the 2026-05-13 direct SetupIntent and PaymentIntent examples, Cash App redirects the customer to the example `return_url` after authentication. The May Checkout Session example instead sets `success_url` and omits `return_url`; the November index establishes no Checkout return behavior. |\n| Desktop | The May direct API examples describe QR display for Cash App authentication, and its Checkout section describes scanning a QR code in test and live modes. These captures do not establish a universal post-scan return destination. |",
+      "reason": "Scope the return_url to the May direct API flows, keep the Checkout success_url example separate, and remove the unsupported desktop post-scan destination.",
+      "quote_indexes": [],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/cash-app-pay, the 2026-11-07 capture only links Setup Intents API, Subscriptions API, and Stripe-hosted page variants (new raw lines 9\u201315). [[source-stripe-subscriptions-cash-app-pay]] keeps the detailed 2026-05-13 combined guide for those three paths (old raw lines 10\u201314, 93\u201397, 168\u2013172). In its Subscriptions API flow, `requires_action` and QR or redirect authentication precede the PaymentIntent's `succeeded` state; the subscription becomes active after successful payment, not merely a redirect (old lines 164\u2013166). The current query-variant contents and live outcomes remain unverified.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/cash-app-pay, the November capture is a navigation index (new raw lines 9\u201315) replacing the May combined rendering (old raw lines 8\u2013241), without proving any path removal or changed runtime behavior. [[source-stripe-subscriptions-cash-app-pay]] now dates the May examples: `confirm=true` and `usage='off_session'` appear in one SetupIntent example (old lines 43\u201360), while the Checkout Session example lacks `mandate_data` and `return_url` (old lines 209\u2013227), so those fields cannot be called universal three-path requirements from this capture. The May PaymentIntent confirm prose names `payment_method_types`, but adjacent curl sends `payment_method_data[type]` (old lines 149\u2013161); the intended parameter remains unresolved. Payment success, account eligibility, and the three November variant contents are unverified."
+  },
+  "status": "candidate_ready"
+}

@@ -1,0 +1,119 @@
+{
+  "job_id": "billing-subscriptions-ideal",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md",
+  "raw_sha256": "bfe4cddde441e905128d5bd800d36165165f9f355ac0f3f96cc109cc566e94da",
+  "prior_raw_path": "raw/stripe-subscriptions-ideal-2026.md",
+  "prior_raw_sha256": "f84474f5e59785b0337ea25ec7804e4fac5cb2901f43057b98ff56721bda0a99",
+  "source_target": "wiki/sources/source-stripe-subscriptions-ideal.md",
+  "source_before_sha256": "ea0ed46bfbfe9a5c703f0af65b0e9ff255a35542229a46ec75fa56eeb885267b",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-ideal-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-subscriptions-ideal-2026.md": [
+      {
+        "start": 1,
+        "end": 1015
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-ideal.md": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1b1ca961aeea19ee287d6e99/content.diff": [
+      {
+        "start": 1,
+        "end": 1017
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Set up a subscription with iDEAL and SEPA Direct Debit",
+      "location": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md:5"
+    },
+    {
+      "text": "Learn how to create and charge a subscription with iDEAL and SEPA Direct Debit.",
+      "location": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md:11"
+    },
+    {
+      "text": "[Full hosted page](https://docs.stripe.com/billing/subscriptions/ideal.md?payments-ui-type=stripe-hosted)",
+      "location": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md:13"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/billing/subscriptions/ideal.md?payments-ui-type=direct-api)",
+      "location": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "iDEAL is a [single use]",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:12"
+    },
+    {
+      "text": "If you\u2019re offering a free trial, Stripe charges your customer 0.01 EUR through iDEAL to collect their bank details and immediately refunds it.",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:18"
+    },
+    {
+      "text": "With this integration, Stripe charges your customer 0.01 EUR through iDEAL to collect their bank details.",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:547"
+    },
+    {
+      "text": "For iDEAL | Wero, this includes collecting a [SEPA Direct Debit mandate]",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:585"
+    },
+    {
+      "text": "Use a method such as webhooks to confirm the setup was authorized successfully by your customer",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:834"
+    },
+    {
+      "text": "When you update a subscription, you must specify `off_session=true`.",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:878"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 capture of https://docs.stripe.com/billing/subscriptions/ideal is a 14-line index with hosted and Direct API variant links, not either variant body (new lines 5\u201314). The large diff deletion reflects this capture/rendering difference and does not demonstrate deprecation or changed payment behavior.",
+    "The current source is dated 2026-05-13 and cites the 1015-line older capture. A bounded historical correction is warranted because source lines 13 and 17\u201322 merge two older variant flows: hosted Checkout charges the first subscription payment through iDEAL, or charges and immediately refunds 0.01 EUR when there is a free trial (old lines 16\u201318); Direct API generally charges and refunds 0.01 EUR through iDEAL for bank-detail setup, then uses the generated SEPA Direct Debit PaymentMethod for the subscription (old lines 541\u2013549, 838\u2013850). The unqualified 'first payment' and 'all subsequent' sequence in source lines 17\u201320 is not an accurate common sequence.",
+    "In the older Direct API variant, SEPA Direct Debit activation and iDEAL/SEPA terms are prerequisites (old line 549). A SetupIntent with ideal tracks setup and the iDEAL | Wero SEPA mandate (old line 585), and its success permits retrieval of latest_attempt.payment_method_details.generated_sepa_debit (old lines 832\u2013850). Setup authorization is separate from later SEPA payment success and active subscription status (old lines 870\u2013874). Accounts v2 customer_account and Customers v1 customer are distinct example identities (old lines 583\u2013610).",
+    "Source line 45 should describe reliable confirmation of SetupIntent authorization, with webhooks as an optional method rather than a required listener: the old heading says 'Optional: Monitor webhooks' and advises a method such as webhooks instead of relying on customer return (old lines 832\u2013834). Source line 50 should retain off_session=true only as this older Direct API guide's subscription-update instruction (old lines 876\u2013878), dropping the unsupported PayPal analogy and universal 'always' framing.",
+    "This source-required correction is for May 2026 source accuracy, not a claim of new November behavior. Keep the source date and older factual raw reference; do not add the November navigation-only index to factual raw_files."
+  ],
+  "substantive_changes": [
+    "No payment or billing behavior change is established by the 2026-11-07 index capture. The only observed change at this captured URL is variant navigation: links to the hosted and Direct API markdown variants (new lines 11\u201314)."
+  ],
+  "historical_claims_to_preserve": [
+    "The dated hosted Checkout path: iDEAL handles the first subscription payment; for a free trial Stripe instead collects and immediately refunds 0.01 EUR through iDEAL to obtain bank details (old lines 12, 16\u201318).",
+    "The dated Direct API path: a 0.01 EUR iDEAL setup collection/refund generally precedes a successful SetupIntent/SEPA mandate and generated SEPA Direct Debit PaymentMethod, which is then used to create the subscription (old lines 547\u2013549, 583\u2013585, 832\u2013850).",
+    "The distinction between setup or mandate authorization, initial SEPA payment success, and active subscription status, with failure outcomes and delayed SEPA test scenarios (old lines 832\u2013850, 870\u2013874, 905\u2013931).",
+    "The Direct API update guidance to specify off_session=true in that older flow, and the optional webhook monitoring plus need for reliable setup confirmation (old lines 832\u2013834, 876\u2013878)."
+  ],
+  "conflicts": [
+    "Source lines 13 and 17\u201322 conflate older hosted and Direct API flows. Replace the unqualified first-iDEAL-subscription-payment \u2192 SEPA-for-all-subsequent sequence with two dated paths: hosted first payment through iDEAL, except the free-trial 0.01 EUR collection/refund; Direct API 0.01 EUR refunded setup payment, successful SetupIntent/mandate, generated SEPA PaymentMethod, then subscription charge (old lines 16\u201318, 541\u2013549, 583\u2013585, 832\u2013850). Do not imply setup success proves a later charge succeeded or the subscription became active (old lines 870\u2013874).",
+    "Source line 45 reads as a required webhook listener, but old lines 832\u2013834 label webhook monitoring optional and recommend confirming SetupIntent setup through a reliable method such as webhooks rather than a browser return. Correct the step without making webhooks mandatory.",
+    "Source line 50's 'always' and PayPal analogy exceed the matched old raw. State off_session=true only as the older Direct API iDEAL/SEPA subscription-update instruction from old lines 876\u2013878; omit the PayPal comparison.",
+    "Existing concept pages wiki/concepts/stripe-ideal.md, wiki/concepts/stripe-sepa-debit.md, and wiki/concepts/stripe-subscriptions.md reciprocally link this source. Check any summary that repeats the merged variant flow or setup/payment finality after the bounded source correction; the new index by itself establishes no concept-level behavior change."
+  ],
+  "unresolved_questions": [
+    "The linked 2026-11-07 hosted and Direct API variant bodies were not in this approved four-file evidence set, so current variant prerequisites, request fields, availability, mandate flow, and payment outcomes cannot be confirmed from this index."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-ideal.md",
+    "wiki/concepts/stripe-sepa-debit.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/ideal, the 2026-11-07 capture establishes the subject and links to hosted and Direct API variants only (new lines 5\u201314), so it establishes no current payment, mandate, or outcome behavior. The May 2026 guide behind [[source-stripe-subscriptions-ideal]] distinguishes hosted Checkout's first iDEAL subscription payment and free-trial-only refunded 0.01 EUR collection (old lines 16\u201318) from Direct API's generally refunded 0.01 EUR iDEAL setup collection, SetupIntent/SEPA mandate authorization, generated SEPA payment method, and later subscription charge (old lines 541\u2013549, 583\u2013585, 832\u2013850). A successful setup is not a successful SEPA payment or active subscription (old lines 870\u2013874).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/ideal, the November difference is navigation: an index links the two variants (new lines 11\u201314), while the older capture contains their full instructions (old lines 8\u201318, 541\u2013549); omission is not deprecation. [[source-stripe-subscriptions-ideal]] needs a bounded historical accuracy correction at lines 13 and 17\u201322 to separate hosted first-payment and Direct API refunded-setup flows, preserving mandate authorization and payment finality as distinct (old lines 583\u2013585, 832\u2013850, 870\u2013874). Source line 45 should make webhook monitoring optional while requiring reliable setup confirmation (old lines 832\u2013834). Source line 50 should scope off_session=true to the older Direct API update guidance and remove the unsupported PayPal analogy (old lines 876\u2013878). These are May-source defects, not newly demonstrated November behavior."
+  }
+}

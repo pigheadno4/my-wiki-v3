@@ -92,11 +92,14 @@ Private preview. Auto-retry for insufficient funds on subscription or one-off in
 
 ## ACSS Subscriptions
 
-**Checkout NOT supported** (waitlist only). **No auto-retry** — ACSS payments never retried.
+**Checkout subscription mode not yet supported** in the 2026-11-07 guide (waitlist). With Direct Debit retries enabled, Stripe can automatically retry Canadian PAD subscription payments that fail for insufficient funds; availability or enablement for a particular account is unverified.
 
-Create with `payment_behavior=default_incomplete` + `payment_method_types=['acss_debit']`. Client uses `stripe.confirmAcssDebitPayment` — opens modal, collects bank + mandate acknowledgment. Customer acknowledges once; subsequent charges need no re-authorization.
+> [!warning] Contradiction
+> The 2026-05-13 subscription guide said Canadian PAD payments were never automatically retried. The 2026-11-07 guide documents this conditional insufficient-funds retry path; see [[source-stripe-subscriptions-acss-debit]].
 
-**Default PM must be set manually** after `invoice.payment_succeeded` + `billing_reason=subscription_create`.
+Create with `payment_behavior=default_incomplete`; the 2026-05-13 Node.js example explicitly sets `payment_method_types=['acss_debit']`, while the 2026-11-07 curl sample omits that field. Client uses `stripe.confirmAcssDebitPayment` to collect bank details and mandate acknowledgment in an on-page modal. Later charges need no new mandate acknowledgment, but payment success must still be checked.
+
+**Fulfillment:** before supplying goods or services, verify the related subscription is `active` and either `invoice.paid` occurred or the underlying PaymentIntent is `succeeded`; `active` alone can precede first-payment completion. **Future default PM in the paid initial-invoice flow:** separately, after `invoice.payment_succeeded` for a new subscription (`billing_reason=subscription_create`), set `subscription.default_payment_method` from the paid invoice's method. For the trial `pending_setup_intent` path, successful verification automatically sets the subscription default.
 
 **Trial period**: returns `pending_setup_intent`; use `confirmAcssDebitSetup` / `verifyMicrodepositsForSetup`. SetupIntent `succeeded` → auto-sets `default_payment_method`.
 
@@ -108,4 +111,4 @@ Create with `payment_behavior=default_incomplete` + `payment_method_types=['acss
 - [[source-stripe-acss-accept-payment]] — integration guide: Checkout + Direct API paths, verification options, microdeposit flow, 6 test tokens, 7 test accounts
 - [[source-stripe-acss-set-up-payment]] — save for future: SetupIntent (Checkout setup mode + Direct API), off-session charging with mandate, reuse PM with new mandate
 - [[source-stripe-acss-custom-pad-agreement]] — custom PAD mandate guide: 9 required elements, pre-notification waiver must be bold, exact recourse text, when/when-not-to-use
-- [[source-stripe-subscriptions-acss-debit]] — ACSS subscription: Checkout NOT supported, no auto-retry, manual default PM webhook, 10-day microdeposit window, trial SetupIntent flow
+- [[source-stripe-subscriptions-acss-debit]] — Canadian PAD subscription guide (2026-05-13 and 2026-11-07 captures): conditional insufficient-funds retries, payment-confirmed fulfillment, default-PM webhook, and microdeposit/trial flows

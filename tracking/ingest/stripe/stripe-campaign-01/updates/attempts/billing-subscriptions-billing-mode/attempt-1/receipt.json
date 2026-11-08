@@ -1,0 +1,90 @@
+{
+  "job_id": "billing-subscriptions-billing-mode",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md",
+  "raw_sha256": "796e0bfc894830fa679e1db8aada40a777048ae925a7e75d5e95a7ff773e6194",
+  "source_before_sha256": "7b79ae74f05da169ab436a0340271e4a6a151ce7e70d9f75415b883431272782",
+  "source_page": "---\ntitle: \"Stripe \u2014 Flexible Billing Mode for Subscriptions\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/billing-mode\"\nraw_files:\n  - \"stripe-billing-subscriptions-billing-mode-2026-11-07.md\"\n  - \"stripe-subscriptions-billing-mode-2026.md\"\ntags: [stripe, subscriptions, flexible-billing, billing-mode, proration-discounts, api-version]\n---\n\n## Overview\n\nStripe's subscription billing mode guide documents the `classic` and `flexible` modes, their version-dependent defaults, creation and migration routes, and proration discount display. The 2026-11-07 capture expands the post-migration and subscription-schedule guidance. The 2026-05-13 capture remains historical evidence for the already documented default and prospective-migration rules. [[stripe-subscriptions]] is the central concept; [[stripe]] is the company route.\n\n## Key facts\n\n- Flexible is recommended for new Billing users, but not required. Classic remains for backward compatibility. A subscription cannot be migrated from flexible back to classic.\n- When an API request omits `billing_mode`, the guide documents `flexible` for `2025-08-27.preview` and later preview versions, or `2025-09-30.clover` GA and later GA versions; all other API versions default to `classic`. Upgrading to the cited GA version changes the default for new subscriptions, so integrations that need classic must set it explicitly.\n- Dashboard creation or classic-to-flexible updating is described as possible regardless of the integration API version; full modification in the API requires `2025-06-30.basil` or later. The Dashboard default setting governs new Dashboard-created subscriptions and Dashboard-generated Payment Links and Pricing Tables, not API-created subscriptions or migrations. API-version default logic separately governs subscriptions from API-created Payment Links and Pricing Tables. The guide's general basil prerequisite should be read with this Dashboard/full-API distinction.\n- Flexible billing can be selected on subscription creation or through the `/v1/subscriptions/{id}/migrate` API for an existing classic subscription. The May Node and November curl examples are dated examples, not evidence of a performed migration. The guide also points to Checkout Sessions, Subscription Schedules, and Quotes as creation routes.\n- Migration changes behavior only for new activity. Pre-migration resources, including pending proration invoice items, are not recalculated. The November guide adds that credit prorations use the original debited amount, usage-based billing uses the price effective when usage was reported, and the billing cycle anchor is never automatically reset.\n- For a subscription with an active schedule, the November guide directs migration through the migrate API; the Dashboard does not support this case, and API migration updates the schedule's `billing_mode` automatically. An unstarted schedule with no active subscription cannot be migrated; cancel and recreate it with `billing_mode` set to `flexible`. When creating a schedule with `from_subscription`, omit `billing_mode` if the subscription already has one: the schedule inherits it, and specifying it produces an error.\n- For flexible subscriptions, `proration_discounts=itemized` (recommended) displays gross proration amounts and discount amounts; `included` preserves the older net-amount, zero-discount-amount display. Setting itemized requires API version `2025-06-30.basil` or later and a create or migrate route.\n\n## Detail locators\n\n- Two modes, recommendation, nonmandatory adoption, and one-way migration: November raw lines 9\u201324; May raw lines 8\u201323.\n- Dashboard versus API version authority and defaults: November lines 28\u201369; May lines 27\u201368. For Dashboard creation, the November editor places Billing mode under **Billing and payment collection** (lines 41\u201346); for Dashboard migration, under **Advanced settings** (lines 520\u2013523). The May UI steps differ (lines 40\u201345 and 498\u2013501).\n- Dated creation request and response examples: November lines 71\u2013510 (curl); May lines 70\u2013488 (Node). The illustrated subscription remains incomplete, its invoice open, and its PaymentIntent requires confirmation (November lines 431, 447, 498); the example proves no successful payment.\n- Migration route, prospective effect, and expanded consequences: November lines 512\u2013570; May lines 490\u2013536. Both captures describe the prospective/no-recalculation boundary. Both also say `billing_mode.updated_at` in migration prose while labeling the response example `billing_mode_details.updated_at` (November lines 529 and 541\u2013549; May lines 507 and 525\u2013535). That inconsistency does not establish a response-field contract.\n- Active and unstarted schedule cases, plus inheritance and `from_subscription` error: November lines 572\u2013578; May line 540 covers the inheritance/error case only.\n- Itemized versus included proration discount display and API floor: November lines 580\u2013603; May lines 542\u2013578.\n\n## Related\n\n- [[stripe-subscriptions]] \u2014 central subscriptions concept\n- [[source-stripe-subscriptions-billing-mode-compare]] \u2014 mode comparison\n- [[source-stripe-subscriptions-mixed-interval]] \u2014 mixed intervals\n- [[stripe]] \u2014 company\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-billing-mode-2026-11-07|Stripe billing mode guide, captured 2026-11-07]] \u2014 complete guide, 1023 lines\n- [[raw/stripe-subscriptions-billing-mode-2026|Stripe billing mode guide, captured 2026-05-13]] \u2014 prior complete guide, 966 lines\n",
+  "quotes": [
+    {
+      "text": "You can configure each subscription to use one of two billing modes:",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md:9"
+    },
+    {
+      "text": "For API version `2025-08-27.preview` and any later preview version, and for `2025-09-30.clover` (GA) and any later GA version, the default is flexible.",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md:64"
+    },
+    {
+      "text": "The flexible behaviors take effect for all new activity on the subscription after migration. However, Stripe doesn\u2019t recalculate any resources created before migration, including pending proration `Invoice Items`.",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md:514"
+    },
+    {
+      "text": "The Dashboard doesn\u2019t support billing mode migration for subscriptions with active schedules.",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md:574"
+    },
+    {
+      "text": "If a subscription schedule hasn\u2019t started yet and has no active subscription, you can\u2019t migrate it. Cancel and recreate the schedule with `billing_mode` set to `flexible`.",
+      "location": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md:576"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "For API version `2025-08-27.preview` and any later preview version, and for `2025-09-30.clover` (GA) and any later GA version, the default is flexible.",
+      "location": "raw/stripe-subscriptions-billing-mode-2026.md:63"
+    },
+    {
+      "text": "The flexible behaviors take effect for all new activity on the subscription after migration. However, Stripe doesn\u2019t recalculate any resources created before migration, including pending proration `Invoice Items`.",
+      "location": "raw/stripe-subscriptions-billing-mode-2026.md:492"
+    },
+    {
+      "text": "You can\u2019t migrate a subscription from flexible billing mode to classic billing mode.",
+      "location": "raw/stripe-subscriptions-billing-mode-2026.md:15"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 1023
+      }
+    ],
+    "raw/stripe-subscriptions-billing-mode-2026.md": [
+      {
+        "start": 1,
+        "end": 966
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-billing-mode.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3c3936578b633a436a6b3a8b/content.diff": [
+      {
+        "start": 1,
+        "end": 602
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "billing-subscriptions-billing-mode-correct-fixed-default",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "`subscription_data.billing_mode: { type: 'flexible' }` \u2014 enhanced, more predictable billing behavior. Default is `'fixed'`. Requires API version `2025-06-30.basil` or later.",
+      "new_text": "This guide documents two subscription billing modes, `classic` and `flexible`; `fixed` is not one of them. When an API create request omits `billing_mode`, flexible is the documented default for `2025-08-27.preview` and later preview versions or `2025-09-30.clover` GA and later GA versions; other API versions default to classic. Full API modification of flexible subscriptions requires `2025-06-30.basil` or later; Dashboard creation and classic-to-flexible updates have a separate version boundary. See [[source-stripe-subscriptions-billing-mode]] for the dated guide and migration/schedule limits.",
+      "reason": "Correct a pre-existing concept default that names an undocumented mode, and keep API defaults and Dashboard version scope explicit.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/billing-mode, [[source-stripe-subscriptions-billing-mode]] now presents the two documented modes, classic and flexible, the one-way migration, and preview-versus-GA API defaults (new lines 9\u201316, 62\u201369; old lines 8\u201315, 61\u201368). Dashboard defaults and authority are separate (new lines 33\u201356; old lines 32\u201355). Migration affects future activity without recalculating existing resources (new 512\u2013555; old 490\u2013492). The new schedule distinctions are at 572\u2013578. The linked concept's former fixed-default claim was inaccurate; the captures do not show account settings, an actual migration, or payment success.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/billing-mode, [[source-stripe-subscriptions-billing-mode]] incorporates newly explicit post-migration credit-proration, usage-price, and billing-anchor consequences (new lines 553\u2013562 versus old 490\u2013492), plus active-schedule API migration and unstarted-schedule limits (new 572\u2013578 versus old 538\u2013540). The preview-version default exception already appeared in May (old 61\u201364; new 62\u201365), so the source's earlier-to-classic shorthand and the concept's fixed-default claim are pre-existing errors, not new Stripe behavior. Node-to-curl examples and Dashboard editor placement changed (old 74\u201394, 498\u2013501; new 75\u201384, 520\u2013523). The prose/example updated_at field mismatch persists (old 507, 525\u2013535; new 529, 541\u2013549), and no response field or payment outcome was independently tested."
+  },
+  "status": "candidate_ready"
+}

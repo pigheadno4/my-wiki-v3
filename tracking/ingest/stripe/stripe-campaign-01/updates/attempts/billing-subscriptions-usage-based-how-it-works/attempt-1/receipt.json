@@ -1,0 +1,103 @@
+{
+  "job_id": "billing-subscriptions-usage-based-how-it-works",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md",
+  "raw_sha256": "084ee5a8a2aacfd5e8e33640737797221166a952c91257b98d82252e1113e2aa",
+  "source_before_sha256": "f67af3d5d507c3330e750909a58327df59ad55dc2b2a0ee2915e3f0fabfde0fc",
+  "source_page": "---\ntitle: \"Stripe: How Usage-Based Billing Works\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/billing/subscriptions/usage-based/how-it-works\nraw_files:\n  - \"stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md\"\n  - \"stripe-usage-based-billing-how-it-works-2025.md\"\ntags: [stripe, billing, usage-based, meters, subscriptions, pricing]\n---\n\n## Summary\n\nThis guide explains **basic usage-based billing with Stripe Billing Meters**: its four-part lifecycle and six core objects. The 2026-11-07 capture adds Stripe's recommendation to use Metronome for a new usage-based integration unless maintaining an existing Billing Meters integration, including when adding usage pricing to a flat-rate subscription. It is a captured product-selection recommendation, not a Meter API deprecation, mandatory migration, or account-eligibility determination. The 2026-05-05 capture described the basic Meter path without that Metronome recommendation.\n\n> [!warning] Contradiction\n> The earlier source summary called the Meter API the \u201cnew v2 approach,\u201d and the linked concept called it the \u201ccurrent approach.\u201d The November guide instead presents Billing Meters as the **basic** path and recommends Metronome for new integrations. These dated descriptions do not establish that Billing Meters stopped working or that any account is eligible for Metronome.\n\n## Metronome versus basic Billing Meters\n\nIn Stripe's November comparison, the basic path sends meter events to Stripe and aggregates usage with Billing Meters for invoicing. Metronome is described as handling event ingestion, real-time metering and rating, and contract management, then passing finalized charges to Stripe for invoicing and payment collection. This describes the component boundary; no merchant invoice or payment outcome was observed.\n\nThe same capture attributes live usage and credit-balance visibility, real-time credit burndown, enterprise commits/minimum spend/ramps, and dimensional or composite pricing to Metronome. It says basic billing credits reconcile at invoice time and could be exceeded during a cycle. The page also documents **Meter Event Summaries** for a custom time period, updated asynchronously. Thus its absence-of-live-totals statement concerns real-time visibility, not a prohibition on querying a processed mid-cycle summary. The linked feature comparison is outside this pinned evidence, so these are the page's comparative claims rather than a complete feature matrix or account-specific verification.\n\n## Key details\n\n### Four-component basic lifecycle\n\n1. **Ingestion** \u2014 send customer usage to Stripe as meter events.\n2. **Product catalog** \u2014 create usage-based and recurring prices.\n3. **Billing** \u2014 subscribe the customer to prices; the documented workflow invoices consumed usage.\n4. **Monitoring** \u2014 threshold alerts and usage analytics.\n\nThe November text diagram connects customer action, meter event and aggregation, price rating, subscription, invoice, and Meter Event Summaries. It illustrates the architecture; it is not evidence of an executed ingest or invoice.\n\n### Six core concepts\n\n| Term | Definition |\n| --- | --- |\n| **Customer-configured Account or Customer** | Alternative billing identities: a customer-configured Accounts v2 `Account` or a Customers v1 `Customer`. This table does not make their API parameters interchangeable in every operation. |\n| **Subscription** | Recurring relationship with customer and one or more prices; governs billing cycles and invoice generation. |\n| **Price** | Product-linked configuration of amount and billing frequency, including usage-based charges. |\n| **Meter** | Tracks reported usage and specifies an aggregation formula over a billing period. |\n| **Meter event** | Reported usage with event name, customer identifier and numeric value; optional timestamp, unique idempotency identifier and segmentation dimensions. |\n| **Meter Event Summary** | Aggregated usage for a chosen customer and custom time period; updates asynchronously as events process. |\n\n## Related pages\n\n- [[stripe-usage-based-billing]] \u2014 concept page\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07]] \u2014 Stripe guide captured 2026-11-07 (74 lines)\n- [[stripe-usage-based-billing-how-it-works-2025]] \u2014 Stripe guide captured 2026-05-05 (42 lines)\n",
+  "quotes": [
+    {
+      "text": "Unless you\u2019re maintaining an existing Billing Meters integration, use [Metronome](https://docs.stripe.com/billing/usage-based.md) \u2014 Stripe\u2019s primary usage-based billing platform \u2014 for any new integration, including adding usage-based pricing to existing flat-rate subscriptions.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md:11"
+    },
+    {
+      "text": "In basic usage-based billing, you ingest meter events through the Stripe API and the Billing Meters API aggregates usage at the end of the billing period before generating an invoice.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md:13"
+    },
+    {
+      "text": "Basic usage-based billing supports billing credits that reconcile at invoice time, but customers can exceed their balance during the cycle.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md:18"
+    },
+    {
+      "text": "The Stripe usage-based billing lifecycle is made up of four major components:",
+      "location": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md:28"
+    },
+    {
+      "text": "Meter event summaries update asynchronously when meter events process.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md:70"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The Stripe usage-based billing lifecycle is made up of four major components:",
+      "location": "raw/stripe-usage-based-billing-how-it-works-2025.md:10"
+    },
+    {
+      "text": "A meter event represents a unit of usage that you report to Stripe for usage-based billing.",
+      "location": "raw/stripe-usage-based-billing-how-it-works-2025.md:35"
+    },
+    {
+      "text": "Meter event summaries update asynchronously when meter events process.",
+      "location": "raw/stripe-usage-based-billing-how-it-works-2025.md:42"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "raw/stripe-usage-based-billing-how-it-works-2025.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-how-it-works.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4de42ac4fa02be7c219fc03a/content.diff": [
+      {
+        "start": 1,
+        "end": 75
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "usage-based-definition-routing",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "Stripe's usage-based billing lets you charge customers based on actual product consumption \u2014 API calls, data processed, seats used, etc. The current approach uses the **Meter API** (billing v2), which is distinct from the legacy `aggregate_usage` metered price approach.",
+      "new_text": "Stripe's usage-based billing lets you charge customers based on actual product consumption \u2014 API calls, data processed, seats used, etc. This page details the **basic Billing Meters API** path (billing v2), distinct from the legacy `aggregate_usage` metered price approach. In the 2026-11-07 guide, Stripe recommends Metronome for new usage-based integrations unless maintaining an existing Billing Meters integration; that recommendation is not Meter API deprecation or forced migration.\n\n> [!warning] Contradiction\n> The earlier \u201ccurrent approach\u201d wording reflected the Meter-based guide, while the November guide now recommends Metronome for new integrations. The capture does not establish account-specific Metronome eligibility or removal of Billing Meters.",
+      "reason": "Replace unqualified current Meter recommendation with dated path selection while retaining legacy distinction.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The comparative Metronome page was linked but not pinned in this job."
+      ]
+    },
+    {
+      "update_id": "usage-based-source-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-how-it-works]] \u2014 lifecycle overview, six core concept definitions, Meter/meter event/meter event summary explained",
+      "new_text": "- [[source-stripe-usage-based-billing-how-it-works]] \u2014 dated basic Billing Meters lifecycle and six definitions, with Stripe's 2026-11-07 Metronome recommendation for new integrations and asynchronous summary qualification",
+      "reason": "Reciprocal route to updated source and its scope distinction.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/how-it-works, the November guide scopes this page to basic Billing Meters and recommends Metronome for new integrations unless maintaining an existing Meter integration (new 9-24). For the basic path, the four components remain ingestion, product catalog, billing and monitoring, with six definitions including customer-configured Account or Customer, subscription, price, meter, meter event and asynchronously updated Meter Event Summary (new 26-70; old 8-42). [[source-stripe-usage-based-billing-how-it-works]] now labels this as the basic path, preserving the May Meter lifecycle as historical evidence. No event ingestion, invoice, payment, account eligibility or installed Metronome integration was observed.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/usage-based/how-it-works, the substantive addition is Stripe's Metronome recommendation and comparative claims about real-time visibility, credit burndown, enterprise contracts, and dimensional/composite pricing (new 9-24; absent old 4-19). [[source-stripe-usage-based-billing-how-it-works]] replaces the unqualified 'new v2 approach' framing with dated basic Meter scope and retains the four steps and six definitions (new 26-70; old 8-42). The new text diagram and pricing-model link are presentation/navigation (new 39-49, 72-74; old 19-20). The no-live-mid-cycle-totals statement coexists with asynchronously updated custom-period Meter Event Summaries (new 17, 70; old 42), and the comparison does not establish Meter deprecation, mandatory migration, specific eligibility, or a live invoice/payment result."
+  },
+  "status": "candidate_ready"
+}

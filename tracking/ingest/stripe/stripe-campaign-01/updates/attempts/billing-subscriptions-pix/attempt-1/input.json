@@ -1,0 +1,99 @@
+{
+  "job_id": "billing-subscriptions-pix",
+  "queue_id": 42,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/pix",
+  "raw_path": "raw/stripe-billing-subscriptions-pix-2026-11-07.md",
+  "raw_sha256": "77415ef8a2881643bcb38823c6987bfbc8df88afe3151b3f8f5e9f9394dbc973",
+  "prior_raw_path": "raw/stripe-subscriptions-pix-2026.md",
+  "prior_raw_sha256": "8e8d51bddf6f0f4f0044849b9818d1f4cdb8a2d4218deeed90844eff6360ea76",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/8e2752de96676b2b50aeb569/content.diff",
+  "diff_sha256": "8821a397fbf9a352af4fa0855a3e4b2c16b34503444d2dbbfaecc7684d2473a1",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-pix.md"
+  ],
+  "source_before_sha256": "555b089b100688e996ad1744e5b6cc6cf20f62ce2e30e2eb0c893d9d161f20d0",
+  "section": "billing",
+  "new_words": 63,
+  "new_lines": 15,
+  "old_words": 7125,
+  "old_lines": 1059,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-pix.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-pix/attempt-1/receipt.json",
+  "receipt_sha256": "5056f7d0c4c13158c2e2e924b49ca1141ba2e6ad16773267caf37049913fa9e5",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-pix/attempt-1/review.json",
+  "review_sha256": "131264fc086d7471dbfd859f5c75a264c40d429dcd82453f07da8f700fc2b331",
+  "affected_concepts": [
+    "wiki/concepts/stripe-pix.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-pix-2026-11-07.md",
+  "new_raw_sha256": "77415ef8a2881643bcb38823c6987bfbc8df88afe3151b3f8f5e9f9394dbc973",
+  "prior_raw": "raw/stripe-subscriptions-pix-2026.md",
+  "findings": [
+    "The 2026-11-07 capture of https://docs.stripe.com/billing/subscriptions/pix is a 15-line navigation index for Stripe-hosted/Checkout, Setup Intents API, and Subscriptions API variants (new lines 5\u201315). The 1062-line diff chiefly replaces the former full combined guide with variant links. It proves no current change to Pix Autom\u00e1tico, mandate fields, customer data, payment outcomes, eligibility, or availability.",
+    "The May 2026 full guide explains Pix Autom\u00e1tico as a customer-authorized mandate for recurring charges (old line 8). Hosted Checkout creates a subscription-mode Session with Pix mandate options and says authorization in the banking app activates the subscription (old lines 34\u201383). The Setup Intents variant sets up a Pix PaymentMethod without an initial payment, then creates a subscription with that method; a successful SetupIntent is setup authorization, whereas active subscription follows successful payment (old lines 126, 192\u2013198, 474, 531\u2013577). The Subscriptions API variant creates an initially incomplete subscription/PaymentIntent, confirms Pix payment, and describes activation only after successful payment (old lines 618\u2013622, 688\u2013692, 905\u2013924).",
+    "Source lines 13 and 17 say Pix mandate_options.amount and payment_schedule are required without a variant qualifier. The older hosted and SetupIntent examples include both (old lines 53\u201380, 198\u2013239), but the Subscriptions API prose expressly says mandate options are optional, and its example includes amount without payment_schedule (old lines 688\u2013750). A source correction must not convert example fields into universal required request properties.",
+    "Source lines 13 and 52\u201358 call CPF/CNPJ generally required by Brazilian government. The older guide's billing-details tables say the government requires tax ID when completing cross-border transactions (old lines 317\u2013323, 764\u2013770); the form examples mark all three fields required for those example integrations. The matched raw does not establish a universal tax-ID rule for every Pix subscription or buyer. The 20 BRL monthly stock-photo price is explicitly an example (old lines 20\u201328, 132\u2013140, 628\u2013636), not a general BRL-only eligibility proof.",
+    "The older guide's outcomes have separate setup, payment, and mandate states. A QR code or return URL is not proof of payment; the SetupIntent return page verifies setup status (old lines 449\u2013474), and the Subscriptions API return page verifies PaymentIntent status (old lines 896\u2013924). A mandate may later be revoked, producing mandate.updated and requiring an on-session replacement (old lines 85\u201387, 581\u2013583, 983\u2013985). Its test email patterns are sandbox simulations, not production timings or guaranteed recurring success (old lines 99\u2013120, 595\u2013616, 997\u20131018).",
+    "The old Subscriptions API guide additionally warns that price above a mandate amount might fail, a more restrictive schedule than a new billing interval causes recurring failure, and Pix can be charged only once per specified mandate cycle; add-on purchases requiring immediate payment use a separate on-session one-time payment (old lines 1020\u20131059). These are material historical limits absent from the current summary, but the new index does not confirm their present-day status."
+  ],
+  "substantive_changes": [
+    "No substantive operational change is established by the 2026-11-07 index. The observed change is presentation/navigation to three variant URLs (new lines 9\u201315), replacing the old combined capture's full hosted, SetupIntent, and Subscriptions API sections."
+  ],
+  "conflicts": [
+    "Source lines 13 and 17 claim mandate options/amount/payment_schedule are required across Pix subscriptions; old line 692 explicitly makes mandate options optional in the Subscriptions API path, and its code supplies amount but no payment_schedule (old lines 701\u2013750). Qualify requirements by variant; do not infer an API schema requirement from code.",
+    "Source lines 13 and 52\u201358 and reciprocal wiki/concepts/stripe-pix.md:20\u201326 plus wiki/concepts/stripe-subscriptions.md:250 and wiki/stripe-index.md:662 state CPF/CNPJ required without the old table's cross-border condition (old lines 317\u2013323, 764\u2013770). Preserve the example form's required inputs separately from the government's stated cross-border rule.",
+    "Source line 50 says QR scan activates the subscription; in the old Subscriptions API path, successful PaymentIntent/payment precedes active status (old lines 905\u2013924). Source line 43's SetupIntent succeeded means payment-method setup, not an initial subscription payment (old lines 474, 531\u2013577). Correct outcome wording and reciprocal concept line 48.",
+    "Source line 13's Brazil-only/BRL-only assertion is not established as a general eligibility rule by this matched old guide, which uses a 20 BRL Brazilian stock-photo example and says a Brazilian Pix-enabled bank account is needed to complete/cancel the live example (old lines 20\u201328, 97, 628\u2013636, 995). Separate authority would be needed to retain the universal claim.",
+    "Source line 19's higher mandate amount is a conditional suggestion for future upgrades without returning on-session (old line 55); old line 1024 still warns increases above mandate amount might fail and customer-set limits are not visible to Stripe. Do not promise all upgrades succeed.",
+    "Reciprocal wiki/concepts/stripe-pix.md:14 says all subsequent charges happen automatically and line 48 compresses mandate authorization and successful payment into scan-to-activation; qualification is needed for failed/revoked mandates and successful-payment-dependent activation (old lines 924, 983\u2013985, 1020\u20131059)."
+  ],
+  "historical_claims_to_preserve": [
+    "May 2026 Pix Autom\u00e1tico mandate flow and the three distinct integration paths, including SetupIntent setup without an initial payment versus Subscriptions API initial PaymentIntent and success-dependent activation (old lines 8, 10\u201314, 122\u2013126, 192\u2013198, 618\u2013622, 688\u2013692, 922\u2013924).",
+    "Accounts v2 customer_account and Customers v1 customer are different example identities; the old guide described Accounts v2 general availability for Connect users and public preview for other Stripe users, including a preview-version condition (old lines 146\u2013160, 200\u2013239, 642\u2013656, 694\u2013750).",
+    "Mandate revocation, conditional pricing/schedule failures, retry exhaustion options, and once-per-mandate-cycle scheme restriction, all dated to the older guide (old lines 85\u201387, 1020\u20131059).",
+    "Tax identifier language limited to cross-border transactions in the old billing-detail tables, with 000.000.000-00 and six email patterns expressly test-only (old lines 317\u2013337, 589\u2013616, 764\u2013784)."
+  ],
+  "unresolved_questions": [
+    "The November hosted, Setup Intents API, and Subscriptions API variant bodies are not in this approved four-file comparison, so their current requirements, eligibility, request schemas, QR/mandate lifecycle, and outcomes remain unverified.",
+    "Separate authority may support Brazil/BRL limits; the matched old guide alone provides examples and a live-flow bank-account requirement, not a universal eligibility rule."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw6",
+  "reviewer_agent": "/root/s01ur5",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-pix-2026-11-07.md",
+      "sha256": "77415ef8a2881643bcb38823c6987bfbc8df88afe3151b3f8f5e9f9394dbc973",
+      "lines": 15
+    },
+    {
+      "path": "raw/stripe-subscriptions-pix-2026.md",
+      "sha256": "8e8d51bddf6f0f4f0044849b9818d1f4cdb8a2d4218deeed90844eff6360ea76",
+      "lines": 1059
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-pix.md",
+      "sha256": "555b089b100688e996ad1744e5b6cc6cf20f62ce2e30e2eb0c893d9d161f20d0",
+      "lines": 92
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/8e2752de96676b2b50aeb569/content.diff",
+      "sha256": "8821a397fbf9a352af4fa0855a3e4b2c16b34503444d2dbbfaecc7684d2473a1",
+      "lines": 1062
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-pix-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-pix-review.json"
+}

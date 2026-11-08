@@ -89,15 +89,14 @@ Private preview. Auto-retry for insufficient funds on subscription or one-off in
 
 ## Subscription integration
 
-Flow: SetupIntent (`au_becs_debit`) → `auBankAccount` Element → `confirmAuBecsDebitSetup()` → share mandate URL → create Customer with PM as default → create subscription.
+Flow: server SetupIntent → `auBankAccount` Element or React `AuBankAccountElement` and DDR acceptance → `confirmAuBecsDebitSetup()` → share Mandate URL → store the payment method as default on a customer-configured Account v2 or Customer v1 → create subscription. The May 2026 Node.js SetupIntent example selects `au_becs_debit` explicitly; the November 2026 guide enables it in the Dashboard and uses `automatic_payment_methods` for eligible methods. After setup, share the Mandate URL; the guide recommends adding the business name, applicable amount/schedule and DDR link. The accepted DDR and service agreement must remain shareable at all times. Before fulfilling the first payment, require `invoice.paid` or a `succeeded` underlying PaymentIntent **and** an `active` related subscription; `active` alone can precede payment success.
 
-**Critical: BECS payments are never automatically retried**, even if a retry schedule is configured.
-
-After `SetupIntent.succeeded`: must share mandate URL, business name, payment schedule, DDR link with customer. Mandate URL at `Mandate.payment_method_details.au_becs_debit.url`.
+> [!warning] Contradiction
+> The May 2026 subscription guide says BECS payments are never automatically retried. The November 2026 guide says Stripe can retry an insufficient-funds AU BECS payment when Direct Debit retries is enabled. The adjacent Billing Retries section records private-preview availability from separate evidence. Do not infer that any account has access or that other BECS failure reasons are retried. See [[source-stripe-subscriptions-becs-debit]].
 
 ## Sources
 
 - [[source-stripe-au-becs-debit]] — primary source: settlement, mandates, disputes, refunds, debit notifications, statement descriptors
 - [[source-stripe-au-becs-accept-payment]] — integration guide: Checkout + Elements + iOS + Android, 10 test accounts, target_date
 - [[source-stripe-au-becs-set-up-payment]] — save for future: SetupIntent (Elements + iOS + Android), AuBankAccountElement, DDR mandate requirements, off-session charging
-- [[source-stripe-subscriptions-becs-debit]] — subscription setup: no-retry rule, mandatory mandate sharing, SetupIntents flow, billing_cycle_anchor + trial_end
+- [[source-stripe-subscriptions-becs-debit]] — May and November 2026 AU BECS subscription guide: SetupIntent and DDR, first-payment check, conditional insufficient-funds retry, anchor and trial

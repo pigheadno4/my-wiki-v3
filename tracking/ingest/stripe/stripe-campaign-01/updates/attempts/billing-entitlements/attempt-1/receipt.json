@@ -1,0 +1,143 @@
+{
+  "job_id": "billing-entitlements",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-entitlements-2026-11-07.md",
+  "raw_sha256": "183ca6c21620fa338fc4e82e7442bce7b579dbc425c378f5e92bce7cfcc8393b",
+  "source_before_sha256": "f96005f9fac039ee16c0f9166b2bb070429169e2e60c162d9e26bef311d06e75",
+  "source_page": "---\ntitle: \"Stripe Billing \u2014 Entitlements\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/entitlements\"\nraw_files:\n  - \"stripe-billing-entitlements-2026.md\"\ntags: [stripe, billing, entitlements, subscriptions, feature-flags, provisioning]\n---\n\n## Summary\n\nAs documented in Stripe's 2026-05-13 Dashboard and API guide, Stripe Entitlements maps internal product features to Stripe Products and tracks customer entitlements through subscriptions. The guide assumes Stripe Subscription and Customer resources; the application uses entitlement events or a list check to provision access.\n\n## Key concepts\n\n- **Feature**: a named capability with a unique `lookup_key` (e.g. `premium-support`, `advanced-reporting`). The lookup key is the stable identifier used to gate access in application code.\n- **Product-feature attachment**: a feature can be attached to multiple products. When a customer subscribes to a product, they gain entitlements to all attached features.\n- **Active entitlement**: an `entitlements.active_entitlement` object that is live as long as the customer maintains an active subscription for the corresponding product.\n\n## Billing period lag\n\nIn the 2026-05-13 Dashboard and API guide, existing subscriptions pick up product-feature mapping changes at the **start of the next billing period**, not immediately.\n\n## Provisioning workflow\n\n1. Create features via API (`stripe.entitlements.features.create`) or Dashboard.\n2. Attach features to products (`stripe.products.createFeature`).\n3. Listen for `entitlements.active_entitlement_summary.updated` webhook to drive provisioning:\n   - **Grant access**: feature appears in `entitlements.data`\n   - **Revoke access**: reconcile against the complete active-entitlement list before disabling a feature absent from `entitlements.data` when the summary may be truncated (up to 10 entries); use `entitlements.url` to fetch all pages for a customer with more than 10 active entitlements. Absence from a capped summary alone is not proof of revocation.\n\n## Webhook: `entitlements.active_entitlement_summary.updated`\n\nIn the 2026-05-13 API variant, this event is used when entitlements change through subscription creation, updates, or cancellation. Its `entitlements.active_entitlement_summary` payload contains a current summary, but `entitlements.data` is capped at 10 items and may omit active features.\n\n- `entitlements.data` max 10 items in summary payload \u2014 use `entitlements.url` for the complete paginated list if the customer has more than 10 active entitlements.\n- `previous_attributes.entitlements.data` shows what changed (useful for diffing).\n\n## Polling API\n\n```js\nstripe.entitlements.activeEntitlements.list({ customer: '{{CUSTOMER_ID}}' })\n```\n\nIn the 2026-05-13 API variant, this returns paginated `entitlements.active_entitlement` objects. Use for startup checks, authorization gates, or reconciliation after webhook delivery failure. Stripe recommends persisting entitlements locally for faster resolution.\n\n## Feature management\n\nThe following management limits come from the 2026-05-13 Dashboard variant.\n\n| Action | Notes |\n|---|---|\n| Edit feature | Can change name and metadata; **lookup key cannot be changed after creation** |\n| Remove from product | Detaches feature; existing subscribers unaffected until next billing period |\n| Archive feature | Irreversible. Archived features still generate entitlements on existing products. Archived lookup key can be reused. |\n\n## Related pages\n\n- [[stripe-entitlements]] \u2014 concept page\n- [[stripe]] \u2014 company page\n- [[stripe-subscriptions]] \u2014 subscriptions overview\n\n## Related raw API references\n\n- [[raw/stripe-billing-entitlements-2026-11-07|2026-11-07 variant index]] \u2014 links to Dashboard and API variants; their current contents were not captured here.\n\n## Raw Sources\n\n- [[raw/stripe-billing-entitlements-2026|2026-05-13 Entitlements guide]] \u2014 fully captured Dashboard and API variants behind the dated summary above.\n",
+  "quotes": [
+    {
+      "text": "# Entitlements",
+      "location": "raw/stripe-billing-entitlements-2026-11-07.md:5"
+    },
+    {
+      "text": "Determine when you can grant or revoke product feature access to customers.",
+      "location": "raw/stripe-billing-entitlements-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-entitlements-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Dashboard](https://docs.stripe.com/billing/entitlements.md?dashboard-or-api=dashboard)",
+      "location": "raw/stripe-billing-entitlements-2026-11-07.md:13"
+    },
+    {
+      "text": "- [API](https://docs.stripe.com/billing/entitlements.md?dashboard-or-api=api)",
+      "location": "raw/stripe-billing-entitlements-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This guide assumes that you\u2019re already using Stripe [Subscriptions](https://docs.stripe.com/billing/subscriptions/build-subscriptions.md) and [Customer](https://docs.stripe.com/invoicing/customer.md) resources.",
+      "location": "raw/stripe-billing-entitlements-2026.md:19"
+    },
+    {
+      "text": "When a customer\u2019s entitlements change because they subscribe to a product, upgrade, downgrade, or cancel, Stripe fires the `entitlements.active_entitlement_summary.updated` webhook. Use this event to drive access provisioning in your own system.",
+      "location": "raw/stripe-billing-entitlements-2026.md:179"
+    },
+    {
+      "text": "The entitlement summary\u2019s `entitlements.data` array contains a maximum of 10 entitlements. If a customer has more than 10 active entitlements, use the `entitlements.url` field in the payload to fetch the complete, paginated list.",
+      "location": "raw/stripe-billing-entitlements-2026.md:187"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-entitlements-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-billing-entitlements-2026.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 339
+      }
+    ],
+    "wiki/sources/source-stripe-billing-entitlements.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1ebbabdfcafc60aee2a0d205/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 341
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "billing-entitlements-concept-overview",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "Stripe Entitlements is a feature-gating layer built into Stripe Billing. It lets you map internal product features to Stripe Products so that Stripe automatically tracks which customers should have access to which capabilities based on their active subscription status \u2014 without custom database tables or manual provisioning logic.",
+      "new_text": "Stripe Entitlements is a feature-gating layer built into Stripe Billing. In the 2026-05-13 guide, mapping internal product features to Stripe Products lets Stripe track customer entitlements through subscriptions; the application still handles provisioning and de-provisioning from entitlement signals.",
+      "reason": "Correct the existing no-manual-provisioning overstatement while dating the guide.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-entitlements-concept-summary-object",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "| `entitlements.active_entitlement_summary` | The full entitlement snapshot for a customer; returned in webhook payloads and the polling API. |",
+      "new_text": "| `entitlements.active_entitlement_summary` | Customer entitlement summary in the webhook payload. Its `entitlements.data` array holds at most 10 items; use `entitlements.url` for the complete paginated list when the customer has more than 10 active entitlements. |",
+      "reason": "Remove the unqualified full-snapshot claim contradicted by the old guide's 10-item cap.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-entitlements-concept-provisioning",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "5. **Grant**: feature present in `entitlements.data` \u2192 enable access\n6. **Revoke**: feature absent from `entitlements.data` \u2192 disable access",
+      "new_text": "5. **Grant**: enable a feature listed in `entitlements.data`\n6. **Revoke**: before disabling a feature absent from `entitlements.data`, reconcile against the complete active-entitlement list when the summary may be truncated; for a customer with more than 10 entitlements, fetch all pages through `entitlements.url`",
+      "reason": "Prevent revocation based solely on absence from a capped summary.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-entitlements-concept-webhook",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "Fires whenever a customer's entitlements change (subscribe, upgrade, downgrade, cancel). Payload is the full current entitlement state.",
+      "new_text": "In the 2026-05-13 API guide, this event signals entitlement changes through subscriptions. The payload gives a current summary; `entitlements.data` can omit active features when the customer has more than 10 entitlements, so fetch the complete paginated list before absence-based revocation.",
+      "reason": "Qualify the second full-state claim at the webhook section.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-entitlements-concept-source-route",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)",
+      "new_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe Entitlements guide, captured in full on 2026-05-13; the 2026-11-07 capture is a Dashboard/API variant index.",
+      "reason": "Make reciprocal route precise about capture type and date.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/entitlements, the 2026-11-07 capture provides the purpose and Dashboard/API variant URLs (new raw lines 5\u201314); it does not verify their current contents or change the entitlement lifecycle. [[source-stripe-billing-entitlements]] retains the 2026-05-13 full guide, including its Subscription and Customer assumption (old raw line 19), feature mapping and application provisioning (old raw lines 97, 169\u2013187). The candidate corrects its revocation rule because `entitlements.data` stops at 10 and `entitlements.url` provides the complete paginated list (old raw line 187).",
+    "Q2": "The 2026-11-07 capture of https://docs.stripe.com/billing/entitlements is a variant index (new raw lines 9\u201314) replacing inline Dashboard/API content from the 2026-05-13 capture (old raw lines 21\u2013339), without evidence of deprecation. [[source-stripe-billing-entitlements]] therefore keeps the dated detailed source, while directly fixing the pre-existing unsafe absence and full-list wording at former source lines 29\u201337 and corresponding [[stripe-entitlements]] claims. For potentially truncated summaries, reconcile the complete active-entitlement list before revoking (old raw lines 179\u2013187). Variant-target contents, account eligibility, and payment or provisioning outcomes remain unverified."
+  },
+  "status": "candidate_ready"
+}

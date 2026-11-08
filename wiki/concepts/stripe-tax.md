@@ -119,6 +119,6 @@ Use `stripe.taxRates.create()` when you need hard-coded rates instead of automat
 - [[source-stripe-checkout-manual-tax-rates]] — Manual Tax Rates: TaxRate API, fixed + dynamic rates, 30-country list, wallet constraints, Dashboard reporting exports
 - [[source-stripe-checkout-collect-taxes]] — Comprehensive tax guide: CS automatic_tax + Tax ID Element + real-time verification; PI Tax API (calculate/record/reverse), 100+ tax ID types
 - [[source-stripe-billing-taxes-collect]] — Billing tax guide: Stripe Tax + Tax Rates for subscriptions, Elements without Intent flow, address validation, invoice.finalization_failed webhook, Credit Note refunds
-- [[source-stripe-billing-customer-tax-ids]] — Customer Tax IDs: 130+ types, "Impact in Tax Calculation" flag (reverse charge), AU/EU/GB auto-validation, VIES tooltip, 3 test magic IDs
+- [[source-stripe-billing-customer-tax-ids]] — Stripe Billing Customer Tax IDs guide (2026-05-13 and 2026-11-07 captures): dated type tables, qualified tax-impact footnote, AU ABN/EU VAT/GB VAT government checks, and object-specific validation events
 - [[source-stripe-billing-taxes-migration]] — migrating subscriptions to Stripe Tax: automated tooling + manual steps, tax_behavior immutability, schedule approach to avoid prorations
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Metronome customer/product mapping, finalization-time calculation, and threshold override

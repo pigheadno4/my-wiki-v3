@@ -1,0 +1,159 @@
+{
+  "job_id": "billing-subscriptions-usage-based-billing-credits",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md",
+  "raw_sha256": "119612e73123679fbcbbd8ffa61378c0589aa4c088ec7f664a61d61c25001e09",
+  "source_before_sha256": "91a53c96e258ff8a1b9797abf822458146fb4cb492d0f806d8b550a7932f7c43",
+  "source_page": "---\ntitle: \"Stripe: Billing Credits (Overview)\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/usage-based/billing-credits\"\nraw_files:\n  - \"stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md\"\n  - \"stripe-usage-based-billing-credits-overview-2025.md\"\ntags: [stripe, billing, usage-based, credits, credit-grants, invoicing]\n---\n\n## Summary\n\nStripe describes Credit Grants for prepaid or promotional billing credits allocated to a customer for usage-based merchant offerings. The 2026-05-05 capture labels the feature **Public preview**; the 2026-11-07 capture omits that banner. Omission does not establish general availability or eligibility for an account. Both captures retain the same core eligibility, finalization, priority, ledger, and 100-unused-grant rules. The November capture also renders the customer \u2192 Meter events \u2192 meter/price \u2192 invoice and Credit Grant \u2192 invoice relationship as text, where the old capture had no diagram rendering. See [[stripe-usage-based-billing]] and [[stripe]].\n\n## Approved and prohibited use\n\nThe guide permits free or paid credits for memberships, pay-as-you-go plans, subscriptions, or specific products and services offered by the merchant. It prohibits gift cards or gift certificates, stored value **not intended for those approved merchant offerings**, payments to third parties, and digital-wallet linking. The older source phrase \u201cstored value for non-subscription spending\u201d was too narrow: the approved list includes merchant products and services beyond subscriptions.\n\n## Grant states\n\n| State | Captured meaning |\n| --- | --- |\n| Pending | Available balance is not yet usable |\n| Granted | Eligible based on `effective_at`; omitted `effective_at` makes the grant effective immediately |\n| Depleted | Balance fully used |\n| Expired | Reached `expires_at` or manually expired; credits do not expire without this field unless manually expired |\n| Voided | Only grants never applied to an invoice can be voided; voided grants cannot apply to future invoices |\n\n> [!warning] Contradiction\n> Both captures' Granted row says `effective_at` \u201cmust occur in the future\u201d and also says omitting it makes the grant effective immediately (new line 48; old line 40). This page does not resolve exact timestamp validation, so do not infer a universal future-only requirement.\n\n## Eligibility and application\n\nA grant applies only when the invoice `period_end` is on or after `effective_at`, before `expires_at` if set, the grant has available balance **at invoice finalization**, and currency matches. Eligible charges must be subscription items using metered prices with usage reported through **Meters**. One-off invoices, one-time setup items, licensed-price items, and metered items using legacy Usage Records are excluded. Price-level applicability can further restrict a grant to specified metered prices.\n\nCredits apply **after discounts**, but before taxes and `invoice_credit_balance`. Across invoices, the first invoice to finalize uses credits first; independently finalized subscription invoices have no guaranteed order. Within an invoice, line order controls. Among multiple applicable grants, use priority (lower number first), earlier expiry, promotional category, earlier effective date, then earlier creation date. A credit shown on a preview or draft is provisional; application occurs at finalization and another invoice can consume the grant first. This can change threshold timing. Finalization and credit application do not prove customer payment settlement.\n\n## Ledger, available balance, and unused-grant cap\n\nThe Credit Balance Summary has two different amounts. **Ledger balance** reflects the sum after recorded credit and debit transactions; the grant is backed by an immutable, append-only **ledger**, but the **balance changes** as transactions are appended. **Available balance** is the amount currently usable, described as ledger balance less expired credits or unrecorded transactions.\n\nA customer can have up to **100 unused Credit Grants**; a further grant request fails at that limit. A grant counts while it is neither voided nor expired and is either pending before `effective_at` **or** has a positive ledger balance. A zero available balance with a positive ledger balance still counts, including when credits appear on a draft invoice. It stops counting when credits applied to a finalized invoice **deplete its ledger balance to zero**, or when the grant expires or is voided. Merely finalizing an invoice does not stop the count if its ledger balance remains positive.\n\n## Voids and Credit Notes\n\nVoiding an invoice reinstates applied credits to the grant, but reinstated credits expire immediately if the grant is past `expires_at`. A Credit Note does **not** reinstate those credits; the guide says to create a new grant to restore them. Neither capture documents that any particular grant, invoice, credit transaction, refund, or payment occurred.\n\n## Related pages\n\n- [[stripe-usage-based-billing]] \u2014 usage-based billing concept\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07|Billing credits guide, captured 2026-11-07]] \u2014 full current assigned capture (145 lines)\n- [[raw/stripe-usage-based-billing-credits-overview-2025|Billing credits guide, captured 2026-05-05]] \u2014 historical raw; reformatted from plain-text paste as documented by its prior source entry\n",
+  "quotes": [
+    {
+      "text": "Your customers can use billing credits to pay for memberships, pay-as-you-go plans, subscriptions, or specific products or services that you offer.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md:32"
+    },
+    {
+      "text": "You can only apply credit grants to subscription items that use [metered](https://docs.stripe.com/api/prices/object.md#price_object-recurring-usage_type) prices and report usage through [Meters](https://docs.stripe.com/api/billing/meter.md).",
+      "location": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md:62"
+    },
+    {
+      "text": "Credits apply to invoices only at the time of [finalization](https://docs.stripe.com/invoicing/integration/workflow-transitions.md#finalized).",
+      "location": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md:97"
+    },
+    {
+      "text": "A credit grant is backed by an immutable, append-only ledger.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md:107"
+    },
+    {
+      "text": "The unused credit grant limit is based on the [ledger balance](https://docs.stripe.com/api/billing/credit-balance-summary/object.md#billing_credit_balance_summary_object-balances-ledger_balance) and not the [available balance](https://docs.stripe.com/api/billing/credit-balance-summary/object.md#billing_credit_balance_summary_object-balances-available_balance).",
+      "location": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md:143"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "> **Public preview**",
+      "location": "raw/stripe-usage-based-billing-credits-overview-2025.md:6"
+    },
+    {
+      "text": "Your customers can use billing credits to pay for memberships, pay-as-you-go plans, subscriptions, or specific products or services that you offer.",
+      "location": "raw/stripe-usage-based-billing-credits-overview-2025.md:24"
+    },
+    {
+      "text": "A credit grant is backed by an immutable, append-only ledger.",
+      "location": "raw/stripe-usage-based-billing-credits-overview-2025.md:99"
+    },
+    {
+      "text": "| Depleted | The credit grant's ledger balance is zero after applying credits to a finalized invoice. |",
+      "location": "raw/stripe-usage-based-billing-credits-overview-2025.md:129"
+    },
+    {
+      "text": "The unused credit grant limit is based on the ledger balance and not the available balance.",
+      "location": "raw/stripe-usage-based-billing-credits-overview-2025.md:135"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 145
+      }
+    ],
+    "raw/stripe-usage-based-billing-credits-overview-2025.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 137
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-credits-overview.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8f6b7831cbf6df331e4de27d/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 190
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "credits-concept-preview-scope",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "Credit grants let customers pre-purchase a monetary credit amount that applies to metered-price subscription items. Credits burn down at invoice finalization. Advanced UBB (private preview) burns in real time.",
+      "new_text": "The matched Billing Credits guide describes prepaid or promotional Credit Grants that can apply to eligible metered-price subscription items at invoice finalization. Its 2026-05-05 capture carried a Public preview banner; the 2026-11-07 capture omits it, which does not establish general availability or account eligibility. Advanced UBB (private preview) burns in real time under separately sourced guidance.",
+      "reason": "Keep the different Advanced UBB claim scoped to its other source while date-qualifying this guide's preview banner and finalization rule.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "credits-concept-approved-use-scope",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Use cases**: prepayment (paid credits) and promotional (free, often with expiry). **Prohibited**: gift cards, stored value, third-party payments, digital wallet linking.",
+      "new_text": "**Use cases in the Billing Credits guide**: paid or free credits for memberships, pay-as-you-go plans, subscriptions, or specific merchant products and services. **Prohibited**: gift cards, stored value outside those approved merchant offerings, third-party payments, and digital-wallet linking.",
+      "reason": "Preserve the complete approved-use list and the specific stored-value boundary in new 29-39 and old 21-31.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "credits-concept-effective-at-tension",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Credit grant states**:\n\n| State | Description |\n| --- | --- |\n| Pending | `available_balance` not yet usable |\n| Granted | Eligible based on `effective_at`; effective immediately if not set |\n| Depleted | Balance fully used |\n| Expired | Reached `expires_at` or manually expired |\n| Voided | Never applied to any invoice; can't be applied to future invoices |",
+      "new_text": "**Credit grant states**:\n\n| State | Description |\n| --- | --- |\n| Pending | `available_balance` not yet usable |\n| Granted | Eligible based on `effective_at`; effective immediately if omitted, as the captured guide states |\n| Depleted | Balance fully used |\n| Expired | Reached `expires_at` or manually expired |\n| Voided | Never applied to any invoice; can't be applied to future invoices |\n\n> [!warning] Contradiction\n> Both captures say `effective_at` must occur in the future and also say omitting it makes the grant effective immediately (new line 48; old line 40). This source does not establish a universal future-only validation rule.",
+      "reason": "Surface the exact captured wording tension without inventing timestamp validation.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Both captures' Granted row contains future-versus-omitted-immediate wording; validation remains unresolved."
+      ]
+    },
+    {
+      "update_id": "credits-concept-ledger-balance",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Ledger vs available balance**: ledger is immutable/append-only; available = ledger minus expired/unrecorded. Unused grant limit is based on **ledger balance** (not available). Max **100 unused grants per customer**.",
+      "new_text": "**Ledger vs available balance**: the grant is backed by an immutable, append-only ledger of transactions, while its **ledger balance changes** as credits and debits are recorded. Available balance is the usable amount after expired credits or unrecorded transactions. The **100 unused-grants-per-customer** cap uses ledger balance, not available balance: a pending grant or a non-expired, non-voided grant with positive ledger balance counts, even if available balance is zero. A grant stops counting when a finalized invoice's credit application depletes ledger balance to zero, or the grant expires or is voided; invoice finalization alone does not suffice.",
+      "reason": "Correct the object of immutability and state exact unused count/stopping conditions from new 103-110,119-145 and old 95-102,111-137.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "credits-concept-source-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-credits-overview]] \u2014 billing credits overview: prohibited uses, 5 states, eligibility rules, priority ordering, ledger vs available balance, 100-grant limit, void/credit note behavior",
+      "new_text": "- [[source-stripe-usage-based-billing-credits-overview]] \u2014 Billing Credits overview: May 2026 Public preview label; November 2026 capture adds a rendered relationship diagram and preserves eligibility, priority, ledger-balance cap, and void/Credit Note rules without proving GA",
+      "reason": "Keep reciprocal route and label the precise old/new status and content boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/billing-credits, the 2026-11-07 guide describes prepaid or promotional Credit Grants for approved merchant offerings and a customer/Meter events \u2192 invoice relationship (new 5-23,29-43). [[source-stripe-usage-based-billing-credits-overview]] states the actual invoice eligibility gate: period_end relative to effective_at/expires_at, available balance at finalization, matching currency, and metered subscription prices reported through Meters; one-off, setup, licensed, and legacy Usage Records lines are excluded (new 53-69; old 45-61). Credits apply after discounts and before tax and invoice_credit_balance only at finalization (new 71-101; old 63-93). A draft or preview allocation is not final consumption or payment success.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/usage-based/billing-credits, the May Public preview label (old 6) is absent from November (new 5-7), but that does not prove GA or account eligibility. November adds a text relationship diagram (new 14-23 versus old 15); the grant rules remain aligned across captures (new 53-145; old 45-137). [[source-stripe-usage-based-billing-credits-overview]] corrects the old source's overly narrow non-subscription stored-value wording using the full approved offering list (new 29-39; old 21-31). It distinguishes the immutable append-only ledger from its changing balance (new 103-110; old 95-102), and specifies that the 100-unused-grant count stops only after ledger balance reaches zero from credits applied to a finalized invoice, or expiry or voiding; zero available balance or invoice finalization alone does not suffice (new 119-145; old 111-137)."
+  },
+  "status": "candidate_ready"
+}

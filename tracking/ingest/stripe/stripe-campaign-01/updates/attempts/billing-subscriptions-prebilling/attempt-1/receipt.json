@@ -1,0 +1,235 @@
+{
+  "job_id": "billing-subscriptions-prebilling",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md",
+  "raw_sha256": "39f4b70cb3bcb8743931d37be9a3f02315baba9af0164c0f402208e153522bbf",
+  "source_before_sha256": "9b7ba62c4ba74393b89082942ed76c713ab2ba6d7b1a034c4e3fd80d2a949a6f",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Bill Customers in Advance (Prebilling)\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/prebilling\"\nraw_files:\n  - \"stripe-billing-subscriptions-prebilling-2026-11-07.md\"\n  - \"stripe-subscriptions-prebilling-2026.md\"\ntags: [stripe, billing, subscriptions, prebilling, flexible-billing]\n---\n\n## Summary\n\nPrebilling uses `billing_schedules` on a subscription to invoice licensed-price items for future service periods when creating or updating the subscription. The 2026-11-07 capture requires `billing_mode=flexible` and API version `2026-05-27.dahlia` or later. The 2026-05-13 capture called the feature a public preview and required `2025-09-30.preview` or later. The newer page omits the preview label; that omission alone does not establish general availability or account eligibility. Invoice creation or finalization is not payment success.\n\n> [!warning] Contradiction\n> The May 2026 public-preview capture stated a `2025-09-30.preview` API prerequisite, while the November 2026 guide states `2026-05-27.dahlia` or later. Use the dated version statement for its capture; do not treat the old preview version as the newer guide's prerequisite.\n\n## Concept and use cases\n\nPrebilling changes when future service periods are invoiced, not when a service period starts. The November guide illustrates multiple months at signup, an early renewal invoice, an annual upfront invoice for a monthly price, item-level prebilling, and an early cancellation fee for a committed contract. For an upcoming renewal billed a set number of days early, trigger the subscription update on the desired date; prebilling does not schedule that update by itself. The May capture also gave a 45-day first-period example and a two-month renewal example.\n\n## Requirements and item scope\n\n- Flexible billing mode is required; an existing subscription must already be flexible before adding prebilling.\n- The November guide states API version `2026-05-27.dahlia` or later.\n- `billing_schedules[]` defines which items are prebilled and through what end date. `applies_to[]` targets specific price IDs. Omit it to cover applicable licensed-price items that cycle before the end date. Metered usage items are excluded and cannot be selected by `applies_to[price]`.\n- The November API examples distinguish Accounts v2 `customer_account` from Customers v1 `customer`; both use flexible billing. Dashboard creation selects all items, while the API can target selected items.\n\n## `bill_until` and end date\n\n`bill_until.type` accepts `duration` with `interval` and `interval_count`, or a `timestamp` Unix end date. The November capture describes the duration as measured from the **current date** (for example, two months); it does not give complete arithmetic for an already-running off-anchor or mixed-interval subscription.\n\n- **Minimum:** November says at least one full billing period from the start; its example is a monthly subscription with at least one month from the period start. It does not specify which item controls this minimum for mixed intervals.\n- **Maximum:** Total prebilled cycles **across all items** cannot exceed 50; this is not a 50-cycle allowance for each item.\n- **Five years:** The guide advises against setting the end date more than five years in the future; it does not state an API rejection rule for that advice.\n- If the end date splits a billing period, the part before the end date is prebilled and the rest follows the subscription's configuration.\n\n> [!warning] Contradiction\n> The May public-preview capture set its minimum at one cycle of the shortest billing period and its maximum at 12 cycles of that shortest period. November gives the one-full-period wording without a mixed-interval shortest-item rule and caps total cycles across items at 50. May also said a `duration` was from the billing-cycle start, although May's later paragraph mixed \u201ccurrent time\u201d with a cycle-start example; November consistently describes the anchor as the current date. Do not project the May shortest-period rule or exact off-anchor date arithmetic onto the newer guide.\n\n## Invoice timing and payment outcome\n\n`proration_behavior=always_invoice` generates **and finalizes** the prebilling invoice immediately when the subscription is created or updated. `create_prorations` generates it at the next natural billing cycle date. These specific timing rules qualify the guide's broad \u201cwhen configured\u201d wording. A preview invoice using `subscription_details.billing_schedules` estimates the invoice before changing the subscription.\n\nFor the November early-renewal example, update on the desired early billing date with `bill_until` at the upcoming period end and `always_invoice`. Its early-cancellation-fee example updates through the committed term with `always_invoice`, then cancels after a successful update using `prorate=false`; it illustrates invoice generation/finalization, not legal fee entitlement or successful collection. `invoice.created` and `invoice.finalized` differ from `invoice.payment_succeeded` and `invoice.payment_failed`; the example grants access to prepaid periods on payment success.\n\n## Limitations and dated uncertainty\n\n- Subscription schedules and schedule-backed subscriptions are incompatible with prebilling. Expired `billing_schedules` entries remain; clear them with an empty value before later creating a subscription schedule.\n- Only `percent_off` coupons with `duration=once` or `forever` are compatible. The November page says `amount_off` and repeating coupons return an error when `billing_schedules` is configured.\n- A scheduled cancellation automatically caps a requested prebilling end date at the cancellation date.\n- November bars `payment_behavior=pending_if_incomplete` **when updating a subscription with an active billing schedule**.\n- The May public-preview limitations also barred subscriptions migrated from classic to flexible billing mode and `proration_behavior=none`, and stated a broader `pending_if_incomplete` ban. November omits the first two and narrows the latter. Omission does not demonstrate that previously barred cases are supported. May's \u201capplied immediately\u201d wording must be read with its own `create_prorations` next-cycle invoice instruction and November's specific invoice-timing rules.\n\n## Related pages\n\n- [[stripe-subscriptions-prebilling]] \u2014 concept page\n- [[stripe-subscriptions]] \u2014 subscriptions concept\n- [[source-stripe-subscriptions-billing-mode]] \u2014 flexible billing mode prerequisite\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-prebilling-2026-11-07|2026-11-07 prebilling guide]]\n- [[raw/stripe-subscriptions-prebilling-2026|2026-05-13 public-preview prebilling guide]]\n",
+  "quotes": [
+    {
+      "text": "Prebilling requires subscriptions with [flexible billing mode](https://docs.stripe.com/billing/subscriptions/billing-mode.md) enabled and API version `2026-05-27.dahlia` or later.",
+      "location": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md:13"
+    },
+    {
+      "text": "The total prebilled cycles across all items can\u2019t exceed 50.",
+      "location": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md:58"
+    },
+    {
+      "text": "Set the end date at least one full billing period from the start.",
+      "location": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md:56"
+    },
+    {
+      "text": "To prebill for a specified duration from the current date",
+      "location": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md:194"
+    },
+    {
+      "text": "`create_prorations`: Generates the prebilling invoice at the next natural billing cycle date.",
+      "location": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md:364"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "During public preview, prebilling has the following limitations:",
+      "location": "raw/stripe-subscriptions-prebilling-2026.md:20"
+    },
+    {
+      "text": "Have an integration on Stripe API version [2025-09-30.preview](https://docs.stripe.com/changelog.md#2025-09-30.preview) or later.",
+      "location": "raw/stripe-subscriptions-prebilling-2026.md:36"
+    },
+    {
+      "text": "The end date can\u2019t be sooner than the start of the shortest billing period on the subscription.",
+      "location": "raw/stripe-subscriptions-prebilling-2026.md:44"
+    },
+    {
+      "text": "The end date can\u2019t be later than the end of 12 cycles of the shortest billing period on the subscription.",
+      "location": "raw/stripe-subscriptions-prebilling-2026.md:45"
+    },
+    {
+      "text": "You can set a duration from the start of the billing cycle or specify an exact timestamp.",
+      "location": "raw/stripe-subscriptions-prebilling-2026.md:73"
+    },
+    {
+      "text": "You can\u2019t use prebilling on subscriptions that have been [migrated from classic to flexible billing mode]",
+      "location": "raw/stripe-subscriptions-prebilling-2026.md:25"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 280
+      },
+      {
+        "start": 281,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 393
+      }
+    ],
+    "raw/stripe-subscriptions-prebilling-2026.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 188
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-prebilling.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/332d522595300cdbc78f36aa/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 325
+      },
+      {
+        "start": 326,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 455
+      },
+      {
+        "start": 456,
+        "end": 506
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "prebilling-concept-overview-version",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "Prebilling (public preview) lets you charge customers now for multiple future service periods \u2014 bill upfront for 2 months, send a renewal invoice early, or cover a custom date range. Requires `billing_mode=flexible` and API version `2025-09-30.preview` or later.\n\n## Prerequisites\n\n- `billing_mode=flexible` \u2014 required; cannot use on subs migrated classic \u2192 flexible\n- API version `2025-09-30.preview` or later",
+      "new_text": "Prebilling invoices licensed-price items for multiple future service periods through subscription `billing_schedules`; invoice creation does not establish payment. The 2026-11-07 guide requires `billing_mode=flexible` and API version `2026-05-27.dahlia` or later. The 2026-05-13 public-preview guide stated `2025-09-30.preview` or later. The newer page's omission of \u201cpublic preview\u201d does not establish general availability or account eligibility.\n\n## Prerequisites\n\n- `billing_mode=flexible` \u2014 required; existing subscriptions must already use flexible mode before prebilling is added\n- API version `2026-05-27.dahlia` or later in the 2026-11-07 guide\n\n> [!warning] Contradiction\n> The May public-preview guide stated `2025-09-30.preview` and barred subscriptions migrated from classic to flexible. November states `2026-05-27.dahlia` and omits that migration restriction. The omission is not proof that a migrated subscription is eligible.",
+      "reason": "Replace outdated present-version and migrated-classic assertions with dated reciprocal guidance.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Availability and migrated-subscription eligibility remain unverified."
+      ]
+    },
+    {
+      "update_id": "prebilling-concept-endrules",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "| Minimum | At least 1 full cycle of the shortest billing period on the subscription |\n| Maximum | At most 12 cycles of the shortest billing period |\n\nExample: monthly subscription \u2192 minimum 1 month, maximum 12 months.",
+      "new_text": "| Minimum | At least one full billing period from the start; November's example is one month from a monthly period start. Which item controls the minimum for mixed intervals is unspecified. |\n| Maximum | At most 50 prebilled cycles **across all items**, not 50 per item. |\n| Five-year guidance | November advises against an end date more than five years in the future; this is not an established API rejection limit. |\n\nIf the end date splits a period, the part before it is prebilled and the remainder follows the subscription configuration.\n\n> [!warning] Contradiction\n> The May public-preview guide instead used the shortest billing period for both a one-cycle minimum and a 12-cycle maximum. Those dated rules must not be used as November's mixed-interval minimum or total cap.",
+      "reason": "Correct outdated shortest-period and 12-cycle rules without inventing the mixed-interval minimum or hardening five-year advice.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Mixed-interval minimum is unresolved in the November capture."
+      ]
+    },
+    {
+      "update_id": "prebilling-concept-item-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "- Omit `applies_to` \u2192 all licensed (non-usage-based) items are prebilled",
+      "new_text": "- Omit `applies_to` \u2192 all applicable licensed-price items that cycle before the prebilling end date are selected; metered usage items remain excluded",
+      "reason": "Narrow the existing all-items claim to the guide's cycling and licensed-price condition.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "prebilling-concept-duration",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "| `duration` | `interval` + `interval_count` | Relative from billing cycle start (e.g. 2 months) |",
+      "new_text": "| `duration` | `interval` + `interval_count` | November 2026 describes it as from the current date; exact off-anchor or mixed-interval arithmetic is not supplied. May 2026 used cycle-start wording and mixed that with \u201ccurrent time\u201d in a later paragraph. |",
+      "reason": "Correct the duration anchor to November's current-date wording while retaining May as qualified history.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not infer an exact existing-subscription end timestamp from the prose alone."
+      ]
+    },
+    {
+      "update_id": "prebilling-concept-limitations",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "## Limitations (public preview)\n\n1. Not available for subscription schedules or schedule-backed subscriptions\n2. Only `percent_off` coupons with `duration=once` or `forever`\n3. Applied immediately on create/update when `billing_schedules` is configured\n4. Cannot use on subscriptions migrated from classic \u2192 flexible billing mode\n5. Cannot prebill if ALL items are usage-based\n6. `proration_behavior` cannot be `none`\n7. If subscription has scheduled cancellation, prebilling cannot extend past that date\n8. Cannot use with `payment_behavior=pending_if_incomplete`",
+      "new_text": "## Limitations (2026-11-07 guide)\n\n1. Incompatible with subscription schedules or schedule-backed subscriptions; clear expired `billing_schedules` before later attaching a schedule.\n2. Only `percent_off` coupons with `duration=once` or `forever` are compatible.\n3. Metered usage items are excluded; a subscription with only usage-based items cannot enable prebilling.\n4. A requested end date beyond scheduled cancellation is automatically capped at that cancellation date.\n5. `payment_behavior=pending_if_incomplete` is barred when **updating a subscription with an active billing schedule**.\n6. Invoice timing depends on `proration_behavior`: `always_invoice` generates and finalizes immediately; `create_prorations` generates at the next natural billing cycle.\n\nThe May public-preview guide also barred migrated classic-to-flexible subscriptions and `proration_behavior=none`. November omits those statements; their omission is not evidence of support. Its broader May `pending_if_incomplete` wording is not the November condition.",
+      "reason": "Replace categorical old preview limits and blanket immediacy with November's scoped limitations, while preserving unresolved May-only restrictions.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "No claim that migrated subscriptions or proration_behavior=none are now supported."
+      ]
+    },
+    {
+      "update_id": "prebilling-concept-route",
+      "target_path": "wiki/concepts/stripe-subscriptions-prebilling.md",
+      "old_text": "- [[source-stripe-subscriptions-prebilling]] \u2014 Stripe docs: prebilling guide (public preview, billing_schedules API, limitations, invoice timing)",
+      "new_text": "- [[source-stripe-subscriptions-prebilling]] \u2014 May 2026 public-preview and November 2026 prebilling guides: version, item scope, end-date and duration rules, conditional invoice timing and payment-event distinctions",
+      "reason": "Reciprocal source route to both dated captures and their substantive differences.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "prebilling-subscriptions-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-prebilling]] \u2014 Prebilling (public preview): bill_until, applies_to, 8 limitations, invoice timing via proration_behavior",
+      "new_text": "- [[source-stripe-subscriptions-prebilling]] \u2014 May 2026 preview and November 2026 prebilling guides: `billing_schedules`, `bill_until`, licensed-item scope, updated API prerequisite and total-cycle limit, invoice timing by `proration_behavior`",
+      "reason": "Keep general subscription concept's reciprocal route accurate without repeating stale preview-only and fixed limitation-count claims.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/prebilling, [[source-stripe-subscriptions-prebilling]] describes the November guide's subscription `billing_schedules` for future licensed-price periods: flexible billing and API `2026-05-27.dahlia` or later (new lines 9\u201313), selected prices through `applies_to` or applicable licensed items when omitted (new lines 40\u201344, 160\u2013162), and a `bill_until` duration described from the current date or a timestamp (new lines 44, 194, 224\u2013226). End dates need at least one full period from the start, at most 50 total prebilled cycles across items, and the guide advises no more than five years (new lines 54\u201359). May preview used `2025-09-30.preview`, a shortest-period minimum and 12-cycle maximum, and cycle-start duration wording (old lines 20, 35\u201345, 73, 127); those remain dated evidence. The mixed-interval minimum, off-anchor arithmetic and account eligibility are unverified, and invoice generation is not successful payment (new lines 363\u2013378).",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/prebilling, [[source-stripe-subscriptions-prebilling]] now directly corrects the prior source's old-preview version and end-date limits: November states Dahlia or later, one full period from the start without a shortest-item rule, and 50 cycles summed across items (new lines 13, 54\u201359; old lines 35\u201345). November describes duration from the current date, whereas May used cycle-start and internally mixed wording (new lines 44, 194; old lines 73, 127). It adds Accounts v2 versus Customer v1 examples, expired-schedule cleanup, scoped `pending_if_incomplete`, and early renewal/cancellation examples (new lines 32\u201336, 88\u2013118, 330\u2013355). The old migrated-classic and `proration_behavior=none` bans are omitted, not reversed (old lines 25\u201329; new lines 31\u201336). `always_invoice` generates/finalizes now, `create_prorations` waits until the next natural cycle, and payment outcome needs separate events (new lines 359\u2013378; old lines 156\u2013171). No actual invoice payment, fee entitlement, or general rollout is established."
+  },
+  "status": "candidate_ready"
+}

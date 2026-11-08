@@ -1,0 +1,141 @@
+{
+  "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-pending-updates/base.md",
+  "base_sha256": "1ae92805ee7765152976fbd6864837dbdd00031005516b978a390e63686e784c",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-pending-updates::pending-updates-payment-gate",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "Pending updates is a Stripe feature that makes subscription changes conditional on successful payment. Without it, Stripe applies changes regardless of whether the new invoice pays \u2014 rollback on failure is a manual process. With pending updates, changes are held in a `pending_update` hash until the invoice succeeds or expires.\n\n## When to use\n\nUse pending updates for any invoice-generating subscription change where you want the update to only apply if payment succeeds.",
+      "new_text": "Pending updates normally hold an invoice-generating subscription change until payment succeeds. Without them, Stripe applies changes regardless of whether the new invoice pays, and rollback after failure is manual. A populated `pending_update` means the change has not yet applied. The November 7, 2026 guide states an exception: a resumption attempt that moves a paused subscription to `active` or `past_due` applies a matching pending update even if payment fails. See [[source-stripe-subscriptions-pending-updates]] and https://docs.stripe.com/billing/subscriptions/pending-updates.\n\n> [!warning] Contradiction\n> The May 13 guide described payment success as an unconditional gate; the November guide adds the paused-resumption exception and clarifies that a populated `pending_update` is not itself proof of payment failure.\n\n## When to use\n\nUse pending updates for invoice-generating subscription changes whose application should normally wait for payment, subject to that paused-resumption exception.",
+      "reason": "Qualify unconditional payment-gate statements and retain dated contradiction.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "The guide does not establish any individual account's eligibility."
+      ],
+      "original_update_id": "pending-updates-payment-gate",
+      "job_id": "billing-subscriptions-pending-updates",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/receipt.json",
+      "receipt_sha256": "63b37726e81312373c8893ce662e49433908a207bed88dde424222f86bf1ee2a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/candidate.md",
+      "source_candidate_sha256": "06e1c0a240005eaf1081f77e5073a4b60046b41a71c076b975f0adfa3ee592ce",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-pending-updates::pending-updates-async-application",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "- **Payment succeeds**: subscription updated immediately, invoice marked `paid`\n- **Payment fails**: `pending_update` hash on subscription holds changes; subscription unchanged",
+      "new_text": "- **Payment succeeds**: invoice becomes `paid` and Stripe applies the changes; with Billing and Payment Records these may finish in separate API requests. Use `customer.subscription.pending_update_applied` before dependent provisioning.\n- **`pending_update` populated**: changes have not applied yet. Check invoice payment outcome before treating this as a failure; a reported payment might still be processing.",
+      "reason": "Remove failed-payment inference and same-request timing guarantee.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Payment Records can be asynchronous; the guide does not say every application is delayed."
+      ],
+      "original_update_id": "pending-updates-async-application",
+      "job_id": "billing-subscriptions-pending-updates",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/receipt.json",
+      "receipt_sha256": "63b37726e81312373c8893ce662e49433908a207bed88dde424222f86bf1ee2a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/candidate.md",
+      "source_candidate_sha256": "06e1c0a240005eaf1081f77e5073a4b60046b41a71c076b975f0adfa3ee592ce",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-pending-updates::pending-updates-supported-attributes",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "Only attributes that control proration or generate invoices: `items` (price, quantity), `trial_end`, `trial_from_plan`, `billing_cycle_anchor`, `proration_behavior`, `proration_date`, `add_invoice_items`. Config and metadata attributes are NOT supported.",
+      "new_text": "The update-subscription list includes `items` (price, quantity, discounts), trial and billing-cycle fields, proration fields, `add_invoice_items`, `metadata`, `discounts`, `cancel_at_period_end`, `coupon`, and `promotion_code`; subscription-item create/update also list `discounts`. This list does not mean every standalone field change invoices or becomes a pending update. The November guide still lists configuration changes as non-invoicing examples. For `add_invoice_items`, classic `always_invoice` can create an invoice while flexible mode leaves charges pending even with that setting. See [[source-stripe-subscriptions-pending-updates]] and https://docs.stripe.com/billing/subscriptions/pending-updates.",
+      "reason": "Correct unsupported metadata/discount assertion and qualify invoice triggers by mode.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not infer that metadata or discount-only updates independently create an invoice."
+      ],
+      "original_update_id": "pending-updates-supported-attributes",
+      "job_id": "billing-subscriptions-pending-updates",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/receipt.json",
+      "receipt_sha256": "63b37726e81312373c8893ce662e49433908a207bed88dde424222f86bf1ee2a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/candidate.md",
+      "source_candidate_sha256": "06e1c0a240005eaf1081f77e5073a4b60046b41a71c076b975f0adfa3ee592ce",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-pending-updates::pending-updates-auto-void",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "Auto-voided (update discarded) if: billing threshold hit, or subscription schedule phase transition.",
+      "new_text": "Auto-voided (update discarded) on billing threshold or schedule phase transition. A later update with `billing_cycle_anchor`, nonempty `items`, `trial_end`, or `trial_from_plan=true` also removes the pending update, as can conflicting discount or cancellation changes. Stripe compares discount IDs and order for those conflicts. See [[source-stripe-subscriptions-pending-updates]].",
+      "reason": "Add newly documented later-update removal triggers without treating every discount change as a conflict.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The source has more detailed discount ID and order rules."
+      ],
+      "original_update_id": "pending-updates-auto-void",
+      "job_id": "billing-subscriptions-pending-updates",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/receipt.json",
+      "receipt_sha256": "63b37726e81312373c8893ce662e49433908a207bed88dde424222f86bf1ee2a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/candidate.md",
+      "source_candidate_sha256": "06e1c0a240005eaf1081f77e5073a4b60046b41a71c076b975f0adfa3ee592ce",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-pending-updates::pending-updates-invoice-item-separation",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "- Exception: `billing_mode=flexible` bills usage when removing a metered price regardless",
+      "new_text": "- Exception: `billing_mode=flexible` bills usage when removing a metered price regardless\n\nExisting pending invoice items are separate from metered-usage loss and from the subscription's `pending_update`. The November guide says flexible-mode update invoices normally include eligible pending items, but `pending_if_incomplete` excludes pre-existing items, even on anchor reset. Classic anchor-reset invoices include eligible pending items; other `always_invoice` update invoices exclude them when the update itself produces invoice items. See [[source-stripe-subscriptions-pending-updates]].",
+      "reason": "Keep metered warning while distinguishing newly documented pending-invoice-item rules.",
+      "quote_indexes": [],
+      "warnings": [
+        "Do not generalize these invoice-item rules across billing modes."
+      ],
+      "original_update_id": "pending-updates-invoice-item-separation",
+      "job_id": "billing-subscriptions-pending-updates",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/receipt.json",
+      "receipt_sha256": "63b37726e81312373c8893ce662e49433908a207bed88dde424222f86bf1ee2a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/candidate.md",
+      "source_candidate_sha256": "06e1c0a240005eaf1081f77e5073a4b60046b41a71c076b975f0adfa3ee592ce",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-pending-updates::pending-updates-applied-event-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions-pending-updates.md",
+      "old_text": "| `customer.subscription.pending_update_applied` | Provision/deprovision services after successful payment |",
+      "new_text": "| `customer.subscription.pending_update_applied` | Confirm the pending update was applied before dependent provisioning or deprovisioning; the paused-resumption exception can apply it even if payment fails |",
+      "reason": "The event signals application of the pending update, not payment success in every case; paused-subscription resumption to active or past_due is an explicit failed-payment exception.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Check invoice payment outcome separately; this webhook row must not imply successful payment for every application."
+      ],
+      "original_update_id": "pending-updates-applied-event-scope",
+      "job_id": "billing-subscriptions-pending-updates",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/receipt.json",
+      "receipt_sha256": "63b37726e81312373c8893ce662e49433908a207bed88dde424222f86bf1ee2a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/candidate.md",
+      "source_candidate_sha256": "06e1c0a240005eaf1081f77e5073a4b60046b41a71c076b975f0adfa3ee592ce",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-pending-updates/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-pending-updates::pending-updates-payment-gate",
+    "billing-subscriptions-pending-updates::pending-updates-async-application",
+    "billing-subscriptions-pending-updates::pending-updates-supported-attributes",
+    "billing-subscriptions-pending-updates::pending-updates-auto-void",
+    "billing-subscriptions-pending-updates::pending-updates-invoice-item-separation",
+    "billing-subscriptions-pending-updates::pending-updates-applied-event-scope"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-pending-updates/auto-candidate.md",
+  "auto_candidate_sha256": "7208e2c2eaf0e9c0d9a8f271408d8e6d76254e83529c85efd46487eb8b681c04",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-subscriptions-pending-updates-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-subscriptions-pending-updates-concept-review.json"
+}

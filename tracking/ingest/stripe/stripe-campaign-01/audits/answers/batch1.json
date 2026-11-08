@@ -1,0 +1,587 @@
+[
+  {
+    "job_id": "billing-billing-apis",
+    "attempt": 2,
+    "receipt_sha256": "967975f673c446a49ce434b8e426617f4c05c7027cb5a73a88e4eec6f1aaf015",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-billing-apis/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/billing-apis",
+    "source_target": "wiki/sources/source-stripe-billing-apis.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/billing-apis, the November capture connects a subscription to Product, Price, and either a customer-configured Account or Customer (new lines 9-13). Its billing narrative says an invoice is generated each cycle and a PaymentIntent is created if the invoice has an amount due, tracked in invoice payments (new line 25). Yet its own object table says invoices automatically create PaymentIntents without that condition (new line 190), as did the May table (old line 43) and May narrative (old line 10). [[source-stripe-billing-apis]] lines 13, 17 and 29 repeat the broad claim. Accounts v2 remains Connect GA and preview otherwise with a version condition (new line 17; old line 20). The source and reciprocal wiki/concepts/stripe-subscriptions.md:14 route should flag the unresolved within-capture tension rather than claim universal runtime behavior.",
+      "Q2": "For https://docs.stripe.com/billing/billing-apis, the substantive November changes include the amount-due condition and invoice payments list in the billing narrative (new line 25 versus old line 10), but the same November table retains the unqualified PaymentIntent statement (new line 190; old table line 43). [[source-stripe-billing-apis]] should preserve both and warn about the conflict across its broad lines 13, 17 and 29, with a reciprocal qualification at wiki/concepts/stripe-subscriptions.md:14. Checkout now says it creates a customer only if none was supplied and collects payment if due, without the old unconditional activation wording (new line 212; old line 8). Accounts v2 preview enablement is explicit (new line 19); expanded variant diagrams and list formatting are presentation, while the entitlements link and See also entries are navigation (new 29-177, 208, 214-218). The source's unsupported customer.activeEntitlements accessor (line 40) needs correction. Example statuses and Checkout completion establish neither payment finality nor account eligibility."
+    }
+  },
+  {
+    "job_id": "billing-collection-method",
+    "attempt": 2,
+    "receipt_sha256": "e27eebc869dd5b5749a3ba3d39e2c1a232ffe1f6f2a3784de4feff0ae5342972",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-collection-method/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/collection-method",
+    "source_target": "wiki/sources/source-stripe-billing-collection-method.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/collection-method, the November capture documents charge_automatically and send_invoice for invoices and subscriptions; a subscription method change affects only future invoices (new 9, 20-32; old 8, 19-31). With allow_incomplete plus charge_automatically, Stripe attempts the initial payment immediately; default_incomplete requires separate PaymentIntent confirmation when the first invoice needs payment, and an unpaid first invoice reaches final incomplete_expired after 23 hours (new 56-60; old 55-59). [[source-stripe-billing-collection-method]] covers these topics but overstates conditions at current source lines 27, 38, 49, 53, 63 and 69; renewal cancellation or unpaid status after retries is only possible and settings-dependent (new 86; old 85), while incomplete-subscription edits are governed by whether they create an invoice or invoice item, with three illustrative fields (new 84; old 83).",
+      "Q2": "For https://docs.stripe.com/billing/collection-method, the two captures show no substantive behavioral change: the diff at 1-108 mainly reformats text and tables, changes Hosted Invoice Page capitalization, and substitutes might for may without changing conditionality (old 85, 87, 95; new 86, 88, 96). Keep both dated raw records behind [[source-stripe-billing-collection-method]] and correct the source's absolute or exhaustive claims at 27, 38, 49, 53, 63 and 69. Root-to-Stripe-index discovery is verified (wiki/index.md:7; wiki/stripe-index.md:653), but the subscription concept lacks a reciprocal source link and abbreviates payment_behavior and 23-hour boundaries (concept 16-18). The captured guidance depends on collection_method, first versus recurring invoice, payment requirement, PaymentIntent status, settings and auto-advancement (new 56-98; old 55-97); it proves no account-specific eligibility or payment outcome."
+    }
+  },
+  {
+    "job_id": "billing-customer-tax-ids",
+    "attempt": 1,
+    "receipt_sha256": "b396bdabfe014b34a168a983ca760ea829cd69a8e1cbc495a5f5b55ef98a87a4",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-customer-tax-ids/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/customer/tax-ids",
+    "source_target": "wiki/sources/source-stripe-billing-customer-tax-ids.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/customer/tax-ids, the new capture establishes invoice and credit-note PDF display, a dated supported-type table, and customer tax-ID management by Dashboard, portal, or Tax ID API (new 11, 13-180, 249-295). ABN, EU VAT and GB VAT receive government checks; other types receive format checks (new 186-219). Customer snapshot and customer-configured Account thin events have different status-reading paths (new 233-240). The old capture already documented PDF display, the three government checks and owner-specific create examples (old 10, 170-184, 226-246), but [[source-stripe-billing-customer-tax-ids]] currently misstates ABN validation and collapses webhook routing (source 42, 46). Neither capture establishes successful tax or payment execution.",
+      "Q2": "At https://docs.stripe.com/billing/customer/tax-ids, substantive changes include additional table rows, explicit format-versus-government validation, separate Customer and customer-configured Account event handling, four verification states and qualified Stripe Tax treatment (new 27-180, 186-219, 233-242; old 16-160, 196-205). Support contact changed from an email (old 8) to a support link (new 9), while markdown/table spacing, heading spacing, and Dashboard list numbering are presentational. [[source-stripe-billing-customer-tax-ids]] should keep the old capture dated, correct its ABN conflict at source 42, narrow its webhook and reverse-charge claims at source 13, 19, 46, and retain the v1/v2 owner identity boundary (new 268-288; old 226-246). The capture gives no proof of current account eligibility, tax determination in a specific jurisdiction, or a bank or payment receipt."
+    }
+  },
+  {
+    "job_id": "billing-entitlements",
+    "attempt": 2,
+    "receipt_sha256": "004bb55298b480b9547d78b53039c28e064d33be297f8da6780aeb2866c08761",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-entitlements/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/entitlements",
+    "source_target": "wiki/sources/source-stripe-billing-entitlements.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/entitlements, the 2026-11-07 capture establishes only the Entitlements purpose and Dashboard/API variant links (new raw lines 5-14); it does not replace prerequisites, lifecycle rules or API outcomes. The matched 2026-05-13 guide assumes Stripe Subscription and Customer resources (old raw line 19), maps features to products, and describes webhook-driven application provisioning and the list API (old raw lines 86-187 and 293-337). [[source-stripe-billing-entitlements]] summarizes that dated guide, but its revoke-on-absence instruction must be qualified because webhook entitlements.data is capped at 10 (source lines 29-31; old raw lines 185-187).",
+      "Q2": "For https://docs.stripe.com/billing/entitlements, new raw lines 9-14 show a presentational/navigation shift from the full old Dashboard/API guide (old raw lines 21-339), not substantive deprecation. Recommend source_required_update for a separate, pre-existing safety defect in [[source-stripe-billing-entitlements]]: source lines 29-31 and concept lines 37-38 would revoke a feature absent from a webhook array capped at 10. For a customer who may have more than 10 entitlements, absence in that array alone does not prove revocation; use entitlements.url to obtain the full paginated list before disabling access (old raw lines 183-187). Preserve the dated billing-period lag, polling, archive and prerequisite claims; qualify the full-list wording at source line 35 and concept line 46. The 2026-11-07 variant targets and actual account/payment outcomes remain unverified."
+    }
+  },
+  {
+    "job_id": "billing-invoices-subscription",
+    "attempt": 2,
+    "receipt_sha256": "b72abd8226873b4d3314e52ec492cc74b25ae08a15ddc5c18f720dd1aabac570",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-invoices-subscription/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/invoices/subscription",
+    "source_target": "wiki/sources/source-stripe-subscriptions-invoices.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/invoices/subscription, the November capture describes immediate first-invoice finalization for charge_automatically, roughly one-hour finalization for send_invoice, a draft renewal window, conditional paid/active outcomes, and the flexible metered-only creation exception (new lines 15-56). Its four-level order selects the first available saved default payment method, while payment_method_types separately controls accepted types (new lines 62-71). The matched May capture carries the core lifecycle and Customer v1 fallback (old lines 16-58), already summarized in [[source-stripe-subscriptions-invoices]]. The new page adds preview-qualified editing, Account v2 position 3, opt-in successful-payment saving, Dashboard link limits, and versioned retrieval expansion (new lines 32-42, 68-98, 125-143).",
+      "Q2": "For https://docs.stripe.com/billing/invoices/subscription, substantive additions are preview-only finalized-invoice editing, customer-configured Account default fallback at position 3, saving the method used in a successful subscription payment only when on_subscription is set (default off), restricted card update links, and API-version-specific invoice expansion (new lines 32-42, 62-98, 125-143). Payment method types control accepted types and are not another saved-default fallback order (new line 71; historical payment-methods-setting raw lines 32-40). Node-to-curl examples are presentation, not SDK deprecation (old lines 88-115, 152-167; new lines 145-162, 199-208). [[source-stripe-subscriptions-invoices]] needs qualified additions. The overbroad auto-finalization claim is in wiki/concepts/stripe-subscriptions-invoices.md:54; the source at line 46 merely describes pause and resume, while old lines 234-242 and new lines 263-271 expressly address automatic payment attempts and emailing."
+    }
+  },
+  {
+    "job_id": "billing-quickstart",
+    "attempt": 2,
+    "receipt_sha256": "525a112a149f50f1144c4bd8a153a01dbbddc3e5fe0969d39bd8778698d99616",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-quickstart/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/quickstart",
+    "source_target": "wiki/sources/source-stripe-checkout-subscriptions-quickstart.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/quickstart, [[source-stripe-checkout-subscriptions-quickstart]] should describe a hosted Checkout subscription sample: a recurring Price lookup key resolves server-side, a subscription-mode Session redirects the customer, and a portal Session uses the correct customer identity (new 15-17, 25-29, 211-245, 653-665). The sample calls for webhook listening and active-status verification before access (new 243-245). The May capture already showed the core flow, both customer object choices and five events (old 8-12, 56-78); the current source at 11-32 summarizes it but lacks the new safety and fulfillment qualifications. The capture is documentation evidence, not proof of payment.",
+      "Q2": "For https://docs.stripe.com/billing/quickstart, [[source-stripe-checkout-subscriptions-quickstart]] needs a dated source update for explicit server-held price/availability data, portal identity variants and active-status fulfillment (new 17, 221, 243-245, 653-665). November adds visible multi-language snippets, links and flattened UI variants (new 65-209, 387-425, 427-1530); May already identified HTML/React and seven backend choices at old 3-4, although its detailed excerpt is React/Node at old 98-285. Preserve that dated scope and the old Accounts v2 recommendation (old 12), whose absence at new 17 does not show reversal. Duplicate November code and the incomplete May portal excerpt prevent copy-paste runnable claims; a success redirect alone does not settle asynchronous payment or entitlement state."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-ach-debit",
+    "attempt": 2,
+    "receipt_sha256": "df5e1b7b26bd7932306128f5956a0c40c89bd0504bf650353bd82336b23b54b3",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-ach-debit/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/ach-debit",
+    "source_target": "wiki/sources/source-stripe-subscriptions-ach-debit.md",
+    "disposition": "no_substantive_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/ach-debit, the November capture establishes only that the ACH subscription article now routes readers to web Advanced integration and Full hosted page variants (new lines 5-14). It does not restate prerequisites, customer identities, PaymentIntent or SetupIntent states, verification limits, or payment finality. The May capture separately documents Elements and hosted routes, Accounts v2 versus Customers v1, microdeposit verification and delayed Checkout payment notifications (old lines 8-22, 221-249, 500-504, 732-769). [[source-stripe-subscriptions-ach-debit]] summarizes that May guide and remains dated to it (source lines 4-7).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/ach-debit, the November capture is a navigation split to Elements and Stripe-hosted variants (new lines 9-14), while the May capture contained both full sections (old lines 18-20 and 500-504); it establishes no substantive change or deprecation. [[source-stripe-subscriptions-ach-debit]] retains dated evidence for the microdeposit window, default payment method webhook, trial SetupIntent and delayed fulfillment (source lines 41-70; old lines 225, 273-300, 405-470, 732-769). A reciprocal warning is needed for wiki/concepts/stripe-subscriptions.md:20: its categorical ACH-skips-incomplete claim conflicts with the May Elements default_incomplete creation and incomplete microdeposit state (old lines 46 and 221-225). The index has no state detail to settle current behavior, account eligibility, payment success or bank receipt."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-acss-debit",
+    "attempt": 2,
+    "receipt_sha256": "b32e1654173eb7e82c899ebc65b1e82f8a3482360c1ce8b64f451d39a299a4d0",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-acss-debit/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/acss-debit",
+    "source_target": "wiki/sources/source-stripe-subscriptions-acss-debit.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/acss-debit, the 2026-11-07 capture sets out a server-created default_incomplete subscription for a customer-configured Account v2 customer_account or Customer v1 customer, followed by client-side PAD mandate and bank verification through stripe.confirmAcssDebitPayment (new lines 31-69, 94). Microdeposit verification has a ten-day limit capped by the billing period date; a separate invoice.payment_succeeded webhook sets the subscription default method for future payments (new lines 135-163). Old line 221 says successful initial payment leads to active status, but does not claim the converse. New line 196 says active status can precede first-payment completion: before fulfillment, verify the related subscription is active together with either invoice.paid or a succeeded underlying PaymentIntent. [[source-stripe-subscriptions-acss-debit]] retains an absolute no-retry statement contradicted by the new conditional possibility.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/acss-debit, the substantive changes are a documented possible automatic retry path when Direct Debit retries is enabled for Canadian PAD insufficient-funds failures, and an explicit fulfillment check requiring an active related subscription alongside either invoice.paid or a succeeded underlying PaymentIntent (old lines 221-223; new lines 196-200). This is not a complete retry eligibility rule; [[source-stripe-subscriptions-acss-debit]] and reciprocal ACSS/subscription labels should correct the absolute no-retry claim while keeping the May 2026 wording dated. The default-method webhook uses invoice.payment_succeeded, distinct from invoice.paid for fulfillment (new 163, 196). Node.js to curl/Ruby, dahlia to endive, sample expansions, and omitted acss_debit type are rendering or unresolved sample differences (old 38-103; new 41-78), not proof of universal API defaults. Account v2 and Customer v1 default-payment-method destinations differ (new 341; old 424); neither capture proves account enablement, settlement, or a bank receipt."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-amazon-pay",
+    "attempt": 2,
+    "receipt_sha256": "d2d134930b0d3c6e97d4d072099cd6dabd45a63488e3899b8c9cc00de5948a0d",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-amazon-pay/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/amazon-pay",
+    "source_target": "wiki/sources/source-stripe-subscriptions-amazon-pay.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/amazon-pay, the complete 2026-11-07 capture establishes a subscription-with-Amazon-Pay purpose and three variant routes, but no detailed flow or outcome (new raw lines 5-15). The matched 2026-05-13 guide describes SetupIntents, PaymentIntents and hosted Checkout separately (old raw lines 10-342). Its API paths involve a Stripe Customer, product/price and Amazon authorization; PaymentIntent requires_action is not payment success, and subscription activation is conditional on successful payment (old raw lines 34-54, 242-284). [[source-stripe-subscriptions-amazon-pay]] summarizes those older paths and should remain tied to that dated capture. The old PaymentIntents confirm prose and request example disagree on the named Amazon Pay parameter (old raw lines 271 and 273-281), without resolving the API contract.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/amazon-pay, the observed change is navigation/rendering: new raw lines 9-15 link the three variants formerly inlined at old raw lines 10-342. No substantive deprecation or changed payment contract is shown. Preserve [[source-stripe-subscriptions-amazon-pay]] as historical guidance, including Checkout's hosted authorization (old raw lines 310-342) and the PaymentIntents requires_action versus successful-payment boundary (old raw line 284). Correct the source and reciprocal concept's unqualified mandate_data/return_url claims for Checkout, and distinguish the off_session sample from old raw line 54's on_session option. Flag that old raw line 271 names payment_method_types for confirm, whereas the adjacent POST example at lines 273-281 uses payment_method_data[type]; source line 37 follows that example. This inconsistency is unresolved, and the new index does not prove either parameter contract wrong. Current variant details, client/server execution and actual payment outcome remain unverified."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-analytics",
+    "attempt": 1,
+    "receipt_sha256": "204efe03b09ff0ef7827eb38f2caa4630ff5c332975b53a73d80e44d32d6287c",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-analytics/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/analytics",
+    "source_target": "wiki/sources/source-stripe-billing-analytics.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/analytics, the new capture documents Dashboard recurring-revenue metrics, configurable MRR/churn/active-subscriber definitions, exports, and AR aging, with Usage MRR still a preview request (new 7-38, 40-69). Active and past_due subscription value is normalized monthly, but item-level trial offers exclude only trialing items, while legacy trial_end excludes the whole subscription (new 111-115). New trials and conversions likewise use item identity for trial offers and subscription identity for legacy trials (new 199-209). The matched old capture used subscription-level trial language (old 79, 163-172), which [[source-stripe-billing-analytics]] repeats at source 36 and 60. These are analytics definitions, not proof of any account's payment or revenue outcome.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/analytics, substantive changes are the item-level versus legacy trial boundaries (new 115, 201, 209; old 79, 165, 172), current versus historical AR aging prerequisites (new 38), and metric-level versus live-mode prebuilt exports with UTC report dates and account-time-zone charts (new 42-65; old 23-31). The prebuilt report title/content changed from 'Subscription metrics summary' to 'Subscription metrics per month' (old 30; new 60); keep the older label dated in [[source-stripe-billing-analytics]]. Markdown emphasis, whitespace, and link rendering changes are presentational. The source and concept should remove an unsupported 'default' for active timing (new 86; old 52), retain preview status for Usage MRR (new 16-34), and avoid inferring access, settled revenue, or exact historical report availability from the capture."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-au-becs-debit",
+    "attempt": 1,
+    "receipt_sha256": "b5f10c1061a54d74011e61dcccff6c6d49e9002f00e2ff69d2aa3302995b19c5",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-au-becs-debit/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/au-becs-debit",
+    "source_target": "wiki/sources/source-stripe-subscriptions-becs-debit.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/au-becs-debit, the November capture describes a BECS subscription flow using a server SetupIntent, client AuBankAccount Element and confirmAuBecsDebitSetup, a customer-shareable DDR and mandate, then an Account v2 or Customer v1 with the saved method set as default before subscription creation (new lines 31-95, 384-435, 584-712). The May capture documents the same core sequence but uses explicit au_becs_debit in its SetupIntent example (old lines 30-56) and says payments are never retried (old line 742). Current [[source-stripe-subscriptions-becs-debit]] summarizes the older path, but its absolute retry claim and fulfillment assumptions need correction against new lines 716-720.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/au-becs-debit, the substantive November changes are conditional insufficient-funds retries when Direct Debit retries is enabled, a warning that active can precede first-payment success, and a SetupIntent example using Dashboard enablement plus automatic_payment_methods (new lines 35-43, 716-720; old lines 34-56, 740-742). [[source-stripe-subscriptions-becs-debit]] and reciprocal AU BECS concept routes should preserve the May no-retry sentence as dated history and distinguish mandatory DDR shareability from recommended ancillary confirmation details (new lines 89-95, 418-425). Node.js/curl rendering, dahlia/endive paths, and Account v2 preview examples require version and object-identity qualifications; no static capture proves eligibility, settlement, or a bank receipt."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-bacs-debit",
+    "attempt": 1,
+    "receipt_sha256": "df7748871d91c97f46fa55ffe0dbab4a65ec073b51c35d849cb3880eaa255d28",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-bacs-debit/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/bacs-debit",
+    "source_target": "wiki/sources/source-stripe-subscriptions-bacs-debit.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/bacs-debit, the November guide documents a Checkout-based Bacs subscription: create a server-side Session with mode subscription and at least one recurring Price, with a client button calling that endpoint (new lines 79-100; old lines 79-100). The delayed debit requires payment success, indicated by invoice.paid or a succeeded PaymentIntent, and an active subscription before fulfillment; active status alone can precede first payment completion (new line 128, compared with old line 142). Authorization at checkout.session.completed is only an early state (new 143-149; old 157-163). [[source-stripe-subscriptions-bacs-debit]] already covers the flow and test cases, but its exclusive-path, instant-sandbox, and funds-confirmed wording is too broad (source 13, 33, 52). Customer Account v2 and Customer v1 are separate existing-customer variants (new 342-364; old 405-439).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/bacs-debit, substantive November changes are repeatable sandbox-to-live product copies rather than May's once-only rule (new line 52; old line 46), a payment-success plus active-subscription fulfillment gate (new line 128; old line 142), and deprecation of line_items.dynamic_tax_rates with alternatives (new 456-458; old 589-591). [[source-stripe-subscriptions-bacs-debit]] should correct lines 44, 52 and 71, retain May claims as dated evidence, and narrow its Checkout-only wording (source 13-15) because this guide's scope does not prove other paths absent. Node examples explicitly select bacs_debit (old 325), while November curl samples omit the parameter and point to Dashboard method settings (new 104-117); neither omission nor language change proves parameter removal or universal Bacs availability. Test table outcomes remain differentiated by failure and mandate state (new 276-284; old 299-307); redirect, active subscription, and sample success do not verify bank receipt. The reciprocal [[stripe-bacs-direct-debit]] route should carry the same scope and fulfillment qualification."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-billing-cycle",
+    "attempt": 2,
+    "receipt_sha256": "485969ee647c0c362241f1cb79607b1ac35b3d2f4a2e4792bb00a80642001238",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-cycle/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/billing-cycle",
+    "source_target": "wiki/sources/source-stripe-subscriptions-billing-cycle.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/billing-cycle, the November capture explains that price intervals and billing-cycle anchors align renewal dates; monthly/yearly config handles short months, and a direct timestamp is documented on creation (new lines 11-41, 87-113; old lines 10-40, 116-158). A config-derived anchor can lie beyond the first full invoice, which occurs within one interval (new lines 83-85; old lines 112-114), contrary to the wording at [[source-stripe-subscriptions-billing-cycle]] line 24 and the linked concept line 144. Existing subscriptions can reset to now or use trial_end, while specific-timestamp update appears only as a November private preview for flexible mode (old lines 209-239; new lines 151-237).",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/billing-cycle, substantive changes are the 2026-09-30.endive billing_cycle_anchor.type=now example, the flexible-mode invoice exception, and a private-preview specific-timestamp update restricted to flexible billing with API 2026-09-30.preview (old lines 222-239; new lines 165-229). [[source-stripe-subscriptions-billing-cycle]] line 28 must distinguish direct timestamp on creation, ordinary now reset, and preview timestamp update; line 38 must include zero-amount-to-paid automatic reset or label its list illustrative (old lines 216-220; new lines 159-163). Its first-invoice phrasing and the linked concept's anchor-equals-first-full-invoice claim need correction (old lines 112-114; new lines 83-85). Older Dashboard options remain dated, not proven removed by omission."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-billing-mode",
+    "attempt": 2,
+    "receipt_sha256": "f6b0f1bb996d279935e71225aa3cc59beaa01e0bff1826c5cd6654bcef32960f",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-mode/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/billing-mode",
+    "source_target": "wiki/sources/source-stripe-subscriptions-billing-mode.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/billing-mode, the complete 2026-11-07 guide documents two modes, classic and flexible, and prohibits migrating flexible back to classic (new raw lines 9-16). For omitted billing_mode on API requests, flexible is the default for 2025-08-27.preview and later preview versions or 2025-09-30.clover GA and later GA versions; other versions default classic (new raw lines 62-65). Dashboard settings are a separate channel (new raw lines 30-56). Migration affects new activity, not old resources, and now includes active/unstarted schedule rules (new raw lines 512-578). The 2026-05-13 guide already covered core version defaults and prospective migration (old raw lines 61-64 and 490-492). [[source-stripe-subscriptions-billing-mode]] summarizes that dated evidence, while the linked concept's fixed-default sentence is inaccurate for this guide.",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/billing-mode, substantive additions are explicit migration effects on credit prorations, usage-price timing and billing anchors (new raw lines 553-568), plus active/unstarted schedule migration rules (lines 572-578). Dashboard placement, Node-to-curl examples and response formatting are presentational (old raw lines 40-45 and 74-94; new raw lines 41-46 and 75-84). [[source-stripe-subscriptions-billing-mode]] needs the previously omitted preview-default exception (old raw lines 61-64; new raw lines 62-65). The linked subscriptions concept at line 112 also needs correction: fixed is not a documented mode here; classic/flexible defaults depend on the preview or GA API version (old raw lines 8-11 and 61-64; new raw lines 9-12 and 62-65). These are pre-existing errors, not new behavior. Preserve the Dashboard/API and prospective-migration boundaries; the example's incomplete subscription and requires_confirmation PaymentIntent do not establish payment success."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-billing-mode-compare",
+    "attempt": 1,
+    "receipt_sha256": "44283f5bfe993b3e016e2322439062e49b1dc709d402359af1ce362abe66dfdf",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-mode-compare/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/billing-mode/compare",
+    "source_target": "wiki/sources/source-stripe-subscriptions-billing-mode-compare.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/billing-mode/compare, [[source-stripe-subscriptions-billing-mode-compare]] should describe documented classic versus flexible subscription billing behavior: original-debit credit prorations, usage and discount treatment, anchor resets, schedules, trials, pending items and mixed intervals (new 15-271; old 12-218). The November capture newly states that trial_end updates reset a flexible anchor, free-to-paid upgrades normally defer pending charges, one-time-only additions may stay pending despite always_invoice, and pending_if_incomplete excludes prior items (new 85-96, 243-263). It also adds 20-versus-100 item limits (new 273-279). May already warned migration cannot reverse (old 8-10); current source lines 24 and 30 state overbroad absolutes. These are mode and scenario-specific documented rules, not evidence of any account's selected mode or a paid invoice.",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/billing-mode/compare, [[source-stripe-subscriptions-billing-mode-compare]] needs a dated source update: November adds a trial_end anchor exception, anchor-reset proration cases, no-credit-after-uncharged-backdate behavior, conditional one-time pending items and item limits (new 85-120, 179-185, 241-263, 273-279), while table spacing and numbering changes are presentational (diff 1-277). Preserve May's dated 2026 wording, especially its explicit-anchor-only statement and internally broad pending-item section (old 84-88, 204-210), with reciprocal warning rather than silently treating them as unchanged current rules. Narrow source lines 21-26 and 30 to their cycling, price-change, usage-transition, Portal and pending_if_incomplete conditions. The compare page does not independently prove API-version eligibility, defaults, invoice creation, credit, payment, or successful migration."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-build-subscriptions",
+    "attempt": 1,
+    "receipt_sha256": "fb9c3c35f656c96507ebcc447a9931babd89d21724bcb5d53122b7c7c3bc852c",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-build-subscriptions/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/build-subscriptions",
+    "source_target": "wiki/sources/source-stripe-build-subscriptions.md",
+    "disposition": "no_substantive_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/build-subscriptions, the complete 2026-11-07 capture establishes only navigation: its variant notice at new raw:11 routes to two Checkout, two Elements, and three mobile choices at new raw:13-22. It states no current implementation prerequisite, account identity, payment status, or finality rule. The matched 2026-05-12 guide instead documented hosted Checkout, embedded Checkout, Elements with Checkout Sessions, direct Subscriptions/Payment Intents, and mobile variants at old raw:20-26,497-501,1025-1045,2133-2149,4021-4028,6036-6041,7944-7949. [[source-stripe-build-subscriptions]] is a dated summary of that old full guide, not proof that its behavior was reconfirmed by the new index.",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/build-subscriptions, the substantive behavior delta is unestablished; the visible change is navigation and rendering of seven variant links at new raw:9-22 and diff:3-11,10050-10059. Preserve [[source-stripe-build-subscriptions]] as 2026-05-12 evidence: flexible billing's Basil API minimum at old raw:267, server webhook and Customer-or-Account ID handling at old raw:310-314, direct API default_incomplete/confirmation at old raw:2519-2525, and platform-qualified mobile caveats at old raw:4021-4028. Source:13-21 and the concept's three-path annotation understate the old variant breadth and merit reciprocal scoped wording, but an index omission cannot prove removal, current eligibility, a payment outcome, or a new client/server contract."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-cancel",
+    "attempt": 1,
+    "receipt_sha256": "67f93f02fd7bdb4673bc29e293aeefc03197bcbe46888c4dccf433a9c336df68",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-cancel/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/cancel",
+    "source_target": "wiki/sources/source-stripe-subscriptions-cancel.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/cancel, the new capture documents immediate cancellation by API or Dashboard, pending period-end cancellation, custom future dates, schedules and limited dispute-triggered cancellation (new 17-88, 141-176). A canceled subscription cannot be reactivated; a period-end cancellation can be stopped before the period ends (new 64, 118-131; old 70, 120-133). Cancellation stops future subscription invoices, while open and draft invoices have auto_advance disabled rather than being erased (new 19, 103; old 18, 109). [[source-stripe-subscriptions-cancel]] covers these routes but overstates custom-date credit proration at source 42. The new page adds a scoped Workflows option for deleting pending invoice items when the subscription ends (new 105-107).",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/cancel, the main substantive changes are clearer custom-date proration limits and a no-code pending-item deletion template (new 21, 105-107, 151-166; old 20, 96-109, 161-174). [[source-stripe-subscriptions-cancel]] and its concept should replace the universal 'credit proration always generated' claim: within-period dates permit suppression, while a date outside the current period cannot disable proration, and billing mode can alter invoice-line effects. The prior proration_behavior=none guidance remains dated at old 20. Node.js-to-curl examples, list numbering, link phrasing and emphasis are presentational. Distinguish customer.subscription.updated for scheduling from customer.subscription.deleted for actual cancellation (new 115-116; old 117-118), and do not infer any refund, invoice payment, workflow execution, or account eligibility from this capture."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-cash-app-pay",
+    "attempt": 2,
+    "receipt_sha256": "7df8ac413ddd1ea5cb5966d99759869c7cb1436c5a9782cf99fa37155bcd1492",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-cash-app-pay/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/cash-app-pay",
+    "source_target": "wiki/sources/source-stripe-subscriptions-cash-app-pay.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/cash-app-pay, the November capture establishes only three variant routes: Setup Intents API, Subscriptions API, and Stripe-hosted page (new lines 9-15). The May combined guide describes all three with separate examples (old lines 10-14, 93-97, 168-172). In its Subscriptions API flow, requires_action and QR or redirect authentication precede PaymentIntent succeeded; subscription activation follows a successful payment, not merely the redirect (old lines 164-166). [[source-stripe-subscriptions-cash-app-pay]] summarizes May behavior but needs that condition at line 37. The new index supplies no current API contract or payment outcome.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/cash-app-pay, the visible November change is a navigation index, not evidence of path removal or new runtime behavior (old lines 8-241; new lines 9-15). [[source-stripe-subscriptions-cash-app-pay]] needs a bounded May-evidence correction: its SetupIntent confirm=true and usage=off_session values are one example, not proven path-wide requirements (old lines 43-60); its activation arrow needs successful payment (old lines 164-166); and the old confirm prose names payment_method_types while adjacent curl uses payment_method_data[type], leaving the intended confirm parameter unresolved (old lines 149-161). The Checkout example omits mandate_data and return_url (old lines 209-227), so universal requiredness is unsupported. Retain May factual provenance and use the new capture only for navigation."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-change-price",
+    "attempt": 1,
+    "receipt_sha256": "4d86b4b75723a8af639b29724e604a30d4893d8233776e405fb21b8ae702af65",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-change-price/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/change-price",
+    "source_target": "wiki/sources/source-stripe-subscriptions-change-price.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/change-price, the 2026-11-07 capture documents a Subscriptions API price replacement using subscription and item identifiers: omitting the item ID adds another item, and changing price resets quantity to 1 unless preserved (new raw lines 15-25 and 62-102). Billing-date behavior depends on interval and interval_count, trial introduction and zero-amount exceptions (new raw lines 104-110 and 144-148). Price changes often result in prorations; immediate billing can fail even though the change request succeeds, leaving past_due, while pending updates can gate application on payment success (new raw lines 128-142). These core rules already appear in the 2026-05-13 guide (old raw lines 65-71 and 161-181) and are summarized by [[source-stripe-subscriptions-change-price]].",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/change-price, the observed diff is Node-to-curl examples and formatting, with no demonstrated substantive or version-contract change (new raw lines 19-23, 70-87 and 120-126; old raw lines 18-26, 73-108 and 145-159). Preserve [[source-stripe-subscriptions-change-price]] as dated guidance for item-ID, quantity, period and usage-meter conditions. Correct its broad 'price changes trigger prorations' and 'charge immediately' wording: the guide says often prorates, always_invoice generates an invoice for a same-period switch, anchor reset attempts payment, and failure can leave the request successful but subscription past_due (new raw lines 128-138; old raw lines 161-171). Keep trial and zero-price exceptions explicit, and treat the preview-method name and actual payment outcome as unverified by this capture."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-coupons",
+    "attempt": 1,
+    "receipt_sha256": "63a9ec922652b96ea442cebba4ca751c9ef7acdee0332d00262c71b2a3a21b9b",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-coupons/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/coupons",
+    "source_target": "wiki/sources/source-stripe-subscriptions-coupons.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/coupons, the November capture describes backend-applied coupons and customer-facing promotion codes that wrap coupons, inherit parent product restrictions, and create Discount objects when redeemed (new lines 15-24; old lines 8-21). It covers once, repeating and forever duration, product eligibility, redemption limits, code eligibility, stacking and update behavior (new 95-109, 193-215, 229-237, 430-503; old 81-95, 215-235, 249-257, 474-587). [[source-stripe-subscriptions-coupons]] summarizes these central mechanisms, but its active-code uniqueness wording omits the customer-restricted duplicate exception (source 33; new 245-261; old 265-281). Accounts v2 examples require the preview version for preview users; Connect users are described as GA (new 126-152; old 112-162).",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/coupons, the notable additions are the explicit shared 20-discount limit including invoices (new line 24; old line 567), optional discount-calculation-script links (new 91-93), and explicit shared max_redemptions counting for direct coupon use and promotion-code redemption (new 209-215; old 231-235). The November once-duration default/finalization language clarifies May's account rather than proving a runtime change (new 195-205; old 219-227). [[source-stripe-subscriptions-coupons]] should preserve coupon versus promotion-code restrictions, customer/account variants, stacking order and replacement rules, and the portal price-upgrade warning (new 19-33, 126-152, 221-237, 479-503; old 112-162, 241-257, 563-587). Node-to-curl and image/link changes are presentation or navigation. The reciprocal [[stripe-subscriptions-coupons]] route needs invoice scope and qualified active-code uniqueness; no account eligibility or script behavior follows from the capture."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-design-an-integration",
+    "attempt": 1,
+    "receipt_sha256": "94b72973aa9ac729fdfaa998c222bee0f5c0b380b285901ba85606b1fe22cc4d",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-design-an-integration/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/design-an-integration",
+    "source_target": "wiki/sources/source-stripe-subscriptions-design-integration.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/design-an-integration, [[source-stripe-subscriptions-design-integration]] should identify a design guide that asks merchants to choose among four pricing models, seven checkout interfaces and three payment-timing models, then follow six example use-case routes (new 9-13, 19-65, 67-181). The May capture already contained those categories, the six named one-click methods and payment-link exclusion for usage-based billing (old 18-21, 53-120, 156-167), which the current source largely summarizes at lines 13-44. The November usage row newly names Metronome for more complex pricing (new 48), but the guide's typical flows and example matrix do not prove account eligibility, execution, payment or provisioning success.",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/design-an-integration, [[source-stripe-subscriptions-design-integration]] warrants a bounded dated update for the November Metronome guidance on complex usage-based pricing (new 48-65 versus old 40-51). Added arithmetic examples, no-code payment-link sentence, cleaner tables and ui=full-page trial-link parameters are primarily explanatory or navigation changes (new 19-65, 114-126, 176; old 23-51, 100-120, 160). Preserve May's existing seven-interface and timing-model evidence (old 53-154) and its image provenance. Qualify the current source's 'full layout control' and mobile UI wording (source 32, 36) against both captures (new 89-96, 127-134; old 75-82, 111-118). Payment-link exclusion remains in both (new 136, 183; old 120, 167); none of these captures proves method availability, merchant eligibility, invoice creation or paid funds."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-ideal",
+    "attempt": 2,
+    "receipt_sha256": "6879fed178dff12bf773fa266ab57690cff1404987639f6ee93324d04d476575",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-ideal/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/ideal",
+    "source_target": "wiki/sources/source-stripe-subscriptions-ideal.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/ideal, the 2026-11-07 capture establishes the subject and links to hosted and Direct API variants only (new lines 5\u201314), so it establishes no current payment, mandate, or outcome behavior. The May 2026 guide behind [[source-stripe-subscriptions-ideal]] distinguishes hosted Checkout's first iDEAL subscription payment and free-trial-only refunded 0.01 EUR collection (old lines 16\u201318) from Direct API's generally refunded 0.01 EUR iDEAL setup collection, SetupIntent/SEPA mandate authorization, generated SEPA payment method, and later subscription charge (old lines 541\u2013549, 583\u2013585, 832\u2013850). A successful setup is not a successful SEPA payment or active subscription (old lines 870\u2013874).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/ideal, the November difference is navigation: an index links the two variants (new lines 11\u201314), while the older capture contains their full instructions (old lines 8\u201318, 541\u2013549); omission is not deprecation. [[source-stripe-subscriptions-ideal]] needs a bounded historical accuracy correction at lines 13 and 17\u201322 to separate hosted first-payment and Direct API refunded-setup flows, preserving mandate authorization and payment finality as distinct (old lines 583\u2013585, 832\u2013850, 870\u2013874). Source line 45 should make webhook monitoring optional while requiring reliable setup confirmation (old lines 832\u2013834). Source line 50 should scope off_session=true to the older Direct API update guidance and remove the unsupported PayPal analogy (old lines 876\u2013878). These are May-source defects, not newly demonstrated November behavior."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-import-subscriptions",
+    "attempt": 2,
+    "receipt_sha256": "d19430537fb032cf1c0ea0246835ffb8401ae9a0656aa877dae57156500f3341",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-import-subscriptions/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/import-subscriptions",
+    "source_target": "wiki/sources/source-stripe-subscriptions-migration-api.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/import-subscriptions, the new capture describes moving third-party, in-house or Stripe-account subscriptions into Stripe Billing through prepared customers, prices and mapped schedule or subscription objects (new 5-16, 63-83, 111-126). It adds a default payment source condition for customers to be charged automatically; absent a default, subscription invoices cannot collect payment (new 16, 45-61). A processor PAN import is conditional and unnecessary for Stripe-to-Stripe migration (new 15, 59-61; old 14). Both captures recommend Schedules for future starts while permitting the Subscription API (new 113; old 111), contrary to [[source-stripe-subscriptions-migration-api]] line 19's exclusionary wording. The list API check proves object existence only (new 128-138; old 140-156), not completed billing or payment.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/import-subscriptions, substantive differences are the new explicit default-payment-method path and third-party import-completion warning (new 16, 45-61; old 10-14), plus a legacy-price maximum interval of three years instead of the old one year (new 95; old 93). [[source-stripe-subscriptions-migration-api]] should retain the older limit as dated evidence and correct its 'not Subscriptions API' phrase, because both captures allow direct Subscription creation but recommend Schedules (new 113; old 111). Node.js-to-curl examples and list numbering are presentational. The old prose June 1, 2022 00:00 UTC (old 115) equals the new prose May 31, 2022 17:00 GMT-7 (new 117), but the unchanged start_date=1654066801 (old 136; new 125) is June 1, 2022 07:00:01 UTC; this unresolved sample mismatch must not be described as changed scheduling behavior or an equivalent rendering of the epoch. Customer and price identity mapping, mid-cycle anchor/start-date continuity, sandbox-to-live price ID remapping and the narrow list-based existence check remain essential (new 79-83, 102-109, 128-138; old 77-81, 100-107, 140-156); no account-specific import, scheduled billing, or payment result was observed."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-import-subscriptions-toolkit",
+    "attempt": 2,
+    "receipt_sha256": "43762dfd68ad6d46b2a2c951f347b697f3fc20c8224ae602ebc01f7d3ae1217f",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/import-subscriptions-toolkit",
+    "source_target": "wiki/sources/source-stripe-subscriptions-migration-toolkit.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/import-subscriptions-toolkit, the new capture documents Dashboard CSV creation of scheduled subscriptions, not migration of payment receipts or successful future collection (new raw:9,34-38,187-202). [[source-stripe-subscriptions-migration-toolkit]] summarizes the May guide's three templates and scheduling windows but omits new defaults and validation. A destination Stripe Customer, future start_date, and the chosen recurring-price representation are required by the corresponding CSV path (new raw:48-50,79-83,111-116); other-processor data import and old-system cancellation depend on migration origin (new raw:15-20). Automatic collection requires a customer default source unless validation is deliberately relaxed; send_invoice instead requires email and days_until_due (new raw:153-163,465-467). The old page had described toolkit proration default as create_prorations (old raw:52,449), now contradicted by new none (new raw:57,497).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/import-subscriptions-toolkit, material changes are the toolkit CSV's omitted/blank proration_behavior default of none versus old create_prorations (new raw:497; old raw:449), charge_automatically default-source validation with send_invoice exception (new raw:153-163), and optional one-time add_invoice_items semantics (new raw:504-510). The old assertion that blank tax columns automatically followed the configured Billing integration after go-live (old raw:362-366) is superseded by the new toolkit guidance: blanks do not enable future automatic tax, and a configured third-party app plus automatic_tax=true is required for that route; merely installing/selecting an app is insufficient (new raw:412-416). Both captures' Basic sample says 20 USD in prose but 50 in the one-time amount row (old raw:255,260; new raw:316,320); new raw:504 specifies major currency units, so reconcile the intended amount before using that row. The coherent 9.99+9.99 illustration at new raw:510 is distinct. Numbered lists and table spacing are presentational. [[source-stripe-subscriptions-migration-toolkit]] should keep its dated timing facts (source:25-36) and distinguish general schedule API defaults. January examples do not waive the future-start rule, and import success proves no payment finality or observed tax calculation."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-kakao-pay",
+    "attempt": 2,
+    "receipt_sha256": "0f0904382d80ec00c3b3cbc46688bfcea632dde628299a3e09209f101b72e599",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-kakao-pay/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/kakao-pay",
+    "source_target": "wiki/sources/source-stripe-subscriptions-kakao-pay.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/kakao-pay, the complete 2026-11-07 capture is a three-link variant index for SetupIntents API, Subscriptions API and a Stripe-hosted page (new 7-13); it provides no payment parameter or lifecycle rule. The matched 2026-05-13 guide documents KRW pricing and those paths (old 8-217). [[source-stripe-subscriptions-kakao-pay]] wrongly promotes usage=off_session from the SetupIntent-create example at old 43 and off_session=true from subscription-create at old 71, alongside mandate_data, into broad requirements at source 13/19-20/26. Source 30 also omits that requires_action calls for customer authentication and only a successful payment precedes Active and default-method saving (old 89, 159). The new index cannot establish deprecation, current eligibility or completed billing; its links are navigation only.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/kakao-pay, the observation is an upstream variant index, not demonstrated API deprecation or contract change (new 7-13; old 8-217). [[source-stripe-subscriptions-kakao-pay]] should retain the May guide as dated evidence, narrow usage=off_session and off_session=true to their different SetupIntent-path request examples (old 43, 71), and keep mandate_data scoped to shown examples (old 47-49, 153-156). Source 30 must say the direct path's requires_action calls for authentication and Active follows successful payment (old 159). Source 13/39 and concept 142 should compare only the three-path organization with KR card. The old guide's SetupIntent sequence and PaymentIntent-confirm prose conflict with its own examples (old 12 versus 34-73; old 79/146 versus 81-87/148-157). The index cannot resolve these or prove eligibility, completed billing or settlement."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-klarna",
+    "attempt": 1,
+    "receipt_sha256": "87933503dcfbae66e923c0ed321a8dda591559d03d18d6fa0070a2e0b1ff2c30",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-klarna/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/klarna",
+    "source_target": "wiki/sources/source-stripe-subscriptions-klarna.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/klarna, the complete 2026-11-07 capture establishes only a Klarna subscription purpose and links to Stripe-hosted and Advanced integration variants (new raw lines 5-14). The 2026-05-13 capture supplies the detailed routes: hosted Checkout requires a recurring Price in subscription mode and can add one-time prices, while the advanced server-created incomplete subscription uses client Payment Element confirmation and post-redirect PaymentIntent status (old raw lines 49-109 and 556-681). The old guide warns options vary by buyer country and use case (old raw lines 10-12). [[source-stripe-subscriptions-klarna]] summarizes that dated evidence; the index proves no current eligibility or completed charge.",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/klarna, the observed change is navigation only: new raw lines 9-14 replace inline hosted and advanced variants contained at old raw lines 16-1038. There is no demonstrated deprecation or new authorization, mandate or capture contract. Keep [[source-stripe-subscriptions-klarna]] tied to the 2026-05-13 guide, including sandbox-only country tests and the advanced path's conditional PaymentIntent succeeded check (old raw lines 164-168 and 644-681). Correct the source and reciprocal concept's success-URL wording: old raw lines 85-109 say redirect alone is not payment proof. The hosted sample's omitted payment_method_types is not a universal override rule; one-time price add-ons do not establish recurring mandate or manual capture support. The uncaptured variant pages and live account outcomes remain unresolved."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-kr-card",
+    "attempt": 1,
+    "receipt_sha256": "e5a707ccb5971b3f857569713308845a38ab4868abcf6bd85495a3cca1acef9e",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-kr-card/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/kr-card",
+    "source_target": "wiki/sources/source-stripe-subscriptions-kr-card.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/kr-card, the 2026-11-07 capture is a thirteen-line variant index that directs readers to SetupIntents, Subscriptions API and Stripe-hosted Checkout pages (new lines 5-13). It contains no substantive integration instructions. The May capture documents those three paths with KRW pricing, local-processor authentication, distinct server SetupIntent/subscription and PaymentIntent-confirmation steps, and a hosted Checkout example (old lines 8-89, 91-156, 158-214). [[source-stripe-subscriptions-kr-card]] accurately routes to the three historical paths but overstates example fields as universal requirements (source 19-20). The May SetupIntents opening also conflicts with its own SetupIntent steps (old 12 versus 34-56).",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/kr-card, the visible change is presentational routing: November lists three query-parameter variants (new lines 9-13) where May rendered all three flows together (old lines 8-214). This does not prove deprecation, removal, changed availability, or a replacement API behavior. [[source-stripe-subscriptions-kr-card]] should preserve May KRW and authentication facts as dated evidence (old 32, 52, 89, 156), narrow its off_session and mandate_data 'required' claims (source 19-20), and flag the May prose/command conflict: payment_method_types is named in prose but confirmation examples use payment_method_data (old 79-87, 143-154). The reciprocal [[stripe-korea-payment-methods]] source route at concept line 141 repeats the overbroad requirement. Example 100,000 KRW pricing and requires_action are not payment-finality or universal-parameter proofs."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-mixed-interval",
+    "attempt": 1,
+    "receipt_sha256": "1bec4f83724f8fdb7c80c01827e5e72d53abf943010b0953dac2169f70f8d4dc",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-mixed-interval/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/mixed-interval",
+    "source_target": "wiki/sources/source-stripe-subscriptions-mixed-interval.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/mixed-interval, the 2026-11-07 capture establishes the page identity and Dashboard/API variant links only (new lines 5\u201314), with no present-day behavior, prerequisite, identity, or payment outcome proof. The dated [[source-stripe-subscriptions-mixed-interval]] summarizes the May 2026 full guide: one subscription can contain differently timed items; flexible billing mode and API 2025-06-30.basil or later are stated prerequisites (old lines 8\u201312). Item periods remain distinct, invoices combine only when periods align, and the subscription period reflects the latest item start and earliest item end (old lines 10, 290\u2013319). Cancellation and exhausted retries affect the shared subscription, with unpaid or past-due state depending on dunning settings (old lines 282\u2013286).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/mixed-interval, the only demonstrated change is navigation: the new index routes Dashboard and API variants (new lines 9\u201314) instead of exposing their combined content; omission is not deprecation. Keep [[source-stripe-subscriptions-mixed-interval]] dated to May 2026 for flexible mode, API version, interval validation, Checkout and portal limits, and schedule guidance (old lines 12, 148, 354\u2013395). Source line 31 and its reciprocal concept line 32 need the condition that all payment retries fail, plus the configured unpaid/past-due outcome (old line 286). The January 2024 invoices, API send_invoice configuration, supported interval lists, and pause/resume state table are examples with their stated item and settings conditions, not universal guarantees (old lines 40\u2013142, 325\u2013385)."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-naver-pay",
+    "attempt": 1,
+    "receipt_sha256": "a8b289610a938c7ff1da4b0dc8932d149bcbca800e8422eac63c18c1e26f4d5e",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-naver-pay/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/naver-pay",
+    "source_target": "wiki/sources/source-stripe-subscriptions-naver-pay.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/naver-pay, the entire 2026-11-07 capture is an index for three variants, SetupIntents API, Subscriptions API and Stripe-hosted page (new 9-15). It does not specify API parameters or subscription and payment states. The matched May 2026 full guide describes KRW pricing, a SetupIntent/client-secret/mandate path, an incomplete direct Subscription path with requires_action customer authentication, and a Checkout subscription-mode example (old 20-75, 117-158, 184-216). [[source-stripe-subscriptions-naver-pay]] reflects that old guide but overgeneralizes path-specific off_session and mandate_data examples at source 13/18-19 and inserts an unshown SetupIntent succeeded state at source 25. Activation follows a successful payment in old 158; the index cannot prove current eligibility or a completed charge.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/naver-pay, the observed change is an upstream variant index at the same URL, not demonstrated deprecation or an API contract change (new 9-15; old 10-216). [[source-stripe-subscriptions-naver-pay]] should retain old KRW and path details as dated evidence while narrowing off_session and mandate_data to the requests shown at old 40-75 and 147-156; Checkout old 203-211 is a separate sample. Old 14 conflicts with its SetupIntent-first steps at 36-75, and old 81/145 parameter prose does not match its confirm examples at 83-89/147-156. The direct flow's requires_action still calls for authentication and successful payment before Active (old 158). The new index's links are unread navigation; no account eligibility, mandate completion, successful billing or settlement was observed."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-overview",
+    "attempt": 1,
+    "receipt_sha256": "aa48d82e29b9ab084eb524af00546c013dc623bd55fed326f6b12cbd207fba48",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-overview/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/overview",
+    "source_target": "wiki/sources/source-stripe-subscriptions-overview.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/overview, the November capture distinguishes `charge_automatically` first-payment `incomplete` and 23-hour expiry from `send_invoice` without a trial, which can begin `active` despite an unpaid first invoice (new 31-43; old 40-55). It adds invoice-dependent status resolution, separates initial collection from recurring retries, and ties provisioning to activated subscriptions or active entitlements (new 77-108,151-164,180). [[source-stripe-subscriptions-overview]] currently states a general 23-hour window, always-active success matrix, and older creation-timed entitlement framing (source 21-23,38-48; old 57-61). Customer, Subscription, Invoice, PaymentIntent and stored payment-method identities remain distinct (new 9-21,110-125).",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/overview, the substantive changes are collection-method scope, configurable status resolution, conditional active status, initial-versus-recurring retry rules, and entitlement timing (new 31-49,77-108,118,151-164 versus old 40-59,103-124,149-155). Heading and link changes are presentational. [[source-stripe-subscriptions-overview]] should retain May 2026 payment_behavior options and first-invoice editing limits as dated evidence (old 29-38,71-77), since their omission is not deprecation. Reciprocal concept warnings should correct categorical async and Checkout provisioning claims; `active` can coexist with processing, later failed delayed payment, or other open invoices (new 80,122-125,137,180), so neither UI event nor payment-status row alone proves final settlement."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-pause",
+    "attempt": 1,
+    "receipt_sha256": "b5cf630d4973a492696fa1191fedf372b3f37935cb6626f7a577910e70d4ced0",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-pause/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/pause",
+    "source_target": "wiki/sources/source-stripe-subscriptions-pause.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/pause, the November capture establishes that true pause stops service and new invoices while existing invoices advance; it differs from payment-collection pause and automatic trial-end pause (new 7-20, 54-57). Flexible billing and charge_automatically are the relevant prerequisites (new 24, 142, 313-315). API, Dashboard, configurable portal and linked schedule routes now appear (new 24-28), unlike the May portal/manual limitations (old 58, 62) summarized by [[source-stripe-subscriptions-pause]] at lines 50 and 73. An HTTP 200 resume response can still have paused status pending invoice payment (new 166-168).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/pause, substantive changes include portal pausing, scheduled attempt navigation, preview conditions and the two payment_behavior outcome branches (new 26-28, 115-126, 181-188), so [[source-stripe-subscriptions-pause]] must qualify its blanket manual-payment, 23-hour and past_due statements at lines 73-82. The May preview header, type parameter, unchanged anchor and cadence claims remain dated evidence (old 40, 48-56, 83-89); omissions do not prove their removal. November's explicit item-level trial-offer exception (new 315) conflicts with the old broad trial-offer exclusion (old 37). Dashboard navigation and example dollar amounts are not general eligibility or billing guarantees."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-pause-payment",
+    "attempt": 1,
+    "receipt_sha256": "d2337a9475f7105e67057a20b02050255729f9b3cfac212e95a022fe84e85fab",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-pause-payment/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/pause-payment",
+    "source_target": "wiki/sources/source-stripe-subscriptions-pause-payment.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/pause-payment, pause_collection leaves the Subscription active, creates invoices, and retains service access while pausing active collection (new 9-17; old 8-24, 38). Its three invoice behaviors are draft with auto_advance=false, uncollectible subject to customer-balance payment, and void (new 25-33; old 12-16, 58, 92-94). The Dashboard or API can set an indefinite pause or resumes_at for automatic future resumption (new 21-23, 37-78; old 10, 40, 96). Prior invoices continue retrying unless voided; existing draft invoices need separate auto_advance=true after subscription collection resumes (new 17, 107-135; old 20, 64-73, 114-118). [[source-stripe-subscriptions-pause-payment]] covers these modes but needs the schedule/resumption qualification; no actual payment result is established.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/pause-payment, the main new precision is that schedule updates still apply yet a schedule phase transition does not itself clear directly set pause_collection (new 80; old 116-118). [[source-stripe-subscriptions-pause-payment]] line 60 should qualify its manual-unpause statement because resumes_at can automatically resume collection (new 23, 58, 74-78; old 40, 44, 96). The related concept's API-only row conflicts with Dashboard/API coverage (new 21, 37-58; old 10). The three behaviors, customer-balance paid exception, prior-invoice retries, and separate draft-invoice auto_advance action persist (new 17, 25-33, 107-135; old 20, 58-64, 92-94, 114-118). New Dashboard detail, curl examples and reorganized headings are presentation changes, and no actual resume or paid-invoice outcome follows from the examples."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-payment-methods-setting",
+    "attempt": 2,
+    "receipt_sha256": "059fb7db460afa084801ebedaa1d52a08cd5ca539e1cec9cbf384a9f76457d7b",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-payment-methods-setting/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/payment-methods-setting",
+    "source_target": "wiki/sources/source-stripe-subscriptions-payment-methods-setting.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/payment-methods-setting, subscription `payment_settings.payment_method_types` controls allowed types rather than an individual default method (new 5-9). `send_invoice` presents eligible choices on the Hosted Invoice Page, while `charge_automatically` attempts collection without first showing a selector; activation and invoice eligibility still constrain choices (new 11-27,57-65). [[source-stripe-subscriptions-payment-methods-setting]] summarizes May subscription-update, priority, save-default and update-link material (old 18-61), but its source line 37 wrongly specifies the subscription as default destination for both save controls. Old 40 only calls it 'the new default'; the object target for each control is unresolved.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/payment-methods-setting, November's substantive clarification concerns type identity, collection-method flow and invoice eligibility (new 9-14,25-27,61-65). The Dashboard create path and API example do not deprecate May's update example (new 31-55; old 18-28). [[source-stripe-subscriptions-payment-methods-setting]] should separate type precedence from default attempt priority, narrow categorical error timing, and preserve May-only update-link details as dated. Crucially, source 37 and reciprocal invoice concept 109 must no longer say both Dashboard Invoice settings and Subscription `save_default_payment_method` set the subscription default: old 40 names both controls but only says 'new default', and the new guide is silent. Neither UI sample nor API snippet proves successful billing."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-paypal",
+    "attempt": 1,
+    "receipt_sha256": "37829d15348ef7b81176112a90a37f358ece6b9648c407fa89a21e1456cce8d7",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-paypal/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/paypal",
+    "source_target": "wiki/sources/source-stripe-subscriptions-paypal.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/paypal, the complete November capture establishes the topic and two UI routes only: Stripe-hosted page and Direct API (new 5-14). It supplies no operational prerequisites, state transitions or eligibility rules. The May capture documents hosted Checkout Session creation and payment confirmation (old 89-174), plus a Direct API SetupIntent, client PayPal billing-agreement approval, authorization webhooks, and later server subscription creation (old 695-846). [[source-stripe-subscriptions-paypal]] summarizes those historical flows but overstates the universal `off_session` rule at source 42-46. Customer/Account, SetupIntent, Mandate, PaymentMethod, Subscription and payment success must remain distinct.",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/paypal, the 2026-11-07 change is variant navigation (new 9-14), not evidence that the May Stripe-hosted or Direct API behavior was withdrawn; the old full-page variants remain dated evidence (old 8-20,620-629). [[source-stripe-subscriptions-paypal]] should keep the May client/server and Dashboard eligibility qualifications, PayPal authorization webhook versus payment outcome distinction, and detach consequence (old 762-796,982-984). Correct its unqualified `off_session` all-creates assertion because old initial examples include the flag while optional create examples omit it (old 809-839,909-977); the new index cannot resolve that tension. The same warning belongs on the reciprocal Stripe PayPal concept."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-pending-updates",
+    "attempt": 1,
+    "receipt_sha256": "038773a1b68abe1a47adfdabc6f7f867ae4d557c4caeed2f4ce842462a342764",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-pending-updates/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/pending-updates",
+    "source_target": "wiki/sources/source-stripe-subscriptions-pending-updates.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/pending-updates, the November capture documents payment_behavior=pending_if_incomplete for invoice-producing subscription or subscription-item changes with charge_automatically and listed payment methods (new 9-13, 32-63). It normally holds changes until payment, but paused-subscription resumption can apply a matching update on active or past_due without success (new 28). The old capture treated a populated hash as failed payment (old 104), as does [[source-stripe-subscriptions-pending-updates]] at 45; November instead says it means not yet applied, with Payment Records potentially still processing (new 95-102).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/pending-updates, substantive November changes are the resumption exception, Payment Records timing, interval-invoice suspension, expanded auto-void conflict triggers, and mode-specific existing pending invoice items (new 28, 95-106, 159-161, 183-188); [[source-stripe-subscriptions-pending-updates]] at 13, 21, 45, 61 and 69 needs qualification. The May Node.js example (old 62-81) remains dated evidence despite a new cURL example. New supported attributes (new 118-147) do not mean each standalone metadata or discount change creates an invoice; old no-invoice examples (old 14-23) cannot simply be reversed."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-pix",
+    "attempt": 1,
+    "receipt_sha256": "5056f7d0c4c13158c2e2e924b49ca1141ba2e6ad16773267caf37049913fa9e5",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-pix/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/pix",
+    "source_target": "wiki/sources/source-stripe-subscriptions-pix.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/pix, the complete November capture establishes the Pix subscription topic and three variant URLs only (new lines 5\u201315), with no current request requirement or outcome proof. The dated [[source-stripe-subscriptions-pix]] reflects the May 2026 full guide: Pix Autom\u00e1tico uses a customer-authorized recurring mandate (old line 8); Checkout, Setup Intents API, and Subscriptions API have distinct flows (old lines 10\u201314, 122\u2013126, 618\u2013622). SetupIntent success authorizes and attaches a payment method without an initial payment, while the Subscriptions API path begins incomplete and becomes active after successful PaymentIntent payment (old lines 194\u2013198, 474, 688\u2013692, 905\u2013924). Accounts v2 customer_account and Customers v1 customer examples differ (old lines 200\u2013239, 694\u2013750).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/pix, the demonstrated change is variant navigation, not a behavioral revision: new lines 9\u201315 link the hosted, Setup Intents, and Subscriptions API pages, replacing the May combined guide. [[source-stripe-subscriptions-pix]] needs a historical accuracy correction because source lines 13 and 17 make mandate options universal though the old Subscriptions API calls them optional (old lines 688\u2013692), and its tax-ID wording drops the cross-border condition (old lines 317\u2013323, 764\u2013770). Source line 50 and reciprocal concept line 48 should separate QR/mandate authorization from successful payment and activation (old lines 905\u2013924). Preserve dated revocation, mandate amount/schedule failure, once-per-cycle restrictions, and test-only scenarios (old lines 983\u20131059); the index does not verify current eligibility or settlement."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-prebilling",
+    "attempt": 2,
+    "receipt_sha256": "cab9269b1f6a94ab89854c3a7b7681ef55ab4859feda07ef88811c3561f3ab80",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/prebilling",
+    "source_target": "wiki/sources/source-stripe-subscriptions-prebilling.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/prebilling, the complete November capture documents billing_schedules on a subscription to invoice licensed-price future service periods, with flexible billing and API version 2026-05-27.dahlia or later (new raw:9-13,38-52). Accounts v2 examples use customer_account and Customers v1 use customer (new raw:88-118); applies_to selects prices, and omitting it covers eligible licensed items, never metered ones (new raw:40-42,160-162). bill_until can be a duration described as from the current date or an exact timestamp (new raw:44,194,224-226), and the new minimum is one full billing period from the start without a mixed-interval shortest-item rule (new raw:54-56). The 50-cycle total and five-year advice further qualify the end date (new raw:58-59). [[source-stripe-subscriptions-prebilling]] still summarizes the May public-preview capture's 2025-09-30.preview minimum, shortest-period minimum/12-cycle cap and cycle-start duration anchor (old raw:20,35-45,73; source:13,31,38-41), so it and the linked concept need dated corrections. Invoice creation/finalization is not payment success (new raw:368-378).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/prebilling, substantive deltas are the Dahlia API minimum versus old preview version (new raw:13; old raw:36); one full period from the start without old 'shortest' language plus 50 total cycles and five-year advice versus old shortest-period minimum and 12-cycle maximum (new raw:54-59; old raw:44-45); and a current-date duration description versus old cycle-start wording (new raw:44,194; old raw:73,127). [[source-stripe-subscriptions-prebilling]] line 31 and 40-41 and the linked concept line 37-40,53 need reciprocal, dated corrections; mixed-interval minimum and off-anchor duration arithmetic remain unresolved. Account-model examples, schedule cleanup, scoped pending_if_incomplete wording, early renewal/cancellation examples and payment-outcome webhooks add context (new raw:32,35-36,88-118,330-386). Omission of the old migrated-classic and proration-none bans does not prove support (old raw:25-29; new raw:31-36). Numbered lists are presentation changes. always_invoice finalizes an invoice now; create_prorations waits for the next cycle (new raw:359-366), and neither proves payment or fee entitlement."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-prorations",
+    "attempt": 1,
+    "receipt_sha256": "184dff9c652d63d95698aef5ade41992c157aa90bdcb67abf67e453603e552a9",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-prorations/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/prorations",
+    "source_target": "wiki/sources/source-stripe-subscriptions-prorations.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/prorations, the new capture establishes subscription-update proration as an invoice-item classification driven by the generating operation, not merely service-period length; item.proration or line-item parent.subscription_item_details.proration identifies it (new 24-48). A single operation can create both kinds, and a manually negative item is not automatically a proration. Both captures retain the default update-trigger and non-trigger tables, discount-state rule, unpaid-invoice credit risk, classic/flexible credit examples, and same-date preview/update pattern (new 60-151, 172-337, 339-719; old 20-109, 119-332, 334-712). [[source-stripe-subscriptions-prorations]] summarizes those older flows but its universal credit-plus-debit wording needs narrowing. Accounts v2 uses customer_account and Customers v1 uses customer in separate examples (new 343-405; old 338-400); the preview is not payment confirmation.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/prorations, substantive additions are the operation-based true/false classification matrix (new 24-48; old 10-18), conditional credit attribution through proration_details.credited_items (new 161-170; old 115-119), optional time-granularity/script customization (new 50-56; old 693), and the new none caveats for ordinary non-proration items and cancel_at outside the current period (new 735-737; old 726-730). [[source-stripe-subscriptions-prorations]] should retain dated classic/flexible calculations, discount behavior, unpaid-invoice warning and preview-locking logic (new 60-151, 172-337, 697-735; old 20-109, 119-332, 693-728), while correcting 'exhaustive' and 'actually paid' overclaims. Arithmetic-table formatting, Node.js-to-curl/Ruby examples, and changed docs links are presentation; customer versus customer_account remain distinct identity variants. The sample preview is draft, unpaid and unattempted (new 665-680; old 661-677), and invoice generation is not payment success."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-revolut-pay",
+    "attempt": 2,
+    "receipt_sha256": "e4a683678abe8baaa21fdaf4c240ed9d53c7276a34322bff2208065a61d9621f",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-revolut-pay/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/revolut-pay",
+    "source_target": "wiki/sources/source-stripe-subscriptions-revolut-pay.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/revolut-pay, the complete November capture only names SetupIntents API, Subscriptions API and Stripe-hosted page variants (new 7-15); it establishes no API parameters or payment state. The May guide documents a SetupIntent/client-secret redirect and mandate path, a direct incomplete Subscription plus PaymentIntent-confirm path, and Checkout subscription mode (old 10-200). [[source-stripe-subscriptions-revolut-pay]] correctly scopes off_session=true to SetupIntents-path subscription creation at source 13/48, matching old 71, while usage=off_session appears on the SetupIntent request at old 43. Its global mandate_data/return_url requirements at source 47/49 exceed shown path examples, source 30 asserts an unshown SetupIntent succeeded state, and source 34 omits successful payment before Active (old 142). Neither capture proves account eligibility or a completed live charge.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/revolut-pay, the observed change is a variant index, not demonstrated API removal or deprecation (new 9-15; old 10-200). [[source-stripe-subscriptions-revolut-pay]] should retain the May guide as dated evidence and preserve its already scoped off_session=true SetupIntents-path wording at source 13/48 and concept 16/33 (old 54-73). It should narrow the global mandate_data and return_url statements at source 47/49 and concept 30-31 to the SetupIntent and direct-confirm examples (old 38-50, 127-140); Checkout is a separate sample without those explicit fields (old 187-196). Source 30/concept 16 lack evidence for SetupIntent succeeded, and source 34/concept 20 need successful payment after requires_action before Active (old 142). Old 129/134 conflict on confirm parameters; Amazon/Cash App identity needs separate authority. Unread November links prove no billing or settlement."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-sepa-debit",
+    "attempt": 2,
+    "receipt_sha256": "f4a7a51962801610ab11926bbd160ebd740be8311c2d0ce953b1a52ac47ffcb8",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-sepa-debit/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/sepa-debit",
+    "source_target": "wiki/sources/source-stripe-subscriptions-sepa-debit.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/sepa-debit, the complete November capture establishes only a Full hosted page and an Advanced integration web variant at parameterized URLs (new 5-14); it establishes no payment prerequisite, mandate or success state. The May same-URL guide covered Checkout and an advanced sample that mounts Payment Element but uses SEPA-specific confirmation calls (old 8-10, 1169-1205, 1259-1262). It warned that checkout.session.completed is authorization, while later async success or invoice.paid supports fulfillment, including an initial invoice (old 236-269, 303-330). [[source-stripe-subscriptions-sepa-debit]] summarizes that historical guide at 13-42, with several corrections needed.",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/sepa-debit, the November change is navigation-only (new 9-14), and omission does not establish deprecation of the May flows. [[source-stripe-subscriptions-sepa-debit]] needs a bounded historical-summary update: correct 20+ to 19 test-table country headings and remove unsupported SK/SI (old 399-644, 1417-1662; source 13, 61), replace confirmPayment with the old SEPA-specific confirmation calls while noting its Payment Element sample and separate new-user recommendation (old 1033, 1180-1257, 1259-1262; source 28-30), remove unsupported Checkout-recommended wording (source 13), and broaden invoice.paid beyond renewal-only (old 257-261, 303-330; source 41). These are May-evidence corrections, not November payment or eligibility findings."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-stablecoins",
+    "attempt": 1,
+    "receipt_sha256": "73665b8f3d5e35a895c71511944f2df5074c406a341eeec82fff7a6386ed24e6",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-stablecoins/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/stablecoins",
+    "source_target": "wiki/sources/source-stripe-subscriptions-stablecoins.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/stablecoins, the complete November capture establishes the subject and three variant URLs only (new lines 5\u201315); it establishes no current prerequisites, identities, token support, or payment outcome. The dated [[source-stripe-subscriptions-stablecoins]] reflects a May 2026 guide for recurring wallet payments (old line 8). Checkout requires customer authorization and separates checkout.session.completed from invoice.paid (old lines 32\u2013102). The Payment Intents path creates an incomplete subscription and confirms its invoice PaymentIntent, with requires_action followed by payment_intent.succeeded (old lines 321\u2013381). The Setup Intents path sets up a crypto method for off-session use, then creates a subscription; Active follows successful payment (old lines 492\u2013547).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/stablecoins, the observed November change is a navigation index for Checkout, Payment Intents, and Setup Intents variants (new lines 9\u201315), not a demonstrated API or payment behavior change. Keep [[source-stripe-subscriptions-stablecoins]] dated to May 2026, with USD prices in the hosted and Setup Intents examples and a USDC price in the Payment Intents example (old lines 18\u201325, 307\u2013314, 478\u2013485). Source line 28 should describe invoice.payment_failed as customer contact and retry request, not automatic retry (old line 94). Testnet faucets and a USDC contract do not establish broad live token eligibility (old lines 232\u2013297). Do not equate wallet authorization, redirect, setup, or requires_action with invoice payment success or Active status (old lines 92\u201394, 375\u2013381, 547)."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-third-party-payment-processing",
+    "attempt": 2,
+    "receipt_sha256": "28aa48e36870c1dd4f98b4c17fb918e2799f4e2169a40ee45526a5c283399ae4",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/third-party-payment-processing",
+    "source_target": "wiki/sources/source-stripe-subscriptions-third-party.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/third-party-payment-processing, the complete November capture establishes only two navigation routes, own processor and out-of-band invoices (new raw:9-14); it states no current prerequisites, API behavior, customer/account identities, or payment-status transitions. The matched May guide documented custom PaymentMethods plus PaymentRecords for charge_automatically subscriptions (old raw:14-19,41-46), with Customer v1 versus Account v2 examples, an incomplete first invoice and a stated 23-hour reporting window (old raw:90-138,340). Its separate out-of-band path used send_invoice, days_until_due, and paid_out_of_band after external success (old raw:792-799,859-899,965-979). [[source-stripe-subscriptions-third-party]] summarizes that dated guide but needs source:59's false always_invoke corrected to always_invoice (old raw:38) and source:13's API version restricted to the May Node examples (old raw:185,259,353); the index verifies neither current behavior nor a product change.",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/third-party-payment-processing, the observed change is navigation/rendering of two variant links (new raw:9-14; diff:3-11,1028-1029), not proof of a payment feature's removal or modification. Keep [[source-stripe-subscriptions-third-party]] and its May raw as dated evidence for variant-specific client/server work, Account v2 versus Customer v1, 23-hour and retry states, external processor responsibility, and out-of-band invoice marking (old raw:32-46,90-138,340,433-443,859-899,965-979). Recommend source_required_update now to replace source:59's false always_invoke with always_invoice from old raw:38 and qualify source:13 plus concept:70: 2026-04-22.dahlia is shown in May Node examples (old raw:185,259,353), with a malformed old raw:324 string, not proven universal. The own-processor Payment Element allowance differs from out-of-band's restriction (old raw:32-40,901-903); neither path's initiated or reported payment proves third-party settlement."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-trials-free-trials",
+    "attempt": 1,
+    "receipt_sha256": "2f484201055f279644a5e2688f0ab8f1a7d6f86dd2a2df341cffc3f6e381558e",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-trials-free-trials/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/trials/free-trials",
+    "source_target": "wiki/sources/source-stripe-subscriptions-free-trials.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/trials/free-trials, both captures document a legacy `trial_end`/`trial_period_days` subscription trial, capped at 730 days, with separate Account v2 and Customer v1 IDs and a zero-amount initial invoice (new 9-49; old 8-64). Missing-method end behavior can cancel, pause without invoices, or create an invoice that becomes `past_due` if no method exists at finalization (new 87-92; old 106-111). The paused subscription requires a resume action and paid resumption invoice before reactivation (new 295-303; old 410-418). [[source-stripe-subscriptions-free-trials]] captures the main choices but overstates PM-add and 23-hour resume effects at source 25,32.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/trials/free-trials, the legacy warning is retained, with a new comparison link; Node-to-curl example changes are presentational (new 9-15,19-35; old 8-14,18-50). A substantive Dashboard correction replaces May's contradictory Cancel selection in the pause flow with Pause and adds no-PM/email-invoice option visibility conditions (new 109,182-185; old 251-252). [[source-stripe-subscriptions-free-trials]] should preserve May facts as dated but correct source 25 and 32: adding a method alone is not the documented reactivation gate, and 23-hour auto-void requires an unconfirmed PaymentIntent without an attached method (new 301; old 416). Accounts v2 preview and flexible-mode `trial_start` remain version-qualified (new 37-43,73); trial offers are a separate recommended path with preview limitations, and no example proves billing success."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-twint",
+    "attempt": 1,
+    "receipt_sha256": "55d73d5b6a38e510838792026c3be6573b446131a13d5b85d5be7fca9c799f83",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-twint/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/twint",
+    "source_target": "wiki/sources/source-stripe-subscriptions-twint.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "For https://docs.stripe.com/billing/subscriptions/twint, the November capture establishes the topic and three variant links only (new lines 5\u201315), with no current prerequisite, country, currency, or payment outcome proof. The dated [[source-stripe-subscriptions-twint]] summarizes May 2026 hosted Checkout, Setup Intents API, and Subscriptions API paths (old lines 10\u201314, 77\u201381, 162\u2013166). In the Setup Intents path, requires_action redirects to a TWINT-hosted QR page, and succeeded means setup authorization; the created subscription still has a first PaymentIntent to complete (old lines 130\u2013158). In the Subscriptions API path, an incomplete subscription's PaymentIntent is confirmed, and Active follows successful payment (old lines 188\u2013237).",
+      "Q2": "For https://docs.stripe.com/billing/subscriptions/twint, the demonstrated November difference is a three-variant navigation index (new lines 9\u201315), not a payment-method revision. Keep [[source-stripe-subscriptions-twint]] dated to May 2026 and qualify the Checkout sample, direct SetupIntent, and direct PaymentIntent flows separately (old lines 60\u201375, 101\u2013158, 186\u2013237). Correct source lines 23, 27, and 34 so SetupIntent success, PaymentIntent success, and active subscription are not merged. Source lines 32\u201333 and reciprocal concept/index labels overstate mandate_data and return_url as universal requirements: the Checkout example has neither, while the direct API examples include both (old lines 60\u201370, 110\u2013127, 222\u2013230). The CHF price is an example, and current eligibility requires separate evidence (old lines 20\u201327)."
+    }
+  },
+  {
+    "job_id": "billing-subscriptions-usage-based-configure-grace-period",
+    "attempt": 1,
+    "receipt_sha256": "a9e4ff76b47770b9d23b79333f2e815b8f46bbd49b42c60c302b4fa07602b1cc",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-1/receipt.json",
+    "canonical_url": "https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period",
+    "source_target": "wiki/sources/source-stripe-usage-based-billing-configure-grace-period.md",
+    "disposition": "source_required_update",
+    "answers": {
+      "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period, the November guide keeps a default one-hour invoice finalization grace period and configurable automatic-collection draft-to-finalized delay up to 72 hours, shorter than the service period (new 9,15-26; old 8,12-23). Only subscription-cycle and qualifying metered phase-transition invoices include usage reported during grace; threshold and other invoices use usage before creation (new 9,63-70). A meter timestamp must fit the prior service period, and an event timestamp after draft creation routes to the next invoice (new 48-55; old 45-52). [[source-stripe-usage-based-billing-configure-grace-period]] retains the old rule set but omits phase transitions and price-change loss, and overgeneralizes the first-invoice exception at source 19-35.",
+      "Q2": "At https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period, substantive additions include qualifying schedule phase-transition invoices, meter-summary acceptance without invoice allocation after grace, an `invoice.created` acknowledgment delay, and mid-cycle price-change loss in both classic and flexible meter billing (new 9-15,63-76 versus old 8-12). Dashboard numbering and table formatting are presentational. [[source-stripe-usage-based-billing-configure-grace-period]] and its usage-based concept should retain May's dated default, rules and timestamp logic (old 16-54), but restore the exact `charge_automatically` condition for immediate first-invoice finalization (old 33; new 36), add the loss exception, and avoid equating accepted metering, draft finalization, payment collection and settlement. Neither capture proves a live invoice outcome."
+    }
+  }
+]

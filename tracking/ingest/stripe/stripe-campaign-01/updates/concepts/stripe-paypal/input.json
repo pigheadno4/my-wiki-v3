@@ -1,0 +1,155 @@
+{
+  "target_path": "wiki/concepts/stripe-paypal.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-paypal/base.md",
+  "base_sha256": "f16727bc84c3c01ddd5212345de2517d8065fa1adce5890cb85383b82cbc0096",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-paypal::paypal-concept-path-labels",
+      "target_path": "wiki/concepts/stripe-paypal.md",
+      "old_text": "Stripe supports PayPal as a payment method for one-time payments and subscriptions. Customers authenticate via PayPal redirect and authorize a billing agreement for recurring charges. Two integration paths: Checkout (recommended) and Direct API (SetupIntents).",
+      "new_text": "Stripe supports PayPal as a payment method for one-time payments and subscriptions. The May 2026 subscription guide documents two paths: Stripe-hosted Checkout and Direct API with a SetupIntent and PayPal billing-agreement approval. The November 2026 canonical capture is a variant index only; it does not establish a current path preference or account eligibility.",
+      "reason": "The matched guide does not recommend Checkout over Direct API; it recommends Stripe.js within the Direct API setup flow (old 737). The new index names both routes only.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "paypal-concept-path-labels",
+      "job_id": "billing-subscriptions-paypal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/receipt.json",
+      "receipt_sha256": "8b8ced699aa5e87577d93fe8b4e2470b0ba7a68496dbc15412146fb5140cf4bf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/candidate.md",
+      "source_candidate_sha256": "990963591a8417f778781241dc76f6e9dacad51382dffda7653d037aec155278",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-paypal::paypal-concept-checkout-heading",
+      "target_path": "wiki/concepts/stripe-paypal.md",
+      "old_text": "### 1. Checkout (recommended)",
+      "new_text": "### 1. Stripe-hosted Checkout (May 2026 guide)",
+      "reason": "Remove unsupported path recommendation and date the historic variant.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "paypal-concept-checkout-heading",
+      "job_id": "billing-subscriptions-paypal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/receipt.json",
+      "receipt_sha256": "8b8ced699aa5e87577d93fe8b4e2470b0ba7a68496dbc15412146fb5140cf4bf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/candidate.md",
+      "source_candidate_sha256": "990963591a8417f778781241dc76f6e9dacad51382dffda7653d037aec155278",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-paypal::paypal-concept-off-session",
+      "target_path": "wiki/concepts/stripe-paypal.md",
+      "old_text": "5. Create subscription with `default_payment_method` + **`off_session=true`**\n\n## Critical: `off_session=true`\n\n**Required** on all subscription creates and updates via Direct API. Without it, any payment requiring action triggers another redirect to PayPal.",
+      "new_text": "5. The May guide's main subscription-create examples use `default_payment_method` and `off_session: true`; confirm setup authorization separately from successful subscription payment.\n\n## `off_session` in the May 2026 guide\n\nThe guide instructs `off_session=true` for subscription updates to avoid another PayPal redirect for a new payment. Its main initial-create examples include the flag, but its optional billing-anchor and trial create snippets omit it. [[source-stripe-subscriptions-paypal]] gives the dated example and object boundaries.\n\n> [!warning] Contradiction\n> The May main create examples include `off_session: true`, while optional create examples omit it and `default_payment_method`. The captured guide does not establish an unconditional rule for every create; the November variant index supplies no contract text to resolve this.",
+      "reason": "Correct universal-create overstatement and expose old guide's internal tension (old 809-850,909-977).",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "May 2026 Direct API main create examples and optional create examples conflict on included fields; current universal requiredness remains unresolved."
+      ],
+      "original_update_id": "paypal-concept-off-session",
+      "job_id": "billing-subscriptions-paypal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/receipt.json",
+      "receipt_sha256": "8b8ced699aa5e87577d93fe8b4e2470b0ba7a68496dbc15412146fb5140cf4bf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/candidate.md",
+      "source_candidate_sha256": "990963591a8417f778781241dc76f6e9dacad51382dffda7653d037aec155278",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-paypal::paypal-concept-mandate-owner",
+      "target_path": "wiki/concepts/stripe-paypal.md",
+      "old_text": "After setup, the Mandate object contains:\n- `payer_email` \u2014 buyer's PayPal email\n- `payer_id` \u2014 unique PayPal payer ID  \n- `billing_agreement_id` \u2014 PayPal BAID",
+      "new_text": "The May guide locates payer ID and Billing Agreement ID on the resulting Mandate under `payment_method_details`, and buyer email plus payer ID on `PaymentMethod.paypal`. Its field table does not assign all three fields to the Mandate; see [[source-stripe-subscriptions-paypal]].",
+      "reason": "Correct object-field ownership directly against old line 786; the field table at 788-792 does not identify one containing object.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "paypal-concept-mandate-owner",
+      "job_id": "billing-subscriptions-paypal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/receipt.json",
+      "receipt_sha256": "8b8ced699aa5e87577d93fe8b4e2470b0ba7a68496dbc15412146fb5140cf4bf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/candidate.md",
+      "source_candidate_sha256": "990963591a8417f778781241dc76f6e9dacad51382dffda7653d037aec155278",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-paypal::paypal-concept-source-route",
+      "target_path": "wiki/concepts/stripe-paypal.md",
+      "old_text": "- [[source-stripe-subscriptions-paypal]] \u2014 Stripe docs: PayPal subscription guide (Checkout + Direct API, billing agreement, off_session requirement)",
+      "new_text": "- [[source-stripe-subscriptions-paypal]] \u2014 May 2026 Stripe PayPal subscription guide (Stripe-hosted Checkout + Direct API); November 2026 canonical capture links variant routes only",
+      "reason": "Keep reciprocal route but remove universal off_session implication and label evidence dates.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "paypal-concept-source-route",
+      "job_id": "billing-subscriptions-paypal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/receipt.json",
+      "receipt_sha256": "8b8ced699aa5e87577d93fe8b4e2470b0ba7a68496dbc15412146fb5140cf4bf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/candidate.md",
+      "source_candidate_sha256": "990963591a8417f778781241dc76f6e9dacad51382dffda7653d037aec155278",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-paypal::paypal-concept-date-prerequisites",
+      "target_path": "wiki/concepts/stripe-paypal.md",
+      "old_text": "- Activate PayPal in Stripe Dashboard\n- **Recurring payments**: Stripe auto-enables for most users on activation. May need manual enable in Dashboard due to PayPal regional policies.\n- **Direct API**: must explicitly enable recurring payments; only available in specific business locations",
+      "new_text": "- **Stripe-hosted Checkout, May 2026 guide:** After PayPal activation in the Dashboard, Stripe said recurring payments were automatically enabled for most users, with possible manual enablement due to PayPal policy or regional restrictions.\n- **Direct API, May 2026 guide:** The guide instructed merchants to enable recurring payments in the Dashboard and check supported business locations.\n- The 2026-11-07 canonical capture is a variant index only; it does not verify current account enablement or business-location eligibility.",
+      "reason": "Date all existing PayPal recurring setup and location claims; preserve the hosted-versus-Direct API distinction from old 20 and 628-629, with November index 9-14 as navigation only.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "paypal-concept-date-prerequisites",
+      "job_id": "billing-subscriptions-paypal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/receipt.json",
+      "receipt_sha256": "8b8ced699aa5e87577d93fe8b4e2470b0ba7a68496dbc15412146fb5140cf4bf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/candidate.md",
+      "source_candidate_sha256": "990963591a8417f778781241dc76f6e9dacad51382dffda7653d037aec155278",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-paypal::paypal-concept-date-detach-effect",
+      "target_path": "wiki/concepts/stripe-paypal.md",
+      "old_text": "`paymentMethods.detach(pmId)` \u2014 revokes Stripe mandate AND cancels PayPal billing agreement via PayPal API.",
+      "new_text": "The May 2026 guide says detaching a saved PayPal PaymentMethod revokes its Stripe Mandate and calls PayPal to cancel the associated billing agreement. The November variant index does not reverify this consequence for a current account; see [[source-stripe-subscriptions-paypal]].",
+      "reason": "Keep the consequential old detachment effect, but mark its May evidence and the November capture's limited scope (old 982-994; new 9-14).",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "paypal-concept-date-detach-effect",
+      "job_id": "billing-subscriptions-paypal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/receipt.json",
+      "receipt_sha256": "8b8ced699aa5e87577d93fe8b4e2470b0ba7a68496dbc15412146fb5140cf4bf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/candidate.md",
+      "source_candidate_sha256": "990963591a8417f778781241dc76f6e9dacad51382dffda7653d037aec155278",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-paypal/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-paypal::paypal-concept-path-labels",
+    "billing-subscriptions-paypal::paypal-concept-checkout-heading",
+    "billing-subscriptions-paypal::paypal-concept-off-session",
+    "billing-subscriptions-paypal::paypal-concept-mandate-owner",
+    "billing-subscriptions-paypal::paypal-concept-source-route",
+    "billing-subscriptions-paypal::paypal-concept-date-prerequisites",
+    "billing-subscriptions-paypal::paypal-concept-date-detach-effect"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-paypal/auto-candidate.md",
+  "auto_candidate_sha256": "30f00fe788cd6ef15e16077908cba4b7b03f48b7cb023b4fe891439e93c9920b",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-paypal-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-paypal-concept-review.json"
+}

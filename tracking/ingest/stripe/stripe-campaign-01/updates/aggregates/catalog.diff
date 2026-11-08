@@ -1,0 +1,393 @@
+--- wiki/stripe-index.md
++++ tracking/ingest/stripe/stripe-campaign-01/updates/aggregates/stripe-index.md
+@@ -288,21 +288,21 @@
+ - [[source-stripe-twint-set-up-future-payments]] — TWINT setup-only (no payment): SetupIntent via Checkout/Elements/Direct API, confirmTwintSetup, mandate_data (webpage, 2026-05-03)
+ - [[source-stripe-wero]] — Wero: Germany/EUR, QR+app auth flow, under 10s, no disputes/recurring, 2-year refunds, 30 business countries (webpage, 2026-05-05)
+ - [[source-stripe-wero-accept-payment]] — Wero integration: Checkout + Elements + Direct API (confirmWeroPayment), server-side manual path, 1-hour auth expiry, error codes (webpage, 2026-05-05)
+-- [[source-stripe-usage-based-billing-how-it-works]] — Usage-based billing: 4-component lifecycle, Meter/meter event/meter event summary concepts, Meter API (billing v2) (webpage, 2026-05-05)
++- [[source-stripe-usage-based-billing-how-it-works]] — This guide explains **basic usage-based billing with Stripe Billing Meters**: its four-part lifecycle and six core objects. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-usage-based-billing-use-cases]] — Usage-based pricing models index: pay-as-you-go, flat fee+overages (v1 legacy), credit-based (webpage, 2026-05-05)
+ - [[source-stripe-usage-based-billing-payg]] — Pay-as-you-go end-to-end: meter + price + subscription + meter events + billing_mode + event summaries (webpage, 2026-05-05)
+-- [[source-stripe-usage-based-billing-flat-fee-overages]] — Flat fee + overages: two-product approach (graduated tiered + licensed flat), Decimal.from() for tiers, invoice timing (webpage, 2026-05-05)
++- [[source-stripe-usage-based-billing-flat-fee-overages]] — End-to-end Hypernian example for a flat fee plus overages: a sum meter, graduated metered price with the first 1,000 units included, separate $100 monthly licensed price, and both prices on one subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-usage-based-billing-credits]] — Credit-based pricing: credit grants (burn at invoice end), balance summary/transactions, funding flow, meter dimensions (webpage, 2026-05-05)
+ - [[source-stripe-usage-based-billing-recording-usage]] — Usage ingestion methods index: API, Dashboard CSV, Amazon S3; async processing (webpage, 2026-05-05)
+ - [[source-stripe-usage-based-billing-meters-configure]] — Meter config attributes, Raw vs Pre-aggregated ingestion, immutability, Meter Event Adjustment API (webpage, 2026-05-05)
+ - [[source-stripe-usage-based-billing-recording-usage-api]] — API ingestion: rate limits, API v2 high-throughput streams (10k/s), timestamp rules, async error events + 9 error codes (webpage, 2026-05-05)
+ - [[source-stripe-usage-based-billing-recording-usage-dashboard]] — Dashboard ingestion: manual input + CSV upload (5 MB limit, field schema, error file workflow) (webpage, 2026-05-05)
+ - [[source-stripe-usage-based-billing-recording-usage-s3]] — Amazon S3 ingestion: connector setup, polling, rate limits (10k events/s), two-tier error handling (webpage, 2026-05-05)
+-- [[source-stripe-usage-based-billing-configure-grace-period]] — Invoice finalization grace period: default 1h, max 72h, cycling vs threshold, rules, draft invoice usage (webpage, 2026-05-05)
+-- [[source-stripe-usage-based-billing-credits-overview]] — Billing credits overview: prohibited uses, 5 grant states, eligibility, priority ordering, 100-grant limit, void/credit note (webpage, 2026-05-05)
++- [[source-stripe-usage-based-billing-configure-grace-period]] — The May 5 and November 7, 2026 same-URL guides describe a configurable invoice **finalization** grace period. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-usage-based-billing-credits-overview]] — Stripe describes Credit Grants for prepaid or promotional billing credits allocated to a customer for usage-based merchant offerings. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-usage-based-billing-credits-setup]] — Billing credits setup: create grant, price-level scoping via billable_items, funding flow API (webpage, 2026-05-05)
+ - [[source-stripe-usage-based-billing-monitor-usage-alerts]] — UBB monitoring hub: usage alerts vs billing thresholds, limits, 8 threshold constraints (webpage, 2026-05-05)
+-- [[source-stripe-usage-based-billing-alerts-setup]] — Usage alert setup: create API, one-time per-customer type, billing.alert.triggered webhook, test clock limitation (webpage, 2026-05-05)
++- [[source-stripe-usage-based-billing-alerts-setup]] — The November 7, 2026 guide describes **usage alerts** that notify an application when meter usage reaches a configured threshold. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-usage-based-billing-thresholds-setup]] — Billing thresholds: monetary + usage APIs, reset_billing_cycle_anchor, tiers behavior, volume tiers negative line item (webpage, 2026-05-05)
+ - [[source-stripe-usage-based-billing-manage-setup]] — UBB management: transform_quantity, mid-cycle price updates (flexible vs classic), backdated subscriptions, cancellation (webpage, 2026-05-05)
+ - [[source-stripe-bank-transfers]] — Bank transfers: virtual account model, customer balance (75/90 day rules), international wires, disputes (USD/CAD), sender info API, Connect (webpage, 2026-05-05)
+@@ -602,10 +602,10 @@
+ - [[source-stripe-agentic-commerce-sftp-catalog]] — ACS SFTP catalog ingestion: directory structure, manifest pattern, explicit/implicit deletion, ingestion rules (webpage, 2026-05-12)
+ - [[source-stripe-ucp]] — Universal Commerce Protocol: open standard, 4 capabilities (checkout/identity/order/payment token), Stripe on Tech Council (webpage, 2026-05-12)
+ - [[source-stripe-acp]] — Agentic Commerce Protocol: co-built by Stripe/OpenAI/Meta, 5 capabilities, buyer-agent-seller purchase flow (webpage, 2026-05-12)
+-- [[source-stripe-billing-apis]] — Billing API objects: Subscription→Invoice→PaymentIntent chain, 11 objects, Entitlements model, Account v2 vs Customer v1 (webpage, 2026-05-12)
+-- [[source-stripe-subscriptions-overview]] — Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix (webpage, 2026-05-12)
+-- [[source-stripe-checkout-subscriptions-quickstart]] — Checkout subscription quickstart: lookup_key, customer portal, 5 webhook events, trial/billing-anchor/auto-tax (notes, 2026-05-12)
+-- [[source-stripe-subscriptions-design-integration]] — Subscriptions design guide: 4 pricing models, 7 checkout interfaces, 3 billing timing models (webpage, 2026-05-12)
++- [[source-stripe-billing-apis]] — Stripe's Billing API overview relates the 11 subscription, billing, payment, customer, and entitlement objects. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-overview]] — Stripe subscription lifecycle guide covering creation, initial and recurring invoices, eight statuses, payment recovery, status resolution, cancellation and access provisioning. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-checkout-subscriptions-quickstart]] — Stripe Billing's hosted [[stripe-checkout]] subscription quickstart demonstrates a product with a recurring Price, a Checkout Session in `subscription` mode, a customer portal, and webhook and entitlement guidance. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-design-integration]] — Stripe's subscriptions design guide helps choose a pricing model, checkout interface, and payment timing, then routes six example combinations to deeper implementation guides. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-build-subscriptions]] — Full subscriptions integration: 3 UI paths (hosted/embedded/Elements), billing_mode:flexible (API 2025-06-30.basil), provision access (webpage, 2026-05-12)
+ - [[source-stripe-recurring-pricing-models]] — Recurring pricing models reference: flat rate, per-seat, tiered, usage-based (webpage, 2026-05-12)
+ - [[source-stripe-flat-rate-pricing]] — Flat rate pricing setup: Product + monthly/yearly Price + Subscription API, immutable after subscription created (webpage, 2026-05-12)
+@@ -616,23 +616,23 @@
+ - [[stripe-pricing-table]] — Stripe Pricing Table: no-code embed, CustomerSession pass-through, 4 products max, local currency, CSP, limitations
+ - [[source-stripe-subscriptions-setup-intents]] — SetupIntents for zero-payment subs: auto-created, requires_action/requires_payment_method, doesn't auto-cancel (webpage, 2026-05-12)
+ - [[source-stripe-subscriptions-migration]] — Subscription migration to Stripe: toolkit (no-code) or APIs, PAN import, 4-scenario decision matrix (webpage, 2026-05-12)
+-- [[source-stripe-subscriptions-migration-toolkit]] — Billing toolkit: 3 CSV types (basic/multi-price/ad-hoc), 24h go-live buffer, 10h cancel window, timing advice (webpage, 2026-05-12)
+-- [[source-stripe-subscriptions-migration-api]] — API migration: Subscription Schedules (>30d future), legacy pricing via price_data, mid-cycle continuity, test clocks (webpage, 2026-05-12)
++- [[source-stripe-subscriptions-migration-toolkit]] — Stripe's Dashboard Billing migration toolkit imports subscription data from a third-party, home-grown, or another Stripe account through CSV and creates scheduled Stripe subscriptions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-migration-api]] — API-based guide for migrating subscriptions from another processor, an in-house system, or an existing Stripe account into Stripe Billing. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-webhooks]] — Subscription webhooks: 22 events, invoice.created 72h delay risk, access expiration pattern, EventBridge/Event Grid (webpage, 2026-05-12)
+-- [[source-stripe-subscriptions-billing-cycle]] — Billing cycle anchor: billing_cycle_anchor_config, direct timestamp, reset to now, trial-as-anchor, auto-reset scenarios (webpage, 2026-05-12)
++- [[source-stripe-subscriptions-billing-cycle]] — Stripe's billing-cycle guide explains how recurring price intervals and billing-cycle anchors align future renewal dates. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-trial-offers]] — Trial Offers API (preview): 4 use cases, flexible billing, status behavior, opt-in cancellation, billing anchor post-trial (webpage, 2026-05-12)
+ - [[stripe-subscriptions-trial-offers]] — Stripe Trial Offers: preview API, discounted/free/upgrade/item-level trials, flexible billing required, opt-in renewal
+ - [[source-stripe-subscriptions-trial-compliance]] — Trial compliance: 7-day reminder emails, statement descriptor 22-char limit + * TRIAL OVER, manual path (webpage, 2026-05-12)
+-- [[source-stripe-subscriptions-free-trials]] — Legacy trial_end: trial_period_days (max 730d), missing_payment_method options, pause/resume flow, combine with billing anchor (webpage, 2026-05-12)
+-- [[source-stripe-subscriptions-billing-mode]] — Flexible billing mode: migrate API, proration_discounts itemized/included, schedule inheritance, API version defaults (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-billing-mode-compare]] — Classic vs flexible: prorations, usage billing, cancellation, trials, mixed intervals — 12-row comparison (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-mixed-interval]] — Mixed interval subscriptions: item-level periods, interval alignment rules, dunning behavior, limitations (webpage, 2026-05-13)
+-- [[stripe-subscriptions-mixed-interval]] — Stripe Mixed Interval Subscriptions: flexible billing required, item-level periods, alignment rules, cancellation constraints
+-- [[source-stripe-subscriptions-coupons]] — Coupons and promotion codes: duration behaviors (once/repeating/forever), stackable, promo restrictions (webpage, 2026-05-13)
+-- [[stripe-subscriptions-coupons]] — Stripe Subscription Coupons: duration behaviors, stackable discounts, promo code restrictions, update rules
++- [[source-stripe-subscriptions-free-trials]] — Both the May 12 and November 7, 2026 captures call `trial_end` free-trial periods a **legacy** integration path and recommend Trial Offers for new integrations. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-billing-mode]] — Stripe's subscription billing mode guide documents the `classic` and `flexible` modes, their version-dependent defaults, creation and migration routes, and proration discount display. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-billing-mode-compare]] — Stripe compares classic and flexible subscription billing to help an integration assess a migration. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-mixed-interval]] — The 2026-05-13 combined Stripe guide describes mixed interval subscriptions: one subscription with items that have different prices and billing periods. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[stripe-subscriptions-mixed-interval]] — Stripe Mixed Interval Subscriptions — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[source-stripe-subscriptions-coupons]] — Stripe's subscription-discount guide distinguishes coupons, which define a discount and can be applied by a backend, from customer-facing promotion codes that reference a coupon and inherit its product restrictions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[stripe-subscriptions-coupons]] — Stripe Subscription Coupons and Promotion Codes — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[source-stripe-subscriptions-modify]] — Modify subscriptions: billing-related vs non-billing updates, discount+proration mixed call, pending updates (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-change-price]] — Change price (upgrade/downgrade): item-ID pitfall, quantity resets to 1, billing period rules, zero-amount edge cases (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-prorations]] — Prorations: 6 triggers, non-trigger table, classic vs flexible credit prorations, preview locking, unpaid invoice handling (webpage, 2026-05-13)
++- [[source-stripe-subscriptions-change-price]] — Stripe's Subscriptions API guide describes changing a subscription item's price to upgrade or downgrade an existing subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-prorations]] — Stripe's same-URL May and November 2026 guides explain proration invoice items for subscription changes, discount treatment, credit calculation in classic versus flexible billing mode, preview, and `proration_behavior`. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections, public workspace postman.com/stripedev (github-repo, 2026-05-13)
+ - [[source-github-stripe-android]] — cumulative Android SDK through v23.25.1: method/display declarations, Link error-display announcement and qualified dependency/history findings; older knowledge retained (github-repo, updated 2026-10-27)
+ - [[changelog-github-stripe-android]] — package-qualified Android ledger through v23.25.1; contracts, announcements and retrospective attribution (github-repo, updated 2026-10-27)
+@@ -647,57 +647,57 @@
+ - [[source-github-stripe-react-native]] — cumulative SDK through v0.84.0: mandatory SPM/RN floor, internal Checkout boundary, callback/Connect fixes and native pins; all earlier history retained (github-repo, updated 2026-10-29)
+ - [[changelog-github-stripe-react-native]] — package-qualified ledger through v0.84.0; migration, attribution and implementation boundaries (github-repo, updated 2026-10-29)
+ - [[stripe-react-native-sdk]] — SDK through v0.84.0: mandatory SPM, internal Checkout exports and version-qualified lifecycle boundaries
+-- [[source-stripe-subscriptions-cancel]] — Cancel subscriptions: 4 methods, custom cancel date caveats, invoice item handling, dispute config, anchor behavior (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-pause]] — True pause (flexible billing only): bill_for, 6 blocking conditions, resume 23h window, 4 webhooks (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-invoices]] — Subscription invoices: lifecycle, 4-level payment priority, draft window, void rules, metadata propagation (webpage, 2026-05-13)
+-- [[source-stripe-billing-collection-method]] — Billing collection methods: charge_automatically vs send_invoice, payment_behavior, 23h rule, unpaid drafts, enterprise wire transfers (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-payment-methods-setting]] — Per-subscription PM settings: payment_method_types pitfall, save_default_payment_method, payment update links (webpage, 2026-05-13)
++- [[source-stripe-subscriptions-cancel]] — Stripe's [[stripe-subscriptions-cancel]] guide covers manual immediate and period-end cancellation, custom cancel dates, subscription schedules, and configured dispute-triggered cancellation. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-pause]] — The November 7 Stripe guide describes true subscription pause: `POST /v1/subscriptions/:id/pause` suspends service delivery and new invoice generation without canceling the subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-invoices]] — Stripe's subscription-invoice guide covers first invoices, renewals, saved-default payment-method fallback, draft invoice changes, voiding, and metadata propagation. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-billing-collection-method]] — Stripe's Billing collection-method guide describes `charge_automatically` and `send_invoice` for invoices and subscriptions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-payment-methods-setting]] — Stripe's November 7, 2026 guide explains that subscription `payment_settings.payment_method_types` limits the **types allowed** to pay subscription invoices; it does not select a single saved default payment method. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-ach-debit]] — ACH subscription: 10-day microdeposit window, default PM webhook step, trial SetupIntent, Checkout delayed events, 11 test scenarios (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-amazon-pay]] — Amazon Pay subscription: 3 paths (SetupIntents/PaymentIntents/Checkout), mandate_data, redirect flow (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-bacs-debit]] — Bacs subscription: Checkout-only, delayed notification events, 9 test accounts, mandate behavior by failure type (webpage, 2026-05-13)
++- [[source-stripe-subscriptions-amazon-pay]] — The 2026-05-13 Stripe guide describes three Amazon Pay subscription paths: Setup Intents API, Payment Intents API, and a Stripe-hosted Checkout page. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-bacs-debit]] — Stripe's Bacs Direct Debit subscription guide uses Checkout: a client checkout button calls a server endpoint that creates a subscription-mode Checkout Session with at least one recurring Price. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-bank-transfers]] — Bank transfer subscription: send_invoice+customer_balance required, days_until_due, cash balance auto-pay (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-becs-debit]] — BECS subscription (AU): SetupIntents+DDR compliance, no auto-retry, mandatory mandate URL sharing, 10 test accounts (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-cash-app-pay]] — Cash App Pay subscription: 3 paths, QR code + redirect auth, mandate_data, US-only (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-klarna]] — Klarna subscription: Checkout + Payment Element, 23 countries, BNPL options vary by country, 23-country test data (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-pix]] — Pix subscription (Brazil/BRL): Pix Automático, 3 paths, CPF/CNPJ required, mandate_options.amount, 6 email test scenarios (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-revolut-pay]] — Revolut Pay subscription: 3 paths, off_session+mandate_data required, structurally identical to Amazon Pay (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-kr-card]] — South Korean card (kr_card) subscription: KRW-only, 3 paths, local processor redirect (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-kakao-pay]] — Kakao Pay subscription: KRW-only, 3 paths, kakao_pay PM type (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-naver-pay]] — Naver Pay subscription: KRW-only, 3 paths, naver_pay PM type (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-acss-debit]] — Canadian PAD subscription: Checkout NOT supported, no auto-retry, manual default PM, 10-day microdeposit window (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-sepa-debit]] — SEPA subscription: Checkout + Payment Element, delayed notification, 20+ country IBAN tables (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-stablecoins]] — Stablecoin subscription: 3 paths, crypto PM type, USDC native currency, testnet MetaMask+Amoy (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-twint]] — TWINT subscription: CHF only, 3 paths, mandate_data+return_url required, QR via redirect (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-ideal]] — iDEAL→SEPA subscription: Checkout + Direct API, 0.01 EUR trial charge, generated_sepa_debit, 6 test patterns (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-pause-payment]] — pause payment collection: 3 behaviors (void/keep_as_draft/mark_uncollectible), distinct from true pause (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-third-party]] — billing with 3rd party processors: own-processor (custom PMs+payment records) vs out-of-band, 23h window (webpage, 2026-05-13)
+-- [[stripe-billing-third-party]] — Stripe Billing with 3rd Party Processors: custom PM types, payment records API, webhook renewal, retry logic, out-of-band legacy
++- [[source-stripe-subscriptions-becs-debit]] — Stripe's Australian BECS Direct Debit subscription guide uses a Dashboard Product and recurring Price, a server-created SetupIntent, client-side Australia Bank Account Element and DDR authorization, then a saved default payment method on a customer-configured Account or Customer before server-side subscription creation. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-cash-app-pay]] — The 2026-05-13 combined guide describes three Cash App Pay subscription paths: Setup Intents API (save a payment method, then subscribe), Subscriptions API (create and confirm separately), and a Stripe-hosted Checkout page. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-klarna]] — The 2026-05-13 Klarna subscription guide contains two paths: Stripe-hosted Checkout, which it recommends for saving Klarna as a payment method, and an advanced Payment Element integration. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-pix]] — The 2026-11-07 capture of this canonical URL is a 15-line navigation index pointing to Stripe-hosted Checkout, Setup Intents API, and Subscriptions API variants. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-revolut-pay]] — The May 13, 2026 full guide documents three Revolut Pay subscription paths: SetupIntents API, direct Subscriptions API plus PaymentIntent confirmation, and a Stripe-hosted Checkout page. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-kr-card]] — Stripe's 2026-05-13 capture explains three `kr_card` subscription integration variants: SetupIntents, direct Subscriptions API with PaymentIntent confirmation, and a Stripe-hosted Checkout page. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-kakao-pay]] — The 2026-05-13 capture is a full Kakao Pay subscription guide with SetupIntents-labeled, Subscriptions API, and Stripe-hosted Checkout variants. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-naver-pay]] — The 2026-05-13 capture is a full Naver Pay subscription guide with SetupIntents-labeled, Subscriptions API, and Stripe-hosted Checkout variants. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-acss-debit]] — Stripe's Canadian pre-authorized debit (ACSS/PAD) subscription guide describes server-side Subscription creation and client-side Stripe.js `stripe.confirmAcssDebitPayment` for bank details and mandate acknowledgment. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-sepa-debit]] — The May 13, 2026 guide documents two SEPA Direct Debit subscription examples: a hosted Checkout page and an advanced web integration. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-stablecoins]] — The May 13, 2026 full guide covers subscription payments from a customer's crypto wallet through three paths: Stripe-hosted Checkout, Payment Intents API, and Setup Intents API. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-twint]] — The May 13, 2026 guide describes three TWINT subscription examples: Stripe-hosted Checkout, Setup Intents API, and Subscriptions API. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-ideal]] — The 2026-11-07 capture of this canonical URL is an index to hosted and Direct API variants, not either variant's instructions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-pause-payment]] — Guide to `pause_collection` on a subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-third-party]] — Stripe's combined 2026-05-13 guide documents two ways to use Billing subscriptions and invoices with a third-party processor: an own-processor path with custom PaymentMethods and PaymentRecords, and a separate out-of-band invoice path. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[stripe-billing-third-party]] — Stripe Billing with Third-Party Payment Processors — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[source-stripe-billing-taxes-collect]] — collecting taxes on subscriptions: Stripe Tax (Elements without Intent) vs Tax Rates (cascade, Checkout dynamic) (webpage, 2026-05-13)
+-- [[source-stripe-billing-customer-tax-ids]] — Customer Tax IDs: 130+ types, reverse charge flag, AU/EU/GB auto-validation, VIES tooltip (webpage, 2026-05-13)
++- [[source-stripe-billing-customer-tax-ids]] — Stripe Billing's customer tax ID guide covers storing, validating, and rendering customer tax IDs. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-billing-taxes-migration]] — migrating subscriptions to Stripe Tax: automated tooling + manual 5-step, tax_behavior immutable, schedule approach (webpage, 2026-05-13)
+-- [[source-stripe-subscriptions-schedules]] — subscription schedules: phases, dual proration settings, metadata merge rules, direct update auto-split, 10 use cases (webpage, 2026-05-13)
+-- [[stripe-subscriptions-schedules]] — Stripe Subscription Schedules: phases, proration, metadata merge, direct update auto-split, installments, 10+ use cases
++- [[source-stripe-subscriptions-schedules]] — Stripe's subscription schedules create a subscription or attach to an existing one, then apply sequential phases to automate changes over time. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[stripe-subscriptions-schedules]] — Stripe Subscription Schedules — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[source-stripe-subscriptions-backdate]] — backdating: classic vs flexible line items, 3 patterns, coupon duration gotcha (counts from backdate) (webpage, 2026-05-13)
+-- [[source-stripe-billing-analytics]] — billing analytics: MRR + growth components, ARPU, LTV, cohort retention, configurable settings, 3 CSV reports (webpage, 2026-05-13)
+-- [[stripe-billing-analytics]] — Stripe Billing Analytics: MRR definition, 6 growth components, ARPU, LTV, trial conversion, churn rate, cohort retention, CSV reports
++- [[source-stripe-billing-analytics]] — Stripe Billing's Dashboard analytics guide defines recurring-revenue, subscriber, trial, churn, retention, and usage metrics. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[stripe-billing-analytics]] — Stripe Billing Analytics — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, 7 metrics, percentile display (webpage, 2026-05-13)
+-- [[stripe-revolut-pay]] — Stripe Revolut Pay: redirect-based, 3 subscription paths, off_session required, vs Amazon Pay/Cash App Pay comparison
+-- [[stripe-pix]] — Stripe Pix: Pix Automático mandate, Brazil/BRL only, QR code display options, mandate revocation, tax_id required
+-- [[stripe-klarna]] — Stripe Klarna: BNPL, 23 countries, Checkout recommended, email-based test approve/deny, cookie session tracking
+-- [[stripe-cash-app-pay]] — Stripe Cash App Pay: US-only, QR code/redirect auth, 3 subscription paths, vs Amazon Pay comparison
+-- [[stripe-amazon-pay]] — Stripe Amazon Pay: redirect-based, mandate required, 3 subscription integration paths, off_session
+-- [[stripe-subscriptions-invoices]] — Stripe Subscription Invoices: lifecycle, payment priority chain, draft window, void logic, metadata snapshot rules
++- [[stripe-revolut-pay]] — Stripe Revolut Pay — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-pix]] — Stripe Pix (Brazil) — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-klarna]] — Stripe Klarna — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-cash-app-pay]] — Stripe Cash App Pay — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-amazon-pay]] — Stripe Amazon Pay — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-subscriptions-invoices]] — Stripe Subscription Invoices — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[source-stripe-billing-ios-sdk]] — BillingSDK for iOS (private preview): Customer Sessions auth, buy buttons, entitlement checking, customer portal (webpage, 2026-05-13)
+ - [[stripe-billing-ios-sdk]] — Stripe BillingSDK for iOS: private preview, higher-level than stripe-ios, buy buttons/entitlements/portal via Customer Sessions
+-- [[source-stripe-subscriptions-prebilling]] — Prebilling (public preview): billing_schedules, bill_until duration/timestamp, 8 limitations, invoice timing (webpage, 2026-05-13)
+-- [[stripe-subscriptions-prebilling]] — Stripe Subscription Prebilling: bill upfront for future periods, applies_to item scoping, end date rules, 8 limitations
+-- [[stripe-subscriptions-pause]] — Stripe Subscription True Pause: flexible billing required, bill_for, resume invoice flow, vs pause-payment-collection comparison
+-- [[stripe-subscriptions-cancel]] — Stripe Subscription Cancellation: immediate/period-end/custom-date/schedule, invoice items, dispute config, anchor reset rules
+-- [[source-stripe-subscriptions-pending-updates]] — Pending updates: payment_behavior=pending_if_incomplete, 27 supported PMs, expiry logic, metered edge cases (webpage, 2026-05-13)
+-- [[stripe-subscriptions-pending-updates]] — Stripe Subscription Pending Updates: gate changes on payment success, expiry rules, 3 webhook events, metered item caveats
+-- [[stripe-subscriptions-prorations]] — Stripe Subscription Prorations: triggers, proration_behavior options, discount interaction, classic vs flexible credit logic
+-- [[source-stripe-billing-entitlements]] — Entitlements: feature-to-product mapping, lookup_key, active_entitlement_summary.updated webhook, 10-item cap, polling API (webpage, 2026-05-13)
+-- [[stripe-entitlements]] — Stripe Entitlements: feature-gating via product-feature mapping, provisioning lifecycle, billing period lag, archive rules
++- [[source-stripe-subscriptions-prebilling]] — Prebilling uses `billing_schedules` on a subscription to invoice licensed-price items for future service periods when creating or updating the subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[stripe-subscriptions-prebilling]] — Stripe Subscription Prebilling — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-subscriptions-pause]] — Stripe Subscription Pause (True Pause) — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-subscriptions-cancel]] — Stripe Subscription Cancellation — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[source-stripe-subscriptions-pending-updates]] — Stripe's pending updates normally defer an invoice-generating subscription change until payment succeeds. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[stripe-subscriptions-pending-updates]] — Stripe Subscription Pending Updates — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-subscriptions-prorations]] — Stripe Subscription Prorations — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[source-stripe-billing-entitlements]] — As documented in Stripe's 2026-05-13 Dashboard and API guide, Stripe Entitlements maps internal product features to Stripe Products and tracks customer entitlements through subscriptions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[stripe-entitlements]] — Stripe Entitlements — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-agentic-commerce-product-feed]] — Stripe ACS Catalog Feed: 4 feed types, required fields, shipping/tax/variant/compliance formats
+ - [[stripe-shared-payment-tokens]] — Stripe Shared Payment Tokens: scoped PM grant from agent to seller, usage limits, next actions, agent/seller webhooks
+ - [[stripe-machine-payments]] — Stripe Machine Payments: Frontier product, agent-to-API microtransactions, MPP + x402 protocols, fiat settlement
+@@ -736,11 +736,11 @@
+ - [[stripe-link]] — Stripe Link: payment network + wallet, two PM paths, LPMs (Instant Bank/Klarna/Pix/UPI/Stablecoins), Link Auth Element
+ - [[stripe-instant-bank-payments]] — Instant Bank Payments: US/USD, 2-day guaranteed settlement, < $5K limit, ACH priority rule, Stripe-funded cash back
+ - [[stripe-ach-direct-debit]] — ACH Direct Debit: US bank accounts, T+4/T+2 settlement, mandates, final disputes, blocked accounts
+-- [[stripe-bacs-direct-debit]] — Bacs Direct Debit (UK): GBP, DDI mandate, T+4/T+7 settlement, unlimited/uncontestable disputes, Custom Branding
+-- [[stripe-acss-debit]] — ACSS Debit / Canadian PAD: CAD, T+5, interval/sporadic/combined schedules, 90-day personal disputes, Rule H1 mandate emails
+-- [[stripe-au-becs-debit]] — AU BECS Direct Debit: AUD, T+2, DDR mandate, 7-year uncontestable disputes, 90-day refunds, lodgement reference descriptor
++- [[stripe-bacs-direct-debit]] — Bacs Direct Debit (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-acss-debit]] — ACSS Debit / Canadian Pre-Authorized Debit (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-au-becs-debit]] — AU BECS Direct Debit (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-nz-becs-debit]] — NZ BECS Direct Debit: NZD, T+2, DDA mandate, mandatory emails (5-day + day-of), 9-month disputes, vs AU BECS comparison
+-- [[stripe-sepa-debit]] — SEPA Direct Debit: EUR/IBAN, T+6, 5-day refusal window, Creditor ID, 8wk disputes, 12 failure codes, Radar fraud protection
++- [[stripe-sepa-debit]] — SEPA Direct Debit (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-bank-redirects]] — Bank redirects: 8 methods (Bancontact/BLIK/EPS/FPX/iDEAL/P24/Pay-by-Bank/TWINT), product/API support matrices
+ - [[stripe-bank-transfers]] — Bank transfers: virtual account model, customer balance, currencies (EUR/GBP/JPY/MXN/USD), disputes, sender info API
+ - [[stripe-fr-meal-vouchers]] — France titres-restaurant (private preview): CNTR approval, SIRET provisioning, 4 issuers, off-Stripe settlement, split tender
+@@ -751,22 +751,23 @@
+ - [[stripe-blik]] — BLIK: Poland/PLN, no-redirect 6-digit code, customer-initiated, 12-day disputes, no ECE
+ - [[stripe-eps]] — EPS: Austria/EUR, bank redirect, customer-authenticated, no chargebacks, no recurring
+ - [[stripe-fpx]] — FPX: Malaysia/MYR, BRN required, 60-day async refunds, 5-day payout, no recurring, no disputes
+-- [[stripe-ideal]] — iDEAL|Wero: Netherlands/EUR, migrating to Wero, KVK requirement, recurring via SEPA Direct Debit
++- [[stripe-ideal]] — iDEAL | Wero (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-p24]] — Przelewy24/P24: Poland/EUR+PLN, payment aggregator, 10 prohibited categories, website legal requirements
+-- [[stripe-twint]] — TWINT: Switzerland/CHF, mobile redirect + QR code, recurring, 25-50 disputes/million, 5000 CHF max
++- [[stripe-twint]] — TWINT (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-wero]] — Wero: Germany/EUR, QR+app auth, under 10s, no disputes/recurring, distinct from iDEAL|Wero
+ - [[stripe-jp-installments]] — Japan card installments: 3 plan types (fixed/revolving/bonus), brand support table, bonus windows
+ - [[stripe-balance-pay]] — Pay with Stripe Balance: Connect platform debit of connected account Stripe balance for subscriptions
+-- [[stripe-stablecoin-payments]] — Stripe stablecoin payments: USDC/USDP/USDG, US only, settle USD, crypto.stripe.com flow
++- [[stripe-stablecoin-payments]] — Stripe Stablecoin Payments — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-installments]] — Stripe installments concept: Mastercard 4×, Mexico meses sin intereses, Japan 分割払い (all 3 products)
+-- [[stripe-usage-based-billing]] — Stripe usage-based billing: Meter API (v2), meter events, aggregation formulas, 4-component lifecycle
++- [[stripe-usage-based-billing]] — Usage-Based Billing (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-elements]] — Stripe Elements: 7 prebuilt UI components, API compatibility, React integration patterns, Appearance API
++- [[source-stripe-subscriptions-paypal]] — Stripe's May 2026 PayPal subscription guide describes two paths: Stripe-hosted Checkout and a Direct API flow using a SetupIntent and PayPal billing agreement. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ 
+ ## Concepts
+ 
+ - [[stripe-apps]] — Stripe Dashboard app platform: manifests, UI extensions, permissions, distribution, API-access models, sandbox support, and evidence boundaries
+ - [[stripe-payment-links]] — Stripe Payment Links: no-code shareable URLs, 40+ methods, Adaptive Pricing, buy button, Invoicing vs Payment Links comparison
+-- [[stripe-checkout]] — Stripe Checkout: Checkout Page vs Elements, 3 hosting modes, Checkout Sessions API, Checkout vs Payment Links comparison
++- [[stripe-checkout]] — Stripe Checkout — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-express-checkout-element]] — Stripe Express Checkout Element: 6 one-click wallets (Link/Apple Pay/Google Pay/PayPal/Klarna/Amazon Pay), browser support, button types/themes, ready event
+ - [[stripe-address-element]] — Stripe Address Element: shipping/billing modes, PaymentIntent routing, autocomplete (26 countries), Link autofill
+ - [[stripe-currency-selector-element]] — Stripe Currency Selector Element: Adaptive Pricing toggle, Checkout Sessions only, placement rules, legal requirement to render
+@@ -786,12 +787,13 @@
+ - [[stripe-terminal-hardware-orders]] — Stripe Terminal Hardware Orders: ordering, statuses, self-service returns, shipping thresholds, permissions, Hardware Orders API
+ - [[stripe-managed-payments]] — Stripe Managed Payments: merchant of record, 80+ country tax compliance, fraud/disputes/support handled by Stripe, Checkout+Payment Links only
+ - [[stripe-nigeria-payment-methods]] — Nigerian Payment Methods: MoR via Nigerian partner, Naira cards/bank transfer/wallet, NGN/US only, 365-day refunds, no dispute challenge
+-- [[stripe-korea-payment-methods]] — South Korean Payment Methods: local processor model, KR cards + Kakao/Naver/Samsung/PAYCO, KRW, installments, 30-day subscription notice
+-- [[stripe-custom-payment-methods]] — Stripe Custom Payment Methods: third-party PSPs in Payment Element, cpmt_ IDs, static/embedded display, off-Stripe processing + optional Stripe recording
+-- [[stripe-tax]] — Stripe Tax: automatic tax calculation, tax codes, tax behavior, Checkout + Invoicing integration, Accounts v2 vs Customers v1
+-- [[stripe-subscriptions]] — Stripe Subscriptions: Checkout integration, webhook provisioning, customer portal, flexible billing mode, entitlements
++- [[stripe-korea-payment-methods]] — South Korean Payment Methods (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-custom-payment-methods]] — Stripe Custom Payment Methods — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-tax]] — Stripe Tax — reviewed source routes and dated qualifications (S01, 2026-11-08)
++- [[stripe-subscriptions]] — Stripe Subscriptions — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ - [[stripe-adaptive-pricing]] — Stripe Adaptive Pricing: ML local currency, 150+ countries, 20 local PMs, 0% merchant / 2–4% customer fee, presentment_details
+ - [[stripe-fx-quotes-api]] — Stripe FX Quotes API (preview): locked exchange rates, merchant fee control, Group 1/2 pricing, PaymentIntent integration, expired quote webhooks
++- [[stripe-paypal]] — Stripe PayPal Integration — reviewed source routes and dated qualifications (S01, 2026-11-08)
+ 
+ ## Operations
+ 
+--- wiki/companies/stripe.md
++++ tracking/ingest/stripe/stripe-campaign-01/updates/aggregates/stripe.md
+@@ -243,44 +243,44 @@
+ - [[source-github-stripe-php]] — cumulative Stripe PHP through `22.0.0`: PHP7.4/Endive, event context, Checkout/Billing migrations and all retained v21 history
+ - [[changelog-github-stripe-php]] — package-qualified Stripe PHP release history through `22.0.0`, with exact-SHA evidence and separate full/delta entries
+ - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display
+-- [[source-stripe-billing-analytics]] — billing analytics: MRR + 6 growth components, ARPU, LTV, cohort retention, configurable settings, 3 CSV reports
++- [[source-stripe-billing-analytics]] — Stripe Billing's Dashboard analytics guide defines recurring-revenue, subscriber, trial, churn, retention, and usage metrics. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-backdate]] — backdating: classic vs flexible line items, 3 patterns (charge/no-charge/anchor), coupon duration counts from backdate not API call
+-- [[source-stripe-subscriptions-schedules]] — subscription schedules: phases, dual proration settings, metadata merge rules, direct update auto-split, installment plans, 10 use cases
++- [[source-stripe-subscriptions-schedules]] — Stripe's subscription schedules create a subscription or attach to an existing one, then apply sequential phases to automate changes over time. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-billing-taxes-migration]] — migrating subscriptions to Stripe Tax: automated tooling (Dashboard), manual 5-step process, tax_behavior immutability, schedule approach
+-- [[source-stripe-billing-customer-tax-ids]] — Customer Tax IDs: 130+ types/100+ countries, reverse charge flag, AU/EU/GB auto-validation, VIES tooltip, test magic IDs
++- [[source-stripe-billing-customer-tax-ids]] — Stripe Billing's customer tax ID guide covers storing, validating, and rendering customer tax IDs. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-billing-taxes-collect]] — collecting taxes on subscriptions: Stripe Tax (Elements without Intent, address validation, invoice.finalization_failed) vs Tax Rates (cascade, Checkout dynamic)
+-- [[source-stripe-subscriptions-third-party]] — billing with 3rd party processors: custom PMs + payment records (23h window, retry logic, refunds) vs out-of-band legacy, 43 business countries
+-- [[source-stripe-subscriptions-pause-payment]] — pause payment collection: 3 behaviors (void/keep_as_draft/mark_uncollectible), distinct from true pause, resumes_at
+-- [[source-stripe-subscriptions-ideal]] — iDEAL→SEPA subscription: Checkout + Direct API, 0.01 EUR free trial charge, generated_sepa_debit, off_session updates
+-- [[source-stripe-subscriptions-twint]] — TWINT subscription: CHF only, 3 paths, mandate_data+return_url required, QR via Stripe-hosted redirect
+-- [[source-stripe-subscriptions-stablecoins]] — Stablecoin subscription: 3 paths (Checkout/PaymentIntents/SetupIntents), crypto PM type, USDC native currency, testnet via MetaMask+Amoy
+-- [[source-stripe-subscriptions-sepa-debit]] — SEPA subscription: Checkout + Payment Element, delayed notification, 20+ country IBAN test tables (8 scenarios each)
+-- [[source-stripe-subscriptions-acss-debit]] — Canadian PAD (acss_debit) subscription: Checkout NOT supported, no auto-retry, manual default PM webhook, 10-day microdeposit window
+-- [[source-stripe-subscriptions-naver-pay]] — Naver Pay subscription: KRW-only, 3 paths, naver_pay PM type (identical structure to kr_card/kakao_pay)
+-- [[source-stripe-subscriptions-kakao-pay]] — Kakao Pay subscription: KRW-only, 3 paths, kakao_pay PM type (identical structure to kr_card)
+-- [[source-stripe-subscriptions-kr-card]] — South Korean card subscription: KRW-only, 3 paths, off_session+mandate_data, local processor redirect
+-- [[source-stripe-subscriptions-revolut-pay]] — Revolut Pay subscription: 3 paths (SetupIntents/Subscriptions API/Checkout), off_session+mandate_data required
+-- [[source-stripe-subscriptions-pix]] — Pix subscription (Brazil/BRL): Pix Automático mandate, 3 paths, tax_id CPF/CNPJ required, mandate_options.amount tip, 6 email test scenarios
+-- [[source-stripe-subscriptions-paypal]] — PayPal subscription: Checkout + Direct API (off_session required), billing agreement ID, mandate.updated on revoke, detach cancels BAID
+-- [[source-stripe-subscriptions-klarna]] — Klarna subscription: Checkout + Payment Element, 23 countries, BNPL options vary by country, email-based test approve/deny
+-- [[source-stripe-subscriptions-cash-app-pay]] — Cash App Pay subscription: 3 paths (SetupIntents/Subscriptions API/Checkout), QR code + redirect auth, mandate_data, US-only
+-- [[source-stripe-subscriptions-becs-debit]] — BECS subscription (AU): SetupIntents + DDR compliance, no auto-retry, mandatory mandate URL sharing, 10 test accounts
++- [[source-stripe-subscriptions-third-party]] — Stripe's combined 2026-05-13 guide documents two ways to use Billing subscriptions and invoices with a third-party processor: an own-processor path with custom PaymentMethods and PaymentRecords, and a separate out-of-band invoice path. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-pause-payment]] — Guide to `pause_collection` on a subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-ideal]] — The 2026-11-07 capture of this canonical URL is an index to hosted and Direct API variants, not either variant's instructions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-twint]] — The May 13, 2026 guide describes three TWINT subscription examples: Stripe-hosted Checkout, Setup Intents API, and Subscriptions API. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-stablecoins]] — The May 13, 2026 full guide covers subscription payments from a customer's crypto wallet through three paths: Stripe-hosted Checkout, Payment Intents API, and Setup Intents API. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-sepa-debit]] — The May 13, 2026 guide documents two SEPA Direct Debit subscription examples: a hosted Checkout page and an advanced web integration. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-acss-debit]] — Stripe's Canadian pre-authorized debit (ACSS/PAD) subscription guide describes server-side Subscription creation and client-side Stripe.js `stripe.confirmAcssDebitPayment` for bank details and mandate acknowledgment. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-naver-pay]] — The 2026-05-13 capture is a full Naver Pay subscription guide with SetupIntents-labeled, Subscriptions API, and Stripe-hosted Checkout variants. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-kakao-pay]] — The 2026-05-13 capture is a full Kakao Pay subscription guide with SetupIntents-labeled, Subscriptions API, and Stripe-hosted Checkout variants. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-kr-card]] — Stripe's 2026-05-13 capture explains three `kr_card` subscription integration variants: SetupIntents, direct Subscriptions API with PaymentIntent confirmation, and a Stripe-hosted Checkout page. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-revolut-pay]] — The May 13, 2026 full guide documents three Revolut Pay subscription paths: SetupIntents API, direct Subscriptions API plus PaymentIntent confirmation, and a Stripe-hosted Checkout page. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-pix]] — The 2026-11-07 capture of this canonical URL is a 15-line navigation index pointing to Stripe-hosted Checkout, Setup Intents API, and Subscriptions API variants. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-paypal]] — Stripe's May 2026 PayPal subscription guide describes two paths: Stripe-hosted Checkout and a Direct API flow using a SetupIntent and PayPal billing agreement. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-klarna]] — The 2026-05-13 Klarna subscription guide contains two paths: Stripe-hosted Checkout, which it recommends for saving Klarna as a payment method, and an advanced Payment Element integration. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-cash-app-pay]] — The 2026-05-13 combined guide describes three Cash App Pay subscription paths: Setup Intents API (save a payment method, then subscribe), Subscriptions API (create and confirm separately), and a Stripe-hosted Checkout page. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-becs-debit]] — Stripe's Australian BECS Direct Debit subscription guide uses a Dashboard Product and recurring Price, a server-created SetupIntent, client-side Australia Bank Account Element and DDR authorization, then a saved default payment method on a customer-configured Account or Customer before server-side subscription creation. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-bank-transfers]] — Bank transfer subscription: send_invoice+customer_balance required, days_until_due, cash balance auto-pay, Accounts v2 path
+-- [[source-stripe-subscriptions-bacs-debit]] — Bacs subscription: Checkout-only, delayed notification, 9 test accounts (debitNotAuthorized/insufficientFunds mandate behavior), inline pricing
+-- [[source-stripe-subscriptions-amazon-pay]] — Amazon Pay subscription: 3 paths (SetupIntents/PaymentIntents/Checkout), mandate_data, off_session, redirect flow
++- [[source-stripe-subscriptions-bacs-debit]] — Stripe's Bacs Direct Debit subscription guide uses Checkout: a client checkout button calls a server endpoint that creates a subscription-mode Checkout Session with at least one recurring Price. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-amazon-pay]] — The 2026-05-13 Stripe guide describes three Amazon Pay subscription paths: Setup Intents API, Payment Intents API, and a Stripe-hosted Checkout page. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-ach-debit]] — ACH subscription setup: 10-day microdeposit window, default PM webhook step, trial SetupIntent flow, Checkout delayed events, 11 test scenarios
+-- [[source-stripe-subscriptions-payment-methods-setting]] — Per-subscription PM settings: payment_method_types pitfall, save_default_payment_method, payment update links (30-day, card-only, active/past_due/trialing only)
+-- [[source-stripe-billing-collection-method]] — Collection methods: charge_automatically vs send_invoice, payment_behavior, 23h incomplete_expired rule, unpaid draft behavior, enterprise wire transfers
+-- [[source-stripe-subscriptions-invoices]] — Subscription invoices: lifecycle, 4-level payment priority chain, draft window, void rules, metadata propagation
++- [[source-stripe-subscriptions-payment-methods-setting]] — Stripe's November 7, 2026 guide explains that subscription `payment_settings.payment_method_types` limits the **types allowed** to pay subscription invoices; it does not select a single saved default payment method. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-billing-collection-method]] — Stripe's Billing collection-method guide describes `charge_automatically` and `send_invoice` for invoices and subscriptions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-invoices]] — Stripe's subscription-invoice guide covers first invoices, renewals, saved-default payment-method fallback, draft invoice changes, voiding, and metadata propagation. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-billing-ios-sdk]] — BillingSDK for iOS (private preview): Customer Sessions auth, buy buttons, hasEntitlement, getCustomerPortal, vs stripe-ios comparison
+-- [[source-stripe-subscriptions-prebilling]] — Prebilling (public preview, flexible billing only): billing_schedules, bill_until, applies_to, 8 limitations, invoice timing via proration_behavior
+-- [[source-stripe-subscriptions-pause]] — True pause (flexible billing only): bill_for param, 6 blocking conditions, resume invoice 23h window, 4 webhook events
+-- [[source-stripe-subscriptions-cancel]] — Cancel subscriptions: 4 methods (immediate/period-end/custom-date/schedule), invoice item handling, dispute config, anchor behavior
+-- [[source-stripe-subscriptions-pending-updates]] — Pending updates: payment_behavior=pending_if_incomplete, 27 supported PMs, expiry logic, metered item edge cases, 3 webhook events
+-- [[source-stripe-subscriptions-prorations]] — Prorations: 6 triggers, exhaustive non-trigger list, classic vs flexible credit prorations, preview locking, unpaid invoice handling
+-- [[source-stripe-subscriptions-change-price]] — Change price (upgrade/downgrade): item-ID pitfall (omit ID → adds item), quantity resets to 1, billing period rules, zero-amount edge cases
++- [[source-stripe-subscriptions-prebilling]] — Prebilling uses `billing_schedules` on a subscription to invoice licensed-price items for future service periods when creating or updating the subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-pause]] — The November 7 Stripe guide describes true subscription pause: `POST /v1/subscriptions/:id/pause` suspends service delivery and new invoice generation without canceling the subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-cancel]] — Stripe's [[stripe-subscriptions-cancel]] guide covers manual immediate and period-end cancellation, custom cancel dates, subscription schedules, and configured dispute-triggered cancellation. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-pending-updates]] — Stripe's pending updates normally defer an invoice-generating subscription change until payment succeeds. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-prorations]] — Stripe's same-URL May and November 2026 guides explain proration invoice items for subscription changes, discount treatment, credit calculation in classic versus flexible billing mode, preview, and `proration_behavior`. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-change-price]] — Stripe's Subscriptions API guide describes changing a subscription item's price to upgrade or downgrade an existing subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-modify]] — Modify subscriptions hub: billing-related vs non-billing updates, discount+proration mixed-call behavior, pending updates
+-- [[source-stripe-billing-entitlements]] — Entitlements: feature-to-product mapping, `lookup_key`, `entitlements.active_entitlement_summary.updated` webhook, 10-entitlement cap in payload, polling API, archive rules
++- [[source-stripe-billing-entitlements]] — As documented in Stripe's 2026-05-13 Dashboard and API guide, Stripe Entitlements maps internal product features to Stripe Products and tracks customer entitlements through subscriptions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-products-prices]] — Products & Prices: custom product IDs, price immutability (archive+new), price_data, compatibility table (tiered/usage-based Disallowed in Payment Links), 3yr max interval
+ - [[source-stripe-payment-records]] — Payment Records API: unified on+off-Stripe ledger, 3-level hierarchy (PaymentRecord→Attempt→Entry), 4 reporting methods, requires Orchestration
+ - [[source-stripe-payment-methods]] — Payment Methods API: 3 customer action types, immediate (cards) vs delayed (ACH/SEPA) notification, single-use vs reusable, PaymentMethod object structure
+@@ -484,21 +484,21 @@
+ - [[source-stripe-twint-set-up-future-payments]] — TWINT setup-only (no payment): SetupIntent via Checkout/Elements/Direct API, confirmTwintSetup, mandate_data
+ - [[source-stripe-wero]] — Wero: Germany/EUR, QR+app auth, under 10s, no disputes/recurring, 2-year refunds, 30 business countries
+ - [[source-stripe-wero-accept-payment]] — Wero integration: Checkout + Elements + Direct API (confirmWeroPayment), server-side manual path, 1-hour auth expiry, error codes
+-- [[source-stripe-usage-based-billing-how-it-works]] — Usage-based billing: 4-component lifecycle, Meter/meter event/meter event summary concepts, Meter API (billing v2)
++- [[source-stripe-usage-based-billing-how-it-works]] — This guide explains **basic usage-based billing with Stripe Billing Meters**: its four-part lifecycle and six core objects. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-usage-based-billing-use-cases]] — Usage-based pricing models: pay-as-you-go, flat fee+overages (v1 only), credit-based
+ - [[source-stripe-usage-based-billing-payg]] — Pay-as-you-go end-to-end: meter creation, metered price, subscription, meter events (value=string), billing_mode, event summaries
+-- [[source-stripe-usage-based-billing-flat-fee-overages]] — Flat fee + overages: two-product approach (graduated tiered + licensed flat), Decimal.from() for tiers, invoice timing
++- [[source-stripe-usage-based-billing-flat-fee-overages]] — End-to-end Hypernian example for a flat fee plus overages: a sum meter, graduated metered price with the first 1,000 units included, separate $100 monthly licensed price, and both prices on one subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-usage-based-billing-credits]] — Credit-based pricing: credit grants API, burn-at-invoice-end, balance summary/transactions, funding flow, meter dimensions
+ - [[source-stripe-usage-based-billing-recording-usage]] — Usage ingestion methods: API, Dashboard CSV, Amazon S3; async processing
+ - [[source-stripe-usage-based-billing-meters-configure]] — Meter config attributes, Raw vs Pre-aggregated ingestion, immutability, Meter Event Adjustment API
+ - [[source-stripe-usage-based-billing-recording-usage-api]] — API ingestion: rate limits (1k/s), API v2 high-throughput streams (10k/s), timestamp rules, async error events
+ - [[source-stripe-usage-based-billing-recording-usage-dashboard]] — Dashboard ingestion: manual input + CSV upload (5 MB limit, field schema, error file workflow)
+ - [[source-stripe-usage-based-billing-recording-usage-s3]] — Amazon S3 ingestion: connector setup (IAM role), polling (5 min), rate limits, two-tier error handling
+-- [[source-stripe-usage-based-billing-configure-grace-period]] — Invoice finalization grace period: default 1h, max 72h, cycling vs threshold, rules system
+-- [[source-stripe-usage-based-billing-credits-overview]] — Billing credits overview: prohibited uses, 5 grant states, eligibility, priority ordering, 100-grant limit
++- [[source-stripe-usage-based-billing-configure-grace-period]] — The May 5 and November 7, 2026 same-URL guides describe a configurable invoice **finalization** grace period. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-usage-based-billing-credits-overview]] — Stripe describes Credit Grants for prepaid or promotional billing credits allocated to a customer for usage-based merchant offerings. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-usage-based-billing-credits-setup]] — Billing credits setup: create grant, price-level scoping via billable_items, funding flow
+ - [[source-stripe-usage-based-billing-monitor-usage-alerts]] — UBB monitoring: usage alerts vs billing thresholds, limits and constraints
+-- [[source-stripe-usage-based-billing-alerts-setup]] — Usage alert setup: create API, one-time per-customer type, billing.alert.triggered webhook
++- [[source-stripe-usage-based-billing-alerts-setup]] — The November 7, 2026 guide describes **usage alerts** that notify an application when meter usage reaches a configured threshold. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-usage-based-billing-thresholds-setup]] — Billing thresholds: monetary + usage APIs, reset_billing_cycle_anchor, volume tiers negative line item edge case
+ - [[source-stripe-usage-based-billing-manage-setup]] — UBB management: transform_quantity, mid-cycle price updates, backdated subscriptions, cancellation
+ - [[source-stripe-bank-transfers]] — Bank transfers: virtual account model, customer balance (75/90 day rules), international wires, disputes (USD/CAD), sender info API, Connect
+@@ -792,10 +792,10 @@
+ - [[source-stripe-agentic-commerce-sftp-catalog]] — ACS SFTP ingestion (agent side): directory structure, manifest pattern, deletion rules, idempotency
+ - [[source-stripe-ucp]] — Universal Commerce Protocol: open standard, 4 capabilities, Stripe as UCP Tech Council member
+ - [[source-stripe-acp]] — Agentic Commerce Protocol: co-built by Stripe/OpenAI/Meta, 5 capabilities (checkout/cart/payment/auth/orders)
+-- [[source-stripe-billing-apis]] — Billing API objects overview: Subscription→Invoice→PaymentIntent chain, 11 objects, Entitlements, Account v2 vs Customer v1
+-- [[source-stripe-subscriptions-overview]] — Subscription lifecycle: 8 statuses, payment behavior, 23h window, async PM behavior, payment status matrix
+-- [[source-stripe-checkout-subscriptions-quickstart]] — Checkout subscription quickstart: lookup_key, customer portal, 5 webhook events, trial/billing-anchor/auto-tax
+-- [[source-stripe-subscriptions-design-integration]] — Subscriptions design guide: 4 pricing models, 7 checkout interfaces, 3 billing timing models, integration matrix
++- [[source-stripe-billing-apis]] — Stripe's Billing API overview relates the 11 subscription, billing, payment, customer, and entitlement objects. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-overview]] — Stripe subscription lifecycle guide covering creation, initial and recurring invoices, eight statuses, payment recovery, status resolution, cancellation and access provisioning. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-checkout-subscriptions-quickstart]] — Stripe Billing's hosted [[stripe-checkout]] subscription quickstart demonstrates a product with a recurring Price, a Checkout Session in `subscription` mode, a customer portal, and webhook and entitlement guidance. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-design-integration]] — Stripe's subscriptions design guide helps choose a pricing model, checkout interface, and payment timing, then routes six example combinations to deeper implementation guides. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-build-subscriptions]] — Full subscriptions integration guide: 3 UI paths, billing_mode:flexible, provision access, test payment methods
+ - [[source-stripe-recurring-pricing-models]] — Recurring pricing models reference: flat rate, per-seat, tiered, usage-based
+ - [[source-stripe-flat-rate-pricing]] — Flat rate pricing setup: Product + monthly/yearly Price + Subscription API, can't edit after subscription created
+@@ -805,16 +805,20 @@
+ - [[source-stripe-pricing-table]] — Pricing table: no-code embed, CustomerSession pass-through, custom CTA, limitations (no usage-based, no Connect)
+ - [[source-stripe-subscriptions-setup-intents]] — SetupIntents for zero-payment subs: auto-created, auth vs authorization failures, doesn't auto-cancel
+ - [[source-stripe-subscriptions-migration]] — Subscription migration: Zuora/Recurly/Chargebee → toolkit or APIs, PAN import, decision matrix
+-- [[source-stripe-subscriptions-migration-toolkit]] — Billing toolkit: 3 CSV types, 24h go-live buffer, 10h cancel window, timing advice, validation errors
+-- [[source-stripe-subscriptions-migration-api]] — API migration: Subscription Schedules (>30d future), legacy pricing, mid-cycle continuity, test clocks
++- [[source-stripe-subscriptions-migration-toolkit]] — Stripe's Dashboard Billing migration toolkit imports subscription data from a third-party, home-grown, or another Stripe account through CSV and creates scheduled Stripe subscriptions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-migration-api]] — API-based guide for migrating subscriptions from another processor, an in-house system, or an existing Stripe account into Stripe Billing. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-webhooks]] — Subscription webhooks: 22 events, invoice.created 72h risk, access expiration pattern, EventBridge/Event Grid
+-- [[source-stripe-subscriptions-billing-cycle]] — Billing cycle anchor: billing_cycle_anchor_config (monthly/yearly), direct timestamp, reset to now, trial-as-anchor
++- [[source-stripe-subscriptions-billing-cycle]] — Stripe's billing-cycle guide explains how recurring price intervals and billing-cycle anchors align future renewal dates. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-subscriptions-trial-offers]] — Trial Offers API (preview): 4 use cases, flexible billing required, status behavior, opt-in cancellation, billing anchor
+ - [[source-stripe-subscriptions-trial-compliance]] — Trial compliance: 7-day reminder emails, statement descriptor 22-char limit + * TRIAL OVER, manual path
+-- [[source-stripe-subscriptions-free-trials]] — Legacy trial_end: trial_period_days, missing_payment_method (cancel/pause/create_invoice), resume, combine with billing anchor
+-- [[source-stripe-subscriptions-billing-mode]] — Flexible billing mode: migrate API, proration_discounts, schedule inheritance, API version defaults, cannot revert
+-- [[source-stripe-subscriptions-billing-mode-compare]] — Classic vs flexible: prorations, usage billing, cancellation, trials, mixed intervals comparison
+-- [[source-stripe-subscriptions-mixed-interval]] — Mixed interval subscriptions: item-level periods, interval alignment rules, dunning behavior, limitations
+-- [[source-stripe-subscriptions-coupons]] — Coupons and promotion codes: duration behaviors, stackable discounts, promo code restrictions, update rules
++- [[source-stripe-subscriptions-free-trials]] — Both the May 12 and November 7, 2026 captures call `trial_end` free-trial periods a **legacy** integration path and recommend Trial Offers for new integrations. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-billing-mode]] — Stripe's subscription billing mode guide documents the `classic` and `flexible` modes, their version-dependent defaults, creation and migration routes, and proration discount display. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-billing-mode-compare]] — Stripe compares classic and flexible subscription billing to help an integration assess a migration. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-mixed-interval]] — The 2026-05-13 combined Stripe guide describes mixed interval subscriptions: one subscription with items that have different prices and billing periods. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
++- [[source-stripe-subscriptions-coupons]] — Stripe's subscription-discount guide distinguishes coupons, which define a discount and can be applied by a backend, from customer-facing promotion codes that reference a coupon and inherit its product restrictions. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
+ - [[source-stripe-bizum-accept-payment]] — Bizum accept-a-payment: 4 integration paths, Direct API phone collection, iOS/Android SDK
+ - [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — Metronome-documented Indian-card flow in which Stripe creates and manages the SetupIntent mandate, reports action-required handling, and owns mandate lifecycle
++
++## [2026-11-08] Stripe S01 documentation curation
++
++The approved S01 update revises 48 existing Billing/subscription source summaries and 31 existing concepts. Thirty-two November captures provide factual evidence; sixteen variant indexes remain navigation only while older functional guidance stays dated. No source pages were added. Start with [[stripe-subscriptions]], [[source-stripe-billing-apis]], [[source-stripe-subscriptions-migration-toolkit]], and [[stripe-usage-based-billing]].

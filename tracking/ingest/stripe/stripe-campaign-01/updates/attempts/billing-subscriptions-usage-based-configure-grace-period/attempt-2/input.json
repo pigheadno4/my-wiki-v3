@@ -1,0 +1,102 @@
+{
+  "job_id": "billing-subscriptions-usage-based-configure-grace-period",
+  "queue_id": 55,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period",
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md",
+  "raw_sha256": "01606c377ba94f9de39f0c67a1a1e146a744d4e6a5ac31c7f8e1d68b5b3df4c5",
+  "prior_raw_path": "raw/stripe-usage-based-billing-configure-grace-period-2025.md",
+  "prior_raw_sha256": "48542c9ecfcc817f9815a0db915399a8508ce3566d56c01dc8b6a3f8621413d0",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/42f20e024130adf20fca9275/content.diff",
+  "diff_sha256": "9e790df7489dba1bebb483fe4e6425dceec4838faabcc13ef2554bf89b74772e",
+  "source_targets": [
+    "wiki/sources/source-stripe-usage-based-billing-configure-grace-period.md"
+  ],
+  "source_before_sha256": "1a8e9201074838553e35c8604a6c5adafa1ef72cb0ac6420fbf9932f69ce7db0",
+  "section": "billing",
+  "new_words": 900,
+  "new_lines": 76,
+  "old_words": 690,
+  "old_lines": 54,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-configure-grace-period.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-1/receipt.json",
+  "receipt_sha256": "ae503bdd3cdb9c5b9847ad50d4eaf480aae2ccf9ed5ba2ad9721ab387a419636",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-1/review.json",
+  "review_sha256": "3a58a6c48dcfb359a08182bd6fddcb5610f624dd7c6e5a474ca3a24512f2e60f",
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md",
+  "new_raw_sha256": "01606c377ba94f9de39f0c67a1a1e146a744d4e6a5ac31c7f8e1d68b5b3df4c5",
+  "prior_raw": "raw/stripe-usage-based-billing-configure-grace-period-2025.md",
+  "findings": [
+    "At https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period, the November guide retains the account default 1-hour invoice-finalization grace period, configurable rules and up-to-72-hour delay for invoices enabled for automatic collection, with a service-period-length caution (new 9,13-15,19-36; old 8-33). The setting governs draft-to-finalized timing, not payment success, invoice delivery, or a guarantee that every invoice receives late usage.",
+    "November expands the inclusion class from May's cycling invoices to subscription cycle invoices and subscription schedule phase-transition invoices that modify metered items; all other invoices, including threshold invoices, use usage recorded before invoice creation even if a grace period is configured (new 9,63-70 versus old 8). Current source 19-21 and `wiki/concepts/stripe-usage-based-billing.md` 157 name only cycling versus threshold, so their selection boundary is incomplete.",
+    "Late usage reported after the configured grace period may still be accepted and appear in meter summaries, but does not get added to either the finalized invoice or next invoice (new 11). This separates event acceptance/summary visibility from invoice allocation and collection. The old capture only said late usage was not included (old 8); current source omits the summary-versus-invoice distinction.",
+    "For draft invoice usage, the meter event timestamp must be inside that invoice's service period; a timestamp after draft invoice creation routes usage to the next invoice (new 48-57; old 45-54). A report delivered during grace with a timestamp in the prior service period is distinct from an event timestamp after invoice creation. Current source 32-35 is broadly aligned but should not be read as promising that every accepted late event appears on the next invoice.",
+    "New 72-76 adds a consequential exception: a mid-cycle subscription-item price change skips invoice recomputation at finalization, so usage reported during the grace period is absent from current and subsequent invoices; both classic and flexible billing modes using billing meters are affected. This defeats a general late-usage inclusion promise for affected invoices and is absent from current source and concept.",
+    "If `invoice.created` does not get a successful response, Stripe separately delays finalizing automatically collected invoices for up to 72 hours, excluding custom-scheduled finalization (new 15). This webhook-response delay must not be collapsed with the merchant-configured grace rule or treated as permission to add usage to otherwise ineligible invoices.",
+    "The immediate-finalization exception is specifically the first invoice of a subscription with `charge_automatically` (new 36, old 33). Current source 30 says 'First subscription invoice ... always' and concept 159 says 'first invoice of any subscription,' both broader than the captured condition. Root `wiki/index.md` 7 routes through `wiki/stripe-index.md` 301 to this source and through the Stripe usage-based concept 153-161,188. No canonical file was edited."
+  ],
+  "substantive_changes": [
+    "Phase-transition invoices modifying metered items are newly explicit as eligible for grace-period reported usage; all other non-cycle/non-phase invoices remain excluded (new 9,63-70 versus old 8).",
+    "Usage reported beyond the grace period can be accepted into meter summaries but is omitted from the finalized and next invoice (new 11 versus old 8's shorter non-inclusion statement).",
+    "Failed acknowledgment of `invoice.created` can delay automatic-collection invoice finalization up to 72 hours, excluding custom scheduled finalization (new 15); this is separate from configured grace duration.",
+    "Mid-cycle subscription-item price changes skip finalization recomputation and drop grace-period usage from current and subsequent invoices for classic and flexible meter billing (new 72-76).",
+    "Numbered Dashboard steps and table formatting changed without changing the documented rule precedence, longest matching duration, or auto-charge first-invoice exception (new 19-46 versus old 16-43)."
+  ],
+  "conflicts": [
+    "Current source 19-21 and Stripe usage-based concept 157 imply only end-of-period cycling invoices include grace usage. New 9,63-70 also includes qualifying subscription-schedule phase-transition invoices and excludes all other invoice types.",
+    "Current source 30 and concept 159 remove the `charge_automatically` condition from the first-invoice immediate-finalization exception, contrary to old 33 and new 36. Restore the condition; do not infer the rule for first `send_invoice` invoices.",
+    "Current source 20 and concept 157 state cycling invoices include grace usage without the new mid-cycle price-change exception (new 72-76). Add a warning that such late usage is omitted from both current and subsequent invoices in classic and flexible meter billing.",
+    "Current source 34 says usage timestamped after draft creation goes to the next invoice (new 55), but new 11 and 74 establish two non-allocation cases. Keep the timestamp rule conditional on ordinary eligible invoice processing, not as a universal fallback."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain May's 1-hour default, up-to-72-hour configured delay, service-period caution, account default/rule order, conservative multi-product duration, and first `charge_automatically` invoice exception, now with the November's exact eligibility additions (old 8-43; new 9-46).",
+    "Retain the May draft-invoice timestamp rule (old 45-54), which November repeats at 48-57; do not turn it into a guarantee that late-reported usage is charged on the next invoice.",
+    "The source filename ends in 2025 but its capture header says Fetched: 2026-05-05 (old 1-2); attribute historical claims to the May 2026 capture, not a presumed 2025 observation."
+  ],
+  "unresolved_questions": [
+    "The captured guide does not specify how to recover or bill grace-period usage dropped after a mid-cycle price change, even though it says neither current nor subsequent invoices include it (new 72-76).",
+    "No observed account setting, webhook acknowledgment, meter ingestion, invoice finalization, actual customer charge, or successful payment is established by these documentation captures.",
+    "Regional invoice-finalization requirements vary (new 17); this capture supplies no jurisdiction-specific rule."
+  ],
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw1",
+  "reviewer_agent": "/root/s01ur5",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md",
+      "sha256": "01606c377ba94f9de39f0c67a1a1e146a744d4e6a5ac31c7f8e1d68b5b3df4c5",
+      "lines": 76
+    },
+    {
+      "path": "raw/stripe-usage-based-billing-configure-grace-period-2025.md",
+      "sha256": "48542c9ecfcc817f9815a0db915399a8508ce3566d56c01dc8b6a3f8621413d0",
+      "lines": 54
+    },
+    {
+      "path": "wiki/sources/source-stripe-usage-based-billing-configure-grace-period.md",
+      "sha256": "1a8e9201074838553e35c8604a6c5adafa1ef72cb0ac6420fbf9932f69ce7db0",
+      "lines": 39
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/42f20e024130adf20fca9275/content.diff",
+      "sha256": "9e790df7489dba1bebb483fe4e6425dceec4838faabcc13ef2554bf89b74772e",
+      "lines": 75
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-usage-based-configure-grace-period-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-usage-based-configure-grace-period-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-configure-grace-period/attempt-1"
+}

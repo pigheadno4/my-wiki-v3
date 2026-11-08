@@ -1,0 +1,99 @@
+{
+  "job_id": "billing-subscriptions-analytics",
+  "queue_id": 16,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/analytics",
+  "raw_path": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md",
+  "raw_sha256": "5acef37780d4af7dfb9c8fd860e6253582e9d589854f5768724c4381583631e2",
+  "prior_raw_path": "raw/stripe-billing-analytics-2026.md",
+  "prior_raw_sha256": "0ad3d7f3b8ffba6a7ce3b1b447d2279186424b89dcc442414a1a0f4df164e497",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ae794cf804323c02f447f41a/content.diff",
+  "diff_sha256": "54777a0b0a8ad50bee0a841cfb48972fbf39daa04fec399b3526fe0f88773cc2",
+  "source_targets": [
+    "wiki/sources/source-stripe-billing-analytics.md"
+  ],
+  "source_before_sha256": "5db12c2bb210a11ea287a1a05cebe5161588f5ea8f7b97d197992c50b7ad745e",
+  "section": "billing",
+  "new_words": 2855,
+  "new_lines": 249,
+  "old_words": 2481,
+  "old_lines": 212,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-billing-analytics.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-analytics/attempt-1/receipt.json",
+  "receipt_sha256": "204efe03b09ff0ef7827eb38f2caa4630ff5c332975b53a73d80e44d32d6287c",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-analytics/attempt-1/review.json",
+  "review_sha256": "6752acd92a2f9f749705c63b96570e3fcf16283f8503c43824ddabd5ee80160d",
+  "affected_concepts": [
+    "wiki/concepts/stripe-billing-analytics.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md",
+  "new_raw_sha256": "5acef37780d4af7dfb9c8fd860e6253582e9d589854f5768724c4381583631e2",
+  "prior_raw": "raw/stripe-billing-analytics-2026.md",
+  "findings": [
+    "The same captured URL remains a Stripe Billing Dashboard analytics guide, not a measured merchant result (new 5-14; old 4-13). Existing definitions for MRR growth, active subscribers, ARPU, LTV, churn, cohort retention and SUM/COUNT usage metrics largely persist (new 111-249; old 77-212). Preserve dated old raw and attach new raw to the existing source route.",
+    "Current source lines 34-37 and concept wiki/concepts/stripe-billing-analytics.md say trials are excluded from MRR without the new distinction. New 113-115 excludes currently trialing items for item-level trial offers but allows non-trial items in the same subscription to contribute; legacy trial_end still excludes the whole subscription. Source and concept need that boundary to avoid a false zero-MRR answer for a mixed-item subscription.",
+    "Current source line 60 and the concept's trial-conversion summary omit the counting identity: new 199-209 counts item-level trial offers and their conversions per subscription item, while legacy trial_end trials and conversions remain subscription-level. Old 163-172 described only subscription-level counting. A simple trials-converted/trials-ended formula is still true but insufficient for the newer variant.",
+    "New 36-65 adds current AR aging on Billing overview > Collections, Revenue Recognition for supported historical dates, two different CSV export paths, and a UTC report-date versus account-time-zone chart boundary. Individual metric summary-table exports reflect current date range, filters, grouping and comparison; data-result rows appear only for supported metrics (new 44-51). Prebuilt report downloads are live-mode, fixed-schema, independent of those filters (new 53-65).",
+    "The old prebuilt 'Subscription metrics summary' report lists MRR/subscriber roll-forward, trial conversion and lifetime value (old 23-31; source 18). The new 'Subscription metrics per month' row lists MRR/subscriber roll-forward, retention and customer value (new 57-61). Preserve the old description as dated and use the new label and contents for the new capture; do not assume the new row proves the old report was removed from all Stripe surfaces.",
+    "Current source line 29 and concept call the start-of-subscription option a default. Both captures say it is the most common option, but neither explicitly establishes a product default (old 52; new 86). Narrow the claim. Configuration changes take 24-48 hours to appear in configuration (old 35; new 69), not a proven payment or cash-collection effect.",
+    "Usage MRR remains explicitly a preview signup/request (old 15-21; new 16-34); the new page adds a registration curl example. This is not evidence that any account obtained access, that registration succeeded, or that metered products enter ordinary MRR (new 113 still excludes them)."
+  ],
+  "substantive_changes": [
+    "MRR and trial definitions now distinguish item-level trial offers from legacy trial_end subscriptions; mixed-item MRR and new-trial/conversion counts differ by variant (new 113-115, 199-209 versus old 79, 163-172).",
+    "New AR aging guidance gives an as-of-today Collections view and a Revenue Recognition requirement for supported past dates (new 36-38).",
+    "New metric-level and live-mode prebuilt CSV export paths, filter behavior and UTC-versus-account-time-zone caveat (new 40-65); new report label and listed contents differ from old 23-31.",
+    "Usage MRR preview section has a signup link and registration example (new 16-34 versus old 15-21); the access status remains preview/requested, not granted."
+  ],
+  "conflicts": [
+    "Source 36 and concept MRR section say all trials are excluded; new 115 says non-trial items in a partly trialing subscription contribute to MRR under item-level trial offers.",
+    "Source 29 and concept configurable-settings section label start-of-subscription timing as default; old 52 and new 86 say only most common.",
+    "Source 18 and concept report table present the older 'Subscription metrics summary' row as current without distinguishing the new 'Subscription metrics per month' row and its changed listed content (old 30; new 60)."
+  ],
+  "historical_claims_to_preserve": [
+    "The 2026-05-13 capture's subscription-level trial counting and exclusion language remains a dated description (old 79, 163-172), now qualified by the new item-level/legacy distinction rather than treated as universally current.",
+    "The old 'Subscription metrics summary' title and its listed trial-conversion/LTV contents (old 30) belong to the old capture; the new report table has a different title and contents (new 60).",
+    "Existing definitions and caveats for positive-MRR active subscribers, 100% coupon churn, Explore availability only for a subset, and Product/Price grouping unavailable with multi-currency volume remain supported (old 59-69, 137-139; new 93-103, 173-175)."
+  ],
+  "unresolved_questions": [
+    "The captures do not establish which merchant accounts can access the Usage MRR preview, whether a preview request was accepted, or how preview usage MRR relates to standard MRR exclusions.",
+    "The captured page does not establish the full historical-date support range for Revenue Recognition AR aging, or whether the older report title remains available through another UI or API path.",
+    "No merchant dashboard, export, payment, invoice settlement, or bank receipt was observed; the documented metric and report definitions do not verify real account totals."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw5",
+  "reviewer_agent": "/root/s01ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md",
+      "sha256": "5acef37780d4af7dfb9c8fd860e6253582e9d589854f5768724c4381583631e2",
+      "lines": 249
+    },
+    {
+      "path": "raw/stripe-billing-analytics-2026.md",
+      "sha256": "0ad3d7f3b8ffba6a7ce3b1b447d2279186424b89dcc442414a1a0f4df164e497",
+      "lines": 212
+    },
+    {
+      "path": "wiki/sources/source-stripe-billing-analytics.md",
+      "sha256": "5db12c2bb210a11ea287a1a05cebe5161588f5ea8f7b97d197992c50b7ad745e",
+      "lines": 88
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ae794cf804323c02f447f41a/content.diff",
+      "sha256": "54777a0b0a8ad50bee0a841cfb48972fbf39daa04fec399b3526fe0f88773cc2",
+      "lines": 162
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-analytics-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-analytics-review.json"
+}

@@ -1,0 +1,207 @@
+{
+  "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-invoices/base.md",
+  "base_sha256": "4829c4c8970b120406873d258dbb34602d46ca24e34533b6d4631cb2abf9799d",
+  "patches": [
+    {
+      "update_id": "billing-invoices-subscription::billing-invoices-subscription-priority",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "## Payment method priority\n\nStripe uses the first available in this order:\n\n| Priority | Source | API field |\n|---|---|---|\n| 1 | Invoice default PM | `invoice.default_payment_method` |\n| 2 | Subscription default PM | `subscription.default_payment_method` |\n| 3 | Customer invoice default PM | `customer.invoice_settings.default_payment_method` |\n| 4 | (Legacy) Customer default source | `customer.default_source` |",
+      "new_text": "## Saved-default payment method fallback\n\nFor invoice collection, Stripe uses the first available saved default in this order; accepted payment method **types** are configured separately with `payment_settings.payment_method_types`:\n\n| Priority | Saved default | API field |\n|---|---|---|\n| 1 | Invoice | `invoice.default_payment_method` |\n| 2 | Subscription | `subscription.default_payment_method` |\n| 3 | Customer or customer-configured Account | `customer.invoice_settings.default_payment_method` or `configuration.customer.billing.default_payment_method`, respectively |\n| 4 | Legacy customer source | `customer.default_source` |\n\nSee [[source-stripe-subscriptions-invoices]] (2026-11-07 capture, lines 62\u201371) for the fallback and [[source-stripe-subscriptions-payment-methods-setting]] for accepted types.",
+      "reason": "Distinguish the saved-default fallback from accepted method types and include the newly documented Account field.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "billing-invoices-subscription-priority",
+      "job_id": "billing-invoices-subscription",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/receipt.json",
+      "receipt_sha256": "707ebd377870e5768c1cfd4a6da6c6d368b9fba1e7ddfbde01c32dc65503c6a8",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/candidate.md",
+      "source_candidate_sha256": "1bf2c73732e3e2e880117cc10d973f69efb05e952bde2d6bec843c92335a3148",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-invoices-subscription::billing-invoices-subscription-pause",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "**Pause for review**: set `auto_advance=false` within 1h \u2192 prevents auto-finalization. Resume with `auto_advance=true`.",
+      "new_text": "**Pause for review**: set `auto_advance=false` within one hour of `invoice.created` to prevent automatic payment attempts and invoice emailing while reviewing. Resume automatic collection with `auto_advance=true`. The cited invoice-guide passage does not expressly establish a finalization outcome; see [[source-stripe-subscriptions-invoices]] (2026-05-13 lines 234\u2013242; 2026-11-07 lines 263\u2013271).",
+      "reason": "Both captures expressly describe payment and email suppression, whereas the concept's finalization claim exceeds this evidence.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "billing-invoices-subscription-pause",
+      "job_id": "billing-invoices-subscription",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/receipt.json",
+      "receipt_sha256": "707ebd377870e5768c1cfd4a6da6c6d368b9fba1e7ddfbde01c32dc65503c6a8",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/candidate.md",
+      "source_candidate_sha256": "1bf2c73732e3e2e880117cc10d973f69efb05e952bde2d6bec843c92335a3148",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-invoices-subscription::billing-invoices-subscription-metadata",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "| `invoice.subscription_details.metadata` | Snapshot at **invoice creation time** \u2014 immutable |",
+      "new_text": "| `invoice.subscription_details.metadata` | Contains subscription metadata from invoice creation, even if subscription metadata changes later; see [[source-stripe-subscriptions-invoices]] (2026-05-13 line 280; 2026-11-07 line 309) |",
+      "reason": "Retain supported creation-time snapshot semantics without asserting blanket immutability.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "billing-invoices-subscription-metadata",
+      "job_id": "billing-invoices-subscription",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/receipt.json",
+      "receipt_sha256": "707ebd377870e5768c1cfd4a6da6c6d368b9fba1e7ddfbde01c32dc65503c6a8",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/candidate.md",
+      "source_candidate_sha256": "1bf2c73732e3e2e880117cc10d973f69efb05e952bde2d6bec843c92335a3148",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-invoices-subscription::billing-invoices-subscription-saving",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "**`save_default_payment_method`**: when enabled, whatever PM the customer pays with becomes the new subscription default.",
+      "new_text": "**`save_default_payment_method`**: set `payment_settings.save_default_payment_method=on_subscription` to save the method from a successful subscription payment as `subscription.default_payment_method`; the default is `off`. This subscription setting is separate from the Dashboard **Save customer payment information** setting. See [[source-stripe-subscriptions-invoices]] (2026-11-07 lines 73\u201377).",
+      "reason": "Narrow saving to the documented successful-payment condition and opt-in setting.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "billing-invoices-subscription-saving",
+      "job_id": "billing-invoices-subscription",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/receipt.json",
+      "receipt_sha256": "707ebd377870e5768c1cfd4a6da6c6d368b9fba1e7ddfbde01c32dc65503c6a8",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/candidate.md",
+      "source_candidate_sha256": "1bf2c73732e3e2e880117cc10d973f69efb05e952bde2d6bec843c92335a3148",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-invoices-subscription/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-payment-methods-setting::type-flow-and-eligibility",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "`payment_settings.payment_method_types` overrides which PMs the customer can use for a specific subscription (e.g. `['card', 'customer_balance']`). Passed to the subscription's SetupIntent and invoices.",
+      "new_text": "`payment_settings.payment_method_types` limits allowed **types**, not the identity of a saved default method. An explicit subscription list overrides Invoice default type configuration for that subscription and passes to its SetupIntent and invoices. With `send_invoice`, customers choose eligible types on the Hosted Invoice Page; with `charge_automatically`, Stripe attempts payment without first showing a selector. Eligibility also depends on account activation, currency, amount, country, collection method, and product support. [[source-stripe-subscriptions-payment-methods-setting]]",
+      "reason": "November clarifies type identity, collection flow and invoice eligibility.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "type-flow-and-eligibility",
+      "job_id": "billing-subscriptions-payment-methods-setting",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/receipt.json",
+      "receipt_sha256": "7f173c17f23cb505b3d3e89d62c84d438febecec745d986167d91531b3f2f525",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/candidate.md",
+      "source_candidate_sha256": "78346618d5f9acb1a6dbed898e24779a77feff5e2814979619e23dd6683bdd0a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-payment-methods-setting::default-type-pitfall",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "**Pitfall**: if a `default_payment_method` is set on the customer or subscription, it must be included in `payment_method_types` or it won't be used and payment may fail.",
+      "new_text": "**Pitfall**: when an applicable default payment method exists, include its **type** in an explicit `payment_method_types` list; otherwise that default method cannot pay the subscription's invoices. This type allowance is separate from the priority of an individual saved method. [[source-stripe-subscriptions-payment-methods-setting]]",
+      "reason": "New warning names method type and invoice consequence precisely.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "default-type-pitfall",
+      "job_id": "billing-subscriptions-payment-methods-setting",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/receipt.json",
+      "receipt_sha256": "7f173c17f23cb505b3d3e89d62c84d438febecec745d986167d91531b3f2f525",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/candidate.md",
+      "source_candidate_sha256": "78346618d5f9acb1a6dbed898e24779a77feff5e2814979619e23dd6683bdd0a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-payment-methods-setting::save-default-destination",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "**`save_default_payment_method`**: when enabled, whatever PM the customer pays with becomes the new subscription default.",
+      "new_text": "**Save-default controls (May 2026 capture)**: the guide says Dashboard Invoice **Save customer payment information** or Subscription `payment_settings.save_default_payment_method` can make a method used to pay an invoice \u201cthe new default.\u201d It does not identify the destination object for each control. The November payment-method-types capture is silent on saving behavior; see [[source-stripe-subscriptions-payment-methods-setting]].",
+      "reason": "Prior approved review rejects the unsupported claim that both controls save to subscription.default_payment_method.",
+      "quote_indexes": [],
+      "warnings": [
+        "May-only; no destination object established for both controls by assigned captures."
+      ],
+      "original_update_id": "save-default-destination",
+      "job_id": "billing-subscriptions-payment-methods-setting",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/receipt.json",
+      "receipt_sha256": "7f173c17f23cb505b3d3e89d62c84d438febecec745d986167d91531b3f2f525",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/candidate.md",
+      "source_candidate_sha256": "78346618d5f9acb1a6dbed898e24779a77feff5e2814979619e23dd6683bdd0a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-payment-methods-setting::update-links-date",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "**Payment update links** (Dashboard, `charge_automatically` only): single-use, card-only, 30-day expiry, `active`/`past_due`/`trialing` status required, doesn't change customer default PM.",
+      "new_text": "**Payment update links (May 2026 capture)**: the Dashboard guide described links for automatically billed `active`, `past_due`, or `trialing` subscriptions; card-only, one use, 30-day expiry. They update the associated subscription's method, not the customer's default. The November type-settings guide does not address link availability. [[source-stripe-subscriptions-payment-methods-setting]]",
+      "reason": "Preserve May link restrictions with date and keep distinct from save-default controls.",
+      "quote_indexes": [],
+      "warnings": [
+        "November omission does not establish current availability or deprecation."
+      ],
+      "original_update_id": "update-links-date",
+      "job_id": "billing-subscriptions-payment-methods-setting",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/receipt.json",
+      "receipt_sha256": "7f173c17f23cb505b3d3e89d62c84d438febecec745d986167d91531b3f2f525",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/candidate.md",
+      "source_candidate_sha256": "78346618d5f9acb1a6dbed898e24779a77feff5e2814979619e23dd6683bdd0a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-payment-methods-setting::source-index-description",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "- [[source-stripe-subscriptions-payment-methods-setting]] \u2014 Per-subscription PM settings: payment_method_types pitfall, save_default_payment_method, payment update links (30-day, card-only)",
+      "new_text": "- [[source-stripe-subscriptions-payment-methods-setting]] \u2014 Allowed subscription payment method types and invoice eligibility (November 2026); save-default and payment update link details retained as May 2026 evidence",
+      "reason": "Keep concept source list aligned with dated source.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "source-index-description",
+      "job_id": "billing-subscriptions-payment-methods-setting",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/receipt.json",
+      "receipt_sha256": "7f173c17f23cb505b3d3e89d62c84d438febecec745d986167d91531b3f2f525",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/candidate.md",
+      "source_candidate_sha256": "78346618d5f9acb1a6dbed898e24779a77feff5e2814979619e23dd6683bdd0a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-payment-methods-setting/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-invoices-subscription::billing-invoices-subscription-priority",
+    "billing-invoices-subscription::billing-invoices-subscription-pause",
+    "billing-invoices-subscription::billing-invoices-subscription-metadata",
+    "billing-invoices-subscription::billing-invoices-subscription-saving",
+    "billing-subscriptions-payment-methods-setting::type-flow-and-eligibility",
+    "billing-subscriptions-payment-methods-setting::default-type-pitfall",
+    "billing-subscriptions-payment-methods-setting::save-default-destination",
+    "billing-subscriptions-payment-methods-setting::update-links-date",
+    "billing-subscriptions-payment-methods-setting::source-index-description"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-invoices/auto-candidate.md",
+  "auto_candidate_sha256": "e692fb0a268f103024ef3a09241dd612beca4a57abed59ba438645e9e704e051",
+  "conflict_clusters": [
+    [
+      {
+        "start": 4314,
+        "end": 4435,
+        "old_text": "**`save_default_payment_method`**: when enabled, whatever PM the customer pays with becomes the new subscription default.",
+        "new_text": "**`save_default_payment_method`**: set `payment_settings.save_default_payment_method=on_subscription` to save the method from a successful subscription payment as `subscription.default_payment_method`; the default is `off`. This subscription setting is separate from the Dashboard **Save customer payment information** setting. See [[source-stripe-subscriptions-invoices]] (2026-11-07 lines 73\u201377).",
+        "ids": [
+          "billing-invoices-subscription::billing-invoices-subscription-saving"
+        ]
+      },
+      {
+        "start": 4314,
+        "end": 4435,
+        "old_text": "**`save_default_payment_method`**: when enabled, whatever PM the customer pays with becomes the new subscription default.",
+        "new_text": "**Save-default controls (May 2026 capture)**: the guide says Dashboard Invoice **Save customer payment information** or Subscription `payment_settings.save_default_payment_method` can make a method used to pay an invoice \u201cthe new default.\u201d It does not identify the destination object for each control. The November payment-method-types capture is silent on saving behavior; see [[source-stripe-subscriptions-payment-methods-setting]].",
+        "ids": [
+          "billing-subscriptions-payment-methods-setting::save-default-destination"
+        ]
+      }
+    ]
+  ],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-subscriptions-invoices-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-subscriptions-invoices-concept-review.json"
+}

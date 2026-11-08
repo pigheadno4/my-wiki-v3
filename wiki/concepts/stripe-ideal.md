@@ -16,7 +16,7 @@ iDEAL | Wero (formerly iDEAL, now rebranding) is the Netherlands' dominant onlin
 ## Key Properties
 
 - **Confirmation**: Customer-initiated, immediate notification
-- **Recurring**: Via [[stripe-sepa-debit]] — same pattern as Bancontact (iDEAL payment saves IBAN as SEPA mandate)
+- **Recurring**: Via [[stripe-sepa-debit]]. In the 2026-05-13 subscription guide, hosted Checkout uses iDEAL for the first subscription payment (or a refunded 0.01 EUR collection for a free trial); Direct API uses a refunded 0.01 EUR setup payment and a successful SetupIntent to obtain a generated SEPA Direct Debit payment method. Later SEPA payment success is separate.
 - **Disputes**: No — customers can't dispute with bank; contact merchant directly
 - **Refunds**: 180 days; up to 7 days pending; after 7 days without failure → considered successful
 - **Full product support**: Connect, Checkout, Payment Links, Subscriptions, Invoicing, Elements
@@ -44,4 +44,4 @@ iDEAL | Wero (formerly iDEAL, now rebranding) is the Netherlands' dominant onlin
 - [[source-stripe-ideal-accept-payment]] — integration guide: Checkout + iOS + Android + React Native + Elements, 14 banks, no minimum
 - [[source-stripe-ideal-save-during-payment]] — save IBAN as SEPA mandate: setup_future_usage + generated_sepa_debit, SEPA mandate text (7 languages), 6 test patterns
 - [[source-stripe-ideal-set-up-payment]] — SetupIntent (no payment): 0.01 EUR charged + refunded, confirmSetup, same mandate text and test patterns
-- [[source-stripe-subscriptions-ideal]] — subscription guide: iDEAL→SEPA conversion, Checkout + Direct API, generated_sepa_debit, off_session updates, 6 email/PM test patterns
+- [[source-stripe-subscriptions-ideal]] — 2026-05-13 subscription variants: hosted Checkout first iDEAL charge or refunded trial setup, Direct API refunded 0.01 EUR setup and generated SEPA method; Direct API off_session update guidance and test cases. 2026-11-07 capture is a variant index only.

@@ -1,90 +1,61 @@
 ---
 title: "Stripe Subscriptions — Cancel Subscriptions"
 type: source
-date_ingested: 2026-05-13
+date_ingested: 2026-11-08
 original_format: webpage
+canonical_url: "https://docs.stripe.com/billing/subscriptions/cancel"
 raw_files:
+  - "stripe-billing-subscriptions-cancel-2026-11-07.md"
   - "stripe-subscriptions-cancel-2026.md"
 tags: [stripe, billing, subscriptions, cancellation, prorations, webhooks]
 ---
 
-## Summary
+## Overview
 
-Comprehensive guide to canceling Stripe subscriptions — immediate, at period end, on a custom date, or via schedule. Key contributions: custom cancel date caveats, invoice item handling on cancel, dispute-triggered cancellation, billing cycle anchor behavior.
+Stripe's [[stripe-subscriptions-cancel]] guide covers manual immediate and period-end cancellation, custom cancel dates, subscription schedules, and configured dispute-triggered cancellation. It also explains prorations, pending invoice items, invoices, events and billing-cycle anchors. The 2026-11-07 capture clarifies when custom-date prorations can be disabled and adds an optional Workflows template for pending invoice items; the 2026-05-13 capture remains historical evidence. See [[stripe]] and [[stripe-subscriptions]].
 
-## Auto-cancellation
+## Cancellation paths
 
-Subscriptions cancel automatically after up to **8 failed billing attempts** (configurable in Dashboard subscription settings).
+- By default, an API or Dashboard cancellation takes effect immediately and stops future invoices for that subscription. Once canceled, the subscription can be updated only for `metadata` and `cancellation_details`; it cannot be reactivated. The May capture's Node.js `stripe.subscriptions.cancel` snippet and November curl DELETE example are dated renderings of this path.
+- Setting `cancel_at_period_end=true` keeps the subscription through its already paid period. Setting it back to `false` can stop the pending cancellation before that period ends. A subscription schedule with `end_behavior=cancel` manages `cancel_at` at its final phase; adding a phase to that final phase removes the cancel date and can affect period end and anchor. The older Node.js and newer curl update examples are locators, not evidence of execution.
+- The Dashboard can be configured to cancel after a dispute, but only for full-amount credit or debit card disputes. Test clocks are excluded; changes take approximately one hour. A scheduled subscription is released from its schedule before cancellation, so later schedule phases do not apply. This does not show any merchant enabled the setting.
+- The guide also describes automatic cancellation after up to eight failed billing attempts, with the attempt count configurable in Dashboard settings. Pausing payment collection is distinct from canceling and does not itself change subscription status.
 
-## Immediate cancellation
+## Custom cancel date and prorations
 
-```js
-stripe.subscriptions.cancel(subscriptionId)
-```
+A future `cancel_at` can shorten `items.current_period_end`, which creates prorations unless the update disables them where allowed. The guide says a custom cancel date does not offer a refund. Its November text permits prevention of the credit proration only when `cancel_at` is within the **current billing period**; being within that period alone does not suppress it. The May capture explicitly names `proration_behavior=none` as the within-period suppression path. For a cancel date outside the current period, November says prorations cannot be disabled. When `cancel_at` shortens the current period, disabling prorations can affect invoice lines differently by billing mode; this capture does not define the complete per-mode effects.
 
-Takes effect immediately. No more invoices generated. After cancel, only `metadata` and `cancellation_details` can be updated.
+> [!warning] Contradiction
+> The May 2026 capture says a credit proration is “always generated” for a custom cancellation date and, in the same passage, gives a `proration_behavior=none` prevention path within the current period. The prior source repeated the absolute claim. The November 2026 wording resolves the overstatement with the within-period condition and the outside-current-period prohibition. Do not treat all custom dates as automatically credited or all within-period dates as automatically suppressed.
 
-## Cancel at period end
+For `billing_mode` subscriptions, `min_period_end` and `max_period_end` helpers resolve the earliest or latest item period-end timestamp immediately. A date more than one period away leaves the current cycle unaffected until renewal into the period containing the date. For flexible billing subscriptions in `trialing` status, changing `cancel_at` does not alter `trial_end`. The post-June-2024 billing-cycle-anchor reset guarantee is limited to subscriptions created after June 2024; older ones can retain legacy behavior.
 
-```js
-stripe.subscriptions.update(subId, { cancel_at_period_end: true })
-```
+## Invoice items and existing invoices
 
-Subscription continues through the paid period. Reactivate any time before period end by setting `cancel_at_period_end: false`.
+Pending invoice items can still be billed if cancellation includes a final invoice or the customer has another active subscription. The guide's manual route deletes the pending items to avoid that billing. The November capture adds an optional **Workflows** template that runs **when the subscription ends** and deletes **only its pending invoice items**. The template's presence does not establish that it was installed or run, that earlier items were retroactively deleted, or that existing invoices were erased. Metered usage can bill at period end unless `clear_usage` is used on an update; `invoice_now` can create a final invoice.
 
-## Custom cancel date (`cancel_at`)
+For period-end cancellation, pending prorations remain to be collected at period end. For an early cancellation, invoice items remain unprocessed unless specifically invoiced. Cancellation sets `auto_advance=false` on open and draft invoices for that subscription, pausing automatic collection and reminder emails; manual collection and emails remain possible. This does not void those invoices or discharge amounts owed.
 
-```js
-stripe.subscriptions.update(subId, { cancel_at: timestamp })
-```
+## Cancellation events and historical qualifications
 
-- Updates `items.current_period_end` to match the cancel date → creates prorations
-- **Cannot provide a refund** with a custom cancel date — credit proration always generated
-- To suppress credit proration: set `cancel_at` within current billing period + `proration_behavior=none`
-- If >1 period away: subscription cycles normally until the period containing `cancel_at`
-- `min_period_end` / `max_period_end` enum helpers available for `billing_mode` subscriptions
+`customer.subscription.updated` includes scheduling `cancel_at_period_end=true`; `customer.subscription.deleted` marks actual cancellation by direct delete or when the scheduled period end arrives. The update event is not the deletion event or evidence of a paid final invoice.
 
-## Via subscription schedule
+The warning about update parameters before API version 2018-02-28 remains in both captures: historically, any parameter on Update Subscription stopped a pending cancellation. The anchor-reset qualification above applies only to subscriptions created after June 2024.
 
-Set `end_behavior=cancel` on schedule. Schedule automatically manages `cancel_at`. Adding a new phase to the last phase **removes** the cancel date.
+## Detail locators
 
-## Dispute-triggered cancellation
+- November: manual and period-end cancellation (raw lines 17–64); schedule and full-amount card dispute limits (66–88); invoice items and Workflows (90–107); events and stopping a pending cancel (109–139); custom date, proration and billing-mode/anchor qualifications (141–176).
+- May: Node.js cancel/update examples (raw lines 35–41, 60–68, 135–159); internally mixed custom-date statement and suppression path (20); invoice and event boundaries (96–118); 2018-02-28 and post-June-2024 qualifications (145, 182).
+- The November page uses curl examples where May used Node.js. Neither captured example proves an executed cancellation, refund, final invoice payment or workflow run.
 
-Configurable in Dashboard (Manage disputed payments). Options:
-- Cancel immediately without prorating
-- Cancel at period end (`cancel_at_period_end=true`)
+## Related
 
-Limitations: only full-amount credit/debit card disputes; ~1h delay; NOT compatible with test clocks. Subscriptions on schedules are first released from the schedule then canceled.
-
-## Invoice items on cancellation
-
-- Pending invoice items still billed if: final invoice generated, or customer has another active subscription
-- Must **manually delete** pending invoice items to avoid billing them
-- Metered usage billed at period end unless `clear_usage` is used on update
-- If `cancel_at_period_end`, pending prorations are collected at period end
-- On cancel, all `open`/`draft` invoices for that subscription get `auto_advance=false` — pauses automatic collection and reminder emails (manual collection still possible)
-
-## Billing cycle anchor on cancel removal/extension
-
-- First period: any anchor originally set is preserved
-- After first period (or if no custom anchor): anchor resets to `current_period_start` when cancel date is removed/extended
-- Subs created before June 2024 may exhibit legacy behavior (anchor unchanged)
-- Moving cancel date closer: shortens billing anchor to match; creates credit proration for removed time
-
-## Webhooks
-
-| Event | Description |
-|---|---|
-| `customer.subscription.updated` | Any update, including `cancel_at_period_end=true` |
-| `customer.subscription.deleted` | Actual cancellation (immediate or period-end) |
-
-## Related pages
-
-- [[stripe-subscriptions-cancel]] — concept page
-- [[stripe-subscriptions-prorations]] — proration behavior on cancel
-- [[stripe-subscriptions]] — concept page
-- [[stripe]] — company page
+- [[stripe-subscriptions-cancel]] — cancellation concept
+- [[stripe-subscriptions-prorations]] — proration behavior
+- [[stripe-subscriptions]] — subscription lifecycle
+- [[stripe]] — company
 
 ## Raw Sources
 
-- [[stripe-subscriptions-cancel-2026]] — verbatim Stripe docs webpage
+- [[raw/stripe-billing-subscriptions-cancel-2026-11-07|Cancellation guide — captured 2026-11-07]]
+- [[raw/stripe-subscriptions-cancel-2026|Cancellation guide — captured 2026-05-13]]

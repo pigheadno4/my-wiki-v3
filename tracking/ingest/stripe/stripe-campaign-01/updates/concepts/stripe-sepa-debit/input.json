@@ -1,0 +1,103 @@
+{
+  "target_path": "wiki/concepts/stripe-sepa-debit.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-sepa-debit/base.md",
+  "base_sha256": "bd58549090b29e5dbc58fdfd49618c0d0f92bda0ef77f8cc9da603b22e1eb7b2",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-ideal::sepa-source-route",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "old_text": "- [[source-stripe-subscriptions-ideal]] \u2014 iDEAL\u2192SEPA subscription: Checkout + Direct API, generated_sepa_debit retrieval, 6 email/PM test patterns",
+      "new_text": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 iDEAL\u2192SEPA subscription variants: hosted Checkout and Direct API setup with generated_sepa_debit retrieval; setup success differs from the later SEPA payment outcome. 2026-11-07 capture is a variant index only.",
+      "reason": "Keep reciprocal source route and preserve separation of SetupIntent and later SEPA payment outcomes.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Current linked variant bodies were not captured."
+      ],
+      "original_update_id": "sepa-source-route",
+      "job_id": "billing-subscriptions-ideal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-ideal/attempt-1/receipt.json",
+      "receipt_sha256": "51c136554635ae7f7a06dc2bb297eedeba61d1f4ef93d8d5212a009a63148310",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-ideal/attempt-1/candidate.md",
+      "source_candidate_sha256": "4fd40f003faa585d5793a9acda24fb5a7dbac546f33df55f9ac1d712ba2e9f51",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-ideal/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-sepa-debit::sepa-subscription-path-qualification",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "old_text": "Two paths: Checkout (`payment_method_types=['sepa_debit']`, `mode='subscription'`) or Payment Element (`default_incomplete` + `save_default_payment_method='on_subscription'`).",
+      "new_text": "The May 2026 guide has a hosted Checkout subscription example (`payment_method_types=['sepa_debit']`, `mode='subscription'`) and an advanced web example (`default_incomplete` + `save_default_payment_method='on_subscription'`). The advanced page recommends a separate Payment Element build guide for new users, while its own mixed sample mounts a Payment Element and uses SEPA-specific `confirmSepaDebitPayment` or `confirmSepaDebitSetup` calls according to whether payment is due up front. The November 2026 unparameterized capture is only a variant index. [[source-stripe-subscriptions-sepa-debit]]",
+      "reason": "Preserve dated branch and sample boundaries; correct unsupported generic confirmPayment simplification in source.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Current full linked variants not captured."
+      ],
+      "original_update_id": "sepa-subscription-path-qualification",
+      "job_id": "billing-subscriptions-sepa-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/receipt.json",
+      "receipt_sha256": "51f430e902cb51e6e5a84340d6b57e775f60fa77b08d308f9a05611567928b71",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "d891564e7388b9dbe007bfaf87551b74c5e81e788cdaecf7755797ef1e51e765",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-sepa-debit::sepa-delayed-paid-initial",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "old_text": "**Delayed notification** \u2014 do NOT fulfill on `checkout.session.completed`. Wait for `checkout.session.async_payment_succeeded` or `invoice.paid`.",
+      "new_text": "**Delayed notification (May 2026 guide)** \u2014 `checkout.session.completed` records debit authorization, not payment success. The guide uses later `checkout.session.async_payment_succeeded` or `invoice.paid` for fulfillment. Its example handles `invoice.paid` for an initial paid invoice as well as later paid periods, even if that event precedes `checkout.session.completed`. [[source-stripe-subscriptions-sepa-debit]]",
+      "reason": "Make initial and later invoice.paid scope explicit.",
+      "quote_indexes": [],
+      "warnings": [
+        "Dated May evidence; November index has no webhook detail."
+      ],
+      "original_update_id": "sepa-delayed-paid-initial",
+      "job_id": "billing-subscriptions-sepa-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/receipt.json",
+      "receipt_sha256": "51f430e902cb51e6e5a84340d6b57e775f60fa77b08d308f9a05611567928b71",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "d891564e7388b9dbe007bfaf87551b74c5e81e788cdaecf7755797ef1e51e765",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-sepa-debit::sepa-subscription-test-table-count",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "old_text": "- [[source-stripe-subscriptions-sepa-debit]] \u2014 subscription guide: Checkout + Payment Element, delayed notification, 20+ country IBAN test tables (8 scenarios each)",
+      "new_text": "- [[source-stripe-subscriptions-sepa-debit]] \u2014 May subscription guide: hosted Checkout and advanced web example, delayed notification, 19 country headings in each IBAN test table (8 scenarios each); November capture is a variant index",
+      "reason": "May raw has 19 headings in each variant and no SK/SI table.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Test headings do not establish current geographic eligibility."
+      ],
+      "original_update_id": "sepa-subscription-test-table-count",
+      "job_id": "billing-subscriptions-sepa-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/receipt.json",
+      "receipt_sha256": "51f430e902cb51e6e5a84340d6b57e775f60fa77b08d308f9a05611567928b71",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "d891564e7388b9dbe007bfaf87551b74c5e81e788cdaecf7755797ef1e51e765",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-sepa-debit/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-ideal::sepa-source-route",
+    "billing-subscriptions-sepa-debit::sepa-subscription-path-qualification",
+    "billing-subscriptions-sepa-debit::sepa-delayed-paid-initial",
+    "billing-subscriptions-sepa-debit::sepa-subscription-test-table-count"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-sepa-debit/auto-candidate.md",
+  "auto_candidate_sha256": "0262582cbe67075ce8f456a5a0af85b2c636f3d4e09ea8297fcb10f4e670fbcf",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-sepa-debit-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-sepa-debit-concept-review.json"
+}

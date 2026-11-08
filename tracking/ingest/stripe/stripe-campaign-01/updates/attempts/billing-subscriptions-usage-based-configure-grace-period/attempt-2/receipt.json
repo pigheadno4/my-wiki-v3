@@ -1,0 +1,138 @@
+{
+  "job_id": "billing-subscriptions-usage-based-configure-grace-period",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md",
+  "raw_sha256": "01606c377ba94f9de39f0c67a1a1e146a744d4e6a5ac31c7f8e1d68b5b3df4c5",
+  "source_before_sha256": "1a8e9201074838553e35c8604a6c5adafa1ef72cb0ac6420fbf9932f69ce7db0",
+  "source_page": "---\ntitle: \"Stripe: Configure an Invoice Finalization Grace Period\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period\"\nraw_files:\n  - \"stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md\"\n  - \"stripe-usage-based-billing-configure-grace-period-2025.md\"\ntags: [stripe, billing, usage-based, invoicing, grace-period, finalization]\n---\n\n## Summary\n\nThe May 5 and November 7, 2026 same-URL guides describe a configurable invoice **finalization** grace period. The account default is 1 hour; rules can delay eligible automatically collected invoices from `draft` to finalized by up to 72 hours. The service period should exceed the configured grace period. This timing setting does not establish payment collection, invoice delivery, or successful settlement.\n\n## Which invoices include usage reported during grace\n\nThe November guide says subscription-cycle invoices and subscription-schedule phase-transition invoices **that modify metered items** can include usage reported during the grace period for the prior billing period. Other invoices, including threshold invoices, use usage recorded before invoice creation even if a grace period is configured (new raw lines 9, 63\u201370). The May capture named cycling invoices and threshold invoices but did not identify qualifying phase transitions (old raw line 8).\n\n> [!warning] Contradiction\n> The prior source summarized only cycling versus threshold invoices and could imply all cycling invoices include grace-period usage. November adds qualifying phase-transition invoices and a material exception: after a mid-cycle subscription-item price change, Stripe skips recomputation at finalization, so grace-period usage appears on neither current nor subsequent invoices for classic and flexible subscriptions using billing meters (new raw lines 72\u201376). Do not treat a longer grace setting as a guarantee of usage allocation.\n\nStripe may accept usage reported **after** the grace period and show it in meter summaries, yet does not add it to the finalized **or next** invoice (new raw line 11). Meter acceptance and summary visibility are distinct from invoice allocation and payment.\n\n## Default and rule configuration\n\nThe Dashboard path is Invoice settings \u2192 Invoice finalization grace period. The account default is 1 hour; setting a delay longer than the service period is discouraged, including a 24-hour-or-longer delay for daily service. Rules can target subscription-cycle invoices, invoices with a metered price, or both conditions. Rules have an order and the account default is last. When several rules match a multi-product invoice, Stripe applies the more conservative, longer grace period; the guide gives a 72-hour metered product plus 1-hour simple product example (new raw lines 19\u201346; old raw lines 16\u201343).\n\nThe **first invoice of a subscription set to `charge_automatically`** finalizes immediately regardless of these rules (new raw line 36; old raw line 33). Neither capture establishes the same exception for first `send_invoice` invoices.\n\nSeparately, when Stripe does not receive a successful `invoice.created` response, it can delay finalization of automatically collected invoices for up to 72 hours, except those with a custom scheduled finalization time (new raw line 15). This webhook-response delay is distinct from the configured grace rule and does not make an otherwise ineligible invoice include late usage.\n\n## Meter timestamps and draft invoices\n\nNewly recorded usage ordinarily appears when an eligible invoice is finalized rather than on its draft. The invoice must still be `draft`, and the meter event timestamp must be within that invoice's service period; a threshold invoice does not take usage reported after its creation. A timestamp **after** draft invoice creation routes usage to the next invoice under the ordinary timestamp rule (new raw lines 48\u201357; old raw lines 45\u201354). That rule does not override the post-grace non-allocation or mid-cycle price-change exceptions above. Verify reflected usage on the Meters page or via the Meters API.\n\nThe captured guide does not specify a recovery path for usage omitted after a mid-cycle price change. Regional finalization rules may differ; this capture supplies no jurisdiction-specific requirement. Neither capture demonstrates a live account setting, accepted event, finalized invoice, or successful payment.\n\n## Related pages\n\n- [[stripe-usage-based-billing]] \u2014 usage-based billing concept\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07|Stripe grace-period guide, November 7 2026]] \u2014 updated same-URL capture\n- [[raw/stripe-usage-based-billing-configure-grace-period-2025|Stripe grace-period guide, May 5 2026]] \u2014 historical capture; filename ends in 2025 but fetched header is May 2026\n",
+  "quotes": [
+    {
+      "text": "Only subscription cycle invoices and subscription schedule phase transition invoices for metered items include usage reported during this period.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md:9"
+    },
+    {
+      "text": "Stripe can accept usage reported beyond the grace period and include it in meter summaries, but we don\u2019t add that usage to the finalized invoice or the next invoice.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md:11"
+    },
+    {
+      "text": "If Stripe fails to receive a successful response to `invoice.created`, we delay finalizing all invoices with [automatic collection](https://docs.stripe.com/invoicing/integration/automatic-advancement-collection.md) for up to 72 hours, excluding those where you have [set a custom scheduled finalization time](https://docs.stripe.com/invoicing/scheduled-finalization.md).",
+      "location": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md:15"
+    },
+    {
+      "text": "The first invoice generated by a subscription set to [charge automatically](https://docs.stripe.com/api/subscriptions/create.md#create_subscription-collection_method) finalizes immediately, regardless of the rules you configure.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md:36"
+    },
+    {
+      "text": "Stripe skips invoice recomputation during finalization, so any usage reported during the grace period doesn\u2019t appear on current or subsequent invoices.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md:74"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Only cycling invoices (those generated at the end of a billing cycle) include usage reported during this period\u2014threshold invoices reflect only the usage accrued up to the point the invoice is created.",
+      "location": "raw/stripe-usage-based-billing-configure-grace-period-2025.md:8"
+    },
+    {
+      "text": "The first invoice generated by a subscription set to [charge automatically](https://docs.stripe.com/api/subscriptions/create.md#create_subscription-collection_method) finalizes immediately, regardless of the rules you configure.",
+      "location": "raw/stripe-usage-based-billing-configure-grace-period-2025.md:33"
+    },
+    {
+      "text": "If the usage timestamp is for any time after the creation time of the draft invoice, we append the usage to the next invoice.",
+      "location": "raw/stripe-usage-based-billing-configure-grace-period-2025.md:52"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-configure-grace-period-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 76
+      }
+    ],
+    "raw/stripe-usage-based-billing-configure-grace-period-2025.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-configure-grace-period.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/42f20e024130adf20fca9275/content.diff": [
+      {
+        "start": 1,
+        "end": 75
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "grace-concept-eligibility",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "**Cycling invoices** (end-of-period) include usage reported during the grace period. **Threshold invoices** do not \u2014 they reflect usage only up to the creation moment.",
+      "new_text": "**Subscription-cycle invoices** and **subscription-schedule phase-transition invoices that modify metered items** can include usage reported during the finalization grace period. Other invoices, including **threshold invoices**, use usage recorded before invoice creation.\n\n> [!warning] Contradiction\n> The May capture and former summary named only cycling versus threshold invoices. The November guide adds qualifying phase transitions and warns that a mid-cycle subscription-item price change skips finalization recomputation: grace-period usage then appears on neither current nor subsequent invoices in classic or flexible subscriptions using billing meters. See [[source-stripe-usage-based-billing-configure-grace-period]].",
+      "reason": "Correct the principal invoice eligibility boundary and add consequential price-change exception.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "The guide does not document a recovery path for dropped usage."
+      ]
+    },
+    {
+      "update_id": "grace-concept-first-invoice",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "The first invoice of any subscription always finalizes immediately, regardless of rules.",
+      "new_text": "The first invoice of a subscription using `charge_automatically` finalizes immediately regardless of these rules; the captures do not extend this statement to first `send_invoice` invoices.",
+      "reason": "Restore the collection-method condition present in both captures.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "grace-concept-timestamps",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "Usage timestamps must fall within the service period of the draft invoice. Usage timestamped after the draft invoice's creation goes to the next invoice.",
+      "new_text": "For ordinary eligible draft-invoice processing, usage timestamps must fall within that invoice's service period; a timestamp after draft creation routes usage to the next invoice. This does not override the November exceptions: usage reported beyond grace may appear in meter summaries but not the finalized or next invoice, and a mid-cycle subscription-item price change can omit grace-period usage from both current and subsequent invoices.",
+      "reason": "Keep the timestamp rule conditional rather than a universal next-invoice fallback.",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "grace-concept-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-configure-grace-period]] \u2014 invoice finalization grace period: default 1h, max 72h, cycling vs threshold, rules system, draft invoice usage behavior",
+      "new_text": "- [[source-stripe-usage-based-billing-configure-grace-period]] \u2014 May and November 2026 invoice-finalization guide: 1h default, up to 72h rules, eligible cycle/phase invoices, timestamp and price-change limits",
+      "reason": "Refresh reciprocal source route for the updated dated guide.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "grace-concept-service-period-advice",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "Default: **1 hour**. Configurable up to **72 hours (3 days)** via Dashboard \u2192 Invoice settings. Must not exceed the service period length.",
+      "new_text": "Default: **1 hour**. Configurable up to **72 hours (3 days)** via Dashboard \u2192 Invoice settings. Stripe advises against setting the grace period longer than the service period; for daily service, it says not to use a grace period of 24 hours or more.",
+      "reason": "Preserve the documented 72-hour configurable limit while expressing the service-period relationship as advice, not an API prohibition.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period, the November guide preserves a one-hour default and configurable automatic-collection finalization delay up to 72 hours, with a service-period caution (new 9, 15\u201326; old 8, 12\u201323). Only subscription-cycle and qualifying metered phase-transition invoices include usage reported during grace; threshold and other invoices use usage before creation (new 9, 63\u201370). [[source-stripe-usage-based-billing-configure-grace-period]] now scopes the draft timestamp rule to ordinary eligible processing (new 48\u201355; old 45\u201352) and records that a mid-cycle price change can omit grace-period usage from current and later invoices (new 72\u201376). This is finalization timing, not payment proof.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period, substantive additions are qualifying schedule phase-transition invoices, usage Stripe can accept after grace and may include in meter summaries, while it is absent from both finalized and next invoices, a separate invoice.created acknowledgment delay, and mid-cycle price-change loss in both billing modes using meters (new 9\u201315, 63\u201376 versus old 8\u201312). [[source-stripe-usage-based-billing-configure-grace-period]] retains May's account default, rule order and draft timestamp behavior (old 16\u201354) while restoring the exact charge_automatically condition for immediate first-invoice finalization (old 33; new 36). No captured live invoice, meter allocation, successful charge or recovery route is established."
+  },
+  "status": "candidate_ready"
+}

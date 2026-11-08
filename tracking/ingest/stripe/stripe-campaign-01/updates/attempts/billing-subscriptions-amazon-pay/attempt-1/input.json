@@ -1,0 +1,96 @@
+{
+  "job_id": "billing-subscriptions-amazon-pay",
+  "queue_id": 15,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/amazon-pay",
+  "raw_path": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md",
+  "raw_sha256": "7849a9ab15a72a6e0bb28bfcbd4b82f5ac7bbecfaa60418a7b7d194517d03f83",
+  "prior_raw_path": "raw/stripe-subscriptions-amazon-pay-2026.md",
+  "prior_raw_sha256": "ea967cf2f72cc8482b190d08df393d7d83aae5223d3e5b9f97aeab89fc731acb",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e8e3f5f56e7a1347a5afab42/content.diff",
+  "diff_sha256": "fe3c2f9712bf7d91ec5e52a3e26fb2fbae096e2dde4b80eb310e227623af19d2",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-amazon-pay.md"
+  ],
+  "source_before_sha256": "50b064042a66c2ee5fd46165718d3c5aa5c26fb513579a2000b69731caba6c1d",
+  "section": "billing",
+  "new_words": 66,
+  "new_lines": 15,
+  "old_words": 2440,
+  "old_lines": 342,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-amazon-pay.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-amazon-pay/attempt-2/receipt.json",
+  "receipt_sha256": "d2d134930b0d3c6e97d4d072099cd6dabd45a63488e3899b8c9cc00de5948a0d",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-amazon-pay/attempt-2/review.json",
+  "review_sha256": "9ab0d05db7579d7b22c3cd8ffa28992d27ae2be2e18adf4c609b3f4e2c6626cf",
+  "affected_concepts": [
+    "wiki/concepts/stripe-amazon-pay.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md",
+  "new_raw_sha256": "7849a9ab15a72a6e0bb28bfcbd4b82f5ac7bbecfaa60418a7b7d194517d03f83",
+  "prior_raw": "raw/stripe-subscriptions-amazon-pay-2026.md",
+  "findings": [
+    "At the pinned URL, the 2026-11-07 capture now has only a title, purpose and three variant links: Setup Intents API, Payment Intents API and Stripe-hosted page (new raw lines 5-15). It does not provide replacement parameter requirements, customer/account eligibility, payment states or a live success result.",
+    "The 2026-05-13 capture contains all three full variants (old raw lines 10-342). The diff removes their inline content and adds variant links. This is an observed presentation/navigation change, not evidence that Amazon Pay subscriptions or any path were deprecated.",
+    "The current source is grounded in the dated old capture (source lines 4-8 and 66-68) and keeps the three-path structure (lines 13-51). Do not replace that content with the index or add the new navigation-only raw as factual raw_files.",
+    "A correction to the current source is warranted independently of the new index: its general Key parameters at lines 55-56 say mandate_data and return_url are required for Amazon Pay without a path qualifier. The old SetupIntent/PaymentIntent API steps provide those values (old raw lines 56-70, 171-188 and 273-284), but the hosted Checkout variant instead shows a subscription-mode Checkout Session with success_url, price, quantity and payment_method_types plus customer authorization on the hosted path (old raw lines 310-342). Do not impose API-only parameter names on the hosted path.",
+    "The SetupIntents section and concept should not imply off_session is the only allowed SetupIntent usage: the old text explicitly permits usage=off_session or usage=on_session (old raw line 54), while its sample chooses off_session (old raw line 61). Preserve sample versus requirement.",
+    "The old PaymentIntents path has an internal wording/example discrepancy: its confirm-call prose says to set payment_method_types to amazon_pay (old raw line 271), while the adjacent POST example uses payment_method_data[type]=amazon_pay and does not show payment_method_types on that request (old raw lines 273-281). The current source line 37 follows the example. This is unresolved documentation inconsistency, not proof that the source's example is an invalid API call or that the 2026-11-07 variant index changed the confirm contract. Keep the subscription creation setting at old raw lines 259-263 separate from this confirm-call issue."
+  ],
+  "substantive_changes": [],
+  "conflicts": [
+    "Current source lines 55-56 and concept lines 15-16/49-50 make mandate_data and return_url sound required for every flow. The old hosted Checkout variant at lines 310-342 uses a Checkout Session and customer authorization, with success_url rather than those API-path parameters. Source and concept should qualify requirements by integration path.",
+    "Current source line 19 and concept lines 17/27 frame usage=off_session as the SetupIntent path, whereas old raw line 54 allows off_session or on_session; old raw line 61 is an off_session example. Retain recurring off-session purpose without turning that example into universal requiredness.",
+    "The old SetupIntents text combines a server-side confirm=true sample (old raw lines 56-68) with a later client-side confirmAmazonPaySetup step (old raw lines 171-188). The capture does not resolve whether both confirmation calls belong in one runnable sequence; the current source line 19-20 should not promise that sequence succeeds as written.",
+    "The old PaymentIntents confirm prose says payment_method_types=amazon_pay (old raw line 271), but its adjacent POST example sends payment_method_data[type]=amazon_pay and does not show payment_method_types there (old raw lines 273-281). Current source line 37 follows the example. Treat this as an internal guide inconsistency, not a verified API correction; payment_settings.payment_method_types on subscription creation (old raw lines 259-263), SetupIntent payment_method_types (old raw lines 54/64), and Checkout Session payment_method_types (old raw lines 335-337) are distinct contexts."
+  ],
+  "historical_claims_to_preserve": [
+    "The 2026-05-13 SetupIntents path requires a Stripe Customer for saving the Amazon Pay payment method for future use, creates a SetupIntent on the server and passes its client_secret to Stripe.js for buyer authorization; the example then creates a subscription with the resulting default PaymentMethod (old raw lines 34-70, 171-216).",
+    "The old PaymentIntents path creates a default_incomplete subscription with an invoice PaymentIntent, describes a server-side PaymentIntent confirm call, receives requires_action for Amazon authentication, and says the subscription activates and saves the method only after successful payment (old raw lines 242-284). Its confirm-call parameter prose and adjacent example disagree (old raw lines 271 and 273-281), so keep the method-name choice dated and unresolved.",
+    "The old hosted path uses a server-created Checkout Session in subscription mode, redirects to the returned URL, and requires the customer to authorize future payments using their Amazon account through Checkout (old raw lines 286-342). The documented test success moves the PaymentIntent from requires_action to succeeded; it is a test description, not a live transaction receipt.",
+    "The old guide's 15 USD monthly stock-photo subscription is an illustrative product and price, not a general Amazon Pay price, currency or billing interval requirement (old raw lines 20-32, 228-240 and 296-308)."
+  ],
+  "unresolved_questions": [
+    "The three 2026-11-07 variant targets at new raw lines 13-15 were not fetched under this review-only order, so their current detailed behavior, version-specific parameters and availability are unverified.",
+    "No account eligibility, merchant setup, customer authorization completion, successful real payment, settlement or future billing outcome was tested or established by the captured index.",
+    "Which parameter wording is intended for the PaymentIntent confirm call is unresolved by this capture: old raw line 271 names payment_method_types, while the adjacent request at old raw lines 273-281 supplies payment_method_data[type]. The new variant index at lines 9-15 does not adjudicate the discrepancy."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw2",
+  "reviewer_agent": "/root/s01ur5",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-amazon-pay-2026-11-07.md",
+      "sha256": "7849a9ab15a72a6e0bb28bfcbd4b82f5ac7bbecfaa60418a7b7d194517d03f83",
+      "lines": 15
+    },
+    {
+      "path": "raw/stripe-subscriptions-amazon-pay-2026.md",
+      "sha256": "ea967cf2f72cc8482b190d08df393d7d83aae5223d3e5b9f97aeab89fc731acb",
+      "lines": 342
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-amazon-pay.md",
+      "sha256": "50b064042a66c2ee5fd46165718d3c5aa5c26fb513579a2000b69731caba6c1d",
+      "lines": 68
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e8e3f5f56e7a1347a5afab42/content.diff",
+      "sha256": "fe3c2f9712bf7d91ec5e52a3e26fb2fbae096e2dde4b80eb310e227623af19d2",
+      "lines": 345
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-amazon-pay-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-amazon-pay-review.json"
+}

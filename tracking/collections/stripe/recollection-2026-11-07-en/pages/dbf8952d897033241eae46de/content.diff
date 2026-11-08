@@ -1,0 +1,400 @@
+--- raw/stripe-subscriptions-pause-2026.md
++++ raw/stripe-billing-subscriptions-pause-2026-11-07.md
+@@ -1,100 +1,215 @@
+ # Pause subscriptions
+ 
+-Learn how to pause subscriptions, halting both service delivery and invoice generation.
+-
+-Pausing a subscription lets you temporarily suspend both service delivery and invoice generation. The ability to pause a subscription helps you support customer scenarios such as vacations, temporary non‑usage, or goodwill pauses to prevent churn.
+-
+-To use the Pause subscription endpoint, the subscription must use [flexible billing mode](https://docs.stripe.com/billing/subscriptions/billing-mode.md).
+-
+-Other similar pause behaviors currently supported on a subscription are:
+-
+-- [Pause payment collection](https://docs.stripe.com/billing/subscriptions/pause-payment.md): Service delivery and invoice generation continue, but collection on invoices is paused.
+-- [Pause on free trial-end without a payment method](https://docs.stripe.com/billing/subscriptions/trials/free-trials.md#create-free-trials-without-payment): The trial-end pause behaves more like a true pause, but it only applies to a specific, system-triggered scenario.
+-
+-The ability to pause subscriptions is useful for:
+-
+-- Merchant teams that want API control over subscription lifecycle without canceling subscriptions.
+-- Backend engineers building retention flows or support tooling that needs a true pause state.
+-- Developers validating billing, entitlement revocation, and webhook handling for paused windows.
+-
+-## Pause subscriptions
+-
+-You can pause subscriptions with the Pause subscription endpoint. The pause takes effect immediately. After a subscription is paused:
+-
+-- The subscription status updates to `paused`.
+-- You get notified about the status change via the [customer.subscription.paused](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.paused), [customer.subscription.updated](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.updated), and [entitlements.active_entitlement_summary.updated](https://docs.stripe.com/api/events/types.md#event_types-entitlements.active_entitlement_summary.updated) webhooks, enabling you to de-provision service delivery accordingly.
+-- Invoice generation is paused for the entire pause duration, though existing subscription invoices advance without affecting the paused status.
+-- The [current_period_end](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-items-data-current_period_end) updates to the time when you paused the subscription.
+-- You can use the `bill_for` parameter to control billing behavior at pause time, including creating credit prorations for unused licensed time and creating debits for metered usage in the current period. You can invoice immediately or create pending invoice items.
+-
+-You can’t pause a subscription if it:
+-
+-- Uses [send_invoice](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-collection_method) collection
+-- Uses billing mode [classic](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-billing_mode-type)
+-- Is in a trial period, or has an active trial offer
+-- Has `paused`, `incomplete`, `incomplete_expired`, or `canceled` status
+-- Has an attached [schedule](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md)
+-- Has an attached [cadence](https://docs.stripe.com/api/v2/billing-cadences.md?api-version=preview)
+-
+-Similarly, you can’t attach a schedule or cadence to a paused subscription.
+-
+-If you pause a subscription that uses a coupon, the coupon retains its original validity and the pause doesn’t extend its duration.
+-
+-This example demonstrates how to use the API to immediately pause an active subscription:
++Pause a subscription to suspend service delivery and invoice generation.
++
++Make clear that pausing a subscription stops both service delivery and invoice generation for the customer. If the user wants the customer to retain access to the service, direct them to [pause payment collection](https://docs.stripe.com/billing/subscriptions/pause-payment.md) instead.
++
++Pause a subscription to temporarily suspend service delivery and invoice generation without canceling it. This is useful for customers who are on vacation, won’t use the service for an extended period, or need a temporary hold. It also gives you a paused state for retention flows, support tooling, and testing billing, entitlement, and webhook behavior.
++
++If you want to keep your customer’s access to the service active while temporarily stopping payment collection, use [pause payment collection](https://docs.stripe.com/billing/subscriptions/pause-payment.md) instead.
++
++## Before you begin
++
++- [Review the conditions for when you can’t pause a subscription](https://docs.stripe.com/billing/subscriptions/pause.md#limitations).
++- If a subscription uses a coupon, the coupon retains its original validity period. Its duration continues to run while the subscription is paused.
++- A subscription can also move to the `paused` status when a trial ends without a payment method on file. Stripe does this automatically and doesn’t use the Pause subscription endpoint. For more details, see [Trial end without a payment method](https://docs.stripe.com/billing/subscriptions/trials/free-trials.md#create-free-trials-without-payment).
++- If you use a restricted API key, grant it the `subscription_write` permission to pause or resume subscriptions. To preview invoices, also grant it `invoice_read`. See [API permissions](https://docs.stripe.com/keys/permissions-reference.md) and [API key best practices](https://docs.stripe.com/keys-best-practices.md).
++
++## Pause a subscription
++
++You can pause subscriptions with either the [Pause a Subscription method](https://docs.stripe.com/api/subscriptions/pause.md) or in the [Dashboard](https://dashboard.stripe.com/subscriptions). Subscriptions must use [flexible billing mode](https://docs.stripe.com/billing/subscriptions/billing-mode.md). The pause takes effect immediately.
++
++You can also let customers pause their own subscriptions in the [customer portal](https://docs.stripe.com/customer-management/pause-subscriptions.md).
++
++To pause on a future date or schedule a resume attempt, [pause and resume the subscription on a schedule](https://docs.stripe.com/billing/subscriptions/pause/schedules.md).
++
++#### Dashboard
++
++To pause a subscription in the Dashboard:
++
++1. On the [Subscriptions page](https://dashboard.stripe.com/subscriptions) in the Dashboard, find the subscription, click the overflow menu (⋯), and select **Pause subscription**.
++2. Configure billing behavior for unused time and outstanding usage. To learn about each option, see [How pausing affects billing](https://docs.stripe.com/billing/subscriptions/pause.md#how-pausing-affects-billing).
++3. Click **Pause subscription**.
++
++#### API
++
++The [bill_for.unused_time_from](https://docs.stripe.com/api/subscriptions/pause.md?api-version=2026-07-29.preview#pause_subscription-bill_for-unused_time_from) and [bill_for.outstanding_usage_through](https://docs.stripe.com/api/subscriptions/pause.md?api-version=2026-07-29.preview#pause_subscription-bill_for-outstanding_usage_through) parameters control billing behavior at pause time. To learn about each parameter, see [How pausing affects billing](https://docs.stripe.com/billing/subscriptions/pause.md#how-pausing-affects-billing).
++
++To pause an active subscription using the API:
+ 
+ ```curl
+ curl https://api.stripe.com/v1/subscriptions/sub_1234567890/pause \
+   -u "<<YOUR_SECRET_KEY>>:" \
+-  -H "Stripe-Version: preview" \
+-  -d type=subscription \
+   -d "bill_for[unused_time_from][type]=now" \
+   -d "bill_for[outstanding_usage_through][type]=now" \
+   -d invoicing_behavior=pending_invoice_item
+ ```
+ 
+-The customer portal reflects that a subscription is paused, but your subscribers can’t use it to pause subscriptions themselves.
+-
+-## Resume subscriptions
+-
+-You need to manually resume the subscription using the [Resume subscription API](https://docs.stripe.com/api/subscriptions/resume.md). Resume is only available on subscriptions that use [charge_automatically](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-collection_method) collection.
+-
+-If resuming doesn’t generate an invoice, the subscription status updates to `active` immediately.
+-
+-If Stripe generates a resumption invoice:
+-
+-- Stripe finalizes the resumption invoice immediately.
+-- Stripe doesn’t attempt payment in the resume response. Collect payment using the [Pay invoice](https://docs.stripe.com/api/invoices/pay.md) endpoint.
+-- When the invoice is paid or marked uncollectible, the subscription becomes `active`.
+-- If a payment attempt fails, the subscription becomes `past_due`.
+-- If you void the resumption invoice before a payment attempt, the subscription stays `paused`.
+-- If there’s not a successful payment within 23 hours, Stripe voids the invoice and the subscription stays `paused`.
+-
+-After a subscription’s status updates to `active`:
+-
+-- Invoicing resumes.
+-- The billing cycle anchor is optionally reset.
+-- You get notified about the status change via the [customer.subscription.resumed](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.resumed), [customer.subscription.updated](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.updated), and [entitlements.active_entitlement_summary.updated](https://docs.stripe.com/api/events/types.md#event_types-entitlements.active_entitlement_summary.updated) webhooks, enabling you to re-provision service delivery accordingly.
+-
+-This example demonstrates how to immediately resume a paused subscription using the API:
++### After you pause a subscription
++
++- The subscription status changes to `paused`.
++- The [current_period_end](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-items-data-current_period_end) updates to the time you paused the subscription.
++- Stripe pauses invoice generation until you resume the subscription. Existing invoices continue to advance without affecting the subscription’s paused status.
++- Stripe sends the [customer.subscription.paused](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.paused), [customer.subscription.updated](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.updated), and [entitlements.active_entitlement_summary.updated](https://docs.stripe.com/api/events/types.md#event_types-entitlements.active_entitlement_summary.updated) webhooks so you can de-provision service access.
++
++### How pausing affects billing
++
++Use the [bill_for](https://docs.stripe.com/api/subscriptions/pause.md#pause_subscription-bill_for) parameter to control how Stripe handles unused licensed time and outstanding metered usage in the current period.
++
++**Credit for unused licensed time**
++
++Set `unused_time_from` to control how much unused licensed time Stripe credits:
++
++| Value | Behavior |
++| --- | --- |
++| `now` (Default) | Credit unused time from when you pause the subscription through the end of the period. |
++| `item_current_period_start` | Credit unused time from each item’s current period start through the end of the period. |
++| `none` | Don’t credit unused time. |
++
++**Charges for outstanding metered usage**
++
++Set `outstanding_usage_through` to control how much metered usage Stripe bills:
++
++| Value | Behavior |
++| --- | --- |
++| `now` (Default) | Bill for metered usage from the current period start through the time you pause the subscription. |
++| `none` | Don’t bill for metered usage in the current period. |
++
++The `invoicing_behavior` parameter controls whether Stripe invoices these credits and debits immediately (`invoice`) or adds them as pending invoice items (`pending_invoice_item`, the default). See [Preview the invoice before pausing](https://docs.stripe.com/billing/subscriptions/pause.md#preview-the-invoice-before-pausing).
++
++## Subscription response
++
++After you pause a subscription, the response includes a `status_details` object that provides information about when and why the subscription status was set to `paused`:
++
++```json
++{
++  "id": "sub_1SrpWtRnJ89Z4rKknfSwXkBc",
++  "object": "subscription",
++  "status": "paused",
++  "status_details": {
++    "paused": {
++      "subscription": {
++        "type": "pause_requested"
++      },
++      "transitioned_at": 1749081600,
++      "type": "subscription"
++    }
++  }
++}
++```
++
++In the response:
++
++- `status_details.paused.transitioned_at` is the Unix timestamp when the subscription transitioned to `paused`.
++
++- `status_details.paused.subscription.type` explains why the subscription paused. Possible values include:
++
++  - `pause_requested`: You paused the subscription using the API.
++  - `trial_end_without_payment_method`: The trial ended without a payment method on file.
++  - `system`: Stripe paused the subscription automatically.
++
++## Preview the invoice before pausing
++
++Use [Create a preview invoice](https://docs.stripe.com/api/invoices/create_preview.md) to see the debits or credits that would be created by pausing.
++
++Stripe returns a preview invoice only when:
++
++- The `invoicing_behavior` is set to `invoice`. The default value (`pending_invoice_item`) doesn’t generate an invoice, so the endpoint returns a `404`.
++- The `bill_for` parameters must produce billable amounts such as unused licensed time or outstanding metered usage. If pausing wouldn’t create debits or credits, no invoice exists to preview and the endpoint returns a `404`.
++
++Stripe returns a preview invoice without modifying the subscription. Call [Pause a subscription](https://docs.stripe.com/api/subscriptions/pause.md) when you’re ready.
++
++Include `expand: ["parent.subscription_details.subscription"]` to see the projected subscription state after pausing: `status` is `paused`, `status_details` is populated, each item’s `current_period_end` is truncated to the pause time, and any pending updates are cleared. These changes don’t persist.
++
++Preview the invoice for a pause that bills unused time and metered usage:
++
++```curl
++curl https://api.stripe.com/v1/invoices/create_preview \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d subscription=sub_1234567890 \
++  -d "subscription_details[pause][invoicing_behavior]=invoice" \
++  -d "subscription_details[pause][bill_for][unused_time_from][type]=now" \
++  -d "subscription_details[pause][bill_for][outstanding_usage_through][type]=now" \
++  -d "expand[]=parent.subscription_details.subscription"
++```
++
++## Resume a subscription
++
++To resume a subscription, it must use the [charge_automatically](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-collection_method) collection method.
++
++If resuming doesn’t generate an invoice, the subscription becomes `active` immediately. If Stripe generates an invoice, it finalizes the invoice immediately. The subscription becomes active after the invoice is paid or manually marked uncollectible. If you void the invoice, the subscription remains paused.
++
++#### Dashboard
++
++To resume a paused subscription in the Dashboard:
++
++1. On the [Subscriptions](https://dashboard.stripe.com/subscriptions) page, find the paused subscription, click the overflow menu (⋯), and select **Resume subscription**.
++2. Configure proration and billing cycle anchor settings.
++3. Click **Resume subscription**.
++
++#### API
++
++To resume a paused subscription:
+ 
+ ```curl
+ curl https://api.stripe.com/v1/subscriptions/sub_1234567890/resume \
+   -u "<<YOUR_SECRET_KEY>>:" \
+-  -H "Stripe-Version: preview" \
+-  -d billing_cycle_anchor=unchanged \
++  -d payment_behavior=resume_on_payment_success \
++  -d "billing_cycle_anchor[type]=now" \
+   -d proration_behavior=create_prorations
+ ```
+ 
++> #### An unpaid resume attempt can expire
++> 
++> A resume request can return `200` even if the subscription remains `paused` while its resumption invoice awaits payment. If the pending update expires, Stripe voids the invoice and keeps the subscription paused. Before treating the subscription as active, check the returned `status` and `pending_update`.
++
++### Payment behavior after resuming a subscription
++
++After the subscription status updates to `active`:
++
++- Invoicing resumes
++- You can optionally reset the billing cycle anchor
++- Stripe notifies you of the status change using the following webhooks so you can re-provision service access:
++  - [customer.subscription.resumed](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.resumed)
++  - [customer.subscription.updated](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.updated)
++  - [entitlements.active_entitlement_summary.updated](https://docs.stripe.com/api/events/types.md#event_types-entitlements.active_entitlement_summary.updated)
++
++Use the optional [payment_behavior](https://docs.stripe.com/api/subscriptions/resume.md#resume_subscription-payment_behavior) parameter to control how Stripe handles payment after you resume the subscription.
++
++| Criterion | `resume_on_payment_attempt` (Default) | `resume_on_payment_success` (Recommended) |
++| --- | --- | --- |
++| Resume request attempts payment | No. Collect payment with the [Pay invoice](https://docs.stripe.com/api/invoices/pay.md) endpoint. | Yes, when the customer has a default payment method or their cash balance covers the amount due. Otherwise, Stripe returns an error. |
++| Subscription status if a payment attempt fails | `past_due`. The subscription doesn’t automatically revert to `paused`. | `paused` |
++| Invoice payment retries after payment failure | No | Yes, unless your retry settings disable it |
++| Pending update expiration time | 23 hours after the resume request | 1 year after the resume request |
++
++## Preview the invoice before resuming a subscription
++
++Use [Create a preview invoice](https://docs.stripe.com/api/invoices/create_preview.md) to preview the resumption invoice before resuming. Set `subscription_details.resume_at` to `now`. Stripe returns a preview invoice without modifying the subscription.
++
++Preview a resumption invoice using the same parameters you’ll pass to the resume call:
++
++```curl
++curl https://api.stripe.com/v1/invoices/create_preview \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d subscription=sub_1234567890 \
++  -d "subscription_details[resume_at]=now" \
++  -d "subscription_details[billing_cycle_anchor][type]=now" \
++  -d "subscription_details[proration_behavior]=create_prorations"
++```
++
+ ## Identify pause and resume events
+ 
+ Stripe sends the following events for paused and resumed subscriptions.
+ 
+-| Event                                                                                                                                                                          | Description                                                |
+-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+-| [customer.subscription.paused](https://docs.stripe.com/api/events/types.md?api-version=preview#event_types-customer.subscription.paused)                                       | Emitted when a subscription pauses.                        |
+-| [customer.subscription.resumed](https://docs.stripe.com/api/events/types.md?api-version=preview#event_types-customer.subscription.resumed)                                     | Emitted when a subscription resumes.                       |
+-| [customer.subscription.updated](https://docs.stripe.com/api/events/types.md?api-version=preview#event_types-customer.subscription.updated)                                     | Emitted when a subscription pauses or resumes.             |
+-| [entitlements.active_entitlement_summary.updated](https://docs.stripe.com/api/events/types.md?api-version=preview#event_types-entitlements.active_entitlement_summary.updated) | Emitted when entitlements change due to a pause or resume. |
++Before you process these events, [verify their signatures](https://docs.stripe.com/webhooks.md#verify-events) to confirm they came from Stripe.
++
++| Event | Description |
++| --- | --- |
++| [customer.subscription.paused](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.paused) | Emitted when a subscription pauses. |
++| [customer.subscription.resumed](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.resumed) | Emitted when a subscription resumes. |
++| [customer.subscription.updated](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.updated) | Emitted when a subscription pauses or resumes. |
++| [entitlements.active_entitlement_summary.updated](https://docs.stripe.com/api/events/types.md#event_types-entitlements.active_entitlement_summary.updated) | Emitted when entitlements change due to a pause or resume. |
+ 
+ Example webhook payload for `customer.subscription.paused` (key fields shown):
+ 
+@@ -102,19 +217,101 @@
+ {
+   "id": "evt_1SrpXjRnJ89Z4rKkFxe9waAz",
+   "object": "event",
+-  ...
+   "data": {
+     "object": {
+       "id": "sub_1SrpWtRnJ89Z4rKknfSwXkBc",
+       "object": "subscription",
+-      ...
+       "latest_invoice": "in_1SrpWtRnJ89Z4rKkzYBCF1MY",
+-      ...
+       "status": "paused",
+-      ...
++      "status_details": {
++        "paused": {
++          "subscription": {
++            "type": "pause_requested"
++          },
++          "transitioned_at": 1749081600,
++          "type": "subscription"
++        }
++      }
+     }
+   },
+-  ...
+   "type": "customer.subscription.paused"
+ }
+-```+```
++
++## Example: pause and resume mid-cycle
++
++**Setup**: A customer has a monthly subscription at 30 USD. The billing cycle renews on day 30.
++
++**Pause on day 15**: Call the pause endpoint with `bill_for.unused_time_from: { type: "now" }` and `invoicing_behavior: "pending_invoice_item"` (defaults).
++
++- Stripe creates a -15 USD pending invoice item (credit for 15 unused days).
++- The subscription transitions to `paused`.
++
++```curl
++curl https://api.stripe.com/v1/subscriptions/sub_1234567890/pause \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "bill_for[unused_time_from][type]=now" \
++  -d invoicing_behavior=pending_invoice_item
++```
++
++**Resume on day 45** with `payment_behavior: "resume_on_payment_success"`, `billing_cycle_anchor: { type: "now" }`, and `proration_behavior: "create_prorations"`:
++
++- Stripe creates a resumption invoice.
++- The -15 USD credit from the pause and a 30 USD charge for the new billing period appear as line items.
++- Net charge: 15 USD.
++- When paid, the subscription transitions to `active` and a new 30-day billing cycle begins.
++
++```curl
++curl https://api.stripe.com/v1/subscriptions/sub_1234567890/resume \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d payment_behavior=resume_on_payment_success \
++  -d "billing_cycle_anchor[type]=now" \
++  -d proration_behavior=create_prorations
++```
++
++**Next renewal on day 75**: Stripe invoices the full 30 USD.
++
++## Test with test clocks
++
++Pause and resume behavior is time-dependent. Use [test clocks](https://docs.stripe.com/billing/testing.md#test-clocks) to simulate time in your [sandbox](https://docs.stripe.com/sandboxes.md).
++
++Test clocks let you:
++
++- Trigger billing cycle events and confirm that invoices are generated correctly after resuming.
++- Verify that `customer.subscription.paused` and `customer.subscription.resumed` webhooks fire at the correct points.
++- Test coupon expiration behavior across a pause period.
++- Confirm that your entitlement revocation and re-provisioning logic fires correctly.
++
++## Query paused subscriptions in Sigma
++
++The `subscriptions` table in [Sigma](https://dashboard.stripe.com/sigma/queries) has a `status` column and a `status_details` JSON column for identifying and analyzing paused subscriptions.
++
++Use this query to find all paused subscriptions with their pause reason and timestamp:
++
++```sql
++select
++  id,
++  customer_id,
++  status,
++  json_extract_scalar(status_details, '$.paused.subscription.type') as pause_reason,
++  from_unixtime(cast(json_extract_scalar(status_details, '$.paused.transitioned_at') as double)) as paused_at
++from subscriptions
++where status = 'paused'
++order by paused_at desc
++```
++
++## Subscriptions you can’t pause 
++
++You can’t pause a subscription if it meets any of these conditions:
++
++| Condition | How to reach a pausable state |
++| --- | --- |
++| Uses [send_invoice](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-collection_method) collection | [Update the subscription](https://docs.stripe.com/api/subscriptions/update.md#update_subscription-collection_method) to use `charge_automatically` collection. |
++| Uses [classic billing mode](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-billing_mode-type) | Migrate to [flexible billing mode](https://docs.stripe.com/billing/subscriptions/billing-mode.md). |
++| Has an active subscription-level free trial configured with `trial_end` or `trial_period_days` | Set the subscription’s [trial_end](https://docs.stripe.com/api/subscriptions/update.md#update_subscription-trial_end) to `now` to end the free trial. This restriction doesn’t apply to [item-level trial offers](https://docs.stripe.com/billing/subscriptions/trials.md). |
++| Status `unpaid` | Collect or [void](https://docs.stripe.com/api/invoices/void.md) the outstanding invoice to return the subscription to `active`. |
++| Status `paused` | Already paused. |
++| Status `incomplete` | Complete the initial payment to move the subscription to `active`. |
++| Status `incomplete_expired` or `canceled` | Create a new subscription. |
++| Has an attached [schedule](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md) | Pause through the schedule by adding a [pause schedule](https://docs.stripe.com/billing/subscriptions/pause/schedules.md), or [release the schedule](https://docs.stripe.com/api/subscription_schedules/release.md) and then pause the subscription. |
++| Has an active [billing schedule](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-billing_schedules) | [Update the subscription](https://docs.stripe.com/api/subscriptions/update.md) to clear the billing schedules by passing an empty string for `billing_schedules`. |

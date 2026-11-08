@@ -1,0 +1,109 @@
+{
+  "job_id": "billing-collection-method",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-collection-method-2026-11-07.md",
+  "raw_sha256": "a7ca6de5d52a91eaca7611ab870df5c8b6375359217cc42492e1e08b88ec80e9",
+  "source_before_sha256": "5af63b0e3e37c3fdea056f7152db4636d8ac86400b5aacc4f90f35e735dbface",
+  "source_page": "---\ntitle: \"Stripe Billing \u2014 Collection Methods\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/collection-method\"\nraw_files:\n  - \"stripe-billing-collection-method-2026-11-07.md\"\n  - \"stripe-billing-collection-method-2026.md\"\ntags: [stripe, billing, invoices, subscriptions, collection-method, payment-behavior, dunning]\n---\n\n## Overview\n\nStripe's Billing collection-method guide describes `charge_automatically` and `send_invoice` for invoices and subscriptions. The Dashboard can set the preference when creating either product; the Invoicing and Subscriptions APIs expose `collection_method`. The 2026-11-07 capture documents the same behavior as the 2026-05-13 capture; no substantive product change is evidenced by this comparison.\n\n## Two collection methods\n\n| Value | Guide's behavior |\n| --- | --- |\n| `charge_automatically` | Attempts to charge the customer's default payment method for an invoice or each subscription billing-period invoice. |\n| `send_invoice` | Sends or generates an invoice for manual payment, with an adjustable payment window; the hosted invoice page and email reminders can facilitate payment. |\n\nSome methods, including bank transfers, only support `send_invoice` and cannot be charged automatically. Changing a subscription's `collection_method` affects only subsequently created subscription invoices.\n\n## Free trial with `charge_automatically`\n\nThe guide permits creating a free trial without collecting a payment method while setting `collection_method=charge_automatically`. The customer can add payment details through the Customer portal during the trial. After the trial, Stripe charges the customer's default payment method; if no payment method was added, configured subscription behavior can instead pause or cancel the subscription.\n\n## `send_invoice` due dates\n\nA manual-payment invoice can have a configured due date and up to three reminders, from 10 days before to 60 days after that date. For a past-due subscription invoice, settings allow an action at 30, 60, or 90 days: cancel, mark unpaid, or leave past due. The selected action determines later status and invoice handling; see the dated raw table.\n\n## Subscription creation and first payment\n\n| `payment_behavior` | Guide's stated condition and result |\n| --- | --- |\n| `allow_incomplete` | With `collection_method=charge_automatically`, immediately attempts payment; an unsuccessful initial attempt marks the subscription `incomplete`. |\n| `default_incomplete` | If the first invoice requires payment, initializes as `incomplete`; confirm the resulting PaymentIntent in a separate request to attempt payment. |\n\nFor either behavior, payment of the first invoice makes the subscription `active`. A subscription requiring no payment at creation, such as a trial, is immediately `active`. If the first invoice remains unpaid after 23 hours, `incomplete_expired` is final and irreversible: the open invoice is voided and future invoices are prevented.\n\n## Failed payment status flows\n\n### Recurring automatic charges\n\nA failed recurring payment or one requiring customer authentication sets the subscription to `past_due`, with the PaymentIntent at `requires_payment_method` or `requires_action`. The guide recommends listening for `customer.subscription.updated` and collecting a different payment method or customer action as appropriate. After successful payment, the subscription is `active` and invoice `paid`.\n\nIf an automatically charged renewal payment fails, the subscription becomes `past_due`. After retries are exhausted, Stripe **might** mark it `canceled` or `unpaid`, depending on subscription settings. This is a possible later outcome, not an inevitable transition.\n\n### Incomplete subscription restrictions\n\nWhile a subscription is `incomplete`, only attributes whose updates do not create an invoice or invoice item can be changed. The guide gives `metadata`, `save_default_payment_method`, and `description` as examples, not an exhaustive allowlist.\n\n### Manual-payment subscriptions and unpaid status\n\nWith `send_invoice`, the subscription becomes `past_due` if its invoice remains unpaid by the due date. After an extended deadline, Stripe might mark it `canceled` or `unpaid`, depending on settings. An `unpaid` subscription still produces future invoices as drafts; the guide describes resending past-due and draft invoices to collect payment or leaving them closed and unpaid.\n\n### Standalone invoice failures\n\n| Condition | Guide's stated outcome |\n| --- | --- |\n| Standalone invoice with `charge_automatically`, auto-advancement disabled, and failed initial attempt | Remains `open`; while auto-advancement is disabled, Stripe does not automatically close, retry, or transition it. |\n| Invoice with auto-advancement enabled | Stripe might mark it `uncollectible` after retry exhaustion, depending on invoice-status settings. |\n| `send_invoice` invoice unpaid past due date | Becomes `past_due`; after an extended deadline, it may be left past due or changed to `uncollectible` or `void`. |\n\n## Enterprise clients and wire transfers\n\nThe guide describes tracking and reconciliation advantages of manual methods such as wire transfers for high-volume enterprise clients. It calls wire transfer a commonly preferred method for this type of client and says `send_invoice` can generate well-documented invoices payable by wire transfer. It does not make a universal enterprise recommendation or guarantee an audit trail.\n\n## Detail locators\n\nThe 2026-11-07 capture covers invoice and subscription method settings (lines 9\u201336), manual due dates and actions (38\u201348), first-payment behavior (54\u201360), recurring and incomplete-subscription outcomes (62\u201390), standalone invoice outcomes (92\u201398), and enterprise wire transfers (100\u2013102). The 2026-05-13 capture preserves the corresponding historical text at lines 8\u201335, 37\u201347, 53\u201359, 61\u201389, 91\u201397, and 99\u2013101. These captures do not establish current account-specific payment-method eligibility, Dashboard settings, or a successful payment, invoice delivery, finalization, or settlement.\n\n## Related\n\n- [[stripe-subscriptions-invoices]] \u2014 subscription invoice lifecycle and payment priority\n- [[stripe-subscriptions]] \u2014 subscription concept and related sources\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-collection-method-2026-11-07|Stripe Billing collection-method guide, captured 2026-11-07]]\n- [[raw/stripe-billing-collection-method-2026|Stripe Billing collection-method guide, captured 2026-05-13]]\n",
+  "quotes": [
+    {
+      "text": "If you change the collection method for a subscription, only subsequently created subscription invoices use the new collection method.",
+      "location": "raw/stripe-billing-collection-method-2026-11-07.md:29"
+    },
+    {
+      "text": "Creating a subscription with a [payment_behavior](https://docs.stripe.com/api/subscriptions/create.md#create_subscription-payment_behavior) of `allow_incomplete`, and the `collection_method` set to `charge_automatically`, immediately attempts payment and marks the subscription `status` as `incomplete` if the initial payment attempt doesn\u2019t succeed.",
+      "location": "raw/stripe-billing-collection-method-2026-11-07.md:56"
+    },
+    {
+      "text": "If the first invoice remains unpaid after 23 hours, the subscription is set to `incomplete_expired`. This status is final and irreversible, voiding the open invoice and preventing future invoices.",
+      "location": "raw/stripe-billing-collection-method-2026-11-07.md:60"
+    },
+    {
+      "text": "When a subscription has a status of `incomplete`, you can only update attributes that won\u2019t result in the creation of an invoice or invoice item, such as its [metadata](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-metadata), [save_default_payment_method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-payment_settings-save_default_payment_method), and [description](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-description).",
+      "location": "raw/stripe-billing-collection-method-2026-11-07.md:84"
+    },
+    {
+      "text": "Invoices not associated with subscriptions that have their `collection_method` set to `charge_automatically` and [auto-advancement](https://docs.stripe.com/invoicing/integration/automatic-advancement-collection.md) disabled, remain `open` if an initial payment attempt fails.",
+      "location": "raw/stripe-billing-collection-method-2026-11-07.md:94"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you change the collection method for a subscription, only subsequently created subscription invoices use the new collection method.",
+      "location": "raw/stripe-billing-collection-method-2026.md:28"
+    },
+    {
+      "text": "If a payment to renew the subscription fails when you\u2019ve set it to charge automatically, the subscription transitions to `past_due` and Stripe may mark it as `canceled` or `unpaid` (depending on your [subscriptions settings](https://dashboard.stripe.com/settings/billing/automatic)) after Stripe exhausts all payment retry attempts.",
+      "location": "raw/stripe-billing-collection-method-2026.md:85"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-collection-method-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 109
+      }
+    ],
+    "raw/stripe-billing-collection-method-2026.md": [
+      {
+        "start": 1,
+        "end": 108
+      }
+    ],
+    "wiki/sources/source-stripe-billing-collection-method.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/920387048b9b6f658291d028/content.diff": [
+      {
+        "start": 1,
+        "end": 108
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "billing-collection-method-payment-behavior",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "**Payment behavior**: `default_incomplete` (recommended; collect payment after creation), `allow_incomplete` (immediate attempt), `error_if_incomplete` (fails entirely on payment failure).",
+      "new_text": "**Payment behavior**: `default_incomplete` (recommended; if the first invoice requires payment, initializes as `incomplete` and its PaymentIntent needs separate confirmation), `allow_incomplete` (with `collection_method=charge_automatically`, immediately attempts payment and marks an unsuccessful initial attempt `incomplete`), `error_if_incomplete` (fails entirely on payment failure).",
+      "reason": "Restore the collection-method condition and first-invoice requirement to the existing shorthand; retain other-source recommendation and error_if_incomplete claim.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-collection-method-first-invoice-23h",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "**23-hour first payment window**: customer must pay within 23h (on-session assumption); after 23h \u2192 `incomplete_expired`; create new subscription for returning customer.",
+      "new_text": "**23-hour first invoice window**: in the `allow_incomplete` / `default_incomplete` path, if the first invoice requires payment and remains unpaid after 23 hours, the subscription becomes final `incomplete_expired`, voiding the open invoice and preventing future invoices. The subscription overview advises creating a new subscription for a returning customer.",
+      "reason": "Bound the 23-hour claim to an unpaid first invoice rather than any subscription or payment; preserve the returning-customer guidance as attributed to the separate overview.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "billing-collection-method-reciprocal",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-overview]] \u2014 Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix",
+      "new_text": "- [[source-stripe-subscriptions-overview]] \u2014 Subscription lifecycle: 8 statuses, payment behavior options, 23h window, async PM behavior, payment status matrix\n- [[source-stripe-billing-collection-method]] \u2014 Billing collection-method guide (2026-11-07 capture): invoice and subscription collection choices, first-payment and failed-payment conditions",
+      "reason": "Add the missing reciprocal source route in the concept's Sources section without displacing existing entries.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/collection-method, the guide offers `charge_automatically` and `send_invoice` for invoices and subscriptions (new 9, 20\u201332; old 8, 19\u201331). A subscription method change affects only subsequently created invoices (new 29; old 28). With `allow_incomplete` plus `charge_automatically`, it immediately attempts an initial payment; `default_incomplete` begins incomplete if the first invoice requires payment and needs separate PaymentIntent confirmation (new 56\u201358; old 55\u201357). An unpaid first invoice reaches final `incomplete_expired` after 23 hours (new 60; old 59). The corrected [[source-stripe-billing-collection-method]] preserves settings-dependent renewal outcomes, illustrative incomplete-edit fields, and the standalone invoice auto-advancement boundary (new 84\u201398; old 83\u201397).",
+    "Q2": "The May and November captures of https://docs.stripe.com/billing/collection-method show no substantive behavior change: the diff at lines 1\u2013108 is largely formatting and capitalization, while `may` becomes `might` for three conditional outcomes (old 85, 87, 95; new 86, 88, 96). The updated [[source-stripe-billing-collection-method]] retains both dated raw references and directly corrects its six overstatements. Discovery runs through wiki/index.md:7 \u2192 wiki/stripe-index.md:653 \u2192 the source; the proposed [[stripe-subscriptions]] patches add a reciprocal route and qualify its immediate-attempt and 23-hour statements. These snapshots do not prove current account eligibility, Dashboard settings, invoice delivery, charge success, or settlement."
+  },
+  "status": "candidate_ready"
+}

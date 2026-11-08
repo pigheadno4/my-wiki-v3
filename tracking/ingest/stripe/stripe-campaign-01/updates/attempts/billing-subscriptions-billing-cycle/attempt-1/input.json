@@ -1,0 +1,99 @@
+{
+  "job_id": "billing-subscriptions-billing-cycle",
+  "queue_id": 19,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/billing-cycle",
+  "raw_path": "raw/stripe-billing-subscriptions-billing-cycle-2026-11-07.md",
+  "raw_sha256": "976e1abc10a83f6d4f4b5507e31dbfea93d1bf5efb450096e17f547549b85910",
+  "prior_raw_path": "raw/stripe-subscriptions-billing-cycle-2026.md",
+  "prior_raw_sha256": "6edd1e96427d3f7bb003f48724d4665d5a97d7c19d352bc05f8f982c985adc86",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a42ea3e668f9eb55a341b324/content.diff",
+  "diff_sha256": "a5636835836919f0e253ec3626c155ad6e411ae2aabf77ec2b20d37d4054b65b",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-billing-cycle.md"
+  ],
+  "source_before_sha256": "81ad7305f8a14ceb7b3b8058e107177b8376b3032b3ef54ba8e17d5bc1fd0dcd",
+  "section": "billing",
+  "new_words": 2609,
+  "new_lines": 284,
+  "old_words": 2392,
+  "old_lines": 303,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-billing-cycle.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-cycle/attempt-2/receipt.json",
+  "receipt_sha256": "485969ee647c0c362241f1cb79607b1ac35b3d2f4a2e4792bb00a80642001238",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-cycle/attempt-2/review.json",
+  "review_sha256": "90cdc0b5a3c59ea0dafbf5c99b16efbcd3f1e73d679eb647d642f5e92b81a10d",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-billing-cycle-2026-11-07.md",
+  "new_raw_sha256": "976e1abc10a83f6d4f4b5507e31dbfea93d1bf5efb450096e17f547549b85910",
+  "prior_raw": "raw/stripe-subscriptions-billing-cycle-2026.md",
+  "findings": [
+    "The same-URL November guide retains billing-cycle fundamentals: price interval plus anchor determine renewal dates, billing_cycle_anchor_config calculates monthly/yearly dates and handles short months, while direct billing_cycle_anchor accepts a timestamp including daily/weekly schedules (new lines 11-41, 64-85, 87-113; old lines 10-40, 83-114, 116-158).",
+    "On creation, an initial prorated invoice is described by default; proration_behavior none gives an initial free period without an invoice until the first full period. Subscriptions API may combine trial_end and anchor, whereas Checkout subscription mode does not support that combination and disallows one-time prices with proration_behavior none (new lines 115-149; old lines 160-207).",
+    "For existing subscriptions, November adds a specific-timestamp reset as private preview, with API 2026-09-30.preview, flexible mode requirement, interval-bound limits, and proration behavior (new lines 192-237). It also changes reset-to-now API shape and explains the flexible-mode invoice exception (new lines 165-183).",
+    "The current source is discoverable through wiki/index.md, wiki/stripe-index.md:622 and wiki/concepts/stripe-subscriptions.md:227, but its reset-to-now code and two-options summary are dated to May and incomplete for the November capture.",
+    "The present source also overgeneralizes direct timestamps as available on create or update (line 28), omits the zero-amount-to-paid automatic reset from its purported reset list (line 38), and says first invoice instead of first full invoice (line 24). The linked concept equates the anchor timestamp with the first full invoice date at line 144, although a config-derived anchor can be later than that invoice (new lines 83-85; old lines 112-114)."
+  ],
+  "substantive_changes": [
+    "The November reset-to-now update uses billing_cycle_anchor.type=now and the example pins Stripe-Version 2026-09-30.endive (new lines 167-183), replacing the May scalar billing_cycle_anchor='now' Node.js example (old lines 224-239). Do not silently treat these as interchangeable across API versions.",
+    "The new flexible-mode warning says a reset to now does not automatically invoice; always_invoice is needed, except when a simultaneous item change leaves non-canceling prorations, which immediately invoices regardless of proration_behavior (new lines 169-171). The older generic immediate-invoice wording lacked that qualification (old line 224).",
+    "A new specific-timestamp reset is private preview for flexible-billing subscriptions only, requires API 2026-09-30.preview, allows an anchor within one price interval of now subject to smallest mixed interval and post-trial-end rules, and can create credits/debits according to proration settings (new lines 192-237). It is not a generally available replacement for ordinary direct timestamp on creation.",
+    "The Dashboard reset-to-now and trial UI instructions changed (old lines 241-246, 275-288; new lines 185-190, 262-268). Node.js examples became curl, links and formatting changed, and an optional test-clock link was added; these alone do not establish lifecycle behavior changes (diff lines 1-386)."
+  ],
+  "conflicts": [
+    "Current source lines 13 and 30-34 say there are only two existing-subscription methods and show update({billing_cycle_anchor:'now'}). November adds a private-preview third method and uses billing_cycle_anchor.type=now for the pinned endive example (new lines 153-175, 192-224). Narrow the summary to public methods plus a separately qualified preview and version the code.",
+    "Current source line 40 says flexible mode keeps the anchor unchanged when the billing period changes; November's explicit flexible-mode reset-to-now behavior and timestamp preview show this is not a blanket ban on requested resets (new lines 159, 169-171, 210-213). Preserve the auto-reset distinction.",
+    "wiki/concepts/stripe-subscriptions.md Billing Cycle Anchor section says trials and anchors are mutually exclusive without saying Checkout. This same source documents trial_end with anchor for Subscriptions API and says Checkout cannot combine them (new lines 121-144; old lines 166-202). Qualify the concept to Checkout.",
+    "Current source line 24 says the first invoice always falls within one period; both raws specifically say first full invoice, and the anchor may be farther away (new lines 83-85; old lines 112-114). Correct invoice type to avoid collapsing prorated and full invoice timing.",
+    "Current source line 28 says direct Unix timestamp on create or update, implying an ordinary arbitrary-timestamp update. Both captures document direct timestamp on creation (old lines 116-158; new lines 87-113); May documents update-to-now rather than arbitrary update (old lines 222-239); November's specific-timestamp update is private preview for flexible-mode subscriptions on API 2026-09-30.preview (new lines 192-229). Separate creation, ordinary now reset, and qualified preview update.",
+    "wiki/concepts/stripe-subscriptions.md line 144 says subscription_data.billing_cycle_anchor sets the first full invoice date. Both captures say billing_cycle_anchor_config may set an anchor more than one interval ahead, while the first full invoice occurs within one interval (old lines 112-114; new lines 83-85). Describe the anchor as the alignment reference for future cycles, not necessarily the first full invoice date.",
+    "Current source line 38 presents an unqualified list of automatic anchor resets but omits the documented zero-amount-to-paid-price reset (old lines 216-220; new lines 159-163). Add that case or mark the list illustrative, while keeping automatic reset conditions distinct from explicitly requested now or preview timestamp resets."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep May 2026's scalar billing_cycle_anchor='now' example and the then-shown Dashboard Bill today instead and trial-end missing-payment-method choices as dated old-capture details (old lines 224-246, 275-288). Their absence in November's shortened UI rendering does not prove deprecation or removal.",
+    "Preserve the existing monthly/yearly config rules, UTC and backdating limits, first-full-invoice timing, Checkout trial-plus-anchor restriction, trial_end anchor update, and auto-reset conditions with the same document's dated evidence (old lines 29-114, 160-220, 248-262; new lines 30-85, 115-163, 239-253)."
+  ],
+  "unresolved_questions": [
+    "The guide's private-preview description does not establish enrollment, account eligibility, or successful acceptance of a particular timestamp reset.",
+    "The May Dashboard trial configuration listed missing-payment-method outcomes, while the November capture omits them; this comparison cannot establish whether the UI options or underlying behavior were removed."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw5",
+  "reviewer_agent": "/root/s01ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-billing-cycle-2026-11-07.md",
+      "sha256": "976e1abc10a83f6d4f4b5507e31dbfea93d1bf5efb450096e17f547549b85910",
+      "lines": 284
+    },
+    {
+      "path": "raw/stripe-subscriptions-billing-cycle-2026.md",
+      "sha256": "6edd1e96427d3f7bb003f48724d4665d5a97d7c19d352bc05f8f982c985adc86",
+      "lines": 303
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-billing-cycle.md",
+      "sha256": "81ad7305f8a14ceb7b3b8058e107177b8376b3032b3ef54ba8e17d5bc1fd0dcd",
+      "lines": 54
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a42ea3e668f9eb55a341b324/content.diff",
+      "sha256": "a5636835836919f0e253ec3626c155ad6e411ae2aabf77ec2b20d37d4054b65b",
+      "lines": 386
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-billing-cycle-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-billing-cycle-review.json"
+}

@@ -144,5 +144,5 @@ Decision rule:
 - [[source-stripe-payment-element-custom-payment-methods]] — primary reference: setup flow, display types, submit handler, recording pattern, XSS warning
 - [[source-stripe-custom-payment-methods]] — overview: PM API type, integration matrix, marks compliance, Indonesia/Thailand restriction, Stripe disclaimer
 - [[source-stripe-paypal-custom-payment-method]] — PayPal as CPM: low-code adapter for Checkout, decision rule (EU→standard PM vs global→CPM adapter)
-- [[source-stripe-subscriptions-third-party]] — billing with 3rd party processors: custom PM types, payment records API, webhook handler, retry logic, refunds, out-of-band legacy
+- [[source-stripe-subscriptions-third-party]] — May 2026 Billing guide for custom payment methods and PaymentRecords with external processors; November 2026 base capture links two variants only
 - [[source-github-stripe-js]] — `@stripe/stripe-js@9.14.0` embedded Payment Element and beta Express Checkout Custom Payment Method declarations

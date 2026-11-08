@@ -1,8 +1,9 @@
 ---
 title: "Stripe Billing — Entitlements"
 type: source
-date_ingested: 2026-05-13
+date_ingested: 2026-11-08
 original_format: webpage
+canonical_url: "https://docs.stripe.com/billing/entitlements"
 raw_files:
   - "stripe-billing-entitlements-2026.md"
 tags: [stripe, billing, entitlements, subscriptions, feature-flags, provisioning]
@@ -10,7 +11,7 @@ tags: [stripe, billing, entitlements, subscriptions, feature-flags, provisioning
 
 ## Summary
 
-Stripe Entitlements is a feature-gating system built into Stripe Billing. It lets you map internal product features to Stripe Products, then have Stripe automatically track which customers are entitled to which features based on their active subscription status.
+As documented in Stripe's 2026-05-13 Dashboard and API guide, Stripe Entitlements maps internal product features to Stripe Products and tracks customer entitlements through subscriptions. The guide assumes Stripe Subscription and Customer resources; the application uses entitlement events or a list check to provision access.
 
 ## Key concepts
 
@@ -20,7 +21,7 @@ Stripe Entitlements is a feature-gating system built into Stripe Billing. It let
 
 ## Billing period lag
 
-Existing subscriptions pick up product-feature mapping changes at the **start of the next billing period**, not immediately.
+In the 2026-05-13 Dashboard and API guide, existing subscriptions pick up product-feature mapping changes at the **start of the next billing period**, not immediately.
 
 ## Provisioning workflow
 
@@ -28,13 +29,13 @@ Existing subscriptions pick up product-feature mapping changes at the **start of
 2. Attach features to products (`stripe.products.createFeature`).
 3. Listen for `entitlements.active_entitlement_summary.updated` webhook to drive provisioning:
    - **Grant access**: feature appears in `entitlements.data`
-   - **Revoke access**: feature is absent from `entitlements.data`
+   - **Revoke access**: reconcile against the complete active-entitlement list before disabling a feature absent from `entitlements.data` when the summary may be truncated (up to 10 entries); use `entitlements.url` to fetch all pages for a customer with more than 10 active entitlements. Absence from a capped summary alone is not proof of revocation.
 
 ## Webhook: `entitlements.active_entitlement_summary.updated`
 
-Fires on any entitlement change: subscribe, upgrade, downgrade, cancel. The payload is an `entitlements.active_entitlement_summary` object containing the customer's **full, up-to-date** entitlement list.
+In the 2026-05-13 API variant, this event is used when entitlements change through subscription creation, updates, or cancellation. Its `entitlements.active_entitlement_summary` payload contains a current summary, but `entitlements.data` is capped at 10 items and may omit active features.
 
-- `entitlements.data` max 10 items in summary payload — use `entitlements.url` for the full paginated list if customer has more than 10 active entitlements.
+- `entitlements.data` max 10 items in summary payload — use `entitlements.url` for the complete paginated list if the customer has more than 10 active entitlements.
 - `previous_attributes.entitlements.data` shows what changed (useful for diffing).
 
 ## Polling API
@@ -43,15 +44,17 @@ Fires on any entitlement change: subscribe, upgrade, downgrade, cancel. The payl
 stripe.entitlements.activeEntitlements.list({ customer: '{{CUSTOMER_ID}}' })
 ```
 
-Returns paginated `entitlements.active_entitlement` objects. Use for startup checks, authorization gates, or reconciliation after webhook delivery failure. Stripe recommends persisting entitlements locally for faster resolution.
+In the 2026-05-13 API variant, this returns paginated `entitlements.active_entitlement` objects. Use for startup checks, authorization gates, or reconciliation after webhook delivery failure. Stripe recommends persisting entitlements locally for faster resolution.
 
 ## Feature management
+
+The following management limits come from the 2026-05-13 Dashboard variant.
 
 | Action | Notes |
 |---|---|
 | Edit feature | Can change name and metadata; **lookup key cannot be changed after creation** |
 | Remove from product | Detaches feature; existing subscribers unaffected until next billing period |
-| Archive feature | Irreversible. Archived features still generate entitlements on existing products. Archived lookup key can be reused. |
+| Archive feature | Irreversible: archived features cannot be edited, attached to new products, or unarchived. Existing product attachments still create entitlements; the archived lookup key can be reused. |
 
 ## Related pages
 
@@ -59,6 +62,10 @@ Returns paginated `entitlements.active_entitlement` objects. Use for startup che
 - [[stripe]] — company page
 - [[stripe-subscriptions]] — subscriptions overview
 
+## Related raw API references
+
+- [[raw/stripe-billing-entitlements-2026-11-07|2026-11-07 variant index]] — links to Dashboard and API variants; their current contents were not captured here.
+
 ## Raw Sources
 
-- [[stripe-billing-entitlements-2026]] — verbatim Stripe docs webpage
+- [[raw/stripe-billing-entitlements-2026|2026-05-13 Entitlements guide]] — fully captured Dashboard and API variants behind the dated summary above.

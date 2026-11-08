@@ -1,0 +1,92 @@
+{
+  "job_id": "billing-subscriptions-change-price",
+  "queue_id": 25,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/change-price",
+  "raw_path": "raw/stripe-billing-subscriptions-change-price-2026-11-07.md",
+  "raw_sha256": "c2dd0de552ff5502b73d9b0af9437a930e35c1dd2e938a9a043103e419ff63ab",
+  "prior_raw_path": "raw/stripe-subscriptions-change-price-2026.md",
+  "prior_raw_sha256": "f41f4f172c67d6198a9cfcdfe44375f72424b422158c9f348af01a2272367e34",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ebb60c0d405361c15ba72457/content.diff",
+  "diff_sha256": "8d35e5f5154eeab425ebe3236b28912f7dd707cb3d2a4a505b0d34244eb6ea85",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-change-price.md"
+  ],
+  "source_before_sha256": "bc37c71bf391fa51554c80f3f8d8971f226ec3cddbb7f211646c8780f0b6b8f9",
+  "section": "billing",
+  "new_words": 1074,
+  "new_lines": 154,
+  "old_words": 1179,
+  "old_lines": 187,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-change-price.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-change-price/attempt-1/receipt.json",
+  "receipt_sha256": "4d86b4b75723a8af639b29724e604a30d4893d8233776e405fb21b8ae702af65",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-change-price/attempt-1/review.json",
+  "review_sha256": "9c065ee5a031b65a4be277edc614e7ef662297b003c0a5e4d8631c99d530eae4",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-change-price-2026-11-07.md",
+  "new_raw_sha256": "c2dd0de552ff5502b73d9b0af9437a930e35c1dd2e938a9a043103e419ff63ab",
+  "prior_raw": "raw/stripe-subscriptions-change-price-2026.md",
+  "findings": [
+    "The 2026-11-07 capture at the same URL remains a full Subscriptions API price-change guide, including identifiers, two update methods, billing periods, usage-meter distinctions, proration, payment-state outcomes and zero-amount cases (new raw lines 9-154). The matched 2026-05-13 guide carries the same central behavior (old raw lines 8-187).",
+    "The principal observed delta is example presentation: list/update/subscription-item/legacy-usage samples change from Node SDK to curl, with emphasis and whitespace changes (diff lines 3-146). No changed parameter rule, lifecycle state or version prerequisite is established. The new curl samples illustrate requests; they do not establish successful billing or an exhaustive schema.",
+    "The guide says to locate subscription and item IDs using a relevant filter, such as the customer-configured Account or Customer ID, then replace the item price by passing that item ID; omitting it adds another active item, and a price change resets quantity to 1 unless explicitly preserved (new raw lines 15-25 and 62-102; old raw lines 14-28 and 65-127). The curl list example uses customer={{CUSTOMER_ID}} and is not proof of every possible Account filter wire format.",
+    "Billing dates remain when interval and interval_count match, change with different billing periods, and shift to trial conclusion when a trial is introduced (new raw line 106; old raw line 131). The zero-price-to-nonzero case separately generates an invoice and resets the period, while increasing a zero quantity on a nonzero price does neither (new raw lines 144-148; old raw lines 177-181). Preserve those exceptions beside the general date rule.",
+    "The payment-state boundary is unchanged: price changes often result in prorations; resetting the billing-cycle anchor immediately attempts payment, and a failed required payment can leave the change request successful but the subscription past_due (new raw lines 128-136; old raw lines 161-169). On a same-period change, always_invoice calculates proration and immediately generates an invoice after the switch; pending updates can gate the subscription change on successful payment (new raw line 138; old raw line 171). The source line 53 says price changes trigger prorations by default and line 55 says always_invoice charges immediately, which overstates the raw's conditional proration and invoice-versus-paid distinction. Recommend correcting that pre-existing source wording, not treating it as a newly changed Stripe behavior.",
+    "The current source line 54 names stripe.invoices.retrieveUpcoming as the preview method, whereas these pinned guides only link to a separate proration preview section (new raw line 130; old raw line 163). Treat the method name as unverified by this source, not as a changed or deprecated API."
+  ],
+  "substantive_changes": [],
+  "conflicts": [
+    "Pre-existing source wording at lines 53-55 implies default proration for all price changes and immediate charge success from always_invoice. The old and new raw say price changes often result in prorations, always_invoice immediately generates an invoice for a same-period change, and successful payment requires a separate outcome; when immediate billing fails, the request can still succeed while the subscription becomes past_due (old raw lines 163-171; new raw lines 130-138). Tighten source and any reciprocal concept wording to preserve invoice creation, attempted payment and paid state separately.",
+    "Source line 54's exact stripe.invoices.retrieveUpcoming preview call is not grounded in the old or new pinned guide; both refer to a separate preview-proration page (old raw line 163; new raw line 130). Avoid asserting that call as a current requirement or rejecting it as invalid without the linked API evidence.",
+    "Source line 45's same-interval date shorthand must be read with its separate zero-price-to-nonzero and trial exceptions (source lines 47 and 69; new raw lines 106 and 146). Do not apply the general row to override the explicit exceptions."
+  ],
+  "historical_claims_to_preserve": [
+    "The 2026-05-13 guide already documented the item-ID omission pitfall, price replacement/addition paths, direct item update and quantity reset (old raw lines 65-127).",
+    "The older guide already documented the same billing-period rules, schedule caution, Billing Meter clear_usage no-effect rule, legacy usage-record transfer and zero-amount/zero-quantity outcomes (old raw lines 129-159 and 177-181).",
+    "The older guide already distinguished immediate billing attempt from payment success: a failed required payment after immediate billing leaves the change request successful and subscription past_due; always_invoice makes an invoice after the switch, while pending updates gate application on successful payment (old raw lines 161-175). Credit proration calculation depends on billing_mode."
+  ],
+  "unresolved_questions": [
+    "The pinned guide does not state an API-version floor or prove that its Node or curl examples work unchanged across versions, accounts and billing modes.",
+    "The linked proration preview and pending-updates references were navigation only for this assignment, so their exact API method and further eligibility conditions are not independently verified here. No real payment, invoice settlement or subscription transition was executed."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw3",
+  "reviewer_agent": "/root/s01ur6",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-change-price-2026-11-07.md",
+      "sha256": "c2dd0de552ff5502b73d9b0af9437a930e35c1dd2e938a9a043103e419ff63ab",
+      "lines": 154
+    },
+    {
+      "path": "raw/stripe-subscriptions-change-price-2026.md",
+      "sha256": "f41f4f172c67d6198a9cfcdfe44375f72424b422158c9f348af01a2272367e34",
+      "lines": 187
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-change-price.md",
+      "sha256": "bc37c71bf391fa51554c80f3f8d8971f226ec3cddbb7f211646c8780f0b6b8f9",
+      "lines": 80
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ebb60c0d405361c15ba72457/content.diff",
+      "sha256": "8d35e5f5154eeab425ebe3236b28912f7dd707cb3d2a4a505b0d34244eb6ea85",
+      "lines": 146
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-change-price-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-change-price-review.json"
+}

@@ -1,0 +1,124 @@
+{
+  "job_id": "billing-subscriptions-twint",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-twint-2026-11-07.md",
+  "raw_sha256": "332c681eee59901956e15b31715ac1b5ea21ea80f09df127052c005881ce166b",
+  "source_before_sha256": "b4e0392fe6c30fcc0ed36c883c7cb6eba380302cb63c25784956788839d463da",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up TWINT Subscription\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/twint\"\nraw_files:\n  - \"stripe-subscriptions-twint-2026.md\"\ntags: [stripe, billing, subscriptions, twint, checkout, setup-intents, mandate, qr-code]\n---\n\n## Summary\n\nThe May 13, 2026 guide describes three TWINT subscription examples: Stripe-hosted Checkout, Setup Intents API, and Subscriptions API. The November 7 capture of the same canonical URL contains only an index linking those three variants. It establishes their navigation targets, not a current change in TWINT requirements, eligibility, currency, QR presentation, or payment outcomes. This page preserves the May flows as dated examples; the linked variant bodies were not captured in November.\n\n## May 2026 example: Stripe-hosted Checkout\n\nThe Checkout example creates a server-side Session with `mode=subscription`, `payment_method_types=[\"card\",\"twint\"]`, a recurring price, and a success URL, then redirects the customer to the Session URL (May raw lines 34\u201370). It says the customer authorizes future use of their TWINT account. In the guide's test-mode instructions, accepting the redirect-page mandate moves a **SetupIntent** from `requires_action` to `succeeded`; declining moves it to `requires_payment_method` (May raw lines 73\u201375). Neither transition alone proves a paid first invoice or an active subscription.\n\nThe Checkout Session example does not show `mandate_data` or `return_url` fields. Do not infer from the direct API examples that they are universal Checkout request requirements.\n\n## May 2026 example: Setup Intents API\n\nThe server-side SetupIntent example uses `confirm=true`, `usage=off_session`, TWINT payment data, a `return_url`, and online `mandate_data.customer_acceptance` values (May raw lines 101\u2013128). The described `requires_action` result supplies `next_action.redirect_to_url.url` for a TWINT-hosted page displaying a QR code. After authentication and return, the **SetupIntent** reaches `succeeded` (May raw lines 130\u2013136).\n\nThe next step creates a subscription using that SetupIntent's PaymentMethod ID as `default_payment_method`. The first subscription **PaymentIntent** still has a client secret to send to the frontend to complete payment (May raw lines 138\u2013158). Setup success establishes payment-method setup in the described flow, not payment success or subscription activation.\n\n## May 2026 example: Subscriptions API\n\nThe example creates a subscription with `payment_behavior=default_incomplete` and `payment_settings.save_default_payment_method=on_subscription`, producing an initial invoice and PaymentIntent. It gets the PaymentIntent ID from `latest_invoice.payments` and returns the confirmation secret client secret for frontend payment completion (May raw lines 162\u2013212).\n\nThe separate PaymentIntent confirmation example supplies TWINT payment data, `return_url`, and online `mandate_data` (May raw lines 216\u2013231). When the **PaymentIntent** is `requires_action`, the example redirects to its `next_action.redirect_to_url.url`, a TWINT-hosted QR page. The guide describes the PaymentIntent reaching `succeeded` after authentication; only **after successful payment** does it say the subscription becomes active and saves the method as default (May raw lines 233\u2013237). A displayed QR or redirect alone is not a success signal.\n\n## Scope of parameters, QR, and eligibility\n\n> [!warning] Contradiction\n> The former source summary called `mandate_data` and `return_url` required for every TWINT subscription path. The May Checkout Session example has neither, while its direct SetupIntent and PaymentIntent confirmation examples contain both. Those examples do not provide an exhaustive API requiredness schema. The separate [[stripe-twint]] concept also states a saved-method reuse condition for `return_url`; do not collapse that condition into these first-setup examples.\n\nThe May direct API flows explicitly describe redirects to a TWINT-hosted page that displays the QR code. This supports those examples, not a claim that all client-side QR presentations are impossible. The May guide's 15 CHF monthly stock-photo price is an **example**, not evidence here of a universal CHF-only subscription or Switzerland-only eligibility rule. Separate primary TWINT sources need their own verification for those product limits.\n\n## November 2026 navigation\n\nThe November same-URL index lists [Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/twint.md?api-integration=checkout), [Setup Intents API](https://docs.stripe.com/billing/subscriptions/twint.md?api-integration=setupintents), and [Subscriptions API](https://docs.stripe.com/billing/subscriptions/twint.md?api-integration=subscription). Their current bodies were not included in the pinned index and were not used as factual evidence here.\n\n## Related pages\n\n- [[stripe-twint]] \u2014 TWINT concept and separately sourced product characteristics\n- [[stripe-subscriptions]] \u2014 subscription concept\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-subscriptions-twint-2026|Stripe TWINT subscription guide, May 13 2026]] \u2014 dated full combined guide\n\n## Related raw API references\n\n- [[raw/stripe-billing-subscriptions-twint-2026-11-07|TWINT subscription variant index, November 7 2026]] \u2014 navigation only\n",
+  "quotes": [
+    {
+      "text": "# Set up a subscription with TWINT",
+      "location": "raw/stripe-billing-subscriptions-twint-2026-11-07.md:5"
+    },
+    {
+      "text": "Learn how to create and charge for a subscription with TWINT.",
+      "location": "raw/stripe-billing-subscriptions-twint-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-twint-2026-11-07.md:11"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/twint.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-twint-2026-11-07.md:13"
+    },
+    {
+      "text": "[Setup Intents API](https://docs.stripe.com/billing/subscriptions/twint.md?api-integration=setupintents)",
+      "location": "raw/stripe-billing-subscriptions-twint-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Your customer must authorize you to use their TWINT account for future payments through Stripe Checkout.",
+      "location": "raw/stripe-subscriptions-twint-2026.md:36"
+    },
+    {
+      "text": "If you authorize the mandate on the redirect page, the SetupIntent transitions from `requires_action` to `succeeded`.",
+      "location": "raw/stripe-subscriptions-twint-2026.md:75"
+    },
+    {
+      "text": "The SetupIntent response includes the status `requires_action`",
+      "location": "raw/stripe-subscriptions-twint-2026.md:134"
+    },
+    {
+      "text": "Return the `client_secret` to the frontend to complete payment.",
+      "location": "raw/stripe-subscriptions-twint-2026.md:158"
+    },
+    {
+      "text": "After a successful payment, the subscription becomes active and saves the payment method as the default payment method.",
+      "location": "raw/stripe-subscriptions-twint-2026.md:237"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-twint-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-subscriptions-twint-2026.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 237
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-twint.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/75f3c7c56510fca30c8f9e30/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "twint-concept-source-route",
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "old_text": "- [[source-stripe-subscriptions-twint]] \u2014 subscription guide: 3 paths (Checkout/SetupIntents/Subscriptions API), CHF only, mandate_data+return_url required, QR via redirect",
+      "new_text": "- [[source-stripe-subscriptions-twint]] \u2014 May 2026 subscription examples for Checkout, Setup Intents and Subscriptions API; November 2026 variant index. Direct API examples include mandate_data and return_url; the Checkout example does not. Hosted QR redirects are described for the direct examples.\n\n> [!warning] Contradiction\n> The earlier source summary treated mandate_data and return_url as universal TWINT subscription requirements, but the May Checkout example has neither while the direct API examples include both. The November index has no variant bodies, so current requiredness remains unverified; see [[source-stripe-subscriptions-twint]].",
+      "reason": "Remove universal field and eligibility claims attributed to this dated subscription guide; preserve separate TWINT primary-source scope.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The concept's general CHF and country claims derive from separate TWINT sources, not this subscription-guide capture."
+      ]
+    },
+    {
+      "update_id": "twint-subscriptions-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-twint]] \u2014 TWINT subscription: CHF only, 3 paths (Checkout/SetupIntents/Subscriptions API), mandate_data+return_url required, QR via redirect",
+      "new_text": "- [[source-stripe-subscriptions-twint]] \u2014 dated May 2026 TWINT subscription examples for Checkout, Setup Intents and Subscriptions API; November 2026 variant index. Direct API examples include mandate_data and return_url, while the Checkout example does not; setup success and first-payment success are distinct.",
+      "reason": "Correct unqualified cross-path field requirements and distinguish setup from payment outcomes.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The November index does not include variant bodies or establish current API requiredness."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/twint, the November capture establishes only a three-variant index for hosted Checkout, Setup Intents API and Subscriptions API (new 5\u201315). The dated [[source-stripe-subscriptions-twint]] preserves May's Checkout Session, SetupIntent and incomplete-subscription PaymentIntent examples (old 34\u201375, 101\u2013158, 162\u2013237). In the Setup Intents path, SetupIntent succeeded follows authorization but the first subscription PaymentIntent still needs payment completion (old 134\u2013158). In the Subscriptions API path, the PaymentIntent succeeds after authentication and the guide conditions active subscription/default-method saving on successful payment (old 233\u2013237). Current variant behavior and eligibility remain unverified by the index.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/twint, the observed November change is presentation as a three-link navigation index, not demonstrated payment-method behavior change (new 9\u201315 versus old 10\u2013237). [[source-stripe-subscriptions-twint]] now dates the May Checkout, direct SetupIntent and direct PaymentIntent examples separately (old 60\u201375, 101\u2013158, 186\u2013237). The Checkout request example has no mandate_data or return_url, while direct examples include both (old 60\u201370, 110\u2013127, 222\u2013230), so universal requiredness cannot be inferred. The 15 CHF monthly price is an example, not proof of customer or merchant eligibility (old 20\u201327). A QR redirect or SetupIntent success is not proof the first invoice was paid."
+  },
+  "status": "candidate_ready"
+}

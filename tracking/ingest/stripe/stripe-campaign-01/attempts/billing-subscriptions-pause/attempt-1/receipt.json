@@ -1,0 +1,129 @@
+{
+  "job_id": "billing-subscriptions-pause",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-pause-2026-11-07.md",
+  "raw_sha256": "6e7226dd73db6f84fe0a2dfe38c3934ee03198b836162c6805fae0cabc74a86f",
+  "prior_raw_path": "raw/stripe-subscriptions-pause-2026.md",
+  "prior_raw_sha256": "f3762fda5cb03329956276dd3f4def25487a12d1df9f2d870c95791d6c377c1a",
+  "source_target": "wiki/sources/source-stripe-subscriptions-pause.md",
+  "source_before_sha256": "fdb9986f2a6f10420cfd8dbfe85c786af9f7a8dc903492749b3dd38e224e790a",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-pause-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 321
+      }
+    ],
+    "raw/stripe-subscriptions-pause-2026.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-pause.md": [
+      {
+        "start": 1,
+        "end": 102
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dbf8952d897033241eae46de/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Pause a subscription to suspend service delivery and invoice generation.",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:7"
+    },
+    {
+      "text": "You can also let customers pause their own subscriptions in the [customer portal](https://docs.stripe.com/customer-management/pause-subscriptions.md).",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:26"
+    },
+    {
+      "text": "A resume request can return `200` even if the subscription remains `paused` while its resumption invoice awaits payment.",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:168"
+    },
+    {
+      "text": "| Pending update expiration time | 23 hours after the resume request | 1 year after the resume request |",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:188"
+    },
+    {
+      "text": "This restriction doesn\u2019t apply to [item-level trial offers](https://docs.stripe.com/billing/subscriptions/trials.md).",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:315"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The customer portal reflects that a subscription is paused, but your subscribers can\u2019t use it to pause subscriptions themselves.",
+      "location": "raw/stripe-subscriptions-pause-2026.md:58"
+    },
+    {
+      "text": "Stripe doesn\u2019t attempt payment in the resume response. Collect payment using the [Pay invoice](https://docs.stripe.com/api/invoices/pay.md) endpoint.",
+      "location": "raw/stripe-subscriptions-pause-2026.md:69"
+    },
+    {
+      "text": "- Is in a trial period, or has an active trial offer",
+      "location": "raw/stripe-subscriptions-pause-2026.md:37"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same-URL November capture retains true pause as suspended service plus invoice generation, distinct from pause_collection and from automatic trial-end-without-payment-method status (new 7-20; old 10-19; source 13-21). Flexible billing is required and pause is immediate (new 24, 54-57); existing invoices still advance. Coupon duration continues during pause (new 18; old 44).",
+    "New capture documents API, Dashboard and configurable customer portal initiation plus a linked schedule route for future pause/resume attempts (new 24-36, 146-164). This directly conflicts with source 19, 50 and 73 and concept 16, 54 and 66; the linked schedule guide's detailed behavior is outside this capture.",
+    "New pause controls specify defaults and alternatives for bill_for unused licensed time, outstanding metered usage and invoicing_behavior (new 65-82). A pause invoice preview requires invoicing_behavior=invoice and billable amounts; otherwise 404, and preview does not mutate the subscription (new 115-138). Restricted keys need subscription_write and invoice_read for previews (new 20).",
+    "New resume payment_behavior branches are materially different: default resume_on_payment_attempt does not attempt collection in the resume request, failed payment leads to past_due, no automatic invoice retries and a 23-hour pending update expiry; recommended resume_on_payment_success can attempt with default payment method or sufficient cash balance, failure keeps paused, retries may occur, and expiry is one year (new 181-188). HTTP 200 alone does not establish active state; inspect status and pending_update (new 166-168).",
+    "New limitations refine the old trial-offer statement to active subscription-level free trials while explicitly allowing item-level trial offers, add unpaid status and distinguish attached subscription schedules from active billing schedules (new 307-321 versus old 33-42 and source 52-61). The old cadence term and reverse attachment rule are historical May evidence; the new page's omission does not prove removal or deprecation."
+  ],
+  "substantive_changes": [
+    "Portal pausing, Dashboard flows, and linked scheduled future pause/resume attempt are newly documented, changing older manual-API-only and no-self-pause claims (new 24-36, 146-164; old 58, 62; source 19, 50, 73).",
+    "Pause and resume invoice preview conditions, non-mutating projected state, bill_for defaults, status_details pause reasons and transition timestamp, restricted-key permissions, and test-clock/Sigma examples add operational detail (new 20, 65-138, 190-203, 278-305).",
+    "Resume payment_behavior changes the payment attempt, failed status, retry and pending update expiry outcomes; May's manual-pay/23-hour/past_due prose only describes the November default branch, not all resume requests (new 166-188; old 66-73; source 76-82).",
+    "Eligibility table now limits the trial exclusion to subscription-level trials, expressly exempts item-level offers, adds unpaid, and names active billing schedules separately from attached subscription schedules (new 307-321; old 33-42)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the May 13 old capture's preview Stripe-Version header, type=subscription request parameter and billing_cycle_anchor=unchanged example as dated examples (old 48-56, 83-89; source 39-46, 65-71); their absence from November examples does not prove these forms invalid, and a November pause API link carries api-version=2026-07-29.preview (new 40).",
+    "Preserve May's portal-display-only, manual resume, active-trial-offer, attached-cadence and reverse-attachment statements as attributed historical claims, not unqualified current rules (old 37-42, 58, 62; source 50-61, 73).",
+    "Retain the enduring distinction between true subscription pause, pause payment collection and system trial-end pause, along with coupon validity, existing-invoice advancement and the webhook/entitlement implications (old 10-30, 44, 91-123; new 7-20, 54-57, 205-243)."
+  ],
+  "conflicts": [
+    "Source 50 and concept 54 say customer portal subscribers cannot self-pause, while new 26 explicitly says customers can be allowed to pause in the portal; update both with configuration qualification.",
+    "Source 73 and concept 66 say resume is manual only, while new 28 links scheduled resume attempts and new 146-164 gives Dashboard/API routes; distinguish scheduled attempt from guaranteed successful active state.",
+    "Source 78-82 and concept 75-79 generalize no payment attempt, past_due failure and 23-hour expiry; new 183-188 confines those outcomes to default resume_on_payment_attempt and gives a separate resume_on_payment_success path.",
+    "Source 56 and concept 29 exclude active trial offers generally; new 315 expressly exempts item-level trial offers. Source 57-61 and concept 30-33 omit unpaid and use cadence where new 316, 320-321 name unpaid and billing schedules."
+  ],
+  "unresolved_questions": [
+    "The linked schedule and customer portal guides are not part of this four-file same-URL review, so exact configuration, eligibility, and scheduled attempt outcome should be verified there before deeper claims.",
+    "November cURL omits the old preview header and type parameter while an API link is versioned 2026-07-29.preview (new 40-50); this capture alone does not establish endpoint GA status or whether old parameters are rejected.",
+    "The November table no longer uses the old cadence term or repeats the rule against attaching schedules/cadences while paused; omission alone cannot establish deprecation or reversal."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-pause.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/pause, the November capture establishes that true pause stops service and new invoices while existing invoices advance; it differs from payment-collection pause and automatic trial-end pause (new 7-20, 54-57). Flexible billing and charge_automatically are the relevant prerequisites (new 24, 142, 313-315). API, Dashboard, configurable portal and linked schedule routes now appear (new 24-28), unlike the May portal/manual limitations (old 58, 62) summarized by [[source-stripe-subscriptions-pause]] at lines 50 and 73. An HTTP 200 resume response can still have paused status pending invoice payment (new 166-168).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/pause, substantive changes include portal pausing, scheduled attempt navigation, preview conditions and the two payment_behavior outcome branches (new 26-28, 115-126, 181-188), so [[source-stripe-subscriptions-pause]] must qualify its blanket manual-payment, 23-hour and past_due statements at lines 73-82. The May preview header, type parameter, unchanged anchor and cadence claims remain dated evidence (old 40, 48-56, 83-89); omissions do not prove their removal. November's explicit item-level trial-offer exception (new 315) conflicts with the old broad trial-offer exclusion (old 37). Dashboard navigation and example dollar amounts are not general eligibility or billing guarantees."
+  }
+}

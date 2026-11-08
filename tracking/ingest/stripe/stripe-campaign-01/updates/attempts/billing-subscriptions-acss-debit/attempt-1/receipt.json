@@ -1,0 +1,182 @@
+{
+  "job_id": "billing-subscriptions-acss-debit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md",
+  "raw_sha256": "e846da578f478bceda267e2bd0c56f337aa0d1456245fd22430f5366292cbb29",
+  "source_before_sha256": "d996aa9f00213b784ce2996dbc2ae07798e111889539b441a2e50d3d14dc69a2",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up Canadian Pre-Authorized Debit (ACSS Debit) Subscription\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/acss-debit\"\nraw_files:\n  - \"stripe-billing-subscriptions-acss-debit-2026-11-07.md\"\n  - \"stripe-subscriptions-acss-debit-2026.md\"\ntags: [stripe, billing, subscriptions, acss-debit, canada, cad, pad, mandate, microdeposit]\n---\n\n## Summary\n\nStripe's Canadian pre-authorized debit (ACSS/PAD) subscription guide describes server-side Subscription creation and client-side Stripe.js `stripe.confirmAcssDebitPayment` for bank details and mandate acknowledgment. Its price example is CAD; this guide does not establish a universal CAD-only eligibility rule. As captured on 2026-11-07, Checkout subscription mode remains on a waitlist, the first-payment method must be set manually for future billing, microdeposit verification can take up to 10 days (bounded by the billing-period date), and fulfillment must wait for payment evidence as well as an active subscription. Enabled Direct Debit retries can automatically retry Canadian PAD insufficient-funds failures; the guide does not establish account eligibility.\n\n## Key constraints\n\n- **Canadian PAD subscription guide** \u2014 the illustrated monthly price is CAD, not a universal currency restriction.\n- **Checkout subscription mode not yet supported** in the 2026-11-07 capture; waitlist described.\n- **Conditional retries** \u2014 with Direct Debit retries enabled, Stripe can automatically retry Canadian PAD payments that fail because of insufficient funds. The 2026-05-13 capture instead said payments were never automatically retried; see dated evidence below.\n- `acss_debit` payment method type appears explicitly in the 2026-05-13 Node.js example. The 2026-11-07 curl example omits that field; omission does not establish a default or universal recipe.\n\n## Subscription creation\n\nThe 2026-11-07 guide creates an `incomplete` subscription using `payment_behavior=default_incomplete`, with `customer_account` for customer-configured Accounts v2 or `customer` for Customers v1. Its curl samples expand `latest_invoice.payment_intent`, while the adjacent prose still tells you to return `latest_invoice.confirmation_secret.client_secret`. The older Node.js sample below explicitly selects `acss_debit` and expands `latest_invoice.payments` and `latest_invoice.confirmation_secret`; the capture does not resolve whether the newer sample returns every value needed for the client step.\n\n2026-05-13 Node.js example (Customers v1; historical sample, not a current universal recipe):\n\n```js\nstripe.subscriptions.create({\n  customer: customerId,\n  items: [{ price: priceId }],\n  payment_behavior: 'default_incomplete',\n  payment_settings: { payment_method_types: ['acss_debit'] },\n  expand: ['latest_invoice.payments', 'latest_invoice.confirmation_secret']\n})\n```\n\n## Client-side mandate flow\n\n`stripe.confirmAcssDebitPayment(clientSecret, { payment_method: { billing_details: { name, email } } })`\n\n- Required: `name` + `email` in billing_details\n- Opens on-page modal UI for bank account collection + verification + mandate acknowledgment\n- Customer acknowledges the Stripe-configured mandate once; later subscription charges need no fresh mandate acknowledgment. This does not guarantee later payment success.\n- Instant verification can make the subscription `active`; manual verification leaves it `incomplete` pending microdeposits. Active status alone does not prove the first payment succeeded.\n\n## Microdeposit extended window\n\nCustomers have **10 days** to verify (vs 23h normal), but not past billing period date. Max 3 failed attempts. Standard microdeposit codes: `32,45`=verify, `10,11`=exceed attempts.\n\n## Payment confirmation and default payment method\n\nBefore fulfilling goods or services, the 2026-11-07 guide requires both an `active` related subscription and either the `invoice.paid` event or a `succeeded` underlying PaymentIntent. A subscription can be `active` while its first payment is still processing. Separately, for future charges, listen to `invoice.payment_succeeded` for a new subscription (`billing_reason=subscription_create`) and set `subscription.default_payment_method` from the payment method used for its initial invoice. Do not substitute this default-method webhook step for the fulfillment check.\n\n## Trial period\n\nReturns `pending_setup_intent`. Use `stripe.confirmAcssDebitSetup` / `verifyMicrodepositsForSetup`. SetupIntent `succeeded` \u2192 auto-sets `default_payment_method`.\n\n## Save for future use\n\nUse a SetupIntent with `mandate_options.default_for=['invoice','subscription']` as shown in the CAD example. After it succeeds, update `configuration.customer.billing.default_payment_method` for a customer-configured Account v2, or `invoice_settings.default_payment_method` for a Customer v1.\n\n## Dated retry statement\n\n> [!warning] Contradiction\n> The 2026-05-13 guide said Canadian PAD payments were never automatically retried. The 2026-11-07 guide says that, if Direct Debit retries is enabled, Stripe can automatically retry Canadian PAD payments that fail because of insufficient funds. This is a conditional possibility, not proof that retries are enabled for an account or apply to every failure.\n\n## Test tokens (6)\n\n`pm_acssDebit_success`, `pm_acssDebit_noAccount`, `pm_acssDebit_accountClosed`, `pm_acssDebit_insufficientFunds`, `pm_acssDebit_debitNotAuthorized`, `pm_acssDebit_dispute`\n\n## Test accounts (7)\n\nInstitution `000`, Transit `11000`. Accounts: `000123456789` (success), `900123456789` (3-min delay success), `000222222227` (fail), `900222222227` (3-min fail), `000666666661` (fail microdeposits), `000777777771` (weekly limit), `000888888881` (transaction limit).\n\n## Related pages\n\n- [[stripe-acss-debit]] \u2014 concept page (updated with subscription facts)\n- [[stripe-subscriptions]] \u2014 concept page\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-acss-debit-2026-11-07|2026-11-07 Canadian PAD subscription guide]] \u2014 current captured guide, including conditional retries and fulfillment check\n- [[raw/stripe-subscriptions-acss-debit-2026|2026-05-13 Canadian PAD subscription guide]] \u2014 historical Node.js rendering and original retry statement\n",
+  "quotes": [
+    {
+      "text": "Subscription mode in [Checkout](https://docs.stripe.com/payments/checkout.md) isn\u2019t yet supported.",
+      "location": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md:11"
+    },
+    {
+      "text": "Create a [subscription](https://docs.stripe.com/api/subscriptions.md) with the price and customer with status `incomplete` by providing the [payment_behavior](https://docs.stripe.com/api/subscriptions/create.md#create_subscription-payment_behavior) parameter with the value of `default_incomplete`.",
+      "location": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md:35"
+    },
+    {
+      "text": "A subscription can become `active` while its first payment is still processing, so don\u2019t use the subscription status alone to determine whether the payment succeeded.",
+      "location": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md:196"
+    },
+    {
+      "text": "If you enable [Direct Debit retries](https://docs.stripe.com/billing/revenue-recovery/smart-retries.md#direct-debit-retries), Stripe can automatically retry Canadian PAD payments that fail because of insufficient funds.",
+      "location": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md:200"
+    },
+    {
+      "text": "After the `SetupIntent` reaches the `succeeded` state, update your customer\u2019s default payment method in either [configuration.customer.billing.default_payment_method](https://docs.stripe.com/api/v2/core/accounts/update.md#v2_update_accounts-response-configuration-customer-billing-default_payment_method) (for customer-configured `Account` objects) or [invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/update.md#update_customer-invoice_settings-default_payment_method) (for `Customer` objects).",
+      "location": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md:341"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Canadian pre-authorized debit payments are never automatically retried, even if you have a [retry schedule](https://docs.stripe.com/invoicing/automatic-collection.md) configured for other payment methods.",
+      "location": "raw/stripe-subscriptions-acss-debit-2026.md:223"
+    },
+    {
+      "text": "When the initial payment succeeds, the status of the subscription is `active` and requires no further action.",
+      "location": "raw/stripe-subscriptions-acss-debit-2026.md:221"
+    },
+    {
+      "text": "payment_method_types: [\"acss_debit\"],",
+      "location": "raw/stripe-subscriptions-acss-debit-2026.md:52"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 366
+      }
+    ],
+    "raw/stripe-subscriptions-acss-debit-2026.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 442
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-acss-debit.md": [
+      {
+        "start": 1,
+        "end": 75
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa5c9eefbe8838ecbfa86572/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 649
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "acss-subscriptions-retry-rule",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "**Checkout NOT supported** (waitlist only). **No auto-retry** \u2014 ACSS payments never retried.",
+      "new_text": "**Checkout subscription mode not yet supported** in the 2026-11-07 guide (waitlist). With Direct Debit retries enabled, Stripe can automatically retry Canadian PAD subscription payments that fail for insufficient funds; availability or enablement for a particular account is unverified.\n\n> [!warning] Contradiction\n> The 2026-05-13 subscription guide said Canadian PAD payments were never automatically retried. The 2026-11-07 guide documents this conditional insufficient-funds retry path; see [[source-stripe-subscriptions-acss-debit]].",
+      "reason": "Directly replace absolute no-retry claim while preserving old/new dated contradiction and private-preview uncertainty in adjacent Billing Retries section.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Direct Debit retries eligibility and account enablement remain unverified."
+      ]
+    },
+    {
+      "update_id": "acss-subscriptions-create-sample",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "Create with `payment_behavior=default_incomplete` + `payment_method_types=['acss_debit']`. Client uses `stripe.confirmAcssDebitPayment` \u2014 opens modal, collects bank + mandate acknowledgment. Customer acknowledges once; subsequent charges need no re-authorization.",
+      "new_text": "Create with `payment_behavior=default_incomplete`; the 2026-05-13 Node.js example explicitly sets `payment_method_types=['acss_debit']`, while the 2026-11-07 curl sample omits that field. Client uses `stripe.confirmAcssDebitPayment` to collect bank details and mandate acknowledgment in an on-page modal. Later charges need no new mandate acknowledgment, but payment success must still be checked.",
+      "reason": "Date the sample-only payment-method selection and avoid implying that mandate reuse guarantees charge success.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "acss-subscriptions-fulfillment",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "**Default PM must be set manually** after `invoice.payment_succeeded` + `billing_reason=subscription_create`.",
+      "new_text": "**Fulfillment:** before supplying goods or services, verify the related subscription is `active` and either `invoice.paid` occurred or the underlying PaymentIntent is `succeeded`; `active` alone can precede first-payment completion. **Future default PM:** separately, after `invoice.payment_succeeded` for a new subscription (`billing_reason=subscription_create`), set `subscription.default_payment_method`.",
+      "reason": "Preserve distinct payment confirmation and default-payment-method workflows.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "acss-subscriptions-source-route",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "- [[source-stripe-subscriptions-acss-debit]] \u2014 ACSS subscription: Checkout NOT supported, no auto-retry, manual default PM webhook, 10-day microdeposit window, trial SetupIntent flow",
+      "new_text": "- [[source-stripe-subscriptions-acss-debit]] \u2014 Canadian PAD subscription guide (2026-05-13 and 2026-11-07 captures): conditional insufficient-funds retries, payment-confirmed fulfillment, default-PM webhook, and microdeposit/trial flows",
+      "reason": "Correct the contradictory reciprocal source label.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "subscriptions-acss-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-acss-debit]] \u2014 Canadian PAD (acss_debit) subscription: Checkout NOT supported, no auto-retry, manual default PM webhook, 10-day microdeposit window",
+      "new_text": "- [[source-stripe-subscriptions-acss-debit]] \u2014 Canadian PAD subscription guide (2026-05-13 and 2026-11-07): Checkout subscription-mode waitlist, conditional insufficient-funds retries, payment-confirmed fulfillment, default-PM webhook, 10-day microdeposit window",
+      "reason": "Correct the absolute no-retry label and route to the material new fulfillment check.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/acss-debit, the 2026-11-07 capture creates an `incomplete` subscription with `payment_behavior=default_incomplete`, then uses client-side `stripe.confirmAcssDebitPayment` for bank details and mandate acknowledgment (new raw lines 31\u201335, 65\u201394). Accounts v2 use `customer_account`, Customers v1 use `customer` (new lines 37\u201360). Manual microdeposit verification has a 10-day window bounded by the billing-period date (new lines 135\u2013147). [[source-stripe-subscriptions-acss-debit]] now distinguishes the `invoice.payment_succeeded` default-method step (new line 163) from fulfillment, which requires an active related subscription plus `invoice.paid` or a succeeded underlying PaymentIntent (new line 196). The May capture's successful-payment-to-active statement was one-way (old line 221).",
+    "Q2": "The 2026-11-07 capture of https://docs.stripe.com/billing/subscriptions/acss-debit adds an explicit fulfillment check and a conditional retry possibility: with Direct Debit retries enabled, Stripe can automatically retry Canadian PAD payments that fail for insufficient funds (new raw lines 196\u2013200). This conflicts with the 2026-05-13 absolute no-retry statement (old raw line 223), so [[source-stripe-subscriptions-acss-debit]] and reciprocal concepts retain the dated contradiction and qualify retry eligibility. The old Node.js sample explicitly selected `acss_debit` and expanded `latest_invoice.payments` and `latest_invoice.confirmation_secret` (old lines 38\u201385); the new curl sample omits that selection and expands `latest_invoice.payment_intent` while adjacent prose still names `latest_invoice.confirmation_secret.client_secret` (new lines 41\u201363), leaving sample completeness unresolved. Account-specific default-method destinations differ (new line 341; old line 424). No capture proves merchant enablement, payment settlement, or bank receipt."
+  },
+  "status": "candidate_ready"
+}

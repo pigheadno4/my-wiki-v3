@@ -1,0 +1,15 @@
+<!-- Source URL: https://docs.stripe.com/billing/subscriptions/amazon-pay -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Set up a subscription with Amazon Pay
+
+Learn how to create and charge for a subscription with Amazon Pay.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Setup Intents API](https://docs.stripe.com/billing/subscriptions/amazon-pay.md?api-integration=setupintents)
+- [Payment Intents API](https://docs.stripe.com/billing/subscriptions/amazon-pay.md?api-integration=subscription)
+- [Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/amazon-pay.md?api-integration=checkout)

@@ -1,0 +1,123 @@
+{
+  "job_id": "billing-subscriptions-sepa-debit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md",
+  "raw_sha256": "f3f0844fdf0b9244384e59cb0f231bfcebc3ff51f7fe29be2e3598291de765c3",
+  "source_before_sha256": "7d116e05807f4bc230fe47e2f9fff26ce3b497da5df294ea0f2898337f42c24d",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up SEPA Direct Debit Subscription\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/billing/subscriptions/sepa-debit\nraw_files:\n  - \"stripe-subscriptions-sepa-debit-2026.md\"\ntags: [stripe, billing, subscriptions, sepa-debit, eur, europe, checkout, payment-element, delayed-notification]\n---\n\n## Summary\n\nThe May 13, 2026 guide documents two SEPA Direct Debit subscription examples: a hosted Checkout page and an advanced web integration. SEPA Direct Debit has delayed payment notification, so Checkout form completion alone is not a payment-success or fulfillment signal. Its two test tables each have **19 country headings** and eight scenarios per country. These are May test examples, not evidence of current account or bank eligibility.\n\nThe November 7, 2026 capture at the same unparameterized URL is only an index linking to a full hosted web variant and an advanced web/elements variant. It contains no current API, mandate, webhook, payment-state, or test-table instructions. Omission from this index does not establish removal of either May flow. The linked full variants were not captured in this job.\n\n## Hosted Checkout example (May 2026)\n\nThe May example creates a Checkout Session with `payment_method_types: ['sepa_debit']`, at least one recurring Price, and `mode: 'subscription'`. It redirects the customer to the Session URL and supplies a `success_url`. The matched May guide labels this a full hosted page; it does **not** establish that Checkout is recommended over the advanced path.\n\n```js\nstripe.checkout.sessions.create({\n  payment_method_types: ['sepa_debit'],\n  line_items: [{ price: priceId, quantity: 1 }],\n  mode: 'subscription',\n  success_url: '...'\n})\n```\n\n## Advanced integration example (May 2026)\n\nThe May advanced variant describes customer-configured Accounts v2 and Customers v1 branches. In that capture, Accounts v2 was generally available for Connect users and in public preview for other Stripe users, with preview-version qualification. Its server example creates a subscription using `payment_behavior: 'default_incomplete'`, `payment_settings.save_default_payment_method: 'on_subscription'`, and expands `latest_invoice.confirmation_secret` plus `pending_setup_intent`. It returns the invoice confirmation secret when payment is due up front, or the pending SetupIntent secret when no payment is collected up front.\n\nThe old page tells new users to follow a separate Payment Element subscription build guide, yet its own sample mounts a Payment Element and includes other Elements/IBAN code. It says the Payment Element displays the SEPA form and mandate acceptance and collects name, email, and IBAN. The confirmation instruction and sample select **`stripe.confirmSepaDebitPayment`** for an upfront payment or **`stripe.confirmSepaDebitSetup`** when no payment is collected up front. This mixed May example must not be collapsed into a single `stripe.confirmPayment` call or treated as a verified end-to-end execution.\n\n## Delayed notification and paid invoices (May 2026)\n\nDo not fulfill solely on `checkout.session.completed`: the May table describes it as customer authorization, with payment still pending. The table describes `checkout.session.async_payment_succeeded` as eventual success and `invoice.paid` as a successful customer payment; either can support fulfillment according to that guide. It describes `checkout.session.async_payment_failed` and `invoice.payment_failed` as failure paths requiring customer follow-up.\n\n| Event | May guide's interpretation |\n|---|---|\n| `checkout.session.completed` | Debit authorized; wait for success or failure |\n| `checkout.session.async_payment_succeeded` | Delayed payment succeeded; fulfill |\n| `checkout.session.async_payment_failed` | Delayed payment failed; ask customer to retry |\n| `invoice.paid` | Customer payment succeeded; fulfill and record paid period |\n| `invoice.payment_failed` | Invoice payment failed; contact customer |\n\nThe May webhook example explicitly allows `invoice.paid` to arrive before `checkout.session.completed`, fulfills the purchase, and records that subscription period as paid. Thus `invoice.paid` is **not limited to renewals** in this guide. These are event-handling examples, not a guarantee that a specific debit settled or funds became available.\n\n## Optional Checkout features (May 2026)\n\n- Setup fee: one-time plus recurring `line_items`\n- Inline pricing: `price_data` plus `product_data`\n- Existing customer: `customer` or `customer_account` branches\n- Trials: `subscription_data.trial_period_days`\n- Fixed tax rates: `subscription_data.default_tax_rates`\n- Dynamic tax rates: `line_items.dynamic_tax_rates` (not mixed with fixed rates in its example)\n- Coupons: `discounts[{coupon}]`\n- Customer-facing promotion codes: `allow_promotion_codes: true`\n\n## Test IBANs (May 2026)\n\nEach of the two May variant tables has **19 country headings**: AT, BE, HR, EE, FI, FR, DE, GI, IE, LI, LT, LU, NL, NO, PT, ES, SE, CH, GB. The tables do not contain SK or SI headings. They give eight test scenarios per country: success, delayed success, failure, delayed failure, dispute, weekly volume limit, weekly transaction limit, and insufficient funds. Token examples include `pm_success_de` and `pm_disputed_fr`. Read the full historical tables in the raw capture; test data is not a live availability guarantee.\n\nThe May advanced page also labels its optional `idealBank` path legacy and unavailable in the latest Stripe.js version as of that capture. One API Price example uses USD while nearby narrative examples use EUR, so example currency values must not be treated as a general SEPA eligibility rule.\n\n## Related pages\n\n- [[stripe-sepa-debit]] \u2014 concept page\n- [[stripe-subscriptions]] \u2014 subscription concept page\n- [[stripe]] \u2014 company page\n\n## Related raw API references\n\n- [[stripe-billing-subscriptions-sepa-debit-2026-11-07]] \u2014 November 7, 2026 unparameterized variant index only; linked variants not captured here\n\n## Raw Sources\n\n- [[stripe-subscriptions-sepa-debit-2026]] \u2014 May 13, 2026 full hosted and advanced variant capture\n",
+  "quotes": [
+    {
+      "text": "# Set up a subscription with SEPA Direct Debit",
+      "location": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md:5"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md:11"
+    },
+    {
+      "text": "[Full hosted page](https://docs.stripe.com/billing/subscriptions/sepa-debit.md?platform=web&payment-ui=stripe-hosted)",
+      "location": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md:13"
+    },
+    {
+      "text": "[Advanced integration](https://docs.stripe.com/billing/subscriptions/sepa-debit.md?platform=web&payment-ui=elements)",
+      "location": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "However, SEPA Direct Debit is a delayed notification payment method, which means that funds aren\u2019t immediately available.",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:240"
+    },
+    {
+      "text": "The customer has successfully authorized the debit payment by submitting the Checkout form.",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:257"
+    },
+    {
+      "text": "If you\u2019re a new user, use the [Payment Element](https://docs.stripe.com/payments/payment-element.md) instead of using Stripe Elements as described in this guide.",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:1033"
+    },
+    {
+      "text": "Use [confirmSepaDebitPayment](https://docs.stripe.com/js/payment_intents/confirm_sepa_debit_payment#stripe_confirm_sepa_debit_payment-with_element) or, for subscriptions that don\u2019t collect a payment up front, [confirmSepaDebitSetup](https://docs.stripe.com/js/setup_intents/confirm_sepa_debit_setup#stripe_confirm_sepa_debit_setup-with_element) to confirm the subscription",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:1261"
+    },
+    {
+      "text": "invoice.paid may have fired before this so there",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:308"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-subscriptions-sepa-debit-2026.md": [
+      {
+        "start": 1,
+        "end": 1761
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-sepa-debit.md": [
+      {
+        "start": 1,
+        "end": 71
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/03c701a9efdd685af72d09ab/content.diff": [
+      {
+        "start": 1,
+        "end": 1763
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "sepa-subscription-path-qualification",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "old_text": "Two paths: Checkout (`payment_method_types=['sepa_debit']`, `mode='subscription'`) or Payment Element (`default_incomplete` + `save_default_payment_method='on_subscription'`).",
+      "new_text": "The May 2026 guide has a hosted Checkout subscription example (`payment_method_types=['sepa_debit']`, `mode='subscription'`) and an advanced web example (`default_incomplete` + `save_default_payment_method='on_subscription'`). The advanced page recommends a separate Payment Element build guide for new users, while its own mixed sample mounts a Payment Element and uses SEPA-specific `confirmSepaDebitPayment` or `confirmSepaDebitSetup` calls according to whether payment is due up front. The November 2026 unparameterized capture is only a variant index. [[source-stripe-subscriptions-sepa-debit]]",
+      "reason": "Preserve dated branch and sample boundaries; correct unsupported generic confirmPayment simplification in source.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Current full linked variants not captured."
+      ]
+    },
+    {
+      "update_id": "sepa-delayed-paid-initial",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "old_text": "**Delayed notification** \u2014 do NOT fulfill on `checkout.session.completed`. Wait for `checkout.session.async_payment_succeeded` or `invoice.paid`.",
+      "new_text": "**Delayed notification (May 2026 guide)** \u2014 `checkout.session.completed` records debit authorization, not payment success. The guide uses later `checkout.session.async_payment_succeeded` or `invoice.paid` for fulfillment. Its example handles `invoice.paid` for an initial paid invoice as well as later paid periods, even if that event precedes `checkout.session.completed`. [[source-stripe-subscriptions-sepa-debit]]",
+      "reason": "Make initial and later invoice.paid scope explicit.",
+      "quote_indexes": [],
+      "warnings": [
+        "Dated May evidence; November index has no webhook detail."
+      ]
+    },
+    {
+      "update_id": "sepa-subscription-test-table-count",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "old_text": "- [[source-stripe-subscriptions-sepa-debit]] \u2014 subscription guide: Checkout + Payment Element, delayed notification, 20+ country IBAN test tables (8 scenarios each)",
+      "new_text": "- [[source-stripe-subscriptions-sepa-debit]] \u2014 May subscription guide: hosted Checkout and advanced web example, delayed notification, 19 country headings in each IBAN test table (8 scenarios each); November capture is a variant index",
+      "reason": "May raw has 19 headings in each variant and no SK/SI table.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Test headings do not establish current geographic eligibility."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/sepa-debit, the November capture is a 14-line index naming Full hosted page and Advanced integration variants; it establishes no API, mandate, payment state, or test eligibility (new 5-14). The May full guide documents Checkout and an advanced sample that mounts Payment Element but uses SEPA-specific confirmation calls (old 188-214,1033,1180-1262). [[source-stripe-subscriptions-sepa-debit]] retains these details as dated evidence.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/sepa-debit, the observable November change is navigation to two parameterized variants, not deprecation of May flows. [[source-stripe-subscriptions-sepa-debit]] should correct its May summary: remove unsupported Checkout-recommended wording, count 19 test-table country headings per variant and omit SK/SI, identify the advanced sample's confirmSepaDebitPayment/confirmSepaDebitSetup calls, and treat invoice.paid as successful payment for initial or later paid periods rather than renewal only (old 257-261,303-330). The linked November variants were not captured; no actual mandate, settlement, or account eligibility was verified."
+  },
+  "status": "candidate_ready"
+}

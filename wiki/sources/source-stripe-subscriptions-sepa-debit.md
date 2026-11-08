@@ -1,8 +1,9 @@
 ---
 title: "Stripe Subscriptions — Set Up SEPA Direct Debit Subscription"
 type: source
-date_ingested: 2026-05-13
+date_ingested: 2026-11-08
 original_format: webpage
+canonical_url: https://docs.stripe.com/billing/subscriptions/sepa-debit
 raw_files:
   - "stripe-subscriptions-sepa-debit-2026.md"
 tags: [stripe, billing, subscriptions, sepa-debit, eur, europe, checkout, payment-element, delayed-notification]
@@ -10,11 +11,13 @@ tags: [stripe, billing, subscriptions, sepa-debit, eur, europe, checkout, paymen
 
 ## Summary
 
-Integration guide for SEPA Direct Debit subscriptions. Two paths: Checkout (recommended) and Payment Element. Key: delayed notification payment method — do NOT fulfill on `checkout.session.completed`. Extensive IBAN test data for 20+ European countries (8 scenarios each).
+The May 13, 2026 guide documents two SEPA Direct Debit subscription examples: a hosted Checkout page and an advanced web integration. SEPA Direct Debit has delayed payment notification, so Checkout form completion alone is not a payment-success or fulfillment signal. Its two test tables each have **19 country headings** and eight scenarios per country. These are May test examples, not evidence of current account or bank eligibility.
 
-## Two integration paths
+The November 7, 2026 capture at the same unparameterized URL is only an index linking to a full hosted web variant and an advanced web/elements variant. It contains no current API, mandate, webhook, payment-state, or test-table instructions. Omission from this index does not establish removal of either May flow. The linked full variants were not captured in this job.
 
-### Path 1: Checkout (hosted)
+## Hosted Checkout example (May 2026)
+
+The May example creates a Checkout Session with `payment_method_types: ['sepa_debit']`, at least one recurring Price, and `mode: 'subscription'`. It redirects the customer to the Session URL and supplies a `success_url`. The matched May guide labels this a full hosted page; it does **not** establish that Checkout is recommended over the advanced path.
 
 ```js
 stripe.checkout.sessions.create({
@@ -25,47 +28,53 @@ stripe.checkout.sessions.create({
 })
 ```
 
-### Path 2: Payment Element (advanced)
+## Advanced integration example (May 2026)
 
-Create subscription: `default_incomplete` + `save_default_payment_method='on_subscription'` → mount Payment Element → `stripe.confirmPayment({ return_url })` → SEPA redirects to Stripe-hosted confirmation → on return check PaymentIntent status.
+The May advanced variant describes customer-configured Accounts v2 and Customers v1 branches. In that capture, Accounts v2 was generally available for Connect users and in public preview for other Stripe users, with preview-version qualification. Its server example creates a subscription using `payment_behavior: 'default_incomplete'`, `payment_settings.save_default_payment_method: 'on_subscription'`, and expands `latest_invoice.confirmation_secret` plus `pending_setup_intent`. It returns the invoice confirmation secret when payment is due up front, or the pending SetupIntent secret when no payment is collected up front.
 
-## Delayed notification — key events
+The old page tells new users to follow a separate Payment Element subscription build guide, yet its own sample mounts a Payment Element and includes other Elements/IBAN code. It says the Payment Element displays the SEPA form and mandate acceptance and collects name, email, and IBAN. The confirmation instruction and sample select **`stripe.confirmSepaDebitPayment`** for an upfront payment or **`stripe.confirmSepaDebitSetup`** when no payment is collected up front. This mixed May example must not be collapsed into a single `stripe.confirmPayment` call or treated as a verified end-to-end execution.
 
-Do NOT fulfill on `checkout.session.completed` alone:
+## Delayed notification and paid invoices (May 2026)
 
-| Event | Action |
+Do not fulfill solely on `checkout.session.completed`: the May table describes it as customer authorization, with payment still pending. The table describes `checkout.session.async_payment_succeeded` as eventual success and `invoice.paid` as a successful customer payment; either can support fulfillment according to that guide. It describes `checkout.session.async_payment_failed` and `invoice.payment_failed` as failure paths requiring customer follow-up.
+
+| Event | May guide's interpretation |
 |---|---|
-| `checkout.session.completed` | Customer authorized — wait |
-| `checkout.session.async_payment_succeeded` | Funds confirmed → fulfill |
-| `checkout.session.async_payment_failed` | Email customer |
-| `invoice.paid` | Subscription renewal succeeded → fulfill |
-| `invoice.payment_failed` | Contact customer |
+| `checkout.session.completed` | Debit authorized; wait for success or failure |
+| `checkout.session.async_payment_succeeded` | Delayed payment succeeded; fulfill |
+| `checkout.session.async_payment_failed` | Delayed payment failed; ask customer to retry |
+| `invoice.paid` | Customer payment succeeded; fulfill and record paid period |
+| `invoice.payment_failed` | Invoice payment failed; contact customer |
 
-## Optional Checkout features
+The May webhook example explicitly allows `invoice.paid` to arrive before `checkout.session.completed`, fulfills the purchase, and records that subscription period as paid. Thus `invoice.paid` is **not limited to renewals** in this guide. These are event-handling examples, not a guarantee that a specific debit settled or funds became available.
 
-- Setup fee: one-time + recurring `line_items`
-- Inline pricing: `price_data` + `product_data`
-- Existing customer: `customer` or `customer_account`
+## Optional Checkout features (May 2026)
+
+- Setup fee: one-time plus recurring `line_items`
+- Inline pricing: `price_data` plus `product_data`
+- Existing customer: `customer` or `customer_account` branches
 - Trials: `subscription_data.trial_period_days`
 - Fixed tax rates: `subscription_data.default_tax_rates`
-- Dynamic tax rates: `line_items.dynamic_tax_rates` (cannot mix with fixed)
+- Dynamic tax rates: `line_items.dynamic_tax_rates` (not mixed with fixed rates in its example)
 - Coupons: `discounts[{coupon}]`
-- Promo codes: `allow_promotion_codes: true`
+- Customer-facing promotion codes: `allow_promotion_codes: true`
 
-## Test IBANs
+## Test IBANs (May 2026)
 
-8 scenarios per country: success, successDelayed (3 min), failed, failedDelayed, disputed, exceedsWeeklyVolumeLimit, exceedsWeeklyTransactionLimit, insufficientFunds.
+Each of the two May variant tables has **19 country headings**: AT, BE, HR, EE, FI, FR, DE, GI, IE, LI, LT, LU, NL, NO, PT, ES, SE, CH, GB. The tables do not contain SK or SI headings. They give eight test scenarios per country: success, delayed success, failure, delayed failure, dispute, weekly volume limit, weekly transaction limit, and insufficient funds. Token examples include `pm_success_de` and `pm_disputed_fr`. Read the full historical tables in the raw capture; test data is not a live availability guarantee.
 
-Token format: `pm_{scenario}_{country_code}` (e.g. `pm_success_de`, `pm_disputed_fr`).
-
-20+ countries covered: AT, BE, HR, EE, FI, FR, DE, GI, IE, LI, LT, LU, NL, NO, PT, SK, SI, ES, SE, CH, GB. Full IBAN tables in raw file.
+The May advanced page also labels its optional `idealBank` path legacy and unavailable in the latest Stripe.js version as of that capture. One API Price example uses USD while nearby narrative examples use EUR, so example currency values must not be treated as a general SEPA eligibility rule.
 
 ## Related pages
 
-- [[stripe-sepa-debit]] — concept page (updated with subscription facts)
-- [[stripe-subscriptions]] — concept page
+- [[stripe-sepa-debit]] — concept page
+- [[stripe-subscriptions]] — subscription concept page
 - [[stripe]] — company page
+
+## Related raw API references
+
+- [[stripe-billing-subscriptions-sepa-debit-2026-11-07]] — November 7, 2026 unparameterized variant index only; linked variants not captured here
 
 ## Raw Sources
 
-- [[stripe-subscriptions-sepa-debit-2026]] — verbatim Stripe docs webpage (1761 lines, 1 image reused)
+- [[stripe-subscriptions-sepa-debit-2026]] — May 13, 2026 full hosted and advanced variant capture

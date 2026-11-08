@@ -1,0 +1,187 @@
+{
+  "job_id": "billing-subscriptions-coupons",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md",
+  "raw_sha256": "36d6a9907f9859dff9fd567770b4480a87c0ddd340d94b621fd454663556774a",
+  "source_before_sha256": "ab1cf573918f2b011680cee2e2c41c0d5ebdcc21720ea969c9d5f58004e59034",
+  "source_page": "---\ntitle: \"Stripe \u2014 Coupons and Promotion Codes for Subscriptions\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/coupons\"\nraw_files:\n  - \"stripe-billing-subscriptions-coupons-2026-11-07.md\"\n  - \"stripe-subscriptions-coupons-2026.md\"\ntags: [stripe, subscriptions, coupons, promotion-codes, discounts, stackable]\n---\n\n## Summary\n\nStripe's subscription-discount guide distinguishes coupons, which define a discount and can be applied by a backend, from customer-facing promotion codes that reference a coupon and inherit its product restrictions. Redeeming creates a Stripe `Discount` object. The guide covers duration, redemption and eligibility, Checkout and customer-portal paths, stacking, and subscription updates (old lines 8\u201325, 474\u2013587; new lines 9\u201339, 430\u2013503).\n\nThe 2026-11-07 capture explicitly states up to **20 discounts on a subscription, subscription item, or invoice**, shared between coupon and promotion-code applications (new line 24). The May stacking section said up to 20 entries in a `discounts` parameter (old lines 563\u2013571). Neither passage establishes one combined 20-discount budget across all three objects.\n\n## Coupon creation, scope, and duration\n\nOnly a coupon's **name** can be edited after creation. `applies_to` can restrict eligible products; associated promotion codes inherit those product restrictions. If no subscription product matches, adding the coupon yields no discount. Existing discounts are reflected in subscription-change prorations, but proration line items cannot be further discounted on the generated invoice (old lines 39\u201395; new lines 53\u2013109).\n\n- `duration=once` applies to the first invoice and is the stated **default** in the November capture. After that invoice finalizes, the subscription's `discounts` array no longer includes the consumed discount, while the invoice retains it (new lines 193\u2013205).\n- `duration=repeating` uses `duration_in_months`; `duration=forever` continues indefinitely. A backdated subscription counts coupon duration from the backdated start, so an elapsed backdated period can consume repeating duration (old lines 215\u2013229; new lines 193\u2013207).\n\nThe May capture already described `once` consumption at finalization and also used \u201cfinalized or paid\u201d in a later explanatory bullet (old lines 221\u2013227). The November finalization wording does not itself prove a changed runtime transition. The slightly different yearly repeating examples (old line 217; new line 197) do not establish a semantic change.\n\nDeleting a coupon prevents new application to subscriptions or invoices, but does not remove discounts already present (old line 195; new line 176). November's coupon-versus-code table adds that deletion archives associated promotion codes (new line 33). A code whose underlying coupon becomes invalid is permanently inactive, as are codes that expire or reach their own max redemption count (old lines 398\u2013402; new lines 378\u2013382).\n\n## Redemption limits\n\n`max_redemptions` caps coupon redemptions across all customers. The November guide explicitly says both direct coupon application and customer redemption of a promotion code consume the **same underlying coupon** counter (new lines 209\u2013215). The May guide described the aggregate coupon limit without that explicit code-counting sentence (old lines 231\u2013235). A coupon's expiration blocks new applications, but does not end an already-applied `forever` discount (old line 235; new line 215).\n\n## Promotion-code controls\n\nA promotion code is a customer-facing wrapper around a coupon; multiple codes may reference one coupon. Code strings are case-insensitive. **Distinct customer-restricted active codes may reuse the same string**, but an active code redeemable by any customer cannot share that string with another active code. An inactivated code string can be reused (old lines 265\u2013281; new lines 245\u2013261).\n\nPromotion-code-only controls include restriction to a particular customer, first-time transaction, minimum amount, expiration, and max redemption count (new lines 26\u201333, 287\u2013364). The first-time restriction excludes customers who initiated a PaymentIntent even if it failed, or subscribed to a trial even if canceled (old lines 329\u2013342; new lines 309\u2013322). Minimum amount is checked **at redemption**, so for a subscription it applies to the initial payment, not every renewal (old lines 344\u2013356; new lines 324\u2013336). Do not generalize these code restrictions to directly applied coupons.\n\nA promotion code with amount restrictions cannot be applied to subscription items, invoice items, subscription updates, or future subscription-schedule phases (old lines 249\u2013257; new lines 229\u2013237). A code's expiration cannot be later than its parent coupon's expiration, and its max redemption limit cannot exceed the parent's (old lines 358\u2013384; new lines 338\u2013364).\n\n## Applying discounts and account variants\n\nCoupons can be applied to a subscription on creation or update; Checkout subscription mode accepts a coupon in `discounts`. Promotion codes can be applied on subscription creation or update by first resolving the entered code to a PromotionCode ID; Checkout can show a code-entry box with `allow_promotion_codes` (old lines 97\u2013189, 404\u2013469; new lines 111\u2013170, 384\u2013425).\n\nAccounts v2 examples use `customer_account`; Customers v1 examples use `customer`. The guide says Accounts v2 is generally available for Connect users and in public preview for other users, with a preview version needed by preview participants. November adds a Dashboard preview-enablement instruction. These are documented paths, not proof that a particular account has access (old lines 112\u2013162, 285\u2013303; new lines 126\u2013152, 265\u2013283).\n\nThe May capture renders coupon, subscription, and Checkout examples in Node SDK form (old lines 56\u201366, 112\u2013189, 423\u2013465). November renders corresponding examples in curl (new lines 70\u201376, 126\u2013170, 403\u2013421). The rendering change is not evidence of Node SDK deprecation.\n\n## Customer portal and stacking\n\nWith promotion codes enabled in the customer portal, customers can apply codes while changing subscriptions. **A promotion-code update can succeed even if an associated price upgrade fails due to a payment failure**, because the updates are applied separately (old lines 241\u2013245; new lines 221\u2013225).\n\nDiscounts can be stacked on subscriptions and subscription items. Order matters when `percent_off` and `amount_off` are mixed (old lines 474\u2013483; new lines 430\u2013439). Stacking restrictions include unique entries, no coupon paired with its derived promotion code or derived Discount, and redeemed Discount objects already attached to the updated customer or subscription (old lines 563\u2013571; new lines 479\u2013487).\n\nWhen updating `discounts`, include all existing coupon, code, and Discount entries to keep; omit an existing entry to remove it. `discounts=\"\"` clears all subscription discounts, after which a customer-level discount can apply to invoices. After multiple discounts are set, the deprecated scalar `coupon` or `promotion_code` update parameters cannot be used as described for subscriptions or schedule phases (old lines 573\u2013581; new lines 489\u2013497).\n\n**Discount-only updates do not create prorations or an invoice.** A separate billable current-cycle change can trigger prorations; when combined in one call, Stripe calculates that proration using the updated pricing and discount state (old lines 583\u2013587; new lines 499\u2013503). The discount update is not itself the proration trigger.\n\n## Other discount routes and scripts\n\nThe guide also lists negative customer balance, negative invoice items, and a cheaper second Price as alternative discount methods (old lines 589\u2013597; new lines 505\u2013513).\n\nThe November page links to [Stripe-authored discount calculation scripts](https://docs.stripe.com/billing/scripts/stripe-authored/discount-calculation.md) and [self-authored discount calculation scripts](https://docs.stripe.com/billing/scripts/discount-calculation.md) (new lines 91\u201393). Those links are navigation to separate authority; this capture does not specify script rules, account eligibility, or execution outcomes.\n\n## Related pages\n\n- [[stripe-subscriptions-coupons]] \u2014 concept route\n- [[stripe-subscriptions]] \u2014 subscription context\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-coupons-2026-11-07|2026-11-07 coupons guide capture]]\n- [[raw/stripe-subscriptions-coupons-2026|2026-05-13 coupons guide capture]]\n",
+  "quotes": [
+    {
+      "text": "You can apply up to 20 discounts to a subscription, subscription item, or invoice. This limit is shared between  coupons and promotion codes.",
+      "location": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md:24"
+    },
+    {
+      "text": "To customize how a coupon calculates discounts, configure a [Stripe-authored discount calculation script](https://docs.stripe.com/billing/scripts/stripe-authored/discount-calculation.md) or [author your own discount calculation script](https://docs.stripe.com/billing/scripts/discount-calculation.md).",
+      "location": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md:93"
+    },
+    {
+      "text": "Duration defaults to `once`, which applies only to the first invoice.",
+      "location": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md:195"
+    },
+    {
+      "text": "Both actions count toward the same `max_redemptions` limit on the coupon.",
+      "location": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md:211"
+    },
+    {
+      "text": "You can create multiple customer-restricted promotion codes with the same `code`, but you can\u2019t reuse that `code` for a promotion code that any customer can redeem.",
+      "location": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md:259"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You can set up to 20 entries in the `discounts` parameter.",
+      "location": "raw/stripe-subscriptions-coupons-2026.md:567"
+    },
+    {
+      "text": "After the invoice that used the coupon is finalized or paid, the subscription\u2019s `discounts` stops showing that discount.",
+      "location": "raw/stripe-subscriptions-coupons-2026.md:225"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-subscriptions-coupons-2026.md:114"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-coupons-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 521
+      }
+    ],
+    "raw/stripe-subscriptions-coupons-2026.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 605
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-coupons.md": [
+      {
+        "start": 1,
+        "end": 57
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7a2a60e00f98114b5b091d5a/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 675
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "coupons-concept-overview-limit",
+      "target_path": "wiki/concepts/stripe-subscriptions-coupons.md",
+      "old_text": "Coupons define discounts (percentage or fixed amount) applied to subscriptions. Promotion codes are customer-facing codes that map to coupons. Both can be stacked (up to 20 per subscription/item).",
+      "new_text": "Coupons define percentage or fixed-amount discounts, and customer-facing promotion codes map to coupons. The 2026-11-07 guide states up to 20 coupon- or code-derived discounts on a subscription, subscription item, **or invoice**; it does not establish one combined budget across those objects. See [[source-stripe-subscriptions-coupons]].",
+      "reason": "Add invoice scope and preserve the per-target limit boundary.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "coupons-concept-redemptions",
+      "target_path": "wiki/concepts/stripe-subscriptions-coupons.md",
+      "old_text": "- `max_redemptions`: limit across all customers; `redeem_by`: expiration",
+      "new_text": "- `max_redemptions`: coupon limit across all customers; direct coupon applications and promotion-code redemptions both consume that coupon's counter. `redeem_by`: expiration. See [[source-stripe-subscriptions-coupons]] (2026-11-07 lines 209\u2013215).",
+      "reason": "Add the explicit shared underlying-coupon redemption counter.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "coupons-concept-code-uniqueness",
+      "target_path": "wiki/concepts/stripe-subscriptions-coupons.md",
+      "old_text": "- Case-insensitive; unique across active codes",
+      "new_text": "- Case-insensitive. Distinct customer-restricted active codes may reuse a string; an active code redeemable by any customer cannot share that string with another active code. An inactivated string can be reused. See [[source-stripe-subscriptions-coupons]] (2026-05-13 lines 265\u2013281; 2026-11-07 lines 245\u2013261).",
+      "reason": "Correct the overbroad uniqueness statement with the customer-restricted exception.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "coupons-concept-stacking-limit",
+      "target_path": "wiki/concepts/stripe-subscriptions-coupons.md",
+      "old_text": "Apply discounts at both subscription level and subscription item level. Up to 20 per `discounts[]`.",
+      "new_text": "Apply discounts at subscription and subscription-item levels. The 2026-11-07 guide also states a limit of up to 20 on an invoice; coupon- and promotion-code-derived discounts share each stated target limit. The 2026-05-13 stacking section says up to 20 entries per `discounts` parameter. See [[source-stripe-subscriptions-coupons]].",
+      "reason": "Add invoice scope without asserting a global combined cap.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "coupons-concept-proration",
+      "target_path": "wiki/concepts/stripe-subscriptions-coupons.md",
+      "old_text": "- Updating discounts alone doesn't trigger prorations \u2014 only when combined with proration-triggering changes (quantity change, price change, etc.)",
+      "new_text": "- Updating discounts alone creates neither prorations nor an invoice. A separate billable current-cycle change, such as a quantity or price change, can trigger proration; if combined in the same call, the proration uses the updated discount state. See [[source-stripe-subscriptions-coupons]] (2026-05-13 lines 583\u2013587; 2026-11-07 lines 499\u2013503).",
+      "reason": "Make the causal boundary explicit so discount updates are not read as a proration trigger.",
+      "quote_indexes": [],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/coupons, [[source-stripe-subscriptions-coupons]] routes the May and November captures. Coupons define discounts; promotion codes are customer-facing wrappers inheriting parent product restrictions (old lines 8\u201321, 81\u201395; new lines 15\u201335, 95\u2013107). The November page states up to 20 discounts on each named target\u2014subscription, item, or invoice\u2014and a shared coupon max_redemptions counter for direct coupon use and code redemption (new lines 24, 209\u2013215; old lines 231\u2013235, 563\u2013571). Code restrictions and stacking still require their object and update conditions (old lines 249\u2013257, 474\u2013587; new lines 229\u2013237, 430\u2013503).",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/coupons, [[source-stripe-subscriptions-coupons]] needs invoice scope for the stated 20-discount limit (new line 24; old line 567), script links as navigation only (new lines 91\u201393), once as the stated default with removal after invoice finalization (new lines 193\u2013205; old lines 215\u2013227), and explicit shared coupon redemption counting (new lines 209\u2013215; old lines 231\u2013235). It must correct the active-code uniqueness summary because customer-restricted active codes may duplicate strings (old lines 265\u2013281; new lines 245\u2013261) and clarify that discount-only changes do not cause proration (old lines 583\u2013587; new lines 499\u2013503). The May Node and Accounts v2 examples remain dated; November curl examples and its preview-enablement instruction do not prove account access or SDK deprecation (old lines 56\u201366, 112\u2013164; new lines 70\u201376, 126\u2013152)."
+  },
+  "status": "candidate_ready"
+}

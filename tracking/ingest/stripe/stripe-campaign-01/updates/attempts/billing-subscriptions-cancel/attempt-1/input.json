@@ -1,0 +1,96 @@
+{
+  "job_id": "billing-subscriptions-cancel",
+  "queue_id": 23,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/cancel",
+  "raw_path": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md",
+  "raw_sha256": "840097cd57d51cae17f11d6d19a2a49bc3152f8f16fa721949d217bd78ea6fc4",
+  "prior_raw_path": "raw/stripe-subscriptions-cancel-2026.md",
+  "prior_raw_sha256": "6545a3c203c870da99f7b15bfb8a06e6da91d18cc007abf765f761d51afc4c06",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/17ae41fe65c0f620c8ca5200/content.diff",
+  "diff_sha256": "21ecd7c6ba5a661194fac34c6ee4881649c3afc5362e37fc0d4e1beaff0ffd3c",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-cancel.md"
+  ],
+  "source_before_sha256": "b5154243b0f0695f0bf0b1a1b4b84728f096fd7260a257fe6f163b015c120d31",
+  "section": "billing",
+  "new_words": 1917,
+  "new_lines": 180,
+  "old_words": 1899,
+  "old_lines": 190,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-cancel.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-cancel/attempt-1/receipt.json",
+  "receipt_sha256": "67f93f02fd7bdb4673bc29e293aeefc03197bcbe46888c4dccf433a9c336df68",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-cancel/attempt-1/review.json",
+  "review_sha256": "c3d8ceec04973dbf75b3b54ffffa43a897ae42dd2f8279d80f799efb3dcb3648",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-cancel.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md",
+  "new_raw_sha256": "840097cd57d51cae17f11d6d19a2a49bc3152f8f16fa721949d217bd78ea6fc4",
+  "prior_raw": "raw/stripe-subscriptions-cancel-2026.md",
+  "findings": [
+    "The same captured URL still documents immediate, period-end, schedule, dispute-triggered and custom-date cancellation (new 17-88, 141-176; old 16-94, 147-184). Immediate cancellation is the default for a manual cancel call, stops future subscription invoices and leaves only metadata and cancellation_details updateable (new 19; old 18). A scheduled period-end cancellation can be stopped before the period ends; a canceled subscription cannot be reactivated (new 64, 118-139; old 70, 120-145).",
+    "Current source 42 and concept custom-date section say a credit proration is always generated. Old raw 20 itself provided a within-period suppression path, and new 21 states only that prevention is possible when cancel_at is within the current billing period. New 151-153 says shortening the current period creates prorations unless disabled, with billing-mode-dependent invoice-line effects. New 166 explicitly rules out disabling prorations for a cancel date beyond the current period. Do not infer that being within the current period alone suppresses a proration, or that suppression has identical invoice consequences in every billing mode.",
+    "The new page adds a Workflows template that runs when the subscription ends and deletes only pending invoice items for that subscription (new 105-107). This is an optional no-code automation route; it does not retroactively delete items, erase invoices, or change the separate existing manual-delete guidance at new 92-103 and old 98-109. A final invoice or another active subscription can still bill pending items absent deletion.",
+    "The unchanged invoice boundary is material: cancellation sets auto_advance=false on open and draft invoices for that subscription, pausing automatic collection and reminders, while manual collection and emails remain possible (new 103; old 109). It does not mean those invoices are voided or debts discharged. If cancel_at_period_end is set, pending prorations remain for period end; an early cancel leaves invoice items unprocessed unless specifically invoiced (new 101; old 107).",
+    "Event identity remains unchanged: customer.subscription.updated includes scheduling cancel_at_period_end, whereas customer.subscription.deleted marks actual cancellation by direct deletion or period-end arrival (new 109-116; old 111-118). Do not treat the scheduling update as the deletion or a paid final invoice.",
+    "The new and old pages both restrict dispute-triggered cancellation to full-amount credit or debit card disputes, exclude test clocks, say changes take roughly an hour, and release scheduled subscriptions before cancellation (new 74-88; old 80-94). Neither capture establishes that any merchant configured this setting or that any specific dispute canceled a subscription.",
+    "The older Node.js examples become curl examples in the new capture (old 35-41, 60-68, 135-159; new 36-39, 58-62, 133-149). This is a rendering change, not a new required SDK or a demonstrated API execution. The prior 2018-02-28 update-parameter warning and post-June-2024 anchor guarantee persist (old 145, 182; new 139, 174)."
+  ],
+  "substantive_changes": [
+    "New wording clarifies custom-date proration boundaries: within-period is a necessary condition for preventing the credit proration; outside-current-period cancel_at cannot disable prorations, and billing mode can change invoice-line effects when the period is shortened (new 21, 151-166 versus old 20, 161-174).",
+    "New optional Workflows template deletes only pending invoice items after the subscription ends (new 105-107); existing manual-deletion and invoice-collection rules remain (new 90-103; old 96-109)."
+  ],
+  "conflicts": [
+    "Current source 42 and wiki/concepts/stripe-subscriptions-cancel.md custom-date section assert an always-generated credit proration while both old 20 and new 21 allow a bounded within-period prevention path. New 153 adds billing-mode-dependent line effects.",
+    "Current source 62 and concept invoice-items section say pending invoice items 'must manually delete' without noting the new optional Workflows route. The no-code template operates only when the subscription ends and only on its pending items (new 105-107), so the manual instruction remains valid when the workflow is not used."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the old 2026-05-13 capture's custom-date statement dated, including its explicit proration_behavior=none within-period suppression path (old 20), rather than repeating its internally overbroad 'always generated' sentence as a universal rule.",
+    "Preserve unchanged irreversible canceled status, period-end reactivation cutoff, invoice-item and auto_advance effects, event distinction, full-amount-card-dispute limitation, 2018-02-28 warning, and post-June-2024 anchor qualification (old 18, 70, 84-109, 117-145, 182; new 19, 64, 78-103, 115-139, 174).",
+    "Keep old Node.js examples as dated sample code, not a current compulsory SDK path (old 35-41, 60-68; new 36-39, 58-62)."
+  ],
+  "unresolved_questions": [
+    "The capture does not determine the exact invoice line effects for each billing mode when prorations are disabled; new 153 links to a separate comparison guide, which was not used as behavioral evidence here.",
+    "The page does not establish that the Workflows template is installed or run for any particular account, nor prove the deletion timing and result of a specific invoice item.",
+    "The capture does not prove a refund, payment collection, final invoice settlement, or any merchant's automatic-cancellation configuration."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw6",
+  "reviewer_agent": "/root/s01ur1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md",
+      "sha256": "840097cd57d51cae17f11d6d19a2a49bc3152f8f16fa721949d217bd78ea6fc4",
+      "lines": 180
+    },
+    {
+      "path": "raw/stripe-subscriptions-cancel-2026.md",
+      "sha256": "6545a3c203c870da99f7b15bfb8a06e6da91d18cc007abf765f761d51afc4c06",
+      "lines": 190
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-cancel.md",
+      "sha256": "b5154243b0f0695f0bf0b1a1b4b84728f096fd7260a257fe6f163b015c120d31",
+      "lines": 90
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/17ae41fe65c0f620c8ca5200/content.diff",
+      "sha256": "21ecd7c6ba5a661194fac34c6ee4881649c3afc5362e37fc0d4e1beaff0ffd3c",
+      "lines": 223
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-cancel-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-cancel-review.json"
+}

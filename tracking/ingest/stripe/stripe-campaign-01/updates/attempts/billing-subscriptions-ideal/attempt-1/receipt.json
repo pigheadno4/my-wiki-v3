@@ -1,0 +1,210 @@
+{
+  "job_id": "billing-subscriptions-ideal",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md",
+  "raw_sha256": "bfe4cddde441e905128d5bd800d36165165f9f355ac0f3f96cc109cc566e94da",
+  "source_before_sha256": "ea0ed46bfbfe9a5c703f0af65b0e9ff255a35542229a46ec75fa56eeb885267b",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up iDEAL + SEPA Direct Debit Subscription\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/billing/subscriptions/ideal\nraw_files:\n  - \"stripe-subscriptions-ideal-2026.md\"\ntags: [stripe, billing, subscriptions, ideal, sepa-debit, eur, netherlands, checkout, payment-element, setup-intents]\n---\n\n## Summary\n\nThe 2026-11-07 capture of this canonical URL is an index to hosted and Direct API variants, not either variant's instructions. The 2026-05-13 capture documents two distinct iDEAL \u2192 SEPA Direct Debit subscription paths: hosted Checkout and Direct API with Payment Element and SetupIntent. The November index establishes no change to either path's payment behavior.\n\n## The iDEAL \u2192 SEPA conversion (2026-05-13 variants)\n\niDEAL is single-use and requires customer authentication for each iDEAL payment. In the older hosted Checkout variant, Stripe charges the first subscription payment through iDEAL to collect bank details. For a free trial, it instead charges 0.01 EUR through iDEAL and immediately refunds that collection. After iDEAL authentication, Stripe saves the customer's IBAN in a SEPA Direct Debit payment method for future payments.\n\nIn the older Direct API variant, Stripe charges 0.01 EUR through iDEAL to collect bank details and refunds that setup payment after authentication. A successful iDEAL SetupIntent tracks setup and the SEPA mandate; retrieve `latest_attempt.payment_method_details.generated_sepa_debit` and use that SEPA Direct Debit PaymentMethod to create and charge the subscription. Successful setup does not by itself establish that the later SEPA payment succeeded or that the subscription is active; inspect the payment and subscription outcomes.\n\n## Path 1: Hosted Checkout (2026-05-13)\n\n```js\nstripe.checkout.sessions.create({\n  payment_method_types: ['ideal'], // or omit to use Dashboard settings\n  line_items: [{ price: priceId, quantity: 1 }],\n  mode: 'subscription',\n  success_url: '...'\n})\n```\n\n**Dashboard-managed PM**: omit `payment_method_types` but must enable \"iDEAL recurring payments\" in Dashboard. This enables SEPA for recurring iDEAL only \u2014 does NOT turn on standalone SEPA.\n\nSupports: `subscription_data.trial_period_days`, `subscription_data.trial_end`.\n\n## Path 2: Direct API (Payment Element + SetupIntent; 2026-05-13)\n\n**Prerequisites**: Activate SEPA Direct Debit in Dashboard; comply with iDEAL ToS + SEPA Direct Debit ToS.\n\n1. Create a SetupIntent with `payment_method_types=['ideal']` and the applicable customer identity: `customer_account` in the older Accounts v2 example or `customer` in the Customers v1 example.\n2. Mount Payment Element; `stripe.confirmSetup({ return_url })` redirects the customer to the bank for setup authorization.\n3. Reliably confirm SetupIntent authorization, for example with the optional `setup_intent.succeeded` webhook, instead of relying only on a customer return. Failed authorization emits `setup_intent.setup_failed`.\n4. After setup succeeds, retrieve the SetupIntent with `expand: ['latest_attempt']`.\n5. Get the `generated_sepa_debit` ID from `latest_attempt.payment_method_details.generated_sepa_debit`.\n6. Create the subscription with that SEPA payment method and `off_session=true` as shown in the older Direct API example. Check the ensuing SEPA payment and subscription status separately.\n\n**Updating subscriptions in this older Direct API flow**: the guide instructs `off_session=true` on updates; otherwise a new payment requires user confirmation.\n\n## Test scenarios (Direct API; 2026-05-13)\n\n### Email-based (6 patterns)\n- `generatedSepaDebitIntentsSucceed@example.com` \u2192 processing \u2192 succeeded\n- `generatedSepaDebitIntentsSucceedDelayed@example.com` \u2192 succeeded after 3+ min\n- `generatedSepaDebitIntentsFail@example.com` \u2192 processing \u2192 requires_payment_method\n- `generatedSepaDebitIntentsFailDelayed@example.com` \u2192 requires_payment_method after 3+ min\n- `generatedSepaDebitIntentsSucceedDisputed@example.com` \u2192 succeeded + immediate dispute\n- `generatedSepaDebitIntentsFailsDueToInsufficientFunds@example.com` \u2192 insufficient_funds\n\n### PM tokens (6 patterns)\n`pm_ideal_generatedSepaDebit{Scenario}` (same 6 scenarios, for automated testing)\n\n## Related pages\n\n- [[stripe-ideal]] \u2014 concept page (updated)\n- [[stripe-sepa-debit]] \u2014 concept page (updated)\n- [[stripe-subscriptions]] \u2014 concept page\n- [[stripe]] \u2014 company page\n\n## Related raw API references\n\n- [[raw/stripe-billing-subscriptions-ideal-2026-11-07|2026-11-07 canonical URL index]] \u2014 navigation only; links to [hosted](https://docs.stripe.com/billing/subscriptions/ideal.md?payments-ui-type=stripe-hosted) and [Direct API](https://docs.stripe.com/billing/subscriptions/ideal.md?payments-ui-type=direct-api) variant bodies, which were not captured in this four-file review.\n\n## Raw Sources\n\n- [[raw/stripe-subscriptions-ideal-2026|2026-05-13 variant guide]] \u2014 historical factual capture (1015 lines, 1 image reused)\n",
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md:11"
+    },
+    {
+      "text": "[Full hosted page](https://docs.stripe.com/billing/subscriptions/ideal.md?payments-ui-type=stripe-hosted)",
+      "location": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md:13"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/billing/subscriptions/ideal.md?payments-ui-type=direct-api)",
+      "location": "raw/stripe-billing-subscriptions-ideal-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "With this integration, Stripe charges the first Subscription payment through iDEAL to collect your customer\u2019s bank details. If you\u2019re offering a free trial, Stripe charges your customer 0.01 EUR through iDEAL to collect their bank details and immediately refunds it.",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:18"
+    },
+    {
+      "text": "With this integration, Stripe charges your customer 0.01 EUR through iDEAL to collect their bank details.",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:547"
+    },
+    {
+      "text": "Use a method such as webhooks to confirm the setup was authorized successfully by your customer, instead of relying on your customer to return to the payment status page.",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:834"
+    },
+    {
+      "text": "When the initial payment succeeds, the status of the subscription is `active` and no further action is needed.",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:874"
+    },
+    {
+      "text": "When you update a subscription, you must specify `off_session=true`.",
+      "location": "raw/stripe-subscriptions-ideal-2026.md:878"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-ideal-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-subscriptions-ideal-2026.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1015
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-ideal.md": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1b1ca961aeea19ee287d6e99/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1017
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "ideal-recurring-qualify",
+      "target_path": "wiki/concepts/stripe-ideal.md",
+      "old_text": "- **Recurring**: Via [[stripe-sepa-debit]] \u2014 same pattern as Bancontact (iDEAL payment saves IBAN as SEPA mandate)",
+      "new_text": "- **Recurring**: Via [[stripe-sepa-debit]]. In the 2026-05-13 subscription guide, hosted Checkout uses iDEAL for the first subscription payment (or a refunded 0.01 EUR collection for a free trial); Direct API uses a refunded 0.01 EUR setup payment and a successful SetupIntent to obtain a generated SEPA Direct Debit payment method. Later SEPA payment success is separate.",
+      "reason": "Qualify existing unscoped recurring description to keep the hosted and Direct API May variants separate and avoid treating setup as a successful subscription charge.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "The 2026-11-07 capture is navigation only; current variant behavior is unverified."
+      ]
+    },
+    {
+      "update_id": "ideal-source-route",
+      "target_path": "wiki/concepts/stripe-ideal.md",
+      "old_text": "- [[source-stripe-subscriptions-ideal]] \u2014 subscription guide: iDEAL\u2192SEPA conversion, Checkout + Direct API, generated_sepa_debit, off_session updates, 6 email/PM test patterns",
+      "new_text": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 subscription variants: hosted Checkout first iDEAL charge or refunded trial setup, Direct API refunded 0.01 EUR setup and generated SEPA method; Direct API off_session update guidance and test cases. 2026-11-07 capture is a variant index only.",
+      "reason": "Reciprocal route to the corrected, dated source with variant and provenance boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Current linked variant bodies were not captured."
+      ]
+    },
+    {
+      "update_id": "sepa-source-route",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "old_text": "- [[source-stripe-subscriptions-ideal]] \u2014 iDEAL\u2192SEPA subscription: Checkout + Direct API, generated_sepa_debit retrieval, 6 email/PM test patterns",
+      "new_text": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 iDEAL\u2192SEPA subscription variants: hosted Checkout and Direct API setup with generated_sepa_debit retrieval; setup success differs from the later SEPA payment outcome. 2026-11-07 capture is a variant index only.",
+      "reason": "Keep reciprocal source route and preserve separation of SetupIntent and later SEPA payment outcomes.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Current linked variant bodies were not captured."
+      ]
+    },
+    {
+      "update_id": "subscriptions-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-ideal]] \u2014 iDEAL\u2192SEPA subscription: Checkout + Direct API, iDEAL captures IBAN then generates SEPA PM, off_session updates, 6 test patterns",
+      "new_text": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 iDEAL\u2192SEPA variants: hosted Checkout first payment or refunded 0.01 EUR trial collection; Direct API refunded setup collection, generated SEPA method, and off_session update guidance. 2026-11-07 capture is a variant index only.",
+      "reason": "Qualify the formerly merged subscription route by May UI variant and November evidence limit.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Current linked variant bodies were not captured."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/ideal, the 2026-11-07 capture contains only a variant index (new raw lines 9\u201314); [[source-stripe-subscriptions-ideal]] records its hosted and Direct API links under related raw references. The 2026-05-13 historical guide separately describes hosted first-subscription-payment iDEAL or refunded 0.01 EUR trial collection (old raw lines 12\u201318) and Direct API refunded 0.01 EUR setup followed by generated SEPA payment method and subscription charge (old raw lines 541\u2013549, 832\u2013850). The linked current variant bodies are outside this evidence set.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/ideal, the 2026-11-07 index alone proves no change to payment behavior (new raw lines 11\u201314). [[source-stripe-subscriptions-ideal]] corrects its May 2026 Direct API summary: reliable SetupIntent authorization confirmation may use optional webhooks (old raw lines 832\u2013834), setup success is distinct from later SEPA payment success and active status (old raw lines 870\u2013874), and off_session=true is the old Direct API subscription-update instruction (old raw lines 876\u2013878). Current variant requirements and outcomes remain unverified until their linked bodies are captured."
+  },
+  "status": "candidate_ready"
+}

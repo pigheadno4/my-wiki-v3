@@ -1,0 +1,115 @@
+{
+  "job_id": "billing-subscriptions-mixed-interval",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-mixed-interval-2026-11-07.md",
+  "raw_sha256": "b2fe019f1b925904a4ab7c5f25d60df448e9b03c63a0223391e745ff5f2978e7",
+  "prior_raw_path": "raw/stripe-subscriptions-mixed-interval-2026.md",
+  "prior_raw_sha256": "473a21290fed210d3c464241676e24304b9beee794573d0ce4f29eac85e9fc6e",
+  "source_target": "wiki/sources/source-stripe-subscriptions-mixed-interval.md",
+  "source_before_sha256": "39813bce05f48117a8f0648ef205f6af70e7fc5f2871486f721fe72ecc359753",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-mixed-interval-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-subscriptions-mixed-interval-2026.md": [
+      {
+        "start": 1,
+        "end": 395
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-mixed-interval.md": [
+      {
+        "start": 1,
+        "end": 51
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f1b182a339fa854a81d42388/content.diff": [
+      {
+        "start": 1,
+        "end": 397
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Mixed interval subscriptions",
+      "location": "raw/stripe-billing-subscriptions-mixed-interval-2026-11-07.md:5"
+    },
+    {
+      "text": "Manage subscriptions for items with different intervals.",
+      "location": "raw/stripe-billing-subscriptions-mixed-interval-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-mixed-interval-2026-11-07.md:11"
+    },
+    {
+      "text": "[Dashboard](https://docs.stripe.com/billing/subscriptions/mixed-interval.md?dashboard-or-api=dashboard)",
+      "location": "raw/stripe-billing-subscriptions-mixed-interval-2026-11-07.md:13"
+    },
+    {
+      "text": "[API](https://docs.stripe.com/billing/subscriptions/mixed-interval.md?dashboard-or-api=api)",
+      "location": "raw/stripe-billing-subscriptions-mixed-interval-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Mixed interval subscriptions must use [flexible billing mode]",
+      "location": "raw/stripe-subscriptions-mixed-interval-2026.md:12"
+    },
+    {
+      "text": "You must upgrade your API version to `2025-06-30.basil` or later to use flexible billing mode in the Dashboard and API.",
+      "location": "raw/stripe-subscriptions-mixed-interval-2026.md:12"
+    },
+    {
+      "text": "Stripe generates a single, combined invoice when item-level billing periods align and separate invoices when billing periods diverge.",
+      "location": "raw/stripe-subscriptions-mixed-interval-2026.md:10"
+    },
+    {
+      "text": "If all retries for a payment fail",
+      "location": "raw/stripe-subscriptions-mixed-interval-2026.md:286"
+    },
+    {
+      "text": "Stripe cancels the entire subscription and marks it as unpaid or past due, depending on your configured dunning settings.",
+      "location": "raw/stripe-subscriptions-mixed-interval-2026.md:286"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 raw at https://docs.stripe.com/billing/subscriptions/mixed-interval is a 14-line Dashboard/API variant index (new lines 5\u201314). It contains no current operational instructions. The 397-line diff's removal of the former full guide is a rendering/capture change, not evidence that old behavior or limitations were deprecated.",
+    "The 2026-05-13 full guide says a mixed interval subscription contains multiple items with different prices and billing periods on one subscription; flexible billing mode and API version 2025-06-30.basil or later were prerequisites for both Dashboard and API in that historical guide (old lines 8\u201312, 14\u201316, 34\u201336). Keep these claims dated; the index cannot verify current prerequisites.",
+    "Invoice combining is conditioned on item billing periods aligning, and separate invoices on divergence (old line 10). The monthly/quarterly January 2024 example, including February/March monthly-only invoices and April combined invoice (old lines 40\u2013142), illustrates this rule rather than guaranteeing one invoice pattern for every mixed interval subscription. The code's send_invoice, days_until_due:5, and proration_behavior:none are sample choices, not universal requirements (old lines 47\u201382).",
+    "Each item has its own period; the subscription period in the old example adjusts to the latest item current_period_start and earliest item current_period_end (old lines 290\u2013319). A future-dated trial_end changes all item/subscription end dates (old line 323). The pause/resume comparison depends on missing-payment-method, billing_cycle_anchor, and proration settings, with active versus paused status tied to whether the resumption invoice is paid in the given example (old lines 325\u2013352).",
+    "The current source line 31 and reciprocal concept line 32 omit the old guide's condition that all retries for a payment fail, and omit that Stripe marks the shared subscription unpaid or past due according to configured dunning settings (old lines 284\u2013286). This is a material correction even though the new index supplies no new behavior. Source line 41 also asserts that flexible cannot migrate to classic, which this matched old raw does not establish; keep it only with separate verified authority."
+  ],
+  "substantive_changes": [
+    "No substantive billing behavior change is established by the new index. The observed difference is Dashboard/API variant navigation (new lines 9\u201314) in place of the previously combined full guide."
+  ],
+  "historical_claims_to_preserve": [
+    "The May 2026 guide's flexible-mode and API-version prerequisites, with Dashboard and API variants, and its shared subscription containing independently billed items (old lines 8\u201316, 34\u201340).",
+    "The qualified invoice alignment, item period tracking, trial/resume settings and payment-state examples, and the rule that every price interval must be a multiple of the shortest together with Stripe's listed supported/unsupported examples (old lines 10, 290\u2013356, 358\u2013385).",
+    "The shared subscription effects: cancellation affects all items; after all retries for one item's payment fail, the entire subscription is affected and becomes unpaid or past due per dunning settings (old lines 282\u2013286).",
+    "The dated limitations for cancellation-date helpers, mixed-interval schedule duration versus deprecated phase iterations, customer-portal retention coupons, and Checkout Session creation (old lines 148, 386\u2013395)."
+  ],
+  "conflicts": [
+    "Source line 31 and wiki/concepts/stripe-subscriptions-mixed-interval.md:32 compress an all-retries-failed condition into 'Dunning failure cancels entire subscription.' Restore the retry condition and configured unpaid/past-due outcome from old line 286 in any canonical correction and reciprocal concept warning.",
+    "Source line 41 says flexible-to-classic migration is impossible; that assertion is not present in the matched 395-line old raw and is not supported by the new index. Verify separate dated authority before retaining it as a claim of this source.",
+    "Source lines 25\u201327 label a few supported and unsupported pairs, while old lines 358\u2013385 expressly call them examples and include additional pairs. Do not present either list as exhaustive or infer equivalence across week/month or day/month type boundaries.",
+    "Source line 35 says 'Use duration not iterations'; old line 148 frames duration as a recommendation and says phase iterations is deprecated, while old line 393 says mixed intervals cannot calculate total iterations accurately. Keep the recommendation and reason scoped to mixed-interval schedules.",
+    "Concept line 10's monthly-flat/quarterly-usage example is not the old guide's annual-flat/monthly-usage example (old line 10); retain only as a clearly illustrative possible pairing, not a quoted source example."
+  ],
+  "unresolved_questions": [
+    "The approved new capture does not include Dashboard or API variant bodies. Whether the May 2026 API-version threshold, limitations, cancellation behavior, or sample configurations remain current requires those variant captures or other approved current evidence.",
+    "The separate authority for source line 41's flexible-to-classic migration assertion was outside this matched four-file review; do not attribute it to the mixed-interval raw without verification."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-mixed-interval.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/mixed-interval, the 2026-11-07 capture establishes the page identity and Dashboard/API variant links only (new lines 5\u201314), with no present-day behavior, prerequisite, identity, or payment outcome proof. The dated [[source-stripe-subscriptions-mixed-interval]] summarizes the May 2026 full guide: one subscription can contain differently timed items; flexible billing mode and API 2025-06-30.basil or later are stated prerequisites (old lines 8\u201312). Item periods remain distinct, invoices combine only when periods align, and the subscription period reflects the latest item start and earliest item end (old lines 10, 290\u2013319). Cancellation and exhausted retries affect the shared subscription, with unpaid or past-due state depending on dunning settings (old lines 282\u2013286).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/mixed-interval, the only demonstrated change is navigation: the new index routes Dashboard and API variants (new lines 9\u201314) instead of exposing their combined content; omission is not deprecation. Keep [[source-stripe-subscriptions-mixed-interval]] dated to May 2026 for flexible mode, API version, interval validation, Checkout and portal limits, and schedule guidance (old lines 12, 148, 354\u2013395). Source line 31 and its reciprocal concept line 32 need the condition that all payment retries fail, plus the configured unpaid/past-due outcome (old line 286). The January 2024 invoices, API send_invoice configuration, supported interval lists, and pause/resume state table are examples with their stated item and settings conditions, not universal guarantees (old lines 40\u2013142, 325\u2013385)."
+  }
+}

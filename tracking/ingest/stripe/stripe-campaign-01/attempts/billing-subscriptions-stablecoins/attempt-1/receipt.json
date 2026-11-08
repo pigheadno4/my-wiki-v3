@@ -1,0 +1,117 @@
+{
+  "job_id": "billing-subscriptions-stablecoins",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-stablecoins-2026-11-07.md",
+  "raw_sha256": "93e3b0fedd4d134c0a70906bea20232c1ff43bfd50f78db12a11747474963474",
+  "prior_raw_path": "raw/stripe-subscriptions-stablecoins-2026.md",
+  "prior_raw_sha256": "7805658a59da1ba96e642d8b19e6077a5e118ac8032e79870e7f97047eb06b9b",
+  "source_target": "wiki/sources/source-stripe-subscriptions-stablecoins.md",
+  "source_before_sha256": "3822304459e8a7e3d6c24aa422459e57a2de56a3735371bed7fabb7ad58d3af7",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-stablecoins-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-subscriptions-stablecoins-2026.md": [
+      {
+        "start": 1,
+        "end": 640
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-stablecoins.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/16d4c1af577d1f436d5c992e/content.diff": [
+      {
+        "start": 1,
+        "end": 643
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Set up a subscription with stablecoin payments",
+      "location": "raw/stripe-billing-subscriptions-stablecoins-2026-11-07.md:5"
+    },
+    {
+      "text": "Learn how to create and charge for a subscription with stablecoins.",
+      "location": "raw/stripe-billing-subscriptions-stablecoins-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-stablecoins-2026-11-07.md:11"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/stablecoins.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-stablecoins-2026-11-07.md:13"
+    },
+    {
+      "text": "[Payment Intents API](https://docs.stripe.com/billing/subscriptions/stablecoins.md?api-integration=paymentintents)",
+      "location": "raw/stripe-billing-subscriptions-stablecoins-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The customer has successfully authorized the payment by submitting the Checkout form.",
+      "location": "raw/stripe-subscriptions-stablecoins-2026.md:92"
+    },
+    {
+      "text": "The customer\u2019s payment succeeded.",
+      "location": "raw/stripe-subscriptions-stablecoins-2026.md:93"
+    },
+    {
+      "text": "Email the customer and request that they attempt the payment again.",
+      "location": "raw/stripe-subscriptions-stablecoins-2026.md:94"
+    },
+    {
+      "text": "This guide uses a stock photo service as an example and charges customers a 15 USDC monthly subscription.",
+      "location": "raw/stripe-subscriptions-stablecoins-2026.md:307"
+    },
+    {
+      "text": "After a successful payment, the status in the Stripe Dashboard changes to **Active**.",
+      "location": "raw/stripe-subscriptions-stablecoins-2026.md:547"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November 2026 capture at https://docs.stripe.com/billing/subscriptions/stablecoins is a 15-line index linking Stripe-hosted Checkout, Payment Intents API, and Setup Intents API variants (new lines 5\u201315). It contains no current operational body. The large deletion in the diff is a variant-rendering/capture difference, not proof of removed subscription support or changed requirements.",
+    "The May 2026 full guide describes recurring stablecoin withdrawals from a customer's crypto wallet (old line 8) and three variant flows. Hosted Checkout uses a server-created Session in subscription mode with crypto payment type and requires customer authorization for future wallet payments (old lines 32\u201369). The old Checkout events distinguish checkout.session.completed authorization from invoice.paid successful payment and invoice.payment_failed failure (old lines 71\u2013102). Neither a redirect nor Checkout completion is sufficient fulfillment proof.",
+    "In the older Payment Intents API path, the server creates a subscription with payment_behavior=default_incomplete and save_default_payment_method=on_subscription, obtains its first invoice PaymentIntent, and confirms that existing PaymentIntent with crypto and online mandate acceptance fields in the example (old lines 321\u2013375). requires_action means redirect to complete wallet setup/payment, not successful payment; payment_intent.succeeded is the success event (old lines 375\u2013381). The 15 USDC monthly price is a Payment Intents example (old lines 307\u2013314), while Checkout and Setup Intents examples price 15 USD (old lines 18\u201325, 478\u2013485). Price currency and merchant settlement currency are distinct.",
+    "In the older Setup Intents API path, the server example uses crypto, Customer ID, usage=off_session, confirm=true, mandate_data and return_url (old lines 492\u2013524). It obtains a payment_method and redirect, then creates a subscription with that default_payment_method and off_session:true in the example (old lines 526\u2013545). Subscription creation charges due to the preset default payment method, but Active follows a successful payment (old line 547); setup/redirect alone does not establish payment success.",
+    "The old guide recommends MetaMask, Polygon Amoy, and Circle faucet for sandbox testing but permits other preferred services (old lines 224\u2013234, 395\u2013405, 567\u2013577). Its USDC token contract, faucets, wallet gas steps, and refund-token warning are testnet instructions (old lines 242\u2013297, 584\u2013640), not proof of every production stablecoin or network supported for subscriptions. Source line 13's 'supports USDC and other stablecoins' is broader than the matched guide establishes; a list of USDP/SOL/ETH test faucets is not a subscription support matrix.",
+    "Source line 28 says invoice.payment_failed leads to 'retry', whereas the old Checkout event table directs emailing the customer and asking them to attempt payment again (old line 94). Source line 13 calls Checkout 'simplest', which is an editorial comparison not stated by the matched raw. These existing summary corrections are historical; the November index establishes no new behavior."
+  ],
+  "substantive_changes": [
+    "No substantive integration or payment change is established by the new capture. The observed change is presentation/navigation to three variant markdown URLs (new lines 9\u201315), replacing the prior capture's combined full variant bodies."
+  ],
+  "historical_claims_to_preserve": [
+    "The dated Checkout flow, including customer authorization for future wallet use and distinct checkout.session.completed, invoice.paid, and invoice.payment_failed meanings (old lines 32\u2013102).",
+    "The dated Payment Intents API path's default_incomplete subscription, saved payment method setting, existing invoice PaymentIntent confirmation, requires_action redirect, and payment_intent.succeeded success event (old lines 321\u2013381).",
+    "The dated Setup Intents API path's off-session setup example, returned payment method, default-payment-method subscription creation, and success-dependent Active state (old lines 492\u2013547).",
+    "The three different price-currency examples: Checkout and Setup Intents use USD; Payment Intents uses USDC. MetaMask/Amoy/Circle is recommended testnet setup, not a mandatory production stack (old lines 18\u201325, 234, 307\u2013314, 405, 478\u2013485)."
+  ],
+  "conflicts": [
+    "Source line 13's 'supports USDC and other stablecoins' and testnet/faucet list should not imply that USDP, SOL, ETH, or every listed token/network is accepted for subscriptions. This matched guide provides a USDC price example and testnet instructions (old lines 232\u2013297, 307\u2013314, 403\u2013468), not a production support matrix. The separate general stablecoin concept may have different dated evidence and must not be silently transposed to subscription eligibility.",
+    "Source line 28 converts invoice.payment_failed into 'retry'; old line 94 says email the customer and request another attempt. Retain the event distinction and avoid promising automatic retry.",
+    "Source line 35's 'Listen for payment_intent.succeeded' is sound as an event to act on, but old lines 379\u2013381 allow Dashboard, custom webhook, or partner solution and warn against relying on client callback. Do not make a particular webhook listener universally required.",
+    "Source lines 33 and 41 present example mandate_data, return_url, confirm=true, and off_session fields as a fixed recipe. Distinguish the old prose's explicitly stated conditions from example payload fields; do not infer universal API schema requiredness from the code (old lines 323\u2013375, 492\u2013524).",
+    "wiki/concepts/stripe-stablecoin-payments.md:55 and wiki/concepts/stripe-subscriptions.md:257 call USDC a native price currency, supported only as the old Payment Intents example (old lines 307\u2013314); this must not be read as the settlement asset. The broader concept's USD settlement claim comes from separate general stablecoin sources and remains distinct from the subscription price example."
+  ],
+  "unresolved_questions": [
+    "The approved November index does not include its three linked variant bodies; current API requirements, account/merchant eligibility, supported stablecoins and networks, payment finality, and settlement for subscriptions cannot be verified from this index.",
+    "General Stripe stablecoin concept pages cite separate sources for US-business eligibility, supported tokens, and USD settlement; those are outside this matched old/new subscription-page comparison and should be checked independently before broadening this source."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-stablecoin-payments.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/stablecoins, the complete November capture establishes the subject and three variant URLs only (new lines 5\u201315); it establishes no current prerequisites, identities, token support, or payment outcome. The dated [[source-stripe-subscriptions-stablecoins]] reflects a May 2026 guide for recurring wallet payments (old line 8). Checkout requires customer authorization and separates checkout.session.completed from invoice.paid (old lines 32\u2013102). The Payment Intents path creates an incomplete subscription and confirms its invoice PaymentIntent, with requires_action followed by payment_intent.succeeded (old lines 321\u2013381). The Setup Intents path sets up a crypto method for off-session use, then creates a subscription; Active follows successful payment (old lines 492\u2013547).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/stablecoins, the observed November change is a navigation index for Checkout, Payment Intents, and Setup Intents variants (new lines 9\u201315), not a demonstrated API or payment behavior change. Keep [[source-stripe-subscriptions-stablecoins]] dated to May 2026, with USD prices in the hosted and Setup Intents examples and a USDC price in the Payment Intents example (old lines 18\u201325, 307\u2013314, 478\u2013485). Source line 28 should describe invoice.payment_failed as customer contact and retry request, not automatic retry (old line 94). Testnet faucets and a USDC contract do not establish broad live token eligibility (old lines 232\u2013297). Do not equate wallet authorization, redirect, setup, or requires_action with invoice payment success or Active status (old lines 92\u201394, 375\u2013381, 547)."
+  }
+}

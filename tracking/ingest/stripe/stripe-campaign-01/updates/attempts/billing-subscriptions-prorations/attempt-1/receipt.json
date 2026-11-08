@@ -1,0 +1,212 @@
+{
+  "job_id": "billing-subscriptions-prorations",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-prorations-2026-11-07.md",
+  "raw_sha256": "d889651182b974ce55ee84d00dc1f25be23c41c905362a60ff1b03dfbc1725f6",
+  "source_before_sha256": "ba6ee4c98bf04301ea0b6d4d76062f889b2819f66c0a736f11dc5d7fdbfa37ad",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Prorations\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/prorations\"\nraw_files:\n  - \"stripe-billing-subscriptions-prorations-2026-11-07.md\"\n  - \"stripe-subscriptions-prorations-2026.md\"\ntags: [stripe, billing, subscriptions, prorations, credit-prorations, billing-mode]\n---\n\n## Summary\n\nStripe's same-URL May and November 2026 guides explain proration invoice items for subscription changes, discount treatment, credit calculation in classic versus flexible billing mode, preview, and `proration_behavior`. The November guide adds an operation-based classification matrix, conditional credit-to-debit attribution, optional time granularity customization, and clearer limits on disabling prorations. Its examples are documentation illustrations, not observed payment outcomes.\n\n## Identify proration items\n\nUse Invoice item `proration` or Invoice line item `parent.subscription_item_details.proration` to identify Stripe's classification. Stripe bases it on the **operation that creates the item**, not just whether its service period is partial. A scheduled phase transition behaves like a subscription update for classification. A single operation may create both proration and non-proration items; a manually created negative invoice item is not automatically a proration.\n\nThe November matrix calls subscription billing credits, backdated-period items, some anchor-created debits even for a full period, trial-offer updates without a trial-status change, and renewals shortened by `cancel_at` prorations. It calls ordinary full-period creation/update debits, trial-start/end debits, certain free-trial updates, and some renewal debits non-prorations. See new raw lines 24\u201348 for exact scenario boundaries.\n\n> [!warning] Contradiction\n> The May source summary described mid-period changes as though each always creates both an unused-time credit and a remaining-time debit. The November classification explicitly includes credit-only or debit-only scenarios and mixed proration/non-proration operations. The paired credit/debit calculation below is one price-upgrade example, not a universal item shape.\n\n## How prorations work\n\nIn the guide's illustrative halfway upgrade from a 10 USD monthly plan to 20 USD, a -5 USD unused-time credit and +10 USD remaining-time debit yield a net +5 USD invoice amount. Negative prorations are not automatically refunded; positive prorations are not immediately billed by default. Neither this arithmetic nor an invoice total proves payment.\n\nStripe calculates prorations to the second by default. The November page links optional Stripe-authored and custom proration scripts for different granularity or calculations; the capture does not establish availability for any particular account. Prorations apply to charges ahead of the billing period, not usage-based billing.\n\n## Discounts and common update triggers\n\nProration items have `discountable=false`; existing subscription discounts affect their calculated amount, but invoice discounts do not apply again to those items. Non-proration lines can show `discount_amounts`. A discount-only change does not generate proration items; when a discount change and a proration trigger share a request, Stripe uses the modified discount state for proration calculation.\n\nThe guide's common default triggers are adding/removing subscription items, changing price or quantity, adding a trial to an active subscription, moving the billing cycle anchor, and setting `cancel_at` mid-period. Its non-trigger table includes configuration and metadata changes and future billing settings such as discounts, billing thresholds, `cancel_at_period_end`, and `add_invoice_items` (new raw 83\u2013125; May raw 41\u201383). This table describes **proration items**, not all invoice or billing activity. Manually adding a negative `unit_amount` with `add_invoice_items` is a separate path and does not by itself make that item a Stripe-classified proration.\n\n## Unpaid invoices\n\nStripe computes prorations assuming prior subscription invoices will eventually be paid. A change while the current-period invoice is unpaid can credit unused time the customer never paid for. The guide suggests `proration_behavior=none` on that update, then either a one-off invoice while retaining the billing period or `billing_cycle_anchor=now` to reset it. It warns that the old invoice can later cause double payment and says to void that unpaid invoice. See new raw lines 142\u2013151 and May raw lines 100\u2013109.\n\n## Proration behavior\n\n| Value | Documented effect |\n|---|---|\n| `create_prorations` (default) | Creates applicable proration items. Immediate invoicing occurs only under certain conditions; period-end invoicing is not guaranteed by this setting alone. |\n| `always_invoice` | Calculates prorations and immediately **generates an invoice** for the change; this does not establish successful collection. |\n| `none` | Disables prorations for that request; it does not stop non-proration items such as regular renewal or full-period subscription items. Repeat on each relevant request to suppress future prorations. |\n\nWhen canceling, the November page says proration can be disabled only if `cancel_at` is within the current billing period; a date outside the current period does not permit it (new raw 721\u2013749). The guide also says that when prorations are disabled, customers are billed the full new price when the next invoice is generated; this is conditional on that invoice.\n\n## Credit prorations: classic versus flexible\n\nIn the documented example, an upgrade from 10 to 20 USD used `proration_behavior=none`, so no upgrade debit was billed. A later downgrade produces a classic-mode credit based on the current 20 USD price (-6.67 USD) plus a 3.33 USD debit, for a -3.34 USD example invoice total. Flexible mode uses the **last billed** 10 USD price, so the 3.33 USD credit and debit cancel to a zero example invoice total (new raw 172\u2013251; May raw 119\u2013223). \u201cLast billed\u201d does not mean the invoice was paid.\n\nFor an `amount_off` coupon across items, the guide's example allocates a 5 USD coupon differently: classic shows a -2.50 USD credit; flexible uses proportional original invoice `discount_amounts` and shows -4.17 USD (new raw 253\u2013337; May raw 225\u2013332). These are sample invoice totals, not refunds or payment receipts.\n\n> [!warning] Contradiction\n> The former source summary said flexible mode was more accurate to what the customer \u201cactually paid.\u201d The raw example establishes the last **price billed** and example invoice totals. It does not establish whether the customer paid either invoice; the guide separately warns about unpaid invoices.\n\n### Credit attribution metadata\n\nWhen Stripe can attribute a credit proration Invoice item to its original debit, `proration_details.credited_items` identifies it. Type `invoice_item` points to a pending debit item; type `invoice_line_items` points to one or more debit lines on an existing invoice, including tiered cases. In classic mode `proration_details` can be absent when Stripe cannot identify the original debit. This is reconciliation metadata, not proof of payment or a guarantee every credit has a link (new raw 161\u2013170).\n\n## Preview a proration\n\nA preview invoice uses the proposed subscription change without modifying the subscription. Because default calculation is second-level, pass the same `subscription_details.proration_date` in the preview and `proration_date` in the actual update to hold the calculation time steady. The May source showed this with Node.js; the November selected examples use Ruby. Both retain separate Accounts v2 `customer_account` and Customers v1 `customer` identity paths (new raw 339\u2013405; May raw 334\u2013400).\n\nThe sample preview response has `amount_paid=0`, `attempted=false`, `paid=false`, and `status=draft`. It is not a finalized or paid invoice (new raw 418\u2013425, 665\u2013680). The old Node.js form was:\n\n```js\nstripe.invoices.createPreview({\n  customer: customerId,\n  subscription: subId,\n  subscription_details: { items, proration_date }\n})\n```\n\n## Related pages\n\n- [[stripe-subscriptions-prorations]] \u2014 concept page\n- [[stripe-subscriptions]] \u2014 concept page\n- [[source-stripe-subscriptions-change-price]] \u2014 price change guide\n- [[source-stripe-subscriptions-modify]] \u2014 subscription update overview\n- [[source-stripe-subscriptions-billing-mode-compare]] \u2014 classic versus flexible comparison\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-prorations-2026-11-07|Stripe prorations guide, November 7 2026]] \u2014 updated same-URL capture\n- [[raw/stripe-subscriptions-prorations-2026|Stripe prorations guide, May 13 2026]] \u2014 historical capture\n",
+  "quotes": [
+    {
+      "text": "Stripe bases this classification on the operation that creates the item, not only on the length of the service period.",
+      "location": "raw/stripe-billing-subscriptions-prorations-2026-11-07.md:28"
+    },
+    {
+      "text": "A single subscription operation can create both proration and non-proration items.",
+      "location": "raw/stripe-billing-subscriptions-prorations-2026-11-07.md:46"
+    },
+    {
+      "text": "Credit proration [invoice items](https://docs.stripe.com/api/invoiceitems/object.md#invoiceitem_object) include a [proration_details](https://docs.stripe.com/api/invoiceitems/object.md#invoiceitem_object-proration_details) object when Stripe can attribute the credit to its original debit.",
+      "location": "raw/stripe-billing-subscriptions-prorations-2026-11-07.md:163"
+    },
+    {
+      "text": "Note this doesn\u2019t prevent Stripe from creating non-proration items, such as regular renewal or full-period subscription items.",
+      "location": "raw/stripe-billing-subscriptions-prorations-2026-11-07.md:735"
+    },
+    {
+      "text": "When canceling a subscription, you can only disable the proration if the `cancel_at` date is within the current billing period.",
+      "location": "raw/stripe-billing-subscriptions-prorations-2026-11-07.md:737"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Negative prorations aren\u2019t automatically refunded and positive prorations aren\u2019t immediately billed",
+      "location": "raw/stripe-subscriptions-prorations-2026.md:14"
+    },
+    {
+      "text": "Updating subscription-level promotion codes, coupons, or discounts by themselves doesn\u2019t create proration invoice items.",
+      "location": "raw/stripe-subscriptions-prorations-2026.md:26"
+    },
+    {
+      "text": "The default parameter for `proration_behavior` is `create_prorations`",
+      "location": "raw/stripe-subscriptions-prorations-2026.md:720"
+    },
+    {
+      "text": "No parameter turns off all future prorations for a subscription.",
+      "location": "raw/stripe-subscriptions-prorations-2026.md:728"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-prorations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 375
+      },
+      {
+        "start": 376,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 625
+      },
+      {
+        "start": 626,
+        "end": 749
+      }
+    ],
+    "raw/stripe-subscriptions-prorations-2026.md": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 375
+      },
+      {
+        "start": 376,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 625
+      },
+      {
+        "start": 626,
+        "end": 749
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-prorations.md": [
+      {
+        "start": 1,
+        "end": 114
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9c2391489b0567c670af1ec6/content.diff": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 230
+      },
+      {
+        "start": 231,
+        "end": 345
+      },
+      {
+        "start": 346,
+        "end": 460
+      },
+      {
+        "start": 461,
+        "end": 575
+      },
+      {
+        "start": 576,
+        "end": 688
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "prorations-concept-overview",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "When a Stripe subscription changes mid-period, Stripe creates proration invoice items to charge customers accurately for partial use. A proration consists of a credit for unused time at the old price and a debit for remaining time at the new price.",
+      "new_text": "Stripe can create proration invoice items when a subscription changes, with credits or debits depending on the operation. The November guide classifies items by the generating operation, using Invoice item `proration` or Invoice line item `parent.subscription_item_details.proration`; partial duration alone does not decide classification. A single operation can create proration and non-proration items. The familiar unused-time credit plus remaining-time debit is one price-change example, not every proration.\n\n> [!warning] Contradiction\n> This page's former definition treated every mid-period change as a paired credit and debit. The November classification includes credit-only, debit-only and mixed-item operations; see [[source-stripe-subscriptions-prorations]] for the dated same-URL evidence.",
+      "reason": "Correct the principal definition and explicitly resolve the old universal credit/debit claim.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "prorations-concept-behavior",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "| `create_prorations` (default) | Creates proration items; invoiced at period end or on anchor reset |\n| `always_invoice` | Creates prorations and immediately generates an invoice |\n| `none` | No prorations; customer billed full new price at next invoice |",
+      "new_text": "| `create_prorations` (default) | Creates applicable proration items; immediate invoicing occurs only under certain conditions, without a guaranteed period-end outcome from this setting alone |\n| `always_invoice` | Calculates prorations and immediately generates an invoice; payment success is not established |\n| `none` | Disables prorations on that request, but regular renewal or full-period non-proration items can still be created; the guide says the full new price is billed when the next invoice is generated |\n\nFor cancellation, the November guide permits disabling proration only when `cancel_at` falls within the current billing period. `none` must be passed on each relevant request to suppress future prorations.",
+      "reason": "Scope invoice versus payment outcomes and add none/cancellation boundaries.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "prorations-concept-credit",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "| Classic | Current (new, unbilled) price | May credit more than customer paid |\n| Flexible | Last **actually-billed** price | Accurate to what customer paid |",
+      "new_text": "| Classic | Current (new, unbilled) price | May credit based on a price that was not billed |\n| Flexible | Last **billed** price | Example credits based on the prior billed price; payment is not established |",
+      "reason": "Preserve billed-versus-paid distinction in the classic/flexible example.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "prorations-concept-payment",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "Flexible is more accurate to actual customer payment.",
+      "new_text": "The flexible example uses proportional `discount_amounts` from the original invoice and shows a different credit total. These sample totals do not establish actual customer payment or a refund. See [[source-stripe-subscriptions-prorations]].",
+      "reason": "Remove unsupported claim that sample invoice totals show paid amounts.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "prorations-concept-source",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "- [[source-stripe-subscriptions-prorations]] \u2014 Stripe docs: full prorations guide (triggers, non-triggers, classic vs flexible, preview, unpaid invoice handling)",
+      "new_text": "- [[source-stripe-subscriptions-prorations]] \u2014 May and November 2026 Stripe guide captures: item classification, behavior controls, credit attribution, classic/flexible examples, preview and unpaid-invoice handling",
+      "reason": "Refresh reciprocal source route for new classification and attribution material.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "prorations-concept-manual",
+      "target_path": "wiki/concepts/stripe-subscriptions-prorations.md",
+      "old_text": "To calculate prorations outside Stripe, pass `add_invoice_items` with a negative `unit_amount` to: CreateSubscription, UpdateSubscription, CreateSubscriptionSchedule, UpdateSubscriptionSchedule.",
+      "new_text": "To calculate an adjustment outside Stripe, pass `add_invoice_items` with a negative `unit_amount` to CreateSubscription, UpdateSubscription, CreateSubscriptionSchedule, or UpdateSubscriptionSchedule. A manually created negative invoice item is not automatically classified as a Stripe proration; see [[source-stripe-subscriptions-prorations]].",
+      "reason": "Avoid conflating manual negative invoice items with Stripe-classified prorations.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/prorations, November classifies an invoice item by its generating operation, checked through Invoice item proration or line-item parent.subscription_item_details.proration; duration alone is insufficient (new 24\u201348). One operation can create both proration and non-proration items. [[source-stripe-subscriptions-prorations]] now narrows the older universal credit/debit description while preserving the halfway 10-to-20 USD sample, discount state, unpaid-invoice risk, classic/flexible examples and preview-date pattern (new 11\u201322, 60\u2013151, 172\u2013337, 697\u2013719; old 10\u201316, 20\u2013109, 119\u2013332, 693\u2013712). The guide's sample preview is draft and unpaid, and Accounts v2 customer_account differs from Customers v1 customer (new 343\u2013405, 418\u2013425, 665\u2013680).",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/prorations, substantive additions are the operation-based classification matrix (new 24\u201348; old 10\u201318), conditional credit attribution through proration_details.credited_items (new 161\u2013170; old 115\u2013119), optional script/granularity links (new 50\u201356; old 693), and the caveats that none leaves ordinary non-proration items possible and cannot disable cancellation proration when cancel_at falls outside the current period (new 735\u2013737; old 726\u2013730). [[source-stripe-subscriptions-prorations]] retains May trigger, discount, unpaid-invoice and classic/flexible examples while correcting exhaustive and actually-paid overclaims (old 20\u2013109, 119\u2013332). Invoice generation and example totals do not prove payment; changed sample languages and formatting do not establish API behavior changes."
+  },
+  "status": "candidate_ready"
+}

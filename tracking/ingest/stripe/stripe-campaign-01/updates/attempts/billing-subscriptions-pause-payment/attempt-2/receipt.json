@@ -1,0 +1,145 @@
+{
+  "job_id": "billing-subscriptions-pause-payment",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md",
+  "raw_sha256": "8f3bd29e02079f75cd4372982c3b23cf14f6324e2cd4ef4724f5b9df4aeb26a9",
+  "source_before_sha256": "34b0e5b03189490fa2cca9c69edda081acb3c333bba9ec020d80db0f4a97e65c",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Pause Payment Collection\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/pause-payment\"\nraw_files:\n  - \"stripe-billing-subscriptions-pause-payment-2026-11-07.md\"\n  - \"stripe-subscriptions-pause-payment-2026.md\"\ntags: [stripe, billing, subscriptions, pause-payment, pause-collection, grace-period, invoices]\n---\n\n## Summary\n\nGuide to `pause_collection` on a subscription. The 2026-11-07 capture says the subscription remains `active`, invoices continue to generate, and the customer retains service access while active collection is paused. The three `behavior` options govern invoices created during the paused period. This is distinct from the separate true-pause lifecycle operation; see [[source-stripe-subscriptions-pause]] for that operation's own evidence. Existing invoices created before pausing continue to be retried unless separately voided.\n\n## Key distinction: pause payment collection vs true pause\n\n| Feature | Pause payment collection (`pause_collection`) | True pause (`/pause` endpoint; separate guide) |\n|---|---|---|\n| Invoice generation | Continues | Halted, per [[source-stripe-subscriptions-pause]] |\n| Service delivery | Continues, per this guide | Halted, per [[source-stripe-subscriptions-pause]] |\n| Requires flexible billing | Not stated as a requirement here | See separate true-pause guide |\n| Available via | Dashboard or API | See separate true-pause guide |\n\n## Three behaviors\n\n### `behavior=void`\nInvoices created while collection is paused are voided; no record of charges is created for those periods. The 2026-05-13 guide says they are immediately marked void. The subscription remains `active`; the November capture does not specify a voiding latency.\n\n```js\nstripe.subscriptions.update(subId, { pause_collection: { behavior: 'void' } })\n```\n\n### `behavior=keep_as_draft`\nInvoices stay `draft` with `auto_advance=false`. They can be finalized and collected later. Custom invoice-finalization logic may need adjustment so it does not conflict. To collect after resuming subscription-level collection, set `auto_advance=true` on each retained draft invoice; this invoice-level change does not prove that payment succeeded.\n\n```js\n// Resume automatic collection on a specific draft invoice\nstripe.invoices.update(invoiceId, { auto_advance: true })\n```\n\n### `behavior=mark_uncollectible`\nActive collection stops for new invoices. Existing customer balance is still applied: if it pays the full invoice total, the invoice status becomes `paid`; otherwise it becomes `uncollectible`. This is a documented status rule, not evidence of a payment on a particular invoice. The subscription remains `active`.\n\n## Pause and resume\n\nPause payment collection from the Dashboard or by updating the subscription with `pause_collection[behavior]`. A Dashboard custom date or optional API `pause_collection[resumes_at]` schedules automatic resumption at a future time. Without `resumes_at`, collection remains paused until `pause_collection` is unset. Manual resumption is available in the Dashboard or API:\n\n```js\nstripe.subscriptions.update(subId, { pause_collection: '' }) // unset = resume\n```\n\nResuming subscription-level collection governs future invoices. It does not automatically advance invoices kept as drafts. Find those invoices with the subscription ID and `status=draft`, then set `auto_advance=true` on each invoice to collect; the Dashboard **Turn on automatic collection** action changes that same invoice property. These actions do not establish finalization, payment, or settlement.\n\n## Pre-pause invoices\n\nInvoices created **before** the pause continue to be retried unless separately voided.\n\n## Subscription schedules\n\nScheduled updates still take effect during a collection pause. A schedule phase transition does not automatically remove `pause_collection` set directly on the subscription. If no `resumes_at` was set, unset `pause_collection` manually when collection should resume; a configured `resumes_at` can resume it automatically. To collect retained draft invoices after either form of resumption, separately set `auto_advance=true` on each desired invoice.\n\n## Related pages\n\n- [[stripe-subscriptions-pause]] \u2014 concept page comparing collection pause with separate true pause\n- [[stripe-subscriptions-cancel]] \u2014 cancellation as alternative\n- [[stripe-subscriptions]] \u2014 concept page\n- [[stripe]] \u2014 company page\n- [[source-stripe-subscriptions-pause]] \u2014 separate true-pause evidence\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-pause-payment-2026-11-07|2026-11-07 pause payment collection guide]]\n- [[raw/stripe-subscriptions-pause-payment-2026|2026-05-13 pause payment collection guide]]\n",
+  "quotes": [
+    {
+      "text": "When you pause payment collection, the *subscription*",
+      "location": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "If the invoice\u2019s total is paid off entirely using customer balance, then the invoice\u2019s status is set to `paid`. Otherwise, the invoice\u2019s status is set to `uncollectible`.",
+      "location": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md:32"
+    },
+    {
+      "text": "Optionally, set `pause_collection[resumes_at]` to automatically resume payment collection at a specific time.",
+      "location": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md:58"
+    },
+    {
+      "text": "A subscription schedule phase transition doesn\u2019t automatically remove `pause_collection` behavior that was set directly on the subscription.",
+      "location": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md:80"
+    },
+    {
+      "text": "After you resume payment collection from a subscription, set `auto_advance=true` on each draft invoice.",
+      "location": "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md:109"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You can pause or resume collection in the [Stripe Dashboard](https://support.stripe.com/questions/how-to-pause-or-cancel-subscriptions) or the API.",
+      "location": "raw/stripe-subscriptions-pause-payment-2026.md:10"
+    },
+    {
+      "text": "Invoices created before subscriptions are paused continue to be [retried]",
+      "location": "raw/stripe-subscriptions-pause-payment-2026.md:20"
+    },
+    {
+      "text": "All invoices created before the `resumes_at` date are immediately marked as void.",
+      "location": "raw/stripe-subscriptions-pause-payment-2026.md:38"
+    },
+    {
+      "text": "Despite this pause, Stripe applies any existing customer balance to invoices.",
+      "location": "raw/stripe-subscriptions-pause-payment-2026.md:94"
+    },
+    {
+      "text": "Resuming collection this way only affects future invoices.",
+      "location": "raw/stripe-subscriptions-pause-payment-2026.md:114"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-pause-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      }
+    ],
+    "raw/stripe-subscriptions-pause-payment-2026.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 118
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-pause-payment.md": [
+      {
+        "start": 1,
+        "end": 71
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a60ea9f71a4b4c0e495d8f84/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 220
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "pause-payment-concept-comparison",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "| Pause payment collection | Yes (not collected) | Continues | Manual API |",
+      "new_text": "| Pause payment collection | Yes (active collection paused; existing customer balance may pay an invoice under `mark_uncollectible`) | Continues | Dashboard or API; optional `resumes_at` |",
+      "reason": "Correct the API-only trigger and qualify invoice collection for the customer-balance exception, without modifying true-pause behavior.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "This comparison's true-pause column comes from separate evidence."
+      ]
+    },
+    {
+      "update_id": "pause-payment-concept-route",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "- [[source-stripe-subscriptions-pause-payment]] \u2014 pause payment collection: 3 behaviors (void/keep_as_draft/mark_uncollectible), resumes_at, unpausing, schedule interaction",
+      "new_text": "- [[source-stripe-subscriptions-pause-payment]] \u2014 May/November 2026 `pause_collection` guide: three invoice behaviors, Dashboard/API pause and resume, optional `resumes_at`, schedule phase boundary, and separate draft-invoice collection",
+      "reason": "Reciprocal route to the refreshed guide and its scoped resumption details.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "pause-payment-concept-void-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "| `void` | Immediately voided; customer never charged |",
+      "new_text": "| `void` | Invoices created during the collection-pause period are voided, with no record of charges for those periods (2026-11-07 guide). The 2026-05-13 guide described them as immediately voided. Invoices created before pausing can still be retried unless separately voided. |",
+      "reason": "Scope void behavior to pause-period invoices, date the May-only immediate timing, and keep pre-pause invoice retries visible in the row.",
+      "quote_indexes": [],
+      "warnings": [
+        "New raw lines 33 and 52 do not state voiding latency; old raw line 38 did."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/pause-payment, [[source-stripe-subscriptions-pause-payment]] documents `pause_collection` as an active subscription with continued invoices and service access while active payment collection is paused (new lines 9\u201317; old lines 8\u201324). The three invoice behaviors are `keep_as_draft`, `mark_uncollectible`, and `void`; existing customer balance can still make a `mark_uncollectible` invoice `paid` (new lines 25\u201333; old lines 12\u201316, 92\u201394). Dashboard or API can pause indefinitely or set `resumes_at` for automatic resumption (new lines 21\u201323, 37\u201378; old lines 10, 40, 96). For `void`, only invoices created during the collection-pause period are described as voided; pre-pause invoices can still be retried unless separately voided (new lines 17, 25\u201333; old lines 20, 38). May called pause-period voiding immediate, while November does not specify latency (old line 38; new lines 33, 52). This evidence does not show a particular payment or settled invoice.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/pause-payment, [[source-stripe-subscriptions-pause-payment]] now distinguishes subscription-level resumption from invoice-level work: a scheduled phase transition does not clear directly set `pause_collection` (new line 80; old lines 116\u2013118), but configured `resumes_at` can resume collection automatically (new lines 58, 74\u201378; old lines 40, 44). Retained draft invoices separately require `auto_advance=true` to collect after resumption (new lines 107\u2013135; old lines 62\u201373, 114\u2013118). The concept's former API-only row is corrected to Dashboard or API (new lines 21, 37\u201358; old line 10). May explicitly called voiding immediate (old line 38); November says voided without timing (new lines 33, 52), so timing remains a dated May statement rather than a claimed new change. No actual resumption or paid invoice is verified."
+  },
+  "status": "candidate_ready"
+}

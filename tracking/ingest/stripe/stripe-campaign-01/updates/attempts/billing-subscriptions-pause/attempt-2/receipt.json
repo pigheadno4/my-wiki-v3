@@ -1,0 +1,206 @@
+{
+  "job_id": "billing-subscriptions-pause",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-pause-2026-11-07.md",
+  "raw_sha256": "6e7226dd73db6f84fe0a2dfe38c3934ee03198b836162c6805fae0cabc74a86f",
+  "source_before_sha256": "fdb9986f2a6f10420cfd8dbfe85c786af9f7a8dc903492749b3dd38e224e790a",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Pause Subscriptions\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/pause\"\nraw_files:\n  - \"stripe-billing-subscriptions-pause-2026-11-07.md\"\n  - \"stripe-subscriptions-pause-2026.md\"\ntags: [stripe, billing, subscriptions, pause, flexible-billing, webhooks]\n---\n\n## Summary\n\nThe November 7 Stripe guide describes true subscription pause: `POST /v1/subscriptions/:id/pause` suspends service delivery and new invoice generation without canceling the subscription. Existing invoices continue to advance. This differs from `pause_collection`, which leaves access and invoice generation running, and from Stripe's automatic trial-end pause when no payment method is on file.\n\n## Three pause-like behaviors compared\n\n| Behavior | Invoices generated? | Service delivery? | Trigger |\n|---|---|---|---|\n| **True pause** (this page) | No new invoices during pause | Halted | Immediate API or Dashboard pause; configurable customer-portal self-pause; flexible billing required. A linked schedule guide covers future pause and resume attempts. |\n| Pause payment collection | Yes (collection paused) | Continues | Separate payment-collection setting |\n| Trial-end pause without payment method | No | Halted | System-triggered at trial end; not the Pause subscription endpoint |\n\n> [!warning] Contradiction\n> The May 13 capture said the portal only displayed paused status and subscribers could not self-pause, and described manual API resumption. The November 7 same-URL guide explicitly permits configured customer-portal self-pause and points to scheduled pause and resume attempts. The linked portal and schedule guides were not reviewed here, so their detailed eligibility, configuration, and outcome are not established by this page.\n\n## Requirements and limitations\n\n- The pause endpoint requires flexible billing mode; resume requires `collection_method=charge_automatically`. Pause is unavailable for `send_invoice` and classic billing mode.\n- November's limitation table excludes active **subscription-level** free trials configured with `trial_end` or `trial_period_days`, but expressly exempts item-level trial offers.\n- A subscription cannot be paused when status is `unpaid`, `paused`, `incomplete`, `incomplete_expired`, or `canceled`.\n- An attached subscription schedule blocks direct pause; the November guide says to add a pause schedule or release the schedule first. An active billing schedule also blocks pause until cleared.\n- The May capture additionally listed an attached cadence and said a schedule or cadence could not be attached to a paused subscription. November omits those statements; this is not evidence of their removal or reversal. See both raw captures for the dated wording.\n- A coupon keeps its original validity period, which continues to run while paused.\n\n## Pause behavior and billing\n\nThe pause takes effect immediately: status becomes `paused`, each item's `current_period_end` moves to the pause time, and new subscription invoices stop for the pause duration. Existing invoices continue advancing. Stripe sends `customer.subscription.paused`, `customer.subscription.updated`, and `entitlements.active_entitlement_summary.updated` for subscription and access handling.\n\n`bill_for.unused_time_from` controls credit for unused licensed time: `now` (default), `item_current_period_start`, or `none`. `bill_for.outstanding_usage_through` controls metered usage: `now` (default) or `none`. `invoicing_behavior` defaults to `pending_invoice_item`; `invoice` invoices credits/debits immediately. The November response includes `status_details.paused.transitioned_at` and a reason such as `pause_requested`, `trial_end_without_payment_method`, or `system`. See new raw lines 65\u2013113 for exact parameters and shape.\n\nThe pause invoice preview is non-mutating. It returns an invoice only when `invoicing_behavior=invoice` **and** the `bill_for` settings create billable credits or debits; otherwise Stripe returns 404. A restricted API key needs `subscription_write` to pause or resume and `invoice_read` to preview invoices.\n\nThe May API example used `Stripe-Version: preview` and `type=subscription`:\n\n```bash\nPOST /v1/subscriptions/sub_xxx/pause\nStripe-Version: preview\ntype=subscription\n\nbill_for[unused_time_from][type]=now\nbill_for[outstanding_usage_through][type]=now\ninvoicing_behavior=pending_invoice_item\n```\n\nNovember's example omits the header and `type` parameter, while its pause API link contains `api-version=2026-07-29.preview`. The omission does not establish that May's parameters are rejected or that the endpoint is generally available.\n\n## Resume behavior\n\nThe November guide provides Dashboard and API resume flows and links to a scheduled resume-attempt guide. Resume requires `charge_automatically`. If no resumption invoice is generated, status becomes `active` immediately. If one is generated, Stripe finalizes it; payment or manual uncollectible marking makes the subscription active, while voiding leaves it paused. A `200` response alone can still leave the subscription `paused` pending invoice payment: inspect `status` and `pending_update`.\n\n| Outcome | `resume_on_payment_attempt` (default) | `resume_on_payment_success` (recommended by guide) |\n|---|---|---|\n| Payment during resume request | None; use Pay invoice endpoint | Attempt with default payment method or sufficient cash balance; otherwise error |\n| Failed payment | `past_due`, no automatic return to paused | Remains `paused` |\n| Invoice retries | None | Yes, unless retry settings disable them |\n| Pending-update expiry | 23 hours after resume request | 1 year after resume request |\n\nThe May source's no-attempt, `past_due`, and 23-hour descriptions match the November **default** branch, not every resume. May's example used `Stripe-Version: preview` and `billing_cycle_anchor=unchanged`; November shows `payment_behavior=resume_on_payment_success` and `billing_cycle_anchor[type]=now`. These are dated examples, not proof that either earlier form was invalidated. The resumption invoice preview also does not mutate the subscription; see new raw lines 190\u2013203.\n\n## Webhooks and verification\n\n| Event | When |\n|---|---|\n| `customer.subscription.paused` | Subscription pauses |\n| `customer.subscription.resumed` | Subscription resumes |\n| `customer.subscription.updated` | Either transition |\n| `entitlements.active_entitlement_summary.updated` | Entitlements change due to pause/resume |\n\nVerify webhook signatures before processing. The guide also supplies an illustrative mid-cycle dollar example, test-clock checks, and a Sigma query for paused status/reason. Those examples do not guarantee a particular invoice amount, eligible account, or successful payment.\n\n## Related pages\n\n- [[stripe-subscriptions-pause]] \u2014 concept page\n- [[source-stripe-subscriptions-pause-payment]] \u2014 pause collection distinction\n- [[stripe-subscriptions-cancel]] \u2014 cancellation patterns\n- [[stripe-subscriptions]] \u2014 subscription concept\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-pause-2026-11-07|Stripe pause guide, November 7 2026]] \u2014 updated same-URL capture\n- [[raw/stripe-subscriptions-pause-2026|Stripe pause guide, May 13 2026]] \u2014 historical capture\n",
+  "quotes": [
+    {
+      "text": "Pause a subscription to suspend service delivery and invoice generation.",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:7"
+    },
+    {
+      "text": "You can also let customers pause their own subscriptions in the [customer portal](https://docs.stripe.com/customer-management/pause-subscriptions.md).",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:26"
+    },
+    {
+      "text": "A resume request can return `200` even if the subscription remains `paused` while its resumption invoice awaits payment.",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:168"
+    },
+    {
+      "text": "| Pending update expiration time | 23 hours after the resume request | 1 year after the resume request |",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:188"
+    },
+    {
+      "text": "This restriction doesn\u2019t apply to [item-level trial offers](https://docs.stripe.com/billing/subscriptions/trials.md).",
+      "location": "raw/stripe-billing-subscriptions-pause-2026-11-07.md:315"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The customer portal reflects that a subscription is paused, but your subscribers can\u2019t use it to pause subscriptions themselves.",
+      "location": "raw/stripe-subscriptions-pause-2026.md:58"
+    },
+    {
+      "text": "Stripe doesn\u2019t attempt payment in the resume response. Collect payment using the [Pay invoice](https://docs.stripe.com/api/invoices/pay.md) endpoint.",
+      "location": "raw/stripe-subscriptions-pause-2026.md:69"
+    },
+    {
+      "text": "- Is in a trial period, or has an active trial offer",
+      "location": "raw/stripe-subscriptions-pause-2026.md:37"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-pause-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 321
+      }
+    ],
+    "raw/stripe-subscriptions-pause-2026.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 123
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-pause.md": [
+      {
+        "start": 1,
+        "end": 102
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dbf8952d897033241eae46de/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "pause-concept-trigger",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "| **True pause** (`/pause` endpoint) | No | Halted | Manual API; flexible billing only |",
+      "new_text": "| **True pause** (`/pause` endpoint) | No new invoices | Halted | Immediate API or Dashboard pause, configured customer-portal self-pause; flexible billing only. Linked schedule guide covers future attempts. |",
+      "reason": "Correct the categorical API-only trigger using the November same-URL capture.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "pause-concept-limits",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "- Active trial period or active trial offer\n- Status already: `paused`, `incomplete`, `incomplete_expired`, or `canceled`\n- Subscription has attached schedule or cadence\n\nCannot attach a schedule or cadence to a paused subscription either.",
+      "new_text": "- Active subscription-level free trial configured with `trial_end` or `trial_period_days`; November expressly exempts item-level trial offers\n- Status: `unpaid`, `paused`, `incomplete`, `incomplete_expired`, or `canceled`\n- Attached subscription schedule or active billing schedule; the November guide describes schedule-based pause or release, and clearing billing schedules respectively\n\n> [!warning] Contradiction\n> The May 13 capture broadly excluded active trial offers, listed attached cadences, and said schedules or cadences could not be attached while paused. The November 7 guide expressly exempts item-level trial offers and does not repeat the cadence or reverse-attachment statements. Omission alone does not prove those historical restrictions were removed. See [[source-stripe-subscriptions-pause]] and its dated raw captures.",
+      "reason": "Fix material trial/status/schedule limits and preserve May-only cadence statements as dated evidence.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The linked schedule guide was not reviewed; do not expand its eligibility or outcome."
+      ]
+    },
+    {
+      "update_id": "pause-concept-portal",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "**Customer portal**: displays paused status; customers cannot self-pause.",
+      "new_text": "**Customer portal**: The November guide says merchants can let customers pause their own subscriptions through a configured customer portal. The May capture described a display-only portal; configuration details are in a linked guide not reviewed here.",
+      "reason": "Remove unqualified self-pause prohibition.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "pause-concept-resume",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "- Manual only \u2014 no auto-resume",
+      "new_text": "- Resume through Dashboard or API; the November guide also links to scheduled resume attempts. A scheduled attempt does not guarantee an active subscription or successful payment.",
+      "reason": "Correct manual-only resume and preserve state/payment qualification.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "pause-concept-payment",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "| Invoice generated, payment fails | Status \u2192 `past_due` |\n| Invoice voided before payment | Stays `paused` |\n| No payment within 23 hours | Stripe voids invoice; stays `paused` |\n\nResume does NOT auto-attempt payment \u2014 must call `POST /v1/invoices/:id/pay` separately.",
+      "new_text": "| Invoice generated, payment fails | Depends on `payment_behavior`: `past_due` with default `resume_on_payment_attempt`; `paused` with `resume_on_payment_success` |\n| Invoice voided before payment | Stays `paused` |\n| Pending update expires | Default `resume_on_payment_attempt`: 23 hours; `resume_on_payment_success`: 1 year. Stripe voids the invoice and leaves the subscription paused. |\n\nWith default `resume_on_payment_attempt`, the resume request does not attempt payment; use `POST /v1/invoices/:id/pay`. With `resume_on_payment_success`, Stripe attempts payment when a default payment method or sufficient cash balance is available; otherwise it returns an error. Failed payment on this branch leaves the subscription paused and invoice retries may occur unless disabled. Inspect `status` and `pending_update` even after HTTP 200. See [[source-stripe-subscriptions-pause]] for the dated May and November evidence.",
+      "reason": "Scope old blanket payment claims to the November default and describe the second branch.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "pause-concept-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "- [[source-stripe-subscriptions-pause]] \u2014 Stripe docs: true pause endpoint (flexible billing only, bill_for, resume flow, webhooks)",
+      "new_text": "- [[source-stripe-subscriptions-pause]] \u2014 May and November 2026 Stripe pause guide captures: flexible billing, pause billing, eligibility, portal and resume payment branches",
+      "reason": "Make the reciprocal route reflect the updated same-URL capture.",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "pause-concept-pause-example-date",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "## Pause API\n\n",
+      "new_text": "## Pause API\n\nThe `Stripe-Version: preview` line below is from the May 13, 2026 captured example. November's same-URL example omits it while linking to an API page with `api-version=2026-07-29.preview`; the captures do not establish a current required header or endpoint availability. See [[source-stripe-subscriptions-pause]].\n\n",
+      "reason": "Date the May preview header and avoid presenting it as current API contract.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Do not infer endpoint GA status or rejection of the May preview header from omission."
+      ]
+    },
+    {
+      "update_id": "pause-concept-resume-example-date",
+      "target_path": "wiki/concepts/stripe-subscriptions-pause.md",
+      "old_text": "## Resume API\n\n",
+      "new_text": "## Resume API\n\nThe `Stripe-Version: preview` line below is from the May 13, 2026 captured example. November's resume example omits it; the captures do not establish a current required header or invalidate the May form. See [[source-stripe-subscriptions-pause]].\n\n",
+      "reason": "Date the resume preview-header example and keep current version requirements unresolved.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Do not infer the May preview header is invalid from the November example."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/pause, the November capture says true pause halts service and new invoices, while existing invoices advance; it differs from pause_collection and automatic trial-end pause (new lines 7\u201320, 54\u201357; old lines 10\u201319). The updated [[source-stripe-subscriptions-pause]] records immediate API and Dashboard pause, configurable portal self-pause, and a link to scheduled attempts (new 24\u201328), superseding May's portal-only display and manual API descriptions as current absolutes (old 58, 62). Flexible billing and charge_automatically are the relevant route requirements. HTTP 200 on resume does not alone prove active status (new 166\u2013168).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/pause, [[source-stripe-subscriptions-pause]] now scopes the May no-payment-attempt, past_due, and 23-hour descriptions (old 66\u201373) to November's default resume_on_payment_attempt branch; resume_on_payment_success can attempt payment, retains paused on failure, permits retries, and has one-year pending-update expiry (new 181\u2013188). November also adds pause preview conditions, item-level trial-offer exception, and unpaid/active-billing-schedule limits (new 115\u2013126, 307\u2013321). May's preview header, type parameter, unchanged anchor and cadence language remain dated evidence, since November's omission cannot prove rejection or deprecation (old 40, 48\u201356, 83\u201389). Portal and schedule guide details require their own review."
+  },
+  "status": "candidate_ready"
+}

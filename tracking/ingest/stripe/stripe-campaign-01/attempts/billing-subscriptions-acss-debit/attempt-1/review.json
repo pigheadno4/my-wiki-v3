@@ -1,0 +1,39 @@
+{
+  "job_id": "billing-subscriptions-acss-debit",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The four pinned hashes match, and the numbered new raw, matched old raw, current source, and diff were independently read to EOF. All five new quotes and three old evidence excerpts match their stated lines. The core source_required_update recommendation is supported: new raw line 200 qualifies the older no-retry rule, and new line 196 adds a first-payment check before fulfillment. Three retained phrasings broaden the evidence in ways that matter to payment-state and retry decisions. Old raw line 221 says payment success leads to an active subscription, not that active status proves payment success; new raw line 196 warns against that reverse inference. The new retry sentence documents one possible enabled insufficient-funds retry path, not an exhaustive only-if rule for all Canadian PAD failures or settings. New raw line 196 also requires verifying the related subscription is active in addition to either waiting for invoice.paid or confirming PaymentIntent succeeded; the receipt's Q1 and findings can read as attaching that check only to the PaymentIntent branch.",
+  "required_changes": [
+    "Replace the finding and substantive-change wording that says old raw line 221 equates payment success and active subscription. State the old one-way claim accurately, then state that new raw line 196 rules out inferring first-payment success from active status alone.",
+    "Remove the exclusive 'only if' phrasing from the retry finding. New raw line 200 supports the bounded statement that, when Direct Debit retries is enabled, Stripe can automatically retry Canadian PAD payments that failed for insufficient funds; it does not establish the full retry eligibility matrix or any particular account's enablement.",
+    "Clarify the fulfillment rule in findings and Q1: verify the related subscription is active along with either invoice.paid or a succeeded underlying PaymentIntent, as new raw line 196 states. Keep invoice.paid distinct from invoice.payment_succeeded used for the default-payment-method webhook."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 366
+      }
+    ],
+    "raw/stripe-subscriptions-acss-debit-2026.md": [
+      {
+        "start": 1,
+        "end": 442
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-acss-debit.md": [
+      {
+        "start": 1,
+        "end": 75
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa5c9eefbe8838ecbfa86572/content.diff": [
+      {
+        "start": 1,
+        "end": 649
+      }
+    ]
+  }
+}

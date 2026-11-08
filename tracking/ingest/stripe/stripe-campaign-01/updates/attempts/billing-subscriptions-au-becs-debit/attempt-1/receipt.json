@@ -1,0 +1,119 @@
+{
+  "job_id": "billing-subscriptions-au-becs-debit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md",
+  "raw_sha256": "6ce211b766f501ffe0a84dbebddc4c0fc51ff7f772445bc2cb16f74c76c9b4f4",
+  "source_before_sha256": "775a50ab170d0b5a4e6847851f84bbf9858acaa504a1f123ce03d8b1f9740dc0",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Up BECS Direct Debit Subscription (Australia)\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/au-becs-debit\"\nraw_files:\n  - \"stripe-billing-subscriptions-au-becs-debit-2026-11-07.md\"\n  - \"stripe-subscriptions-becs-debit-2026.md\"\ntags: [stripe, billing, subscriptions, becs, australia, aud, direct-debit, setup-intents, mandate]\n---\n\n## Overview\n\nStripe's Australian BECS Direct Debit subscription guide uses a Dashboard Product and recurring Price, a server-created SetupIntent, client-side Australia Bank Account Element and DDR authorization, then a saved default payment method on a customer-configured Account or Customer before server-side subscription creation. It recommends the Payment Element for new users instead of the legacy Elements path described here. The 2026-11-07 capture adds explicit first-payment fulfillment and conditional retry qualifications to the 2026-05-13 guide. See [[stripe]], [[stripe-au-becs-debit]] and [[stripe-subscriptions]].\n\n## Integration flow\n\n1. Create the Product and recurring AUD Price in the Dashboard and retain its Price ID. The November server example enables the payment method in the Dashboard and creates a SetupIntent with `automatic_payment_methods[enabled]=true`; Stripe displays eligible methods automatically. This does not establish BECS eligibility for any particular account. The May Node.js example explicitly uses `payment_method_types: [\"au_becs_debit\"]`; both are dated sample variants, not evidence that explicit selection is invalid.\n2. Pass only the SetupIntent `client_secret` to the client. Do not log it, put it in a URL, or expose it to anyone other than the customer. Use the HTML/JS `auBankAccount` Element or React `AuBankAccountElement` to collect BSB and account number, plus account holder name and email. The guide requires HTTPS for live checkout, while allowing tests without it.\n3. Display the DDR service agreement and authorization text, obtain the customer's Direct Debit Request, and confirm setup with `stripe.confirmAuBecsDebitSetup`. A successful setup has SetupIntent status `succeeded`; it is a payment-method setup result, not proof that the first debit has cleared.\n4. Make the accepted DDR and its service agreement shareable with the customer at all times. After successful setup, the guide says to share the Mandate URL. It recommends also sending an explicit confirmation, business name on the bank statement, amount and schedule if applicable, and the DDR link; those extra details are recommendations, not individually mandatory steps.\n5. For recurring charges, set the stored payment method as the default for the correct customer object: `configuration.customer.billing.default_payment_method` on a customer-configured Account v2, or `payment_method` and `invoice_settings.default_payment_method` when creating a Customer v1. Then create the subscription with that Account's `customer_account` or Customer's `customer` and the Price ID. Store the customer identity for subsequent use.\n\n## Payment state and retries\n\nA subscription may become `active` while its first BECS payment is still processing. Before fulfilling goods or services, wait for `invoice.paid` **or** confirm that the underlying PaymentIntent is `succeeded`, and also verify the related subscription is `active`. A SetupIntent success, subscription creation, or `active` status by itself does not prove the debit succeeded.\n\n> [!warning] Contradiction\n> The 2026-05-13 capture states that BECS payments are never automatically retried, even with another-method retry schedule. The 2026-11-07 guide says Stripe **can** automatically retry AU BECS payments failed for insufficient funds **if Direct Debit retries is enabled**. Keep the older sentence as historical wording; the newer condition is bounded by enablement and failure reason. Neither capture verifies this feature is available or enabled for a given account. [[stripe-au-becs-debit]] separately records a private-preview Billing Retries qualification from its own evidence.\n\n## Mandate and customer-model qualifications\n\nThe online DDR form collects account holder name, BSB and account number. Display Stripe's exact DDR service agreement inline or through a clearly labeled link, and display its standard authorization text with the merchant name substituted. The accepted DDR and service agreement must remain shareable as print or a non-changeable electronic copy; Stripe hosts the Mandate URL.\n\nThe November guide says Accounts v2 is generally available for Connect users and in public preview for other Stripe users. Preview participants need a preview API version; its Account curl example shows `Stripe-Version: 2026-10-28.preview` and the Dashboard path to enable \u201cReusable payment methods for Global Payouts.\u201d This is documentation of a preview path, not proof of account access. Customer v1 remains an alternative.\n\n## Optional features and tests\n\nA manual `billing_cycle_anchor` can produce a prorated charge until the anchor; `proration_behavior=none` suppresses that charge. A `trial_end` timestamp creates a free trial and can be combined with an anchor. These are guide examples, not evidence of a tested subscription.\n\nThe guide gives test BSB `000000` and ten test accounts. The table preserves the documented PaymentIntent and mandate outcomes; it does not report an actual payment in this workspace.\n\n| Account | Token | Documented outcome |\n|---|---|---|\n| `000123456` | `pm_auBecsDebit_success` | PaymentIntent `processing` \u2192 `succeeded`; mandate active |\n| `900123456` | `pm_auBecsDebit_successDelayed` | Same success after a three-minute delay; mandate active |\n| `111111113` | `pm_auBecsDebit_accountClosed` | `requires_payment_method`; mandate inactive |\n| `111111116` | `pm_auBecsDebit_noAccount` | `requires_payment_method`; mandate inactive |\n| `222222227` | `pm_auBecsDebit_referToCustomer` | `requires_payment_method`; mandate active |\n| `922222227` | `pm_auBecsDebit_referToCustomerDelayed` | Same failure after three minutes; mandate active |\n| `333333335` | `pm_auBecsDebit_debitNotAuthorized` | `requires_payment_method`; mandate inactive |\n| `666666660` | `pm_auBecsDebit_dispute` | `succeeded`, followed immediately by dispute |\n| `343434343` | `pm_auBecsDebit_exceedsWeeklyLimit` | `charge_exceeds_source_limit` error |\n| `121212121` | `pm_auBecsDebit_exceedsTransactionLimit` | `charge_exceeds_transaction_limit` error |\n\n## Detail locators\n\n- November: Product and Price (raw lines 13\u201329); SetupIntent and client secret (31\u201345); DDR requirements (75\u201395 and 265\u2013285); HTML/React Element setup (97\u2013382); client confirmation and mandate URL (384\u2013576); Account v2 preview and Customer v1 defaults (584\u2013688); subscription creation, first-payment state and retries (690\u2013720); test table, anchor and trial (722\u2013789).\n- May: explicit Node.js `payment_method_types` SetupIntent (raw lines 30\u201356); DDR requirements (86\u2013106); mandate URL advice (417\u2013424, 575\u2013582); customer and subscription examples (594\u2013736); former status and never-retry wording (738\u2013742); ten test accounts and optional billing cases (744\u2013843). Its Stripe.js example uses a `dahlia` path; November uses `endive`. The path and Node.js-to-curl rendering do not alone establish a new payment capability.\n\n## Related\n\n- [[stripe-au-becs-debit]] \u2014 AU BECS mandates, settlement and retries\n- [[stripe-subscriptions]] \u2014 subscription lifecycle and fulfillment\n- [[stripe]] \u2014 company\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07|AU BECS subscription guide \u2014 captured 2026-11-07]]\n- [[raw/stripe-subscriptions-becs-debit-2026|AU BECS subscription guide \u2014 captured 2026-05-13]]\n",
+  "quotes": [
+    {
+      "text": "Create a [SetupIntent](https://docs.stripe.com/api/setup_intents.md) on your server. [Enable the payment method](https://dashboard.stripe.com/settings/payment_methods) in your Dashboard. Stripe displays eligible payment methods automatically.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:35"
+    },
+    {
+      "text": "Make sure the accepted DDR and its accompanying [DDR service agreement](https://stripe.com/au-becs-dd-service-agreement/legal) can be shared with your customer at all times, either as a printed or non-changeable electronic copy (such as email). Stripe hosts this for you.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:90"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:590"
+    },
+    {
+      "text": "A subscription can become `active` while its first payment is still processing, so don\u2019t use the subscription status alone to determine whether the payment succeeded.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:716"
+    },
+    {
+      "text": "If you enable [Direct Debit retries](https://docs.stripe.com/billing/revenue-recovery/smart-retries.md#direct-debit-retries), Stripe can automatically retry AU BECS Direct Debit payments that fail because of insufficient funds.",
+      "location": "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md:720"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Create a [SetupIntent](https://docs.stripe.com/api/setup_intents.md) on your server with [payment_method_types](https://docs.stripe.com/api/setup_intents/create.md#create_setup_intent-payment_method_types) set to `au_becs_debit`:",
+      "location": "raw/stripe-subscriptions-becs-debit-2026.md:34"
+    },
+    {
+      "text": "BECS Direct Debit payments are never automatically retried, even if you have a [retry schedule](https://docs.stripe.com/invoicing/automatic-collection.md) configured for other payment methods.",
+      "location": "raw/stripe-subscriptions-becs-debit-2026.md:742"
+    },
+    {
+      "text": "After successfully confirming the `SetupIntent`, you should share the [mandate URL](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-au_becs_debit-url) from the [Mandate object](https://docs.stripe.com/api/mandates.md) with your customer. We also recommend including the following details to your customer when you confirm their mandate has been established:",
+      "location": "raw/stripe-subscriptions-becs-debit-2026.md:417"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-au-becs-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 789
+      }
+    ],
+    "raw/stripe-subscriptions-becs-debit-2026.md": [
+      {
+        "start": 1,
+        "end": 843
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 76
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f21f7d1ade9af189a6f182a5/content.diff": [
+      {
+        "start": 1,
+        "end": 891
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "au-becs-subscription-flow-retry-mandate",
+      "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+      "old_text": "Flow: SetupIntent (`au_becs_debit`) \u2192 `auBankAccount` Element \u2192 `confirmAuBecsDebitSetup()` \u2192 share mandate URL \u2192 create Customer with PM as default \u2192 create subscription.\n\n**Critical: BECS payments are never automatically retried**, even if a retry schedule is configured.\n\nAfter `SetupIntent.succeeded`: must share mandate URL, business name, payment schedule, DDR link with customer. Mandate URL at `Mandate.payment_method_details.au_becs_debit.url`.",
+      "new_text": "Flow: server SetupIntent \u2192 `auBankAccount` Element or React `AuBankAccountElement` and DDR acceptance \u2192 `confirmAuBecsDebitSetup()` \u2192 share Mandate URL \u2192 store the payment method as default on a customer-configured Account v2 or Customer v1 \u2192 create subscription. The May 2026 Node.js SetupIntent example selects `au_becs_debit` explicitly; the November 2026 guide enables it in the Dashboard and uses `automatic_payment_methods` for eligible methods. After setup, share the Mandate URL; the guide recommends adding the business name, applicable amount/schedule and DDR link. The accepted DDR and service agreement must remain shareable at all times. Before fulfilling the first payment, require `invoice.paid` or a `succeeded` underlying PaymentIntent **and** an `active` related subscription; `active` alone can precede payment success.\n\n> [!warning] Contradiction\n> The May 2026 subscription guide says BECS payments are never automatically retried. The November 2026 guide says Stripe can retry an insufficient-funds AU BECS payment when Direct Debit retries is enabled. The adjacent Billing Retries section records private-preview availability from separate evidence. Do not infer that any account has access or that other BECS failure reasons are retried. See [[source-stripe-subscriptions-becs-debit]].",
+      "reason": "Directly correct the concept's absolute no-retry and overbroad mandate-details claims; preserve the separate private-preview qualification and add the new payment-state boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "May never-retry wording and November enabled insufficient-funds retry wording conflict; retain dates and conditional scope."
+      ]
+    },
+    {
+      "update_id": "au-becs-subscription-concept-route",
+      "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+      "old_text": "- [[source-stripe-subscriptions-becs-debit]] \u2014 subscription setup: no-retry rule, mandatory mandate sharing, SetupIntents flow, billing_cycle_anchor + trial_end",
+      "new_text": "- [[source-stripe-subscriptions-becs-debit]] \u2014 May and November 2026 AU BECS subscription guide: SetupIntent and DDR, first-payment check, conditional insufficient-funds retry, anchor and trial",
+      "reason": "Replace the inaccurate no-retry source route with a dated reciprocal summary.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "au-becs-subscriptions-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-becs-debit]] \u2014 BECS subscription (AU): SetupIntents + DDR mandate compliance, no-retry rule, mandatory mandate URL sharing",
+      "new_text": "- [[source-stripe-subscriptions-becs-debit]] \u2014 AU BECS subscription guide (May/November 2026): SetupIntent and DDR, first-payment check, conditional insufficient-funds retry, mandate URL sharing",
+      "reason": "Correct the existing subscription concept's source route without generalizing retry availability.",
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/au-becs-debit, [[source-stripe-subscriptions-becs-debit]] describes an Australian BECS subscription setup: Dashboard Product and recurring Price, server SetupIntent and client secret, client AuBankAccount Element and DDR authorization, `confirmAuBecsDebitSetup`, saved default method on an Account v2 or Customer v1, then server subscription creation (new 13\u201395, 169\u2013205, 384\u2013435, 584\u2013712; old 12\u2013110, 176\u2013212, 386\u2013438, 594\u2013736). The current source's May flow remains historically useful, but its no-retry assertion is contradicted by the November condition (old 742; new 720). Neither capture proves account eligibility or a completed debit.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/au-becs-debit, [[source-stripe-subscriptions-becs-debit]] now records the November server sample's Dashboard enablement and `automatic_payment_methods` (new 35\u201343) beside the May explicit `payment_method_types` Node.js example (old 34\u201356). November warns that subscription `active` can precede first-payment completion, requiring `invoice.paid` or a `succeeded` PaymentIntent plus `active` before fulfillment (new 716; old 740 gave no further action). November permits automatic insufficient-funds AU BECS retries only if Direct Debit retries is enabled (new 720), whereas May said never (old 742); actual availability is unverified and the AU BECS concept records private-preview context separately. The accepted DDR and agreement must remain shareable (new 90), the guide says share the Mandate URL and recommends ancillary business and schedule details (new 418\u2013425; old 417\u2013424). Curl/Node and endive/dahlia differences are dated sample rendering, not proof of new capability."
+  },
+  "status": "candidate_ready"
+}

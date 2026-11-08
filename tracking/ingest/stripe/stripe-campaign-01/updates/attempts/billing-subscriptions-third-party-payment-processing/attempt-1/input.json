@@ -1,0 +1,100 @@
+{
+  "job_id": "billing-subscriptions-third-party-payment-processing",
+  "queue_id": 49,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/third-party-payment-processing",
+  "raw_path": "raw/stripe-billing-subscriptions-third-party-payment-processing-2026-11-07.md",
+  "raw_sha256": "ff0dbadd06e5748823b8e318f92af889df8218d0888904894a777850ce219521",
+  "prior_raw_path": "raw/stripe-subscriptions-third-party-2026.md",
+  "prior_raw_sha256": "6408bff6d437141b42ce4f27741655bded81afdc10afd984c2ffcdb1042e902f",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/33df2a5520269ea25df63a0d/content.diff",
+  "diff_sha256": "77d876ba63b30d3ab95f2e594cee9fed03b8fffdfa3d3ca023eb5c5a1af8bde6",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-third-party.md"
+  ],
+  "source_before_sha256": "04ffb6fbbc320327577342b5b85945a3e83da820902196c65451c3c8e585b063",
+  "section": "billing",
+  "new_words": 63,
+  "new_lines": 14,
+  "old_words": 5042,
+  "old_lines": 1027,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-third-party.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/receipt.json",
+  "receipt_sha256": "28aa48e36870c1dd4f98b4c17fb918e2799f4e2169a40ee45526a5c283399ae4",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-third-party-payment-processing/attempt-2/review.json",
+  "review_sha256": "e4651ab2ff2fb0064464192b51f7e321208b0ce836f271d0af266651d5635b6d",
+  "affected_concepts": [
+    "wiki/concepts/stripe-billing-third-party.md",
+    "wiki/concepts/stripe-custom-payment-methods.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-third-party-payment-processing-2026-11-07.md",
+  "new_raw_sha256": "ff0dbadd06e5748823b8e318f92af889df8218d0888904894a777850ce219521",
+  "prior_raw": "raw/stripe-subscriptions-third-party-2026.md",
+  "findings": [
+    "The 2026-11-07 base-URL capture is a 14-line navigation index with exactly two named variant links: own processor and out-of-band invoices (new raw:5-14). It establishes that these routes exist in this capture, but no current API version, integration support, processor eligibility, payment state, refund process, retry rule, fee, or country list.",
+    "The matched 2026-05-13 raw combined both full variants at the same canonical URL: own processor begins at old raw:10-26 and out-of-band at old raw:792-799. The 1,029-line diff replaces their combined body with variant links (diff:1-13,1026-1029). This is a collection/rendering shape change; old body omission does not deprecate either approach or establish that its behavior changed.",
+    "The dated source accurately distinguishes the May own-processor custom-payment-method plus PaymentRecord approach from the older out-of-band send_invoice/paid_out_of_band path (source:4-13,15-50), and its raw_files points to the full May evidence (source:6-7,78-80). Retain that factual raw link; the short November navigation page should not replace it as implementation evidence.",
+    "Own-processor May guidance has the merchant or platform collect through its third-party processor, while Stripe custom payment methods reference that instrument and PaymentRecords report the result; initial subscription is incomplete, with an open invoice, and the guide states a 23-hour reporting window (old raw:14-24,41-46,92-138,340). For renewals, invoice.payment_attempt_required, off-session collection, retry attempts against an existing record, and refund reporting with Credit Notes have distinct roles (old raw:342-346,433-443,548-555). These remain dated claims, not reconfirmed by the index.",
+    "The May out-of-band variant uses send_invoice with days_until_due, merchant-initiated third-party payment after invoice.finalized, and paid_out_of_band only after external success (old raw:859-899,955-979). It has different Checkout/Elements and customer-portal restrictions from the own-processor variant (old raw:32-40,609-616,823-825,901-903). The new index does not resolve these old variant-specific differences.",
+    "The current source needs a scoped correction now despite the navigation-only November capture: source:59 states customer-portal proration_behavior=always_invoke, a false token. Replace it with always_invoice as old raw:38 and wiki/concepts/stripe-billing-third-party.md:45 state. Source:13 also presents 2026-04-22.dahlia as a guide-wide API version, although it appears only in May Node examples at old raw:185,259,353,538,561; old raw:324 even has a malformed quoted version with a semicolon. Qualify the version as dated sample code, not a universal prerequisite. Concept:70 repeats a broad version claim and needs reciprocal qualification. These source/concept corrections do not imply a November API or product change."
+  ],
+  "substantive_changes": [
+    "No substantive payment-processing change is established by the same-URL new capture. It only changes the base page from a combined, two-variant full guide to an index of the own-processor and out-of-band variant URLs (new raw:9-14; diff:3-11,1028-1029).",
+    "An actionable preexisting source error requires correction now: source:59's always_invoke must become always_invoice (old raw:38; concept:45), and source:13's 2026-04-22.dahlia must be labeled as an example-scoped May Node API version, with concept:70 qualified similarly (old raw:185,259,324,353). This explains source_required_update without attributing a product delta to the new index."
+  ],
+  "conflicts": [
+    "Source:59 spells the customer-portal setting always_invoke, but old raw:38 and wiki/concepts/stripe-billing-third-party.md:45 spell always_invoice. Correct the false source token now; this is an old-summary error, not an observed November product delta.",
+    "Own-processor old raw:32-40 permits Payment Element or a custom non-Stripe checkout flow but excludes Stripe Checkout; out-of-band old raw:901-903 excludes Checkout and Elements and calls for a custom checkout. Keep the variant scope explicit rather than deriving a universal Elements prohibition or permission from the two-label index.",
+    "Source:13 presents 2026-04-22.dahlia as an API version for the whole guide, and concept:70 says it is used for the Payment Records API without sample qualification. Old raw:185,259,353 shows it in illustrative PaymentRecord Node code, and old raw:324 contains a malformed semicolon in one quoted version string. Qualify source and concept as May example-scoped; no universal minimum or current account capability follows from those examples or new raw:9-14.",
+    "Old raw:340 says attaching a PaymentRecord marks invoice paid/Subscription active, while old raw:252-317 describes an initiated asynchronous record and later outcome reporting. Treat payment initiation, reported guaranteed/failed outcome, invoice state, and actual third-party settlement as separate; the index cannot resolve that timing ambiguity."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve May 2026 own-processor evidence as scoped: custom PaymentMethod and PaymentRecord with charge_automatically, separate external processor collection, account or customer identity, merchant legal/location responsibilities, no Stripe Checkout, no in-Stripe off-Stripe dispute/refund initiation, and limited recovery support (old raw:14-46,90-138,624-790). The new index alone cannot affirm present availability or supported country lists.",
+    "Preserve the May lifecycle distinctions: default_incomplete begins with open invoice; synchronous guaranteed/failed versus asynchronous initiated outcome; attachPayment/reporting and 23-hour incomplete_expired boundary; renewal invoice.payment_attempt_required; failed attempt leaves invoice open and can move a formerly active subscription to past_due (old raw:138,172-174,176-340,342-346,433-443). A reported/attached record is not a provider-side receipt in this review.",
+    "Preserve out-of-band as a distinct dated workflow: send_invoice and days_until_due, external payment, then paid_out_of_band; invoice email and portal settings affect unrelated users, and partial payments are unsupported in that guide (old raw:792-825,859-899,953-979,1025-1027). Do not transfer the own-processor Payment Element permission or retry automations into that path.",
+    "Preserve old source and concept routes as May evidence, with 2026-04-22.dahlia explicitly labeled as the version in May Node examples, not a universal prerequisite or current account requirement (source:13; concept:70; old raw:185,259,353). The malformed old raw:324 version string must not be copied as runnable guidance."
+  ],
+  "unresolved_questions": [
+    "What do the two query-parameter variant pages actually state on 2026-11-07 about PaymentRecords, supported processors and countries, Payment Element, invoices, retries, refunds, and out-of-band processing? They were not captured in this assigned new raw.",
+    "Do currently deployed account/API settings accept the historical own-processor and out-of-band flows? The capture contains no execution, entitlement, live processor result, or current country verification.",
+    "For asynchronous initiated PaymentRecords, at exactly what reported outcome and attachment step does the relevant invoice or subscription become paid/active? The May combined guide is internally ambiguous at old raw:252-340."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw2",
+  "reviewer_agent": "/root/s01ur1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-third-party-payment-processing-2026-11-07.md",
+      "sha256": "ff0dbadd06e5748823b8e318f92af889df8218d0888904894a777850ce219521",
+      "lines": 14
+    },
+    {
+      "path": "raw/stripe-subscriptions-third-party-2026.md",
+      "sha256": "6408bff6d437141b42ce4f27741655bded81afdc10afd984c2ffcdb1042e902f",
+      "lines": 1027
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-third-party.md",
+      "sha256": "04ffb6fbbc320327577342b5b85945a3e83da820902196c65451c3c8e585b063",
+      "lines": 80
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/33df2a5520269ea25df63a0d/content.diff",
+      "sha256": "77d876ba63b30d3ab95f2e594cee9fed03b8fffdfa3d3ca023eb5c5a1af8bde6",
+      "lines": 1029
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-third-party-payment-processing-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-third-party-payment-processing-review.json"
+}

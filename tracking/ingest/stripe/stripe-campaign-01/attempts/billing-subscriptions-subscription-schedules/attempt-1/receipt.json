@@ -1,0 +1,113 @@
+{
+  "job_id": "billing-subscriptions-subscription-schedules",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-subscription-schedules-2026-11-07.md",
+  "raw_sha256": "3325ed14fcedb8932cf24072dc2d1ab20315ed8a118aaa2c5475720c73622f54",
+  "prior_raw_path": "raw/stripe-subscriptions-schedules-2026.md",
+  "prior_raw_sha256": "265b5f5cb55597c8ce776b341bd40eb03fcac473fad03c72bba30c9a7fa44af9",
+  "source_target": "wiki/sources/source-stripe-subscriptions-schedules.md",
+  "source_before_sha256": "9fb2e6d7e07b6f3f2845a4bc152d2fcdb3bbfece5246efbd438c2f2a3ac16eb4",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-subscription-schedules-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 989
+      }
+    ],
+    "raw/stripe-subscriptions-schedules-2026.md": [
+      {
+        "start": 1,
+        "end": 1170
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-schedules.md": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f8fab46d3f97a6baa2e161ea/content.diff": [
+      {
+        "start": 1,
+        "end": 1606
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Subscription schedules are available in both the Stripe Billing Dashboard and the API.",
+      "location": "raw/stripe-billing-subscriptions-subscription-schedules-2026-11-07.md:17"
+    },
+    {
+      "text": "You can\u2019t configure manual tax rates and enable automatic tax for the same phase",
+      "location": "raw/stripe-billing-subscriptions-subscription-schedules-2026-11-07.md:139"
+    },
+    {
+      "text": "The invoice begins in a `draft` status and is finalized by Stripe",
+      "location": "raw/stripe-billing-subscriptions-subscription-schedules-2026-11-07.md:235"
+    },
+    {
+      "text": "Setting a finite end date on the final phase in the Dashboard cancels the subscription at that date.",
+      "location": "raw/stripe-billing-subscriptions-subscription-schedules-2026-11-07.md:522"
+    },
+    {
+      "text": "Creating the schedule doesn\u2019t create proration invoice items during the migration.",
+      "location": "raw/stripe-billing-subscriptions-subscription-schedules-2026-11-07.md:588"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This feature is only available in the classic version of the",
+      "location": "raw/stripe-subscriptions-schedules-2026.md:8"
+    },
+    {
+      "text": "The invoice begins in a `draft` status and is finalized by Stripe",
+      "location": "raw/stripe-subscriptions-schedules-2026.md:227"
+    },
+    {
+      "text": "You can only update the current and future phases on subscription schedules.",
+      "location": "raw/stripe-subscriptions-schedules-2026.md:336"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The new complete guide still describes schedules that create a subscription or attach to an existing one, sequential phases (one active at a time), up to 10 current/future phases, phase transitions, and end_behavior (new 9-23, 110-112, 431-434). The old guide covered the same fundamentals (old 10-24, 111-113, 516-519). No completed live subscription or invoice payment was observed.",
+    "Old line 8 asserted classic Subscription editor only and a 30-day persisted editor choice; the November guide omits that restriction and expressly gives Dashboard create, edit, preview, release/cancel and use-case workflows (new 17, 35-43, 295-308, 361-425, 833-859). Source 13 and concept 10/91 still state classic-only as current. Retain the May statement as dated historical UI guidance, remove its unqualified current claim, and do not infer every Dashboard account or interface variant has identical access.",
+    "The inheritance table gains default_settings.automatic_tax versus phases.automatic_tax as a fifth schedule/phase property, beyond the four in the May table and current source 36/concept 46 (new 118-137; old 119-133). New 139-141 adds consequential manual-tax exclusions and inheritance: set a phase's automatic_tax.enabled=false to use manual default_tax_rates, automatic tax and manual rates cannot both apply to the same phase, and retained manual rates are not a fallback after inherited automatic-tax calculation fails. These conditions deserve source and concept correction.",
+    "The first invoice draft and approximate one-hour finalization window is specifically for a schedule-created subscription with collection_method=charge_automatically and start_date=now in the illustrated case, with later open or paid depending on asynchronous outcome (new 231-237; old 223-229). Source 19 and concept 14 state the draft window for every schedule-created subscription, and contrast all direct subscription creation as immediate finalization. Narrow the schedule-side condition and retain the guide's qualified contrast; draft does not prove paid or settled.",
+    "The new use cases distinguish API end_behavior=release after a fixed duration from Dashboard Forever final phase; a finite Dashboard final end date cancels the subscription (new 522-526). Future start creates the subscription when the future date arrives (new 528-545), whereas backdating creates immediately and bills elapsed time while application controls access (new 555-573). Old 639-641 implied backdating itself allowed immediate website access; that is corrected. Source 57-58 and concept 68-69 should preserve timing and access separation.",
+    "The new from_subscription path creates one phase from the current billing period/configuration without proration invoice items during migration (new 582-594). Updating a schedule requires all current/future phases and settings to retain them; omitted parameters are unset, past phases remain response-only (new 310-320, 674-681; old 334-342). Source 46 and concept 77-82 should keep this destructive omission warning and avoid treating the single-item downgrade sample as a general template.",
+    "The new release section says pass the schedule ID, valid for not_started or active, remove remaining phases, preserve an existing subscription, and create no subscription when not_started (new 833-840). Cancellation is valid for not_started or active; if active with a subscription, it immediately cancels that subscription, while Dashboard deletion before start cancels the schedule before subscription creation (new 842-859). Source 18 and concept 16/84-87 collapse release/cancel into 'sub continues' or 'both canceled' without the not_started boundary; qualify these by schedule state.",
+    "Direct edits of listed subscription fields might automatically split an attached phase; new 455-511 retains the old warning and specifically says metadata edits do not propagate to the attached schedule. Source 50 and concept 56 make automatic split categorical; narrow to 'might' generally while retaining the concrete item-delete example at new 476-479. The new API examples predominantly use curl rather than old Node.js and include a Ruby downgrade example (new 249-275, 683-726); this sample-language change is presentational, not proof of SDK removal."
+  ],
+  "substantive_changes": [
+    "New guide removes the old classic-editor-only statement and documents broader Dashboard paths, although account-specific UI availability is not proven (old 8; new 17, 295-425, 833-859).",
+    "New guide adds automatic_tax to schedule/phase inheritance and detailed manual-tax conflict, precedence and non-fallback rules (new 118-141 versus old 119-133).",
+    "New guide clarifies finite Dashboard final-phase cancellation versus API release, backdate access control, no proration items when attaching from_subscription, and not_started release/cancel effects (new 522-588, 833-859).",
+    "Most Node.js-to-curl example replacement and list-number/Markdown styling changes in the diff are presentational; the new Ruby downgrade example does not negate old Node.js sample behavior (new 683-726; old 781-823)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain May 2026 classic-editor-only and 30-day persisted choice solely as dated old UI guidance, since the November guide gives Dashboard workflows without repeating that limitation (old 8; new 17, 295-425).",
+    "Retain established two-proration-setting scopes, phase metadata merge/unset behavior, 10 current/future phase limit, update-all-current/future destructive omission warning, and draft-invoice condition with exact qualifiers (old 50-80, 135-147, 223-229, 334-342; new 49-79, 143-155, 231-237, 310-320).",
+    "Retain May Node.js examples as dated examples rather than evidence of a required SDK or deprecated API; November examples use curl and a Ruby downgrade example (old 243-295, 781-823; new 249-275, 683-726)."
+  ],
+  "conflicts": [
+    "Source 13 and concept 10/91 say classic Dashboard editor only; old 8 said so, but new 17 and Dashboard sections omit it and describe workflows. Do not preserve the May UI restriction as a current universal limit.",
+    "Source 36 and concept 46 list exactly four inheritable schedule/phase attributes, while new 118-124 includes automatic_tax as a fifth with further tax rules at 135-141.",
+    "Source 19 and concept 14 generalize the initial draft invoice timing; new 235-237 conditions it on schedule-created charge_automatically and gives start_date=now as the example, with payment outcome asynchronous.",
+    "Source 50 and concept 56 say direct changes auto-split the active phase; new 466 says listed changes might create a new phase. The item-delete example at new 476 is specific.",
+    "Source 18 and concept 16/86-87 omit not_started release/cancel distinctions; new 833-859 says release before start creates no subscription, and Dashboard delete before start cancels the schedule before creation."
+  ],
+  "unresolved_questions": [
+    "The November Dashboard instructions do not establish availability for every account, editor variant, or rollout; the removed classic-only sentence alone is not proof of a universal UI transition.",
+    "The capture documents possible invoice status after asynchronous finalization but no live invoice, payment success, settlement, or actual access grant.",
+    "The guide's Dashboard finite-end-date wording and API end_behavior=release are separate paths; no automatic equivalence should be inferred for unspecified Dashboard configurations."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-schedules.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/subscription-schedules, the November guide establishes that schedules create or attach to subscriptions, sequence phases, and update subscriptions as phases start (new 9-23, 45-47). It conditions the draft first invoice and approximate one-hour finalization on a schedule-created charge_automatically subscription, with later open or paid dependent on asynchronous payment outcome (new 231-237). It adds automatic_tax to the inheritable schedule/phase fields and warns that manual tax rates cannot coexist with automatic tax in one phase (new 118-141). [[source-stripe-subscriptions-schedules]] matches older core material but retains a May classic-editor-only limit and overstates the draft invoice, four-field inheritance and direct auto-split claims (source 13/19/36/50; old 8, 223-229, 551-561). Accounts v2 customer_account versus Customer v1 customer remain distinct, with preview qualification at new 241-275.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/subscription-schedules, substantive changes include Dashboard workflows without the May classic-only sentence, fifth automatic_tax inheritance with non-fallback tax rules, finite Dashboard end-date cancellation versus API release, backdate access control, and state-specific release/cancel consequences (new 17, 118-141, 522-588, 833-859; old 8, 119-133, 639-641, 958-974). [[source-stripe-subscriptions-schedules]] should date the May UI limit, qualify first-invoice draft timing at source 19, expand inheritance at 36, and change categorical auto-splitting at 50 to 'might' except the item-delete example. The old Node.js to new curl/Ruby sample change and Markdown numbering are presentation, not API deprecation (old 243-295; new 249-275). Schedule update omissions unset prior settings (new 318), release before start creates no subscription (new 835), and draft/open/paid invoice statuses do not establish actual payment or settlement."
+  }
+}

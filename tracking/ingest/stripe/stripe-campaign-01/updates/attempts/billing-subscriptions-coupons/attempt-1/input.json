@@ -1,0 +1,101 @@
+{
+  "job_id": "billing-subscriptions-coupons",
+  "queue_id": 26,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/coupons",
+  "raw_path": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md",
+  "raw_sha256": "36d6a9907f9859dff9fd567770b4480a87c0ddd340d94b621fd454663556774a",
+  "prior_raw_path": "raw/stripe-subscriptions-coupons-2026.md",
+  "prior_raw_sha256": "3d191fc7c9a10cc8f4766f5ab276cd8b68e4c8044f51f1177cccd2302147f90b",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/7a2a60e00f98114b5b091d5a/content.diff",
+  "diff_sha256": "8e1e81e200a49b0d11eb73b509c21fcde303efcccdbebd8fb2b0850f2c8dd9e8",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-coupons.md"
+  ],
+  "source_before_sha256": "ab1cf573918f2b011680cee2e2c41c0d5ebdcc21720ea969c9d5f58004e59034",
+  "section": "billing",
+  "new_words": 4261,
+  "new_lines": 521,
+  "old_words": 4179,
+  "old_lines": 605,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-coupons.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-coupons/attempt-1/receipt.json",
+  "receipt_sha256": "63a9ec922652b96ea442cebba4ca751c9ef7acdee0332d00262c71b2a3a21b9b",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-coupons/attempt-1/review.json",
+  "review_sha256": "a637d3011e0aff284078a8e05a394806317312a51e04509eeca70c0b2fd557c6",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-coupons.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md",
+  "new_raw_sha256": "36d6a9907f9859dff9fd567770b4480a87c0ddd340d94b621fd454663556774a",
+  "prior_raw": "raw/stripe-subscriptions-coupons-2026.md",
+  "findings": [
+    "Same canonical coupon guide, May versus November capture. Both explain coupons as discount definitions and promotion codes as customer-facing wrappers, with product restrictions inherited from the parent coupon (new 15-35, 95-107; old 8-21, 81-95). November adds a comparison table separating coupon controls from promotion-code-only customer, first-purchase and minimum-spend restrictions; its examples are illustrative, not eligibility guarantees.",
+    "November states a shared maximum of 20 discounts from coupons and promotion codes on a subscription, subscription item or invoice (new 24); May states up to 20 entries per discounts parameter in the stacking section (old 563-571). Current source line 40 and concept lines 10/40 mention subscription and item but omit invoice scope; do not infer a combined 20 total across all three objects from the text.",
+    "November adds an optional route to Stripe-authored or self-authored discount calculation scripts (new 91-93), a navigation/capability addition absent in May. The capture gives no script rules or enabled-account claim; keep it a locator rather than infer execution behavior.",
+    "Coupon duration remains once, repeating or forever, with backdated duration starting from the backdated subscription start (new 193-207; old 215-229). November explicitly says once is the default and removes the subscription discount after invoice finalization while the invoice retains it (new 195, 199-205). May already described finalization, but also used 'finalized or paid' in an explanatory bullet (old 221-227); retain the dated phrasing without claiming a new runtime transition from the wording change.",
+    "November clarifies that directly applying a coupon and redeeming a promotion code both consume the underlying coupon's max_redemptions, with limit across all customers (new 209-215). May described the aggregate coupon cap generally (old 231-235) but did not explicitly state promotion-code redemptions share it.",
+    "Promotion code restrictions continue: first-time eligibility excludes initiated even unsuccessful PaymentIntents and trial subscriptions; minimum amount is checked at redemption and applies to initial subscription payment; amount-restricted codes cannot be applied to subscription or invoice items, subscription updates, or future schedule phases (new 229-237, 309-336; old 249-257, 329-356). Do not generalize those restrictions to ordinary coupons.",
+    "Accounts v2 customer_account examples remain distinct from Customers v1 customer examples, and Accounts v2 is Connect GA but public preview for others with preview version in that case (new 126-152, 265-283; old 112-162, 285-303). November adds a Dashboard preview enablement instruction (new 130); no captured text verifies a particular account's access.",
+    "Stacking still supports subscription and item discounts, order affects mixed amount_off/percent_off, duplicate/same-parent combinations are excluded, updates replace retained entries if omitted, and discount-only updates do not generate prorations (new 430-503; old 474-587). November mainly changes formatting and Node examples to curl, not the documented stacking logic. The Checkout promotion-code parameter link is corrected from object to create documentation (new 423-425; old 467-469)."
+  ],
+  "substantive_changes": [
+    "The November overview explicitly extends the shared 20-discount statement to invoices as well as subscription and item targets and to both coupons and promotion codes (new 24 versus old 567).",
+    "Optional discount calculation scripts are newly routed, without detail about execution or availability (new 91-93).",
+    "The November duration section explicitly states default once and describes removal at finalization, while May already documented once and a finalized-or-paid explanatory line (new 195-205; old 219-227). This is clarification, not proof of a changed runtime rule.",
+    "Direct coupon application and promotion-code redemption are now explicitly said to share the coupon max_redemptions counter (new 209-215 versus old 231-235).",
+    "The November coupon-versus-code table states deleting a coupon archives associated promotion codes (new 26-33); May separately states deletion blocks new uses and invalid underlying coupons permanently inactivate codes (old 195, 398-402), so preserve those distinct effects."
+  ],
+  "conflicts": [
+    "wiki/sources/source-stripe-subscriptions-coupons.md:33 and wiki/concepts/stripe-subscriptions-coupons.md:33 state code uniqueness across active codes without the any-customer qualification. Both captures allow duplicate active code strings for distinct customer-restricted promotion codes but forbid reuse by any-customer codes (new 245-261; old 265-281). Narrow those summaries.",
+    "wiki/sources/source-stripe-subscriptions-coupons.md:40 and wiki/concepts/stripe-subscriptions-coupons.md:10,40 state the 20-discount limit only for subscription/item; new raw line 24 includes invoice. Add invoice scope while avoiding an inferred global combined cap.",
+    "wiki/sources/source-stripe-subscriptions-coupons.md:44 says prorations occur 'only when combined' with another change, which can imply discount updates themselves cause proration. New raw 499-503 and old 583-587 say discount-only changes do not create prorations; combined billable changes trigger them and use updated discount state. Narrow wording."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep May Node SDK examples and Accounts v2 preview/version caveat as dated evidence (old 56-66, 112-164, 423-465). November curl rendering does not deprecate Node or prove account eligibility (new 70-76, 126-152, 403-421).",
+    "Keep the old coupon-duration description including 'finalized or paid' as dated May text (old 221-227); November uses finalization only (new 199-205), and the snapshots alone do not establish a separate rule change.",
+    "Preserve portal caveat that a promotion code can succeed despite a failed price upgrade, product-scope inheritance, first-time restrictions, redemption-time minimum, permanent code inactivity after expiry/max, and update/stacking constraints (old 85-95, 241-257, 331-402, 563-587; new 19-20, 221-237, 309-382, 479-503)."
+  ],
+  "unresolved_questions": [
+    "The new script links do not specify eligibility, configuration requirements, or exact discount-calculation behavior; read those destinations before making such claims.",
+    "The captured snippets do not prove current Accounts v2 preview access for any particular non-Connect account or universal availability of a code or discount.",
+    "The yearly repeating example has slightly different wording between old line 217 and new line 197; the snapshot comparison alone does not establish a change in billing-cycle discount semantics."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw5",
+  "reviewer_agent": "/root/s01ur1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-coupons-2026-11-07.md",
+      "sha256": "36d6a9907f9859dff9fd567770b4480a87c0ddd340d94b621fd454663556774a",
+      "lines": 521
+    },
+    {
+      "path": "raw/stripe-subscriptions-coupons-2026.md",
+      "sha256": "3d191fc7c9a10cc8f4766f5ab276cd8b68e4c8044f51f1177cccd2302147f90b",
+      "lines": 605
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-coupons.md",
+      "sha256": "ab1cf573918f2b011680cee2e2c41c0d5ebdcc21720ea969c9d5f58004e59034",
+      "lines": 57
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/7a2a60e00f98114b5b091d5a/content.diff",
+      "sha256": "8e1e81e200a49b0d11eb73b509c21fcde303efcccdbebd8fb2b0850f2c8dd9e8",
+      "lines": 675
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-coupons-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-coupons-review.json"
+}

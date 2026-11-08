@@ -1,0 +1,98 @@
+{
+  "job_id": "billing-subscriptions-billing-mode",
+  "queue_id": 20,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/billing-mode",
+  "raw_path": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md",
+  "raw_sha256": "796e0bfc894830fa679e1db8aada40a777048ae925a7e75d5e95a7ff773e6194",
+  "prior_raw_path": "raw/stripe-subscriptions-billing-mode-2026.md",
+  "prior_raw_sha256": "ce15bdeb44d06997eba518d0998528f9230f33e8a908b510ed7d2add0a003f86",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/3c3936578b633a436a6b3a8b/content.diff",
+  "diff_sha256": "6b7de106dafa02fdc875c50b8c82600381fefa88607f8e1dd30171091fdc8a08",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-billing-mode.md"
+  ],
+  "source_before_sha256": "7b79ae74f05da169ab436a0340271e4a6a151ce7e70d9f75415b883431272782",
+  "section": "billing",
+  "new_words": 3136,
+  "new_lines": 1023,
+  "old_words": 2980,
+  "old_lines": 966,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-billing-mode.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-mode/attempt-2/receipt.json",
+  "receipt_sha256": "f6b0f1bb996d279935e71225aa3cc59beaa01e0bff1826c5cd6654bcef32960f",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-mode/attempt-2/review.json",
+  "review_sha256": "c6bd17a199214f9eb45836753c4ad58851589e2f901df59f88ad8b4fe959b220",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md",
+  "new_raw_sha256": "796e0bfc894830fa679e1db8aada40a777048ae925a7e75d5e95a7ff773e6194",
+  "prior_raw": "raw/stripe-subscriptions-billing-mode-2026.md",
+  "findings": [
+    "The 2026-11-07 capture remains a full guide to classic and flexible subscription billing modes, not a variant index. Flexible is recommended but not mandatory for new Billing users (new raw lines 9-24), and migration back to classic is disallowed (line 16).",
+    "Mode default and modification authority are version and channel specific. The API default is flexible for 2025-08-27.preview and later preview versions or 2025-09-30.clover GA and later GA versions; other versions default classic (new raw lines 60-69). Dashboard creation and classic-to-flexible updates can occur regardless of the integration API version, but full API modification needs 2025-06-30.basil or later (new raw lines 33-39). The Dashboard default setting applies to Dashboard-created subscriptions and Dashboard-generated Payment Links/Pricing Tables, not API-created subscriptions or migrations (new raw lines 48-56).",
+    "The new guide explicitly details post-migration behavior: only new activity changes, with no recalculation of pre-migration resources including pending proration invoice items; credit proration basis, usage price timing and billing-cycle-anchor handling are listed (new raw lines 512-570). The old guide already stated the prospective/no-recalculation boundary (old raw line 492), so that principle is historical, while its expanded consequences are new detail.",
+    "New schedule guidance says the migrate API can migrate a subscription with an active schedule and updates the schedule billing_mode automatically; the Dashboard does not support that case (new raw line 574). An unstarted schedule without an active subscription cannot be migrated and must be canceled/recreated with flexible mode (line 576). This materially extends the old schedule section, which only covered inheritance and from_subscription error (old raw lines 538-540).",
+    "The current source summarizes baseline defaults, migration, proration discount display and inheritance (source lines 13-41) but omits the new active-schedule and unstarted-schedule distinctions. Its line 19 says all earlier API versions default classic, although both old and new raw document the 2025-08-27.preview and later preview exception (old raw lines 61-64; new raw lines 62-65). Recommend a targeted source correction for that existing overgeneralization and the new material schedule/migration effects.",
+    "The linked central concept at wiki/concepts/stripe-subscriptions.md line 112 says the billing-mode default is fixed. In this guide fixed is not one of the two modes: classic and flexible are the documented values in both captures (old raw lines 8-11; new raw lines 9-12). When an API request omits billing_mode, flexible is the documented default for 2025-08-27.preview and later preview versions and 2025-09-30.clover GA and later GA versions; other API versions default classic (old raw lines 61-64; new raw lines 62-65). This pre-existing concept error could mislead selection of a mode or default and needs correction with the source update.",
+    "The changed Dashboard editor instructions locate Billing mode under Billing and payment collection for creation and Advanced settings for migration (new raw lines 41-46 and 520-523; old raw lines 40-45 and 498-501). Node SDK snippets become curl examples (old raw lines 74-94 and 511-521; new raw lines 75-84 and 533-537), and large response objects are reformatted. These are presentation/example changes; the illustrated incomplete subscription, open invoice and requires_confirmation PaymentIntent (new raw lines 431, 447, 498) do not prove a successful payment or universal runtime result."
+  ],
+  "substantive_changes": [
+    "New explicit migration consequences: original-debit basis for credit prorations, price at usage-report time, and no automatic billing-cycle-anchor reset for new activity after migration; prior resources are not recalculated (new raw lines 553-562; compare old raw line 492).",
+    "New active-schedule migration route and limits: use migrate API for an active-schedule subscription, Dashboard unsupported for that case, schedule billing_mode automatically updated, and unstarted schedule without active subscription must be canceled and recreated (new raw lines 572-578; old raw lines 538-540)."
+  ],
+  "conflicts": [
+    "Current source line 19's 'earlier \u2192 classic' API-default shorthand conflicts with the preview exception stated in both captures (old raw lines 61-64; new raw lines 62-65). Qualify the source by preview versus GA version and keep Dashboard defaults separately scoped.",
+    "The linked subscriptions concept line 112 says Default is fixed, which conflicts with the guide's only two modes, classic and flexible (old raw lines 8-11; new raw lines 9-12), and its version-dependent API default (old raw lines 61-64; new raw lines 62-65). For omitted billing_mode on API requests, flexible is documented for 2025-08-27.preview and later preview versions or 2025-09-30.clover GA and later GA versions; other API versions default classic. Correct the pre-existing concept claim rather than treating fixed as a third mode or a new 2026-11-07 change.",
+    "The new guide's API migration paragraph says billing_mode.updated_at (new raw line 529), while its example response labels billing_mode_details.updated_at (new raw lines 541-549); the older guide has the same prose/example mismatch (old raw lines 507 and 523-535). Do not turn either example key into an independently verified universal response contract.",
+    "The new guide says Dashboard can create/update flexible subscriptions regardless of integration API version (new raw line 39), then repeats a basil-or-later integration condition inside the Dashboard migration subsection (line 518). Read these with the full-API-modification qualification at line 39; do not claim the Dashboard itself cannot perform the migration solely from line 518."
+  ],
+  "historical_claims_to_preserve": [
+    "Both 2026-05-13 and 2026-11-07 guides recommend flexible billing without requiring it for new Billing users, preserve classic for existing users, and prohibit flexible-to-classic migration (old raw lines 8-23; new raw lines 9-24).",
+    "The version floor 2025-06-30.basil for API use/full modification, GA default switch at 2025-09-30.clover, preview-version default exception, and Dashboard-versus-API settings boundary were already documented in the older capture (old raw lines 27-68).",
+    "The old guide already stated that flexible behaviors apply only to new post-migration activity and prior resources, including pending proration invoice items, are not recalculated (old raw line 492).",
+    "The existing inherited billing_mode and from_subscription error for a schedule created from an existing subscription remain in the new guide (old raw line 540; new raw line 578). Itemized versus included proration-discount display, the basil version floor and create/migrate route remain (old raw lines 542-553; new raw lines 580-603)."
+  ],
+  "unresolved_questions": [
+    "The capture does not show account-specific settings, actual API version, successful migration, active schedule state, invoice recomputation or payment execution; the documented outcomes remain guidance, not an observed account result.",
+    "The prose/example timestamp field mismatch at new raw lines 529 and 541-549 is unresolved by the pinned guide; a later API reference or tested response would be needed before changing an integration based on that field name."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw3",
+  "reviewer_agent": "/root/s01ur5",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-billing-mode-2026-11-07.md",
+      "sha256": "796e0bfc894830fa679e1db8aada40a777048ae925a7e75d5e95a7ff773e6194",
+      "lines": 1023
+    },
+    {
+      "path": "raw/stripe-subscriptions-billing-mode-2026.md",
+      "sha256": "ce15bdeb44d06997eba518d0998528f9230f33e8a908b510ed7d2add0a003f86",
+      "lines": 966
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-billing-mode.md",
+      "sha256": "7b79ae74f05da169ab436a0340271e4a6a151ce7e70d9f75415b883431272782",
+      "lines": 49
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/3c3936578b633a436a6b3a8b/content.diff",
+      "sha256": "6b7de106dafa02fdc875c50b8c82600381fefa88607f8e1dd30171091fdc8a08",
+      "lines": 602
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-billing-mode-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-billing-mode-review.json"
+}

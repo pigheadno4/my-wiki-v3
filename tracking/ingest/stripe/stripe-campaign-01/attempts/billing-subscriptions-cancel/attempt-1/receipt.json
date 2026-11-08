@@ -1,0 +1,103 @@
+{
+  "job_id": "billing-subscriptions-cancel",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md",
+  "raw_sha256": "840097cd57d51cae17f11d6d19a2a49bc3152f8f16fa721949d217bd78ea6fc4",
+  "prior_raw_path": "raw/stripe-subscriptions-cancel-2026.md",
+  "prior_raw_sha256": "6545a3c203c870da99f7b15bfb8a06e6da91d18cc007abf765f761d51afc4c06",
+  "source_target": "wiki/sources/source-stripe-subscriptions-cancel.md",
+  "source_before_sha256": "b5154243b0f0695f0bf0b1a1b4b84728f096fd7260a257fe6f163b015c120d31",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-cancel-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 180
+      }
+    ],
+    "raw/stripe-subscriptions-cancel-2026.md": [
+      {
+        "start": 1,
+        "end": 190
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-cancel.md": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/17ae41fe65c0f620c8ca5200/content.diff": [
+      {
+        "start": 1,
+        "end": 223
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "If you set a custom cancel date, you can\u2019t provide a refund. You can also only prevent the credit proration from generating if the `cancel_at` date is within the current billing period. If you cancel the subscription for a date outside the current period, you can\u2019t disable the proration.",
+      "location": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md:21"
+    },
+    {
+      "text": "To prevent billing your customer for pending invoice items, you must [manually delete](https://docs.stripe.com/api.md#delete_invoiceitem) the invoice items.",
+      "location": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md:97"
+    },
+    {
+      "text": "The workflow runs when the subscription ends and deletes only its pending invoice items.",
+      "location": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md:107"
+    },
+    {
+      "text": "When `cancel_at` shortens the current billing period, [disabling prorations](https://docs.stripe.com/billing/subscriptions/prorations.md#disable-prorations) can have different invoice line effects depending on the subscription\u2019s [billing mode](https://docs.stripe.com/billing/subscriptions/billing-mode.md).",
+      "location": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md:153"
+    },
+    {
+      "text": "In this case, you can\u2019t [disable prorations](https://docs.stripe.com/billing/subscriptions/prorations.md#disable-prorations).",
+      "location": "raw/stripe-billing-subscriptions-cancel-2026-11-07.md:166"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you set a custom cancellation date, you can\u2019t provide a refund. A credit proration is always generated. To prevent a credit proration from generating, make sure the custom cancellation date is within the current billing period and `proration_behavior` is set to `none`.",
+      "location": "raw/stripe-subscriptions-cancel-2026.md:20"
+    },
+    {
+      "text": "When you cancel a subscription, all `open` and `draft` invoices for that subscription have their `auto_advance` property set to `false`.",
+      "location": "raw/stripe-subscriptions-cancel-2026.md:109"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same captured URL still documents immediate, period-end, schedule, dispute-triggered and custom-date cancellation (new 17-88, 141-176; old 16-94, 147-184). Immediate cancellation is the default for a manual cancel call, stops future subscription invoices and leaves only metadata and cancellation_details updateable (new 19; old 18). A scheduled period-end cancellation can be stopped before the period ends; a canceled subscription cannot be reactivated (new 64, 118-139; old 70, 120-145).",
+    "Current source 42 and concept custom-date section say a credit proration is always generated. Old raw 20 itself provided a within-period suppression path, and new 21 states only that prevention is possible when cancel_at is within the current billing period. New 151-153 says shortening the current period creates prorations unless disabled, with billing-mode-dependent invoice-line effects. New 166 explicitly rules out disabling prorations for a cancel date beyond the current period. Do not infer that being within the current period alone suppresses a proration, or that suppression has identical invoice consequences in every billing mode.",
+    "The new page adds a Workflows template that runs when the subscription ends and deletes only pending invoice items for that subscription (new 105-107). This is an optional no-code automation route; it does not retroactively delete items, erase invoices, or change the separate existing manual-delete guidance at new 92-103 and old 98-109. A final invoice or another active subscription can still bill pending items absent deletion.",
+    "The unchanged invoice boundary is material: cancellation sets auto_advance=false on open and draft invoices for that subscription, pausing automatic collection and reminders, while manual collection and emails remain possible (new 103; old 109). It does not mean those invoices are voided or debts discharged. If cancel_at_period_end is set, pending prorations remain for period end; an early cancel leaves invoice items unprocessed unless specifically invoiced (new 101; old 107).",
+    "Event identity remains unchanged: customer.subscription.updated includes scheduling cancel_at_period_end, whereas customer.subscription.deleted marks actual cancellation by direct deletion or period-end arrival (new 109-116; old 111-118). Do not treat the scheduling update as the deletion or a paid final invoice.",
+    "The new and old pages both restrict dispute-triggered cancellation to full-amount credit or debit card disputes, exclude test clocks, say changes take roughly an hour, and release scheduled subscriptions before cancellation (new 74-88; old 80-94). Neither capture establishes that any merchant configured this setting or that any specific dispute canceled a subscription.",
+    "The older Node.js examples become curl examples in the new capture (old 35-41, 60-68, 135-159; new 36-39, 58-62, 133-149). This is a rendering change, not a new required SDK or a demonstrated API execution. The prior 2018-02-28 update-parameter warning and post-June-2024 anchor guarantee persist (old 145, 182; new 139, 174)."
+  ],
+  "substantive_changes": [
+    "New wording clarifies custom-date proration boundaries: within-period is a necessary condition for preventing the credit proration; outside-current-period cancel_at cannot disable prorations, and billing mode can change invoice-line effects when the period is shortened (new 21, 151-166 versus old 20, 161-174).",
+    "New optional Workflows template deletes only pending invoice items after the subscription ends (new 105-107); existing manual-deletion and invoice-collection rules remain (new 90-103; old 96-109)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the old 2026-05-13 capture's custom-date statement dated, including its explicit proration_behavior=none within-period suppression path (old 20), rather than repeating its internally overbroad 'always generated' sentence as a universal rule.",
+    "Preserve unchanged irreversible canceled status, period-end reactivation cutoff, invoice-item and auto_advance effects, event distinction, full-amount-card-dispute limitation, 2018-02-28 warning, and post-June-2024 anchor qualification (old 18, 70, 84-109, 117-145, 182; new 19, 64, 78-103, 115-139, 174).",
+    "Keep old Node.js examples as dated sample code, not a current compulsory SDK path (old 35-41, 60-68; new 36-39, 58-62)."
+  ],
+  "conflicts": [
+    "Current source 42 and wiki/concepts/stripe-subscriptions-cancel.md custom-date section assert an always-generated credit proration while both old 20 and new 21 allow a bounded within-period prevention path. New 153 adds billing-mode-dependent line effects.",
+    "Current source 62 and concept invoice-items section say pending invoice items 'must manually delete' without noting the new optional Workflows route. The no-code template operates only when the subscription ends and only on its pending items (new 105-107), so the manual instruction remains valid when the workflow is not used."
+  ],
+  "unresolved_questions": [
+    "The capture does not determine the exact invoice line effects for each billing mode when prorations are disabled; new 153 links to a separate comparison guide, which was not used as behavioral evidence here.",
+    "The page does not establish that the Workflows template is installed or run for any particular account, nor prove the deletion timing and result of a specific invoice item.",
+    "The capture does not prove a refund, payment collection, final invoice settlement, or any merchant's automatic-cancellation configuration."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-cancel.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/cancel, the new capture documents immediate cancellation by API or Dashboard, pending period-end cancellation, custom future dates, schedules and limited dispute-triggered cancellation (new 17-88, 141-176). A canceled subscription cannot be reactivated; a period-end cancellation can be stopped before the period ends (new 64, 118-131; old 70, 120-133). Cancellation stops future subscription invoices, while open and draft invoices have auto_advance disabled rather than being erased (new 19, 103; old 18, 109). [[source-stripe-subscriptions-cancel]] covers these routes but overstates custom-date credit proration at source 42. The new page adds a scoped Workflows option for deleting pending invoice items when the subscription ends (new 105-107).",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/cancel, the main substantive changes are clearer custom-date proration limits and a no-code pending-item deletion template (new 21, 105-107, 151-166; old 20, 96-109, 161-174). [[source-stripe-subscriptions-cancel]] and its concept should replace the universal 'credit proration always generated' claim: within-period dates permit suppression, while a date outside the current period cannot disable proration, and billing mode can alter invoice-line effects. The prior proration_behavior=none guidance remains dated at old 20. Node.js-to-curl examples, list numbering, link phrasing and emphasis are presentational. Distinguish customer.subscription.updated for scheduling from customer.subscription.deleted for actual cancellation (new 115-116; old 117-118), and do not infer any refund, invoice payment, workflow execution, or account eligibility from this capture."
+  }
+}

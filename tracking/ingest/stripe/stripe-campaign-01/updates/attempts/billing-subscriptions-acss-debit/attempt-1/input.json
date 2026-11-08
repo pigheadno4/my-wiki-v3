@@ -1,0 +1,96 @@
+{
+  "job_id": "billing-subscriptions-acss-debit",
+  "queue_id": 14,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/acss-debit",
+  "raw_path": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md",
+  "raw_sha256": "e846da578f478bceda267e2bd0c56f337aa0d1456245fd22430f5366292cbb29",
+  "prior_raw_path": "raw/stripe-subscriptions-acss-debit-2026.md",
+  "prior_raw_sha256": "cfe54fc0f4d7a55d32d19247d9419075cba55f76dc4a1a54e142856d6fcf9225",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa5c9eefbe8838ecbfa86572/content.diff",
+  "diff_sha256": "df1efb837bb54a670657e83ab28f4a042f356d0303b613b8ff5e41d2ed28d389",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-acss-debit.md"
+  ],
+  "source_before_sha256": "d996aa9f00213b784ce2996dbc2ae07798e111889539b441a2e50d3d14dc69a2",
+  "section": "billing",
+  "new_words": 2817,
+  "new_lines": 366,
+  "old_words": 2957,
+  "old_lines": 442,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-acss-debit.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-acss-debit/attempt-2/receipt.json",
+  "receipt_sha256": "b32e1654173eb7e82c899ebc65b1e82f8a3482360c1ce8b64f451d39a299a4d0",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-acss-debit/attempt-2/review.json",
+  "review_sha256": "daf72c9e06b66d7ba06900ab35d84dc4bfbf71adc1f94d151eb58e8fd5cf9d82",
+  "affected_concepts": [
+    "wiki/concepts/stripe-acss-debit.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md",
+  "new_raw_sha256": "e846da578f478bceda267e2bd0c56f337aa0d1456245fd22430f5366292cbb29",
+  "prior_raw": "raw/stripe-subscriptions-acss-debit-2026.md",
+  "findings": [
+    "Same captured URL: the 2026-11-07 guide still describes Canadian PAD subscription creation with default_incomplete, customer_account for customer-configured Accounts v2 or customer for Customers v1, client-side stripe.confirmAcssDebitPayment with required account-holder name and billing email, mandate acknowledgment, a 10-day microdeposit window bounded by the billing period date, and a manually set subscription default payment method after the initial invoice.payment_succeeded event (new lines 9-11, 31-69, 94, 133-147, 161-191).",
+    "The old guide says that when the initial payment succeeds, the subscription is active and requires no further action (old line 221); this is a one-way statement and does not say active status proves payment success. The new guide expressly warns that a subscription can be active while the first payment is processing. Before fulfilling goods or services, verify that the related subscription is active together with either the invoice.paid event or a succeeded underlying PaymentIntent (new line 196). The invoice.payment_succeeded event used to set the default payment method is a separate instruction (new line 163).",
+    "The old capture's absolute no-auto-retry statement (old line 223) conflicts with a documented possible path in the new capture: when Direct Debit retries is enabled, Stripe can automatically retry Canadian PAD payments that fail for insufficient funds (new line 200). The new sentence does not give an exhaustive retry eligibility matrix or prove enablement for a particular account; retain the old statement as dated history.",
+    "The new capture is a curl/Ruby rendering with an endive Stripe.js URL, whereas the prior capture used Node.js examples and a dahlia Stripe.js URL (new lines 37-60, 75-79, 165-192; old lines 34-85, 100-104, 190-217). The source page's Node.js snippet is old-snapshot evidence, not a current universal SDK recipe."
+  ],
+  "substantive_changes": [
+    "Critical: old line 223 says Canadian PAD never automatically retries; new line 200 says enabled Direct Debit retries can automatically retry insufficient-funds failures. Update the source and reciprocal concept/index labels with that precise condition; do not generalize to all failures or accounts.",
+    "Critical: old line 221 says initial payment success leads to an active subscription and no further action, without asserting the converse. New line 196 warns that active status alone does not prove first-payment success and requires an active related subscription along with either invoice.paid or a succeeded underlying PaymentIntent before fulfillment.",
+    "Examples and rendering changed: new subscription curl samples omit the old Node.js payment_settings.payment_method_types acss_debit field and expand latest_invoice.payment_intent rather than the old latest_invoice.payments and latest_invoice.confirmation_secret; nearby prose still instructs returning latest_invoice.confirmation_secret.client_secret (new lines 41-63; old lines 38-88). This is sample/prose tension, not evidence that ACSS selection became unnecessary or that the alternate expansion is a proven complete recipe.",
+    "Other changes are prose/formatting or language variants: an added availability lead-in, numbered Dashboard steps, microdeposit spelling, Node.js-to-Ruby/curl code tabs, and dahlia-to-endive Stripe.js path (new lines 9-29, 78, 165-192; old lines 8-26, 103, 190-217)."
+  ],
+  "conflicts": [
+    "Current source lines 13 and 19, wiki/concepts/stripe-acss-debit.md lines 94 and 111, wiki/concepts/stripe-subscriptions.md line 255, and wiki/stripe-index.md line 667 all retain an unqualified no-auto-retry claim. New raw line 200 contradicts it for enabled Direct Debit retries and insufficient-funds failures; adjacent stripe-acss-debit concept line 90 already says Billing Retries is private preview. Reciprocal updates should preserve the preview/account eligibility uncertainty and the old snapshot's date.",
+    "Current source lines 13 and 17 call the subscription guide Canada/CAD only. The guide uses a CAD example (new lines 17-25, 320-338) and Canadian PAD, while the existing stripe-acss-debit concept lines 8-13 describes broader ACSS USD support. The captured subscription guide does not establish a universal CAD-only subscription eligibility restriction; narrow this to example currency absent direct scope evidence.",
+    "Current source line 13 describes a single Elements path, but the new guide's actual client step is Stripe.js confirmAcssDebitPayment (new lines 65-94); avoid implying Checkout Sessions or a separate Elements product flow. The old source's line 40 says later charges need no re-authorization, matching the guide's mandate statement at new line 69 but not guaranteeing payment success despite that sentence's wording.",
+    "Current source line 57 says update the customer invoice_settings.default_payment_method after future-use SetupIntent success, but new line 341 and old line 424 distinguish customer-configured Account v2 configuration.customer.billing.default_payment_method from Customer v1 invoice_settings.default_payment_method. Preserve the object-specific destination."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-13 capture's Node.js examples, dahlia Stripe.js path, explicit payment_method_types acss_debit parameter, and absolute no-retry assertion as dated old evidence, alongside the 2026-11-07 replacement wording (old lines 38-85, 103, 221-223; new lines 41-63, 78, 196-200).",
+    "Retain unchanged Checkout subscription-mode waitlist limitation, PAD mandate and billing_details name/email requirement, client-side modal, microdeposit 10-day/billing-date cap and three failed attempts, invoice.payment_succeeded default-PM webhook, trial pending_setup_intent setup flow, and separate Account v2 versus Customer v1 default-PM paths (old lines 8, 92-119, 154-188, 310-424; new lines 11, 67-94, 129-163, 271-341)."
+  ],
+  "unresolved_questions": [
+    "The new curl samples omit explicit acss_debit selection while the old Node.js samples include it, and the new expansion line mentions latest_invoice.payment_intent while line 63 names latest_invoice.confirmation_secret.client_secret. The capture alone does not resolve whether these particular sample requests return all values needed for the shown client call.",
+    "The new guide does not establish whether Direct Debit retries is enabled or generally available for any particular merchant, nor whether a specific bank debit settled; eligibility and receipt require separate evidence."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw4",
+  "reviewer_agent": "/root/s01ur1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-acss-debit-2026-11-07.md",
+      "sha256": "e846da578f478bceda267e2bd0c56f337aa0d1456245fd22430f5366292cbb29",
+      "lines": 366
+    },
+    {
+      "path": "raw/stripe-subscriptions-acss-debit-2026.md",
+      "sha256": "cfe54fc0f4d7a55d32d19247d9419075cba55f76dc4a1a54e142856d6fcf9225",
+      "lines": 442
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-acss-debit.md",
+      "sha256": "d996aa9f00213b784ce2996dbc2ae07798e111889539b441a2e50d3d14dc69a2",
+      "lines": 75
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa5c9eefbe8838ecbfa86572/content.diff",
+      "sha256": "df1efb837bb54a670657e83ab28f4a042f356d0303b613b8ff5e41d2ed28d389",
+      "lines": 649
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-acss-debit-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-acss-debit-review.json"
+}

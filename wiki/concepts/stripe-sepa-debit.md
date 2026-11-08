@@ -102,9 +102,9 @@ Real-time ML fraud protection for SEPA, trained specifically for SEPA Direct Deb
 
 ## SEPA Subscriptions
 
-Two paths: Checkout (`payment_method_types=['sepa_debit']`, `mode='subscription'`) or Payment Element (`default_incomplete` + `save_default_payment_method='on_subscription'`).
+The May 2026 guide has a hosted Checkout subscription example (`payment_method_types=['sepa_debit']`, `mode='subscription'`) and an advanced web example (`default_incomplete` + `save_default_payment_method='on_subscription'`). The advanced page recommends a separate Payment Element build guide for new users, while its own mixed sample mounts a Payment Element and uses SEPA-specific `confirmSepaDebitPayment` or `confirmSepaDebitSetup` calls according to whether payment is due up front. The November 2026 unparameterized capture is only a variant index. [[source-stripe-subscriptions-sepa-debit]]
 
-**Delayed notification** — do NOT fulfill on `checkout.session.completed`. Wait for `checkout.session.async_payment_succeeded` or `invoice.paid`.
+**Delayed notification (May 2026 guide)** — `checkout.session.completed` records debit authorization, not payment success. The guide uses later `checkout.session.async_payment_succeeded` or `invoice.paid` for fulfillment. Its example handles `invoice.paid` for an initial paid invoice as well as later paid periods, even if that event precedes `checkout.session.completed`. [[source-stripe-subscriptions-sepa-debit]]
 
 Checkout supports: setup fee, inline pricing, existing customer, trials, fixed/dynamic tax rates, coupons, promo codes.
 
@@ -113,5 +113,5 @@ Checkout supports: setup fee, inline pricing, existing customer, trials, fixed/d
 - [[source-stripe-sepa-debit]] — primary source: settlement, Creditor ID, mandates, failure codes, disputes, refunds, Radar
 - [[source-stripe-sepa-accept-payment]] — integration guide: Checkout + Elements + iOS + Android, 19-country IBAN test table, reference_prefix, target_date
 - [[source-stripe-sepa-set-up-payment]] — save for future: Checkout setup mode + SetupIntents (Elements/iOS/Android), same IBAN test table, reference_prefix
-- [[source-stripe-subscriptions-sepa-debit]] — subscription guide: Checkout + Payment Element, delayed notification, 20+ country IBAN test tables (8 scenarios each)
-- [[source-stripe-subscriptions-ideal]] — iDEAL→SEPA subscription: Checkout + Direct API, generated_sepa_debit retrieval, 6 email/PM test patterns
+- [[source-stripe-subscriptions-sepa-debit]] — May subscription guide: hosted Checkout and advanced web example, delayed notification, 19 country headings in each IBAN test table (8 scenarios each); November capture is a variant index
+- [[source-stripe-subscriptions-ideal]] — 2026-05-13 iDEAL→SEPA subscription variants: hosted Checkout and Direct API setup with generated_sepa_debit retrieval; setup success differs from the later SEPA payment outcome. 2026-11-07 capture is a variant index only.

@@ -102,13 +102,13 @@ Stripe auto-emails customers when mandate is created and before each debit. Cust
 
 Private preview. Automatic retry of failed payments caused by insufficient funds. Works for subscription invoices and one-off invoices.
 
-## Bacs Subscriptions (Checkout only)
+## Bacs subscriptions: Checkout guide
 
-Bacs subscriptions use Checkout (`payment_method_types: ['bacs_debit']`, `mode='subscription'`). No custom Elements path.
+The 2026-05-13 and 2026-11-07 Bacs subscription guide documents a Checkout path with `mode='subscription'` and at least one recurring Price. Its May Node.js examples explicitly select `bacs_debit`; November curl examples omit that field and direct Dashboard payment-method configuration. This guide alone does not resolve other subscription UI paths or account eligibility.
 
-**Delayed notification** — do NOT fulfill on `checkout.session.completed` alone. Wait for `checkout.session.async_payment_succeeded` or `invoice.paid`. Bacs notification emails are NOT sent in sandboxes.
+**Delayed notification** — `checkout.session.completed` records debit authorization, not payment success. Before fulfillment, verify the related subscription is `active` and wait for `invoice.paid` or a `succeeded` underlying PaymentIntent; `active` alone can precede the first payment. `checkout.session.async_payment_succeeded` reports later payment success, not immediate funds availability. Bacs notification emails are not sent in sandboxes.
 
-**Delayed test accounts recommended** (3-min processing) to simulate live behavior; instant accounts settle immediately in sandbox.
+**Delayed test accounts recommended** (three-minute processing) to better simulate live behavior. The sandbox table includes immediate success, delayed success and failure, and a success followed immediately by dispute; these are test outcomes, not settlement evidence.
 
 **Test account mandate behavior**: `debitNotAuthorized` failures → mandate `inactive` (PM cannot be reused); `insufficientFunds` failures → mandate stays `active` (PM can be retried).
 
@@ -116,4 +116,4 @@ Bacs subscriptions use Checkout (`payment_method_types: ['bacs_debit']`, `mode='
 
 - [[source-stripe-bacs-direct-debit]] — primary source: settlement, mandates, disputes, refunds, Connect, Custom Branding
 - [[source-stripe-bacs-accept-payment]] — integration guide: Checkout + Elements paths, 11 test accounts, 6 failure codes, target_date, mandate reference prefix
-- [[source-stripe-subscriptions-bacs-debit]] — Bacs subscription: Checkout-only, delayed notification events, 9 test accounts, inline pricing, trials, tax rates
+- [[source-stripe-subscriptions-bacs-debit]] — Bacs subscription Checkout guide (2026-05-13 and 2026-11-07): delayed fulfillment, sandbox-copy change, nine test accounts, and deprecated dynamic tax-rate field

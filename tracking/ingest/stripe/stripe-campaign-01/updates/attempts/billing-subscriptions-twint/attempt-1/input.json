@@ -1,0 +1,98 @@
+{
+  "job_id": "billing-subscriptions-twint",
+  "queue_id": 51,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/twint",
+  "raw_path": "raw/stripe-billing-subscriptions-twint-2026-11-07.md",
+  "raw_sha256": "332c681eee59901956e15b31715ac1b5ea21ea80f09df127052c005881ce166b",
+  "prior_raw_path": "raw/stripe-subscriptions-twint-2026.md",
+  "prior_raw_sha256": "bcbb7c1ac8ca11424d2bc01cc27fd2a26e03b279fe5a2a3b3510737d4a10eebb",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/75f3c7c56510fca30c8f9e30/content.diff",
+  "diff_sha256": "a1de8fd9cc2cb63d00ce448c62efc64bceda27476c02e083c71329d59aa613b1",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-twint.md"
+  ],
+  "source_before_sha256": "b4e0392fe6c30fcc0ed36c883c7cb6eba380302cb63c25784956788839d463da",
+  "section": "billing",
+  "new_words": 63,
+  "new_lines": 15,
+  "old_words": 2022,
+  "old_lines": 237,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-twint.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-twint/attempt-1/receipt.json",
+  "receipt_sha256": "55d73d5b6a38e510838792026c3be6573b446131a13d5b85d5be7fca9c799f83",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-twint/attempt-1/review.json",
+  "review_sha256": "d20de5efc83acce53ceada8d7f78e7167227bb321ca3e940c3a6d89897eec921",
+  "affected_concepts": [
+    "wiki/concepts/stripe-twint.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-twint-2026-11-07.md",
+  "new_raw_sha256": "332c681eee59901956e15b31715ac1b5ea21ea80f09df127052c005881ce166b",
+  "prior_raw": "raw/stripe-subscriptions-twint-2026.md",
+  "findings": [
+    "The November 2026 raw at https://docs.stripe.com/billing/subscriptions/twint is a 15-line index for hosted Checkout, Setup Intents API, and Subscriptions API variants (new lines 5\u201315). The diff removes the formerly combined full guide because only an index was captured; omission does not establish a change to TWINT requirements, eligibility, QR presentation, or payment behavior.",
+    "The older hosted Checkout variant shows a subscription-mode Session with card and twint in its example and requires customer authorization for future TWINT account payments (old lines 34\u201370). Its test instructions describe SetupIntent transitions on authorization or refusal of a redirect-page mandate (old lines 73\u201375); those are test-mode setup outcomes, not proof of paid invoices or an active subscription.",
+    "The older Setup Intents API variant uses an example SetupIntent with confirm:true, usage:off_session, twint payment data, return_url, and online mandate acceptance fields (old lines 101\u2013128). Its requires_action state leads to next_action.redirect_to_url.url, a TWINT-hosted QR page, and after authentication the SetupIntent succeeds (old lines 130\u2013136). It then creates a subscription with the SetupIntent PaymentMethod, but the first PaymentIntent client secret still needs to be returned to the frontend to complete payment (old lines 138\u2013158). SetupIntent success is not payment success.",
+    "The older Subscriptions API variant creates a default_incomplete subscription and an invoice PaymentIntent (old lines 162\u2013212), then confirms that PaymentIntent with TWINT and example return_url/mandate_data (old lines 216\u2013231). requires_action redirects to a TWINT-hosted QR page; the PaymentIntent succeeds after authentication in the described flow, and only after successful payment does the subscription become active and save its default PaymentMethod (old lines 233\u2013237). An unverified redirect or displayed QR is not a success signal.",
+    "Source lines 32\u201333 describe mandate_data and return_url as universal requirements, but the older Checkout example includes neither (old lines 60\u201370). The old direct API examples include them (old lines 110\u2013127, 222\u2013230), without an exhaustive schema requiredness statement. Scope any requirement to the direct confirmation examples and separately verify API constraints. The related TWINT concept says return_url is not required for reuse of a previously saved method (wiki/concepts/stripe-twint.md:49), creating a reciprocal conflict with the source's unqualified wording.",
+    "Source lines 13 and 31 claim Switzerland/CHF-only as a universal subscription rule; the matched old guide uses 15 CHF as its example (old lines 20\u201327, 87\u201394, 172\u2013179) but does not itself define eligible customer or merchant countries. Related primary TWINT concept contains broader eligibility claims from separate sources, which must not be silently attributed to this matched subscription guide."
+  ],
+  "substantive_changes": [
+    "No substantive payment or subscription behavior change is demonstrated by the 2026-11-07 index. The observed difference is presentation and navigation to three variant URLs (new lines 9\u201315)."
+  ],
+  "conflicts": [
+    "Source line 23 compresses the SetupIntent succeeding and subscription creation but omits that the newly created subscription's first PaymentIntent client secret is sent to the frontend for payment completion (old lines 138\u2013158). Clarify that setup authorization alone does not activate or pay for the subscription.",
+    "Source lines 27 and 34 use an unqualified 'succeeded' alongside setup and payment states. In the Subscriptions API path it is the PaymentIntent that succeeds, and subscription activation follows successful payment (old lines 233\u2013237); in Setup Intents it is the SetupIntent that succeeds before the first subscription payment (old lines 134\u2013158).",
+    "Source lines 32\u201333, wiki/concepts/stripe-twint.md:57, wiki/concepts/stripe-subscriptions.md:258, and wiki/stripe-index.md:670 call mandate_data and return_url required across this guide. The old Checkout example has neither (old lines 60\u201370), while direct examples include both (old lines 110\u2013127, 222\u2013230). Reciprocal concept line 49 says return_url is not required for a saved TWINT method; preserve that separate reuse condition.",
+    "Source line 13 says the QR is 'not client-side QR rendering.' The matched old direct variants use next_action.redirect_to_url.url for a TWINT-hosted QR page (old lines 134, 233), which supports that described flow but does not prove no other client presentation is possible.",
+    "Source lines 13 and 31 present Switzerland/CHF-only as if demonstrated by the subscription guide. Its 15 CHF monthly price is explicitly an example (old lines 20\u201327, 87\u201394, 172\u2013179). If retained, cite separately verified product eligibility evidence and keep it dated."
+  ],
+  "historical_claims_to_preserve": [
+    "The dated hosted Checkout subscription-mode example, future-payment authorization, and test-only SetupIntent authorization/refusal transitions (old lines 34\u201375).",
+    "The dated Setup Intents API path's setup requires_action and redirect, succeeded setup status, followed by subscription creation whose first PaymentIntent still requires payment completion (old lines 101\u2013158).",
+    "The dated Subscriptions API path's default_incomplete state, invoice PaymentIntent confirmation, requires_action redirect, and successful-payment-dependent active subscription and default method saving (old lines 162\u2013237).",
+    "TWINT-hosted QR presentation is specifically described for the older direct SetupIntent and PaymentIntent redirects; CHF 15/month is an example price, not this guide's general eligibility statement (old lines 20\u201327, 134, 172\u2013179, 233)."
+  ],
+  "unresolved_questions": [
+    "The November index does not contain the three linked variant bodies, so current required fields, API schemas, merchant/customer eligibility, and setup/payment outcomes cannot be confirmed here.",
+    "Separate TWINT primary sources may establish CHF and country limits or saved-method return_url behavior; they are distinct from the matched old subscription guide and need their own verification before reconciliation."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw1",
+  "reviewer_agent": "/root/s01ur5",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-twint-2026-11-07.md",
+      "sha256": "332c681eee59901956e15b31715ac1b5ea21ea80f09df127052c005881ce166b",
+      "lines": 15
+    },
+    {
+      "path": "raw/stripe-subscriptions-twint-2026.md",
+      "sha256": "bcbb7c1ac8ca11424d2bc01cc27fd2a26e03b279fe5a2a3b3510737d4a10eebb",
+      "lines": 237
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-twint.md",
+      "sha256": "b4e0392fe6c30fcc0ed36c883c7cb6eba380302cb63c25784956788839d463da",
+      "lines": 44
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/75f3c7c56510fca30c8f9e30/content.diff",
+      "sha256": "a1de8fd9cc2cb63d00ce448c62efc64bceda27476c02e083c71329d59aa613b1",
+      "lines": 240
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-twint-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-twint-review.json"
+}

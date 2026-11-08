@@ -240,6 +240,7 @@ The APIs remain private preview. Host visibility/resume and per-controller confi
 - [[stripe-payment-links]] — no-code peer product; shareable URLs, no website needed
 - [[stripe-subscriptions]] — Stripe Subscriptions: full lifecycle, provisioning pattern, customer portal, flexible billing mode
 - [[source-stripe-checkout-build-subscriptions]] — End-to-end subscription integration: product catalog, Checkout Session, webhooks, portal
+- [[source-stripe-checkout-subscriptions-quickstart]] — May and November 2026 hosted subscription sample; recurring Price lookup key, portal identity and active-status check
 - [[source-stripe-checkout-sessions]] — Checkout Sessions API deep dive
 - [[source-stripe-accept-a-payment]] — full integration guide (4 UI modes, mobile, test cards)
 - [[source-stripe-build-payments-page]] — Checkout Page vs Elements comparison table

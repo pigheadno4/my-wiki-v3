@@ -52,4 +52,4 @@ Check status: `account.capabilities.crypto_payments = 'active'`.
 - [[source-stripe-stablecoin-payments]] — primary source: stablecoin types, payment flow, limitations, disputes, refunds, Connect
 - [[source-stripe-accept-stablecoin-payments]] — integration guide: Dashboard enablement, Checkout/Elements/PaymentIntents APIs, testnet setup (MetaMask + Polygon Amoy)
 - [[source-stripe-crypto-deposit-mode]] — deposit mode: API-only, direct on-chain deposit addresses, USDC only (Tempo/Base/Solana), exact amount required, access required
-- [[source-stripe-subscriptions-stablecoins]] — subscription guide: 3 paths (Checkout/PaymentIntents/SetupIntents), crypto PM type, USDC native currency, testnet setup
+- [[source-stripe-subscriptions-stablecoins]] — May 2026 full three-path subscription guide and November 2026 variant-index navigation; USDC is a price example in the Payment Intents path, while Checkout and Setup Intents examples use USD; sandbox instructions do not prove production token/network support

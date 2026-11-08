@@ -1,0 +1,97 @@
+{
+  "job_id": "billing-subscriptions-import-subscriptions",
+  "queue_id": 29,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/import-subscriptions",
+  "raw_path": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md",
+  "raw_sha256": "cc4efc31c64c1999dbfe9da1b958a9472caaa735ecc042def1499a474b5c08fe",
+  "prior_raw_path": "raw/stripe-subscriptions-migration-api-2026.md",
+  "prior_raw_sha256": "4ea33c16dd7bbb357bf79d8cf438d5c82e08ac11a0fcda0a313ab4572b158fcc",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/acdf011880e5a135f4e4177c/content.diff",
+  "diff_sha256": "c3eaaa393003ae1c7dc5a037925666c85b28f595cd9d1406e9477b98bc271f39",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-migration-api.md"
+  ],
+  "source_before_sha256": "e123ce259c753d7440fe2ed5cf2f1bd03a61f8b7ebee28f695ca29b4e4897cb5",
+  "section": "billing",
+  "new_words": 1355,
+  "new_lines": 142,
+  "old_words": 1276,
+  "old_lines": 160,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-migration-api.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-import-subscriptions/attempt-2/receipt.json",
+  "receipt_sha256": "d19430537fb032cf1c0ea0246835ffb8401ae9a0656aa877dae57156500f3341",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-import-subscriptions/attempt-2/review.json",
+  "review_sha256": "eb9d05a1b55856286a8b31cca36d868743a5287c2aaae1223d41b8c9a625d6b9",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md",
+  "new_raw_sha256": "cc4efc31c64c1999dbfe9da1b958a9472caaa735ecc042def1499a474b5c08fe",
+  "prior_raw": "raw/stripe-subscriptions-migration-api-2026.md",
+  "findings": [
+    "The same URL remains an API-based guide for moving subscriptions from a third-party, in-house system, or existing Stripe account into Stripe Billing (new 5-16; old 4-14). It says to review migration stages, set up a Billing integration once, and request a processor payments-data/PAN import when moving from another processor; the processor import prerequisite is expressly unnecessary for Stripe-to-Stripe migration (new 11-16, 59-61). None of these instructions proves a data import was requested, completed, or reconciled.",
+    "New 16 and 45-61 explicitly require a default payment source for customers the merchant wants to charge automatically; without one, subscription invoices cannot collect payment. It describes create/retrieve, attach if needed, and set invoice_settings.default_payment_method for the applicable Customer; an already attached method need not be recreated. The old capture's before-you-begin list (old 10-14) omitted this explicit check. Source 13-25 currently omits it and should not imply that creating or listing subscriptions establishes collectability.",
+    "The legacy-price table changes its stated maximum recurring interval from one year in old 93 to three years in new 95. Preserve the former as dated evidence and add the new value with the units exactly stated: 3 years, 36 months, or 156 weeks. New 96 retains the unit_amount versus unit_amount_decimal mutual exclusion. This table is a captured documentation claim, not an account-specific API validation result.",
+    "Both captures recommend the Subscription Schedules API while explicitly allowing the Subscription API (new 113-115; old 111-113). Current source 19 says 'Use Subscription Schedules API (not Subscriptions API)', which overstates the recommendation. The documented reason is future start, including monthly subscriptions more than 30 days ahead, and phase-specific tax/collection/coupon settings. The old prose June 1, 2022 00:00 UTC (old 115) and new prose May 31, 2022 17:00 GMT-7 (new 117) agree with each other, but both conflict with the unchanged start_date=1654066801 sample (old 136; new 125): the epoch is June 1, 2022 07:00:01 UTC, or June 1, 2022 00:00:01 GMT-7. Preserve the literal sample and flag this documentation ambiguity; the changed prose does not demonstrate changed scheduling behavior.",
+    "Source-data identity and continuity matter: map the old customer ID to the new Stripe customer, old price to new price, and a schedule's current_phase.start_date/billing_cycle_anchor to the remaining term; preserve third-party metadata and tax information as appropriate (new 69-83; old 67-81). Placeholder legacy product and items.price_data are a conditional legacy-plan pattern (new 18-43, 85-96; old 16-59, 83-94), not a universal required migration step.",
+    "The page recommends a sandbox pricing-model import run before live mode and remapping after wiping a sandbox or moving to live because price IDs differ (new 102-109; old 100-107). Test clocks can simulate time progression, but the source does not establish production billing outcomes. Its final list Subscriptions call with a created filter checks whether Subscription objects exist (new 128-138; old 140-156), not whether schedule starts, customer mapping, invoices, payment collection, or migration reconciliation succeeded."
+  ],
+  "substantive_changes": [
+    "New explicit default-payment-method prerequisite and conditional attach/default workflow for automatically charged customers, with a third-party PAN-import timing warning (new 16, 45-61 versus old 10-14).",
+    "The documented maximum for recurring.interval_count changes from one year (old 93) to three years (new 95) in the legacy-price preparation table.",
+    "The earlier source's Schedule-only wording is not supported by either capture: both allow Subscription API creation and recommend Schedules for future starts and phase controls (old 111-113; new 113-115)."
+  ],
+  "conflicts": [
+    "Current source 19 says 'Use Subscription Schedules API (not Subscriptions API)' though both old 111 and new 113 expressly permit Subscription API creation and only recommend Schedules.",
+    "Current source's migration summary omits the new automatic-collection default-payment-method prerequisite (new 16, 45-61). A reader might otherwise mistake existence of imported subscriptions for payment readiness.",
+    "Both captures' prose labels agree on June 1, 2022 00:00 UTC (old 115; new 117 in GMT-7), but their unchanged API sample start_date=1654066801 resolves to June 1, 2022 07:00:01 UTC (old 136; new 125). Do not present the epoch as an equivalent rendering of the prose or silently correct either value."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-05-12 one-year interval statement as dated old evidence (old 93), not a current universal maximum in the presence of the 2026-11-07 three-year statement (new 95).",
+    "Keep the old Node.js examples and earlier PAN-import wording dated (old 14, 20-59, 117-156); the new capture uses curl and says payments-data import while retaining the PAN-import reference and explicit completion warning (new 15, 22-61).",
+    "The core recommendation of Schedules over direct Subscriptions for future-start migration, customer/price ID remapping, mid-cycle continuity, sandbox testing and list-based existence check is present in both captures (old 77-81, 100-144; new 79-83, 102-132)."
+  ],
+  "unresolved_questions": [
+    "The capture does not prove the import has run, source-to-Stripe IDs were reconciled, a scheduled subscription started, a Stripe invoice was paid, or any payment method collected funds.",
+    "The page provides a dated maximum-interval table but no live API validation for a specific Stripe version or account; it also does not establish all possible migration billing modes or alternative payment-source configurations.",
+    "The sample's intended start time remains unresolved: the old and new prose times are equivalent to each other, while start_date=1654066801 is 7 hours and 1 second later than those labels (old 115, 136; new 117, 125). The captures do not explain which value is intended."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw6",
+  "reviewer_agent": "/root/s01ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-import-subscriptions-2026-11-07.md",
+      "sha256": "cc4efc31c64c1999dbfe9da1b958a9472caaa735ecc042def1499a474b5c08fe",
+      "lines": 142
+    },
+    {
+      "path": "raw/stripe-subscriptions-migration-api-2026.md",
+      "sha256": "4ea33c16dd7bbb357bf79d8cf438d5c82e08ac11a0fcda0a313ab4572b158fcc",
+      "lines": 160
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-migration-api.md",
+      "sha256": "e123ce259c753d7440fe2ed5cf2f1bd03a61f8b7ebee28f695ca29b4e4897cb5",
+      "lines": 34
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/acdf011880e5a135f4e4177c/content.diff",
+      "sha256": "c3eaaa393003ae1c7dc5a037925666c85b28f595cd9d1406e9477b98bc271f39",
+      "lines": 215
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-import-subscriptions-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-import-subscriptions-review.json"
+}

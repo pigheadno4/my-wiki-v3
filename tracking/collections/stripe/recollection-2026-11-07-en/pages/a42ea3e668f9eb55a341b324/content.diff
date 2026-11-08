@@ -1,0 +1,386 @@
+--- raw/stripe-subscriptions-billing-cycle-2026.md
++++ raw/stripe-billing-subscriptions-billing-cycle-2026-11-07.md
+@@ -14,12 +14,12 @@
+ The following are examples of monthly subscriptions with different billing periods:
+ 
+ - A monthly subscription with a billing cycle anchor date of September 2 always bills on the 2nd day of the month.
+-- A monthly subscription with a billing cycle anchor date of January 31 bills the last day of the month closest to the anchor date, so February 28 (or February 29 in a leap year), then March 31, April 30, and so on.
++- A monthly subscription with a billing cycle anchor date of January 31 bills the last day of the month closest to the anchor date, so  February 28 (or February 29 in a leap year), then March 31, April 30, and so on.
+ - A weekly subscription with a billing cycle anchor date of Friday, June 3 bills every Friday thereafter.
+ 
+-Full billing periods start on the first full _invoice_ (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) date, which is often the same as the billing cycle anchor and is always interval-aligned with it.
+-
+-## Specify the billing cycle anchor for new subscriptions
++Full billing periods start on the first full *invoice* (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) date, which is often the same as the billing cycle anchor and is always interval-aligned with it.
++
++## Specify the billing cycle anchor for new subscriptions 
+ 
+ > The subscription creation time matches the time of the request. It isn’t the same as the subscription start date. Learn more about [backdating and billing cycle anchors](https://docs.stripe.com/billing/subscriptions/backdating.md#backdating-billing-cycle).
+ 
+@@ -36,81 +36,51 @@
+ 
+ Set `day_of_month` to `31` to create a monthly subscription that renews at the end of the month, even in months with less than 31 days. If a month has less than 31 days, the subscription renews on the last day of that month.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  billing_cycle_anchor_config: {
+-    day_of_month: 31,
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d "billing_cycle_anchor_config[day_of_month]=31"
+ ```
+ 
+ You can also specify `month` to control the month of year for the anchor on multi-month and yearly subscriptions.
+ 
+ To cycle your yearly subscriptions on the first of July, create a yearly subscription with a `month` of `7` and `day_of_month` of `1`.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  billing_cycle_anchor_config: {
+-    month: 7,
+-    day_of_month: 1,
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d "billing_cycle_anchor_config[month]=7" \
++  -d "billing_cycle_anchor_config[day_of_month]=1"
+ ```
+ 
+ You can specify the exact month, day, hour, minute, and second for the billing cycle anchor by using `billing_cycle_anchor_config`. If you don’t specify the hour, minute, and second, they default to the values of the subscription creation time.
+ 
+-The billing cycle anchor uses Coordinated Universal Time (UTC). For example, if you create a subscription using `billing_cycle_anchor_config` at 5 PM EST without specifying the hour, the time is recorded in the system as 10 PM UTC.
++The billing cycle anchor uses Coordinated Universal Time (UTC). For example, if you create a subscription using `billing_cycle_anchor_config` at 5 pm EST without specifying the hour, the time  is recorded in the system as 10 pm UTC.
+ 
+ `billing_cycle_anchor_config` doesn’t support anchoring on a backdated start date.
+ 
+ For example, if you have an existing monthly subscription with a `billing_cycle_anchor` timestamp that contains the day of the month, hour, minute, and second of 15, 12, 30, and 0, you can align a new monthly subscription with it. To do this, set `day_of_month`, `hour`, `minute`, and `second` to match those same values, respectively.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  billing_cycle_anchor_config: {
+-    day_of_month: 15,
+-    hour: 12,
+-    minute: 30,
+-    second: 0,
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d "billing_cycle_anchor_config[day_of_month]=15" \
++  -d "billing_cycle_anchor_config[hour]=12" \
++  -d "billing_cycle_anchor_config[minute]=30" \
++  -d "billing_cycle_anchor_config[second]=0"
+ ```
+ 
+ If you use `billing_cycle_anchor_config`, it might result in a `billing_cycle_anchor` that’s more than one billing period in the future. However, the date for the first full invoice always falls within one billing period from the creation of the subscription or the ending of a free trial.
+ 
+ For example, assume that you create a two-month interval subscription in February and you cycle it at the end of every month by setting `day_of_month` to `31`. The next month that has 31 days on two-month intervals from February is August, which results in a billing cycle anchor on August 31. However, the first full invoice date for this subscription still occurs in February. There’s an initial, prorated period from subscription creation until February 28 (or 29 during a leap year), followed by a full two-month billing period.
+ 
+-### Use billing_cycle_anchor
++### Use billing_cycle_anchor 
+ 
+ You can create a subscription with an explicit billing cycle anchor using the Subscriptions API or Checkout.
+ 
+@@ -120,38 +90,22 @@
+ 
+ #### Accounts v2
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer_account: "{{CUSTOMERACCOUNT_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  billing_cycle_anchor: 1611008505,
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d billing_cycle_anchor=1611008505
+ ```
+ 
+ #### Customers v1
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  billing_cycle_anchor: 1611008505,
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d billing_cycle_anchor=1611008505
+ ```
+ 
+ ### Configure proration behavior
+@@ -167,29 +121,16 @@
+ 
+ Call the Stripe Checkout [create session](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session) with a timestamp for `subscription_data.billing_cycle_anchor`:
+ 
+-#### Node.js
+-
+-```javascript
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const session = await stripe.checkout.sessions.create({
+-  line_items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-      quantity: 1,
+-    },
+-  ],
+-  mode: "subscription",
+-  success_url: "https://example.com/success?session_id={CHECKOUT_SESSION_ID}",
+-  subscription_data: { billing_cycle_anchor: 1611008505 },
+-});
+-
+-// Record the session ID in your system
+-const session_id = session.id;
+-
+-// 303 redirect to session.url
++#### cURL
++
++```bash
++curl https://api.stripe.com/v1/checkout/sessions \
++  -u <<YOUR_SECRET_KEY>>: \
++  -d "line_items[][price]"="{{PRICE_ID}}" \
++  -d "line_items[][quantity]"=1 \
++  -d "mode"="subscription" \
++  -d "success_url"="https://example.com/success?session_id={CHECKOUT_SESSION_ID}" \
++  -d "subscription_data[billing_cycle_anchor]"=1611008505
+ ```
+ 
+ Checkout must be in `subscription` mode to configure a billing cycle anchor.
+@@ -203,48 +144,97 @@
+ 
+ > You can’t use one-time prices in Checkout Sessions when `proration_behavior` is `none`.
+ 
+-## Change the billing period on existing subscriptions
++## Change the billing period on existing subscriptions 
+ 
+ Use the [Subscriptions API](https://docs.stripe.com/api/subscriptions/update.md) or [Dashboard](https://dashboard.stripe.com/subscriptions) to change the billing date of an existing subscription through one of the following options:
+ 
+ - Reset the billing cycle anchor to the current time.
+-- Add a [free trial](https://docs.stripe.com/billing/subscriptions/trials.md) to automatically set the anchor date to the end of the trial. Trials typically start when you create a subscription, but you can also apply them to existing subscriptions, allowing you to credit the customer for the days left in the previous cycle that they already paid.
+-
+-Your billing cycle date changes in these scenarios. However, if you create or update a subscription with `billing_mode[type]=flexible`, the billing cycle anchor remains unchanged. Learn more about [configuring flexible billing mode](https://docs.stripe.com/billing/subscriptions/billing-mode.md) and its [limitations](https://docs.stripe.com/billing/subscriptions/billing-mode.md#limitations).
++- Reset the billing cycle anchor to a specific timestamp.
++- Add a [free trial](https://docs.stripe.com/billing/subscriptions/trials/free-trials.md) to automatically set the anchor date to the end of the trial. Trials typically start when you create a subscription, but you can also apply them to existing subscriptions, allowing you to credit the customer for the days left in the previous cycle that they already paid.
++
++Your billing cycle date changes in these scenarios. However, if you create or update a subscription with `billing_mode[type]=flexible`, the billing cycle anchor remains unchanged. Learn more about [configuring flexible billing mode](https://docs.stripe.com/billing/subscriptions/billing-mode.md).
+ 
+ - If all prices are zero-amount, adding one or more paid prices immediately resets the billing period. See the [change subscription prices guide](https://docs.stripe.com/billing/subscriptions/change-price.md#handle-zero-amount-prices-and-quantities) for more information.
+ - The `billing_cycle_anchor` resets to the [cancel_at](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-cancel_at) date when creating a subscription with `cancel_at` set to a date before the subscription renews next, or modifying an existing `cancel_at` date on a subscription with a `billing_cycle_anchor` in the future of the new `cancel_at` date.
+ - The `billing_cycle_anchor` resets to the current time when switching to a price with a different [recurring.interval](https://docs.stripe.com/api/prices/object.md#price_object-recurring).
+ 
+-### Reset the billing period to the current time
+-
+-To reset the billing cycle anchor to the current time, make an update request with `billing_cycle_anchor` set to `now`. This sets the billing cycle anchor to the time of the update request. After you reset the billing cycle anchor, Stripe immediately sends an invoice. [Enable proration](https://docs.stripe.com/api/subscriptions/create.md#create_subscription-proration_behavior) to credit the customer for any days already paid in the previous period. Disabling proration might result in overcharging your customer.
++### Reset the billing period to the current time 
++
++To reset the billing cycle anchor to the current time, make an update request with `billing_cycle_anchor.type` set to `now`. This sets the billing cycle anchor to the time of the update request. After you reset the billing cycle anchor, Stripe immediately sends an invoice. [Enable proration](https://docs.stripe.com/api/subscriptions/create.md#create_subscription-proration_behavior) to credit the customer for any days already paid in the previous period. Disabling proration might result in overcharging your customer.
++
++> **Flexible mode behavior:** If your subscription uses `billing_mode[type]=flexible`, resetting the billing cycle anchor to `now` doesn’t automatically generate a new invoice. To trigger an invoice on a BCA reset, you must also set `proration_behavior` to `always_invoice`.
++> 
++> Exception: If you also change subscription items alongside the BCA reset so that the prorations don’t fully cancel, Stripe generates an invoice immediately regardless of `proration_behavior`.
+ 
+ #### API
+ 
+-Call [update the subscription](https://docs.stripe.com/api.md#update_subscription), setting `billing_cycle_anchor` to `now` and `proration_behavior` to `create_prorations` to prevent overcharging the customer for any days they already paid in the previous cycle.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.update("sub_49ty4767H20z6a", {
+-  billing_cycle_anchor: "now",
+-  proration_behavior: "create_prorations",
+-});
++Call [update the subscription](https://docs.stripe.com/api.md#update_subscription), setting `billing_cycle_anchor.type` to `now` and `proration_behavior` to `create_prorations` to prevent overcharging the customer for any days they already paid in the previous cycle.
++
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Version: 2026-09-30.endive" \
++  -d "billing_cycle_anchor[type]=now" \
++  -d proration_behavior=create_prorations
+ ```
+ 
+ #### Dashboard
+ 
+-1. On the [Subscriptions](https://dashboard.stripe.com/subscriptions) page in the Dashboard, find the subscription you want to update.
+-1. Click its overflow menu ⋯, and select **Update subscription**.
+-1. Expand the **Billing and payment collection** section, and click **Bill today instead**. We automatically prevent charging for the days already paid from the previous cycle. In the preview, click **Show details** to see the prorated invoice.
+-1. Click **Update subscription**.
++1. On the [Subscriptions](https://dashboard.stripe.com/subscriptions), click the overflow menu ⋯ and choose **Update subscription**.
++2. Scroll to **Advanced options** and select **Reset the billing cycle**.
++3. Select the **Prorate changes** toggle to prevent overcharging for the days already paid from the previous cycle.
++4. Click **Update subscription**.
++
++### Reset the billing period to a specific time 
++
++> The ability to reset the billing period to a specific time is in [private preview](https://docs.stripe.com/release-phases.md).
++
++### Get early access to reset the billing period to a specific time
++
++Enter your email to request access.
++
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/billing/subscriptions/billing-cycle" \
++  -d '{"email": "EMAIL", "preview": "subscription_update_billing_cycle_anchor_timestamp_private_preview"}'
++```
++
++Before you begin, note the following requirements:
++
++- Use [API version](https://docs.stripe.com/api/versioning.md) `2026-09-30.preview`.
++- You can only reset the billing cycle anchor to a specific time for subscriptions that use [flexible billing mode](https://docs.stripe.com/billing/subscriptions/billing-mode/compare.md).
++
++To reset the billing cycle anchor to a specific time, make an [update](https://docs.stripe.com/api/subscriptions/update.md) request with `billing_cycle_anchor.type` set to `timestamp` and `billing_cycle_anchor.timestamp` set to the Unix timestamp representing the new billing cycle anchor time. Depending on the new billing cycle anchor time, the update either advances the start and end time of the previous period or truncates the end time of the previous period.
++
++After you reset the billing period, Stripe automatically creates [prorations](https://docs.stripe.com/billing/subscriptions/prorations.md) to either credit the customer for any days already paid in the previous period or debit the customer for any days in the new period that haven’t yet been paid for. You can set [proration behavior](https://docs.stripe.com/api/subscriptions/update.md#update_subscription-proration_behavior) to invoice the customer immediately, or to disable creating prorations.
++
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Version: 2026-09-30.preview" \
++  -d "billing_cycle_anchor[type]=timestamp" \
++  -d "billing_cycle_anchor[timestamp]=1788220800" \
++  -d proration_behavior=create_prorations
++```
++
++Stripe accepts any billing cycle anchor time that’s within one price interval of the current time with the following exceptions:
++
++- For [mixed interval subscriptions](https://docs.stripe.com/billing/subscriptions/mixed-interval.md), Stripe considers the smallest price interval associated with the subscription.
++- For subscriptions with a [free trial period](https://docs.stripe.com/billing/subscriptions/trials/free-trials.md), the new billing cycle anchor must be after the current [trial end](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-trial_end).
++
++The following are examples of possible new billing cycle anchors for different subscriptions. In all examples, the update request happens on September 10:
++
++- A monthly subscription can accept a new billing cycle anchor time between August 10 and October 10.
++- A mixed interval subscription with both a monthly and annual price can accept a new billing cycle anchor between August 10 and October 10.
++- A monthly subscription with a free trial ending October 1 can accept a new billing cycle anchor time between October 1 and October 10.
++
++You can also set a specific billing cycle anchor timestamp when you [create a preview invoice](https://docs.stripe.com/api/invoices/create_preview.md#create_invoice-subscription_details-billing_cycle_anchor-timestamp) and when you [resume a paused subscription](https://docs.stripe.com/api/subscriptions/resume.md#resume_subscription-billing_cycle_anchor-timestamp).
+ 
+ ### Change the billing period using a trial period
+ 
+-You can change the billing cycle anchor by using a [free trial](https://docs.stripe.com/billing/subscriptions/trials.md) to automatically set the billing cycle anchor date to the `trial_end` date.
++You can change the billing cycle anchor by using a [free trial](https://docs.stripe.com/billing/subscriptions/trials/free-trials.md) to automatically set the billing cycle anchor date to the `trial_end` date.
+ 
+ For example, if a customer has an active subscription originally set to bill next on July 23, and on July 15 you introduce a trial period ending on August 1:
+ 
+@@ -258,31 +248,20 @@
+ 
+ Call [update subscription](https://docs.stripe.com/api.md#update_subscription), setting `trial_end` to a Unix timestamp representing the end date for the trial and `proration_behavior` to `none`. Setting the `trial_end` sets the billing cycle anchor to the same date.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.update("sub_49ty4767H20z6a", {
+-  trial_end: 1627801200,
+-  proration_behavior: "none",
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d trial_end=1627801200 \
++  -d proration_behavior=none
+ ```
+ 
+ #### Dashboard
+ 
+ 1. On the [Subscriptions](https://dashboard.stripe.com/subscriptions) page, find the subscription you want to update.
+-
+-1. Click its overflow menu ⋯, and select **Update subscription**.
+-
+-1. Expand **Subscription options**, and click **Trial period**, and select the trial duration. The end of the trial becomes the new billing cycle anchor date. We automatically prevent charging for the days already paid from the previous cycle. In the preview, click **Show details** to see the prorated invoice.
+-
+-1. If the trial ends and the customer doesn’t add a payment method, you can choose to either:
+-   - **Continue subscription and send invoice**: Stripe sends an email to the customer with a link to a payment page to continue the subscription
+-   - **Cancel subscription**
+-   - **Pause subscription**
+-
+-1. Click **Update subscription**.
++2. Click **Update subscription**.
++3. Click **Add trial** and enter the number of days of the trial. The end of the trial becomes the new billing cycle anchor date.
++4. Deselect the **Prorate changes** toggle to prevent crediting the customer for already paid days.
++5. Click **Update subscription**.
+ 
+ ## Usage-based billing
+ 
+@@ -296,5 +275,6 @@
+ 
+ ## See also
+ 
+-- [Using trial periods](https://docs.stripe.com/billing/subscriptions/trials.md)
+-- [Update Subscription](https://docs.stripe.com/api.md#update_subscription)+- [Using trial periods](https://docs.stripe.com/billing/subscriptions/trials/free-trials.md)
++- [Update Subscription](https://docs.stripe.com/api.md#update_subscription)
++- [Use test clocks to preview invoices](https://docs.stripe.com/billing/testing.md#test-clocks)

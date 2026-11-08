@@ -1,0 +1,35 @@
+# Approved Stripe S01 review contract
+
+ACTIVE — approved 2026-11-07. Scope: 50 review units only; original proposal text below is retained verbatim. Future proposals target 100 units; no review standard is waived.
+
+# Stripe S01 proposed provider-specific review authorization
+
+**PROPOSED ONLY — awaiting exact-scope and Stripe provider-contract approval.** The user's agreement approves the priority order: review the 512 changed units before triaging 4265 new candidates. It does not transfer Adyen's parallel authorization to Stripe. This contract is for the exact 50 Billing old/new/current-source comparisons in manifest.proposed.json.
+
+## Scope and output
+
+Review only. No canonical source, concept, company, index, count or log edits; no source generation or promotion. Each unit must receive a complete old/new comparison and a proposed disposition: source_required update, raw_reference/navigation-only, no substantive update, or unresolved identity/variant/authority. A short new capture or changed hash does not establish a substantive change. No disposition is silently applied. After these reviews, present a smaller exact update proposal with its actual evidence and scope for approval. The other 462 changed units and all 4265 new candidates remain outside this review round.
+
+## Proposed parallel exception
+
+Under rules/ingest.md's coordinator-controlled exception, authorize ten shared rolling child slots maximum, excluding the coordinator, bounded by actual host capacity. Workers, independent reviewers and auditors share the ten; not ten each. Proposed role settings are gpt-6-sol medium comparison workers and different gpt-6-sol high first reviewers. Review-ready work has priority with a worker reserve. No worktrees. All delegates are repository-read-only and write only assigned external handoff artifacts; the coordinator alone persists review evidence under this campaign directory. No runtime before approval.
+
+Delegates read rules/ingest-roles.md, their trusted exact review job and concise Stripe scope notes. The order must identify this as review/triage rather than a source-candidate generation task, and use the review-only output contract below. Every worker and initial independent reviewer fully reads the numbered pinned new raw, matched old raw, entire current source and diff, including every table/schema/error/example and ending, in contiguous bounded model-visible chunks. Reread truncated ranges; preserve completed/unread ranges across context limits. No size, schema, first-review or quote waiver. Each worker grounds findings in 3–5 exact located new-raw quotes and located old evidence for delta assertions. No semantic decisions from titles, URL shape, file size or metadata alone.
+
+Read relevant concept/context through root index → Stripe index → applicable concept sections where needed to assess a retained claim or material conflict. Do not fan out into unrelated source histories. Existing historical raw provenance remains immutable. Additional old raw may be read only where needed for a material retained claim or conflict, with the actual scope reported. Do not claim all historical versions were reread.
+
+## Comparison requirements
+
+Preserve Stripe's captured date, version and API/UI/platform variants; client/server and merchant/platform/connected-account roles; object identities and lifecycle states, defaults, prerequisites, deprecation and limits. A new overview or variant index omitting old functional details does not prove their removal or deprecation. Preserve navigation-only versus factual-evidence boundaries; do not propose adding navigation-only new raw to raw_files/Raw Sources. Identify already collected variants that could resolve the gap, but do not expand assigned source units or ingest them. A variant index may warrant raw_reference rather than replacement of an old functional summary. Do not erase or silently modernize old claims; recommend dated retention, qualified replacement or further review with actual evidence.
+
+Do not infer payment success, settlement, bank receipt, compliance, production eligibility or current API behavior from setup, a successful request, resource creation or a reported state. No collection/refresh, live API, SDK, customer/account/subscription/billing/payment/device operation, code/rules change, commit or push. Documentation paths are evidence labels, not executable operations.
+
+## Review-only artifact contract
+
+Worker output per exact job: job_id, attempt, raw_path/raw_sha256, prior_raw_path/prior_raw_sha256, source_target/source_before_sha256, completed read ranges, 3–5 located new quotes, located old-delta evidence, proposed_disposition, findings, substantive_changes, historical_claims_to_preserve, conflicts, unresolved_questions, affected_concepts, and two actual declarative answers to the fixed original Q1/Q2. No generated source_page is required or authorized in this review phase. Preserve actual conclusions including no-material-change findings, instead of inventing changes to fill the queue.
+
+An independent first reviewer fully rereads the pinned new/old raw and current source/diff, validates quotes, findings, dispositions, relevant context and both actual answers. Return job_id, attempt, verdict, all required_changes, review_scope and read ranges. Maximum three attempts. Bounded unchanged-hash corrections may use targeted review where impact is clear; broader factual uncertainty requires full rereview. Failed/exhausted reviews retain evidence and do not become approved dispositions.
+
+The three distinct predetermined coordinator audits in the proposal cover a standard page, the largest new raw, and an ordinary page. Fully reread their new/old raw, current source, findings, quotes and both actual answers. A material partial/fail expands the audit to all 50. Check all raw/old/source/diff hashes, actual read/review independence, attempt limits, exact quote locations, all 100 actual fixed answers, and queue accounting. Mark gaps or unresolved matters explicitly; do not label a review-only round as 50 ingested pages.
+
+Activation must recheck every pin and source-before hash plus live aggregate/catalog context. Reconcile the pre-existing company-count/catalog discrepancy before any later canonical update scope is finalized. A pause stops new dispatch and preserves evidence. Completion reports reviewed dispositions and proposes canonical updates separately. Nothing here authorizes canonical ingestion, new source generation, collection, publication or edits to unrelated work.

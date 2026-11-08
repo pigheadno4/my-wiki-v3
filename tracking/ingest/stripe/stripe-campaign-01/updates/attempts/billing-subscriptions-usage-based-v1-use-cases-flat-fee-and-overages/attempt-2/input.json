@@ -1,0 +1,98 @@
+{
+  "job_id": "billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages",
+  "queue_id": 52,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/usage-based-v1/use-cases/flat-fee-and-overages",
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages-2026-11-07.md",
+  "raw_sha256": "02f8a8e27258ef954c363d87b9128b9c2decc721e4da513468f5bb5767b3b08c",
+  "prior_raw_path": "raw/stripe-usage-based-billing-flat-fee-overages-2025.md",
+  "prior_raw_sha256": "bb94cbc299735d507166f11977f208542253b15bba2ed85594ffee0ba5d41d05",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/aaf2c51d78fa9ef1ad9676b5/content.diff",
+  "diff_sha256": "3ed3908d70957e07ccad7ebe5355c65443d4a2e33af5428cfae6db4a968d979d",
+  "source_targets": [
+    "wiki/sources/source-stripe-usage-based-billing-flat-fee-overages.md"
+  ],
+  "source_before_sha256": "d97e73da4be219f1116c05d59940bebe0eb3074aa2f937e929ccd9858e8adb31",
+  "section": "billing",
+  "new_words": 2077,
+  "new_lines": 330,
+  "old_words": 2083,
+  "old_lines": 350,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-flat-fee-overages.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-1/receipt.json",
+  "receipt_sha256": "ab44c2959bbab4f824f00244bd439802504269cc94c5006602db7110f38dbc0a",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-1/review.json",
+  "review_sha256": "27a69e9d0205cb04cefa571212014d973fd2219e96b0e16b55790d07c67fbc01",
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages-2026-11-07.md",
+  "new_raw_sha256": "02f8a8e27258ef954c363d87b9128b9c2decc721e4da513468f5bb5767b3b08c",
+  "prior_raw": "raw/stripe-usage-based-billing-flat-fee-overages-2025.md",
+  "findings": [
+    "At the same captured URL, the core flat fee plus overage flow remains a sum meter, graduated metered price with 1,000 included units, separate $100 monthly licensed price, and both prices on one subscription (new:24\u201330,74\u201382,98\u2013114,143\u2013154,213\u2013258; old:25\u201330,73\u201388,116\u2013139,142\u2013190,219\u2013262). The first invoice/license and second invoice/prior usage timing is an example, not proof of a successful invoice or payment.",
+    "The new capture expands the old one-line Accounts v2 caveat into an Accounts v2 creation example, a retained Customers v1 path, and customer_account versus customer subscription parameters (new:172\u2013211,240\u2013258; old:193\u2013217,246\u2013262). Accounts v2 availability is scoped: GA for Connect users, public preview for other Stripe users, with preview version for participants (new:174,189\u2013202).",
+    "The existing source at lines 20\u201327 presents Node Decimal.from monetary arguments as though they define the approach; the new capture's curl example uses numeric form values (new:108\u2013114,151\u2013154). Existing source line 34 says the first invoice charges only the license fee under flexible mode, while new/old text excludes metered lines and also says an invoice is created only for backdated usage or pending invoice items; this prose is ambiguous for a mixed licensed plus metered subscription (new:219\u2013223; old:225\u2013229). Preserve the mixed subscription's upfront licensed fee separately and avoid a blanket no-first-invoice claim.",
+    "The current concept categorizes this URL's flat-fee-overages example as legacy usage-based-v1 not Meter API (wiki/concepts/stripe-usage-based-billing.md:83), despite this same page explicitly creating /v1/billing/meters, linking the metered price to recurring[meter], and submitting /v1/billing/meter_events (new:26\u201357,98\u2013114,260\u2013285; old:25\u201367,116\u2013139,264\u2013295). URL path naming does not establish a legacy aggregate_usage implementation.",
+    "The current source and index omit the new Accounts v2 and customer_account identity route, and the source's raw provenance names only the older capture (source:6\u20137,40\u201342; Stripe index:294). A coordinator update should retain the historical raw evidence while adding the pinned new capture and scoped identity facts."
+  ],
+  "substantive_changes": [
+    "Expanded Accounts v2 customer-configured Account setup and scoped availability/preview version, plus an explicit Customers v1 alternative and customer_account subscription parameter (new:172\u2013211,240\u2013258; old:193\u2013217,246\u2013262).",
+    "Meter event summary prose now says to pass a customer-configured Account ID in the customer parameter (new:318); example still uses CUSTOMER_ID (new:327).",
+    "Examples switch from Node SDK and Decimal.from to curl form parameters; this changes sample syntax, not the documented meter, price, subscription, or invoice behavior (diff:28\u201396,129\u2013197,217\u2013265,354\u2013392,407\u2013490)."
+  ],
+  "conflicts": [
+    "New:64 calls the metered rate $0.04 per hundred units, while new:79 and tiers[1][unit_amount_decimal]=4 at new:111\u2013113 express $0.04 per unit above 1,000. The same conflict appears in old:73 versus old:88,134\u2013136. Avoid asserting the per-hundred rate without qualification.",
+    "Concept wiki/concepts/stripe-usage-based-billing.md:83,86 calls this legacy usage-based-v1 not Meter API and Decimal.from required; both conflict with the meter-creation/event API in the captured guide and the new curl numeric tier values (new:26\u201357,98\u2013114,279\u2013285). Reciprocal concept/source correction is needed.",
+    "The guide's broad new:9 says an end-of-month invoice combines the flat fee and overage, while its specific two-product example new:80 says the next invoice combines prior-month overage with upcoming-month license. New:223's invoice-only-if-backdated-or-pending statement is ambiguous for this mixed-price case. Preserve the specific timing and qualify invoice creation to metered-only context rather than extending it to licensed charges.",
+    "The new Accounts v2 subscription and event summary examples use customer_account or Account ID (new:245,318), but the meter-event sample still passes CUSTOMER_ID (new:283) and the summary curl uses CUSTOMER_ID (new:327). Do not infer the event example demonstrates an Account v2 payload end-to-end."
+  ],
+  "historical_claims_to_preserve": [
+    "The old Node SDK examples, including Decimal.from tier amounts and customer-only subscription code, remain dated sample evidence (old:116\u2013139,180\u2013190,246\u2013262), not a universal current requirement or proof that Accounts v2 was absent.",
+    "Flexible versus classic initial metered-line behavior, backdated usage/pending-item caveats, and asynchronous meter processing were present in the old raw already (old:229,315,335); do not label them new behavior.",
+    "The optional first-tier $100 flat amount places the initial license charge at period end, whereas the two-product licensed-price example charges the fee at the beginning (new:80\u201381; old:87\u201390)."
+  ],
+  "unresolved_questions": [
+    "Does the new raw's $0.04 per hundred units sentence at line 64 reflect a documentation typo? The Dashboard tier and API tier amount indicate per unit; no live execution was performed.",
+    "How should the guide's line 223 invoice-only-if-backdated-or-pending caveat be interpreted for the shown mixed licensed and metered subscription? This capture does not demonstrate an invoice creation result.",
+    "What exact meter-event customer mapping is required for the Accounts v2 variant? The guide does not show an Account v2 meter-event example, despite its subscription and summary variants."
+  ],
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw6",
+  "reviewer_agent": "/root/s01ur3",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages-2026-11-07.md",
+      "sha256": "02f8a8e27258ef954c363d87b9128b9c2decc721e4da513468f5bb5767b3b08c",
+      "lines": 330
+    },
+    {
+      "path": "raw/stripe-usage-based-billing-flat-fee-overages-2025.md",
+      "sha256": "bb94cbc299735d507166f11977f208542253b15bba2ed85594ffee0ba5d41d05",
+      "lines": 350
+    },
+    {
+      "path": "wiki/sources/source-stripe-usage-based-billing-flat-fee-overages.md",
+      "sha256": "d97e73da4be219f1116c05d59940bebe0eb3074aa2f937e929ccd9858e8adb31",
+      "lines": 42
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/aaf2c51d78fa9ef1ad9676b5/content.diff",
+      "sha256": "3ed3908d70957e07ccad7ebe5355c65443d4a2e33af5428cfae6db4a968d979d",
+      "lines": 490
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-usage-based-v1-use-cases-flat-fee-and-overages/attempt-1"
+}

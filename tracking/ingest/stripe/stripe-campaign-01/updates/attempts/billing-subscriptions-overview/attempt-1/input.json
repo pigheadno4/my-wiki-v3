@@ -1,0 +1,100 @@
+{
+  "job_id": "billing-subscriptions-overview",
+  "queue_id": 36,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/overview",
+  "raw_path": "raw/stripe-billing-subscriptions-overview-2026-11-07.md",
+  "raw_sha256": "52f124caade74e4b736a76369d3ac28b147d0d7b6794d680cd1ffe1c12013929",
+  "prior_raw_path": "raw/stripe-subscriptions-overview-2026.md",
+  "prior_raw_sha256": "cbd14dbef181b6b190f2809094c2beb2a3d6080d03f12b80aa4baae886ef4726",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/227e23db8ca7dadba0bc6d6f/content.diff",
+  "diff_sha256": "c9736c8979a69b73ddb7685af2d0e1a18261a184af5f0779ddd7d6d914295670",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-overview.md"
+  ],
+  "source_before_sha256": "7fcd91beb3bafa83b2bc4c3740a46433b79373ea989e914bd56af2800e649453",
+  "section": "billing",
+  "new_words": 2619,
+  "new_lines": 186,
+  "old_words": 2050,
+  "old_lines": 180,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-overview.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-overview/attempt-1/receipt.json",
+  "receipt_sha256": "aa48d82e29b9ab084eb524af00546c013dc623bd55fed326f6b12cbd207fba48",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-overview/attempt-1/review.json",
+  "review_sha256": "0e83d58a5f54d7c3126e9c587ba0987113b1710fa343806c6485ef01ca4db865",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-overview-2026-11-07.md",
+  "new_raw_sha256": "52f124caade74e4b736a76369d3ac28b147d0d7b6794d680cd1ffe1c12013929",
+  "prior_raw": "raw/stripe-subscriptions-overview-2026.md",
+  "findings": [
+    "The complete new capture at https://docs.stripe.com/billing/subscriptions/overview is a substantive lifecycle revision. Initial `charge_automatically` invoices and the 23-hour incomplete window are scoped at new 31,39-43; `send_invoice` without a trial can start `active` with its first invoice unpaid at 33. The current source's unqualified 23-hour statement (source 21-23) overgeneralizes the automatic-collection case.",
+    "The new capture conditions active status on configurable most-recent-versus-all-invoices resolution (new 77-108,118,130-139). An applicable outstanding invoice is finalized, due and unsettled; the 37-month lookback and uncollectible-reason distinction are at 104-106. A paid PaymentIntent/invoice need not turn an existing `past_due` or `unpaid` subscription active when another governing invoice remains. The current source's matrix (source 38-44) and shorthand status rows (25-36) are incomplete for this setting.",
+    "Initial `incomplete` payment recovery requires collection/confirmation by the integration; Smart Retries and custom rules do not retry that initial payment (new 141-156). Later recurring failures have separate retry settings and final outcomes (new 160-164). The old capture's retry advice at old 149-155 appears in its generic payment-method recovery section and is unsafe to carry over as an initial-payment retry promise.",
+    "The new provisioning condition is subscription activation and active entitlements (new 47-51,180); `invoice.paid` plus status or entitlements confirmation is the documented gate in recovery/authentication paths (new 151-154,176-180). Delayed-confirmation methods can be active while PaymentIntent is processing and can remain active after later failure and voiding (new 122-125,137). Neither `active` nor `invoice.paid` alone proves every invoice was paid or every delayed payment finally succeeded.",
+    "The new raw distinguishes `trialing`, `active`, `incomplete`, `incomplete_expired`, `past_due`, `canceled`, `unpaid`, and `paused` at 75-88, with failed-payment settings and trial-end missing-method settings controlling some outcomes. Cancellation, Checkout incomplete-session update limits, and delayed confirmation are substantially retained at new 57,65-69,122-125 versus old 69,91-95,124. The removed first-invoice update subsection (old 71-77) remains historical captured evidence; omission is no proof of deprecation.",
+    "Root index 7 routes to Stripe index 606 and concept `wiki/concepts/stripe-subscriptions.md` at 792; the concept reciprocally links this source at 213. The dated concept statements at 16,18,20,60,80-85,175 need review because they present old payment behavior, universal 23-hour/async/provisioning shortcuts and entitlement timing without the new qualifications. No canonical page was edited."
+  ],
+  "substantive_changes": [
+    "Collection-method split: 23-hour `incomplete` first-payment rule is explained for `charge_automatically`; `send_invoice` without trial can begin `active` with unpaid invoice (new 31-43 versus old 40-55).",
+    "Status resolution now has a default most-recent-non-voided-invoice option and an all-applicable-invoices option, with different reactivation and outstanding-invoice outcomes, delayed reevaluation, 37-month window, and uncollectible-reason distinctions (new 77-108 versus old 103-110).",
+    "Payment success matrix now conditions active on settlement of governing invoices; initial recovery does not use automatic retries, while recurring failure may use Smart Retries/custom rules (new 116-164 versus old 118-155).",
+    "Entitlements are described as active when the subscription becomes active, not simply on subscription creation; authentication flow now names `stripe.handleNextAction` and confirms subscription active or entitlements before provision (new 49,176-180 versus old 59,169-174)."
+  ],
+  "conflicts": [
+    "Current source 23 and concept 18 describe a general first-invoice 23-hour rule; new 31-43 scope it to `charge_automatically` and distinguish `send_invoice` active-with-unpaid-invoice.",
+    "Current source 42 says succeeded/paid always maps to active; new 118,134 condition activation on governing invoices and can retain `past_due` or `unpaid` under all-invoices resolution. Concept 22/123-125 lacks this setting distinction.",
+    "Current source 48 and concept 20 say delayed methods skip incomplete and go active; new 124 says they can do so, and new 137 says PaymentIntent can still be processing. Preserve possibility rather than universal behavior.",
+    "Current source 58-60 and concept 60,80-85,175 imply invoice-paid, Checkout completion or subscription creation suffices for provisioning/entitlements; new 49,154,180 require activation or active entitlements in the stated flows. Concept 175's creation-timed entitlement assertion is directly contrary to new 49.",
+    "Current source 59 says `invoice.payment_failed` handles Smart Retry updates without distinguishing first versus recurring payment; new 156 excludes automatic retry while initially `incomplete`, whereas new 160-164 cover recurring-payment retries. Concept 16 also presents `default_incomplete` as a current universal recommendation absent from new 25."
+  ],
+  "historical_claims_to_preserve": [
+    "The May 2026 capture's specific `default_incomplete`, `allow_incomplete`, and `error_if_incomplete` descriptions (old 29-38) remain dated evidence. The new overview only says `payment_behavior` can override a payment-method-dependent default (new 25); omission does not deprecate those values or establish a new universal default.",
+    "The May 2026 first-invoice update limits for `send_invoice`, `charge_automatically`, and schedules (old 71-77; source 50-54) remain attributed to that capture. Their omission from the November overview is not proof that update windows or schedule constraints ceased to apply.",
+    "The old capture's Stripe.js `stripe.ConfirmCardPayment` authentication example (old 169-174) is historical client-flow evidence. The November capture uses `stripe.handleNextAction` (new 176-180); the page comparison alone does not establish SDK-wide removal of the old method."
+  ],
+  "unresolved_questions": [
+    "Whether the May 2026 first-invoice editing constraints and named payment_behavior options remain current in their dedicated API/invoice guides is not resolved by omission in this overview capture.",
+    "The new overview names `stripe.handleNextAction` but does not establish version-wide support, deprecation or exclusivity relative to the older `stripe.ConfirmCardPayment` example.",
+    "The new overview's own generic confirmation wording at 39 and 139 must be read with its explicit status-resolution and delayed-confirmation qualifications at 77-108,118,124,137; a single webhook/status signal is not a universal payment-finality guarantee."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw6",
+  "reviewer_agent": "/root/s01ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-overview-2026-11-07.md",
+      "sha256": "52f124caade74e4b736a76369d3ac28b147d0d7b6794d680cd1ffe1c12013929",
+      "lines": 186
+    },
+    {
+      "path": "raw/stripe-subscriptions-overview-2026.md",
+      "sha256": "cbd14dbef181b6b190f2809094c2beb2a3d6080d03f12b80aa4baae886ef4726",
+      "lines": 180
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-overview.md",
+      "sha256": "7fcd91beb3bafa83b2bc4c3740a46433b79373ea989e914bd56af2800e649453",
+      "lines": 68
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/227e23db8ca7dadba0bc6d6f/content.diff",
+      "sha256": "c9736c8979a69b73ddb7685af2d0e1a18261a184af5f0779ddd7d6d914295670",
+      "lines": 268
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-overview-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-overview-review.json"
+}

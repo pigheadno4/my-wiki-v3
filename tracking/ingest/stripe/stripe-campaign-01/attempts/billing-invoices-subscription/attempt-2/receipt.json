@@ -1,0 +1,133 @@
+{
+  "job_id": "billing-invoices-subscription",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-invoices-subscription-2026-11-07.md",
+  "raw_sha256": "8a06b67f26f88877d98f98e3123d0d59689ba533365cfe0291b4d2ee6bdf7f32",
+  "prior_raw_path": "raw/stripe-subscriptions-invoices-2026.md",
+  "prior_raw_sha256": "392d1c4692cb7e831b615f119e765a9590e954d2e877e2fb873faed5dea22c06",
+  "source_target": "wiki/sources/source-stripe-subscriptions-invoices.md",
+  "source_before_sha256": "8a209d4bc1a587f37d0587682f9e01523c1c9052fa4df1aa4ae80e529d28e213",
+  "read_ranges": {
+    "raw/stripe-billing-invoices-subscription-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 315
+      }
+    ],
+    "raw/stripe-subscriptions-invoices-2026.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 286
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-invoices.md": [
+      {
+        "start": 1,
+        "end": 103
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b3dc974ede64aeeab1fa4ec1/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 360
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The ability to edit finalized subscription invoices is in preview.",
+      "location": "raw/stripe-billing-invoices-subscription-2026-11-07.md:34"
+    },
+    {
+      "text": "[configuration.customer.billing.default_payment_method](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-configuration-customer-billing-default_payment_method) (for customer-configured `Account` objects)",
+      "location": "raw/stripe-billing-invoices-subscription-2026-11-07.md:68"
+    },
+    {
+      "text": "Set [payment_settings.save_default_payment_method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-payment_settings-save_default_payment_method) to `on_subscription` to save the payment method from a successful subscription payment as `subscription.default_payment_method`. The setting defaults to `off`.",
+      "location": "raw/stripe-billing-invoices-subscription-2026-11-07.md:75"
+    },
+    {
+      "text": "The subscription\u2019s status must be `active`, `past_due`, or `trialing`. It can\u2019t be `unpaid` or ended.",
+      "location": "raw/stripe-billing-invoices-subscription-2026-11-07.md:95"
+    },
+    {
+      "text": "**API version 2025-03-31.basil or later**: Expand [parent.subscription_details.subscription](https://docs.stripe.com/api/invoices/object.md#invoice_object-parent-subscription_details-subscription)",
+      "location": "raw/stripe-billing-invoices-subscription-2026-11-07.md:129"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If your integration uses [customer-configured Accounts](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer), replace `Customer` and event references in the code examples with the equivalent Accounts v2 API references.",
+      "location": "raw/stripe-subscriptions-invoices-2026.md:8"
+    },
+    {
+      "text": "| 3        | Customer invoice default payment method  | [customer.invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object.md#customer_object-invoice_settings-default_payment_method) |",
+      "location": "raw/stripe-subscriptions-invoices-2026.md:57"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "At the same canonical URL, the 2026-11-07 capture retains the core first-invoice, renewal, pending-item, void, and metadata rules from the 2026-05-13 capture (new lines 15-30, 44-56, 239-249, 284-315; old lines 16-45, 208-220, 255-286). The existing source summarizes those rules at lines 15-92, so replacement of their dated evidence is unnecessary.",
+    "New raw lines 62-69 preserve four ordered fallback positions for the first available saved default payment method and extend position 3 to customer-configured Account objects. This fallback is a different dimension from which payment method types invoices may accept: new line 71 explicitly separates subscription payment_method_types. New lines 73-77 add an opt-in on_subscription rule after a successful subscription payment, default off, distinct from the Dashboard customer-saving setting.",
+    "New Dashboard payment-update-link instructions and restrictions appear at lines 79-98. The link changes only the associated automatically billed subscription, requires active/past_due/trialing, accepts a card, is single-use, and expires unused after 30 days; it does not change the customer default. Related historical source and concept already cover many restrictions, but the current invoice source does not route them.",
+    "New retrieval guidance at lines 125-143 distinguishes expansion through parent.subscription_details.subscription on API version 2025-03-31.basil or later from expansion through subscription before that version. Do not present the new path without the version boundary.",
+    "The edit-finalized-invoice heading is qualified as preview at lines 32-42. It does not repeal the ordinary finalized-invoice amount-edit restriction at line 30 or establish account eligibility. A source update should present the preview as a qualified exception, without treating its registration example as an operation to execute.",
+    "Examples changed from Node SDK to curl at old lines 88-115, 152-167 and 181-204 versus new lines 145-162, 199-208 and 222-235; described invoice item behavior stayed materially the same. Heading spacing, italic syntax, numbered-list formatting, Hosted Invoice Page capitalization, and a corrected metadata API URL are presentational or navigation changes (diff lines 103-120, 215-275, 279-360)."
+  ],
+  "substantive_changes": [
+    "Preview-only finalized subscription invoice editing is newly documented, while ordinary post-finalization amount edits remain restricted (new 30-42).",
+    "Payment fallback position 3 now explicitly includes customer-configured Account objects, and saving a successful payment as subscription default is opt-in with off default (new 62-77).",
+    "Dashboard payment-update-link behavior and eligibility are added to this captured page (new 79-98).",
+    "Invoice retrieval expansion is newly split by the 2025-03-31.basil API version boundary (new 125-143)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-13 Accounts v2 instruction as dated evidence from old line 8; its omission from the new capture is not deprecation. The new capture independently includes the Account default-payment-method field at line 68, but does not restate the broader Customer/event-reference instruction.",
+    "Keep old Node SDK examples dated to the 2026-05-13 variant (old 88-115, 152-167, 181-204); the 2026-11-07 curl rendering is not evidence that the SDK calls were removed or deprecated.",
+    "Preserve existing first/renewal lifecycle, flexible metered-only exception, pending-item cancellation and tax caveats, void-state outcomes, and metadata-time distinctions with their original capture provenance (old 16-45, 208-232, 255-286; new 15-56, 237-261, 284-315)."
+  ],
+  "conflicts": [
+    "wiki/sources/source-stripe-subscriptions-payment-methods-setting.md:29-37 uses a Payment method priority heading for payment_settings.payment_method_types and says either the Dashboard invoice setting or subscription save_default_payment_method makes any method used to pay the new subscription default. The historical raw for that setting, lines 32-40, concerns allowed payment method types and its then-current saving explanation; it is not a competing four-level saved-default fallback chain. New invoice raw lines 62-71 distinguish saved-default fallback from allowed types, while lines 73-77 specify a successful subscription payment, opt-in on_subscription with default off, and a separate Dashboard Save customer payment information setting. Reconcile the saving claim and label each priority dimension accurately.",
+    "wiki/concepts/stripe-subscriptions-invoices.md:95 calls the invoice metadata snapshot immutable, while the new raw line 309 says it contains subscription metadata at creation even if later modified; retain the supported snapshot semantics without expanding to an unsupported blanket immutability claim. The concept's payment setting summary at lines 109-111 omits the off default and successful-payment condition from new line 75.",
+    "wiki/concepts/stripe-subscriptions-invoices.md:54 says setting auto_advance=false for review prevents auto-finalization. Both old raw lines 234-242 and new raw lines 263-271 explicitly describe preventing automatic payment attempts and invoice emailing, then resuming automatic collection; neither passage expressly establishes the finalization outcome. Correct the concept's overbroad finalization claim or qualify it with separate authority. wiki/sources/source-stripe-subscriptions-invoices.md:46 merely says to set auto_advance=false and later resume, and is not the source of that claim."
+  ],
+  "unresolved_questions": [
+    "The preview-registration paragraph does not establish which accounts are eligible or what revision operations a registered account can perform beyond the preview label (new 32-42).",
+    "The captured page does not establish that the broader Accounts v2 Customer/event-reference mapping in the old variant was withdrawn; verify with dedicated Accounts v2 authority before changing that historical guidance (old 8; new 68).",
+    "No captured text proves actual invoice payment, bank receipt, customer eligibility for payment links, or execution of any example in an account."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-invoices.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/invoices/subscription, the November capture describes immediate first-invoice finalization for charge_automatically, roughly one-hour finalization for send_invoice, a draft renewal window, conditional paid/active outcomes, and the flexible metered-only creation exception (new lines 15-56). Its four-level order selects the first available saved default payment method, while payment_method_types separately controls accepted types (new lines 62-71). The matched May capture carries the core lifecycle and Customer v1 fallback (old lines 16-58), already summarized in [[source-stripe-subscriptions-invoices]]. The new page adds preview-qualified editing, Account v2 position 3, opt-in successful-payment saving, Dashboard link limits, and versioned retrieval expansion (new lines 32-42, 68-98, 125-143).",
+    "Q2": "For https://docs.stripe.com/billing/invoices/subscription, substantive additions are preview-only finalized-invoice editing, customer-configured Account default fallback at position 3, saving the method used in a successful subscription payment only when on_subscription is set (default off), restricted card update links, and API-version-specific invoice expansion (new lines 32-42, 62-98, 125-143). Payment method types control accepted types and are not another saved-default fallback order (new line 71; historical payment-methods-setting raw lines 32-40). Node-to-curl examples are presentation, not SDK deprecation (old lines 88-115, 152-167; new lines 145-162, 199-208). [[source-stripe-subscriptions-invoices]] needs qualified additions. The overbroad auto-finalization claim is in wiki/concepts/stripe-subscriptions-invoices.md:54; the source at line 46 merely describes pause and resume, while old lines 234-242 and new lines 263-271 expressly address automatic payment attempts and emailing."
+  }
+}

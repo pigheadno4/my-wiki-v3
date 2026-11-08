@@ -1,0 +1,99 @@
+{
+  "job_id": "billing-subscriptions-billing-mode-compare",
+  "queue_id": 21,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/billing-mode/compare",
+  "raw_path": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md",
+  "raw_sha256": "7e087658df959bf8f490d39dff5ac11cad917205d0e1578a3b1603e6d6929299",
+  "prior_raw_path": "raw/stripe-subscriptions-billing-mode-compare-2026.md",
+  "prior_raw_sha256": "bbc559ac4099bd3651e2c7e117888a86fa2743a57a40c12ba206ffe83d9fe492",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/6d5f62ab5f201651ef6239fe/content.diff",
+  "diff_sha256": "0820dc4059f508fb2d63f2cc4c13b22ab049b4eeef73d5eca55d3d98f815e8a3",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-billing-mode-compare.md"
+  ],
+  "source_before_sha256": "6e8a82032fce4ebe8e48415265cdd4974377b75443129056c790e3ff3d0dfc6e",
+  "section": "billing",
+  "new_words": 2993,
+  "new_lines": 279,
+  "old_words": 2066,
+  "old_lines": 218,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-billing-mode-compare.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-mode-compare/attempt-1/receipt.json",
+  "receipt_sha256": "44283f5bfe993b3e016e2322439062e49b1dc709d402359af1ce362abe66dfdf",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-billing-mode-compare/attempt-1/review.json",
+  "review_sha256": "218db38142a310deb99cf2068857961947712c703ea1b600951a71ed3be7e807",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md",
+  "new_raw_sha256": "7e087658df959bf8f490d39dff5ac11cad917205d0e1578a3b1603e6d6929299",
+  "prior_raw": "raw/stripe-subscriptions-billing-mode-compare-2026.md",
+  "findings": [
+    "Both captures at https://docs.stripe.com/billing/subscriptions/billing-mode/compare compare classic with flexible subscription billing and warn that a flexible subscription cannot migrate back (old 4-10; new 5-13). The current [[source-stripe-subscriptions-billing-mode-compare]] is discoverable via wiki/index.md:7 \u2192 wiki/stripe-index.md:628 and the existing stripe-subscriptions concept source link at 231. The November page materially expands the comparison; retain the May capture separately rather than replacing its dated claims.",
+    "Core shared distinctions remain: credit prorations based on original debits in flexible mode; proportional per-item discounts; usage price at reporting; conditional removal of unbilled usage; consolidated renewal invoice on usage-based schedule transitions; portal cancel_at behavior; trial field differences; and mixed intervals (old 12-218; new 15-271). The current source table compresses several conditions and examples into broad claims.",
+    "November adds trial_end as an explicit anchor-reset exception and says free-to-paid upgrades leave pending invoice items for the next cycle unless always_invoice or anchor=now is selected (new 83-96). It also details net proration behavior when an anchor resets without item changes, with proration_behavior-specific immediate invoicing and an item-change exception (98-120).",
+    "November specifies that a first shortened period under cancel_at creation plus proration_behavior=none produces no flexible invoice and latest_invoice=null, and restricts analogous update behavior to updates that create an invoice (142-150). It adds no-credit-after-no-debit backdate behavior (179-185), item limits 20 versus 100 (273-279), and more precise pending-item cases (241-263).",
+    "Line 245's one-time add_invoice_items behavior is limited to a mid-period update or schedule transition where no item, price or quantity change independently creates an invoice; flexible mode leaves items pending despite always_invoice alone (245-253). Line 257's pending inclusion applies to update-generated invoices with always_invoice except pending_if_incomplete, not to every subscription invoice (255-263)."
+  ],
+  "substantive_changes": [
+    "Anchor reset: May says flexible only resets on explicit billing_cycle_anchor update (old 84-88); November adds trial_end update as another reset cause (new 85-92) and free-to-paid invoice timing/overrides (94-96).",
+    "Prorations and backdating: November adds a no-item-change anchor-reset netting table with create_prorations, always_invoice and none outcomes plus an item-change exception (98-120), and a later-credit distinction after an uncharged backdate (179-185).",
+    "First truncated period: May gives a short general comparison (old 110-116); November states exact creation condition, no flexible invoice/latest_invoice=null with none, and an update condition (new 142-150).",
+    "Pending invoice items: May's old prose/table at 204-210 is internally broad and inconsistent; November distinguishes one-time-only additions with no other invoicing trigger (243-253) from eligible pending items on update-generated invoices under always_invoice, with pending_if_incomplete exception (255-263).",
+    "November adds explicit subscription item limits, classic 20 and flexible 100 (273-279). Table spacing, list numbering, and section framing changes elsewhere in the diff are presentational (diff 1-277)."
+  ],
+  "conflicts": [
+    "Current source line 24 says flexible billing-cycle anchor is 'Never automatically reset'; November expressly says updating trial_end sets the anchor to the new trial end (85-92). Replace the absolute with explicit exceptions. The related stripe-subscriptions concept's generic price-change reset at line 106 is not mode-qualified; do not project that generic line onto flexible mode without its own source context.",
+    "Current source line 30 says flexible pending invoice items are 'Always included' and classic 'Only when proration_behavior \u2260 always_invoice'. November says classic anchor-reset invoices include eligible pending items, other always_invoice update invoices exclude pre-existing items when the update produces invoice items; flexible update-generated invoices include eligible pending items except pending_if_incomplete (255-263). The May prose/table already conflict at 204-210, so a dated warning is warranted.",
+    "Current source line 22 says classic charges the 'Most recent price only'; the cited example actually bills only usage reported since changing to the current price, whereas flexible bills usage at its reporting-time price (old 44-67; new 47-69). Narrow the summary to that price-change example rather than a universal classic-price rule.",
+    "Current source line 21 omits the cycling exception to flexible zero-amount line-item suppression (new 35-45; old 32-42). Source line 23 compresses API removal and schedule proration_behavior branches (new 71-81); source line 25's two-versus-one invoices applies to renewal phase transitions with usage-based items (new 122-130). Restore conditions where those rows guide implementation.",
+    "Current source line 26's fixed cancel_at refers specifically to Customer Portal scheduled cancellation in flexible mode, not every cancellation route (new 132-140; old 100-108)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep May 13, 2026 source as dated same-URL evidence for shared differences, including the irreversible migration warning (old 8-10), zero-amount line suppression except cycling (old 32-42), conditional unbilled usage (old 69-80), and multi-period backdating with 250-line limit (old 118-145).",
+    "May explicitly said flexible anchor resets only when billing_cycle_anchor is set and never automatically (old 84-88). Preserve as May wording, but do not use it as the current unconditional rule in view of November's trial_end exception (new 85-92).",
+    "May pending-item section stated both a narrow billing-cycle-anchor condition and an overbroad always-included table cell (old 204-210). Preserve it as dated documentation with this ambiguity noted; use November's scoped rules for the refreshed summary."
+  ],
+  "unresolved_questions": [
+    "The comparison page has no standalone API-version or merchant-eligibility declaration; the related billing-mode guide/source indicates version prerequisites, so do not infer universal availability or which mode a specific account defaults to from this capture alone.",
+    "No invoice creation, debit, credit, customer eligibility or live migration was executed; examples and table scenarios are documentation evidence, not receipts."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw1",
+  "reviewer_agent": "/root/s01ur4",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-billing-mode-compare-2026-11-07.md",
+      "sha256": "7e087658df959bf8f490d39dff5ac11cad917205d0e1578a3b1603e6d6929299",
+      "lines": 279
+    },
+    {
+      "path": "raw/stripe-subscriptions-billing-mode-compare-2026.md",
+      "sha256": "bbc559ac4099bd3651e2c7e117888a86fa2743a57a40c12ba206ffe83d9fe492",
+      "lines": 218
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-billing-mode-compare.md",
+      "sha256": "6e8a82032fce4ebe8e48415265cdd4974377b75443129056c790e3ff3d0dfc6e",
+      "lines": 39
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/6d5f62ab5f201651ef6239fe/content.diff",
+      "sha256": "0820dc4059f508fb2d63f2cc4c13b22ab049b4eeef73d5eca55d3d98f815e8a3",
+      "lines": 277
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-billing-mode-compare-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-billing-mode-compare-review.json"
+}

@@ -1,0 +1,109 @@
+{
+  "job_id": "billing-subscriptions-prebilling",
+  "queue_id": 43,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/prebilling",
+  "raw_path": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md",
+  "raw_sha256": "39f4b70cb3bcb8743931d37be9a3f02315baba9af0164c0f402208e153522bbf",
+  "prior_raw_path": "raw/stripe-subscriptions-prebilling-2026.md",
+  "prior_raw_sha256": "9e9208d6ff2a23f52f13b0f8cc6185131b546a4ae5d3b658b46d062a7f1997b3",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/332d522595300cdbc78f36aa/content.diff",
+  "diff_sha256": "c301713e58bbf1b7bb4c31fc45430f1960a75b5dd9f6677ecd26ba2f3d616b16",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-prebilling.md"
+  ],
+  "source_before_sha256": "9b7ba62c4ba74393b89082942ed76c713ab2ba6d7b1a034c4e3fd80d2a949a6f",
+  "section": "billing",
+  "new_words": 2308,
+  "new_lines": 393,
+  "old_words": 1202,
+  "old_lines": 188,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-prebilling.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-prebilling/attempt-2/receipt.json",
+  "receipt_sha256": "cab9269b1f6a94ab89854c3a7b7681ef55ab4859feda07ef88811c3561f3ab80",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-prebilling/attempt-2/review.json",
+  "review_sha256": "37499c0bfd0764b663b88023b446958bc047262493e3fc2b9c7cc770972d9491",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions-prebilling.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md",
+  "new_raw_sha256": "39f4b70cb3bcb8743931d37be9a3f02315baba9af0164c0f402208e153522bbf",
+  "prior_raw": "raw/stripe-subscriptions-prebilling-2026.md",
+  "findings": [
+    "The 2026-11-07 same-URL capture documents prebilling future service periods through subscription billing_schedules on create or update, with flexible billing mode and API version 2026-05-27.dahlia or later (new raw:7-13,38-52). The May source and concept instead state public preview and 2025-09-30.preview or later (source:13,22-25; concept:10,14-15). Retain those as dated old-capture claims and revise current guidance; disappearance of the preview label does not independently establish general availability or account eligibility.",
+    "New API examples separate Accounts v2 customer_account from Customers v1 customer; both set billing_mode=flexible and billing_schedules. applies_to targets named price IDs; omission reaches all applicable licensed items cycling before bill_until, never metered usage items. bill_until may be duration or timestamp (new raw:40-44,84-118,160-226). Dashboard creation selects all items, while API can target individual items (new raw:61-80,84-162).",
+    "New end-date guidance requires at least one full billing period from the start, caps total prebilled cycles across all items at 50, and advises not to set an end date more than five years in the future; nonaligned end dates split the period (new raw:54-59). Old raw:44-45 explicitly uses the shortest billing period for both minimum and 12-cycle maximum; source:40-41 and concept:37-40 repeat those dated rules. New raw:56 gives a monthly example but does not specify 'shortest' for mixed-interval subscriptions. Recommend replacing the current shortest-period minimum and maximum with the new wording plus a mixed-interval uncertainty note, not guessing which item's period controls the minimum. The five-year sentence is advice, not a confirmed API validation limit.",
+    "The bill_until duration anchor also changes in the captured prose. New raw:44 and 194 explicitly say a duration such as two months is from the current date. Old raw:73 says from billing-cycle start, while old raw:127 itself says both 'current time' and 'start of the billing cycle' in one paragraph. Source:31 and concept:53 retain billing-cycle-start as the present rule; recommend using the new current-date wording and retaining the old anchor only as dated, internally inconsistent historical wording. The captures do not define exact date arithmetic for every existing, mixed-interval or off-anchor subscription; no specific timestamp or invoice amount can be inferred.",
+    "The new limitations retain schedule incompatibility, percent_off once/forever coupon restriction, metered item exclusion, and a cancellation-date cap (new raw:31-36,384-386). It adds the need to clear expired billing_schedules before later creating a subscription schedule, states an end date past a scheduled cancellation is automatically capped, and scopes pending_if_incomplete to updating a subscription with an active billing schedule (new raw:32,35-36). The old migrated-classic restriction and proration_behavior none prohibition are absent from the new limitation list (old raw:25,27; source:47-50; concept:61-63); omission alone is not proof they are universally permitted.",
+    "Invoice timing must be read with proration_behavior: always_invoice generates and finalizes immediately; create_prorations generates at the next natural billing cycle (new raw:254-315,359-366). New raw:40 and 361 broadly say the invoice is generated when billing_schedules is configured, but the more specific timing section qualifies that. Prebilling changes invoice timing, not the service-period start, and early renewal needs an update on the intended date (new raw:31,330-342).",
+    "New early cancellation fee example updates bill_until through the committed term with always_invoice, then cancels after a successful update with prorate=false (new raw:344-355). It establishes invoice generation/finalization, not successful collection, legal entitlement to a fee, or actual payment. New webhook table distinguishes invoice.created/finalized from invoice.payment_succeeded/payment_failed and subscription.updated; access to prepaid periods follows payment success in that example (new raw:368-378). Preview invoice via subscription_details.billing_schedules remains a non-mutating estimate (new raw:380-382; old raw:186-188).",
+    "The current source and prebilling concept still faithfully describe May preview evidence but conflict with November version, minimum and maximum end rules, bill_until duration anchor, and categorical limitations. Both are routed from the Stripe index (wiki/index.md:7; wiki/stripe-index.md:692-693; concept stripe-subscriptions.md:240), so a coordinator-approved source and reciprocal concept refresh is warranted without overwriting historical raw evidence."
+  ],
+  "substantive_changes": [
+    "Documented prerequisite changes from API 2025-09-30.preview or later in old raw:35-36 to 2026-05-27.dahlia or later in new raw:11-13, with flexible billing retained. No current general-availability status is proven by the missing public-preview label.",
+    "Documented end range changes from old minimum one cycle and maximum 12 cycles of the shortest period (old raw:42-45) to new minimum one full billing period from the start without a stated shortest-item rule, at most 50 prebilled cycles summed across items, five-year advice, and handling of nonaligned periods (new raw:54-59). Mixed-interval minimum interpretation remains unresolved.",
+    "The bill_until duration description shifts from old billing-cycle-start wording (old raw:73), despite old raw:127 also saying current time, to explicit current-date wording (new raw:44,194). This affects interpretation of the end date on an existing subscription but the captures do not define all off-anchor or mixed-interval calculations.",
+    "New guide adds Accounts v2 customer_account examples beside Customer v1 customer, early renewal update timing, early cancellation invoice/cancel sequence, invoice lifecycle webhooks, and cleanup of expired billing_schedules before attaching a subscription schedule (new raw:32,88-118,330-386).",
+    "New limitation wording narrows pending_if_incomplete to updates with an active billing schedule and specifies automatic clipping to scheduled cancellation date (old raw:28-29; new raw:35-36). The old migrated-classic and proration-none bans are no longer stated; actual eligibility remains unresolved."
+  ],
+  "conflicts": [
+    "Current source:13,25 and concept:10,15 state 2025-09-30.preview as if present prerequisite; new raw:13 says 2026-05-27.dahlia or later. Add dated reciprocal warnings and update current guidance. The new page drops 'public preview' wording, but this alone does not prove broad GA availability.",
+    "Current source:40-41 and concept:37-40 repeat old raw:44-45 shortest-period minimum and 12-cycle cap. New raw:56-59 instead uses minimum one full billing period from the start without specifying 'shortest,' at most 50 total prebilled cycles across all items, and five-year advice. Correct both minimum and maximum in source and concept; explicitly leave mixed-interval minimum unresolved. Do not equate 50 total with 50 cycles per item or treat advice as verified hard API rejection.",
+    "Current source:31 and concept:53 say bill_until duration is relative to billing-cycle start, matching old raw:73 but not new raw:44,194, which say from the current date. Old raw:127 itself mixes current-time and cycle-start prose. Use new current-date wording in current source and concept; date the old wording and avoid inventing exact off-anchor or mixed-interval end timestamps.",
+    "Old source:47-50 and concept:60-65 prohibit prebilling on subscriptions migrated from classic to flexible and proration_behavior none, and broadly exclude pending_if_incomplete. New raw:31-36 omits the first two and limits the pending_if_incomplete statement to update with an active billing schedule; absence is uncertainty, not positive support. New raw:35 also specifies automatic clipping to scheduled cancellation date versus old raw:28's generic cap.",
+    "New raw:40,361 suggests invoice generation at create/update, while new raw:288,363-366 says create_prorations defers it until the next natural cycle. Preserve the explicit proration_behavior timing rather than promising immediate invoice generation for every prebilling configuration.",
+    "New raw:7,17,21-25 uses 'collect payment' in use-case prose; new raw:363-378 separates invoice generation/finalization from payment success/failure. Do not treat a final invoice, early cancellation fee example, or invoice.created as proof funds were collected or access should be granted."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-13 source/raw as public-preview evidence requiring 2025-09-30.preview and setting minimum one cycle and maximum 12 cycles of the shortest period (old raw:20,35-45; source:13,38-43). Date those claims rather than retaining the old shortest-period minimum or maximum as current guidance against new raw:56-59.",
+    "Keep old bill_until anchor wording as dated and internally inconsistent evidence: old raw:73 says duration from billing-cycle start, but old raw:127 also says duration from current time before giving a cycle-start example. Current source:31 and concept:53 select only the old cycle-start wording; new raw:44,194 consistently say from the current date.",
+    "Keep old raw:24-29, source:43-52, and concept:56-65 as historical limitation wording, particularly the migrated-classic restriction, proration_behavior none prohibition, and broad pending_if_incomplete phrasing. Do not infer from omission in the new guide that the formerly restricted cases now work.",
+    "Retain the shared, scoped facts that flexible billing is required, subscription schedules are incompatible while billing_schedules remain, only licensed items can be prebilled, percent_off once/forever coupons are allowed, and always_invoice versus create_prorations sets invoice timing (old raw:22-27,35,70-74,156-171; new raw:13,31-36,40-52,359-366).",
+    "Distinguish invoice created/finalized from invoice payment_succeeded and payment_failed, and keep the early cancellation fee as an illustrative contract scenario rather than a payment receipt (new raw:344-378)."
+  ],
+  "unresolved_questions": [
+    "Is prebilling broadly available outside preview and on which accounts? The new page's missing preview label and Dahlia version prerequisite do not prove rollout or account eligibility.",
+    "Are the old migrated-classic restriction and proration_behavior none prohibition actually removed for the new API train? The new limitation list omits them, but no explicit reversal or execution evidence is captured.",
+    "Does the five-year end-date advice correspond to an enforced API limit in any configuration? The new capture says 'Don't set' rather than stating a validation error.",
+    "For a subscription with multiple licensed items of different intervals, which item's full billing period sets the new minimum end date? New raw:56 gives only a monthly example and does not resolve this. Do not retain old raw:44's shortest-period answer as current.",
+    "For an already-running subscription with an off-anchor current date, how precisely does a duration bill_until resolve relative to cycle boundaries, and how is it combined with mixed intervals? New raw:44,194 says current date, but supplies no full edge-case calculation."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw4",
+  "reviewer_agent": "/root/s01ur1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-prebilling-2026-11-07.md",
+      "sha256": "39f4b70cb3bcb8743931d37be9a3f02315baba9af0164c0f402208e153522bbf",
+      "lines": 393
+    },
+    {
+      "path": "raw/stripe-subscriptions-prebilling-2026.md",
+      "sha256": "9e9208d6ff2a23f52f13b0f8cc6185131b546a4ae5d3b658b46d062a7f1997b3",
+      "lines": 188
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-prebilling.md",
+      "sha256": "9b7ba62c4ba74393b89082942ed76c713ab2ba6d7b1a034c4e3fd80d2a949a6f",
+      "lines": 72
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/332d522595300cdbc78f36aa/content.diff",
+      "sha256": "c301713e58bbf1b7bb4c31fc45430f1960a75b5dd9f6677ecd26ba2f3d616b16",
+      "lines": 506
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-prebilling-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-prebilling-review.json"
+}

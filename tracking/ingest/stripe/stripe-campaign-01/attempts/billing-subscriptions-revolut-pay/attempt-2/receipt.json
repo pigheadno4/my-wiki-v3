@@ -1,0 +1,113 @@
+{
+  "job_id": "billing-subscriptions-revolut-pay",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-revolut-pay-2026-11-07.md",
+  "raw_sha256": "24d9e2bb08832f6c495b8e17f00517ff0b3186250188ac63e8af0df7cb02194c",
+  "prior_raw_path": "raw/stripe-subscriptions-revolut-pay-2026.md",
+  "prior_raw_sha256": "35612639e317d1c45d97d6a1440b1fdbee1f650aa71927f37afb0a19332dd8c5",
+  "source_target": "wiki/sources/source-stripe-subscriptions-revolut-pay.md",
+  "source_before_sha256": "4ce0f701647c4f597a9c1acc314944be8d689b1545140f3c56a8e40bb4340617",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-revolut-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-subscriptions-revolut-pay-2026.md": [
+      {
+        "start": 1,
+        "end": 200
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-revolut-pay.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0b4f235e452410fadc2613ac/content.diff": [
+      {
+        "start": 1,
+        "end": 203
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to create and charge for a subscription with Revolut Pay.",
+      "location": "raw/stripe-billing-subscriptions-revolut-pay-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-revolut-pay-2026-11-07.md:11"
+    },
+    {
+      "text": "[SetupIntents API](https://docs.stripe.com/billing/subscriptions/revolut-pay.md?api-integration=setupintents)",
+      "location": "raw/stripe-billing-subscriptions-revolut-pay-2026-11-07.md:13"
+    },
+    {
+      "text": "[Subscriptions API](https://docs.stripe.com/billing/subscriptions/revolut-pay.md?api-integration=subscription)",
+      "location": "raw/stripe-billing-subscriptions-revolut-pay-2026-11-07.md:14"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/revolut-pay.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-revolut-pay-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "usage=off_session",
+      "location": "raw/stripe-subscriptions-revolut-pay-2026.md:43"
+    },
+    {
+      "text": "  off_session: true,",
+      "location": "raw/stripe-subscriptions-revolut-pay-2026.md:71"
+    },
+    {
+      "text": "After a successful payment, the subscription becomes active and saves the payment method as the default payment method.",
+      "location": "raw/stripe-subscriptions-revolut-pay-2026.md:142"
+    },
+    {
+      "text": "The PaymentIntent transitions from `requires_action` to `succeeded`.",
+      "location": "raw/stripe-subscriptions-revolut-pay-2026.md:200"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 capture at the canonical URL is a 15-line index naming SetupIntents API, Subscriptions API and Stripe-hosted page variants (new 5-15). It has no API parameters, eligibility statement, mandate status or transaction result. Its three linked variant URLs were not read, so they serve as navigation only; disappearance of detailed text from the index is not deprecation.",
+    "The dated May 2026 full guide documents three path sections: SetupIntent then subscription creation (old 10-75), direct Subscriptions API plus PaymentIntent confirmation (old 77-142), and Checkout Session in subscription mode (old 144-200). The 15 GBP monthly price at old 20/87/154 is an example, not a universal currency restriction. Source 13's assertion of structural identity with Amazon Pay and Cash App Pay exceeds the two Revolut captures; at most the three named path categories are observed without separately read comparison evidence.",
+    "Old SetupIntent sample puts usage=off_session and mandate_data on SetupIntent creation (old 38-50), then its subscription-create sample includes off_session=true (old 54-73). Source 13/48 and concept stripe-revolut-pay 16/33 already scope off_session=true to subscription creation in the SetupIntents path; source 23 and concept 16 also place usage=off_session on SetupIntent creation. Preserve those qualifications. The direct API confirm sample includes mandate_data and return_url (old 127-140), while the Checkout sample has card/revolut_pay and mode=subscription without those explicit fields (old 187-196). Source 47/49 and concept 30-31 are the overbroad global mandate_data and return_url requirements to narrow to shown request/path contexts; absent sample fields do not prove prohibition or defaults.",
+    "Old SetupIntent prose says client_secret is passed to Stripe.js for buyer redirect and mandate authorization (old 52), but it does not explicitly say the SetupIntent reached succeeded. Source 30 and concept 16 insert that status in a definite arrow; treat it as unverified from these captures. The separate old test paragraph says a PaymentIntent transitions requires_action to succeeded in a successful test case (old 198-200), not a SetupIntent or a live recurring charge.",
+    "Direct API old 103-125 creates a subscription with default_incomplete, expands latest_invoice payments and confirmation_secret, and passes the latter to the frontend. Old 129 prose says set payment_method_types on confirm, while old 134 sample uses payment_method_data[type]=revolut_pay. Preserve the prose/example discrepancy instead of presenting a verified runnable request. Old 142 says requires_action calls for customer authentication and only after successful payment does the subscription become active and save a default method. Source 34 and concept 20 omit that success condition in their arrows.",
+    "The route wiki/index.md to wiki/stripe-index.md to wiki/concepts/stripe-revolut-pay.md already lists this source. The source and concept already place off_session=true within the SetupIntents subscription-create path, but their unqualified mandate_data/return_url requirements remain broader than their request examples. The concept also claims identity with Amazon/Cash App (concept 10/28-37; subscriptions concept 251). Preserve May details as dated evidence and use a qualified reciprocal source label; do not add the navigation-only November index to factual raw_files or infer merchant eligibility, mandate completion, live payment or settlement."
+  ],
+  "substantive_changes": [
+    "No Revolut Pay API or payment-behavior change is established by the new capture; the observable change is upstream rendering of three variant links at the same URL (new 9-15 versus old 10-200).",
+    "The existing source and reciprocal concept need factual qualification independent of the index: mandate_data and return_url are promoted from path-specific examples to global requirements at source 47/49 and concept 30-31; SetupIntent succeeded is asserted without old evidence; and a direct-flow Active arrow omits successful payment (source 30/34; concept 16/20). Preserve the already scoped off_session=true wording at source 13/48 and concept 16/33."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May 2026 three path descriptions and request examples with their client/server and 15 GBP example qualifications (old 10-200).",
+    "Keep the SetupIntent redirect/mandate-authorization prose and direct requires_action, customer-authentication and successful-payment-to-Active condition distinct; old test PaymentIntent succeeded is a test scenario only (old 52, 142, 198-200).",
+    "Keep the old confirm prose versus curl sample disagreement visible: payment_method_types in old 129, payment_method_data[type] in old 134; do not claim the exact request was run or validated."
+  ],
+  "conflicts": [
+    "Source 47/49 and concept 30-31 frame mandate_data and return_url as global requirements, while the old guide shows them in SetupIntent-create and direct PaymentIntent-confirm requests and the Checkout sample at old 187-196 omits explicit fields. Source 13/48 and concept 16/33 already scope off_session=true to the SetupIntents-path subscription create, matching old 71; do not narrow that path qualification.",
+    "Source 30 and concept 16 state SetupIntent succeeded; the old SetupIntent section at 34-75 documents creation, client_secret/redirect and subscription creation but no explicit succeeded status. Old 200 is a PaymentIntent test transition, not SetupIntent evidence.",
+    "Source 34 and concept 20 compress requires_action and authentication into activation; old 142 makes activation conditional on successful payment.",
+    "Old 129 says confirm PaymentIntent with payment_method_types while sample old 134 uses payment_method_data[type]. Source/concept comparisons to Amazon Pay and Cash App Pay also exceed the Revolut captures without independent authority."
+  ],
+  "unresolved_questions": [
+    "The three November variant target URLs were not read, so their current parameters, eligibility, client/server sequence, states and outcomes remain unverified by the assigned capture.",
+    "The old confirm-request parameter discrepancy requires separate path-specific authority before any runnable implementation claim.",
+    "Neither capture demonstrates a merchant's Revolut Pay eligibility, completed live authorization, successful initial or recurring charge, or settlement."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-revolut-pay.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/revolut-pay, the complete November capture only names SetupIntents API, Subscriptions API and Stripe-hosted page variants (new 7-15); it establishes no API parameters or payment state. The May guide documents a SetupIntent/client-secret redirect and mandate path, a direct incomplete Subscription plus PaymentIntent-confirm path, and Checkout subscription mode (old 10-200). [[source-stripe-subscriptions-revolut-pay]] correctly scopes off_session=true to SetupIntents-path subscription creation at source 13/48, matching old 71, while usage=off_session appears on the SetupIntent request at old 43. Its global mandate_data/return_url requirements at source 47/49 exceed shown path examples, source 30 asserts an unshown SetupIntent succeeded state, and source 34 omits successful payment before Active (old 142). Neither capture proves account eligibility or a completed live charge.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/revolut-pay, the observed change is a variant index, not demonstrated API removal or deprecation (new 9-15; old 10-200). [[source-stripe-subscriptions-revolut-pay]] should retain the May guide as dated evidence and preserve its already scoped off_session=true SetupIntents-path wording at source 13/48 and concept 16/33 (old 54-73). It should narrow the global mandate_data and return_url statements at source 47/49 and concept 30-31 to the SetupIntent and direct-confirm examples (old 38-50, 127-140); Checkout is a separate sample without those explicit fields (old 187-196). Source 30/concept 16 lack evidence for SetupIntent succeeded, and source 34/concept 20 need successful payment after requires_action before Active (old 142). Old 129/134 conflict on confirm parameters; Amazon/Cash App identity needs separate authority. Unread November links prove no billing or settlement."
+  }
+}

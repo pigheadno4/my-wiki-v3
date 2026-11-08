@@ -1,0 +1,161 @@
+{
+  "job_id": "billing-subscriptions-sepa-debit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md",
+  "raw_sha256": "f3f0844fdf0b9244384e59cb0f231bfcebc3ff51f7fe29be2e3598291de765c3",
+  "prior_raw_path": "raw/stripe-subscriptions-sepa-debit-2026.md",
+  "prior_raw_sha256": "527fdaaa821430cba66c9a732e7236dd61eca18b58315e8fe7e3d39161c8f6a6",
+  "source_target": "wiki/sources/source-stripe-subscriptions-sepa-debit.md",
+  "source_before_sha256": "7d116e05807f4bc230fe47e2f9fff26ce3b497da5df294ea0f2898337f42c24d",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-subscriptions-sepa-debit-2026.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1100
+      },
+      {
+        "start": 1101,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1761
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-sepa-debit.md": [
+      {
+        "start": 1,
+        "end": 71
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/03c701a9efdd685af72d09ab/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 1763
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Set up a subscription with SEPA Direct Debit",
+      "location": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md:5"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md:11"
+    },
+    {
+      "text": "[Full hosted page](https://docs.stripe.com/billing/subscriptions/sepa-debit.md?platform=web&payment-ui=stripe-hosted)",
+      "location": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md:13"
+    },
+    {
+      "text": "[Advanced integration](https://docs.stripe.com/billing/subscriptions/sepa-debit.md?platform=web&payment-ui=elements)",
+      "location": "raw/stripe-billing-subscriptions-sepa-debit-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "However, SEPA Direct Debit is a delayed notification payment method, which means that funds aren\u2019t immediately available.",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:240"
+    },
+    {
+      "text": "The customer has successfully authorized the debit payment by submitting the Checkout form.",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:257"
+    },
+    {
+      "text": "If you\u2019re a new user, use the [Payment Element](https://docs.stripe.com/payments/payment-element.md) instead of using Stripe Elements as described in this guide.",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:1033"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-subscriptions-sepa-debit-2026.md:1059"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "The November same-URL capture is a 14-line variant index with purpose text and two navigation links, not a full SEPA subscription guide (new 5-14). It identifies a full hosted web variant and an advanced web/elements variant, but contains no API schema, payment states, mandate instructions, webhook outcomes, IBAN tests or account eligibility. The 1763-line diff is almost entirely removal of old variant content from this unparameterized rendering and does not prove feature removal.",
+    "The May same-URL raw contained both full hosted Checkout and advanced integration variants (old 8-10, 1027-1033). Its hosted example creates a subscription Checkout Session with sepa_debit and at least one recurring price (old 188-214), and its delayed-notification section distinguishes authorization at checkout.session.completed from later async success or invoice.paid (old 236-269). Preserve these as May snapshot evidence, not claims established by new index.",
+    "The May advanced variant includes customer-configured Accounts v2 and Customers v1 branches, with version qualification for Accounts v2 (old 1053-1097), and distinguishes latest invoice confirmation_secret from pending_setup_intent where no payment is collected up front (old 1101-1145). It documents mandate collection/client confirmation and default payment methods (old 1148-1407). The November index does not settle whether those instructions changed in the linked variants.",
+    "The current source and concept overstate details of the May raw: source 13, 61 and concept 116 say 20+ IBAN countries, but the old per-country tables cover 19 country headings in each variant (old 399-644, 1417-1662). Source 28-30 and concept 105 describe the advanced branch as Payment Element with confirmPayment; old 1027-1033 labels it advanced Elements and explicitly recommends the separate Payment Element guide for new users, while old 1259-1262 uses confirmSepaDebitPayment or confirmSepaDebitSetup. These are historical-summary accuracy issues, not new semantic changes.",
+    "The old guide's sample product amounts/currencies and test IBANs are examples, not SEPA availability guarantees; notably one API price code uses currency usd while surrounding examples say EUR (old 103-166). New index says nothing about customer, merchant, account, bank, payment or settlement eligibility."
+  ],
+  "substantive_changes": [
+    "No substantive payment, mandate, API, webhook or eligibility change is established by the November unparameterized index; the observable change is rendering/navigation to two query-parameter variants (new 9-14 versus old 8-10, 1027-1033).",
+    "The new capture supports routing by full hosted and advanced integration labels only. It does not supply evidence to replace the May source's factual SEPA flow, delay warning, test tables, or Accounts v2 qualification."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the May hosted Checkout flow and delayed-notification warning as dated evidence: session completion is authorization, while async payment success or invoice.paid is the later fulfillment gate (old 188-269; source 15-42; concept 103-109).",
+    "Retain May advanced integration details with their exact branch and version qualifications: Accounts v2 was GA for Connect and preview for other Stripe users in that capture; invoice confirmation_secret versus pending_setup_intent depends on upfront payment; old Elements guide recommended a separate Payment Element path for new users (old 1027-1033, 1053-1145, 1259-1262).",
+    "Retain May optional Checkout examples and IBAN test data as historical examples rather than asserting current acceptance, availability, or bank settlement (old 391-1025, 1409-1761). The old guide explicitly flagged idealBank as legacy/unavailable in latest Stripe.js (old 1748-1751)."
+  ],
+  "conflicts": [
+    "The new index does not contradict May's delayed-payment or mandate behavior; replacing source 13-61 or concept 103-109 with an omission/deprecation claim would be unsupported.",
+    "Existing source 13, 61 and concept 116 say 20+ countries, while the May raw has 19 country test-table headings per variant (old 399-644, 1417-1662). Keep any count dated and correct if this historical source is later edited.",
+    "Existing source 28-30 and concept 105 conflate the old advanced Elements variant with the separately recommended Payment Element guide; old 1027-1033 and 1259-1262 should constrain any description, while new 14 is a variant label only."
+  ],
+  "unresolved_questions": [
+    "The two query-parameter variant pages linked at new 13-14 were not captured in this pinned job; their current instructions, API examples and status boundaries require separately authorized collection and review before claims of current behavior.",
+    "The index gives no evidence of SEPA account eligibility, mandate completion, payment success, fund availability or eventual settlement for any customer."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-sepa-debit.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/sepa-debit, the complete November capture establishes only that the article offers two web variants, Full hosted page and Advanced integration, at query-parameter URLs (new 5-14). It establishes no payment prerequisite, mandate or success state. The May same-URL guide contained Checkout and advanced Elements flows and warned that SEPA funds are delayed, with authorization distinct from later payment success (old 8-10, 236-269, 1027-1033). [[source-stripe-subscriptions-sepa-debit]] summarizes that May material at lines 13-42 and remains a historical source rather than a November-verified flow.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/sepa-debit, the observed change is a navigation-only variant index (new 9-14), so the large diff's deleted May text does not establish deprecation of Checkout, Elements, mandates or delayed webhooks. [[source-stripe-subscriptions-sepa-debit]] should retain its May date and delayed-payment warning, while any future correction should distinguish the old advanced Elements path from its separate Payment Element recommendation (old 1027-1033, 1259-1262) and correct the 20+ versus 19 test-country count (old 399-644). Neither the index nor historical examples prove current account eligibility or payment receipt."
+  }
+}

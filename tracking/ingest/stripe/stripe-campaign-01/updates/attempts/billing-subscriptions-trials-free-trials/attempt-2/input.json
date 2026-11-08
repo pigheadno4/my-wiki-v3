@@ -1,0 +1,103 @@
+{
+  "job_id": "billing-subscriptions-trials-free-trials",
+  "queue_id": 50,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/trials/free-trials",
+  "raw_path": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md",
+  "raw_sha256": "857cb04c11809e5bd88240d3854f475a9b1b44db90ba1b970c2b364e891edff4",
+  "prior_raw_path": "raw/stripe-subscriptions-free-trials-2026.md",
+  "prior_raw_sha256": "7ae56763ce53559832117ca59c84bc8ebd5ff34ca5f744653810fff275254a9c",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/22e27e6d8450aed1dd48a551/content.diff",
+  "diff_sha256": "69e95d3a470640c315d8b0840cad5f4fa72b68189efd1a323f91e3ac7624bfef",
+  "source_targets": [
+    "wiki/sources/source-stripe-subscriptions-free-trials.md"
+  ],
+  "source_before_sha256": "0d14799071f260b5ef9f8ca6eff779131bb2ad62e372b6e4161b5391c1df2c05",
+  "section": "billing",
+  "new_words": 3123,
+  "new_lines": 358,
+  "old_words": 3328,
+  "old_lines": 489,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-subscriptions-free-trials.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-trials-free-trials/attempt-1/receipt.json",
+  "receipt_sha256": "ad8ab70eaa82d881aaf10c7a63899a7689ad012db1f72716c0003dc40d3916c0",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-trials-free-trials/attempt-1/review.json",
+  "review_sha256": "0b5bce11d38e0a6cc119df226a4758df683cf81591a631491e09720c003e15d8",
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md",
+    "wiki/concepts/stripe-subscriptions-trial-offers.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md",
+  "new_raw_sha256": "857cb04c11809e5bd88240d3854f475a9b1b44db90ba1b970c2b364e891edff4",
+  "prior_raw": "raw/stripe-subscriptions-free-trials-2026.md",
+  "findings": [
+    "Both May and November captures of https://docs.stripe.com/billing/subscriptions/trials/free-trials call `trial_end` free trial periods a legacy path and recommend Trial Offers for new integrations (old 4-14; new 5-15). November adds a comparison link at new 13; that is navigation, not a newly deprecated API. The current source 11-13 accurately flags legacy, but `wiki/concepts/stripe-subscriptions.md` 157-165 lists the Checkout trial path without a legacy qualification and `wiki/concepts/stripe-subscriptions-trial-offers.md` 8-14 has separate preview/flexible-mode limits. Keep the paths distinct rather than claim Trial Offers universally replace `trial_end`.",
+    "The core legacy trial rules remain: Accounts v2 customer-configured `Account` uses `customer_account`, Customers v1 uses `customer` (new 17-43); `trial_end` is a timestamp or `trial_period_days` an integer with 730-day maximum (new 45). A trial can start without a payment method and creates a zero-amount invoice; when it ends, if not paused, Stripe creates an invoice and `invoice.created`, then attempts charge approximately an hour later (new 47-49). This does not itself prove charge success or active status.",
+    "The three missing-payment-method end behaviors remain distinct: cancel terminates and requires a new subscription for later paid service; pause stops invoice creation and can remain indefinitely until resume; `create_invoice` invoices and moves to `past_due` if no payment method at finalization (new 87-92; old 106-111). A true `paused` subscription differs from `pause_collection`, which continues invoicing and billing periods (new 90,313-317). Current source 24-26 is too terse to capture the reactivation boundary.",
+    "November adds explicit Dashboard UI visibility conditions for both cancel and pause: the option is hidden if a payment method was provided or email-invoice-to-customer was chosen (new 100-109,176-185). The May pause Dashboard steps paradoxically said to click Cancel subscription while listening for paused (old 244-252); November corrects the UI instruction to select Pause (new 178-183). This is a real captured UI correction, not proof that a payment method can never be configured through other paths.",
+    "For Checkout no-payment-method trials, both captures show `subscription_data.trial_settings.end_behavior.missing_payment_method` as cancel/pause plus `payment_method_collection=if_required`; this makes collection optional in that Checkout Session, not all subscription flows (new 147-170,223-246; old 201-238,326-363). API examples additionally set `payment_settings.save_default_payment_method=on_subscription`, but examples do not prove that setting is required to configure missing-method behavior (new 115-145,191-221).",
+    "A paused subscription can be resumed without first supplying a method, but its resumption invoice must be paid before reactivation; the 23-hour auto-void statement applies when the associated PaymentIntent has no method attached and is unconfirmed (new 295-303; old 410-418). Current source 25 implies adding a PM alone resumes, and source 32 states an unqualified 23-hour payment window and `billing_cycle_anchor: now` default. Correct to the action/payment and conditional void described in the capture; the document does not explicitly establish that anchor default.",
+    "Version and modality matter: `trial_start` reflects the most recent trial only for flexible billing as of API 2025-04-30; for most other repeat trials it stays at the first trial (new 69-73). The Accounts v2 availability/preview statement is qualified at new 37-43. Root index 7 routes through Stripe index 626/792 to concept `wiki/concepts/stripe-subscriptions.md` 157-165,229 and this source. No repository file was edited."
+  ],
+  "substantive_changes": [
+    "New comparison navigation for legacy trial periods versus Trial Offers and a new Accounts v2 preview enablement instruction (new 13,37-43 versus old 12,52-58); neither changes observed trial runtime.",
+    "Dashboard no-PM trial controls now have explicit visibility conditions; the pause instructions correct May's contradictory Cancel selection (new 100-109,176-185 versus old 121-127,244-252).",
+    "Dashboard resume UI now distinguishes reset anchor to now and optional prorated billing controls (new 285-293 versus old 402-409); API resume and paid-invoice gate remain materially the same (new 295-303 versus old 410-418).",
+    "Most Node examples were replaced with equivalent curl requests; this is presentation/sample language, not evidence that Node SDK usage was withdrawn (new 19-35,117-145,158-168,193-244,331-349 versus old 18-50,135-199,212-236,260-361,446-480)."
+  ],
+  "conflicts": [
+    "Current source 25 says paused subscriptions resume when a PM is added. New 301 and old 416 distinguish resume from PM attachment and require the resumption invoice to be paid before reactivation; new 307/311 describe portal and hosted-invoice actions. Narrow source and concept `wiki/concepts/stripe-subscriptions.md` 163's 'resumes on PM add' wording.",
+    "Current source 32 calls the 23-hour period an unqualified invoice-payment window and says `billing_cycle_anchor: now` is the default. New 301 only says auto-void after 23 hours if associated PaymentIntent lacks an attached method and is unconfirmed; new 297 says anchor can optionally change, without naming a default. Retain the explicit condition and leave default unresolved from this page.",
+    "Old pause Dashboard row 251 selected Cancel subscription but old 252 expected `customer.subscription.paused`; new 182-183 explicitly selects Pause and observes paused. Avoid reproducing the old UI mismatch as current instructions.",
+    "Current concept `wiki/concepts/stripe-subscriptions.md` 159-165 presents legacy Checkout trials without legacy/Trial Offers scope, while both captures label this path legacy (old 8-12; new 9-13). Add a concise dated qualification; trial-offers concept 8-14 describes a separate preview path with its own constraints."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May legacy designation, Trial Offers recommendation, 730-day cap, zero-amount first invoice, usage-meter behavior, three missing-PM outcomes and conditional resume-invoice payment rule (old 8-12,60-64,78-111,410-430); November largely retains them (new 9-13,45-49,59-92,295-315).",
+    "Keep May Node examples as dated implementation examples, while November uses curl. Omission does not deprecate the Node SDK or prove example timestamps form a valid current request; the anchor examples contain fixed historical timestamps (old 444-480; new 329-349).",
+    "Keep the old pause Dashboard instruction only as dated, internally inconsistent UI evidence (old 244-252); use November's Pause selection and `customer.subscription.paused` event for the newer captured UI (new 176-185)."
+  ],
+  "unresolved_questions": [
+    "The new Accounts v2 preview instruction names a Dashboard feature and version condition (new 37-43); no account-specific preview access or current eligibility was tested.",
+    "This guide does not state the default `billing_cycle_anchor` used on resume, despite current source 32's claim. Confirm against the dedicated resume API if that default is needed.",
+    "No live invoice, paid resumption, trial offer eligibility, or actual future charge result was observed. The fixed timestamp examples cannot establish a valid current transaction."
+  ],
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw5",
+  "reviewer_agent": "/root/s01ur2",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md",
+      "sha256": "857cb04c11809e5bd88240d3854f475a9b1b44db90ba1b970c2b364e891edff4",
+      "lines": 358
+    },
+    {
+      "path": "raw/stripe-subscriptions-free-trials-2026.md",
+      "sha256": "7ae56763ce53559832117ca59c84bc8ebd5ff34ca5f744653810fff275254a9c",
+      "lines": 489
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-free-trials.md",
+      "sha256": "0d14799071f260b5ef9f8ca6eff779131bb2ad62e372b6e4161b5391c1df2c05",
+      "lines": 49
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/22e27e6d8450aed1dd48a551/content.diff",
+      "sha256": "69e95d3a470640c315d8b0840cad5f4fa72b68189efd1a323f91e3ac7624bfef",
+      "lines": 551
+    }
+  ],
+  "coordinator_request_path": "tracking/ingest/stripe/stripe-campaign-01/updates/coordinator-requests/billing-subscriptions-trials-free-trials-company-route.json",
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-trials-free-trials-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-trials-free-trials-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-trials-free-trials/attempt-1"
+}

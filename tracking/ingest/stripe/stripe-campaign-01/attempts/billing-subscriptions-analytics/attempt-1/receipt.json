@@ -1,0 +1,110 @@
+{
+  "job_id": "billing-subscriptions-analytics",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md",
+  "raw_sha256": "5acef37780d4af7dfb9c8fd860e6253582e9d589854f5768724c4381583631e2",
+  "prior_raw_path": "raw/stripe-billing-analytics-2026.md",
+  "prior_raw_sha256": "0ad3d7f3b8ffba6a7ce3b1b447d2279186424b89dcc442414a1a0f4df164e497",
+  "source_target": "wiki/sources/source-stripe-billing-analytics.md",
+  "source_before_sha256": "5db12c2bb210a11ea287a1a05cebe5161588f5ea8f7b97d197992c50b7ad745e",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-analytics-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 249
+      }
+    ],
+    "raw/stripe-billing-analytics-2026.md": [
+      {
+        "start": 1,
+        "end": 212
+      }
+    ],
+    "wiki/sources/source-stripe-billing-analytics.md": [
+      {
+        "start": 1,
+        "end": 88
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ae794cf804323c02f447f41a/content.diff": [
+      {
+        "start": 1,
+        "end": 162
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "This view reflects your balances as of today. To view AR aging data for a supported past reporting date, you need Revenue Recognition.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:38"
+    },
+    {
+      "text": "In live mode, use **Report downloads** on the [Billing overview](https://dashboard.stripe.com/billing) page to download prebuilt reports. These reports have fixed schemas and aren\u2019t tied to the filters or grouping on an individual metric\u2019s details page.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:55"
+    },
+    {
+      "text": "Date columns in prebuilt reports use UTC. Billing Analytics charts use your account\u2019s time zone, so monthly totals might not match exactly.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:65"
+    },
+    {
+      "text": "For [trial offers](https://docs.stripe.com/billing/subscriptions/trials.md) (item-level trials), only the subscription items currently in a trial period are excluded from MRR. If a subscription has multiple items and only some have an active trial offer, the non-trial items still contribute to MRR. Legacy free trials (using `trial_end`) exclude the entire subscription from MRR for the duration of the trial.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:115"
+    },
+    {
+      "text": "For [trial offers](https://docs.stripe.com/billing/subscriptions/trials.md) (item-level trials), conversion is tracked independently for each subscription item with a trial offer. For legacy free trials (using `trial_end`), conversion is tracked at the subscription level.",
+      "location": "raw/stripe-billing-subscriptions-analytics-2026-11-07.md:209"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "MRR calculations exclude subscriptions in trial periods, any taxes applied to the subscription, any subscribers on free plans, and any metered (usage based) products.",
+      "location": "raw/stripe-billing-analytics-2026.md:79"
+    },
+    {
+      "text": "**New trials** shows the sum of subscriptions that started a trial during the period. We count the number of trials at the subscription level rather than at the customer level, so a single customer can count as multiple trials.",
+      "location": "raw/stripe-billing-analytics-2026.md:165"
+    },
+    {
+      "text": "| Subscription metrics summary | A summary of your monthly subscription metrics. The report includes your MRR roll-forward report, active subscriber roll-forward report, trial conversion metrics, and lifetime value metrics.",
+      "location": "raw/stripe-billing-analytics-2026.md:30"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same captured URL remains a Stripe Billing Dashboard analytics guide, not a measured merchant result (new 5-14; old 4-13). Existing definitions for MRR growth, active subscribers, ARPU, LTV, churn, cohort retention and SUM/COUNT usage metrics largely persist (new 111-249; old 77-212). Preserve dated old raw and attach new raw to the existing source route.",
+    "Current source lines 34-37 and concept wiki/concepts/stripe-billing-analytics.md say trials are excluded from MRR without the new distinction. New 113-115 excludes currently trialing items for item-level trial offers but allows non-trial items in the same subscription to contribute; legacy trial_end still excludes the whole subscription. Source and concept need that boundary to avoid a false zero-MRR answer for a mixed-item subscription.",
+    "Current source line 60 and the concept's trial-conversion summary omit the counting identity: new 199-209 counts item-level trial offers and their conversions per subscription item, while legacy trial_end trials and conversions remain subscription-level. Old 163-172 described only subscription-level counting. A simple trials-converted/trials-ended formula is still true but insufficient for the newer variant.",
+    "New 36-65 adds current AR aging on Billing overview > Collections, Revenue Recognition for supported historical dates, two different CSV export paths, and a UTC report-date versus account-time-zone chart boundary. Individual metric summary-table exports reflect current date range, filters, grouping and comparison; data-result rows appear only for supported metrics (new 44-51). Prebuilt report downloads are live-mode, fixed-schema, independent of those filters (new 53-65).",
+    "The old prebuilt 'Subscription metrics summary' report lists MRR/subscriber roll-forward, trial conversion and lifetime value (old 23-31; source 18). The new 'Subscription metrics per month' row lists MRR/subscriber roll-forward, retention and customer value (new 57-61). Preserve the old description as dated and use the new label and contents for the new capture; do not assume the new row proves the old report was removed from all Stripe surfaces.",
+    "Current source line 29 and concept call the start-of-subscription option a default. Both captures say it is the most common option, but neither explicitly establishes a product default (old 52; new 86). Narrow the claim. Configuration changes take 24-48 hours to appear in configuration (old 35; new 69), not a proven payment or cash-collection effect.",
+    "Usage MRR remains explicitly a preview signup/request (old 15-21; new 16-34); the new page adds a registration curl example. This is not evidence that any account obtained access, that registration succeeded, or that metered products enter ordinary MRR (new 113 still excludes them)."
+  ],
+  "substantive_changes": [
+    "MRR and trial definitions now distinguish item-level trial offers from legacy trial_end subscriptions; mixed-item MRR and new-trial/conversion counts differ by variant (new 113-115, 199-209 versus old 79, 163-172).",
+    "New AR aging guidance gives an as-of-today Collections view and a Revenue Recognition requirement for supported past dates (new 36-38).",
+    "New metric-level and live-mode prebuilt CSV export paths, filter behavior and UTC-versus-account-time-zone caveat (new 40-65); new report label and listed contents differ from old 23-31.",
+    "Usage MRR preview section has a signup link and registration example (new 16-34 versus old 15-21); the access status remains preview/requested, not granted."
+  ],
+  "historical_claims_to_preserve": [
+    "The 2026-05-13 capture's subscription-level trial counting and exclusion language remains a dated description (old 79, 163-172), now qualified by the new item-level/legacy distinction rather than treated as universally current.",
+    "The old 'Subscription metrics summary' title and its listed trial-conversion/LTV contents (old 30) belong to the old capture; the new report table has a different title and contents (new 60).",
+    "Existing definitions and caveats for positive-MRR active subscribers, 100% coupon churn, Explore availability only for a subset, and Product/Price grouping unavailable with multi-currency volume remain supported (old 59-69, 137-139; new 93-103, 173-175)."
+  ],
+  "conflicts": [
+    "Source 36 and concept MRR section say all trials are excluded; new 115 says non-trial items in a partly trialing subscription contribute to MRR under item-level trial offers.",
+    "Source 29 and concept configurable-settings section label start-of-subscription timing as default; old 52 and new 86 say only most common.",
+    "Source 18 and concept report table present the older 'Subscription metrics summary' row as current without distinguishing the new 'Subscription metrics per month' row and its changed listed content (old 30; new 60)."
+  ],
+  "unresolved_questions": [
+    "The captures do not establish which merchant accounts can access the Usage MRR preview, whether a preview request was accepted, or how preview usage MRR relates to standard MRR exclusions.",
+    "The captured page does not establish the full historical-date support range for Revenue Recognition AR aging, or whether the older report title remains available through another UI or API path.",
+    "No merchant dashboard, export, payment, invoice settlement, or bank receipt was observed; the documented metric and report definitions do not verify real account totals."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-billing-analytics.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/analytics, the new capture documents Dashboard recurring-revenue metrics, configurable MRR/churn/active-subscriber definitions, exports, and AR aging, with Usage MRR still a preview request (new 7-38, 40-69). Active and past_due subscription value is normalized monthly, but item-level trial offers exclude only trialing items, while legacy trial_end excludes the whole subscription (new 111-115). New trials and conversions likewise use item identity for trial offers and subscription identity for legacy trials (new 199-209). The matched old capture used subscription-level trial language (old 79, 163-172), which [[source-stripe-billing-analytics]] repeats at source 36 and 60. These are analytics definitions, not proof of any account's payment or revenue outcome.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/analytics, substantive changes are the item-level versus legacy trial boundaries (new 115, 201, 209; old 79, 165, 172), current versus historical AR aging prerequisites (new 38), and metric-level versus live-mode prebuilt exports with UTC report dates and account-time-zone charts (new 42-65; old 23-31). The prebuilt report title/content changed from 'Subscription metrics summary' to 'Subscription metrics per month' (old 30; new 60); keep the older label dated in [[source-stripe-billing-analytics]]. Markdown emphasis, whitespace, and link rendering changes are presentational. The source and concept should remove an unsupported 'default' for active timing (new 86; old 52), retain preview status for Usage MRR (new 16-34), and avoid inferring access, settled revenue, or exact historical report availability from the capture."
+  }
+}

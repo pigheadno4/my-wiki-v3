@@ -1,0 +1,107 @@
+{
+  "job_id": "billing-subscriptions-kakao-pay",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md",
+  "raw_sha256": "f3f026488524b421894e1d10c6b9a259871ed6ea0d834c0422094a63ddeb0c69",
+  "prior_raw_path": "raw/stripe-subscriptions-kakao-pay-2026.md",
+  "prior_raw_sha256": "3d36d95362986f4f8704884fb05308f137c9014dbcc39358e0f987d0203d4ebf",
+  "source_target": "wiki/sources/source-stripe-subscriptions-kakao-pay.md",
+  "source_before_sha256": "abe796b76e77f1f8e33cf44ab89775598ffdcb53edacaffe2f9be370db1e09e1",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 13
+      }
+    ],
+    "raw/stripe-subscriptions-kakao-pay-2026.md": [
+      {
+        "start": 1,
+        "end": 217
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-kakao-pay.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6d25eda53fbf3e740e4e984d/content.diff": [
+      {
+        "start": 1,
+        "end": 221
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md:9"
+    },
+    {
+      "text": "[SetupIntents API](https://docs.stripe.com/billing/subscriptions/kakao-pay.md?api-integration=setupintents)",
+      "location": "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md:11"
+    },
+    {
+      "text": "[Subscriptions API](https://docs.stripe.com/billing/subscriptions/kakao-pay.md?api-integration=subscription)",
+      "location": "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md:12"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/kakao-pay.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-kakao-pay-2026-11-07.md:13"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You must convert your prices to KRW to use the payment method.",
+      "location": "raw/stripe-subscriptions-kakao-pay-2026.md:32"
+    },
+    {
+      "text": "  off_session: true,",
+      "location": "raw/stripe-subscriptions-kakao-pay-2026.md:71"
+    },
+    {
+      "text": "Set the `payment_settings.save_default_payment_method=on_subscription` parameter to save a payment method when a subscription is activated.",
+      "location": "raw/stripe-subscriptions-kakao-pay-2026.md:120"
+    },
+    {
+      "text": "Use the [Checkout Sessions API](https://docs.stripe.com/api/checkout/sessions.md) to create and confirm a subscription with a prebuilt checkout page.",
+      "location": "raw/stripe-subscriptions-kakao-pay-2026.md:165"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 capture at the same canonical URL is an index, not a full Kakao Pay subscription guide: it identifies three variant links, SetupIntents API, Subscriptions API and Stripe-hosted page (new 5-13). It contains no parameter contract, payment state, currency rule or deprecation statement. The omission of the old detailed content does not prove that a path or requirement was removed; the three linked variant URLs were not read and must serve as navigation only.",
+    "The 2026-05-13 full capture remains the behavioral evidence for those three paths (old 8-89 SetupIntents-labeled section, 91-159 Subscriptions API, 161-217 Checkout). Preserve it as dated evidence in the existing source, and add the new index only as a dated navigation reference rather than replacing the old guide or treating its index text as an API specification.",
+    "Current source 13 says the paths have the same off_session=true and mandate_data requirements, while source 19-20 mark both globally required. The old full capture places off_session=true in the SetupIntent-path subscription-create example (old 54-73), mandate_data in the SetupIntent create example (old 38-50) and in the Subscriptions-path PaymentIntent-confirm example (old 144-157). Its Checkout example uses mode=subscription and payment_method_types including kakao_pay, without either of those explicit fields (old 185-213). Narrow requirements to the relevant path/example; lack of a field in a sample does not prove a universal prohibition or default.",
+    "The old SetupIntents-labeled section has internal prose/example tension: line 12 describes the first call as Subscriptions API creation of a Subscription and PaymentIntent, but lines 34-52 show a SetupIntent first, followed by subscription creation at 54-73. Do not turn that prose into the path's definitive sequence. Old 79 and 146 say to set payment_method_types on PaymentIntent confirmation, while their sample commands show different payment_method_data forms at 81-87 and 148-157; old 81-87 also has unusual array-shaped payment_method_data parameters. Flag these as unresolved guide inconsistencies, not verified runnable requests.",
+    "Old 18-32 uses a 100,000 KRW monthly example and expressly says to convert prices to KRW for this payment method; the new index gives no currency statement. Current source's KRW claim can be retained as dated old-guide evidence, but the new index does not independently confirm present account eligibility or all possible currency behavior. The old successful-payment-to-Active prose (old 75, 89, 159) is conditional and does not establish successful live payment, final settlement, or that an Active subscription alone proves payment success.",
+    "The route through wiki/index.md to wiki/stripe-index.md and wiki/concepts/stripe-korea-payment-methods.md already points to the existing source. The Korea concept repeats 'identical structure to KR card' at its source list, a comparison not established by the two Kakao captures alone. Any reciprocal summary should label the old full guide's date and the new index's navigation-only purpose."
+  ],
+  "substantive_changes": [
+    "No Kakao Pay subscription API or payment-behavior change is established by the new 13-line capture; it is a variant index with three target URLs (new 7-13).",
+    "The existing source needs a factual correction independent of that navigation change: off_session and mandate_data are shown in different old path-specific examples, not as a universal three-path requirement (old 38-73, 120-159, 185-213; source 13, 19-20)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the old 2026-05-13 three-path guide, including its KRW statement, SetupIntent and Subscription examples, requires_action/authentication condition, and Checkout subscription-mode example, with their original path and date qualifications (old 8-217).",
+    "Keep old-guide prose/sample tensions visible rather than silently resolving them: SetupIntents section line 12 versus 34-73, and PaymentIntent-confirm wording at 79/146 versus sample parameters at 81-87/148-157.",
+    "The old guide's success-to-Active statements are conditional documentation, not proof that a specific payment completed, mandate was authorized, or future recurring payment will succeed (old 75, 89, 159)."
+  ],
+  "conflicts": [
+    "Current source 13 and 19-20 generalize off_session=true and mandate_data to all three paths, but the old Checkout example at 185-213 does not show them and the old direct paths place them in distinct requests.",
+    "Old SetupIntents-labeled prose at 12 describes a Subscription/PaymentIntent-first path, while the same section's concrete steps at 34-73 begin with a SetupIntent. The new index offers no resolution.",
+    "Old PaymentIntent-confirm prose at 79 and 146 calls for payment_method_types, but the shown commands at 81-87 and 148-157 use payment_method_data-shaped fields; no request was executed."
+  ],
+  "unresolved_questions": [
+    "The three 2026-11-07 variant target URLs were not read, so their current parameters, currency eligibility, client/server sequence, states and payment outcomes remain unverified by this assigned index capture.",
+    "The old guide's internal SetupIntent sequence and confirm-request parameter inconsistencies require separate path-specific authority before any runnable implementation claim.",
+    "Neither capture demonstrates a merchant's Kakao Pay eligibility, a successful live authorization, settlement, or recurring payment."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-korea-payment-methods.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/kakao-pay, the complete 2026-11-07 capture is a three-link variant index for SetupIntents API, Subscriptions API and a Stripe-hosted page (new 7-13); it provides no payment parameter or lifecycle rule. The matched 2026-05-13 capture documented those paths with KRW pricing, mandate authorization, and conditional requires_action and post-success Active descriptions (old 8-89, 91-159, 161-217). [[source-stripe-subscriptions-kakao-pay]] reflects that older full guide but wrongly promotes off_session and mandate_data from different path examples into universal requirements at source 13, 19-20. The new index cannot establish deprecation, current eligibility, or successful billing, and its variant links are navigation, not read behavioral evidence.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/kakao-pay, the substantive observation is a change in upstream rendering to a variant index, not a demonstrated change in Kakao Pay APIs (new 7-13 versus old 8-217). [[source-stripe-subscriptions-kakao-pay]] should preserve the old guide as dated and narrow its global off_session and mandate_data claims to old examples: SetupIntent path at old 38-73, direct Subscription/PaymentIntent path at old 120-157, and Checkout at old 185-213. Old prose conflicts with its own examples about the SetupIntent sequence (old 12 versus 34-73) and payment_method_types on confirm (old 79, 146 versus 81-87, 148-157); these remain unresolved. The old KRW statement at 32 and conditional Active outcome at 75/89/159 do not establish current variant eligibility, final payment, or settlement."
+  }
+}

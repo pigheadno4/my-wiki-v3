@@ -54,4 +54,7 @@ Must comply *before* requesting access or capability stays `pending`:
 - [[source-stripe-twint-accept-payment]] — integration guide: Checkout + Direct API legacy, confirmTwintPayment, redirect flow
 - [[source-stripe-twint-save-during-payment]] — save during payment: setup_future_usage, off-session charging, return_url not required for saved method
 - [[source-stripe-twint-set-up-future-payments]] — setup-only (no payment): SetupIntent via Checkout/Elements/Direct API, confirmTwintSetup, mandate_data
-- [[source-stripe-subscriptions-twint]] — subscription guide: 3 paths (Checkout/SetupIntents/Subscriptions API), CHF only, mandate_data+return_url required, QR via redirect
+- [[source-stripe-subscriptions-twint]] — May 2026 subscription examples for Checkout, Setup Intents and Subscriptions API; November 2026 variant index. Direct API examples include mandate_data and return_url; the Checkout example does not. Hosted QR redirects are described for the direct examples.
+
+> [!warning] Contradiction
+> The earlier source summary treated mandate_data and return_url as universal TWINT subscription requirements, but the May Checkout example has neither while the direct API examples include both. The November index has no variant bodies, so current requiredness remains unverified; see [[source-stripe-subscriptions-twint]].

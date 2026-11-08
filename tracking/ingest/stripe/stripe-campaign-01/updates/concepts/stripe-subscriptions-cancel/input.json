@@ -1,0 +1,78 @@
+{
+  "target_path": "wiki/concepts/stripe-subscriptions-cancel.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-cancel/base.md",
+  "base_sha256": "0431f8de0f6aae84463dd4b40d795a2054821b9bdd53032cdafc14a6710c7dd2",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-cancel::cancel-concept-custom-date",
+      "target_path": "wiki/concepts/stripe-subscriptions-cancel.md",
+      "old_text": "Key behaviors:\n- Updates `items.current_period_end` to match \u2192 creates prorations\n- **Cannot provide a refund** \u2014 credit proration always generated with a custom cancel date\n- To suppress: set `cancel_at` within current billing period + `proration_behavior=none`\n- If >1 period away: subscription cycles normally until the period containing the cancel date, then `current_period_end` shortens to match\n- `min_period_end` / `max_period_end` enum helpers for `billing_mode` subscriptions",
+      "new_text": "Key behaviors:\n- A custom `cancel_at` does not provide a refund. Shortening the current billing period updates `items.current_period_end` and creates prorations unless disabled where allowed.\n- A credit proration can be prevented only when `cancel_at` is within the current billing period; the May 2026 capture names `proration_behavior=none` for that path. Being within the period alone does not suppress it. Beyond the current period, the November 2026 guide says prorations cannot be disabled.\n- Disabling prorations when `cancel_at` shortens the current period has billing-mode-dependent invoice-line effects; this guide does not enumerate each mode's result.\n- If more than one period away, the current cycle continues until renewal into the period containing the cancel date; then `current_period_end` shortens.\n- `min_period_end` / `max_period_end` enum helpers are available for `billing_mode` subscriptions.\n\n> [!warning] Contradiction\n> The May 2026 capture calls custom-date credit prorations \u201calways generated\u201d but also gives a within-period prevention path in the same passage. The November 2026 guide clarifies that prevention is bounded to a date in the current period and unavailable outside it. See [[source-stripe-subscriptions-cancel]].",
+      "reason": "Correct the concept's internally contradictory universal credit claim in place and preserve dated suppression and billing-mode limits.",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [
+        "May always-generated wording conflicts with its own suppression instruction and with the November bounded condition."
+      ],
+      "original_update_id": "cancel-concept-custom-date",
+      "job_id": "billing-subscriptions-cancel",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/receipt.json",
+      "receipt_sha256": "49845e870791788074de2a88bb65191df487d147642fcec3cd16f48769c10103",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/candidate.md",
+      "source_candidate_sha256": "95d0d88d0473ab795a7ad2b7034e5dbf0aa70a76efbed64b5721163623c23bbb",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-cancel::cancel-concept-invoice-items",
+      "target_path": "wiki/concepts/stripe-subscriptions-cancel.md",
+      "old_text": "- Must manually delete pending items to avoid billing",
+      "new_text": "- To avoid billing pending items, delete them manually, or use the optional November 2026 Workflows template: it runs when the subscription ends and deletes only that subscription's pending invoice items. The template does not erase existing invoices or prove execution for an account.",
+      "reason": "Add the scoped no-code route while preserving manual deletion and existing invoice behavior.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "cancel-concept-invoice-items",
+      "job_id": "billing-subscriptions-cancel",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/receipt.json",
+      "receipt_sha256": "49845e870791788074de2a88bb65191df487d147642fcec3cd16f48769c10103",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/candidate.md",
+      "source_candidate_sha256": "95d0d88d0473ab795a7ad2b7034e5dbf0aa70a76efbed64b5721163623c23bbb",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-cancel::cancel-concept-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions-cancel.md",
+      "old_text": "- [[source-stripe-subscriptions-cancel]] \u2014 Stripe docs: full cancellation guide (all methods, invoice items, dispute config, anchor behavior)",
+      "new_text": "- [[source-stripe-subscriptions-cancel]] \u2014 May and November 2026 cancellation guide: methods, bounded custom-date prorations, pending-item deletion routes, dispute limits and anchor behavior",
+      "reason": "Update the reciprocal route to the dated revised source without duplicating flow details.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "cancel-concept-source-route",
+      "job_id": "billing-subscriptions-cancel",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/receipt.json",
+      "receipt_sha256": "49845e870791788074de2a88bb65191df487d147642fcec3cd16f48769c10103",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/candidate.md",
+      "source_candidate_sha256": "95d0d88d0473ab795a7ad2b7034e5dbf0aa70a76efbed64b5721163623c23bbb",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-cancel/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-cancel::cancel-concept-custom-date",
+    "billing-subscriptions-cancel::cancel-concept-invoice-items",
+    "billing-subscriptions-cancel::cancel-concept-source-route"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-cancel/auto-candidate.md",
+  "auto_candidate_sha256": "2247f22d5a7867f46de7340d39820bbecf6b3ac643ed295f4b1148cfa658fd88",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-subscriptions-cancel-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-subscriptions-cancel-concept-review.json"
+}

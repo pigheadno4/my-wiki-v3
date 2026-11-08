@@ -1,0 +1,111 @@
+{
+  "job_id": "billing-subscriptions-naver-pay",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-naver-pay-2026-11-07.md",
+  "raw_sha256": "8e317bdb1cefdcb86cd6c70f3d7d03ef12caafb7f39d9f512848fc21ae92dea0",
+  "prior_raw_path": "raw/stripe-subscriptions-naver-pay-2026.md",
+  "prior_raw_sha256": "00a64be0775dbf868c48e9dda5287eec07fdc4a7441c2a9cd0a24564c4cd3db0",
+  "source_target": "wiki/sources/source-stripe-subscriptions-naver-pay.md",
+  "source_before_sha256": "12088084596ad33a241b1b865abd07670b247d96483f28b0731335dc2b36a5fc",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-naver-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-subscriptions-naver-pay-2026.md": [
+      {
+        "start": 1,
+        "end": 216
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-naver-pay.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/673acf0c55b67ae5c002ff54/content.diff": [
+      {
+        "start": 1,
+        "end": 219
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to integrate with Naver Pay.",
+      "location": "raw/stripe-billing-subscriptions-naver-pay-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-subscriptions-naver-pay-2026-11-07.md:11"
+    },
+    {
+      "text": "[SetupIntents API](https://docs.stripe.com/billing/subscriptions/naver-pay.md?api-integration=setupintents)",
+      "location": "raw/stripe-billing-subscriptions-naver-pay-2026-11-07.md:13"
+    },
+    {
+      "text": "[Subscriptions API](https://docs.stripe.com/billing/subscriptions/naver-pay.md?api-integration=subscription)",
+      "location": "raw/stripe-billing-subscriptions-naver-pay-2026-11-07.md:14"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/naver-pay.md?api-integration=checkout)",
+      "location": "raw/stripe-billing-subscriptions-naver-pay-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You must convert your prices to KRW to use the payment method.",
+      "location": "raw/stripe-subscriptions-naver-pay-2026.md:34"
+    },
+    {
+      "text": "  off_session: true,",
+      "location": "raw/stripe-subscriptions-naver-pay-2026.md:73"
+    },
+    {
+      "text": "The PaymentIntent response includes the status `requires_action`, which indicates that your customers must authenticate with Naver Pay to complete the PaymentIntent. After a successful payment, the subscription becomes active and saves the payment method as the default payment method.",
+      "location": "raw/stripe-subscriptions-naver-pay-2026.md:158"
+    },
+    {
+      "text": "Create a Checkout Session in `subscription` mode to collect the required information.",
+      "location": "raw/stripe-subscriptions-naver-pay-2026.md:201"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 capture at the same URL is a 15-line index pointing to SetupIntents API, Subscriptions API and Stripe-hosted page variants (new 5-15). It states no currency rule, API parameters, state transition, deprecation or eligibility. The missing detailed guide is a rendering/navigation change in this captured URL, not proof that any old path was retired or its behavior changed. The linked variant URLs were not read and provide navigation only.",
+    "The complete 2026-05-13 capture still provides dated behavioral evidence: a SetupIntents-labeled section (old 10-91), a Subscriptions API section (old 93-158), and a Stripe-hosted Checkout section (old 160-216). Keep that old raw linked as a dated full guide and represent the new capture as an index; a navigation-only page should not replace the old raw as the factual basis for API claims.",
+    "Current source 13 says all three paths have the same off_session=true and mandate_data requirements. Old 40-52 shows usage=off_session and mandate_data in a SetupIntent create request; old 60-75 shows off_session=true in the subsequent subscription-create example. Old 147-156 shows mandate_data in the direct Subscriptions path's PaymentIntent-confirm example. Old 184-211 shows a Checkout Session in subscription mode and does not explicitly include those fields. These are path/request-specific examples, not evidence for universal requiredness. Source 18 calls off_session=true required although the old guide's prose at 56-58 does not explicitly say that; label it as a shown sample field unless a separate contract is read.",
+    "Current source 25 says SetupIntent succeeded, but the old guide at 36-54 describes SetupIntent creation, client_secret handoff, redirect and mandate authorization without an explicit succeeded-state check in that section. Do not insert the success state as an observed transition. In the direct Subscriptions path, old 119-141 creates an incomplete subscription and saves the default method when activated; old 158 says requires_action calls for customer authentication and only after successful payment does it become active. Source 29's arrow from requires_action to activation must retain those conditions; initiation and mandate authorization do not themselves prove payment success.",
+    "The old SetupIntents section contradicts itself: old 14 calls its first call Subscriptions API creation of a Subscription and PaymentIntent, but old 36-75 actually shows SetupIntent creation before subscription creation. Old 81 and 145 say to set payment_method_types in the PaymentIntent confirm request while old 83-89 and 147-156 show payment_method_data-shaped parameters, including odd array-shaped fields in the former. These internal tensions remain unresolved by the new index; do not treat either example as a verified runnable recipe.",
+    "Old 20-34 uses a 100,000 KRW monthly example and explicitly says to convert prices to KRW; the new index contains no currency statement. Preserve the KRW condition as dated old evidence without inferring present eligibility. The old Checkout example lists card and naver_pay (old 203-211) but its test paragraph (old 214-216) is a sandbox path, not a successful live payment or bank receipt. Source's 'structurally identical' comparison to KR card and Kakao Pay needs separately read comparison evidence and is not established by this new index."
+  ],
+  "substantive_changes": [
+    "No new Naver Pay API or payment behavior is established; the November capture changes the same URL to a three-variant navigation index (new 9-15 versus the May full guide at old 10-216).",
+    "Existing source requires factual narrowing: old examples place off_session and mandate_data in particular requests, and direct-flow requires_action precedes customer authentication and successful payment rather than guaranteeing activation (old 40-75, 119-158, 184-216; source 13, 18-19, 25, 29)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the dated 2026-05-13 guide and its KRW conversion statement, three path sections, SetupIntent client_secret/mandate authorization, direct-flow incomplete and requires_action states, conditional post-success activation, and Checkout subscription-mode example (old 10-216).",
+    "Preserve old prose/example conflicts as caveats: SetupIntents introduction old 14 versus steps old 36-75, and confirm-parameter prose old 81/145 versus examples old 83-89/147-156. The 2026-11-07 index does not resolve them.",
+    "Do not turn the old successful-payment-to-Active description into a converse claim that Active alone proves payment, or into evidence that any real mandate, first charge or future off-session charge completed (old 77, 91, 158)."
+  ],
+  "conflicts": [
+    "Current source 13 and 18-19 promote off_session=true and mandate_data across all paths, but the old source places these in different path-specific requests and its Checkout example omits them (old 40-75, 147-156, 203-211).",
+    "Current source 25 adds a SetupIntent succeeded state absent from the old SetupIntents section's stated steps (old 36-54); source 29 compresses requires_action/authentication/success into a direct activation arrow despite old 158's conditions.",
+    "Old SetupIntents intro old 14 does not match its own SetupIntent-first examples old 36-75; PaymentIntent-confirm prose old 81/145 calls for payment_method_types while examples old 83-89/147-156 show payment_method_data forms."
+  ],
+  "unresolved_questions": [
+    "The three current variant URLs were not read, so the capture cannot verify their current request schemas, client/server sequence, eligibility, currency scope, mandate steps or outcomes.",
+    "The old guide's contradictory SetupIntents introduction and PaymentIntent confirm parameters require path-specific authority before making an implementation guarantee.",
+    "Neither capture demonstrates a specific merchant's access, a completed mandate, successful live payment, settlement or future recurring charge."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-korea-payment-methods.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/naver-pay, the entire 2026-11-07 capture is an index for three variants, SetupIntents API, Subscriptions API and Stripe-hosted page (new 9-15). It does not specify API parameters or subscription and payment states. The matched May 2026 full guide describes KRW pricing, a SetupIntent/client-secret/mandate path, an incomplete direct Subscription path with requires_action customer authentication, and a Checkout subscription-mode example (old 20-75, 117-158, 184-216). [[source-stripe-subscriptions-naver-pay]] reflects that old guide but overgeneralizes path-specific off_session and mandate_data examples at source 13/18-19 and inserts an unshown SetupIntent succeeded state at source 25. Activation follows a successful payment in old 158; the index cannot prove current eligibility or a completed charge.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/naver-pay, the observed change is an upstream variant index at the same URL, not demonstrated deprecation or an API contract change (new 9-15; old 10-216). [[source-stripe-subscriptions-naver-pay]] should retain old KRW and path details as dated evidence while narrowing off_session and mandate_data to the requests shown at old 40-75 and 147-156; Checkout old 203-211 is a separate sample. Old 14 conflicts with its SetupIntent-first steps at 36-75, and old 81/145 parameter prose does not match its confirm examples at 83-89/147-156. The direct flow's requires_action still calls for authentication and successful payment before Active (old 158). The new index's links are unread navigation; no account eligibility, mandate completion, successful billing or settlement was observed."
+  }
+}

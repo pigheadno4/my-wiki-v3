@@ -1,0 +1,96 @@
+{
+  "job_id": "billing-subscriptions-usage-based-billing-credits",
+  "queue_id": 54,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/usage-based/billing-credits",
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md",
+  "raw_sha256": "119612e73123679fbcbbd8ffa61378c0589aa4c088ec7f664a61d61c25001e09",
+  "prior_raw_path": "raw/stripe-usage-based-billing-credits-overview-2025.md",
+  "prior_raw_sha256": "f6e4d42abd8b76d9da6292ad0054a3532d1597a5ce058155f1e6834bde05c714",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/8f6b7831cbf6df331e4de27d/content.diff",
+  "diff_sha256": "2f37452fa6f5ace1d5ef1ace104f5c95ec9ef8b5a04e95365b4fdd7530f3db2a",
+  "source_targets": [
+    "wiki/sources/source-stripe-usage-based-billing-credits-overview.md"
+  ],
+  "source_before_sha256": "91a53c96e258ff8a1b9797abf822458146fb4cb492d0f806d8b550a7932f7c43",
+  "section": "billing",
+  "new_words": 1497,
+  "new_lines": 145,
+  "old_words": 1464,
+  "old_lines": 137,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-credits-overview.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-billing-credits/attempt-3/receipt.json",
+  "receipt_sha256": "6fc45f39dcabfe61cdb195ca439748f31d7b2395762c876d1edeef6255391124",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-billing-credits/attempt-3/review.json",
+  "review_sha256": "f27cac13877d103fd2fcb2dc9c7f408f195c9174ddf7ec6b130940502c95c85a",
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md",
+  "new_raw_sha256": "119612e73123679fbcbbd8ffa61378c0589aa4c088ec7f664a61d61c25001e09",
+  "prior_raw": "raw/stripe-usage-based-billing-credits-overview-2025.md",
+  "findings": [
+    "The matched URL remains Stripe's conceptual Billing Credits guide for prepaid or promotional credit grants allocated to a customer (new 5-13, 41-43; old 4-13, 33-35). The old raw has a Public preview banner (old 6) absent from the new capture (new 5-7). Date the old preview status; omission is not evidence of general availability, eligibility for a particular account, or removal of a product restriction. New 14-23 supplies a text rendering of the customer, meter event, meter/price, invoice and credit-grant relationship where the old raw said its diagram was unavailable (old 15).",
+    "Approved-use prose includes memberships, pay-as-you-go plans, subscriptions and specific merchant products or services, while prohibitions cover gift cards, stored value not intended for those approved goods/services, third-party payments and digital-wallet linking (new 25-39; old 17-31). Current source 19 says 'stored value for non-subscription spending,' which wrongly suggests all non-subscription product/service spending is prohibited. Recommend wording tied to the full approved-use list. This is a source-summary correction to a restriction present in both captures, not a changed Stripe rule.",
+    "The broad business-use examples do not make every charge eligible for grant application. Both captures require invoice period_end on/after effective_at and before expires_at if set, available balance at finalization, matching currency, and a metered-price subscription item reporting usage through Meters (new 53-69; old 45-61). They exclude one-off invoices, one-time setup items, licensed items and legacy Usage Records. Current source 31-37 largely preserves these boundaries; no grant can be inferred from a preview alone.",
+    "Credit application order is unchanged: after discounts, before taxes and invoice_credit_balance; prices can scope applicability; among invoices the first to finalize uses credits first without a guaranteed cross-subscription order; within an invoice lines are processed in listed order; among grants priority, earlier expiry, promotional category, earlier effective date and earlier creation date break ties (new 71-93; old 63-85). Credits apply at finalization, so preview/draft allocations can change and threshold timing can differ (new 95-101; old 87-93). A preview allocation is not final credit consumption or payment settlement.",
+    "A customer Credit Balance Summary distinguishes ledger balance from available balance. The grant is backed by an immutable, append-only ledger, but its ledger balance changes as credit and debit transactions are recorded and can reach zero after applying credits to a finalized invoice (new 103-110, 137; old 95-102, 129). A grant with zero available but positive ledger balance still counts toward the 100-unused-grant limit while it is not voided or expired; a grant also counts while pending before effective_at. Finalizing an invoice alone does not end the count: credit application must deplete the ledger balance to zero, or the grant must expire or be voided (new 125-139, 143-145; old 117-131, 135-137). Voiding an invoice reinstates applied credits subject to immediate expiry if past expires_at; a Credit Note does not reinstate them, requiring a new grant (new 112-117; old 104-109). Current source 50-53 uses the shorthand 'Ledger: immutable append-only'; a bounded wording correction should assign immutability to the ledger entries and explicitly allow the balance to change. Neither capture proves any particular grant, invoice, ledger transaction or refund occurred."
+  ],
+  "substantive_changes": [
+    "No demonstrated change to grant eligibility, priorities, application timing, 100 unused-grant limit, or void/Credit Note behavior: those rule statements match old 45-137 and new 53-145.",
+    "The new capture renders a relationship diagram as text (new 14-23 versus old 15 unavailable) and adds links to API properties, while preserving the customer-to-grant and meter-events-to-invoice roles; this improves discoverability but does not establish changed processing semantics.",
+    "The old Public preview banner is absent from the new page (old 6; new 5-7). Treat this as a captured presentation/status-label difference with current rollout or account eligibility unresolved, not as proof of GA."
+  ],
+  "conflicts": [
+    "Current source 19 calls prohibited stored value 'for non-subscription spending,' but old 24 and new 32 expressly allow memberships, pay-as-you-go plans and specific merchant products/services. Both old 29 and new 37 prohibit grants not intended for the approved categories. Correct the narrower source wording; the concept at wiki/concepts/stripe-usage-based-billing.md:92 already lists stored value without the misleading subscription qualifier.",
+    "Current source 13 presents Public preview without a dated qualifier beyond frontmatter. Old 6 supports it historically; new 5-7 omits it. Date or qualify the label in source and related index/concept navigation; do not claim GA or deprecation from absence.",
+    "New 48 and old 40 say a Granted grant is eligible based on effective_at 'which must occur in the future' and also say omission makes it immediately effective. Preserve both captured clauses rather than infer a universal future-only effective_at constraint or silently rewrite the apparent wording tension."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the 2026-05-05 Public preview label as dated old-capture evidence (old 6; source 13), and state that the 2026-11-07 capture lacks that label without inferring current GA or account eligibility (new 5-7).",
+    "Preserve the shared 2026-05-05 grant-state, eligibility, application priority, finalization-only, ledger-versus-available, 100-unused-grant, void and Credit Note details with their original date (old 33-137; new 41-145).",
+    "The old source's 'reformatted from plain-text paste' provenance at line 63 applies only to the old raw. Any new capture reference should keep its separate 2026-11-07 provenance rather than relabel the historical file."
+  ],
+  "unresolved_questions": [
+    "The captures do not establish whether billing credits are generally available on 2026-11-07 or enabled for a particular Stripe account. The missing Public preview banner and link updates are insufficient for that conclusion.",
+    "Neither capture demonstrates a particular credit grant's balance, invoice finalization order, payment collection, credit note, or refund. Credit application at finalization is distinct from customer payment success and from a previewed allocation.",
+    "The page's Granted-state wording around effective_at being future while omission is immediately effective is not resolved by a worked example; exact timestamp validation should not be inferred."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw2",
+  "reviewer_agent": "/root/s01ur7",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-usage-based-billing-credits-2026-11-07.md",
+      "sha256": "119612e73123679fbcbbd8ffa61378c0589aa4c088ec7f664a61d61c25001e09",
+      "lines": 145
+    },
+    {
+      "path": "raw/stripe-usage-based-billing-credits-overview-2025.md",
+      "sha256": "f6e4d42abd8b76d9da6292ad0054a3532d1597a5ce058155f1e6834bde05c714",
+      "lines": 137
+    },
+    {
+      "path": "wiki/sources/source-stripe-usage-based-billing-credits-overview.md",
+      "sha256": "91a53c96e258ff8a1b9797abf822458146fb4cb492d0f806d8b550a7932f7c43",
+      "lines": 63
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/8f6b7831cbf6df331e4de27d/content.diff",
+      "sha256": "2f37452fa6f5ace1d5ef1ace104f5c95ec9ef8b5a04e95365b4fdd7530f3db2a",
+      "lines": 190
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-usage-based-billing-credits-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-usage-based-billing-credits-review.json"
+}

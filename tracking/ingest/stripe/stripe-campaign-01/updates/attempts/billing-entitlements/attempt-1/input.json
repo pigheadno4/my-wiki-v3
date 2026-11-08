@@ -1,0 +1,93 @@
+{
+  "job_id": "billing-entitlements",
+  "queue_id": 10,
+  "canonical_url": "https://docs.stripe.com/billing/entitlements",
+  "raw_path": "raw/stripe-billing-entitlements-2026-11-07.md",
+  "raw_sha256": "183ca6c21620fa338fc4e82e7442bce7b579dbc425c378f5e92bce7cfcc8393b",
+  "prior_raw_path": "raw/stripe-billing-entitlements-2026.md",
+  "prior_raw_sha256": "cd786ed4ec34d13f5957f8c7520dcb7897df417299e17793e093dabbe94d350f",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/1ebbabdfcafc60aee2a0d205/content.diff",
+  "diff_sha256": "8fb2a9d5bbcffcdd992c8bcc4c58e15907d97e9f30e468550cc198d893d135bc",
+  "source_targets": [
+    "wiki/sources/source-stripe-billing-entitlements.md"
+  ],
+  "source_before_sha256": "f96005f9fac039ee16c0f9166b2bb070429169e2e60c162d9e26bef311d06e75",
+  "section": "billing",
+  "new_words": 53,
+  "new_lines": 14,
+  "old_words": 1673,
+  "old_lines": 339,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-billing-entitlements.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-entitlements/attempt-2/receipt.json",
+  "receipt_sha256": "004bb55298b480b9547d78b53039c28e064d33be297f8da6780aeb2866c08761",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-entitlements/attempt-2/review.json",
+  "review_sha256": "3e949ab26248eee1665a43a37f5545cdafe0b595dba8a3080570596f6596b376",
+  "affected_concepts": [
+    "wiki/concepts/stripe-entitlements.md"
+  ],
+  "new_raw": "raw/stripe-billing-entitlements-2026-11-07.md",
+  "new_raw_sha256": "183ca6c21620fa338fc4e82e7442bce7b579dbc425c378f5e92bce7cfcc8393b",
+  "prior_raw": "raw/stripe-billing-entitlements-2026.md",
+  "findings": [
+    "The 2026-11-07 capture of https://docs.stripe.com/billing/entitlements retains the title and one-sentence purpose, then serves only a Dashboard/API variant index (new raw lines 5-14). It does not establish a changed entitlement lifecycle, prerequisite, feature schema, webhook contract, or API outcome.",
+    "The matched 2026-05-13 capture contains both Dashboard and API variants and the detailed feature mapping, subscription, webhook, polling and archive guidance (old raw lines 17-339). The diff is dominated by removal of that inline variant content and addition of variant links, which is a capture/rendering change; it does not prove deprecation.",
+    "The current source routes to the dated old raw and summarizes the detailed guide (source lines 6-8, 13-54, 62-64). Keep it as historical evidence; do not add the navigation-only 2026-11-07 raw to its factual raw_files or replace the detailed guidance with an index.",
+    "The existing source's provisioning decision at lines 29-31 says to revoke access whenever a feature is absent from webhook entitlements.data. The old guide says the array contains at most 10 entitlements and directs use of entitlements.url to retrieve the complete paginated list for a customer with more than 10 (old raw lines 185-187). For such a customer, absence from the capped array alone does not establish revocation and could wrongly remove access. Source lines 29-31 require a workflow qualification: reconcile against the complete entitlement list before revoking when the summary may be truncated. The concept repeats the same unsafe absence rule at lines 37-38.",
+    "The existing source calls the webhook payload a full, up-to-date entitlement list at line 35, but it separately records the 10-item cap and full-list URL at line 37. Its full-list wording should be qualified along with the revocation rule; the concept's full-snapshot language at lines 21 and 46 also needs that qualification. These are required corrections to existing dated guidance, not evidence of a new Stripe behavior in the 2026-11-07 variant index.",
+    "The existing concept overview says the feature-gating layer works without manual provisioning logic (concept line 10), while the old API guide explicitly says to use the webhook to drive provisioning in the application (old raw lines 177-183). This is a pre-existing overstatement, not a new 2026-11-07 behavior."
+  ],
+  "substantive_changes": [],
+  "conflicts": [
+    "Material pre-existing decision conflict: source lines 29-31 and concept lines 37-38 equate feature absence from webhook entitlements.data with revocation. Because the old raw caps this array at 10 and offers entitlements.url for the complete paginated list (old raw lines 183-187), absence in the capped summary alone cannot safely drive revocation when the customer may have more than 10 active entitlements. Qualify both routes to retrieve/reconcile the complete list before disabling access in that case.",
+    "Pre-existing wording conflict: source line 35 and concept lines 21/46 imply an unqualified full webhook list, whereas the old raw caps entitlements.data at 10 (old raw lines 181 and 185-187). Preserve the full-state intent only with the pagination qualification.",
+    "Pre-existing overstatement: concept line 10 says no manual provisioning logic, whereas old raw lines 177-183 require application provisioning/de-provisioning in response to the entitlement event. This should be corrected in a separately authorized concept update."
+  ],
+  "historical_claims_to_preserve": [
+    "As of the 2026-05-13 capture, the guide assumes Stripe Subscription and Customer resources (old raw line 19); the new index neither repeats nor revokes that prerequisite.",
+    "As of the old Dashboard/API variants, product-feature changes affect existing subscriptions at the start of the next billing period (old raw lines 57 and 119), and the API variant documents feature creation/attachment and customer entitlement checks (old raw lines 86-175 and 293-337).",
+    "As of the old API variant, the active-entitlement-summary webhook is a provisioning signal, with at most 10 items in entitlements.data and entitlements.url for the full paginated list (old raw lines 177-193). An absent feature in a potentially truncated summary alone is not proof of revocation; check the complete list before disabling access for a customer with more than 10 entitlements.",
+    "As of the old Dashboard variant, an archived feature cannot be edited, newly attached, or unarchived, while existing attachments can still create entitlements and its lookup key can be reused (old raw lines 71-80)."
+  ],
+  "unresolved_questions": [
+    "The two variant URLs listed at new raw lines 13-14 were not captured under this review-only, no-network order. Their present content, availability and any later behavioral changes remain unverified.",
+    "The new index does not establish a current Stripe account's eligibility, any successful payment, or actual feature provisioning outcome."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw4",
+  "reviewer_agent": "/root/s01ur1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-entitlements-2026-11-07.md",
+      "sha256": "183ca6c21620fa338fc4e82e7442bce7b579dbc425c378f5e92bce7cfcc8393b",
+      "lines": 14
+    },
+    {
+      "path": "raw/stripe-billing-entitlements-2026.md",
+      "sha256": "cd786ed4ec34d13f5957f8c7520dcb7897df417299e17793e093dabbe94d350f",
+      "lines": 339
+    },
+    {
+      "path": "wiki/sources/source-stripe-billing-entitlements.md",
+      "sha256": "f96005f9fac039ee16c0f9166b2bb070429169e2e60c162d9e26bef311d06e75",
+      "lines": 64
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/1ebbabdfcafc60aee2a0d205/content.diff",
+      "sha256": "8fb2a9d5bbcffcdd992c8bcc4c58e15907d97e9f30e468550cc198d893d135bc",
+      "lines": 341
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-entitlements-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-entitlements-review.json"
+}

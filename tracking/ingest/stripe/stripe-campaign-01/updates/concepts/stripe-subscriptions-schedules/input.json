@@ -1,0 +1,226 @@
+{
+  "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-schedules/base.md",
+  "base_sha256": "4f8687284b626bdab00121fec1b69a39212f9f37d9b29e74d706690ce77aae08",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-import-subscriptions-toolkit::migration-toolkit-schedule-default-boundary",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "Both accept: `create_prorations` (default), `none`, `always_invoice`.",
+      "new_text": "Both accept: `create_prorations` (default), `none`, `always_invoice`.\n\n> [!warning] Contradiction\n> This default describes the top-level and per-phase **Subscription Schedule API** settings above. The 2026-05-12 [[source-stripe-subscriptions-migration-toolkit]] capture described its separate CSV `proration_behavior` default as `create_prorations`, while the 2026-11-07 capture says an omitted or blank toolkit CSV value defaults to `none`. Do not use the schedule API default to fill a toolkit CSV value.",
+      "reason": "Prevent the schedule API default from overriding the newly documented toolkit CSV default while preserving the existing API claim.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May and November toolkit captures disagree on the separate CSV default; this patch does not change the schedule API default."
+      ],
+      "original_update_id": "migration-toolkit-schedule-default-boundary",
+      "job_id": "billing-subscriptions-import-subscriptions-toolkit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-1/receipt.json",
+      "receipt_sha256": "14e35983ab1b9ae83f0e60d2d3e8fe9a0172d925f396c8482467c5fd0f14cd5d",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-1/candidate.md",
+      "source_candidate_sha256": "20c65d406a165d234c4031c7a4e36b2e804ecd540845638bcb73748d12f6534b",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-import-subscriptions-toolkit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-overview",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "Subscription schedules automate changes to subscriptions over time using sequential phases. Available via API and Dashboard (classic editor only). Up to 10 phases per schedule.",
+      "new_text": "Subscription schedules automate changes to subscriptions over time using sequential phases. The November 2026 guide describes Dashboard and API workflows; the May 2026 guide's classic-editor-only statement is dated UI guidance, not a current universal limit. Up to 10 current and future phases per schedule.",
+      "reason": "Correct dated Dashboard scope and phase count.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-overview",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-first-invoice",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "- **First invoice**: schedule-created subs start with a DRAFT invoice (1h window to edit) \u2014 unlike direct subscription creation which finalizes immediately",
+      "new_text": "- **First invoice**: for a schedule-created subscription with `collection_method=charge_automatically`, the guide says the invoice is initially `draft` rather than immediately finalized as in its direct-creation comparison. Its `start_date=now` example allows about an hour to edit; later `open` or `paid` depends on the asynchronous payment outcome.",
+      "reason": "Narrow draft and timing to documented condition and example; avoid payment inference.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-first-invoice",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-end-behavior",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "- **`end_behavior`**: `release` (sub continues, schedule detached) or `cancel` (both terminated)",
+      "new_text": "- **`end_behavior`**: `release` detaches the schedule and preserves an existing subscription; when `not_started`, release creates no subscription. Canceling an active schedule with a subscription cancels that subscription; canceling before start ends the schedule before subscription creation.",
+      "reason": "Preserve not_started versus active state consequences.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-end-behavior",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-tax",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "4 attributes settable at both schedule (`default_settings`) and phase level: `billing_thresholds`, `collection_method`, `default_payment_method`, `invoice_settings`. Phase overrides schedule.",
+      "new_text": "Five attributes are settable at both schedule (`default_settings`) and phase level: `automatic_tax`, `billing_thresholds`, `collection_method`, `default_payment_method`, `invoice_settings`. Phase overrides schedule. For a phase using manual `default_tax_rates`, explicitly set `automatic_tax.enabled=false`; enabled automatic tax and manual rates cannot apply together. Directly enabling automatic tax on the attached subscription updates the current phase and schedule default, so future phases without an explicit setting inherit that default. Retained manual rates are not a fallback if automatic tax calculation fails.",
+      "reason": "Add fifth inherited property and tax precedence, conflict, non-fallback.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-tax",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-direct-updates",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "Modifying `items`, `discounts`, `tax_rates`, `trial_end`, `automatic_tax`, `add_invoice_items` etc. directly on the subscription **auto-splits** the active schedule phase into two phases.",
+      "new_text": "Direct edits to `items`, `discounts`, `tax_rates`, `trial_end`, `automatic_tax`, `add_invoice_items` and other listed fields **might** create a new phase. In the guide's item-deletion example, the active phase splits into ended and new phases. Direct metadata edits do not propagate to the attached schedule.",
+      "reason": "Correct categorical split claim to modal behavior.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-direct-updates",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-start-backdate",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "| Future start | `start_date: future_unix` |\n| Backdate | `start_date: past_unix` |\n| Add schedule to existing sub | `from_subscription: subId` |",
+      "new_text": "| Future start | `start_date: future_unix`; subscription created when date arrives |\n| Backdate | `start_date: past_unix`; subscription created immediately and elapsed time billed; application controls digital access |\n| Add schedule to existing sub | `from_subscription: subId`; one phase from current period/configuration, with no migration proration invoice items |",
+      "reason": "Clarify creation timing, access ownership, and migration effect.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-start-backdate",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-existing",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "// Creates schedule with 1 phase mirroring current billing period",
+      "new_text": "// Creates one phase from current billing period and configuration; migration creates no proration invoice items",
+      "reason": "Qualify the from_subscription path.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-existing",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-release-cancel",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "- **Release**: `subscriptionSchedules.release(id)` \u2014 removes schedule, subscription continues\n- **Cancel**: `subscriptionSchedules.cancel(id)` \u2014 cancels both schedule and subscription",
+      "new_text": "- **Release (API)**: `subscriptionSchedules.release(scheduleId)` accepts `not_started` or `active`, removes remaining phases, preserves an existing subscription, and creates none before start.\n- **Cancel (API or Dashboard)**: `subscriptionSchedules.cancel(scheduleId)` accepts `not_started` or `active`; when active with a subscription, it cancels that subscription immediately. Dashboard deletion before start cancels the schedule before creation. A finite final Dashboard phase end date cancels the subscription; use API `end_behavior=release` for fixed-duration release.",
+      "reason": "Separate API release from Dashboard cancellation and state conditions.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-release-cancel",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-limits",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "- Classic Dashboard editor only (not new subscription editor)",
+      "new_text": "- The May 2026 capture said classic Dashboard editor only and a 30-day persisted editor choice; the November guide describes Dashboard create/edit/preview/cancel without establishing universal account or editor availability. It documents release through the API.",
+      "reason": "Date old UI restriction and avoid inferring rollout.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-limits",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-subscription-schedules::schedules-update-warning",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "## Create from existing subscription",
+      "new_text": "Schedule updates must include every current and future phase and any previously set parameters to keep them; omitted parameters are unset. Past phases are response-only.\n\n## Create from existing subscription",
+      "reason": "Add destructive omission warning at concept level.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "schedules-update-warning",
+      "job_id": "billing-subscriptions-subscription-schedules",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/receipt.json",
+      "receipt_sha256": "5c4f743cef81c20c1bd4c3cf74731faccfa222d25715db2ba36c4aa49fe4ebae",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/candidate.md",
+      "source_candidate_sha256": "fd2adcfb7112f905363080dd0269f374522aeca02c81e215cd21400028dde974",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-subscription-schedules/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-import-subscriptions-toolkit::migration-toolkit-schedule-default-boundary",
+    "billing-subscriptions-subscription-schedules::schedules-overview",
+    "billing-subscriptions-subscription-schedules::schedules-first-invoice",
+    "billing-subscriptions-subscription-schedules::schedules-end-behavior",
+    "billing-subscriptions-subscription-schedules::schedules-tax",
+    "billing-subscriptions-subscription-schedules::schedules-direct-updates",
+    "billing-subscriptions-subscription-schedules::schedules-start-backdate",
+    "billing-subscriptions-subscription-schedules::schedules-existing",
+    "billing-subscriptions-subscription-schedules::schedules-release-cancel",
+    "billing-subscriptions-subscription-schedules::schedules-limits",
+    "billing-subscriptions-subscription-schedules::schedules-update-warning"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-subscriptions-schedules/auto-candidate.md",
+  "auto_candidate_sha256": "093152a896f2a60c66db8c5294d90a2234b9b9cc88984480c692d5722b2b0c63",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-subscriptions-schedules-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-subscriptions-schedules-concept-review.json"
+}

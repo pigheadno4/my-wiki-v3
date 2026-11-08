@@ -1,8 +1,9 @@
 ---
 title: "Stripe Subscriptions — Set Up PayPal Subscription"
 type: source
-date_ingested: 2026-05-13
+date_ingested: 2026-11-08
 original_format: webpage
+canonical_url: "https://docs.stripe.com/billing/subscriptions/paypal"
 raw_files:
   - "stripe-subscriptions-paypal-2026.md"
 tags: [stripe, billing, subscriptions, paypal, checkout, setup-intents, mandate, billing-agreement]
@@ -10,16 +11,16 @@ tags: [stripe, billing, subscriptions, paypal, checkout, setup-intents, mandate,
 
 ## Summary
 
-Integration guide for PayPal subscriptions on Stripe. Two paths: Checkout (simple) and Direct API (SetupIntents + billing agreement). Key specifics: recurring payments may need manual Dashboard enable, `off_session=true` required on all updates, detaching PM cancels PayPal billing agreement.
+Stripe's May 2026 PayPal subscription guide describes two paths: Stripe-hosted Checkout and a Direct API flow using a SetupIntent and PayPal billing agreement. The 2026-11-07 capture of the canonical URL is a 14-line variant index linking those two paths, with no operational instructions. It does not establish changed behavior, current availability, or current account eligibility.
 
-## Important prerequisites
+## Important prerequisites (May 2026 guide)
 
-- Stripe auto-enables PayPal recurring payments for most users on activation. May need manual enable in Dashboard due to PayPal regional restrictions.
-- Direct API path: must explicitly enable recurring payments in Dashboard; only available in specific business locations.
+- **Stripe-hosted Checkout:** Stripe said recurring payments were automatically enabled for most users when PayPal was activated, but regional restrictions or PayPal policy might require manual Dashboard enablement.
+- **Direct API:** The guide instructed merchants to enable PayPal recurring payments in the Dashboard and check business-location eligibility. These are path-specific statements in the May capture, not a verified current account state.
 
-## Two integration paths
+## Path 1: Stripe-hosted Checkout (May 2026 guide)
 
-### Path 1: Checkout (Stripe-hosted)
+Create a server-side Checkout Session with `payment_method_types: ['paypal']`, `mode: 'subscription'`, at least one recurring Price in `line_items`, and a `success_url`; redirect the buyer to the returned Session URL. The guide also permits one-time line items alongside recurring ones and says the buyer receives receipts from Stripe and PayPal.
 
 ```js
 stripe.checkout.sessions.create({
@@ -30,52 +31,48 @@ stripe.checkout.sessions.create({
 })
 ```
 
-- Buyer gets receipt from both Stripe and PayPal
-- Supports: setup fee (one-time + recurring `line_items`), inline pricing, existing customer, prefill email, trials, fixed/dynamic tax rates, coupons, promo codes
+A visit to `success_url` alone does not prove payment: someone can visit it without paying, and a buyer can close the tab before redirect. Use the Dashboard, webhooks, or another post-payment mechanism before fulfillment. The May guide illustrates a `checkout.session.completed` webhook.
 
-### Path 2: Direct API (SetupIntents)
+The hosted variant also documents a one-time setup fee on the initial invoice, inline pricing, existing customers, email prefill, trials, fixed or dynamic tax rates, coupons, and promotion codes. See the historical raw for the specific parameters and conditions.
 
-1. Create Customer/Account
-2. Create SetupIntent: `payment_method_types=['paypal']`, `payment_method_data.type='paypal'`
-3. Client: `stripe.confirmPayPalSetup(clientSecret, { return_url, mandate_data })` → redirect to PayPal billing agreement approval
-4. Listen for `setup_intent.succeeded` webhook
-5. Create subscription: `default_payment_method` from SetupIntent PM + **`off_session=true`**
+## Path 2: Direct API and SetupIntent (May 2026 guide)
 
-## Critical: `off_session=true` required
+1. Create or retrieve a customer-configured Account v2 or Customer v1 to represent the buyer; these are distinct Stripe object paths.
+2. On the server, create a SetupIntent for that object with `payment_method_types: ['paypal']` and `payment_method_data.type: 'paypal'`.
+3. On the client, use `stripe.confirmPayPalSetup(clientSecret, { return_url, mandate_data })`. The buyer is redirected to PayPal to approve a billing agreement, then back to the site.
+4. Confirm authorization using `setup_intent.succeeded`; `setup_intent.setup_failed` indicates failed setup and `mandate.updated` can signal revocation. Setup authorization is separate from successful subscription payment.
+5. The guide's main server-side subscription-create examples pass the customer object ID, the saved `default_payment_method`, a Price, and `off_session: true`. A successful initial payment is described as moving the Subscription to `active`; failed payments follow configured collection settings.
 
-**All subscription creates and updates** via Direct API require `off_session=true`. Without it, any new payment requires another user redirect to PayPal for re-confirmation.
+### `off_session` qualification
 
-## Mandate fields
+The May guide says to specify `off_session=true` when updating a subscription so a new payment does not require another PayPal redirect. Its main initial-create examples include `off_session: true`, but its optional billing-anchor and trial create examples omit both that field and `default_payment_method`. The 2026-11-07 index has no contract text to resolve this tension.
 
-After `setup_intent.succeeded`, the Mandate object contains:
-- `payer_email` — buyer's PayPal email
-- `payer_id` — unique PayPal payer ID
-- `billing_agreement_id` — PayPal BAID (Billing Agreement ID)
+> [!warning] Contradiction
+> The May guide's main Direct API create examples include `off_session: true`, while its optional create examples omit it. Treat the main examples and update instruction as dated guidance; do not infer an unconditional requirement for every create from this capture.
 
-## Webhook events (Direct API)
+## PaymentMethod and Mandate identities (May 2026 guide)
 
-| Event | When |
-|---|---|
-| `setup_intent.succeeded` | Billing agreement authorized |
-| `setup_intent.setup_failed` | Authorization failed; status → `requires_payment_method` |
-| `mandate.updated` | Customer revokes billing agreement from PayPal |
+After PayPal setup, the guide places the payer ID and Billing Agreement ID on the resulting Mandate under `payment_method_details`. It also places the buyer email and payer ID on `PaymentMethod.paypal`. Its following field table describes `payer_email`, `payer_id`, and `billing_agreement_id` without assigning all three to one object.
 
-## Removing a PayPal payment method
+## Removing a saved PayPal payment method (May 2026 guide)
 
-`paymentMethods.detach(id)` — revokes the Stripe mandate AND calls PayPal API to cancel the associated billing agreement.
+The guide says `paymentMethods.detach(id)` revokes the Stripe Mandate and calls the PayPal API to cancel the associated PayPal billing agreement. This is consequential historical behavior, not a verified action on a particular account.
 
-## Optional features (both paths)
+## Optional Direct API examples (May 2026 guide)
 
-- `billing_cycle_anchor` — manual billing cycle start
-- `trial_end` — free trial period; can combine with billing anchor
+The guide illustrates `billing_cycle_anchor` for a manual cycle and `trial_end` for a trial, including a combined trial and billing anchor. The optional snippets omit fields used in its main subscription-create examples, so they should not be treated as complete proof of requiredness or operational validity.
 
 ## Related pages
 
-- [[stripe-paypal]] — concept page
-- [[stripe-subscriptions]] — concept page
-- [[paypal-subscriptions]] — PayPal-native Subscriptions API (distinct from Stripe's PayPal integration)
+- [[stripe-paypal]] — Stripe PayPal integration concept
+- [[stripe-subscriptions]] — Stripe subscriptions concept
+- [[paypal-subscriptions]] — PayPal-native Subscriptions API, distinct from Stripe's PayPal integration
 - [[stripe]] — company page
+
+## Related raw API references
+
+- [[raw/stripe-billing-subscriptions-paypal-2026-11-07|2026-11-07 variant index]] — navigation only; links to [Stripe-hosted page](https://docs.stripe.com/billing/subscriptions/paypal.md?payments-ui-type=stripe-hosted) and [Direct API](https://docs.stripe.com/billing/subscriptions/paypal.md?payments-ui-type=direct-api); variant bodies were not captured here
 
 ## Raw Sources
 
-- [[stripe-subscriptions-paypal-2026]] — verbatim Stripe docs webpage (994 lines, 1 image reused)
+- [[raw/stripe-subscriptions-paypal-2026|May 2026 PayPal subscription guide]] — historical Stripe-hosted and Direct API variant content (994 lines)

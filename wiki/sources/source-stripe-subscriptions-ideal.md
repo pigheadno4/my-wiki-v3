@@ -1,8 +1,9 @@
 ---
 title: "Stripe Subscriptions — Set Up iDEAL + SEPA Direct Debit Subscription"
 type: source
-date_ingested: 2026-05-13
+date_ingested: 2026-11-08
 original_format: webpage
+canonical_url: https://docs.stripe.com/billing/subscriptions/ideal
 raw_files:
   - "stripe-subscriptions-ideal-2026.md"
 tags: [stripe, billing, subscriptions, ideal, sepa-debit, eur, netherlands, checkout, payment-element, setup-intents]
@@ -10,18 +11,15 @@ tags: [stripe, billing, subscriptions, ideal, sepa-debit, eur, netherlands, chec
 
 ## Summary
 
-Integration guide for iDEAL → SEPA Direct Debit subscriptions. iDEAL is single-use; Stripe collects IBAN via iDEAL and converts to SEPA PM for recurring charges. Two paths: Checkout (simpler) and Direct API (Payment Element + SetupIntent). Free trial: 0.01 EUR charged + immediately refunded.
+The 2026-11-07 capture of this canonical URL is an index to hosted and Direct API variants, not either variant's instructions. The 2026-05-13 capture documents two distinct iDEAL → SEPA Direct Debit subscription paths: hosted Checkout and Direct API with Payment Element and SetupIntent. The November index establishes no change to either path's payment behavior.
 
-## The iDEAL → SEPA conversion
+## The iDEAL → SEPA conversion (2026-05-13 variants)
 
-iDEAL is single-use — each payment requires customer authentication. For subscriptions, Stripe:
-1. Collects first payment via iDEAL (captures IBAN)
-2. Creates a SEPA Direct Debit PM (`generated_sepa_debit`)
-3. Uses SEPA PM for all subsequent recurring charges
+iDEAL is single-use and requires customer authentication for each iDEAL payment. In the older hosted Checkout variant, Stripe charges the first subscription payment through iDEAL to collect bank details. For a free trial, it instead charges 0.01 EUR through iDEAL and immediately refunds that collection. After iDEAL authentication, Stripe saves the customer's IBAN in a SEPA Direct Debit payment method for future payments.
 
-Free trial: charges 0.01 EUR via iDEAL → immediately refunded → IBAN captured → SEPA PM created.
+In the older Direct API variant, Stripe charges 0.01 EUR through iDEAL to collect bank details and refunds that setup payment after authentication. A successful iDEAL SetupIntent tracks setup and the SEPA mandate; retrieve `latest_attempt.payment_method_details.generated_sepa_debit` and use that SEPA Direct Debit PaymentMethod to create and charge the subscription. Successful setup does not by itself establish that the later SEPA payment succeeded or that the subscription is active; inspect the payment and subscription outcomes.
 
-## Path 1: Checkout
+## Path 1: Hosted Checkout (2026-05-13)
 
 ```js
 stripe.checkout.sessions.create({
@@ -36,20 +34,20 @@ stripe.checkout.sessions.create({
 
 Supports: `subscription_data.trial_period_days`, `subscription_data.trial_end`.
 
-## Path 2: Direct API (Payment Element + SetupIntent)
+## Path 2: Direct API (Payment Element + SetupIntent; 2026-05-13)
 
 **Prerequisites**: Activate SEPA Direct Debit in Dashboard; comply with iDEAL ToS + SEPA Direct Debit ToS.
 
-1. Create SetupIntent: `payment_method_types=['ideal']`, customer ID
-2. Mount Payment Element; `stripe.confirmSetup({ return_url })` → customer redirected to bank
-3. Listen for `setup_intent.succeeded` webhook
-4. Retrieve SetupIntent with `expand: ['latest_attempt']`
-5. Get `generated_sepa_debit` ID from `latest_attempt.payment_method_details.generated_sepa_debit`
-6. Create subscription with that SEPA PM + `off_session=true`
+1. Create a SetupIntent with `payment_method_types=['ideal']` and the applicable customer identity: `customer_account` in the older Accounts v2 example or `customer` in the Customers v1 example.
+2. Mount Payment Element; `stripe.confirmSetup({ return_url })` redirects the customer to the bank for setup authorization.
+3. Reliably confirm SetupIntent authorization, for example with the optional `setup_intent.succeeded` webhook, instead of relying only on a customer return. Failed authorization emits `setup_intent.setup_failed`.
+4. After setup succeeds, retrieve the SetupIntent with `expand: ['latest_attempt']`.
+5. Get the `generated_sepa_debit` ID from `latest_attempt.payment_method_details.generated_sepa_debit`.
+6. Create the subscription with that SEPA payment method and `off_session=true` as shown in the older Direct API example. Check the ensuing SEPA payment and subscription status separately.
 
-**Updating subscriptions**: always use `off_session=true` on updates (same pattern as PayPal).
+**Updating subscriptions in this older Direct API flow**: the guide instructs `off_session=true` on updates; otherwise a new payment requires user confirmation.
 
-## Test scenarios (Direct API)
+## Test scenarios (Direct API; 2026-05-13)
 
 ### Email-based (6 patterns)
 - `generatedSepaDebitIntentsSucceed@example.com` → processing → succeeded
@@ -69,6 +67,10 @@ Supports: `subscription_data.trial_period_days`, `subscription_data.trial_end`.
 - [[stripe-subscriptions]] — concept page
 - [[stripe]] — company page
 
+## Related raw API references
+
+- [[raw/stripe-billing-subscriptions-ideal-2026-11-07|2026-11-07 canonical URL index]] — navigation only; links to [hosted](https://docs.stripe.com/billing/subscriptions/ideal.md?payments-ui-type=stripe-hosted) and [Direct API](https://docs.stripe.com/billing/subscriptions/ideal.md?payments-ui-type=direct-api) variant bodies, which were not captured in this four-file review.
+
 ## Raw Sources
 
-- [[stripe-subscriptions-ideal-2026]] — verbatim Stripe docs webpage (1015 lines, 1 image reused)
+- [[raw/stripe-subscriptions-ideal-2026|2026-05-13 variant guide]] — historical factual capture (1015 lines, 1 image reused)

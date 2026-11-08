@@ -1,0 +1,126 @@
+{
+  "job_id": "billing-subscriptions-trials-free-trials",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md",
+  "raw_sha256": "857cb04c11809e5bd88240d3854f475a9b1b44db90ba1b970c2b364e891edff4",
+  "source_before_sha256": "0d14799071f260b5ef9f8ca6eff779131bb2ad62e372b6e4161b5391c1df2c05",
+  "source_page": "---\ntitle: \"Stripe \u2014 Free Trial Periods on Subscriptions (Legacy trial_end)\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/billing/subscriptions/trials/free-trials\nraw_files:\n  - \"stripe-billing-subscriptions-trials-free-trials-2026-11-07.md\"\n  - \"stripe-subscriptions-free-trials-2026.md\"\ntags: [stripe, subscriptions, free-trials, legacy, trial-end, trial-period-days, pause, resume]\n---\n\n## Summary\n\nBoth the May 12 and November 7, 2026 captures call `trial_end` free-trial periods a **legacy** integration path and recommend Trial Offers for new integrations. The November page adds a comparison link. Trial Offers are a separate preview path with their own constraints; the legacy Checkout trial example remains documented here.\n\n## Trial period and first invoice\n\n- Supply `trial_end` as a timestamp, or `trial_period_days` as an integer. The trial period cannot exceed 730 days. `trial_end=now` can end a trial early.\n- Accounts v2 customer-configured Account examples use `customer_account`; Customers v1 examples use `customer`. The November capture says Accounts v2 was generally available for Connect users and in public preview for other Stripe users, with a preview version required for participants.\n- A trial may start without a payment method. Stripe still creates an immediate zero-amount invoice whose line description includes \u201cFree trial.\u201d\n- When the trial ends and the subscription is not `paused`, Stripe creates an invoice and emits `invoice.created`, then attempts to charge about an hour later. These steps do not establish that payment succeeds or that a specific subscription becomes active.\n- Usage recorded during a trial is not billed then, but can be viewed in the meter event summary. For a `paused` subscription, meter events may be sent but are not invoiced; future invoices include only events after resume. Legacy usage records cannot be created while paused.\n\n## No-payment-method end behavior\n\nSet `trial_settings.end_behavior.missing_payment_method` on the subscription:\n\n| Value | Documented result at trial end without a payment method |\n|---|---|\n| `cancel` | The subscription cancels. A later paid service requires a new subscription. |\n| `pause` | The subscription enters `paused`, stops cycling and invoicing, and can remain paused indefinitely until resumed. |\n| `create_invoice` | Stripe invoices; if there is still no method when the invoice finalizes, the subscription moves to `past_due`. |\n\nA truly `paused` subscription stops generating invoices. `pause_collection` instead stops collection while invoicing and billing periods continue.\n\nFor a no-method **Checkout Session**, the examples set `subscription_data.trial_settings.end_behavior.missing_payment_method` to `cancel` or `pause` and `payment_method_collection=if_required`, making payment-information collection optional in that Checkout Session. That Checkout setting is not a global rule for all subscription flows. The API create examples also include `payment_settings.save_default_payment_method=on_subscription`; the guide does not say that setting is required for the missing-method behavior.\n\n## Dashboard controls (November 2026)\n\nThe November Dashboard guide offers **Pause or cancel if free trial ends without a payment method**. For cancel, select **Cancel immediately** and expect `customer.subscription.deleted`. For pause, select **Pause** and expect `customer.subscription.paused`. The option is hidden if a payment method was provided or **Email invoice to customer with link to payment page** was selected. This visibility statement describes this Dashboard flow, not every API configuration.\n\nThe May pause instructions inconsistently said to select **Cancel subscription** while expecting `customer.subscription.paused`. Use the November **Pause** instruction for the newer captured UI.\n\n## Resume a paused subscription\n\nUse the Dashboard, API `resume` endpoint, customer portal, or hosted invoice page to resume. Adding a payment method alone is not the documented reactivation gate. The API can start resume without a method attached, for example to view the invoice, but **the resumption invoice must be paid before the subscription is reactivated**. The guide says the invoice automatically voids after 23 hours **if its associated PaymentIntent has no payment method attached and is unconfirmed**. This is a conditional void rule, not an unconditional 23-hour payment deadline.\n\nThe endpoint can optionally change `billing_cycle_anchor` or create prorations. With `billing_cycle_anchor=unchanged`, a debit proration may cover the partial period unless `proration_behavior=none`; `always_invoice` also creates a current-period invoice. With `billing_cycle_anchor=now`, the new cycle starts now. The guide does **not** specify the default anchor value on resume. November Dashboard controls explicitly offer **Reset billing cycle anchor to now** and an optional prorated bill.\n\nThe customer portal example lets a customer select **Start subscription** and add a method; the hosted invoice page offers **Authorize and pay**. Both are payment/resumption actions, not evidence that attachment alone reactivates the subscription.\n\n## Other trial behavior and version scope\n\nFor most subscriptions given a later trial, `trial_start` continues to show the first trial's start. As of API version `2025-04-30`, a subscription using `billing_mode=flexible` instead reports the most recent trial's start. Adding items during a trial can create zero-amount invoices; a one-time price added through `add_invoice_items` can still be charged during the trial. The guide also illustrates a free trial followed by a prorated period before a fixed billing-cycle anchor. Its fixed historical timestamps are examples, not valid current request values.\n\nThe May capture used Node examples and the November capture uses curl for corresponding operations. That presentation change does not establish removal of the Node SDK path.\n\n## Related Pages\n\n- [[stripe-subscriptions]] \u2014 subscription concepts and Checkout trial use\n- [[stripe-subscriptions-trial-offers]] \u2014 separate Trial Offers preview path\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[stripe-billing-subscriptions-trials-free-trials-2026-11-07]] \u2014 November 7, 2026 Stripe guide\n- [[stripe-subscriptions-free-trials-2026]] \u2014 May 12, 2026 Stripe guide\n",
+  "quotes": [
+    {
+      "text": "The content below describes a *Legacy* (Technology that's no longer recommended) integration path for offering free trials.",
+      "location": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md:11"
+    },
+    {
+      "text": "When a subscription is paused, it doesn\u2019t generate invoices (unlike when a subscription\u2019s [payment collection](https://docs.stripe.com/billing/subscriptions/pause-payment.md) is paused).",
+      "location": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md:90"
+    },
+    {
+      "text": "Alternatively, set `missing_payment_method=create_invoice` to invoice at the end of the trial if no payment method is present. If a payment method isn\u2019t provided when the invoice finalizes, the subscription moves into `past_due`.",
+      "location": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md:92"
+    },
+    {
+      "text": "If you provide a payment method or select the **Email invoice to customer with link to payment page** option, the **Pause or cancel if free trial ends without a payment method** option won\u2019t be visible.",
+      "location": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md:109"
+    },
+    {
+      "text": "A payment method doesn\u2019t need to be supplied on the subscription before you can resume (for example, if you want to generate or view the invoice before a customer provides payment), but the invoice needs to be paid before the subscription is reactivated.",
+      "location": "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md:301"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The content below describes a _Legacy_ (Technology that's no longer recommended) integration path for offering free trials.",
+      "location": "raw/stripe-subscriptions-free-trials-2026.md:10"
+    },
+    {
+      "text": "Under **When trial ends without a payment method\u2026**, click **Cancel subscription**.",
+      "location": "raw/stripe-subscriptions-free-trials-2026.md:251"
+    },
+    {
+      "text": "A payment method doesn\u2019t need to be supplied on the subscription before you can resume (for example, if you want to generate or view the invoice before a customer provides payment), but the invoice needs to be paid before the subscription is reactivated.",
+      "location": "raw/stripe-subscriptions-free-trials-2026.md:416"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 358
+      }
+    ],
+    "raw/stripe-subscriptions-free-trials-2026.md": [
+      {
+        "start": 1,
+        "end": 489
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-free-trials.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/22e27e6d8450aed1dd48a551/content.diff": [
+      {
+        "start": 1,
+        "end": 551
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "legacy-checkout-trial-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "## Free Trials\n\n- `subscription_data.trial_period_days` or `subscription_data.trial_end` (Unix timestamp)",
+      "new_text": "## Free Trials\n\nStripe's May and November 2026 guides label the `trial_end`/`trial_period_days` free-trial period a legacy integration path and recommend separate Trial Offers for new integrations. Trial Offers have their own preview and flexible-billing constraints; Checkout's documented no-payment-method trial path here remains the legacy period path. [[source-stripe-subscriptions-free-trials]]\n\n- `subscription_data.trial_period_days` or `subscription_data.trial_end` (Unix timestamp)",
+      "reason": "Concept presents Checkout trial without legacy or separate Trial Offers scope.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Do not imply Trial Offers universally replace Checkout legacy trial periods."
+      ]
+    },
+    {
+      "update_id": "pause-resume-paid-gate",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "  - Pause = no invoices, resumes on PM add via portal; can pause indefinitely",
+      "new_text": "  - Pause = no invoices and can remain paused indefinitely. A payment method may be added through the portal, but resume and payment of the resumption invoice are required before reactivation; the API can begin resume without a method attached. The 23-hour auto-void applies only if the invoice's PaymentIntent has no attached method and remains unconfirmed. [[source-stripe-subscriptions-free-trials]]",
+      "reason": "Adding a method alone is not the documented reactivation gate; void is conditional.",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "checkout-if-required-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- **No PM at signup**: `payment_method_collection: 'if_required'`",
+      "new_text": "- **No PM in this Checkout Session**: `payment_method_collection: 'if_required'` makes payment-information collection optional; set `subscription_data.trial_settings.end_behavior.missing_payment_method` to `cancel` or `pause` for the documented Checkout end behavior. [[source-stripe-subscriptions-free-trials]]",
+      "reason": "Keep if_required scoped to Checkout and pair it with end behavior.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "trial-source-list-scope",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-free-trials]] \u2014 Legacy trial_end: trial_period_days, missing_payment_method (cancel/pause/create_invoice), resume flow, combine with billing anchor",
+      "new_text": "- [[source-stripe-subscriptions-free-trials]] \u2014 Legacy trial_end/trial_period_days (May and November 2026): no-PM end choices, paid-invoice resume gate, conditional 23-hour void, billing-anchor example",
+      "reason": "Reflect corrected resume boundary in source list.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/trials/free-trials, both May and November call trial_end/trial_period_days free-trial periods legacy, with a 730-day maximum. A trial can start without a method and creates a zero-amount invoice; at trial end, absent pause, Stripe creates an invoice then attempts charge about an hour later (November 9-49). Missing-method behavior can cancel, pause without invoices, or create an invoice and become past_due if no method exists at finalization (87-92). [[source-stripe-subscriptions-free-trials]] documents the choices; actual reactivation requires resume and a paid resumption invoice (295-303), not method attachment alone.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/trials/free-trials, November retains the legacy Trial Offers recommendation and adds comparison navigation, changes many Node examples to curl, adds Dashboard option visibility conditions, corrects the May pause UI mismatch by selecting Pause, and clarifies Dashboard anchor/proration controls (November 9-13,109,182-185,285-293; May 244-252). [[source-stripe-subscriptions-free-trials]] must correct its shorthand: the resumption invoice must be paid before reactivation; 23-hour auto-void applies when the associated PaymentIntent has no attached method and is unconfirmed; this page states no default resume anchor. No sample proves an actual payment."
+  },
+  "status": "candidate_ready"
+}

@@ -1,0 +1,551 @@
+--- raw/stripe-subscriptions-free-trials-2026.md
++++ raw/stripe-billing-subscriptions-trials-free-trials-2026-11-07.md
+@@ -3,76 +3,56 @@
+ Offer free trial periods on subscriptions using the legacy trial_end parameter.
+ 
+ > #### Legacy
+->
+-> The content below describes a _Legacy_ (Technology that's no longer recommended) integration path for offering free trials.
+->
+-> If you’re building a new integration, we recommend that you [Configure trial offers on subscriptions](https://docs.stripe.com/billing/subscriptions/trials.md).
+-
+-You can start a customer’s _subscription_ (A Subscription represents the product details associated with the plan that your customer subscribes to. Allows you to charge the customer on a recurring basis) with a free trial period by providing a `trial_end` argument when [creating the subscription](https://docs.stripe.com/api.md#create_subscription):
++> 
++> The content below describes a *Legacy* (Technology that's no longer recommended) integration path for offering free trials.
++> 
++> If you’re building a new integration, we recommend that you [configure trial offers on subscriptions](https://docs.stripe.com/billing/subscriptions/trials.md). To choose between a free trial period and a trial offer, [compare free trial periods and trial offers](https://docs.stripe.com/billing/subscriptions/trials/compare.md).
++
++You can start a customer’s *subscription* (A Subscription represents the product details associated with the plan that your customer subscribes to. Allows you to charge the customer on a recurring basis) with a free trial period by providing a `trial_end` argument when [creating the subscription](https://docs.stripe.com/api.md#create_subscription):
+ 
+ #### Accounts v2
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer_account: "{{CUSTOMERACCOUNT_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  trial_end: 1610403705,
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d trial_end=1610403705
+ ```
+ 
+ #### Customers v1
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  trial_end: 1610403705,
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d trial_end=1610403705
+ ```
+ 
+ > #### Use the Accounts v2 API to represent customers
+->
+-> The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you’re part of the Accounts v2 preview, you need to specify a [specify a preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.
+->
+-> To request access to the Accounts v2 preview,
+->
++> 
++> The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you’re part of the Accounts v2 preview, you need to specify a [preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.
++> 
++> To join the Accounts v2 preview, go to [Account previews and features](https://dashboard.stripe.com/settings/previews) in your Dashboard and enable **Reusable payment methods for Global Payouts**.
++> 
+ > For most use cases, we recommend [modeling your customers as customer-configured Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md) instead of using [Customer](https://docs.stripe.com/api/customers.md) objects.
+ 
+ The `trial_end` parameter takes a timestamp indicating the exact moment the trial ends. When creating a subscription, you can alternatively use the [trial_period_days](https://docs.stripe.com/api.md#create_subscription-trial_period_days) parameter: an integer representing the number of days the trial lasts, from the current moment. The trial period must be 730 days (2 years) or less. Trial periods are normally applied at the start of a subscription, but you can also use a trial period on an existing subscription to [change the subscription’s billing period (cycle)](https://docs.stripe.com/billing/subscriptions/billing-cycle.md).
+ 
+-When creating a subscription with a trial period, you don’t need to add a payment method. An immediate _invoice_ (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) is still created, but the amount is 0 and the [Invoice Line descriptions](https://docs.stripe.com/api/invoices/object.md#invoice_object-lines-data-description) include “Free trial” verbiage.
++When creating a subscription with a trial period, you don’t need to add a payment method. An immediate *invoice* (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) is still created, but the amount is 0 and the [Invoice Line descriptions](https://docs.stripe.com/api/invoices/object.md#invoice_object-lines-data-description) include “Free trial” verbiage.
+ 
+ When the trial ends, if the subscription `status` isn’t `paused`, we generate an invoice and send an `invoice.created` event notification. Approximately 1 hour later, we attempt to charge that invoice. A new billing period also begins for the customer when the trial ends.
+ 
+ To end a trial early, make an [update subscription](https://docs.stripe.com/api.md#update_subscription) API call, setting the `trial_end` value to a new timestamp, or **now** to end immediately:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.update("{{SUBSCRIPTION_ID}}", {
+-  trial_end: "now",
+-});
+-```
+-
+-## Trials with usage-based billing
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d trial_end=now
++```
++
++## Trials with usage-based billing 
+ 
+ You can use trial periods for subscriptions with usage-based billing. Stripe doesn’t bill for usage recorded during the trial period, but you can view the usage in the [meter event summary](https://docs.stripe.com/api/billing/meter-event-summary.md) for the trial period. After the trial period ends, billing resumes for recorded usage.
+ 
+@@ -82,21 +62,21 @@
+ 
+ You can send [meter events](https://docs.stripe.com/api/billing/meter-event.md) associated with a price on a subscription even while it’s paused, but that usage isn’t invoiced. Future invoices only include meter events that occur after the resume date. If you use [legacy usage records](https://docs.stripe.com/billing/subscriptions/usage-based-legacy.md), you can’t create new usage records while a subscription is paused.
+ 
+-## Adding a new trial to a subscription previously in a trial
+-
+-You can add a new trial on a non-trialing subscription by updating the subscription while specifying [`trial_end`](https://docs.stripe.com/api/subscriptions/update.md#update_subscription-trial_end) or updating its associated subscription schedule. You need to specify [`phases.trial_end`](https://docs.stripe.com/api/subscription_schedules/create.md?#create_subscription_schedule-phases-trial_end) for subscriptions.
++## Adding a new trial to a subscription previously in a trial 
++
++You can add a new trial on a non-trialing subscription by updating the subscription while specifying [trial_end](https://docs.stripe.com/api/subscriptions/update.md#update_subscription-trial_end) or updating its associated subscription schedule. You need to specify [phases.trial_end](https://docs.stripe.com/api/subscription_schedules/create.md?#create_subscription_schedule-phases-trial_end) for subscriptions.
+ 
+ For most subscriptions that enter a new trial after a previous trial ends, the `trial_start` field remains set to the start of the first trial. As of [API version 2025-04-30](https://docs.stripe.com/changelog/basil.md#2025-04-30.preview), for subscriptions with [billing_mode](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-billing_mode) set to `flexible`, `trial_start` reflects the beginning of the most recent trial.
+ 
+-## Update a subscription in a trial
++## Update a subscription in a trial 
+ 
+ You can update subscriptions in a trial normally. Adding items to a `billing_mode=flexible` or `billing_mode=classic` subscription in a trial generates an invoice for those items with an amount of 0. For `billing_mode=classic`, the 0-amount invoice might include items that were previously invoiced.
+ 
+-## Combining trials with add_invoice_items
++## Combining trials with add_invoice_items 
+ 
+ You can combine trial periods for subscriptions with one time prices and `add_invoice_items`. This is useful when you want to charge a one-time fee or add-on at the same time you start a trial. When you do this, Stripe automatically generates an invoice for the one-time charge, even though the trial hasn’t ended yet. The customer pays the one-time amount upfront, while the recurring subscription billing begins after the trial period ends.
+ 
+-## Create free trials without collecting payment method
++## Create free trials without collecting payment method 
+ 
+ > While starting a free trial without a payment method lets your potential customers try your product or service faster, it can also allow spammers to create lots of fake customers, usage, and subscriptions. We recommend carefully considering the signup flow here to balance making it easy for real customers and difficult for spam bots to abuse (for example, requiring customers to create a user account and complete a captcha before starting their free trial subscription).
+ 
+@@ -117,11 +97,12 @@
+ 
+ Use the Dashboard to sign customers up for a free trial of a subscription without collecting their payment details:
+ 
+-1. On the [Subscriptions](https://dashboard.stripe.com/subscriptions) page in the Dashboard, select **+Create subscription**.
+-1. After adding your customer, product, and service period information, expand **Subscription options**.
+-1. Click **Trial period** to give the customer free access to this subscription. Set the trial end date.
+-1. Under **When trial ends without a payment method…**, click **Cancel subscription**. If you’re using [test clocks](https://docs.stripe.com/billing/testing/test-clocks.md), advance to the end of the trial. You won’t see an upcoming invoice for the subscription.
+-1. Listen to the `customer.subscription.deleted` event that informs you when a subscription cancels at the end of a trial without a payment method.
++1. From the Subscriptions settings of the Dashboard, select **+Create subscription**.
++2. After adding your customer and product information, select **+Add free trial**, then input how many days the free trial lasts.
++3. Select the **Pause or cancel if free trial ends without a payment method** option, then select **Cancel immediately**. If you’re using [test clocks](https://docs.stripe.com/billing/testing.md#test-clocks), advance to the end of the trial. You won’t see an upcoming invoice for the subscription.
++4. Listen to the `customer.subscription.deleted` event that informs you when a subscription cancels at the end of trials without a payment method.
++
++If you provide a payment method or select the **Email invoice to customer with link to payment page** option, the **Pause or cancel if free trial ends without a payment method** option won’t be visible.
+ 
+ #### API
+ 
+@@ -129,70 +110,34 @@
+ 
+ #### Accounts v2
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer_account: "{{CUSTOMERACCOUNT_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  trial_period_days: 30,
+-  payment_settings: {
+-    save_default_payment_method: "on_subscription",
+-  },
+-  trial_settings: {
+-    end_behavior: {
+-      missing_payment_method: "cancel",
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d trial_period_days=30 \
++  -d "payment_settings[save_default_payment_method]=on_subscription" \
++  -d "trial_settings[end_behavior][missing_payment_method]=cancel"
+ ```
+ 
+ #### Customers v1
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  trial_period_days: 30,
+-  payment_settings: {
+-    save_default_payment_method: "on_subscription",
+-  },
+-  trial_settings: {
+-    end_behavior: {
+-      missing_payment_method: "cancel",
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d trial_period_days=30 \
++  -d "payment_settings[save_default_payment_method]=on_subscription" \
++  -d "trial_settings[end_behavior][missing_payment_method]=cancel"
+ ```
+ 
+ To update existing subscriptions, use the following API call:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.update("{{SUBSCRIPTION_ID}}", {
+-  trial_settings: {
+-    end_behavior: {
+-      missing_payment_method: "cancel",
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "trial_settings[end_behavior][missing_payment_method]=cancel"
+ ```
+ 
+ #### Checkout
+@@ -206,30 +151,16 @@
+   - The `trial_settings[end_behavior]` parameter set to `cancel` to make sure that the subscription cancels if the free trial ends without a payment method attached.
+ - The `payment_method_collection` field with a value of `if_required`. This tells Stripe that collecting payment information at checkout is optional.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const session = await stripe.checkout.sessions.create({
+-  mode: "subscription",
+-  line_items: [
+-    {
+-      price: "price_abc",
+-      quantity: 1,
+-    },
+-  ],
+-  subscription_data: {
+-    trial_settings: {
+-      end_behavior: {
+-        missing_payment_method: "cancel",
+-      },
+-    },
+-    trial_period_days: 30,
+-  },
+-  payment_method_collection: "if_required",
+-  success_url: "https://example.com/success",
+-});
++```curl
++curl https://api.stripe.com/v1/checkout/sessions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d mode=subscription \
++  -d "line_items[0][price]=price_abc" \
++  -d "line_items[0][quantity]=1" \
++  -d "subscription_data[trial_settings][end_behavior][missing_payment_method]=cancel" \
++  -d "subscription_data[trial_period_days]=30" \
++  -d payment_method_collection=if_required \
++  --data-urlencode "success_url=https://example.com/success"
+ ```
+ 
+ If you set the `trial_settings.end_behavior.missing_payment_method=cancel` field on the subscription or set the subscription in the `subscription_data` field when creating a Checkout session, the subscription cancels if a payment method isn’t provided before the trial ends.
+@@ -242,11 +173,12 @@
+ 
+ You can use the Dashboard to sign customers up for a free trial of a subscription without collecting their payment details:
+ 
+-1. On the [Subscriptions](https://dashboard.stripe.com/subscriptions) page in the Dashboard, select **+Create subscription**.
+-1. After adding your customer, product, and service period information, expand **Subscription options**.
+-1. Click **Trial period** to give the customer free access to this subscription. Set the trial end date.
+-1. Under **When trial ends without a payment method…**, click **Cancel subscription**. If you’re using [test clocks](https://docs.stripe.com/billing/testing/test-clocks.md), advance to the end of the trial. You won’t see an upcoming invoice for the subscription.
+-1. Listen to the `customer.subscription.paused` event that informs you when a subscription pauses at the end of trials without a payment method.
++1. From the Subscriptions settings of the Dashboard, select **+Create subscription**.
++2. After selecting a customer without a payment method and adding product information, select **+Add trial days**, then enter the number of trial days the free trial lasts.
++3. Below the free trial days field, select **Pause or cancel if free trial ends without a payment method**, then select **Pause**. If you’re using [test clocks](https://docs.stripe.com/billing/testing.md#test-clocks), advance to the end of the trial. You won’t see an upcoming invoice for the subscription.
++4. Listen to the `customer.subscription.paused` event that informs you when a subscription pauses at the end of trials without a payment method.
++
++If you provide a payment method or select the **Email invoice to customer with link to payment page** option, the **Pause or cancel if free trial ends without a payment method** option won’t be visible.
+ 
+ #### API
+ 
+@@ -254,70 +186,34 @@
+ 
+ #### Accounts v2
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer_account: "{{CUSTOMERACCOUNT_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  trial_period_days: 30,
+-  payment_settings: {
+-    save_default_payment_method: "on_subscription",
+-  },
+-  trial_settings: {
+-    end_behavior: {
+-      missing_payment_method: "pause",
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d trial_period_days=30 \
++  -d "payment_settings[save_default_payment_method]=on_subscription" \
++  -d "trial_settings[end_behavior][missing_payment_method]=pause"
+ ```
+ 
+ #### Customers v1
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  trial_period_days: 30,
+-  payment_settings: {
+-    save_default_payment_method: "on_subscription",
+-  },
+-  trial_settings: {
+-    end_behavior: {
+-      missing_payment_method: "pause",
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d trial_period_days=30 \
++  -d "payment_settings[save_default_payment_method]=on_subscription" \
++  -d "trial_settings[end_behavior][missing_payment_method]=pause"
+ ```
+ 
+ To update existing subscriptions, use the following API call:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.update("{{SUBSCRIPTION_ID}}", {
+-  trial_settings: {
+-    end_behavior: {
+-      missing_payment_method: "pause",
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "trial_settings[end_behavior][missing_payment_method]=pause"
+ ```
+ 
+ #### Checkout
+@@ -331,30 +227,16 @@
+   - The `trial_settings[end_behavior]` parameter set to `pause` to make sure that the subscription pauses if the free trial ends without a payment method attached.
+ - The `payment_method_collection` field with a value of `if_required`. This tells Stripe that collecting payment information at checkout is optional.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const session = await stripe.checkout.sessions.create({
+-  mode: "subscription",
+-  line_items: [
+-    {
+-      price: "price_abc",
+-      quantity: 1,
+-    },
+-  ],
+-  subscription_data: {
+-    trial_settings: {
+-      end_behavior: {
+-        missing_payment_method: "pause",
+-      },
+-    },
+-    trial_period_days: 30,
+-  },
+-  payment_method_collection: "if_required",
+-  success_url: "https://example.com/success",
+-});
++```curl
++curl https://api.stripe.com/v1/checkout/sessions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d mode=subscription \
++  -d "line_items[0][price]=price_abc" \
++  -d "line_items[0][quantity]=1" \
++  -d "subscription_data[trial_settings][end_behavior][missing_payment_method]=pause" \
++  -d "subscription_data[trial_period_days]=30" \
++  -d payment_method_collection=if_required \
++  --data-urlencode "success_url=https://example.com/success"
+ ```
+ 
+ If you set the `trial_settings.end_behavior.missing_payment_method=pause` field on the subscription or set the subscription in the `subscription_data` field when creating a Checkout session, the subscription pauses if you don’t add a payment method before the trial ends.
+@@ -371,10 +253,10 @@
+ 
+ Next, collect billing information from your customers:
+ 
+-1. Listen to the [`customer.subscription.trial_will_end` event](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.trial_will_end).
+-1. If the subscription doesn’t have a [default payment method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-default_payment_method), get the customer’s email from the associated customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/retrieve.md) or [Customer](https://docs.stripe.com/api/customers/retrieve.md). Send the customer a message with a link to your site. Embed the customer ID in the email, for example **https://example.com?..&customer={{CUSTOMER\_ID}}**.
+-1. When the customer enters your site, create a customer portal session using the customer ID from the previous step.
+-1. Redirect the customer to the customer portal, where they can update their subscription with payment details.
++1. Listen to the [customer.subscription.trial_will_end](https://docs.stripe.com/api/events/types.md#event_types-customer.subscription.trial_will_end) event.
++2. If the subscription doesn’t have a [default payment method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-default_payment_method), get the customer’s email from the associated customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/retrieve.md) or [Customer](https://docs.stripe.com/api/customers/retrieve.md). Send the customer a message with a link to your site. Embed the customer ID in the email, for example **https://example.com?..&customer={{CUSTOMER\_ID}}**.
++3. When the customer enters your site, create a customer portal session using the customer ID from the previous step.
++4. Redirect the customer to the customer portal, where they can update their subscription with payment details.
+ 
+ ### Allow customers to reactivate their subscriptions in the customer portal
+ 
+@@ -394,15 +276,17 @@
+ 
+ ### Resume a paused subscription
+ 
+-Use the Dashboard, API, customer portal, or Hosted Invoice Page to resume a paused subscription.
++Use the Dashboard, API, customer portal, or hosted invoice page to resume a paused subscription.
+ 
+ #### Dashboard
+ 
+ To resume a paused subscription in the Dashboard:
+ 
+ 1. Go to the subscription, click the overflow menu (⋯), and select **Resume Subscription**.
+-1. Click the overflow menu (⋯), and select **Update Subscription**.
+-1. Expand the **Billing and payment collection** section, and click **Bill today instead** to charge the customer immediately.
++2. Click the overflow menu (⋯), and select **Update Subscription**.
++3. Select **Reset billing cycle anchor to now** to charge the customer immediately.
++4. To bill the customer for the prorated amount, click **Bill for prorated change amount**.
++5. Click **Update subscription**.
+ 
+ #### API
+ 
+@@ -418,9 +302,9 @@
+ 
+ Use the [customer portal to collect payment](https://docs.stripe.com/billing/subscriptions/trials/free-trials.md#use-the-customer-portal-to-collect-payment), then [redirect](https://docs.stripe.com/customer-management/integrate-customer-portal.md#redirect) the customer to the customer portal. The customer can select **Start subscription**, then add a payment method to resume their subscription.
+ 
+-#### Hosted Invoice Page
+-
+-To resume a paused subscription in the [Hosted Invoice Page](https://docs.stripe.com/invoicing/hosted-invoice-page.md), provide a payment method, then select **Authorize and pay**.
++#### Hosted invoice page
++
++To resume a paused subscription in the [hosted invoice page](https://docs.stripe.com/invoicing/hosted-invoice-page.md), provide a payment method, then select **Authorize and pay**.
+ 
+ ### Invoicing a subscription
+ 
+@@ -428,7 +312,7 @@
+ 
+ To preview the invoice that’s generated when a paused subscription is resumed, specify [subscription_details.resume_at](https://docs.stripe.com/api/invoices/create_preview.md#create_create_preview-subscription_details-resume_at).
+ 
+-## Combine trials with a specific billing cycle anchor
++## Combine trials with a specific billing cycle anchor 
+ 
+ You can combine trials with `billing_cycle_anchor`, resulting in a free period followed by a prorated period, leading into a fixed billing period. This capability is available through the API.
+ 
+@@ -440,40 +324,24 @@
+ 
+ #### Accounts v2
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer_account: "{{CUSTOMERACCOUNT_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  trial_end: 1753170047,
+-  billing_cycle_anchor: 1627801200,
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d trial_end=1753170047 \
++  -d billing_cycle_anchor=1627801200
+ ```
+ 
+ #### Customers v1
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-    },
+-  ],
+-  trial_end: 1753170047,
+-  billing_cycle_anchor: 1627801200,
+-});
++```curl
++curl https://api.stripe.com/v1/subscriptions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "items[0][price]={{PRICE_ID}}" \
++  -d trial_end=1753170047 \
++  -d billing_cycle_anchor=1627801200
+ ```
+ 
+ You can also use `trial_end` to change the billing period for an existing subscription. To learn more, see [Change the billing period on existing subscriptions](https://docs.stripe.com/billing/subscriptions/billing-cycle.md#changing).

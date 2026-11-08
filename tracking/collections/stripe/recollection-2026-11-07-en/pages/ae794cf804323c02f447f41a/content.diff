@@ -1,0 +1,162 @@
+--- raw/stripe-billing-analytics-2026.md
++++ raw/stripe-billing-subscriptions-analytics-2026-11-07.md
+@@ -2,7 +2,7 @@
+ 
+ Use the Stripe Dashboard to monitor and analyze your recurring revenue.
+ 
+-[Stripe Billing](https://dashboard.stripe.com/billing) analytics and [downloadable reports](https://docs.stripe.com/billing/subscriptions/analytics.md#downloadable-reports) let you:
++Stripe Billing analytics and [data exports](https://docs.stripe.com/billing/subscriptions/analytics.md#downloadable-reports) let you:
+ 
+ - Monitor overall performance at a glance
+ - Drill down into data to audit changes over time
+@@ -13,27 +13,60 @@
+ 
+ To get early access to a [preview](https://docs.stripe.com/release-phases.md) feature, enter your email.
+ 
+-| Preview program | Description                                   | Sign up                     |
+-| --------------- | --------------------------------------------- | --------------------------- |
+-| Usage MRR       | Access usage-based MRR and reporting features | to sign up for our preview. |
+-
+-## Downloadable reports
+-
+-To build financial models and begin downstream reporting, download your billing metrics data. The export is in CSV format and includes the following reports:
+-
+-| Report                       | Description                                                                                                                                                                                    |
+-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| MRR per subscriber per month | Includes the Monthly Recurring Revenue (MRR) for each subscriber at the end of each month.                                                                                                     |
+-| Subscription metrics summary | A summary of your monthly subscription metrics. The report includes your MRR roll-forward report, active subscriber roll-forward report, trial conversion metrics, and lifetime value metrics. |
+-| Customer MRR changes         | Includes a log of every MRR change for each customer, including new subscribers, upgrades, downgrades, reactivations, and churn.                                                               |
+-
+-## Configure your metrics definitions
++| Preview program | Description | Sign up |
++| --- | --- | --- |
++| Usage MRR | Access usage-based MRR and reporting features | [Sign up for our preview](https://docs.stripe.com/billing/subscriptions/analytics.md#ba_usage_mrr_beta_preview). |
++
++### Join our Usage MRR preview
++
++Enter your email to request access.
++
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/billing/subscriptions/analytics" \
++  -d '{"email": "EMAIL", "preview": "ba_usage_mrr_beta_preview"}'
++```
++
++## View accounts receivable aging
++
++You can view current accounts receivable (AR) aging information, including unpaid invoice balances grouped by how long they’ve been outstanding, on the **Billing overview** > [Collections page](https://dashboard.stripe.com/billing/collections) in the Dashboard. This view reflects your balances as of today. To view AR aging data for a supported past reporting date, you need Revenue Recognition. To learn more, see [Accounts receivable aging in Billing Analytics](https://docs.stripe.com/revenue-recognition/reports/accounts-receivable-aging.md#view-current-ar-aging-in-billing-analytics).
++
++## Export Billing Analytics data 
++
++Billing Analytics provides two ways to export CSV data. Export an individual metric to download data from its details page, or download a prebuilt report for a fixed-schema view across customers and reporting periods.
++
++### Export metric data
++
++On the **Revenue**, **Subscribers**, **Trials**, **Churn**, or **Usage** page, select a metric to open its details page, then click **Export**.
++
++In the export dialog, select the data to download:
++
++- **Summary table**: Downloads the metric’s aggregated time-series data. The export reflects the current date range, filters, grouping, and comparison, as applicable.
++- **Data results**: Downloads the underlying rows for the selected period and filters. This option only appears for metrics that support data results.
++
++### Download prebuilt reports
++
++In live mode, use **Report downloads** on the [Billing overview](https://dashboard.stripe.com/billing) page to download prebuilt reports. These reports have fixed schemas and aren’t tied to the filters or grouping on an individual metric’s details page.
++
++| Report | Description |
++| --- | --- |
++| MRR per subscriber per month | Includes the Monthly Recurring Revenue (MRR) for each subscriber at the end of each month. |
++| Subscription metrics per month | Includes your MRR roll-forward, subscriber roll-forward, retention, and customer value for each month. |
++| Customer MRR changes | Includes a log of every MRR change for each customer, including new subscribers, upgrades, downgrades, reactivations, and churn. |
++
++> #### Report time zones
++> 
++> Date columns in prebuilt reports use UTC. Billing Analytics charts use your account’s time zone, so monthly totals might not match exactly.
++
++## Configure your metrics definitions 
+ 
+ You can configure metrics from the [Billing overview](https://dashboard.stripe.com/billing) page. Click **Configure** to change how Stripe calculates Monthly Recurring Revenue (MRR), Churn, and Active Subscribers. Changes take 24-48 hours to appear in your configuration.
+ 
+ ### Discounts
+ 
+-You can configure whether to include or exclude discounts in your MRR calculation. Subtracting discounts from MRR is considered a more conservative approach to reporting MRR because it more closely reflects the present value of these customers.
++You can configure whether to include or exclude discounts in your MRR calculation. Subtracting discounts from MRR is considered  a more conservative approach to reporting MRR because it more closely reflects the present value of these customers.
+ 
+ You can adjust two settings to exclude discounts:
+ 
+@@ -42,14 +75,14 @@
+ 
+ These settings apply the same way to all coupons you use on Stripe, including subscription-level coupons, line-item level coupons, and stacked coupons. Permanent recurring discounts, are always subtracted from MRR.
+ 
+-### Active subscribers
++### Active subscribers 
+ 
+ You can configure when Stripe considers a subscriber to be active:
+ 
+ - **At the start of the subscription**: If you select this option, a subscription is considered active when the first billing period begins. This is the most common option.
+-- **When the first payment is received**: If you select this, the subscription is considered active when the first payment is received. Use this if you don’t want to consider subscribers active until they’ve paid their first invoice.
+-
+-## Audit your metrics with drill-downs
++- **When the first payment is received**:  If you select this, the subscription is considered active when the first payment is received. Use this if you don’t want to consider subscribers active until they’ve paid their first invoice.
++
++## Audit your metrics with drill-downs 
+ 
+ You can interact with billing charts using the **Explore** functionality.
+ 
+@@ -57,7 +90,7 @@
+ 
+ > This feature is currently available for a subset of billing metrics.
+ 
+-## Analyze your metrics with filtering and grouping
++## Analyze your metrics with filtering and grouping 
+ 
+ You can interact with billing charts using the **Explore** functionality.
+ 
+@@ -73,11 +106,13 @@
+ 
+ ### Monthly Recurring Revenue (MRR)
+ 
+-**MRR** is the sum of the monthly-normalized value of all your `active` and `past_due` subscriptions. MRR calculations exclude subscriptions in trial periods, any taxes applied to the subscription, any subscribers on free plans, and any metered (usage based) products. When a subscriber’s subscription is canceled or marked as `unpaid`, then the subscription is considered [churn](https://docs.stripe.com/billing/subscriptions/analytics.md#churn) and no longer counts towards MRR.
++**MRR** is the sum of the monthly-normalized value of all your `active` and `past_due` subscriptions. MRR calculations exclude any taxes applied to the subscription, any subscribers on free plans, and any metered (usage based) products. When a subscriber’s subscription is canceled or marked as `unpaid`, then the subscription is considered [churn](https://docs.stripe.com/billing/subscriptions/analytics.md#churn) and no longer counts towards MRR.
++
++For [trial offers](https://docs.stripe.com/billing/subscriptions/trials.md) (item-level trials), only the subscription items currently in a trial period are excluded from MRR. If a subscription has multiple items and only some have an active trial offer, the non-trial items still contribute to MRR. Legacy free trials (using `trial_end`) exclude the entire subscription from MRR for the duration of the trial.
+ 
+ For example, in a given period, 100 subscribers are on Plan A (100 USD per month) and 50 subscribers are on Plan B (600 USD per year). In this example, MMR is calculated as: (100 subscribers x 100 USD) + (50 subscribers x (600 USD / 12)) = 12,500 USD.
+ 
+-Learn more about how your [MRR is impacted by taxes, trials, delinquency, and refunds](<https://support.stripe.com/questions/understanding-monthly-recurring-revenue-(mrr)>).
++Learn more about how your [MRR is impacted by taxes, trials, delinquency, and refunds](https://support.stripe.com/questions/understanding-monthly-recurring-revenue-\(mrr\)).
+ 
+ ### MRR growth
+ 
+@@ -129,7 +164,7 @@
+ 
+ ### Active subscribers
+ 
+-In Stripe, you create _Customer_ (Customer objects represent customers of your business. They let you reuse payment methods and give you the ability to track multiple payments) and _Subscription_ (A Subscription represents the product details associated with the plan that your customer subscribes to. Allows you to charge the customer on a recurring basis) objects. If a customer has one or more subscriptions attached, Stripe considers that customer to be a subscriber.
++In Stripe, you create *Customer* (Customer objects represent customers of your business. They let you reuse payment methods and give you the ability to track multiple payments) and *Subscription* (A Subscription represents the product details associated with the plan that your customer subscribes to. Allows you to charge the customer on a recurring basis) objects. If a customer has one or more subscriptions attached, Stripe considers that customer to be a subscriber.
+ 
+ **Active subscribers** only includes subscribers with positive MRR that are in an `active` or `past_due` status. It doesn’t include subscribers on free plans or trials. A customer with multiple active subscriptions is counted as a single active subscriber. See [How subscriptions work](https://docs.stripe.com/billing/subscriptions/overview.md#subscription-lifecycle) for information about subscription statuses.
+ 
+@@ -159,14 +194,15 @@
+ 
+ ### New trials
+ 
+-**New trials** shows the sum of subscriptions that started a trial during the period. We count the number of trials at the subscription level rather than at the customer level, so a single customer can count as multiple trials. For example, each of the following scenarios counts as two new trials in January:
+-
+-- Customer A creates two subscriptions in January. Each subscription starts with a 7-day free trial period on January 1.
+-- Customer B enters a 7-day free trial period on January 1. They start another 7-day free trial period on January 21.
++**New trials** shows the sum of trial periods that started during the selected period. For [trial offers](https://docs.stripe.com/billing/subscriptions/trials.md) (item-level trials), Stripe counts trials at the subscription item level—each subscription item with a trial offer counts as a separate trial. For legacy free trials (using `trial_end`), Stripe counts trials at the subscription level—a single customer can count as multiple new trials. For example, each of the following scenarios counts as two new trials in January:
++
++- Customer A creates one subscription in January with two items that each have a trial offer. Each item’s trial counts separately.
++- Customer B creates two subscriptions in January, each with a legacy 7-day free trial period starting on January 1.
++- Customer C enters a 7-day legacy free trial period on January 1 and starts another 7-day legacy free trial period on January 21.
+ 
+ ### Trial conversion rate
+ 
+-**Trial conversion rate** is the number of subscriptions that converted from a trial to a paid plan in the last 30 days, divided by the number of trials that ended in the last 30 days. The number reflects the trial conversion rate at the end of the selected time period, and might exceed 100% if some subscriptions convert to a paid plan after the end of their trial period.
++**Trial conversion rate** is the number of trials that converted to a paid plan in the last 30 days, divided by the number of trials that ended in the last 30 days. For [trial offers](https://docs.stripe.com/billing/subscriptions/trials.md) (item-level trials), conversion is tracked independently for each subscription item with a trial offer. For legacy free trials (using `trial_end`), conversion is tracked at the subscription level. The number reflects the trial conversion rate at the end of the selected time period, and might exceed 100% if some trials convert to a paid plan after the end of their trial period.
+ 
+ For example, during a 30-day period, 100 trials ended and 15 trials converted. The trial conversion rate equals 15 divided by 100, or 15%.
+ 

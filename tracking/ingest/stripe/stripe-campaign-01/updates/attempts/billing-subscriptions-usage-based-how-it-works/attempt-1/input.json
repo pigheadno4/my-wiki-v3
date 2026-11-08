@@ -1,0 +1,96 @@
+{
+  "job_id": "billing-subscriptions-usage-based-how-it-works",
+  "queue_id": 56,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/usage-based/how-it-works",
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md",
+  "raw_sha256": "084ee5a8a2aacfd5e8e33640737797221166a952c91257b98d82252e1113e2aa",
+  "prior_raw_path": "raw/stripe-usage-based-billing-how-it-works-2025.md",
+  "prior_raw_sha256": "bafc1b432f6e23213869010f904429902b04a343d369cdcc40344168159d80d0",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/4de42ac4fa02be7c219fc03a/content.diff",
+  "diff_sha256": "51b1e10d22cb210b7aa247b71db63b8f4f5ec49fd1c0b13076672ebe8caf71eb",
+  "source_targets": [
+    "wiki/sources/source-stripe-usage-based-billing-how-it-works.md"
+  ],
+  "source_before_sha256": "f67af3d5d507c3330e750909a58327df59ad55dc2b2a0ee2915e3f0fabfde0fc",
+  "section": "billing",
+  "new_words": 893,
+  "new_lines": 74,
+  "old_words": 543,
+  "old_lines": 42,
+  "status": "QUEUED_FOR_CHANGE_REVIEW",
+  "semantic_review_completed": false,
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-how-it-works.md",
+  "recommended_worker_tier": "strong",
+  "routing_reason": "Existing Stripe Billing source update: full new raw + matched prior raw + current source; preserve version, UI variant, client/server, state and dated evidence boundaries; no semantic assumptions from collection diff alone.",
+  "disposition": "source_required_update",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-how-it-works/attempt-1/receipt.json",
+  "receipt_sha256": "52b909bc63dbde3d3ada24de00895b4ed88c59a3a1ad6aa4b08e57556984ade8",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-01/attempts/billing-subscriptions-usage-based-how-it-works/attempt-1/review.json",
+  "review_sha256": "b289d87d01ba5eb7b08c6f727e0325f83e1e4cdfa107b00953d82635fcbe0d97",
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "new_raw": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md",
+  "new_raw_sha256": "084ee5a8a2aacfd5e8e33640737797221166a952c91257b98d82252e1113e2aa",
+  "prior_raw": "raw/stripe-usage-based-billing-how-it-works-2025.md",
+  "findings": [
+    "The same URL's new capture opens with a new decision and scope frame absent from old 4-19: this page describes basic usage-based billing based on Billing Meters, while Stripe recommends Metronome for new usage-based integrations unless maintaining an existing Billing Meters integration, including adding usage pricing to existing flat-rate subscriptions (new 9-24). This is a recommendation in captured documentation, not a forced migration, deprecation of the Meters API, account eligibility finding, or proof that a Metronome integration is installed. Current source 13 and concept stripe-usage-based-billing.md:10 label the Meter API as the 'new/current' approach without this new routing distinction; recommend a dated source and reciprocal concept qualification.",
+    "The new page describes an architectural contrast: basic Billing Meters ingests Stripe meter events and aggregates usage for invoice generation; Metronome is described as handling event ingestion, real-time metering/rating and contract management before passing finalized charges to Stripe for payment collection and invoicing (new 11-13). It attributes real-time visibility and credit burndown, enterprise commits/minimum spend/ramps, and dimensional/composite pricing to Metronome rather than basic Meters (new 15-22). These are captured comparative claims, not an exhaustive feature matrix or independent verification of account-specific capability. Stripe's linked compare page was not part of this pinned evidence.",
+    "New 17 says customers and the team cannot see live credit balances or usage totals mid-cycle in basic billing and uses 'only reconciles usage at invoice time'; new 70 and old 42 still describe Meter Event Summary retrieval for a custom time period, updated asynchronously. Read 'live' as real-time and preserve the asynchronous summary capability; do not turn the comparison into a universal claim that mid-cycle usage data cannot be queried at all. New 18 says basic prepaid credits reconcile at invoice time and may be exceeded during a cycle; it does not show any customer's balance or overage outcome.",
+    "The old and new captures agree on four basic lifecycle components\u2014ingestion, product catalog setup, billing and monitoring (new 26-33; old 8-15)\u2014and on six core definitions: customer-configured Account or Customer, Subscription, Price, Meter, Meter event and Meter Event Summary (new 51-70; old 22-42). The identity alternative is customer-configured Accounts v2 versus Customers v1, not an interchangeable API field in every call. Meter events include event name, customer identifier, numeric usage, optional timestamp/idempotency identifier and dimensions; summaries update asynchronously (new 57-70; old 28-42). Source 17-33 is faithful for this basic path but needs its scope identified after the new recommendation.",
+    "New 39-49 adds a text rendering of the lifecycle diagram (customer action to event, meter aggregation and price rating, subscription to invoice, summaries) where old 19-20 had only a diagram pointer. It is explanatory presentation, not an observed meter ingest or invoice. The new See also pricing-model link (new 72-74) is navigation only; it does not change the six definitions or establish payment collection."
+  ],
+  "substantive_changes": [
+    "New Metronome-versus-basic section and explicit recommendation for Metronome on new integrations, while this page remains a basic Billing Meters explanation (new 9-24; absent old 4-19).",
+    "New comparative claims locate real-time usage/credit burndown, enterprise contract features and dimensional/composite pricing on Metronome, and warn that basic credits reconcile at invoice time so balance can be exceeded mid-cycle (new 13-22). These need captured-source attribution and scope qualification.",
+    "No change to the four-step basic lifecycle or six core definitions; new 26-70 largely retains old 8-42 and adds a text diagram and related navigation."
+  ],
+  "conflicts": [
+    "Current source 13 calls Billing Meters the 'new v2 approach' and concept stripe-usage-based-billing.md:10 calls it the 'current approach.' New 11 and 24 now recommend Metronome for new integrations, with the Meter API page explicitly scoped to basic or existing integrations. Recommend dated reciprocal wording that preserves the Meter-based guide without presenting it as Stripe's preferred new-build route.",
+    "The new capture's broad 'can't see live ... usage totals mid-cycle' wording (new 17) sits beside its Meter Event Summary definition for custom periods and asynchronous updates (new 70; old 42). Distinguish real-time live totals from asynchronously processed summaries; do not assert no mid-cycle query capability.",
+    "New 13 says Metronome passes finalized charges to Stripe for payment collection and invoicing. This describes a component boundary, not proof of finalized or paid invoices for a merchant. The basic lifecycle's 'Stripe invoices your customers' (new 32; old 14) likewise describes intended workflow rather than a specific successful charge."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the 2026-05-05 basic Meter API lifecycle and object definitions as dated evidence (old 8-42). The November page repeats them (new 26-70) while adding product-selection advice; do not recast the old page as having recommended Metronome.",
+    "Retain asynchronous Meter Event Summary updates and the distinction between customer-configured Accounts and Customers (old 28-42; new 57-70). The new real-time comparison does not remove the ability to retrieve a non-live custom-period summary.",
+    "Old raw 19-20 offered a lifecycle diagram pointer without its text; new 39-49 provides a text rendering. Treat it as a captured explanation, not as new API or payment-state evidence."
+  ],
+  "unresolved_questions": [
+    "The captures do not establish whether any Stripe or Metronome account has access to a feature, whether Stripe has deprecated basic Billing Meters, or whether a migration is required. The linked comparison and Metronome guides were not pinned in this exact job.",
+    "The new comparison does not define a precise latency bound for Meter Event Summary updates or every form of mid-cycle usage visibility. It claims basic billing lacks live real-time totals while the page still documents asynchronously updated custom-period summaries.",
+    "No meter event ingestion, rating calculation, invoice finalization, payment collection or credit-balance outcome was observed in these documentation captures."
+  ],
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s01uw4",
+  "reviewer_agent": "/root/s01ur2",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-usage-based-how-it-works-2026-11-07.md",
+      "sha256": "084ee5a8a2aacfd5e8e33640737797221166a952c91257b98d82252e1113e2aa",
+      "lines": 74
+    },
+    {
+      "path": "raw/stripe-usage-based-billing-how-it-works-2025.md",
+      "sha256": "bafc1b432f6e23213869010f904429902b04a343d369cdcc40344168159d80d0",
+      "lines": 42
+    },
+    {
+      "path": "wiki/sources/source-stripe-usage-based-billing-how-it-works.md",
+      "sha256": "f67af3d5d507c3330e750909a58327df59ad55dc2b2a0ee2915e3f0fabfde0fc",
+      "lines": 37
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/4de42ac4fa02be7c219fc03a/content.diff",
+      "sha256": "51b1e10d22cb210b7aa247b71db63b8f4f5ec49fd1c0b13076672ebe8caf71eb",
+      "lines": 75
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s01-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-01/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved48 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s01-updates/billing-subscriptions-usage-based-how-it-works-worker.json",
+  "review_output": "/tmp/stripe-s01-updates/billing-subscriptions-usage-based-how-it-works-review.json"
+}

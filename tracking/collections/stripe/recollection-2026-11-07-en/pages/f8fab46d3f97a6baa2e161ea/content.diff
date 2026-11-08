@@ -1,0 +1,1606 @@
+--- raw/stripe-subscriptions-schedules-2026.md
++++ raw/stripe-billing-subscriptions-subscription-schedules-2026-11-07.md
+@@ -1,8 +1,6 @@
+ # Subscription schedules
+ 
+ Learn about subscription schedules and how to use them.
+-
+-> This feature is only available in the classic version of the [Subscription editor](https://dashboard.stripe.com/subscriptions) in the Dashboard. You can switch between the classic and the new version anytime, and your choice persists for 30 days. This means when you reopen the editor, it defaults to whichever version you last selected.
+ 
+ Use [subscription schedules](https://docs.stripe.com/api/subscription_schedules.md) to automate changes to subscriptions over time. You can [create](https://docs.stripe.com/api/subscription_schedules/create.md) subscriptions directly through a schedule or you can add a schedule to an existing subscription. Use the [phases](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases) attribute to define the changes you want to make to the subscription. After a schedule completes all of its phases, it completes based on its [end_behavior](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-end_behavior).
+ 
+@@ -16,11 +14,11 @@
+ 
+ For examples of how you can use subscription schedules, see [Use cases](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md#use-cases).
+ 
+-## Phases
+-
+-When creating a subscription schedule, use the [phases](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases) attribute to define when changes occur and what properties of the subscription to change. For example, you might offer a coupon for 50% off for the first three months of a subscription. In this scenario, you’d create a subscription schedule where the first phase is three months long and contains the 50% off coupon. In the second phase, the subscription reverts to the normal cost and the coupon is removed. Phases must be sequential, meaning only one phase can be active at a given time. You can have up to 10 phases.
+-
+-### Set the length of a phase
++## Phases 
++
++When creating a subscription schedule, use the [phases](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases) attribute to define when changes occur and what properties of the subscription to change. For example, you might offer a coupon for 50% off for the first three months of a subscription. In this scenario, you’d create a subscription schedule where the first phase is three months long and contains the 50% off coupon. In the second phase, the subscription reverts to the normal cost and the coupon is removed. Phases must be sequential, meaning only one phase can be active at a given time. You can have up to 10 phases. 
++
++### Set the length of a phase 
+ 
+ You can set the length of a phase using the API or the Dashboard.
+ 
+@@ -35,22 +33,22 @@
+ To set the length of a phase:
+ 
+ 1. In the Dashboard, open the [subscription editor](https://dashboard.stripe.com/subscriptions?create=subscription).
+-1. Add a new customer, or find an existing one.
+-1. Add a new product, or find an existing one.
+-1. Click **+ Add phase**.
+-1. Select the phase duration. You can also select **Forever** to keep the subscription active indefinitely.
+-
+-### Transition to the next phase
++2. Add a new customer, or find an existing one.
++3. Add a new product, or find an existing one.
++4. Click **+ Add phase**.
++5. Select the phase duration. You can also select **Forever** to keep the subscription active indefinitely.
++
++### Transition to the next phase 
+ 
+ Phase transitions happen automatically after the `end_date` on a phase is reached. When a phase starts, Stripe updates the subscription based on the attributes of the next phase. You can optionally enable [prorations](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-proration_behavior) to credit the user for unused items or time on the plan.
+ 
+-#### Proration behavior
++#### Proration behavior 
+ 
+ There are two different proration behavior settings that control how Stripe handles billing adjustments during subscription schedule changes:
+ 
+ 1. **Schedule update proration behavior**: The top-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update.md#update_subscription_schedule-proration_behavior) parameter controls how to handle prorations when updating a subscription schedule in a way that affects the current phase’s billing configuration (such as changing prices or quantities).
+ 
+-1. **Phase transition proration behavior**: Each phase has its own [proration_behavior](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-proration_behavior) attribute that controls how Stripe handles prorations when transitioning to that phase.
++2. **Phase transition proration behavior**: Each phase has its own [proration_behavior](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-proration_behavior) attribute that controls how Stripe handles prorations when transitioning to that phase.
+ 
+ ##### Schedule update proration behavior
+ 
+@@ -76,7 +74,7 @@
+ 
+ If you need to change how a future phase transition handles prorations, update the `proration_behavior` setting on the future phase before it becomes active.
+ 
+-### Use trials
++### Use trials 
+ 
+ You can add a trial period to the first phase of a subscription using the API or the Dashboard.
+ 
+@@ -89,47 +87,56 @@
+ To add a trial period to the first phase of a new subscription:
+ 
+ 1. In the Dashboard, open the [Subscription editor](https://dashboard.stripe.com/subscriptions?create=subscription).
+-1. Add a new customer, or find an existing one.
+-1. Add a new product, or find an existing one.
+-1. Under **Free trial days**, set the length of the free trial period.
++2. Add a new customer, or find an existing one.
++3. Add a new product, or find an existing one.
++4. Under **Free trial days**, set the length of the free trial period.
+    - If you want the entire phase to be a trial, set the length of the trial to be the same as the length of the phase.
+    - If you want only part of the phase to be a trial, set the length of the trial to be shorter than the length of the phase.
+-1. Click **Create subscription**.
++5. Click **Create subscription**.
+ 
+ To add a trial period to the first phase of an existing subscription:
+ 
+ 1. In the Dashboard, go to the [Subscriptions](https://dashboard.stripe.com/subscriptions) page, select an existing subscription, and click **Actions** > **Update subscription**.
+-1. In the subscription, click **Edit** for the first phase.
+-1. Under **Free trial days**, set the length of the free trial period.
++2. In the subscription, click **Edit** for the first phase.
++3. Under **Free trial days**, set the length of the free trial period.
+    - If you want the entire phase to be a trial, set the length of the trial to be the same as the length of the phase.
+    - If you want only part of the phase to be a trial, set the length of the trial to be shorter than the length of the phase.
+-1. Click **Update subscription**.
+-
+-### Complete a schedule
++4. Click **Update subscription**.
++
++### Complete a schedule 
+ 
+ Subscription schedules end after the last phase is complete. At this point, the subscription is left in place and is no longer associated with the schedule. If you want to cancel a subscription after the last phase of a schedule completes, you can set [end_behavior](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-end_behavior) to `cancel`. The subscription’s [cancel_on_date](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-cancel_at) isn’t set until the subscription transitions into the final phase.
+ 
+-### Phase attribute inheritance
++### Phase attribute inheritance 
+ 
+ When a phase becomes active, all attributes set on the phase are also set on the subscription. After the phase ends, attributes remain the same unless the next phase modifies them, or if the schedule has no default setting. You can set some attributes on both schedules and phases. This includes:
+ 
+-| Schedule attribute                                                                                                                                                           | Phase attribute                                                                                                                                          |
+-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| [default_settings.billing_thresholds](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-default_settings-billing_thresholds)         | [phases.billing_thresholds](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-billing_thresholds)         |
+-| [default_settings.collection_method](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-default_settings-collection_method)           | [phases.collection_method](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-collection_method)           |
++| Schedule attribute | Phase attribute |
++| --- | --- |
++| [default_settings.automatic_tax](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-default_settings-automatic_tax) | [phases.automatic_tax](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-automatic_tax) |
++| [default_settings.billing_thresholds](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-default_settings-billing_thresholds) | [phases.billing_thresholds](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-billing_thresholds) |
++| [default_settings.collection_method](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-default_settings-collection_method) | [phases.collection_method](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-collection_method) |
+ | [default_settings.default_payment_method](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-default_settings-default_payment_method) | [phases.default_payment_method](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-default_payment_method) |
+-| [default_settings.invoice_settings](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-default_settings-invoice_settings)             | [phases.invoice_settings](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-invoice_settings)             |
++| [default_settings.invoice_settings](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-default_settings-invoice_settings) | [phases.invoice_settings](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-invoice_settings) |
+ 
+ If one of these attributes is defined on the schedule, it becomes the default for all phases. When the same property is defined on both the schedule and the phase, the phase attribute overrides the schedule attribute. This behavior is explained more below:
+ 
+-| Schedule attribute present | Phase attribute present | Outcome                                      |
+-| -------------------------- | ----------------------- | -------------------------------------------- |
+-| No                         | No                      | Defaults to the customer or account settings |
+-| Yes                        | No                      | Schedule attribute set                       |
+-| Yes                        | Yes                     | Phase attribute set                          |
+-| No                         | Yes                     | Phase attribute set                          |
+-
+-### Use phase metadata
++| Schedule attribute present | Phase attribute present | Outcome |
++| --- | --- | --- |
++| No | No | Defaults to the customer or account settings |
++| Yes | No | Schedule attribute set |
++| Yes | Yes | Phase attribute set |
++| No | Yes | Phase attribute set |
++
++### Configure taxes for each phase 
++
++A phase’s [automatic_tax](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-automatic_tax) setting overrides the schedule’s [default_settings.automatic_tax](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-default_settings-automatic_tax). If you omit `automatic_tax` on a phase, it inherits the schedule’s default setting.
++
++To use manual [default_tax_rates](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-default_tax_rates) for a phase, set that phase’s `automatic_tax.enabled` to `false`. This prevents the phase from inheriting enabled automatic tax if the schedule’s default changes later. You can’t configure manual tax rates and enable automatic tax for the same phase, whether or not you’ve enabled automatic tax on the phase or when inherited from the schedule. To use automatic tax, remove the phase’s manual tax rates when enabling it.
++
++If you enable automatic tax directly on a subscription with an attached schedule, Stripe updates the current phase and the schedule’s default automatic tax setting. Future phases retain their configuration, but phases without an explicit `automatic_tax` setting inherit the updated default. For example, if a future phase retains `default_tax_rates` and inherits enabled automatic tax, automatic tax takes precedence and Stripe doesn’t use those manual rates to calculate tax. The retained rates aren’t a fallback if automatic tax calculation fails.
++
++### Use phase metadata 
+ 
+ You can use subscription schedule phases to set metadata on the underlying subscription. This allows you to control the metadata on a subscription with scheduled updates.
+ 
+@@ -137,9 +144,9 @@
+ 
+ To use phase metadata with the API, set [metadata](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-metadata) on the phases of a subscription schedule. When the underlying subscription enters a phase:
+ 
+-- Metadata from the phase with non-empty values are _added_ to the metadata on the subscription if the keys _aren’t_ already present in the latter.
+-- Metadata from the phase with non-empty values are used to _update_ the metadata on the subscription if the keys _are_ already present in the latter.
+-- Metadata from the phase with _empty values_ are used to _unset_ the corresponding keys in the metadata on the subscription.
++- Metadata from the phase with non-empty values are *added* to the metadata on the subscription if the keys *aren’t* already present in the latter.
++- Metadata from the phase with non-empty values are used to *update* the metadata on the subscription if the keys *are* already present in the latter.
++- Metadata from the phase with *empty values* are used to *unset* the corresponding keys in the metadata on the subscription.
+ 
+ To unset all keys in the subscription’s metadata, update the subscription directly or unset every key individually from the phase’s metadata. Updating the underlying subscription’s metadata directly doesn’t affect the current phase’s metadata.
+ 
+@@ -210,85 +217,57 @@
+ You can add, edit, and remove metadata entries in each phase of a subscription schedule using the [Billing Dashboard subscription editor](https://dashboard.stripe.com/subscriptions?create=subscription). When a new phase activates, the metadata of the subscription object updates to match that phase’s metadata.
+ 
+ 1. In the Dashboard, open the [subscription editor](https://dashboard.stripe.com/subscriptions?create=subscription).
+-1. Add a new customer, or find an existing one.
+-1. Add a new product, or find an existing one.
+-1. In a new or existing phase, click **+ Add metadata**.
+-1. Enter a **Key** and a **Value**, then click **Save**.
++2. Add a new customer, or find an existing one.
++3. Add a new product, or find an existing one.
++4. In a new or existing phase, click **+ Add metadata**.
++5. Enter a **Key** and a **Value**, then click **Save**.
+ 
+ Learn how to [copy subscription metadata onto subscription invoices](https://docs.stripe.com/billing/invoices/subscription.md#subscription-metadata).
+ 
+-## Create subscription schedules
++## Create subscription schedules 
+ 
+ This example demonstrates how to create a subscription schedule using a customer. Creating a schedule this way automatically creates the subscription as well.
+ 
+-> Unlike when you create a subscription directly, the first invoice of a subscription schedule with `collection_method` set to `charge_automatically` behaves like a recurring invoice and _isn’t_ immediately finalized at the time the schedule’s subscription is created. The invoice begins in a `draft` status and is finalized by Stripe [approximately 1 hour after creation](https://docs.stripe.com/billing/subscriptions/webhooks.md#understand).
+->
++> Unlike when you create a subscription directly, the first invoice of a subscription schedule with `collection_method` set to `charge_automatically` behaves like a recurring invoice and *isn’t* immediately finalized at the time the schedule’s subscription is created. The invoice begins in a `draft` status and is finalized by Stripe [approximately 1 hour after creation](https://docs.stripe.com/billing/subscriptions/webhooks.md#understand).
++> 
+ > For example, when you create a subscription schedule with the collection method set to charge automatically and with `start_date=now`, this also creates a subscription and an invoice in the `draft` status. You have 1 hour to [edit the invoice](https://docs.stripe.com/api/invoices/update.md). Later, the invoice auto-advances to `open` or `paid` status, depending on the outcome of the asynchronous payment attempt at finalization time.
+ 
+ #### API
+ 
+ > #### Use the Accounts v2 API to represent customers
+->
+-> The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you’re part of the Accounts v2 preview, you need to specify a [specify a preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.
+->
+-> To request access to the Accounts v2 preview,
+->
++> 
++> The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you’re part of the Accounts v2 preview, you need to specify a [preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.
++> 
++> To join the Accounts v2 preview, go to [Account previews and features](https://dashboard.stripe.com/settings/previews) in your Dashboard and enable **Reusable payment methods for Global Payouts**.
++> 
+ > For most use cases, we recommend [modeling your customers as customer-configured Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md) instead of using [Customer](https://docs.stripe.com/api/customers.md) objects.
+ 
+ #### Accounts v2
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer_account: "{{CUSTOMERACCOUNT_ID}}",
+-  start_date: "now",
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "price_1GqNdGAJVYItwOKqEHb",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 12,
+-      },
+-    },
+-  ],
+-});
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d start_date=now \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]=price_1GqNdGAJVYItwOKqEHb" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=12"
+ ```
+ 
+ #### Customers v1
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "price_1GqNdGAJVYItwOKqEHb",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 12,
+-      },
+-    },
+-  ],
+-});
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]=price_1GqNdGAJVYItwOKqEHb" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=12"
+ ```
+ 
+ This schedule:
+@@ -299,14 +278,10 @@
+ 
+ You can also create subscription schedules by passing a subscription ID:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  from_subscription: "sub_GB98WOvaRAWPl6",
+-});
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "from_subscription={{SUBSCRIPTION_ID}}"
+ ```
+ 
+ Creating a schedule this way uses attributes on the subscription to set attributes on the schedule.
+@@ -318,122 +293,65 @@
+ To create multi-phase subscription schedules:
+ 
+ 1. In the Dashboard, open the [subscription editor](https://dashboard.stripe.com/subscriptions?create=subscription).
+-1. Add a new customer, or find an existing one.
+-1. Add a new product, or find an existing one.
+-1. Set a duration for the first phase of the subscription schedule.
+-1. Click **+ Add phase**.
+-1. Select the phase duration. You can also select **Forever** to keep the subscription active indefinitely.
+-1. Make the required changes to your new phase. You can change the quantity, change the price, add or remove coupons, reset the billing period date, change proration behavior, or update metadata. If you change the metadata in a phase, it updates the subscription’s metadata when that phase activates.
+-1. Save the new phase.
+-1. Add any additional phases as needed.
+-1. Click **Schedule subscription**.
+-
+-## Update subscription schedules
++2. Add a new customer, or find an existing one.
++3. Add a new product, or find an existing one.
++4. Set a duration for the first phase of the subscription schedule.
++5. Click **+ Add phase**.
++6. Select the phase duration. You can also select **Forever** to keep the subscription active indefinitely.
++7. Make the required changes to your new phase. You can change the quantity, change the price, add or remove coupons, reset the billing period date, change proration behavior, or update metadata. If you change the metadata in a phase, it updates the subscription’s metadata when that phase activates.
++8. Save the new phase.
++9. Add any additional phases as needed.
++10. Click **Schedule subscription**.
++
++## Update subscription schedules 
+ 
+ You can only update the current and future phases on subscription schedules.
+ 
++An upgrade or downgrade is a subscription update that changes a subscription’s tier by replacing its price. Other schedule updates can change quantities, discounts, or phase dates without changing tiers. For price replacement and subscription update API details, see [Change the price of existing subscriptions](https://docs.stripe.com/billing/subscriptions/change-price.md).
++
+ #### API
+ 
+ You need to pass in all current and future phases when you update a subscription schedule. You also need to pass in any previously set parameters that you want to keep. Any parameters that were previously set are unset for the existing phase unless you pass those in the update request. You still receive information in the response about past phases.
+ 
+ You can include up to 10 current or future phases. Updating the active phase updates the underlying subscription as well. For example, this call updates the `quantity` to two:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.update(
+-  "{{SUBSCRIPTIONSCHEDULE_ID}}",
+-  {
+-    phases: [
+-      {
+-        items: [
+-          {
+-            price: "{{PRICE_ID}}",
+-            quantity: 2,
+-          },
+-        ],
+-        start_date: 1577865600,
+-        end_date: 1580544000,
+-      },
+-    ],
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/subscription_schedules/{{SUBSCRIPTIONSCHEDULE_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "phases[0][items][0][price]={{PRICE_ID}}" \
++  -d "phases[0][items][0][quantity]=2" \
++  -d "phases[0][start_date]=1577865600" \
++  -d "phases[0][end_date]=1580544000"
+ ```
+ 
+ You can also end the current phase immediately and start a new phase. This moves the active phase to the past and immediately applies the new phase to the subscription. The example below ends the current phase and starts a new phase:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.update(
+-  "{{SUBSCRIPTIONSCHEDULE_ID}}",
+-  {
+-    phases: [
+-      {
+-        items: [
+-          {
+-            price: "{{PRICE_ID}}",
+-            quantity: 1,
+-          },
+-        ],
+-        start_date: 1577865600,
+-        end_date: "now",
+-      },
+-      {
+-        items: [
+-          {
+-            price: "{{PRICE_ID}}",
+-            quantity: 2,
+-          },
+-        ],
+-        start_date: "now",
+-        end_date: 1580544000,
+-      },
+-    ],
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/subscription_schedules/{{SUBSCRIPTIONSCHEDULE_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "phases[0][items][0][price]={{PRICE_ID}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][start_date]=1577865600" \
++  -d "phases[0][end_date]=now" \
++  -d "phases[1][items][0][price]={{PRICE_ID}}" \
++  -d "phases[1][items][0][quantity]=2" \
++  -d "phases[1][start_date]=now" \
++  -d "phases[1][end_date]=1580544000"
+ ```
+ 
+ To add additional phases to a subscription schedule, pass in the current phase, and then define your new phases:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.update(
+-  "{{SUBSCRIPTIONSCHEDULE_ID}}",
+-  {
+-    phases: [
+-      {
+-        items: [
+-          {
+-            price: "{{PRICE_ID}}",
+-            quantity: 1,
+-          },
+-        ],
+-        start_date: 1577865600,
+-        end_date: 1580544000,
+-      },
+-      {
+-        items: [
+-          {
+-            price: "{{PRICE_ID}}",
+-            quantity: 2,
+-          },
+-        ],
+-        duration: {
+-          interval: "month",
+-          interval_count: 1,
+-        },
+-      },
+-    ],
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/subscription_schedules/{{SUBSCRIPTIONSCHEDULE_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "phases[0][items][0][price]={{PRICE_ID}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][start_date]=1577865600" \
++  -d "phases[0][end_date]=1580544000" \
++  -d "phases[1][items][0][price]={{PRICE_ID}}" \
++  -d "phases[1][items][0][quantity]=2" \
++  -d "phases[1][duration][interval]=month" \
++  -d "phases[1][duration][interval_count]=1"
+ ```
+ 
+ #### Dashboard
+@@ -441,26 +359,35 @@
+ To update existing subscriptions to have future subscription schedule phases:
+ 
+ 1. In the Dashboard, go to the [Subscriptions](https://dashboard.stripe.com/subscriptions) page, select an existing subscription, and click **Actions** > **Update subscription**.
+-1. Set a duration for the current phase of the subscription schedule by selecting an end date.
+-1. Click **+Add phase**.
+-1. Select your next phase duration. You can also select **Forever** to keep the subscription active indefinitely.
+-1. Make the required changes to your new phase. You can change the quantity, change the price, add or remove coupons, reset the billing period date, change proration behavior, or update metadata. If you change the metadata in a phase, it updates the subscription’s metadata when that phase activates.
+-1. Save the new phase.
+-1. Add any additional phases as needed.
+-1. Click **Schedule subscription**.
++
++2. Set a duration for the current phase of the subscription schedule by selecting an end date. To schedule an upgrade or downgrade, keep the current phase’s existing price in place until that date.
++
++3. Click **+Add phase**.
++
++4. Select your next phase duration. You can also select **Forever** to keep the subscription active indefinitely.
++
++5. Make the required changes to your new phase. You can change the quantity, change the price, add or remove coupons, reset the billing period date, change proration behavior, or update metadata. If you change the metadata in a phase, it updates the subscription’s metadata when that phase activates.
++
++   For an upgrade or downgrade, replace the old tier’s price with the desired tier’s price in this future phase. Keep any unrelated subscription items and set the appropriate quantities. Don’t leave both tier prices in the phase unless you intend to bill for both.
++
++6. Save the new phase.
++
++7. Add any additional phases as needed.
++
++8. Click **Schedule subscription**.
+ 
+ ## Preview an invoice
+ 
++You can preview the next invoice for a subscription schedule using the API or the Dashboard.
++
++#### API
++
+ Use the [schedule](https://docs.stripe.com/api/invoices/create_preview.md#create_create_preview-schedule) parameter in the [create preview](https://docs.stripe.com/api/invoices/create_preview.md) to preview the next invoice for a subscription schedule.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const invoice = await stripe.invoices.createPreview({
+-  schedule: "{{SUBSCRIPTIONSCHEDULE_ID}}",
+-});
++```curl
++curl https://api.stripe.com/v1/invoices/create_preview \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "schedule={{SUBSCRIPTIONSCHEDULE_ID}}"
+ ```
+ 
+ ### Previewing schedule creation and updates
+@@ -471,55 +398,42 @@
+ 
+ For example, the following code previews the first invoice for a subscription schedule with `1` phase that lasts for `12` months.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const invoice = await stripe.invoices.createPreview({
+-  customer_details: {
+-    address: {
+-      line1: "920 5th Ave",
+-      city: "Seattle",
+-      state: "WA",
+-      postal_code: "98104",
+-      country: "US",
+-    },
+-  },
+-  schedule_details: {
+-    phases: [
+-      {
+-        start_date: "now",
+-        items: [
+-          {
+-            price: "{{PRICE_ID}}",
+-            quantity: 1,
+-          },
+-        ],
+-        duration: {
+-          interval: "month",
+-          interval_count: 12,
+-        },
+-      },
+-    ],
+-  },
+-});
+-```
+-
+-## Additional considerations
++```curl
++curl https://api.stripe.com/v1/invoices/create_preview \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_details[address][line1]=920 5th Ave" \
++  -d "customer_details[address][city]=Seattle" \
++  -d "customer_details[address][state]=WA" \
++  -d "customer_details[address][postal_code]=98104" \
++  -d "customer_details[address][country]=US" \
++  -d "schedule_details[phases][0][start_date]=now" \
++  -d "schedule_details[phases][0][items][0][price]={{PRICE_ID}}" \
++  -d "schedule_details[phases][0][items][0][quantity]=1" \
++  -d "schedule_details[phases][0][duration][interval]=month" \
++  -d "schedule_details[phases][0][duration][interval_count]=12"
++```
++
++#### Dashboard
++
++After the subscription schedule starts, you can preview its next invoice on the subscription page:
++
++1. In the Dashboard, go to the [Subscriptions](https://dashboard.stripe.com/subscriptions) page and select the subscription associated with the schedule.
++2. Review the **Upcoming invoice** section.
++
++## Additional considerations 
+ 
+ Subscription schedules generally follow the same restrictions as subscriptions, but also introduce some of their own restrictions. Additionally, the interaction between subscription schedules and subscriptions can produce unexpected behavior. Review the following sections to understand limitations, product behavior, and general best practices when using subscription schedules.
+ 
+-### Restrictions
++### Restrictions 
+ 
+ - You can only define up to 10 current or future phases at a time on a subscription schedule. Past phases don’t count against this limit.
+ - Subscription schedule phases also follow [the same restrictions as subscriptions](https://docs.stripe.com/billing/subscriptions/quantities.md#billing-periods-with-multiple-prices) when creating subscription schedule phases with multiple items.
+ 
+-### Dashboard limitations
++### Dashboard limitations 
+ 
+ You can create and update subscription schedules without code in the [Dashboard](https://dashboard.stripe.com/test/subscriptions).
+ 
+-In the Dashboard, you can set the following settings globally across all phases, but not on a per phase basis:
++In the Dashboard, you can set the following settings globally across all phases, but not on an individual phase:
+ 
+ - Billing thresholds
+ - Payment methods
+@@ -529,12 +443,12 @@
+ 
+ The following parameters aren’t supported in the Dashboard:
+ 
+-- Subscription schedule metadata
+-- Phase item metadata
+-- Currency
+-- All Connect parameters
+-
+-### Subscription updates when a schedule is attached
++- Subscription schedule-level metadata ([metadata](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-metadata)): Key-value pairs that you can attach to the Subscription Schedule object.
++- Phase item metadata ([phases.items.metadata](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-items-metadata)): Key-value pairs that you can attach to a configuration item.
++- Currency ([phases.currency](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-currency)): The currency used for a phase.
++- All Connect parameters: The Dashboard doesn’t support Connect-only parameters such as [phases.on_behalf_of](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-on_behalf_of) or [phases.application_fee_percent](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-phases-application_fee_percent).
++
++### Subscription updates when a schedule is attached 
+ 
+ Use [subscription schedules](https://docs.stripe.com/api/subscription_schedules.md) to modify subscriptions automatically when time passes and the schedule’s next phase is entered. Some changes that you make directly to the subscription propagate to the subscription schedule’s phases, but some don’t. This means that any modifications you make directly to the subscription might be overwritten by the subscription schedule when the next phase is entered.
+ 
+@@ -558,7 +472,7 @@
+ For example, consider a subscription with two items. The subscription has a subscription schedule attached with a single phase, mirroring the current status of the subscription. If you [use the API to delete](https://docs.stripe.com/api/subscription_items/delete.md) one of the items, this automatically splits the attached subscription schedule’s phase into two phases:
+ 
+ 1. The phase that just ended and had two subscription items
+-1. The new phase that has just one item on the subscription
++2. The new phase that has just one item on the subscription
+ 
+ When subscription schedule phases automatically split, the following properties are copied from the current phase to the new phase:
+ 
+@@ -569,26 +483,26 @@
+ - `metadata`
+ - `pause_collection`
+ 
+-Additionally, Stripe might copy the following top-level subscription attributes to the subscription schedule or its [`default_settings`](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-default_settings):
+-
+-| Subscription attribute    | Copied to new subscription schedule phase | Copied to subscription schedule `default_settings` |
+-| ------------------------- | ----------------------------------------- | -------------------------------------------------- |
+-| `coupon`                  | ✓ Supported                               | - Unsupported                                      |
+-| `trial_end`               | ✓ Supported                               | - Unsupported                                      |
+-| `tax_rates`               | ✓ Supported                               | - Unsupported                                      |
+-| `application_fee_percent` | ✓ Supported                               | ✓ Supported                                        |
+-| `discounts`               | ✓ Supported                               | - Unsupported                                      |
+-| `collection_method`       | ✓ Supported                               | ✓ Supported                                        |
+-| `invoice_settings`        | ✓ Supported                               | ✓ Supported                                        |
+-| `default_payment_method`  | ✓ Supported                               | ✓ Supported                                        |
+-| `default_source`          | ✓ Supported                               | ✓ Supported                                        |
+-| `transfer_data`           | ✓ Supported                               | ✓ Supported                                        |
+-| `on_behalf_of`            | ✓ Supported                               | ✓ Supported                                        |
+-| `currency`                | ✓ Supported                               | - Unsupported                                      |
+-| `add_invoice_items`       | ✓ Supported                               | - Unsupported                                      |
+-| `automatic_tax`           | ✓ Supported                               | ✓ Supported                                        |
+-| `items.prices`            | ✓ Supported                               | - Unsupported                                      |
+-| `billing_thresholds`      | ✓ Supported                               | ✓ Supported                                        |
++Additionally, Stripe might copy the following top-level subscription attributes to the subscription schedule or its [default_settings](https://docs.stripe.com/api/subscription_schedules/object.md#subscription_schedule_object-default_settings):
++
++| Subscription attribute | Copied to new subscription schedule phase | Copied to subscription schedule `default_settings` |
++| --- | --- | --- |
++| `coupon` | ✓ Supported | - Unsupported |
++| `trial_end` | ✓ Supported | - Unsupported |
++| `tax_rates` | ✓ Supported | - Unsupported |
++| `application_fee_percent` | ✓ Supported | ✓ Supported |
++| `discounts` | ✓ Supported | - Unsupported |
++| `collection_method` | ✓ Supported | ✓ Supported |
++| `invoice_settings` | ✓ Supported | ✓ Supported |
++| `default_payment_method` | ✓ Supported | ✓ Supported |
++| `default_source` | ✓ Supported | ✓ Supported |
++| `transfer_data` | ✓ Supported | ✓ Supported |
++| `on_behalf_of` | ✓ Supported | ✓ Supported |
++| `currency` | ✓ Supported | - Unsupported |
++| `add_invoice_items` | ✓ Supported | - Unsupported |
++| `automatic_tax` | ✓ Supported | ✓ Supported |
++| `items.prices` | ✓ Supported | - Unsupported |
++| `billing_thresholds` | ✓ Supported | ✓ Supported |
+ 
+ Updates to subscription `metadata` aren’t propagated to an attached subscription schedule.
+ 
+@@ -596,199 +510,187 @@
+ 
+ To understand subscription schedules, imagine a fictional newspaper company called The Pacific that offers two subscription options:
+ 
+-- _Print_, where customers receive the physical paper
+-- _Digital_, where customers get access to exclusive content on The Pacific’s website
+-
+-Both subscriptions bill monthly. Browse possible options for subscription schedules below.
++- *Print*, where customers receive the physical paper
++- *Digital*, where customers get access to exclusive content on The Pacific’s website
++
++Both subscriptions bill monthly.
++
++The Dashboard examples use **Forever** for the final phase to keep billing with that phase’s configuration. Setting a finite end date on the final phase in the Dashboard cancels the subscription at that date. To release a schedule after a fixed duration without canceling the subscription, use the API with `end_behavior=release`.
++
++For new subscriptions, create or select a customer and monthly recurring prices for the print and digital products. Replace the example price IDs and timestamps with your own.
+ 
+ If you represent your customers as customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/object.md) objects instead of [Customer](https://docs.stripe.com/api/customers/object.md) objects, replace the `customer` parameter in these code examples with the `customer_account` parameter. For more details, see [Represent customers using Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md).
+ 
+ ### Start a subscription in the future
+ 
+-By default, new print subscriptions start on the first day of the next month. To accomplish this, set the `start_date` to a point in the future. The code below creates a subscription that starts in the future:
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: 1690873200,
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_PRINT}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 12,
+-      },
+-    },
+-  ],
+-});
+-```
++The Pacific starts new print subscriptions on the first day of the next month.
++
++#### API
++
++Set [start_date](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-start_date) to a future Unix timestamp. Stripe creates the subscription when that date arrives.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=1690873200 \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]={{PRICE_PRINT}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=12"
++```
++
++#### Dashboard
++
++1. Open the [subscription editor](https://dashboard.stripe.com/subscriptions?create=subscription), select the customer, and add the monthly print price with a quantity of 1.
++2. Under **Duration**, select the start date and choose **1st of next month**.
++3. Select **Forever** as the end date to keep the subscription active.
++4. Click **Schedule subscription**.
+ 
+ ### Backdate a subscription
+ 
+-When customers subscribe to the digital plan, The Pacific backdates their subscriptions to the first day of the current month. Backdating allows you to charge for time in the past and allows digital subscribers to access the website immediately.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: 1688194800,
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_DIGITAL}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 12,
+-      },
+-    },
+-  ],
+-});
+-```
++When customers subscribe to the digital plan, The Pacific backdates their subscriptions to the first day of the current month. Backdating allows you to charge for time in the past. Your application controls when customers can access the website.
++
++#### API
++
++Set [start_date](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-start_date) to a past Unix timestamp to create the subscription immediately and bill for the elapsed time. The 12-month phase in this example must end in the future. Choose a start date less than 12 months ago, such as the first day of the current month.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=1688194800 \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]={{PRICE_DIGITAL}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=12"
++```
++
++#### Dashboard
++
++1. Open the [subscription editor](https://dashboard.stripe.com/subscriptions?create=subscription), select the customer, and add the monthly digital price with a quantity of 1.
++2. Under **Duration**, select the start date and choose the first day of the current month.
++3. Select **Forever** as the end date to keep the subscription active.
++4. Review the proration settings and invoice preview for the elapsed time, then create the subscription.
+ 
+ ### Add a schedule to an existing subscription
+ 
+-The Pacific might discover that some of their original customers are on subscriptions without schedules. Because these subscriptions exist already, you can pass the subscription IDs in the `from_subscription` attribute to add a schedule. Passing the subscription IDs in this way creates a schedule with one phase that’s based on the current billing period of the subscription.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  from_subscription: "{{SUBSCRIPTION_ID}}",
+-});
+-```
+-
+-While adding these schedules, some customers decide to get a print subscription, so The Pacific adds a second phase to the schedule to start the print plan one month from now. The [Upgrade subscriptions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md#upgrading-subscriptions) use case shows an example of this process.
++The Pacific might discover that some of their original customers are on subscriptions without schedules.
++
++#### API
++
++Pass the existing subscription ID in [from_subscription](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-from_subscription) instead of supplying `customer`, `start_date`, or `phases`. Stripe creates a schedule with one phase based on the subscription’s current billing period and configuration. Creating the schedule doesn’t create proration invoice items during the migration.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "from_subscription={{SUBSCRIPTION_ID}}"
++```
++
++#### Dashboard
++
++Follow the [Dashboard update instructions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md?dashboard-or-api=dashboard#updating) to add a future change. The editor creates the schedule when you save the scheduled changes.
++
++To change plans at the end of the current billing period, see [Schedule an upgrade or downgrade for an existing subscription](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md#changing-subscriptions).
+ 
+ ### Upgrade subscriptions
+ 
+ The Pacific offers an option to start with a print subscription for one month, then automatically add the digital option. Some customers prefer this because they can try the print publication first and then decide if they want to continue or cancel their subscription.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_PRINT}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 1,
+-      },
+-    },
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_PRINT}}",
+-          quantity: 1,
+-        },
+-        {
+-          price: "{{PRICE_DIGITAL}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 11,
+-      },
+-    },
+-  ],
+-});
+-```
++#### API
++
++Set the first phase’s [duration](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-duration) to one month. In the second phase’s [items](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-items), keep the print price and add the digital price.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]={{PRICE_PRINT}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=1" \
++  -d "phases[1][items][0][price]={{PRICE_PRINT}}" \
++  -d "phases[1][items][0][quantity]=1" \
++  -d "phases[1][items][1][price]={{PRICE_DIGITAL}}" \
++  -d "phases[1][items][1][quantity]=1" \
++  -d "phases[1][duration][interval]=month" \
++  -d "phases[1][duration][interval_count]=11"
++```
++
++#### Dashboard
++
++Follow the [Dashboard creation instructions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md?dashboard-or-api=dashboard#managing) with these phase settings:
++
++1. **First phase**: Add the monthly print price with quantity **1** for one month.
++2. **Second phase**: Keep the print price, add the monthly digital price with quantity **1**, and select **Forever** as the end date.
+ 
+ ### Downgrade subscriptions
+ 
+-The Pacific also offers an option to start a subscription with both the print and digital publications, and then downgrade to only the print publication for the rest of the subscription. _Customers_ (Customer objects represent customers of your business. They let you reuse payment methods and give you the ability to track multiple payments) use this option to try both publications and see how they like them.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_DIGITAL}}",
+-          quantity: 1,
+-        },
+-        {
+-          price: "{{PRICE_PRINT}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 1,
+-      },
+-    },
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_PRINT}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 11,
+-      },
+-    },
+-  ],
+-});
+-```
+-
+-### Change subscriptions
+-
+-The Pacific offers two print subscription options: a basic option with advertisements or a premium option without advertisements. Some customers on the premium option want to change to the basic option at the next billing period. You can create a schedule using the existing subscription, and then update the schedule with the basic option with advertisements as a new phase.
+-
+-#### Node.js
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-// Create a subscription schedule with the existing subscription
+-const schedule = await stripe.subscriptionSchedules.create({
+-  from_subscription: "sub_ERf72J8Sc7qx7D",
+-});
+-
+-// Update the schedule with the new phase
+-const subscriptionSchedule = await stripe.subscriptionSchedules.update(
++The Pacific also offers an option to start a subscription with both the print and digital publications, and then downgrade to only the print publication for the rest of the subscription. *Customers* (Customer objects represent customers of your business. They let you reuse payment methods and give you the ability to track multiple payments) use this option to try both publications and see how they like them.
++
++#### API
++
++Include both prices in the first phase’s [items](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-items) for one month. Include only the print price in the second phase’s `items` for 11 months.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]={{PRICE_DIGITAL}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][items][1][price]={{PRICE_PRINT}}" \
++  -d "phases[0][items][1][quantity]=1" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=1" \
++  -d "phases[1][items][0][price]={{PRICE_PRINT}}" \
++  -d "phases[1][items][0][quantity]=1" \
++  -d "phases[1][duration][interval]=month" \
++  -d "phases[1][duration][interval_count]=11"
++```
++
++#### Dashboard
++
++Follow the [Dashboard creation instructions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md?dashboard-or-api=dashboard#managing) with these phase settings:
++
++1. **First phase**: Add both monthly prices, each with quantity **1**, for one month.
++2. **Second phase**: Keep the print price, remove the digital price from this phase only, and select **Forever** as the end date.
++
++### Schedule an upgrade or downgrade for an existing subscription
++
++The Pacific offers two print subscription options: a basic subscription with ads and a premium subscription without ads. In this example, a customer with a premium subscription wants to downgrade to the basic subscription at the end of the current billing period.
++
++#### API
++
++Use two requests to schedule the downgrade:
++
++1. Create a subscription schedule from the subscription by passing the subscription ID to [from_subscription](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-from_subscription). Stripe creates a schedule with a phase that matches the subscription’s current billing period and configuration.
++2. Update the schedule by passing the current phase and adding a second phase with the basic price. The second phase starts automatically when the current phase ends.
++
++The following end-to-end example schedules the downgrade for a subscription with one item and no other phase-level settings. To schedule an upgrade, specify the upgraded price in the second phase.
++
++Include all items and settings from the current phase in the update, such as discounts, metadata, tax rates, and trial settings. Stripe unsets omitted parameters. When you update a schedule, pass all current and future phases that you want to keep.
++
++#### Ruby
++
++```ruby
++
++# Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
++# Find your keys at https://dashboard.stripe.com/apikeys.
++client = Stripe::StripeClient.new('<<YOUR_SECRET_KEY>>')
++
++# Create a subscription schedule with the existing subscription
++schedule = client.v1.subscription_schedules.create({
++  from_subscription: 'sub_ERf72J8Sc7qx7D',
++})
++
++# Update the schedule with the new phase
++client.v1.subscription_schedules.update(
+   schedule.id,
+   {
+     phases: [
+@@ -805,180 +707,152 @@
+       {
+         items: [
+           {
+-            price: "{{PRICE_PRINT_BASIC}}",
++            price: '{{PRICE_PRINT_BASIC}}',
+             quantity: 1,
+           },
+         ],
+         duration: {
+-          interval: "month",
++          interval: 'month',
+           interval_count: 1,
+         },
+       },
+     ],
+   },
+-);
+-```
++)
++```
++
++#### Dashboard
++
++Follow the [Dashboard update instructions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md?dashboard-or-api=dashboard#updating) with these phase settings:
++
++1. **Current phase**: Keep the premium price until the end of the current billing period.
++2. **Future phase**: Replace the premium price with the basic price and select **Forever** as the end date. Keep any unrelated items and quantities.
++
++Review the phase’s proration settings before saving. To schedule an upgrade instead, use the premium price in the future phase.
+ 
+ ### Increase the quantity
+ 
+-You can also schedule increases to the quantities on a subscription. The schedule below starts with one instance of the digital publication for one month. In the second phase, the quantity is increased to 2 for 11 more months.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_ID}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 1,
+-      },
+-    },
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_ID}}",
+-          quantity: 2,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 11,
+-      },
+-    },
+-  ],
+-});
+-```
++You can also schedule increases to the quantities on a subscription. This example starts with one instance of the digital publication for one month. In the second phase, the quantity increases to 2 for 11 more months.
++
++#### API
++
++Keep the same price in both phases and change the item’s [quantity](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-items-quantity) from `1` in the first phase to `2` in the second phase.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]={{PRICE_ID}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=1" \
++  -d "phases[1][items][0][price]={{PRICE_ID}}" \
++  -d "phases[1][items][0][quantity]=2" \
++  -d "phases[1][duration][interval]=month" \
++  -d "phases[1][duration][interval_count]=11"
++```
++
++#### Dashboard
++
++Follow the [Dashboard creation instructions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md?dashboard-or-api=dashboard#managing) with these phase settings:
++
++1. **First phase**: Add the monthly digital price with quantity **1** for one month.
++2. **Second phase**: Keep the digital price, change its quantity to **2**, and select **Forever** as the end date.
+ 
+ ### Use coupons
+ 
+-The Pacific occasionally runs subscription specials. The schedule below starts the customer on the print publication at 50% off for six months. The schedule removes the coupon from the subscription in the second phase for the remaining six months.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_ID}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 6,
+-      },
+-      discounts: [
+-        {
+-          coupon: "{{COUPON_ID}}",
+-        },
+-      ],
+-    },
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_ID}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 6,
+-      },
+-    },
+-  ],
+-});
+-```
++The Pacific occasionally runs subscription specials. This example starts the customer on the print publication at 50% off for six months. Use a 50%-off coupon with a [duration](https://docs.stripe.com/billing/subscriptions/coupons.md#coupon-duration) of `forever` so the discount applies to all six monthly invoices. The schedule removes the coupon from the subscription in the second phase for the remaining six months.
++
++#### API
++
++Use the ID of a 50%-off coupon in the first phase’s [discounts](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-discounts). Omit `discounts` from the second phase.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]={{PRICE_ID}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=6" \
++  -d "phases[0][discounts][0][coupon]={{COUPON_ID}}" \
++  -d "phases[1][items][0][price]={{PRICE_ID}}" \
++  -d "phases[1][items][0][quantity]=1" \
++  -d "phases[1][duration][interval]=month" \
++  -d "phases[1][duration][interval_count]=6"
++```
++
++#### Dashboard
++
++Create or select a 50%-off coupon, then follow the [Dashboard creation instructions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md?dashboard-or-api=dashboard#managing) with these phase settings:
++
++1. **First phase**: Add the monthly print price and the coupon for six months.
++2. **Second phase**: Keep the print price, remove the coupon, and select **Forever** as the end date.
+ 
+ ### Change tax rates
+ 
+ The Pacific operates in several jurisdictions, and some have unique tax rates for subscription-based businesses. One of these jurisdictions requires two tax rates: one for the first month when a customer initially subscribes, and one for recurring billings.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  end_behavior: "release",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_ID}}",
+-          quantity: 1,
+-          tax_rates: ["txr_2J8lmBBGHJYyuUJqF6QJtaAA"],
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 1,
+-      },
+-    },
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_ID}}",
+-          quantity: 1,
+-          tax_rates: ["txr_2J8lmBBGHJYyuUJqF6QJtbBB"],
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 11,
+-      },
+-    },
+-  ],
+-});
+-```
++#### API
++
++Set [tax_rates](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-items-tax_rates) on the item in each phase using your manual tax rate IDs. This example doesn’t use automatic tax calculation.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d end_behavior=release \
++  -d "phases[0][items][0][price]={{PRICE_ID}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][items][0][tax_rates][0]=txr_2J8lmBBGHJYyuUJqF6QJtaAA" \
++  -d "phases[0][duration][interval]=month" \
++  -d "phases[0][duration][interval_count]=1" \
++  -d "phases[1][items][0][price]={{PRICE_ID}}" \
++  -d "phases[1][items][0][quantity]=1" \
++  -d "phases[1][items][0][tax_rates][0]=txr_2J8lmBBGHJYyuUJqF6QJtbBB" \
++  -d "phases[1][duration][interval]=month" \
++  -d "phases[1][duration][interval_count]=11"
++```
++
++#### Dashboard
++
++Create or select the two manual tax rates, then follow the [Dashboard creation instructions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md?dashboard-or-api=dashboard#managing) with these phase settings instead of using automatic tax calculation:
++
++1. **First phase**: Add the monthly price and apply the first manual tax rate to the product for one month.
++2. **Second phase**: Keep the same price, replace the product’s manual tax rate with the second tax rate, and select **Forever** as the end date.
+ 
+ ### Release a subscription from a schedule
+ 
+-You can [release](https://docs.stripe.com/api/subscription_schedules/release.md) a subscription from a schedule if the status is `not_started` or `active`. Releasing a subscription leaves it in place but removes the schedule and any remaining phases.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.release(
+-  "{{SUBSCRIPTIONSCHEDULE_ID}}",
+-);
++Pass the schedule ID, not the subscription ID, to the [release API](https://docs.stripe.com/api/subscription_schedules/release.md). You can release a schedule with status `not_started` or `active`. Releasing removes the schedule and its remaining phases without canceling an existing subscription or creating one for a schedule that hasn’t started.
++
++```curl
++curl -X POST https://api.stripe.com/v1/subscription_schedules/{{SUBSCRIPTIONSCHEDULE_ID}}/release \
++  -u "<<YOUR_SECRET_KEY>>:"
+ ```
+ 
+ ### Cancel a schedule and subscription
+ 
+ If a subscription schedule has an active subscription, you can cancel it and its associated subscription immediately. You can only cancel a subscription schedule if its status is `not_started` or `active`.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.cancel(
+-  "{{SUBSCRIPTIONSCHEDULE_ID}}",
+-);
+-```
++#### API
++
++Pass the schedule ID to the [cancellation endpoint](https://docs.stripe.com/api/subscription_schedules/cancel.md):
++
++```curl
++curl -X POST https://api.stripe.com/v1/subscription_schedules/{{SUBSCRIPTIONSCHEDULE_ID}}/cancel \
++  -u "<<YOUR_SECRET_KEY>>:"
++```
++
++#### Dashboard
++
++For a schedule with an active subscription, open the subscription from the [Subscriptions](https://dashboard.stripe.com/subscriptions) page and select **Cancel subscription**. Choose to cancel immediately, review the final invoice and proration options, and confirm the cancellation. This also cancels the attached schedule.
++
++For a schedule that hasn’t started, open the scheduled subscription in the Dashboard, select **Delete subscription**, and confirm. This cancels the schedule before it creates a subscription.
+ 
+ ### Reset the billing cycle anchor
+ 
+@@ -986,116 +860,81 @@
+ 
+ If these customers transition to the digital edition, The Pacific schedules their transition date for the 1st day of the following month. They also reset the billing cycle anchor to that same date.
+ 
+-You can verify that the billing cycle anchor gets reset by creating a subscription using the sample code below. Look at the subscription in the Dashboard, and notice that the Upcoming Invoice is scheduled to bill the customer as soon as the digital subscription starts on the 1st.
+-
+-To see what happens if you don’t reset the anchor, run the sample code again, but remove the line that sets the billing cycle anchor to `phase_start`. Without that line, the Upcoming Invoice in the Dashboard waits to bill the customer until a full month from today, despite the transition that occurs on the 1st.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_PRINT}}",
+-          quantity: 1,
+-        },
+-      ],
+-      end_date: 1690873200,
+-    },
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_DIGITAL}}",
+-          quantity: 1,
+-        },
+-      ],
+-      duration: {
+-        interval: "month",
+-        interval_count: 11,
+-      },
+-      billing_cycle_anchor: "phase_start",
+-    },
+-  ],
+-});
+-```
++After scheduling the transition, open the subscription in the Dashboard and check the upcoming invoice date. With the billing cycle anchor reset, the invoice is scheduled for the first day of the month, when the digital phase starts.
++
++#### API
++
++Set [billing_cycle_anchor](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-billing_cycle_anchor) to `phase_start` on the digital phase to bill when that phase starts. Without this setting, the subscription keeps its existing billing cycle anchor. Replace the first phase’s [end_date](https://docs.stripe.com/api/subscription_schedules/create.md#create_subscription_schedule-phases-end_date) with the first day of next month.
++
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d "phases[0][items][0][price]={{PRICE_PRINT}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][end_date]=1690873200" \
++  -d "phases[1][items][0][price]={{PRICE_DIGITAL}}" \
++  -d "phases[1][items][0][quantity]=1" \
++  -d "phases[1][duration][interval]=month" \
++  -d "phases[1][duration][interval_count]=11" \
++  -d "phases[1][billing_cycle_anchor]=phase_start"
++```
++
++#### Dashboard
++
++1. Follow the [Dashboard update instructions](https://docs.stripe.com/billing/subscriptions/subscription-schedules.md?dashboard-or-api=dashboard#updating) to keep the print price in the current phase until the first day of next month.
++2. Add a future phase with the digital price instead of the print price and select **Forever** as its end date.
++3. In that future phase, under **Billing cycle details**, select **Reset billing cycle anchor to now**. For a future phase, this resets the anchor when the phase starts, not when you save the schedule.
++4. Review the proration settings, save the phase, and save the scheduled changes.
++
++The reset option isn’t shown when the phase already starts on a billing cycle boundary.
+ 
+ ### Installment plans
+ 
++Use a subscription with a fixed end date to collect a set number of monthly payments.
++
++#### API
++
+ Installment plans allow customers to make partial payments for a set amount of time until the total amount is paid. For example, when The Pacific buys new printing presses, they sell the used ones to other publications. Smaller publications rarely have enough funds to pay for a printing press upfront, so they pay using an installment plan instead.
+ 
+ For most presses, The Pacific charges 1,000 USD per month so a reusable price is created:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const price = await stripe.prices.create({
+-  unit_amount: 100000,
+-  currency: "usd",
+-  product: "prod_Hh99apo1OViyGW",
+-  recurring: {
+-    interval: "month",
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/prices \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d unit_amount=100000 \
++  -d currency=usd \
++  -d "product={{PRODUCT_ID}}" \
++  -d "recurring[interval]=month"
+ ```
+ 
+ Depending on the make, model, and age of the printing press, The Pacific charges different amounts. This example charges 1,000 USD each month for 6 months, for a total of 6,000 USD.
+ 
+ #### Accounts v2
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer_account: "{{CUSTOMERACCOUNT_ID}}",
+-  start_date: "now",
+-  end_behavior: "cancel",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_ID}}",
+-          quantity: 1,
+-        },
+-      ],
+-      iterations: 6,
+-    },
+-  ],
+-});
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d start_date=now \
++  -d end_behavior=cancel \
++  -d "phases[0][items][0][price]={{PRICE_ID}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][iterations]=6"
+ ```
+ 
+ #### Customers v1
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  end_behavior: "cancel",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price: "{{PRICE_ID}}",
+-          quantity: 1,
+-        },
+-      ],
+-      iterations: 6,
+-    },
+-  ],
+-});
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d end_behavior=cancel \
++  -d "phases[0][items][0][price]={{PRICE_ID}}" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][iterations]=6"
+ ```
+ 
+ The number of `iterations` is multiplied by the price’s interval—6 monthly payments in this example—to determine the number of times the customer is charged. `end_behavior` determines what happens to the subscription after the last iteration is complete. In an installment plan, the subscription isn’t needed anymore so `end_behavior` is set to `cancel`.
+@@ -1104,64 +943,43 @@
+ 
+ #### Accounts v2
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer_account: "{{CUSTOMERACCOUNT_ID}}",
+-  start_date: "now",
+-  end_behavior: "cancel",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price_data: {
+-            currency: "usd",
+-            product: "prod_Hh99apo1OViyGW",
+-            recurring: {
+-              interval: "month",
+-            },
+-            unit_amount: 50000,
+-          },
+-          quantity: 1,
+-        },
+-      ],
+-      iterations: 6,
+-    },
+-  ],
+-});
++```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d start_date=now \
++  -d end_behavior=cancel \
++  -d "phases[0][items][0][price_data][currency]=usd" \
++  -d "phases[0][items][0][price_data][product]={{PRODUCT_ID}}" \
++  -d "phases[0][items][0][price_data][recurring][interval]=month" \
++  -d "phases[0][items][0][price_data][unit_amount]=50000" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][iterations]=6"
+ ```
+ 
+ #### Customers v1
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscriptionSchedule = await stripe.subscriptionSchedules.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  start_date: "now",
+-  end_behavior: "cancel",
+-  phases: [
+-    {
+-      items: [
+-        {
+-          price_data: {
+-            currency: "usd",
+-            product: "prod_Hh99apo1OViyGW",
+-            recurring: {
+-              interval: "month",
+-            },
+-            unit_amount: 50000,
+-          },
+-          quantity: 1,
+-        },
+-      ],
+-      iterations: 6,
+-    },
+-  ],
+-});
+-```+```curl
++curl https://api.stripe.com/v1/subscription_schedules \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d start_date=now \
++  -d end_behavior=cancel \
++  -d "phases[0][items][0][price_data][currency]=usd" \
++  -d "phases[0][items][0][price_data][product]=prod_Hh99apo1OViyGW" \
++  -d "phases[0][items][0][price_data][recurring][interval]=month" \
++  -d "phases[0][items][0][price_data][unit_amount]=50000" \
++  -d "phases[0][items][0][quantity]=1" \
++  -d "phases[0][iterations]=6"
++```
++
++#### Dashboard
++
++To collect six monthly payments of 1,000 USD:
++
++1. Open the [subscription editor](https://dashboard.stripe.com/subscriptions?create=subscription) and select the customer.
++2. Add a monthly recurring price of 1,000 USD with a quantity of 1.
++3. Under **Duration**, set the start date and an end date six monthly billing cycles later. Don’t select **Forever**.
++4. Review the schedule and create the subscription.
++
++The subscription cancels at the end of the 6-month phase.

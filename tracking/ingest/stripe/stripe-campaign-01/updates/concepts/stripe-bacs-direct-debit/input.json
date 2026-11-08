@@ -1,0 +1,113 @@
+{
+  "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-bacs-direct-debit/base.md",
+  "base_sha256": "8761fdc9c43290fa9ac589a950740abe2b05a973ed5815d5fb698911e0262346",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-bacs-debit::bacs-subscription-heading-scope",
+      "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+      "old_text": "## Bacs Subscriptions (Checkout only)",
+      "new_text": "## Bacs subscriptions: Checkout guide",
+      "reason": "Remove unsupported universal exclusivity inference from the section heading.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "bacs-subscription-heading-scope",
+      "job_id": "billing-subscriptions-bacs-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/receipt.json",
+      "receipt_sha256": "fe3870d4d1ed763a0edd098e86b294d346c3d55dc43fe8e1199297e078f16503",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "f1390b4d44a10e6fb1f991da8c2a25869e84c40700c5f09f3ce2eb0e7dbbd7ad",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-bacs-debit::bacs-subscription-path-scope",
+      "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+      "old_text": "Bacs subscriptions use Checkout (`payment_method_types: ['bacs_debit']`, `mode='subscription'`). No custom Elements path.",
+      "new_text": "The 2026-05-13 and 2026-11-07 Bacs subscription guide documents a Checkout path with `mode='subscription'` and at least one recurring Price. Its May Node.js examples explicitly select `bacs_debit`; November curl examples omit that field and direct Dashboard payment-method configuration. This guide alone does not resolve other subscription UI paths or account eligibility.",
+      "reason": "Qualify Checkout as this guide's path and date the Node-only example without treating curl omission as deprecation.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "bacs-subscription-path-scope",
+      "job_id": "billing-subscriptions-bacs-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/receipt.json",
+      "receipt_sha256": "fe3870d4d1ed763a0edd098e86b294d346c3d55dc43fe8e1199297e078f16503",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "f1390b4d44a10e6fb1f991da8c2a25869e84c40700c5f09f3ce2eb0e7dbbd7ad",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-bacs-debit::bacs-subscription-fulfillment",
+      "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+      "old_text": "**Delayed notification** \u2014 do NOT fulfill on `checkout.session.completed` alone. Wait for `checkout.session.async_payment_succeeded` or `invoice.paid`. Bacs notification emails are NOT sent in sandboxes.",
+      "new_text": "**Delayed notification** \u2014 `checkout.session.completed` records debit authorization, not payment success. Before fulfillment, verify the related subscription is `active` and wait for `invoice.paid` or a `succeeded` underlying PaymentIntent; `active` alone can precede the first payment. `checkout.session.async_payment_succeeded` reports later payment success, not immediate funds availability. Bacs notification emails are not sent in sandboxes.",
+      "reason": "State the explicit November fulfillment gate and distinguish payment success from available funds.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "bacs-subscription-fulfillment",
+      "job_id": "billing-subscriptions-bacs-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/receipt.json",
+      "receipt_sha256": "fe3870d4d1ed763a0edd098e86b294d346c3d55dc43fe8e1199297e078f16503",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "f1390b4d44a10e6fb1f991da8c2a25869e84c40700c5f09f3ce2eb0e7dbbd7ad",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-bacs-debit::bacs-subscription-test-timing",
+      "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+      "old_text": "**Delayed test accounts recommended** (3-min processing) to simulate live behavior; instant accounts settle immediately in sandbox.",
+      "new_text": "**Delayed test accounts recommended** (three-minute processing) to better simulate live behavior. The sandbox table includes immediate success, delayed success and failure, and a success followed immediately by dispute; these are test outcomes, not settlement evidence.",
+      "reason": "Correct the overbroad instant-settlement wording.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "bacs-subscription-test-timing",
+      "job_id": "billing-subscriptions-bacs-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/receipt.json",
+      "receipt_sha256": "fe3870d4d1ed763a0edd098e86b294d346c3d55dc43fe8e1199297e078f16503",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "f1390b4d44a10e6fb1f991da8c2a25869e84c40700c5f09f3ce2eb0e7dbbd7ad",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/review.json"
+    },
+    {
+      "update_id": "billing-subscriptions-bacs-debit::bacs-subscription-source-route",
+      "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+      "old_text": "- [[source-stripe-subscriptions-bacs-debit]] \u2014 Bacs subscription: Checkout-only, delayed notification events, 9 test accounts, inline pricing, trials, tax rates",
+      "new_text": "- [[source-stripe-subscriptions-bacs-debit]] \u2014 Bacs subscription Checkout guide (2026-05-13 and 2026-11-07): delayed fulfillment, sandbox-copy change, nine test accounts, and deprecated dynamic tax-rate field",
+      "reason": "Provide a reciprocal dated route without unsupported Checkout exclusivity.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "bacs-subscription-source-route",
+      "job_id": "billing-subscriptions-bacs-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/receipt.json",
+      "receipt_sha256": "fe3870d4d1ed763a0edd098e86b294d346c3d55dc43fe8e1199297e078f16503",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/candidate.md",
+      "source_candidate_sha256": "f1390b4d44a10e6fb1f991da8c2a25869e84c40700c5f09f3ce2eb0e7dbbd7ad",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-subscriptions-bacs-debit/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-bacs-debit::bacs-subscription-heading-scope",
+    "billing-subscriptions-bacs-debit::bacs-subscription-path-scope",
+    "billing-subscriptions-bacs-debit::bacs-subscription-fulfillment",
+    "billing-subscriptions-bacs-debit::bacs-subscription-test-timing",
+    "billing-subscriptions-bacs-debit::bacs-subscription-source-route"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-bacs-direct-debit/auto-candidate.md",
+  "auto_candidate_sha256": "6e0f06c5e32122431ae8afdeba25fc17a34423d62b15701803ed53b5aaae4a3f",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-bacs-direct-debit-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-bacs-direct-debit-concept-review.json"
+}

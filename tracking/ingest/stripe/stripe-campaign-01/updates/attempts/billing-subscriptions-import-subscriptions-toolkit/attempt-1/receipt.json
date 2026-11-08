@@ -1,0 +1,192 @@
+{
+  "job_id": "billing-subscriptions-import-subscriptions-toolkit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md",
+  "raw_sha256": "72dbd05cc01e4f453f1c8693859cf716fb6883800c419cfa5eae823b0e790431",
+  "source_before_sha256": "474e460df13e652b01497ee8fb17097a0e5c0be6e54b999e6d31c5876573c3e1",
+  "source_page": "---\ntitle: \"Stripe \u2014 Billing Migration Toolkit\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/import-subscriptions-toolkit\"\nraw_files:\n  - \"stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md\"\n  - \"stripe-subscriptions-migration-toolkit-2026.md\"\ntags: [stripe, subscriptions, migration, billing-toolkit, csv, subscription-schedule, pan-import]\n---\n\n## Overview\n\nStripe's Dashboard Billing migration toolkit imports subscription data from a third-party, home-grown, or another Stripe account through CSV and creates scheduled Stripe subscriptions. The page describes preparation, validation, migration timing, and repair paths; an uploaded or scheduled subscription does not prove a payment was collected. See [[stripe]] and [[stripe-subscriptions]].\n\nSet up a Stripe Billing integration before migration. A payments-data import from the prior processor is required only when moving from another processor, not for Stripe-to-Stripe migration. For a third-party or home-grown system, create the new Stripe subscriptions before canceling the old ones, then cancel old subscriptions before their next charge; schedule close billing dates after the last old-system charge. These are the page's timing instructions, not evidence that any migration has run.\n\n## CSV route and defaults\n\n| Template | Recurring-price representation |\n| --- | --- |\n| Basic | Destination Stripe `customer`, future `start_date`, recurring `price`, and optional quantity/settings |\n| Multi-price items | Destination `customer`, future `start_date`, and `items.x.price` with optional quantities |\n| Ad-hoc pricing | Destination `customer`, future `start_date`, and recurring `adhoc_items.x` amount, product, interval, and currency |\n\nChoose the template that matches the recurring pricing route; the full specification lists the fields at November raw lines 476\u2013506. The toolkit requires `start_date` at least 24 hours after CSV upload, or at least 1 hour in a sandbox. A past `backdate_start_date` requires `proration_behavior=none`. The worked January 2024 timestamps and the renewal example's \"charge immediately\" wording do not waive the future upload-time buffer.\n\n> [!warning] Contradiction\n> The 2026-05-12 toolkit page says omitted `proration_behavior` defaults to `create_prorations` (May lines 52, 77, 111, 449). The 2026-11-07 same-URL page says an omitted column or blank value defaults to `none` (November lines 57, 89, 127, 497). Use the November toolkit-specific wording for this CSV route; do not apply it to the separate Subscription Schedule API's top-level or per-phase defaults. The November past-due-cycle example explicitly sets `create_prorations` for a prorated invoice and possible dunning if unpaid (lines 377\u2013383).\n\nThe optional `add_invoice_items.0.amount`, `.product`, and `.currency` fields add a **one-time extra** in major currency units. They are separate from recurring `adhoc_items`. Omit or leave all three blank for a recurring-only import; copying the recurring amount into the one-time field requests a second charge. The November 9.99 + 9.99 = 19.98 illustration is before taxes, discounts, or credits (lines 504\u2013510).\n\n> [!warning] Contradiction\n> Both captures' Basic add-on example says the extra fee is **20 USD** in prose (May line 255; November line 316), but the `add_invoice_items.0.amount` CSV row contains **50** (May line 260; November line 320). The November field definition makes that a one-time amount in major units. Reconcile the intended amount and valid template before reusing the row; it is not a verified 20 USD upload example. Some other sample rows are also column-misaligned, so use the full specification and current template for exact headers.\n\nFor Stripe-to-Stripe migration, the Customer, Price, and any Coupon or Tax IDs must belong to the destination account. The older source summary wrote `metadata.source`; the November full specification writes `metadata_source` while template prose also uses `metadata.source`. The exact accepted CSV header is unresolved in these captures; do not silently normalize it in an upload template. See November lines 431\u2013442, 474, and 491.\n\n## Payment source and collection\n\nThe November Advanced setting **Allow subscriptions without a default payment source** is unchecked by default. This blocks `charge_automatically` rows whose customer lacks a default source. `send_invoice` rows are exempt from that check and require customer email and `days_until_due`; an emailed invoice or an active subscription status does not establish payment. If the setting is checked, rows without a default source can import, but their invoices will fail to collect at billing time unless a default is set before the first billing date. This scoped validation qualifies the broad \"all customers\" wording in the CSV prerequisites table. See November lines 153\u2013163, 465\u2013467, 498, and 502.\n\nOn a missing-source error, download the error file, inspect `processing_error`, set a default for each affected customer, and upload the revised CSV. An already attached method can be made the default; the page gives Dashboard steps and an API update using `invoice_settings[default_payment_method]`. For data from another processor, the PAN import may need to finish first. See November lines 238\u2013286.\n\n## Tax and other constraints\n\n> [!warning] Contradiction\n> The May 2026 external-tax example said blank `automatic_tax` and `default_tax_rate` fields would automatically follow the configured Billing tax integration after go-live (May lines 362\u2013366). The November 2026 toolkit guidance says blanks **do not enable automatic tax for future invoices**. For a configured third-party tax app, it says set `automatic_tax=true` on the migrated subscription; installing or selecting the app alone is insufficient (November lines 412\u2013416, 493). This is documented toolkit guidance, not an observed tax calculation.\n\nStripe Tax's automatic calculation path requires customer location data, and `default_tax_rate` is incompatible with `automatic_tax`. The toolkit supports one coupon per subscription. With a future anchor and `proration_behavior=none`, updating the schedule or subscription can unset the coupon and requires reapplying it. See November lines 59, 420, 460\u2013474, and 499.\n\n## Timing, review, and limits\n\nThe CSV upload limit is 120 MB. The toolkit validates the file, then presents a summary to review before **Start migration**. It creates Subscription Schedules and retains a 24-hour pre-live buffer, reduced to 1 hour in a sandbox. A scheduled subscription cannot be edited in the toolkit or canceled by a customer in the portal; the page routes edits to the schedule API or Dashboard. The toolkit's **Cancel migration** action is available for 10 hours after scheduling; afterward use the schedule cancel endpoint or cancel individual subscriptions in the Dashboard. Monitor invoices, payment methods, charge dates, and amounts after go-live. See November lines 147\u2013202 and 220\u2013225.\n\nValidation errors include invalid dates, too-early `start_date`, missing required fields, tax/price incompatibility, and missing default payment source for `charge_automatically`. Correct the `processing_error` rows and re-upload. The guide's sample rows and status descriptions are not receipts for a successful charge, tax calculation, or account eligibility.\n\n## Related\n\n- [[stripe-subscriptions]] \u2014 subscription concept and toolkit route\n- [[stripe-subscriptions-schedules]] \u2014 schedule behavior and distinct API proration defaults\n- [[source-stripe-subscriptions-migration]] \u2014 migration overview\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07|Billing migration toolkit, captured 2026-11-07]]\n- [[raw/stripe-subscriptions-migration-toolkit-2026|Billing migration toolkit, captured 2026-05-12]]\n",
+  "quotes": [
+    {
+      "text": "In the migration toolkit, omitting the `proration_behavior` column or leaving its value blank defaults to `none`.",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md:57"
+    },
+    {
+      "text": "By default, **Allow subscriptions without a default payment source** is unchecked, which means Stripe blocks any `charge_automatically` subscription in your CSV where the customer doesn\u2019t have a default payment source on file.",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md:155"
+    },
+    {
+      "text": "The amount of an optional additional one-time charge, not the recurring price amount.",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md:63"
+    },
+    {
+      "text": "This doesn\u2019t enable automatic tax for future invoices.",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md:414"
+    },
+    {
+      "text": "| 50 | prod_xxx1 | usd |",
+      "location": "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md:320"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The default value is `create_prorations`.",
+      "location": "raw/stripe-subscriptions-migration-toolkit-2026.md:52"
+    },
+    {
+      "text": "After the subscriptions are migrated and live, they automatically follow the tax integration workflows you set up for new subscriptions in your Billing integration.",
+      "location": "raw/stripe-subscriptions-migration-toolkit-2026.md:366"
+    },
+    {
+      "text": "An ad-hoc invoice add-on fee of 20 USD",
+      "location": "raw/stripe-subscriptions-migration-toolkit-2026.md:255"
+    },
+    {
+      "text": "| 50 | prod_xxx1 | usd |",
+      "location": "raw/stripe-subscriptions-migration-toolkit-2026.md:260"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-import-subscriptions-toolkit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 325
+      },
+      {
+        "start": 326,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 455
+      },
+      {
+        "start": 456,
+        "end": 514
+      }
+    ],
+    "raw/stripe-subscriptions-migration-toolkit-2026.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 225
+      },
+      {
+        "start": 226,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 459
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-migration-toolkit.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d8d1b9c1bb09c3fc52444264/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 560
+      },
+      {
+        "start": 561,
+        "end": 645
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "migration-toolkit-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-migration-toolkit]] \u2014 Toolkit detail: 3 CSV types, 24h go-live buffer, 10h cancel window, timing advice, validation errors",
+      "new_text": "- [[source-stripe-subscriptions-migration-toolkit]] \u2014 Billing migration toolkit (May and November 2026 captures): three CSV paths, scheduled-start and cancellation windows, collection validation, toolkit-specific proration default, and tax/sample contradictions\n\n> [!warning] Contradiction\n> The May toolkit capture said blank/omitted `proration_behavior` defaults to `create_prorations` and blank external-tax fields would follow the Billing integration after go-live. The November capture says this toolkit CSV defaults to `none` and blank tax fields do not enable future automatic tax. Its unchanged Basic example also says 20 USD in prose but puts 50 in the one-time amount field. See the dated [[source-stripe-subscriptions-migration-toolkit]]; do not treat sample rows as verified upload templates.",
+      "reason": "Update the reciprocal source route and surface consequential dated contradictions where subscription migration is indexed.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Toolkit CSV default differs from separate Subscription Schedule API settings.",
+        "The 20 USD prose/50 field mismatch remains unresolved in both captures."
+      ]
+    },
+    {
+      "update_id": "migration-toolkit-schedule-default-boundary",
+      "target_path": "wiki/concepts/stripe-subscriptions-schedules.md",
+      "old_text": "Both accept: `create_prorations` (default), `none`, `always_invoice`.",
+      "new_text": "Both accept: `create_prorations` (default), `none`, `always_invoice`.\n\n> [!warning] Contradiction\n> This default describes the top-level and per-phase **Subscription Schedule API** settings above. The 2026-05-12 [[source-stripe-subscriptions-migration-toolkit]] capture described its separate CSV `proration_behavior` default as `create_prorations`, while the 2026-11-07 capture says an omitted or blank toolkit CSV value defaults to `none`. Do not use the schedule API default to fill a toolkit CSV value.",
+      "reason": "Prevent the schedule API default from overriding the newly documented toolkit CSV default while preserving the existing API claim.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May and November toolkit captures disagree on the separate CSV default; this patch does not change the schedule API default."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/import-subscriptions-toolkit, the 2026-11-07 capture describes Dashboard CSV creation of scheduled subscriptions from third-party, home-grown, or Stripe-account data (new lines 9\u201320), with three template variants and a future start_date (new lines 34\u201350, 75\u201384, 107\u2013116). The completed [[source-stripe-subscriptions-migration-toolkit]] candidate preserves the old 24-hour buffer, sandbox one-hour exception and ten-hour toolkit cancellation window (old lines 43\u201344, 156\u2013188; new lines 49, 187\u2013202, 220\u2013225). November says blank toolkit proration_behavior defaults to none (new lines 57 and 497), contradicting May's create_prorations (old lines 52 and 449). Charge-automatically default-source validation is scoped and optional to relax, while send_invoice is exempt but requires email and days_until_due (new lines 153\u2013163, 465\u2013467). None of this verifies payment collection or account eligibility.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/import-subscriptions-toolkit, [[source-stripe-subscriptions-migration-toolkit]] now records the November toolkit CSV default of none versus May create_prorations (new line 497; old line 449), default-source validation for charge_automatically with send_invoice exemption (new lines 153\u2013163), and optional one-time add_invoice_items fields distinct from recurring adhoc_items (new lines 504\u2013510). May said blank external-tax fields would automatically follow a configured integration after go-live (old lines 362\u2013366); November says blanks do not enable future automatic tax and requires a configured third-party app plus automatic_tax=true for that route (new lines 412\u2013416). Both captures' Basic add-on prose says 20 USD but their one-time amount row says 50 (old lines 255 and 260; new lines 316 and 320), so the candidate warns against treating it as a verified 20 USD upload row. The future start_date rule survives January examples; no actual upload, charge or tax calculation was observed."
+  },
+  "status": "candidate_ready"
+}

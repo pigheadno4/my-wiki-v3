@@ -28,16 +28,18 @@ Stripe generates one invoice per subscription billing period. This page covers t
 4. Finalized → payment attempted
 5. Payment succeeds → `status=paid`
 
-## Payment method priority
+## Saved-default payment method fallback
 
-Stripe uses the first available in this order:
+For invoice collection, Stripe uses the first available saved default in this order; accepted payment method **types** are configured separately with `payment_settings.payment_method_types`:
 
-| Priority | Source | API field |
+| Priority | Saved default | API field |
 |---|---|---|
-| 1 | Invoice default PM | `invoice.default_payment_method` |
-| 2 | Subscription default PM | `subscription.default_payment_method` |
-| 3 | Customer invoice default PM | `customer.invoice_settings.default_payment_method` |
-| 4 | (Legacy) Customer default source | `customer.default_source` |
+| 1 | Invoice | `invoice.default_payment_method` |
+| 2 | Subscription | `subscription.default_payment_method` |
+| 3 | Customer or customer-configured Account | `customer.invoice_settings.default_payment_method` or `configuration.customer.billing.default_payment_method`, respectively |
+| 4 | Legacy customer source | `customer.default_source` |
+
+See [[source-stripe-subscriptions-invoices]] (2026-11-07 capture, lines 62–71) for the fallback and [[source-stripe-subscriptions-payment-methods-setting]] for accepted types.
 
 ## Working with the draft window
 
@@ -51,7 +53,7 @@ stripe.invoiceItems.create({ invoice: draftInvoiceId, pricing: { price: priceId 
 stripe.invoiceItems.create({ customer: customerId, pricing: { price: priceId } })
 ```
 
-**Pause for review**: set `auto_advance=false` within 1h → prevents auto-finalization. Resume with `auto_advance=true`.
+**Pause for review**: set `auto_advance=false` within one hour of `invoice.created` to prevent automatic payment attempts and invoice emailing while reviewing. Resume automatic collection with `auto_advance=true`. The cited invoice-guide passage does not expressly establish a finalization outcome; see [[source-stripe-subscriptions-invoices]] (2026-05-13 lines 234–242; 2026-11-07 lines 263–271).
 
 **Max 250 invoice items** per invoice.
 
@@ -92,7 +94,7 @@ Stripe walks invoices newest → oldest until a condition matches:
 
 | Location | Value |
 |---|---|
-| `invoice.subscription_details.metadata` | Snapshot at **invoice creation time** — immutable |
+| `invoice.subscription_details.metadata` | Contains subscription metadata from invoice creation, even if subscription metadata changes later; see [[source-stripe-subscriptions-invoices]] (2026-05-13 line 280; 2026-11-07 line 309) |
 | Line items `parent.type=subscription_item_details` | **Most recent** subscription metadata at retrieval time |
 | Line items `parent.type=invoice_item_details` | No subscription metadata |
 
@@ -102,13 +104,13 @@ Subscription item metadata is not propagated to any other objects automatically.
 
 ## Per-subscription payment method settings
 
-`payment_settings.payment_method_types` overrides which PMs the customer can use for a specific subscription (e.g. `['card', 'customer_balance']`). Passed to the subscription's SetupIntent and invoices.
+`payment_settings.payment_method_types` limits allowed **types**, not the identity of a saved default method. An explicit subscription list overrides Invoice default type configuration for that subscription and passes to its SetupIntent and invoices. With `send_invoice`, customers choose eligible types on the Hosted Invoice Page; with `charge_automatically`, Stripe attempts payment without first showing a selector. Eligibility also depends on account activation, currency, amount, country, collection method, and product support. [[source-stripe-subscriptions-payment-methods-setting]]
 
-**Pitfall**: if a `default_payment_method` is set on the customer or subscription, it must be included in `payment_method_types` or it won't be used and payment may fail.
+**Pitfall**: when an applicable default payment method exists, include its **type** in an explicit `payment_method_types` list; otherwise that default method cannot pay the subscription's invoices. This type allowance is separate from the priority of an individual saved method. [[source-stripe-subscriptions-payment-methods-setting]]
 
-**`save_default_payment_method`**: when enabled, whatever PM the customer pays with becomes the new subscription default.
+**Save-default controls (dated captures)**: The 2026-05-13 payment-methods guide says either Dashboard Invoice **Save customer payment information** or Subscription `payment_settings.save_default_payment_method` can make a method used to pay an invoice “the new default,” without identifying the destination for each control. The 2026-11-07 payment-method-types guide is silent on saving. Separately, the 2026-11-07 subscription-invoices guide specifies that `payment_settings.save_default_payment_method=on_subscription` (default `off`) saves the method from a **successful subscription payment** as `subscription.default_payment_method`. This subscription setting is separate from the Dashboard control; these captures do not establish the Dashboard control's destination. See [[source-stripe-subscriptions-payment-methods-setting]] (May 2026) and [[source-stripe-subscriptions-invoices]] (2026-11-07 lines 73–77).
 
-**Payment update links** (Dashboard, `charge_automatically` only): single-use, card-only, 30-day expiry, `active`/`past_due`/`trialing` status required, doesn't change customer default PM.
+**Payment update links (May 2026 capture)**: the Dashboard guide described links for automatically billed `active`, `past_due`, or `trialing` subscriptions; card-only, one use, 30-day expiry. They update the associated subscription's method, not the customer's default. The November type-settings guide does not address link availability. [[source-stripe-subscriptions-payment-methods-setting]]
 
 ## payment_behavior options
 
@@ -134,4 +136,4 @@ Both: → `active` after first invoice paid. **23-hour rule**: first invoice unp
 
 - [[source-stripe-subscriptions-invoices]] — Stripe docs: full subscription invoice guide (lifecycle, payment priority, draft window, void rules, metadata)
 - [[source-stripe-billing-collection-method]] — Collection methods: charge_automatically vs send_invoice, payment_behavior options, 23h incomplete_expired rule, unpaid draft behavior
-- [[source-stripe-subscriptions-payment-methods-setting]] — Per-subscription PM settings: payment_method_types pitfall, save_default_payment_method, payment update links (30-day, card-only)
+- [[source-stripe-subscriptions-payment-methods-setting]] — Allowed subscription payment method types and invoice eligibility (November 2026); save-default and payment update link details retained as May 2026 evidence

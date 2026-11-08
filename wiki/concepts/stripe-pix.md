@@ -7,27 +7,29 @@ tags: [stripe, pix, pix-automatico, brazil, brl, subscriptions, payment-methods,
 
 ## Overview
 
-Pix is Brazil's instant payment system. On Stripe, Pix subscriptions use **Pix Automático** — a customer-authorized mandate that enables automatic recurring charges without requiring customer action for each payment. Brazil only, BRL currency only.
+Pix is Brazil's instant payment system. The 2026-05-13 Stripe Pix subscription guide uses **Pix Automático**, a customer-authorized mandate for recurring charges, and illustrates a 20 BRL monthly price. It says a Brazilian Pix-enabled bank account is needed for its live example. These captures do not establish universal merchant, country or currency eligibility; the 2026-11-07 page is only a variant index. See [[source-stripe-subscriptions-pix]].
 
 ## Pix Automático
 
-Pix Automático is a mandate-based extension of Pix for recurring payments. The customer scans a QR code once in their banking app to authorize the mandate. All subsequent subscription charges happen automatically.
+Pix Automático is a mandate-based extension of Pix for recurring payments. The customer authorizes a mandate in their banking app; later charges can be automatic within the mandate's conditions, but can fail or the mandate can be revoked.
 
-**Key fields**:
-- `payment_method_options.pix.mandate_options.amount` — maximum amount that can be charged per period. Can be set higher than current price to allow future upgrades without re-authorization.
-- `payment_method_options.pix.mandate_options.payment_schedule` — `monthly`, `weekly`, etc.
+**Example mandate fields (2026-05-13 guide)**:
+- `payment_method_options.pix.mandate_options.amount` — the example's mandate amount. A higher amount may accommodate a future upgrade without returning on-session, but charges above the mandate or a customer-set limit can fail.
+- `payment_method_options.pix.mandate_options.payment_schedule` — the example's monthly schedule; a more frequent new billing interval can fail. The older direct Subscriptions API prose makes mandate options optional and its example omits this field. Pix charging is limited to once per specified mandate cycle in that guide.
 
-## Required customer fields
+## Customer fields in the May 2026 example forms
 
-| Field | Requirement |
+| Field | Example form input |
 |---|---|
-| `name` | Full name of account holder |
-| `email` | Email address |
-| `tax_id` | CPF (individual) or CNPJ (business) — required by Brazilian government |
+| `name` | Full name; marked required in the SetupIntents and Subscriptions API example forms |
+| `email` | Email; marked required in those example forms |
+| `tax_id` | CPF (individual) or CNPJ (business); marked required in those example forms. The guide states a government requirement for cross-border transactions, not every Pix buyer. |
 
 ## Subscription integration paths
 
-### Checkout
+### Checkout — 2026-05-13 guide example
+
+The 2026-11-07 page only links to a Checkout variant; its request body is unread in this comparison. The code below is the retained May example, not a verified current recipe.
 
 ```js
 stripe.checkout.sessions.create({
@@ -41,11 +43,11 @@ stripe.checkout.sessions.create({
 
 ### SetupIntents
 
-SetupIntent → `stripe.confirmPixSetup(clientSecret, { payment_method: { billing_details: { name, email, tax_id } }, return_url })` → customer scans QR → `succeeded` → create subscription with `default_payment_method`.
+In the 2026-05-13 SetupIntents example, `stripe.confirmPixSetup` and banking-app authorization can make the **SetupIntent** `succeeded` and attach its PaymentMethod; this is setup without an initial payment. Create a subscription with that `default_payment_method` and check its separate payment outcome. The return page verifies SetupIntent status, not invoice payment.
 
 ### Subscriptions API
 
-Create subscription with `default_incomplete` + mandate options → display QR → customer scans → activates.
+In the 2026-05-13 Subscriptions API example, create an initially `incomplete` subscription with `default_incomplete`; mandate options are optional in that variant's prose. Confirm the first-invoice PaymentIntent with Pix and verify its status on return. The guide describes activation and saving the default PaymentMethod **after successful payment**, not from displaying or scanning the QR alone.
 
 ## QR code display options
 
@@ -79,4 +81,7 @@ Release notes announce Pix PaymentIntent and SetupIntent support in PaymentSheet
 
 - [[source-github-stripe-android]] - native 23.22.0 bindings and PaymentSheet release announcements with explicit implementation limits
 
-- [[source-stripe-subscriptions-pix]] — Stripe docs: Pix subscription guide (Checkout + SetupIntents + Subscriptions API, Pix Automático, 6 test email patterns)
+- [[source-stripe-subscriptions-pix]] — 2026-11-07 Pix subscription variant index and retained 2026-05-13 combined Checkout, SetupIntents and Subscriptions API guide; mandate, payment and sandbox conditions are dated
+
+> [!warning] Contradiction
+> Earlier concept wording treated both mandate options as universal requirements, CPF/CNPJ as universally government-required, and a QR scan as sufficient for direct API activation. The May guide itself says direct API mandate options are optional, limits the stated tax-ID rule to cross-border transactions, and activates after successful payment. The November index does not resolve current variant rules; see [[source-stripe-subscriptions-pix]].

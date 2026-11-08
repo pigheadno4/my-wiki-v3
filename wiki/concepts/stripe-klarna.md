@@ -7,13 +7,13 @@ tags: [stripe, klarna, bnpl, subscriptions, payment-methods, checkout, payment-e
 
 ## Overview
 
-Klarna is a Buy Now Pay Later (BNPL) payment method available on Stripe across 23 countries. Customers authenticate and select repayment options (Pay Now, Pay Later, Pay in installments) via a Klarna-hosted redirect. Supports subscriptions.
+Klarna is a Buy Now Pay Later (BNPL) payment method on Stripe. Customers authenticate and select repayment options (Pay Now, Pay Later, Pay in installments) through a Klarna-hosted redirect, subject to their use case and buyer country. The 2026-05-13 subscription guide includes sandbox test data for 23 customer countries; this does not establish current merchant or buyer eligibility. The guide describes subscription integrations.
 
 **Important**: Payment options available to customers vary by use case and buyer country — check Klarna's supported options before integrating.
 
-## Supported countries (23)
+## May 2026 sandbox country data (23)
 
-AU, AT, BE, CA, CZ, DK, FI, FR, DE, GR, IE, IT, NL, NZ, NO, PL, PT, RO, ES, SE, CH, UK, US
+The dated subscription guide gives test inputs for AU, AT, BE, CA, CZ, DK, FI, FR, DE, GR, IE, IT, NL, NZ, NO, PL, PT, RO, ES, SE, CH, UK and US. This is a sandbox test list, not a current eligibility matrix; Klarna options vary by use case and buyer country.
 
 ## Subscription integration
 
@@ -21,13 +21,16 @@ Stripe recommends **Checkout** for Klarna subscriptions.
 
 ### Checkout (recommended)
 
-Enable Klarna from Dashboard payment methods settings. Create Checkout Session with `mode='subscription'`. Retrieve subscription via `checkout.session.completed` webhook or by expanding the session.
+The May 2026 guide creates a Checkout Session with `mode='subscription'` and at least one recurring Price; its sample omits `payment_method_types`, without establishing a universal override rule. Retrieve the created subscription through `checkout.session.completed`, or retrieve and verify the Session server-side if the buyer returns. A visit to `success_url` alone does not prove payment or justify access.
+
+> [!warning] Contradiction
+> The guide's Session-creation request uses `mode='subscription'`, but its illustrative `checkout.session.completed` payload says `mode: "setup"`. Treat the payload as an inconsistent example, not a subscription-mode instruction. See [[source-stripe-subscriptions-klarna]].
 
 Supports trial periods via `subscription_data.trial_period_days` or `trial_end`.
 
 ### Payment Element (advanced)
 
-Create subscription with `payment_behavior=default_incomplete` + `save_default_payment_method='on_subscription'` → mount Payment Element → `stripe.confirmPayment({ return_url, mandate_data })` → Klarna redirects customer → on return check PaymentIntent status.
+In the May 2026 advanced example, create an incomplete subscription with `payment_behavior=default_incomplete` and `save_default_payment_method='on_subscription'`, then mount the Payment Element. Its `stripe.confirmPayment` call passes `elements` and `confirmParams` with `return_url` and example `mandate_data`; Klarna redirects the buyer. On return, check the PaymentIntent and call payment successful and the subscription active only if its status is `succeeded`. The example does not impose those confirm parameters on hosted Checkout.
 
 ## Testing
 
@@ -40,4 +43,4 @@ Full per-country test data (name, DOB, address, phone for 23 countries) in [[sou
 
 ## Sources
 
-- [[source-stripe-subscriptions-klarna]] — Stripe docs: Klarna subscription integration guide (Checkout + Payment Element, 23-country test data)
+- [[source-stripe-subscriptions-klarna]] — 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data

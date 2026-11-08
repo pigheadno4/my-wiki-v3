@@ -1,0 +1,161 @@
+{
+  "target_path": "wiki/concepts/stripe-entitlements.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-entitlements/base.md",
+  "base_sha256": "33c3d371e697aebdb13a92b6aa6e57ad28d9860b1ee90c9a63e259a749f7ca61",
+  "patches": [
+    {
+      "update_id": "billing-entitlements::billing-entitlements-concept-overview",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "Stripe Entitlements is a feature-gating layer built into Stripe Billing. It lets you map internal product features to Stripe Products so that Stripe automatically tracks which customers should have access to which capabilities based on their active subscription status \u2014 without custom database tables or manual provisioning logic.",
+      "new_text": "Stripe Entitlements is a feature-gating layer built into Stripe Billing. In the 2026-05-13 guide, mapping internal product features to Stripe Products lets Stripe track customer entitlements through subscriptions; the application still handles provisioning and de-provisioning from entitlement signals.",
+      "reason": "Correct the existing no-manual-provisioning overstatement while dating the guide.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "billing-entitlements-concept-overview",
+      "job_id": "billing-entitlements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/receipt.json",
+      "receipt_sha256": "4b8fdc9e23f3686ccd08162008ef465c31d6d367946a0b46986f76468110191b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/candidate.md",
+      "source_candidate_sha256": "e30959902507d8156cfde41b7bdaf92952998c55465df3edc66da077efd16834",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-entitlements::billing-entitlements-concept-summary-object",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "| `entitlements.active_entitlement_summary` | The full entitlement snapshot for a customer; returned in webhook payloads and the polling API. |",
+      "new_text": "| `entitlements.active_entitlement_summary` | Customer entitlement summary in the webhook payload. Its `entitlements.data` array holds at most 10 items; use `entitlements.url` for the complete paginated list when the customer has more than 10 active entitlements. |",
+      "reason": "Remove the unqualified full-snapshot claim contradicted by the old guide's 10-item cap.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "billing-entitlements-concept-summary-object",
+      "job_id": "billing-entitlements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/receipt.json",
+      "receipt_sha256": "4b8fdc9e23f3686ccd08162008ef465c31d6d367946a0b46986f76468110191b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/candidate.md",
+      "source_candidate_sha256": "e30959902507d8156cfde41b7bdaf92952998c55465df3edc66da077efd16834",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-entitlements::billing-entitlements-concept-provisioning",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "5. **Grant**: feature present in `entitlements.data` \u2192 enable access\n6. **Revoke**: feature absent from `entitlements.data` \u2192 disable access",
+      "new_text": "5. **Grant**: enable a feature listed in `entitlements.data`\n6. **Revoke**: before disabling a feature absent from `entitlements.data`, reconcile against the complete active-entitlement list when the summary may be truncated; for a customer with more than 10 entitlements, fetch all pages through `entitlements.url`",
+      "reason": "Prevent revocation based solely on absence from a capped summary.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "billing-entitlements-concept-provisioning",
+      "job_id": "billing-entitlements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/receipt.json",
+      "receipt_sha256": "4b8fdc9e23f3686ccd08162008ef465c31d6d367946a0b46986f76468110191b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/candidate.md",
+      "source_candidate_sha256": "e30959902507d8156cfde41b7bdaf92952998c55465df3edc66da077efd16834",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-entitlements::billing-entitlements-concept-webhook",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "Fires whenever a customer's entitlements change (subscribe, upgrade, downgrade, cancel). Payload is the full current entitlement state.",
+      "new_text": "In the 2026-05-13 API guide, this event signals entitlement changes through subscriptions. The payload gives a current summary; `entitlements.data` can omit active features when the customer has more than 10 entitlements, so fetch the complete paginated list before absence-based revocation.",
+      "reason": "Qualify the second full-state claim at the webhook section.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "billing-entitlements-concept-webhook",
+      "job_id": "billing-entitlements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/receipt.json",
+      "receipt_sha256": "4b8fdc9e23f3686ccd08162008ef465c31d6d367946a0b46986f76468110191b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/candidate.md",
+      "source_candidate_sha256": "e30959902507d8156cfde41b7bdaf92952998c55465df3edc66da077efd16834",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-entitlements::billing-entitlements-concept-source-route",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)",
+      "new_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe Entitlements guide, captured in full on 2026-05-13; the 2026-11-07 capture is a Dashboard/API variant index.",
+      "reason": "Make reciprocal route precise about capture type and date.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "billing-entitlements-concept-source-route",
+      "job_id": "billing-entitlements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/receipt.json",
+      "receipt_sha256": "4b8fdc9e23f3686ccd08162008ef465c31d6d367946a0b46986f76468110191b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/candidate.md",
+      "source_candidate_sha256": "e30959902507d8156cfde41b7bdaf92952998c55465df3edc66da077efd16834",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-entitlements::billing-entitlements-concept-archive-limits",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "| Archive | Irreversible. Still generates entitlements on existing product attachments. Lookup key can be reused after archiving. |",
+      "new_text": "| Archive | In the 2026-05-13 Dashboard guide, archived features cannot be edited, attached to new products, or unarchived. Existing product attachments still create entitlements; the lookup key can be reused. |",
+      "reason": "Surface the irreversible no-new-attachments constraint in the decision row, alongside existing effects.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "billing-entitlements-concept-archive-limits",
+      "job_id": "billing-entitlements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/receipt.json",
+      "receipt_sha256": "4b8fdc9e23f3686ccd08162008ef465c31d6d367946a0b46986f76468110191b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/candidate.md",
+      "source_candidate_sha256": "e30959902507d8156cfde41b7bdaf92952998c55465df3edc66da077efd16834",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-entitlements/attempt-2/review.json"
+    },
+    {
+      "update_id": "billing-quickstart::billing-quickstart-entitlements-route",
+      "target_path": "wiki/concepts/stripe-entitlements.md",
+      "old_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)",
+      "new_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)\n- [[source-stripe-checkout-subscriptions-quickstart]] \u2014 Hosted subscription sample using active-entitlement summary events and list API for access",
+      "reason": "Add a reciprocal route for the quickstart's explicit feature-fulfillment example without repeating entitlement rules.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "billing-quickstart-entitlements-route",
+      "job_id": "billing-quickstart",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/receipt.json",
+      "receipt_sha256": "fccc1d0c1f38a6546e8cc4a73a904dcb410d91ab583b62a289f31754d834da2f",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/candidate.md",
+      "source_candidate_sha256": "27c3852452bd613824054859a4c4780cd3f5371bfb940dd3f696b7d782be4284",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-01/updates/attempts/billing-quickstart/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-entitlements::billing-entitlements-concept-overview",
+    "billing-entitlements::billing-entitlements-concept-summary-object",
+    "billing-entitlements::billing-entitlements-concept-provisioning",
+    "billing-entitlements::billing-entitlements-concept-webhook",
+    "billing-entitlements::billing-entitlements-concept-source-route",
+    "billing-entitlements::billing-entitlements-concept-archive-limits",
+    "billing-quickstart::billing-quickstart-entitlements-route"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-01/updates/concepts/stripe-entitlements/auto-candidate.md",
+  "auto_candidate_sha256": "301aa088927c7d9843c1fd9a13b1daa742f8d8ba2f2223af4815eb1716fe5f59",
+  "conflict_clusters": [
+    [
+      {
+        "start": 3494,
+        "end": 3614,
+        "old_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)",
+        "new_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe Entitlements guide, captured in full on 2026-05-13; the 2026-11-07 capture is a Dashboard/API variant index.",
+        "ids": [
+          "billing-entitlements::billing-entitlements-concept-source-route"
+        ]
+      },
+      {
+        "start": 3494,
+        "end": 3614,
+        "old_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)",
+        "new_text": "- [[source-stripe-billing-entitlements]] \u2014 Stripe docs: Entitlements guide (Dashboard + API tabs, full webhook payloads)\n- [[source-stripe-checkout-subscriptions-quickstart]] \u2014 Hosted subscription sample using active-entitlement summary events and list API for access",
+        "ids": [
+          "billing-quickstart::billing-quickstart-entitlements-route"
+        ]
+      }
+    ]
+  ],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s01-updates/stripe-entitlements-concept.json",
+  "review_output": "/tmp/stripe-s01-updates/stripe-entitlements-concept-review.json"
+}

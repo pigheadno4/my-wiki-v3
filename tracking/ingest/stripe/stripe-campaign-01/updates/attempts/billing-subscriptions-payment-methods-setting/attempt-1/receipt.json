@@ -1,0 +1,137 @@
+{
+  "job_id": "billing-subscriptions-payment-methods-setting",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-payment-methods-setting-2026-11-07.md",
+  "raw_sha256": "ee4fe74f93f8af3beb964a7941c29123c5ebb51aa554dd867cee0a3de0d27456",
+  "source_before_sha256": "fbeeaca88b1ef87e51b5280900a60bbc9ab3b2411f93373b01be38f374310e4c",
+  "source_page": "---\ntitle: \"Stripe Subscriptions \u2014 Set Payment Method Types Per Subscription\"\ntype: source\ndate_ingested: 2026-11-08\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/billing/subscriptions/payment-methods-setting\nraw_files:\n  - \"stripe-billing-subscriptions-payment-methods-setting-2026-11-07.md\"\n  - \"stripe-subscriptions-payment-methods-setting-2026.md\"\ntags: [stripe, billing, subscriptions, payment-methods, payment-settings, payment-update-link]\n---\n\n## Summary\n\nStripe's November 7, 2026 guide explains that subscription `payment_settings.payment_method_types` limits the **types allowed** to pay subscription invoices; it does not select a single saved default payment method. The May 13, 2026 capture also documented subscription updates, payment-update links, and save-default controls. Details omitted from the November capture remain dated May evidence, not evidence of removal or current availability.\n\n## Allowed types and collection method (November 2026)\n\n- With `send_invoice`, customers choose among eligible types on the Hosted Invoice Page; some types support only this collection method.\n- With `charge_automatically`, Stripe attempts collection without first presenting a payment-method selector. The configured types constrain the invoice PaymentIntent. An invoice payment or recovery flow later offers eligible types.\n- Account activation, recurring-payment and product support, currency, amount, country, and collection method constrain eligibility. Ineligible types cannot pay the invoice or appear in customer-facing payment flows.\n\n## Type selection and default method\n\nBy default, Stripe derives allowed types for a subscription-generated invoice from the account's Invoice default payment method configuration, attempts to include the **type** of the applicable saved default method, and filters by invoice eligibility. Explicit subscription `payment_settings.payment_method_types` takes precedence over the default invoice type configuration for that subscription and is passed to its SetupIntent and invoices.\n\n**Pitfall:** If the subscription has an applicable default payment method, include that method's **type** in an explicit `payment_method_types` list. Otherwise, the default method cannot pay the subscription invoices. Type inclusion is distinct from selecting which saved method Stripe attempts. The May capture separately says a subscription `default_payment_method` or legacy `default_source` can prioritize an individual method; it also says the account's Invoice default type configuration takes precedence over the older customer `default_source` setting. These older method-priority statements are dated May evidence, not a three-step priority ladder for allowed types.\n\n## Configure the subscription\n\nThe November Dashboard example creates a subscription that emails a manual invoice: Subscriptions \u2192 Create subscription \u2192 choose customer \u2192 Payment: **Email invoice the customer to pay manually** \u2192 Payment methods: **Manage** \u2192 select and save allowed types.\n\nIts API example creates a subscription using an existing customer and recurring price, with `payment_settings[payment_method_types]` entries such as `card` and `link`. A restricted key needs `subscription_write` permission. This is a create example, not evidence that updating is unavailable or that a payment succeeded.\n\nThe May capture separately showed an update example:\n\n```js\nstripe.subscriptions.update(subId, {\n  payment_settings: {\n    payment_method_types: ['card', 'customer_balance']\n  }\n})\n```\n\n## Save a payment method as a default (May 2026 only)\n\nThe May guide said that either enabling **Save customer payment information** in Dashboard Invoice settings or setting Subscription `payment_settings.save_default_payment_method` can make a method used to pay an invoice \u201cthe new default.\u201d That sentence did not identify the destination object for each control. The November payment-method-types guide does not discuss saving a paid method as default. Do not assume that both controls change the subscription's default from these captures alone.\n\n## Payment update links (May 2026 only)\n\nThe May Dashboard guide described single-use links for customers to update the payment method on an automatically billed subscription. It said links are available for `active`, `past_due`, or `trialing` subscriptions, require a card, allow one update, and expire after 30 days if unused. The link updates only its associated subscription's method, not the customer's default payment method. These link restrictions are separate from the save-default settings above; the November guide is silent on current link availability.\n\n## Ineligible types and possible errors\n\nIf an explicitly configured type is ineligible, Stripe **might** return an error when creating or updating the subscription or finalizing an invoice, according to the November guide. The May guide also discussed possible creation and payment-time/finalization errors. Neither capture establishes a successful account-specific payment attempt.\n\nFor payment-method-specific options, see `payment_settings.payment_method_options`.\n\n## Related pages\n\n- [[stripe-subscriptions-invoices]] \u2014 invoice collection and payment-method settings\n- [[source-stripe-billing-collection-method]] \u2014 collection methods\n- [[stripe-subscriptions]] \u2014 subscription concepts\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[stripe-billing-subscriptions-payment-methods-setting-2026-11-07]] \u2014 November 7, 2026 Stripe docs capture\n- [[stripe-subscriptions-payment-methods-setting-2026]] \u2014 May 13, 2026 Stripe docs capture\n",
+  "quotes": [
+    {
+      "text": "This controls the allowed types instead of selecting a single default payment method.",
+      "location": "raw/stripe-billing-subscriptions-payment-methods-setting-2026-11-07.md:9"
+    },
+    {
+      "text": "For `send_invoice`, customers can select from the eligible payment method types when they pay on the Hosted Invoice Page.",
+      "location": "raw/stripe-billing-subscriptions-payment-methods-setting-2026-11-07.md:13"
+    },
+    {
+      "text": "Stripe also attempts to include the type of the applicable default payment method and filters the result based on eligibility for the invoice.",
+      "location": "raw/stripe-billing-subscriptions-payment-methods-setting-2026-11-07.md:25"
+    },
+    {
+      "text": "If the subscription uses a [default payment method](https://docs.stripe.com/billing/invoices/subscription.md#collect-payment), include that method\u2019s type in `payment_method_types`.",
+      "location": "raw/stripe-billing-subscriptions-payment-methods-setting-2026-11-07.md:59"
+    },
+    {
+      "text": "If you explicitly configure an ineligible type, Stripe might return an error when creating or updating the subscription or finalizing an invoice.",
+      "location": "raw/stripe-billing-subscriptions-payment-methods-setting-2026-11-07.md:65"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you enable **Save customer payment information** in the Dashboard invoice settings or the [save_default_payment_method](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-payment_settings-save_default_payment_method) parameter of the `Subscription`, any payment method the customer uses to pay the invoice becomes the new default.",
+      "location": "raw/stripe-subscriptions-payment-methods-setting-2026.md:40"
+    },
+    {
+      "text": "A link can only update the payment method on the associated subscription, and can\u2019t change the customer\u2019s default payment method.",
+      "location": "raw/stripe-subscriptions-payment-methods-setting-2026.md:57"
+    },
+    {
+      "text": "const subscription = await stripe.subscriptions.update(\"sub_49ty4767H20z6a\", {",
+      "location": "raw/stripe-subscriptions-payment-methods-setting-2026.md:23"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-payment-methods-setting-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "raw/stripe-subscriptions-payment-methods-setting-2026.md": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-payment-methods-setting.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/58643716b76fc8ad0c10ef85/content.diff": [
+      {
+        "start": 1,
+        "end": 121
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "type-flow-and-eligibility",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "`payment_settings.payment_method_types` overrides which PMs the customer can use for a specific subscription (e.g. `['card', 'customer_balance']`). Passed to the subscription's SetupIntent and invoices.",
+      "new_text": "`payment_settings.payment_method_types` limits allowed **types**, not the identity of a saved default method. An explicit subscription list overrides Invoice default type configuration for that subscription and passes to its SetupIntent and invoices. With `send_invoice`, customers choose eligible types on the Hosted Invoice Page; with `charge_automatically`, Stripe attempts payment without first showing a selector. Eligibility also depends on account activation, currency, amount, country, collection method, and product support. [[source-stripe-subscriptions-payment-methods-setting]]",
+      "reason": "November clarifies type identity, collection flow and invoice eligibility.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "default-type-pitfall",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "**Pitfall**: if a `default_payment_method` is set on the customer or subscription, it must be included in `payment_method_types` or it won't be used and payment may fail.",
+      "new_text": "**Pitfall**: when an applicable default payment method exists, include its **type** in an explicit `payment_method_types` list; otherwise that default method cannot pay the subscription's invoices. This type allowance is separate from the priority of an individual saved method. [[source-stripe-subscriptions-payment-methods-setting]]",
+      "reason": "New warning names method type and invoice consequence precisely.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "save-default-destination",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "**`save_default_payment_method`**: when enabled, whatever PM the customer pays with becomes the new subscription default.",
+      "new_text": "**Save-default controls (May 2026 capture)**: the guide says Dashboard Invoice **Save customer payment information** or Subscription `payment_settings.save_default_payment_method` can make a method used to pay an invoice \u201cthe new default.\u201d It does not identify the destination object for each control. The November payment-method-types capture is silent on saving behavior; see [[source-stripe-subscriptions-payment-methods-setting]].",
+      "reason": "Prior approved review rejects the unsupported claim that both controls save to subscription.default_payment_method.",
+      "quote_indexes": [],
+      "warnings": [
+        "May-only; no destination object established for both controls by assigned captures."
+      ]
+    },
+    {
+      "update_id": "update-links-date",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "**Payment update links** (Dashboard, `charge_automatically` only): single-use, card-only, 30-day expiry, `active`/`past_due`/`trialing` status required, doesn't change customer default PM.",
+      "new_text": "**Payment update links (May 2026 capture)**: the Dashboard guide described links for automatically billed `active`, `past_due`, or `trialing` subscriptions; card-only, one use, 30-day expiry. They update the associated subscription's method, not the customer's default. The November type-settings guide does not address link availability. [[source-stripe-subscriptions-payment-methods-setting]]",
+      "reason": "Preserve May link restrictions with date and keep distinct from save-default controls.",
+      "quote_indexes": [],
+      "warnings": [
+        "November omission does not establish current availability or deprecation."
+      ]
+    },
+    {
+      "update_id": "source-index-description",
+      "target_path": "wiki/concepts/stripe-subscriptions-invoices.md",
+      "old_text": "- [[source-stripe-subscriptions-payment-methods-setting]] \u2014 Per-subscription PM settings: payment_method_types pitfall, save_default_payment_method, payment update links (30-day, card-only)",
+      "new_text": "- [[source-stripe-subscriptions-payment-methods-setting]] \u2014 Allowed subscription payment method types and invoice eligibility (November 2026); save-default and payment update link details retained as May 2026 evidence",
+      "reason": "Keep concept source list aligned with dated source.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/payment-methods-setting, `payment_settings.payment_method_types` controls allowed types, not a saved default identity (November lines 9,25-27). `send_invoice` offers eligible choices on the Hosted Invoice Page; `charge_automatically` attempts collection without an initial selector (lines 11-14). [[source-stripe-subscriptions-payment-methods-setting]] separates these rules from May-only save-default and update-link descriptions.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/payment-methods-setting, November changes the source's allowed-type and eligibility description, adds the Dashboard manual-invoice creation and API creation examples, and says ineligible explicit types might error at creation, update, or invoice finalization (lines 25-65). [[source-stripe-subscriptions-payment-methods-setting]] preserves May's update sample and payment-update-link restrictions as dated evidence. May line 40 says the paid method becomes 'the new default' under two controls but does not identify both destinations; the current source and concept must remove their unqualified subscription-default claim. No sample proves a payment succeeded."
+  },
+  "status": "candidate_ready"
+}
