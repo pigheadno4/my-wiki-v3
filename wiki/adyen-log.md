@@ -6,6 +6,18 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-08] ingest | Adyen Web `6.48.1`
+
+- Approved additive delta with focused reading, `github-63a67800194fcf63cd6f`, SHA `6ccc03f83b064c2171bc836edd9b35444e582823`, only after validated/completed 6.48.0. One-file exact-SHA supplement confirms SF_VERSION 6.4.1; PayPal JS pin 11.2.1. IRIS mobile/UPI/beta-host validation remain release-note-qualified, not full implementation, compliance or hosted-runtime proof.
+- Concept-first online-payments update; cumulative source/changelog/company/catalog/logs preserve all prior history and warnings. Both 222-file snapshot identities verified; two changed manifests/220 unchanged files, supplement and prior context covered, generated/duplicated material mechanically checked. Source_count remains 3206; repository-qualified package release count 33. No extra collection, SDK build/upstream/browser/compliance/payment test, commit or push.
+- Receipt: `tracking/github/repos/adyen/adyen-web/ingest-review-2026-11-08.md`; details [[source-github-adyen-web]] and [[changelog-github-adyen-web]].
+
+## [2026-11-08] ingest | Adyen Web `6.48.0`
+
+- Approved additive delta with focused reading, `github-7af6b1df429e8b0d75bf`, SHA `a05c1184195fa73ce7dc9e956fa080cb40638209`, including five exact-SHA supplemental files. Optional Session continuation with distinct UIElement/review paths, detached-3DS2 callback protection, bounded Apple Pay completion/abort handling and hosting-error analytics; SF_VERSION 6.4.0 / PayPal JS 11.2.0 pins remain independent runtime boundaries.
+- Concept-first updates to online payments, review-page checkout and 3D Secure; source/changelog/company/catalog/logs preserve every earlier release and 6.45.1 warning. All 444 snapshot file identities and five supplements verified; 10 modified/212 unchanged, inventories/duplicated diff mechanically checked. Source_count remains 3206; repository-qualified package release count 32. No SDK install/build, upstream/browser/issuer/payment test, further collection, commit or push. Complete this cycle before claiming 6.48.1.
+- Receipt: `tracking/github/repos/adyen/adyen-web/ingest-review-2026-11-08.md`; details [[source-github-adyen-web]] and [[changelog-github-adyen-web]].
+
 ## [2026-11-07] ingest | Adyen React Native `2.14.0`
 
 - Approved full additive ingest with focused reading, `github-01b194e7c644e7ff1f60`, SHA `08e15ac5e38d925780895093844edc7ca4cdb811`; explicit full override for new supported Android/toolchain baselines. Native pins Android 5.22.0 / iOS 5.27.0; bounded AGP9/Expo classpath fixes and native iOS embedded CardView appearance propagation.

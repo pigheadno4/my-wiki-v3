@@ -2,9 +2,15 @@
 title: "GitHub: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
-date_updated: 2026-10-19
+date_updated: 2026-11-08
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-11-08-6ccc03f/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-11-08-6ccc03f-543c5280/manifest.json"
+  - "github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/manifest.json"
+  - "github/adyen/adyen-web/snapshots/2026-11-08-a05c118/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/manifest.json"
+  - "github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json"
   - "github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json"
@@ -26,20 +32,24 @@ tags: [adyen, checkout, web-sdk, cards, 3d-secure, github-repository]
 
 ## Overview
 
-`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and records history through `@adyen/adyen-web@6.47.0` at exact SHA `6068f43579dfbf50bad7505113b369e4e0d4df54`, preserving the 6.45.1 do-not-use warning and subsequent fix.
+`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and records history through `@adyen/adyen-web@6.48.1` at exact SHA `6ccc03f83b064c2171bc836edd9b35444e582823`, preserving the 6.45.1 do-not-use warning and subsequent fix.
 
 Repository: <https://github.com/Adyen/adyen-web>
 
 ## Evidence boundary
 
-The newest ingested release is `@adyen/adyen-web@6.47.0`, SHA `6068f43579dfbf50bad7505113b369e4e0d4df54`. This additive full ingest uses the explicitly approved focused-reading exception: all 34 changed retained files read fully, affected prior code and dependencies reviewed, and 188 unchanged current files, inventories and the duplicated comparison checked mechanically. Both 222-file snapshots passed hash and size verification. The effective full-mode list contains 231 paths; focused reading does not mean every unchanged source file or the whole upstream repository was semantically reread. No new supplement was collected for this release.
+The newest ingested release is `@adyen/adyen-web@6.48.1`, SHA `6ccc03f83b064c2171bc836edd9b35444e582823`, delta-ingested 2026-11-08 after completing 6.48.0. Approved focused reading covers both modified retained package manifests, the one-file exact-SHA secured-fields constants supplement, release notes and affected prior context; generated inventories, 220 unchanged retained files and duplicated diff were checked mechanically. The primary payment-method announcements remain release-note-qualified rather than full IRIS/UPI/hosted-runtime verification. This records latest ingested evidence, not a live freshness guarantee.
+
+The preceding `@adyen/adyen-web@6.48.0` delta used SHA `a05c1184195fa73ce7dc9e956fa080cb40638209`, ingested 2026-11-08 with approved focused reading. All 10 changed retained files and the five exact-SHA supplemental files were read, with affected prior/dependency context; unchanged files, generated inventories and duplicated diff were verified mechanically. Both 222-file snapshots and the supplement pass identity/hash/size checks. All older source sections, captures and warnings remain; this is not whole-repository, hosted-runtime or executed-payment verification.
+
+The historical `@adyen/adyen-web@6.47.0` ingest used SHA `6068f43579dfbf50bad7505113b369e4e0d4df54`. This additive full ingest uses the explicitly approved focused-reading exception: all 34 changed retained files read fully, affected prior code and dependencies reviewed, and 188 unchanged current files, inventories and the duplicated comparison checked mechanically. Both 222-file snapshots passed hash and size verification. The effective full-mode list contains 231 paths; focused reading does not mean every unchanged source file or the whole upstream repository was semantically reread. No new supplement was collected for this release.
 
 The preceding `6.46.0` additive full ingest at SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1` used its separately approved focused-reading exception: all 30 changed retained files and seven supplemental files read fully, affected prior context reviewed, and 192 unchanged current files plus manifest inventories checked mechanically. Older architecture, regression and rollback history remains preserved.
 
 > [!warning] Do not use 6.45.1
 > The collected upstream release notes warn of a payment-action handling bug and direct users to 6.45.2. Recording this release preserves evidence; it is not an upgrade recommendation.
 
-- The ingested snapshots and supplements cover version-qualified implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.47.0`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
+- The ingested snapshots and supplements cover version-qualified implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.48.1`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
 - Drop-in and Components are presentation and client-orchestration surfaces. Payment-method availability still comes from backend responses, merchant configuration, shopper context, and regional or product eligibility.
 - Stories are retained as intended integration scenarios. Tests were excluded by collection policy, so test-only behavior is outside this capsule.
 - PayPal Fastlane support in this repository depends on `@paypal/paypal-js`; these snapshots describe Adyen's adapter and configuration surface, not the delegated PayPal runtime.
@@ -473,7 +483,129 @@ The retained Core payment/review methods are unchanged from 6.46.0 apart from th
 >
 > [Challenge preparation, line 281](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.tsx#L281)
 
+## `6.48.0` Session continuation, 3DS2 teardown and wallet diagnostics
+
+`@adyen/adyen-web@6.47.0` -> `@adyen/adyen-web@6.48.0`, released 2026-10-28, delta-ingested 2026-11-08 at SHA `a05c1184195fa73ce7dc9e956fa080cb40638209`. Ten retained files change, 212 remain unchanged; the separately approved five-file supplement supplies ordinary UIElement order handling, ApplePayService and secured-fields wiring. All 75 repository-wide changes have dispositions (10 retained, 65 intentional exclusions); this does not mean all excluded implementations were reviewed. See [[changelog-github-adyen-web]] for the separate release ledger.
+
+### `onOrderUpdated` exposes optional Session continuation data
+
+`CoreConfiguration.onOrderUpdated` now accepts exported `OrderUpdatedData`: the existing `order` plus optional `sessionData?: string`. The package's types entry reexports the global types. Callers must tolerate absence; this is additive callback data, not a newly required backend request field or a universal order-update notification.
+
+- **Ordinary partial-payment path:** UIElement.handleResponse handles actions before checking for a positive remaining order amount. Its handleOrder waits for `core.update({ order })` in Sessions, then obtains the resolved Core Session and emits truthy `session.data`. Core.update reinitializes Checkout; Session.setupSession updates/stores returned data. The source comment identifies this post-setup blob as newer than the payments response. Advanced handling retains its payment-method update/Core.update route and has no invented Session field when no Session exists.
+- **Review-page final submission:** Core.processPayment emits its current `this.session.data` on the positive-remaining-amount branch, without the extra Core.update used above. Session.submitPayment already updates/stores a returned blob. The historical ADR/Core.update discrepancy remains relevant; adding this callback field does not make both paths identical. [[adyen-review-page-checkout]]
+- **Not first-time persistence:** the retained Session already uses storage for refreshed Session blobs and restores a stored Session only when its ID matches. This release exposes current continuation data to the merchant callback. It does not establish cross-device restoration, final order completion, authorization/capture, or fulfillment eligibility.
+
+Illustrative callback typing, not an executed integration or storage prescription:
+
+```typescript
+import type { CoreConfiguration } from '@adyen/adyen-web';
+
+const onOrderUpdated: CoreConfiguration['onOrderUpdated'] = ({ order, sessionData }) => {
+    // Retain order and, when present, sessionData in the merchant's chosen state layer.
+    // Neither value is proof that the remaining amount has been paid.
+};
+```
+
+Keep existing validation, final confirmation, stale/double-submit prevention, action cleanup and server-side outcome verification. `processPayment` remains Sessions-only and returns void.
+
+### Detached 3DS2 callback protection
+
+Both DoChallenge3DS2 and DoFingerprint3DS2 remove their message listener when their timeout-wrapped promise settles, then return without invoking the completion/error callback if `!base?.isConnected`. The helper uses Node.isConnected so an attached shadow tree is not automatically classified as detached. Normal Preact unmount still cancels the wrapper and removes the listener.
+
+This closes a stale callback path when raw DOM removal bypasses Preact cleanup; it is not immediate listener cleanup at raw removal, cancellation of issuer/backend processing, or a universal duplicate-request/idempotency guarantee. The new TwoInstances story creates sibling Drop-ins sharing one Checkout/Session to illustrate the teardown case. It does not demonstrate two independent sessions, endorse that topology for production or constitute an executed regression test. [[adyen-3d-secure]]
+
+### Apple Pay error-handling boundaries
+
+ApplePayService funnels payment completion through a helper that catches `session.completePayment` exceptions and logs a warning. In its rejection branch, values with a numeric status are passed through as authorization results; other errors become `ApplePaySession.STATUS_FAILURE`. That check is not exhaustive result validation.
+
+Merchant-validation failures attempt `session.abort()` in try/catch. If abort throws, the handler warns and returns without another onError call; the implementation comment attributes this to a prior cancellation event. If abort succeeds, it invokes `options.onError(error)`. Do not claim onError always fires. Payment-method/shipping/contact/coupon selection handlers keep their direct completion calls, so the fix is not universal protection against every wallet or merchant-callback rejection. A completed Apple Pay sheet is not proof of backend payment authorization/capture. No Safari/device/cancellation-race test was run.
+
+### Secured-fields hosting diagnostics versus hosted enforcement
+
+The supplemental SecuredField invokes the existing origin-check helper, parses feedback, requires action/numKey and matching per-field numKey, then dispatches messages. `invalidHosting` and `insecureMerchantDomain` become internal analytics error events, using supplied codes or fallback 501/502 and optional submitAnalytics. Their branches do not directly invoke merchant error/validation callbacks, show a shopper error, or independently reject payment. The imported origin helper was not collected as a new supplement; this is not a complete message-security audit.
+
+SF_VERSION advances 6.3.0 -> 6.4.0. The retained handleConfig builds the hosted iframe URL with loadingContext, clientKey and that version, plus bundle/origin query data. Its local-development override separately passes `vn=${SF_VERSION}`. The external hosted implementation deciding URL/domain validity is not in this capsule; neither telemetry codes nor a version constant prove production rollout, complete allowlist behavior or a general security guarantee. [[adyen-online-payments]]
+
+### Dependencies, qualified announcements and migration
+
+- Runtime PayPal JS advances 11.1.0 -> 11.2.0; Preact stays 10.29.8, Apple Pay types 14.0.9 and Google Pay types 0.7.13. Delegated behavior belongs to independently versioned [[source-github-paypal-js]], not the bump alone. Development dependency changes are not new checkout functionality.
+- Release notes additionally announce preserved address-lookup queries on blur and Click to Pay/shared Modal null-safety. Complete implementations remain outside the approved scope; no detailed recipe or universal malformed-input claim follows.
+- Recheck partial-order callback consumers, continuation-state retention, teardown during 3DS2, Apple Pay dismissal/merchant-validation failure and diagnostics. SDK installation/build, upstream tests, browser, issuer, accessibility and payment execution were not performed. Earlier status/disclaimer/review architecture and the 6.45.1 do-not-use warning remain historical evidence.
+
+### 6.48.0 grounding
+
+> `sessionData?: string;`
+>
+> [OrderUpdatedData, line 247](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/types/global-types.ts#L247)
+
+> `return !base?.isConnected;`
+>
+> [Detached-component helper, line 192](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/components/ThreeDS2/components/utils.ts#L192)
+
+> `this.props.onOrderUpdated?.({ order, ...(session?.data && { sessionData: session.data }) });`
+>
+> [UIElement callback, line 483](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/files/packages/lib/src/components/internal/UIElement/UIElement.tsx#L483)
+
+> `console.warn('ApplePayService: onpaymentauthorized session.completePayment() failed', error);`
+>
+> [Completion exception handling, line 141](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/files/packages/lib/src/components/ApplePay/services/ApplePayService.ts#L141)
+
+> `export const SF_VERSION = '6.4.0';`
+>
+> [Hosted version selection, line 18](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/files/packages/lib/src/components/internal/SecuredFields/lib/constants.ts#L18)
+
+## `6.48.1` secured-fields version and payment-method announcements
+
+`@adyen/adyen-web@6.48.0` -> `@adyen/adyen-web@6.48.1`, released 2026-11-05, delta-ingested 2026-11-08 at SHA `6ccc03f83b064c2171bc836edd9b35444e582823`, serially after the completed 6.48.0 ingest. The standard 222-file capsule has two modified package manifests and 220 unchanged files. Its one-file approved supplement captures the new constants at this exact SHA. These retained counts are not the complete upstream release: the packet has 81 repository-wide changes (two retained, 79 intentional exclusions).
+
+### Code-backed selection and dependency changes
+
+The supplemental SecuredFields constants advance `SF_VERSION` 6.4.0 -> 6.4.1; the other constant content is unchanged. This retains the requested hosted-runtime version identity. The preceding 6.48.0 handleConfig shows how SF_VERSION enters the hosted URL, but it is not silently promoted into a new 6.48.1 full-file audit. The hosted HTML/runtime performing URL validation remains uncollected; the constant cannot prove its allowlist logic, deployment, production behavior or a security guarantee.
+
+The library package pins PayPal JS 11.2.0 -> 11.2.1. Preact stays 10.29.8; Apple Pay and Google Pay type pins remain 14.0.9 and 0.7.13. Root/library development dependencies and the new `build:size` command are tooling, not new merchant-facing checkout capabilities. Package exports remain unchanged, and no delegated PayPal behavior is inferred. [[source-github-paypal-js]]
+
+### Release-note-qualified findings and migration
+
+- **IRIS mobile:** upstream announces bank-list-only presentation without a QR option. The IRIS/mobile-detection/shared-QR implementations are intentionally outside this retained scope; no precise device-detection recipe or merchant availability claim follows.
+- **UPI:** upstream describes regulatory-related updates, without establishing a detailed compliance rule or complete integration recipe in the release note. The UPI/shared QR source was not collected/read completely, so do not infer current legal compliance, detailed branding/timer behavior or transaction eligibility.
+- **Secured-fields beta compatibility:** upstream announces that the new URL validation permits checkoutshopper-beta environments. Pair that announcement with the exact 6.4.1 selection evidence; do not invent the hosted validation code or claim this adds a public merchant environment setting.
+
+Review affected beta-host/card integration and IRIS/UPI shopper journeys in the merchant's own environment. No install/build, upstream tests, browser, compliance, hosted-runtime or payment execution was performed. Earlier Session continuation, 3DS teardown and Apple Pay findings remain preserved at their original evidence versions, not reclassified as new 6.48.1 features. No new cross-company comparison or contradictory claim is established.
+
+### 6.48.1 grounding
+
+> `"version": "6.48.1",`
+>
+> [Package identity, line 3](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-6ccc03f/files/packages/lib/package.json#L3)
+
+> `"@paypal/paypal-js": "11.2.1",`
+>
+> [Runtime dependency, line 142](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-6ccc03f/files/packages/lib/package.json#L142)
+
+> `export const SF_VERSION = '6.4.1';`
+>
+> [Secured-fields selection, line 18](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-6ccc03f-543c5280/files/packages/lib/src/components/internal/SecuredFields/lib/constants.ts#L18)
+
+> Improved: Display only the bank list for IRIS on mobile, without the QR code option.
+>
+> [Release notes, line 3](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/release-notes.md#L3)
+
+> Fixed: new securedFields url validation also allows checkoutshopper-beta environments
+>
+> [Release notes, line 9](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/release-notes.md#L9)
+
 ## Raw sources
+
+- [6.48.1 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-6ccc03f/manifest.json), [release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/manifest.json) and [release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/release-notes.md)
+- [6.48.1 constants supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-6ccc03f-543c5280/manifest.json) and [work-item attachment](../../../../tracking/github/repos/adyen/adyen-web/evidence-attachments/github-63a67800194fcf63cd6f/attachment.json)
+- [6.48.0 to 6.48.1 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.48.0--6.48.1/comparison.json), [retained patch](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.48.0--6.48.1/diff.patch) and [package metadata](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-6ccc03f/files/packages/lib/package.json)
+
+- [6.48.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/manifest.json), [release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/manifest.json) and [release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/release-notes.md)
+- [6.48.0 five-file supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/manifest.json) and [work-item attachment](../../../../tracking/github/repos/adyen/adyen-web/evidence-attachments/github-7af6b1df429e8b0d75bf/attachment.json)
+- [6.47.0 to 6.48.0 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.47.0--6.48.0/comparison.json) and [retained patch](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.47.0--6.48.0/diff.patch)
+- [Core review flow](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/core/core.ts), [callback contract](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/core/types.ts), [global payload types](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/types/global-types.ts) and [Session storage/refresh](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/core/CheckoutSession/CheckoutSession.ts)
+- [Challenge execution](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx), [fingerprint execution](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx) and [Drop-in stories](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx)
+- [Secured-field message dispatch](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/files/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts), [iframe configuration](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/files/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/handleConfig.ts) and [analytics error codes](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts)
 
 - [6.47.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json)
 - [6.47.0 release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.47.0/2026-10-19/manifest.json)

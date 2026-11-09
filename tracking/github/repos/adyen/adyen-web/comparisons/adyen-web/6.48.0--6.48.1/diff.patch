@@ -1,0 +1,1442 @@
+diff --git a/packages/lib/.storybook/preview.tsx b/packages/lib/.storybook/preview.tsx
+index 3f72d0b..353c319 100644
+--- a/packages/lib/.storybook/preview.tsx
++++ b/packages/lib/.storybook/preview.tsx
+@@ -22,7 +22,7 @@ if (!disableMsw) {
+         loaders: [
+             mswLoader(async () => {
+                 const worker = setupWorker();
+-                await worker.start({ onUnhandledRequest: 'bypass' });
++                await worker.start({ onUnhandledFrame: 'bypass' });
+ 
+                 return worker;
+             })
+diff --git a/packages/lib/CHANGELOG.md b/packages/lib/CHANGELOG.md
+index d0d4c6a..4b2a8fe 100644
+--- a/packages/lib/CHANGELOG.md
++++ b/packages/lib/CHANGELOG.md
+@@ -1,5 +1,15 @@
+ # @adyen/adyen-web
+ 
++## 6.48.1
++
++### Patch Changes
++
++- Improved: Display only the bank list for IRIS on mobile, without the QR code option. ([#4282](https://github.com/Adyen/adyen-web/pull/4282))
++
++- Fixed: new securedFields url validation also allows checkoutshopper-beta environments ([#4291](https://github.com/Adyen/adyen-web/pull/4291))
++
++- Improved: Update UPI to meet latest regulatory requirements. ([#4279](https://github.com/Adyen/adyen-web/pull/4279))
++
+ ## 6.48.0
+ 
+ ### Minor Changes
+diff --git a/packages/lib/config/rollup.size.js b/packages/lib/config/rollup.size.js
+new file mode 100644
+index 0000000..a21d6d4
+--- /dev/null
++++ b/packages/lib/config/rollup.size.js
+@@ -0,0 +1,15 @@
++import productionConfig from './rollup.prod.js';
++
++/**
++ * Bundle size measurement build, used by the `build:size` script in CI.
++ *
++ * Derived from the production config, it keeps only the outputs that .size-limit.cjs reads:
++ * dist/umd/adyen.js, dist/es and dist/es-legacy (through auto/auto.js).
++ * Leaving out the CJS and .d.ts configs also leaves out their dist/temp-types
++ * input, which is why this build doesn't need `yarn run build:types` first.
++ */
++
++const MEASURED_OUTPUTS = ['dist/umd/adyen.js', './dist/es', './dist/es-legacy'];
++
++export default commandLineArgs =>
++    productionConfig(commandLineArgs).filter(config => [config.output].flat().some(output => MEASURED_OUTPUTS.includes(output.dir ?? output.file)));
+diff --git a/packages/lib/config/setupTests.ts b/packages/lib/config/setupTests.ts
+index f038d09..2bfee62 100644
+--- a/packages/lib/config/setupTests.ts
++++ b/packages/lib/config/setupTests.ts
+@@ -13,19 +13,9 @@ import 'whatwg-fetch';
+ import './testMocks/srPanelMock';
+ import './testMocks/commonCorePropsMock';
+ 
+-// Polyfill Web Streams API for MSW v2.x compatibility
+-// https://github.com/mswjs/msw/issues/1916
+-import { ReadableStream, WritableStream, TransformStream } from 'node:stream/web';
+-
+ const DEFAULT_TEST_TIMEOUT = 10_000;
+ 
+ jest.setTimeout(DEFAULT_TEST_TIMEOUT);
+ 
+ process.env.VERSION = 'X.Y.Z';
+ process.env.BUNDLE_TYPE = 'esm';
+-
+-Object.assign(global, {
+-    ReadableStream,
+-    WritableStream,
+-    TransformStream
+-});
+diff --git a/packages/lib/jest.config.ts b/packages/lib/jest.config.ts
+index 73e1905..4651c11 100644
+--- a/packages/lib/jest.config.ts
++++ b/packages/lib/jest.config.ts
+@@ -23,7 +23,7 @@ export default defineConfig({
+     testEnvironment: 'jest-fixed-jsdom',
+     verbose: true,
+     setupFilesAfterEnv: ['<rootDir>/config/setupTests.ts'],
+-    transformIgnorePatterns: ['node_modules/(?!(preact|@testing-library|until-async|@open-draft|rettime|msw)/)'],
++    transformIgnorePatterns: ['node_modules/(?!(preact|@testing-library)/)'],
+     transform: {
+         '^.+\\.(js|ts|tsx)$': 'ts-jest',
+         '^.+\\.mjs$': '<rootDir>/config/esbuild-jest-transformer.cjs'
+diff --git a/packages/lib/package.json b/packages/lib/package.json
+index aaf7de0..ebb3679 100644
+--- a/packages/lib/package.json
++++ b/packages/lib/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@adyen/adyen-web",
+-    "version": "6.48.0",
++    "version": "6.48.1",
+     "license": "MIT",
+     "homepage": "https://docs.adyen.com/checkout",
+     "type": "module",
+@@ -63,6 +63,7 @@
+         "dev-server": "rollup --watch --config config/rollup.dev.js",
+         "build": "rm -rf dist/ && yarn run lint && yarn run lint-styles && yarn run type-check && yarn run build:types && rollup --config config/rollup.prod.js && rm -rf dist/temp-types",
+         "build:types": "tsc --emitDeclarationOnly && node scripts/add-type-references.cjs",
++        "build:size": "rm -rf dist/ && rollup --config config/rollup.size.js",
+         "docs:generate": "typedoc --out docs src --exclude \"**/*+(index|.test).ts\"",
+         "start:storybook": "node .storybook/run.cjs",
+         "build:storybook": "storybook build --disable-telemetry",
+@@ -91,21 +92,21 @@
+         "@rollup/plugin-node-resolve": "16.0.3",
+         "@rollup/plugin-replace": "6.0.3",
+         "@rollup/plugin-terser": "1.0.0",
+-        "@size-limit/file": "14.1.0",
+-        "@size-limit/webpack": "14.1.0",
++        "@size-limit/file": "14.2.0",
++        "@size-limit/webpack": "14.2.0",
+         "@storybook/addon-a11y": "10.6.2",
+         "@storybook/addon-docs": "10.6.2",
+         "@storybook/preact-vite": "10.6.2",
+-        "@swc/core": "1.16.2",
++        "@swc/core": "1.16.18",
+         "@testing-library/jest-dom": "7.0.1",
+         "@testing-library/preact": "3.2.4",
+         "@testing-library/preact-hooks": "1.1.0",
+         "@testing-library/user-event": "14.6.7",
+         "@types/jest": "30.0.0",
+         "autoprefixer": "10.6.1",
+-        "cssnano": "9.1.2",
+-        "dotenv": "18.0.5",
+-        "eslint": "10.11.0",
++        "cssnano": "9.3.2",
++        "dotenv": "18.0.6",
++        "eslint": "10.12.0",
+         "eslint-plugin-import": "2.32.0",
+         "eslint-plugin-jsx-a11y": "6.10.2",
+         "eslint-plugin-react": "7.37.5",
+@@ -115,30 +116,30 @@
+         "jest": "30.5.2",
+         "jest-environment-jsdom": "30.5.2",
+         "jest-fixed-jsdom": "^0.0.11",
+-        "jest-mock-extended": "4.0.1",
+-        "msw": "2.15.0",
++        "jest-mock-extended": "4.0.2",
++        "msw": "3.0.3",
+         "msw-storybook-addon": "3.0.3",
+-        "postcss": "8.5.28",
+-        "rollup": "4.63.6",
++        "postcss": "8.5.29",
++        "rollup": "4.64.2",
+         "rollup-plugin-dts": "6.5.1",
+         "rollup-plugin-postcss": "4.0.2",
+         "rollup-plugin-stylelint": "1.0.0",
+         "rollup-plugin-swc3": "0.12.1",
+         "sass": "1.105.1",
+-        "size-limit": "14.1.0",
++        "size-limit": "14.2.0",
+         "storybook": "10.6.2",
+-        "stylelint": "17.15.0",
++        "stylelint": "17.16.0",
+         "stylelint-config-standard-scss": "17.0.0",
+         "ts-jest": "29.4.14",
+         "tslib": "2.8.1",
+         "typescript": "6.0.3",
+-        "typescript-eslint": "8.71.0",
+-        "vite": "6.4.3",
++        "typescript-eslint": "8.71.1",
++        "vite": "6.4.4",
+         "vite-plugin-stylelint": "6.3.0",
+         "whatwg-fetch": "3.6.20"
+     },
+     "dependencies": {
+-        "@paypal/paypal-js": "11.2.0",
++        "@paypal/paypal-js": "11.2.1",
+         "@types/applepayjs": "14.0.9",
+         "@types/googlepay": "0.7.13",
+         "classnames": "2.5.1",
+diff --git a/packages/lib/src/components/AfterPay/AfterPay.test.ts b/packages/lib/src/components/AfterPay/AfterPay.test.ts
+index 3dafa6a..bc6f63a 100644
+--- a/packages/lib/src/components/AfterPay/AfterPay.test.ts
++++ b/packages/lib/src/components/AfterPay/AfterPay.test.ts
+@@ -1,20 +1,14 @@
+ import AfterPay from './AfterPay';
+ import { render, screen, waitFor, within } from '@testing-library/preact';
+ import userEvent from '@testing-library/user-event';
+-import { setupServer } from 'msw/node';
+-import { http, HttpResponse } from 'msw';
++import getDataset from '../../core/Services/get-dataset';
+ import { setupCoreMock, TEST_CHECKOUT_ATTEMPT_ID, TEST_RISK_DATA } from '../../../config/testMocks/setup-core-mock';
+ 
+-const server = setupServer(
+-    http.get('https://checkoutshopper-live.adyen.com/checkoutshopper/datasets/countries/en-US.json', () => {
+-        return HttpResponse.json([{ id: 'NL', name: 'Netherlands' }]);
+-    }) as any
++jest.mock('../../core/Services/get-dataset');
++(getDataset as jest.Mock).mockImplementation((dataset: string) =>
++    Promise.resolve(dataset === 'countries' ? [{ id: 'NL', name: 'Netherlands' }] : [])
+ );
+ 
+-beforeAll(() => server.listen());
+-afterEach(() => server.resetHandlers());
+-afterAll(() => server.close());
+-
+ describe('AfterPay', () => {
+     afterEach(() => {
+         jest.clearAllMocks();
+diff --git a/packages/lib/src/components/Boleto/Boleto.test.ts b/packages/lib/src/components/Boleto/Boleto.test.ts
+index 07cc4d4..4f20808 100644
+--- a/packages/lib/src/components/Boleto/Boleto.test.ts
++++ b/packages/lib/src/components/Boleto/Boleto.test.ts
+@@ -1,25 +1,19 @@
+ import Boleto from './Boleto';
+ import { render, screen, waitFor } from '@testing-library/preact';
+ import userEvent from '@testing-library/user-event';
+-import { http, HttpResponse } from 'msw';
+-import { setupServer } from 'msw/node';
++import getDataset from '../../core/Services/get-dataset';
+ import { setupCoreMock, TEST_CHECKOUT_ATTEMPT_ID, TEST_RISK_DATA } from '../../../config/testMocks/setup-core-mock';
+ 
+-const server = setupServer(
+-    http.get('https://checkoutshopper-live.adyen.com/checkoutshopper/datasets/countries/en-US.json', () => {
+-        return HttpResponse.json([{ id: 'BR', name: 'Brazil' }]);
+-    }) as any,
+-    http.get('https://checkoutshopper-live.adyen.com/checkoutshopper/datasets/states/BR/en-US.json', () => {
+-        return HttpResponse.json([
+-            { id: 'MG', name: 'Minas Gerais' },
+-            { id: 'SP', name: 'Sao Paulo' }
+-        ]);
+-    }) as any
+-);
+-
+-beforeAll(() => server.listen());
+-afterEach(() => server.resetHandlers());
+-afterAll(() => server.close());
++const DATASETS: Record<string, { id: string; name: string }[]> = {
++    countries: [{ id: 'BR', name: 'Brazil' }],
++    'states/BR': [
++        { id: 'MG', name: 'Minas Gerais' },
++        { id: 'SP', name: 'Sao Paulo' }
++    ]
++};
++
++jest.mock('../../core/Services/get-dataset');
++(getDataset as jest.Mock).mockImplementation((dataset: string) => Promise.resolve(DATASETS[dataset] ?? []));
+ 
+ describe('Boleto', () => {
+     test('should make a Boleto payment', async () => {
+diff --git a/packages/lib/src/components/Iris/Iris.test.tsx b/packages/lib/src/components/Iris/Iris.test.tsx
+index 8db024d..ef01f75 100644
+--- a/packages/lib/src/components/Iris/Iris.test.tsx
++++ b/packages/lib/src/components/Iris/Iris.test.tsx
+@@ -52,16 +52,34 @@ describe('Iris', () => {
+         expect(await screen.findByRole('button', { name: /Generate QR code/i })).toBeInTheDocument();
+     });
+ 
+-    test('should pre-select "Bank List" mode on Mobile', async () => {
++    test('should render Bank List without segmented control on Mobile', async () => {
+         isMobileMock.mockReturnValue(true);
+         const iris = createIris();
+         render(iris.render());
+ 
+-        const bankListTab = await screen.findByRole('tab', { name: 'Bank list' });
+-        expect(bankListTab).toHaveAttribute('aria-selected', 'true');
++        expect(await screen.findByRole('option', { name: /Piraeus Bank/i })).toBeInTheDocument();
++        expect(screen.queryByRole('tab', { name: 'Bank list' })).not.toBeInTheDocument();
++        expect(screen.queryByRole('tab', { name: 'QR code' })).not.toBeInTheDocument();
+         expect(screen.queryByRole('button', { name: /Generate QR code/i })).not.toBeInTheDocument();
+     });
+ 
++    test('should have QR code as fallback on Mobile when issuer list is empty', async () => {
++        isMobileMock.mockReturnValue(true);
++        const iris = createIris({ issuers: [], showPayButton: true, onSubmit: onSubmitMock });
++        render(iris.render());
++        const generateQrButton = await screen.findByRole('button', { name: /Generate QR code/i });
++        expect(screen.queryByRole('tab', { name: 'QR code' })).not.toBeInTheDocument();
++        expect(screen.queryByRole('tab', { name: 'Bank list' })).not.toBeInTheDocument();
++        expect(iris.isValid).toBe(true);
++        await user.click(generateQrButton);
++        await waitFor(() => {
++            expect(onSubmitMock).toHaveBeenCalled();
++        });
++        const submitCall = onSubmitMock.mock.calls[0][0];
++        expect(submitCall.data.paymentMethod).not.toHaveProperty('issuer');
++        expect(submitCall.data.paymentMethod.type).toBe('iris');
++    });
++
+     test('should trigger validation error if issuer is not selected', async () => {
+         isMobileMock.mockReturnValue(true); // Start in Bank List mode
+         const iris = createIris({ showPayButton: true, onSubmit: onSubmitMock });
+@@ -127,10 +145,12 @@ describe('Iris', () => {
+     });
+ 
+     test('should NOT include issuer in payload when switching from Bank List to QR Code mode', async () => {
+-        isMobileMock.mockReturnValue(true);
+         const iris = createIris({ showPayButton: true, onSubmit: onSubmitMock });
+         render(iris.render());
+ 
++        const bankListTab = await screen.findByRole('tab', { name: 'Bank list' });
++        await user.click(bankListTab);
++
+         const issuerOption = await screen.findByRole('option', { name: /Piraeus Bank/i });
+         await user.click(issuerOption);
+ 
+@@ -186,17 +206,15 @@ describe('Iris', () => {
+     });
+ 
+     describe('Analytics', () => {
+-        test('should send analytics info event with default mode of segmented control on Mobile', () => {
++        test('should not send segmented control analytics events on Mobile', async () => {
+             isMobileMock.mockReturnValue(true);
+             const iris = createIris();
+             render(iris.render());
+ 
+-            expect(core.modules.analytics.sendAnalytics).toHaveBeenCalledWith(
++            expect(await screen.findByRole('option', { name: /Piraeus Bank/i })).toBeInTheDocument();
++            expect(core.modules.analytics.sendAnalytics).not.toHaveBeenCalledWith(
+                 expect.objectContaining({
+-                    type: InfoEventType.displayed,
+-                    target: UiTarget.segmentedControl,
+-                    component: 'iris',
+-                    selectedValue: IrisMode.BANK_LIST
++                    target: UiTarget.segmentedControl
+                 })
+             );
+         });
+@@ -216,22 +234,6 @@ describe('Iris', () => {
+             );
+         });
+ 
+-        test('should not send analytics info event with default mode of segmented control if no issuers are available', () => {
+-            const iris = createIris({
+-                issuers: []
+-            });
+-            render(iris.render());
+-
+-            expect(core.modules.analytics.sendAnalytics).not.toHaveBeenCalledWith(
+-                expect.objectContaining({
+-                    type: InfoEventType.displayed,
+-                    target: UiTarget.segmentedControl,
+-                    component: 'iris',
+-                    selectedValue: IrisMode.BANK_LIST
+-                })
+-            );
+-        });
+-
+         test('should send analytics info event when clicking on Bank list segmented control option', async () => {
+             const iris = createIris();
+             render(iris.render());
+@@ -255,12 +257,11 @@ describe('Iris', () => {
+         });
+ 
+         test('should send analytics info event when clicking on QR code segmented control option', async () => {
+-            isMobileMock.mockReturnValue(true); // Start in Bank List mode
+             const iris = createIris();
+             render(iris.render());
+ 
+-            // Verify Bank list is initially selected
+             const bankListTab = await screen.findByRole('tab', { name: 'Bank list' });
++            await user.click(bankListTab);
+             expect(bankListTab).toHaveAttribute('aria-selected', 'true');
+ 
+             // Click on QR code
+diff --git a/packages/lib/src/components/Iris/Iris.tsx b/packages/lib/src/components/Iris/Iris.tsx
+index 6736eab..dc09235 100644
+--- a/packages/lib/src/components/Iris/Iris.tsx
++++ b/packages/lib/src/components/Iris/Iris.tsx
+@@ -11,7 +11,7 @@ import { DEFAULT_IRIS_COUNTDOWN_TIME } from './constants';
+ export class Iris extends IssuerListContainer<IrisConfiguration, IrisData> {
+     public static readonly type = TxVariants.iris;
+ 
+-    private readonly defaultMode = isMobile() ? IrisMode.BANK_LIST : IrisMode.QR_CODE;
++    private readonly defaultMode = isMobile() && !!this.props.issuers?.length ? IrisMode.BANK_LIST : IrisMode.QR_CODE;
+ 
+     public state: IrisState = {
+         isValid: this.defaultMode === IrisMode.QR_CODE,
+@@ -77,10 +77,13 @@ export class Iris extends IssuerListContainer<IrisConfiguration, IrisData> {
+             );
+         }
+ 
++        if (this.defaultMode === IrisMode.BANK_LIST) {
++            return this.renderIssuerList();
++        }
++
+         return (
+             <IrisComponent
+                 setComponentRef={this.setComponentRef}
+-                defaultMode={this.defaultMode}
+                 onUpdateMode={mode => {
+                     this.setState({ mode });
+                 }}
+diff --git a/packages/lib/src/components/Iris/components/IrisComponent.tsx b/packages/lib/src/components/Iris/components/IrisComponent.tsx
+index 0d74c6e..99e65d0 100644
+--- a/packages/lib/src/components/Iris/components/IrisComponent.tsx
++++ b/packages/lib/src/components/Iris/components/IrisComponent.tsx
+@@ -15,7 +15,6 @@ import { TxVariants } from '../../tx-variants';
+ import useAnalytics from '../../../core/Analytics/useAnalytics';
+ 
+ interface IrisComponentProps {
+-    defaultMode: IrisMode;
+     issuers: IssuerItem[];
+     issuerListUI: h.JSX.Element;
+     onUpdateMode: (mode: IrisMode) => void;
+@@ -27,24 +26,22 @@ export default function IrisComponent(props: Readonly<IrisComponentProps>) {
+     const { i18n } = useCoreContext();
+     const { analytics } = useAnalytics();
+ 
+-    const [mode, setMode] = useState<IrisMode>(props.defaultMode);
++    const [mode, setMode] = useState<IrisMode>(IrisMode.QR_CODE);
+     const [status, setStatus] = useState<UIElementStatus>('ready');
+-    const segmentedControlOptions = useMemo(() => getIrisSegmentedControlOptions(i18n, props.defaultMode), [i18n, props.defaultMode]);
++    const segmentedControlOptions = useMemo(() => getIrisSegmentedControlOptions(i18n), [i18n]);
+ 
+     const issuersAvailable = props.issuers.length > 0;
+ 
+-    const handleModeChange = (mode: IrisMode, sendAnalytics = false) => {
++    const handleModeChange = (mode: IrisMode) => {
+         setMode(mode);
+         props.onUpdateMode(mode);
+-        if (sendAnalytics) {
+-            const event = new AnalyticsInfoEvent({
+-                type: InfoEventType.selected,
+-                target: UiTarget.segmentedControl,
+-                component: TxVariants.iris,
+-                selectedValue: mode
+-            });
+-            analytics.sendAnalytics(event);
+-        }
++        const event = new AnalyticsInfoEvent({
++            type: InfoEventType.selected,
++            target: UiTarget.segmentedControl,
++            component: TxVariants.iris,
++            selectedValue: mode
++        });
++        analytics.sendAnalytics(event);
+     };
+ 
+     const irisRef = useRef<ComponentMethodsRef>({
+@@ -61,30 +58,19 @@ export default function IrisComponent(props: Readonly<IrisComponentProps>) {
+                 type: InfoEventType.displayed,
+                 target: UiTarget.segmentedControl,
+                 component: TxVariants.iris,
+-                selectedValue: props.defaultMode
++                selectedValue: IrisMode.QR_CODE
+             });
+             analytics.sendAnalytics(event);
+         }
+     }, []);
+ 
+-    useEffect(() => {
+-        if (!issuersAvailable) {
+-            handleModeChange(IrisMode.QR_CODE);
+-        }
+-    }, [issuersAvailable]);
+-
+     if (!issuersAvailable) {
+         return <IrisGenerateQRCode payButton={props.payButton} status={status} />;
+     }
+ 
+     return (
+         <div>
+-            <SegmentedControl
+-                onChange={mode => handleModeChange(mode, true)}
+-                selectedValue={mode}
+-                disabled={status === 'loading'}
+-                options={segmentedControlOptions}
+-            />
++            <SegmentedControl onChange={handleModeChange} selectedValue={mode} disabled={status === 'loading'} options={segmentedControlOptions} />
+             {mode === IrisMode.BANK_LIST && (
+                 <SegmentedControlRegion
+                     id={IRIS_ALLY_LABELS.AreaId.BANK_LIST}
+diff --git a/packages/lib/src/components/Iris/utils.test.ts b/packages/lib/src/components/Iris/utils.test.ts
+index 35e3a99..5009ce1 100644
+--- a/packages/lib/src/components/Iris/utils.test.ts
++++ b/packages/lib/src/components/Iris/utils.test.ts
+@@ -7,24 +7,16 @@ describe('getIrisSegmentedControlOptions', () => {
+     const core = setupCoreMock();
+     const { i18n } = core.modules;
+ 
+-    test('should return options with QR_CODE first when defaultMode is QR_CODE', () => {
+-        const result = getIrisSegmentedControlOptions(i18n, IrisMode.QR_CODE);
++    test('should return options with QR_CODE first', () => {
++        const result = getIrisSegmentedControlOptions(i18n);
+ 
+         expect(result).toHaveLength(2);
+         expect(result[0].value).toBe(IrisMode.QR_CODE);
+         expect(result[1].value).toBe(IrisMode.BANK_LIST);
+     });
+ 
+-    test('should return options with BANK_LIST first when defaultMode is BANK_LIST', () => {
+-        const result = getIrisSegmentedControlOptions(i18n, IrisMode.BANK_LIST);
+-
+-        expect(result).toHaveLength(2);
+-        expect(result[0].value).toBe(IrisMode.BANK_LIST);
+-        expect(result[1].value).toBe(IrisMode.QR_CODE);
+-    });
+-
+     test('should return options with correct accessibility IDs and controls', () => {
+-        const result = getIrisSegmentedControlOptions(i18n, IrisMode.QR_CODE);
++        const result = getIrisSegmentedControlOptions(i18n);
+ 
+         const [qrCodeOption, bankListOption] = result;
+ 
+@@ -40,7 +32,7 @@ describe('getIrisSegmentedControlOptions', () => {
+     });
+ 
+     test('should return all required properties for each option', () => {
+-        const result = getIrisSegmentedControlOptions(i18n, IrisMode.QR_CODE);
++        const result = getIrisSegmentedControlOptions(i18n);
+ 
+         result.forEach(option => {
+             expect(option).toHaveProperty('label');
+diff --git a/packages/lib/src/components/Iris/utils.ts b/packages/lib/src/components/Iris/utils.ts
+index cbae23d..6af188b 100644
+--- a/packages/lib/src/components/Iris/utils.ts
++++ b/packages/lib/src/components/Iris/utils.ts
+@@ -3,25 +3,17 @@ import { SegmentedControlOption } from '../internal/SegmentedControl/SegmentedCo
+ import { IRIS_ALLY_LABELS } from './constants';
+ import { IrisMode } from './types';
+ 
+-export const getIrisSegmentedControlOptions = (i18n: Language, defaultMode: IrisMode): SegmentedControlOption<IrisMode>[] => {
+-    const options = [
+-        {
+-            label: i18n.get('qrCode'),
+-            value: IrisMode.QR_CODE,
+-            id: IRIS_ALLY_LABELS.ButtonId.QR_CODE,
+-            controls: IRIS_ALLY_LABELS.AreaId.QR_CODE
+-        },
+-        {
+-            label: i18n.get('bankList'),
+-            value: IrisMode.BANK_LIST,
+-            id: IRIS_ALLY_LABELS.ButtonId.BANK_LIST,
+-            controls: IRIS_ALLY_LABELS.AreaId.BANK_LIST
+-        }
+-    ];
+-
+-    return options.sort((a, b) => {
+-        if (a.value === defaultMode) return -1;
+-        if (b.value === defaultMode) return 1;
+-        return 0;
+-    });
+-};
++export const getIrisSegmentedControlOptions = (i18n: Language): SegmentedControlOption<IrisMode>[] => [
++    {
++        label: i18n.get('qrCode'),
++        value: IrisMode.QR_CODE,
++        id: IRIS_ALLY_LABELS.ButtonId.QR_CODE,
++        controls: IRIS_ALLY_LABELS.AreaId.QR_CODE
++    },
++    {
++        label: i18n.get('bankList'),
++        value: IrisMode.BANK_LIST,
++        id: IRIS_ALLY_LABELS.ButtonId.BANK_LIST,
++        controls: IRIS_ALLY_LABELS.AreaId.BANK_LIST
++    }
++];
+diff --git a/packages/lib/src/components/PayTo/PayTo.test.ts b/packages/lib/src/components/PayTo/PayTo.test.ts
+index de9556d..bc65759 100644
+--- a/packages/lib/src/components/PayTo/PayTo.test.ts
++++ b/packages/lib/src/components/PayTo/PayTo.test.ts
+@@ -1,13 +1,13 @@
+ import { render, screen } from '@testing-library/preact';
+ import userEvent from '@testing-library/user-event';
+-import { http, HttpResponse } from 'msw';
+-import { setupServer } from 'msw/node';
+ import getDataset from '../../core/Services/get-dataset';
++import checkPaymentStatus from '../../core/Services/payment-status';
+ import PayTo from './PayTo';
+ import { MandateType } from './types';
+ import { setupCoreMock } from '../../../config/testMocks/setup-core-mock';
+ 
+ jest.mock('../../core/Services/get-dataset');
++jest.mock('../../core/Services/payment-status');
+ (getDataset as jest.Mock).mockImplementation(
+     jest.fn(() => {
+         return Promise.resolve([{ id: 'AUS', prefix: '+61' }]);
+@@ -254,19 +254,14 @@ describe('PayTo', () => {
+     });
+ 
+     describe('PayTo await screen', () => {
+-        const server = setupServer(
+-            http.post('https://checkoutshopper-test.adyen.com/checkoutshopper/services/PaymentInitiation/v1/status', () => {
+-                return HttpResponse.json({
+-                    payload: 'mockPaymentData',
+-                    resultCode: 'pending',
+-                    type: 'pending'
+-                });
+-            }) as any
+-        );
+-
+-        beforeAll(() => server.listen());
+-        afterEach(() => server.resetHandlers());
+-        afterAll(() => server.close());
++        beforeEach(() => {
++            const pendingStatus: { payload: string; resultCode: string; type: string } = {
++                payload: 'mockPaymentData',
++                resultCode: 'pending',
++                type: 'pending'
++            };
++            (checkPaymentStatus as jest.Mock).mockResolvedValue(pendingStatus);
++        });
+ 
+         test('should render await screen and transaction and mandate amount should be different', async () => {
+             const core = setupCoreMock();
+diff --git a/packages/lib/src/components/RatePay/RatePay.test.ts b/packages/lib/src/components/RatePay/RatePay.test.ts
+index bce71f0..e3cb888 100644
+--- a/packages/lib/src/components/RatePay/RatePay.test.ts
++++ b/packages/lib/src/components/RatePay/RatePay.test.ts
+@@ -1,23 +1,11 @@
+ import RatePay from './RatePay';
+ import { render, screen, waitFor, within } from '@testing-library/preact';
+ import userEvent from '@testing-library/user-event';
+-import { setupServer } from 'msw/node';
+-import { http, HttpResponse } from 'msw';
++import getDataset from '../../core/Services/get-dataset';
+ import { setupCoreMock, TEST_CHECKOUT_ATTEMPT_ID, TEST_RISK_DATA } from '../../../config/testMocks/setup-core-mock';
+ 
+-const server = setupServer(
+-    http.get('https://checkoutshopper-live.adyen.com/checkoutshopper/datasets/countries/en-US.json', () => {
+-        return HttpResponse.json([{ id: 'DE', name: 'Germany' }]);
+-    }) as any
+-);
+-
+-beforeAll(() => server.listen());
+-afterEach(() => server.resetHandlers());
+-afterAll(() => server.close());
+-
+-server.events.on('request:start', ({ request }) => {
+-    console.log('MSW intercepted:', request.method, request.url);
+-});
++jest.mock('../../core/Services/get-dataset');
++(getDataset as jest.Mock).mockImplementation((dataset: string) => Promise.resolve(dataset === 'countries' ? [{ id: 'DE', name: 'Germany' }] : []));
+ 
+ describe('RatePay Direct Debit', () => {
+     afterEach(() => {
+diff --git a/packages/lib/src/components/RatePay/RatePayDirectDebit.test.ts b/packages/lib/src/components/RatePay/RatePayDirectDebit.test.ts
+index d57a766..4fc494a 100644
+--- a/packages/lib/src/components/RatePay/RatePayDirectDebit.test.ts
++++ b/packages/lib/src/components/RatePay/RatePayDirectDebit.test.ts
+@@ -1,19 +1,11 @@
+ import RatePayDirectDebit from './RatePayDirectDebit';
+ import { render, screen, waitFor, within } from '@testing-library/preact';
+ import userEvent from '@testing-library/user-event';
+-import { setupServer } from 'msw/node';
+-import { http, HttpResponse } from 'msw';
++import getDataset from '../../core/Services/get-dataset';
+ import { setupCoreMock, TEST_CHECKOUT_ATTEMPT_ID, TEST_RISK_DATA } from '../../../config/testMocks/setup-core-mock';
+ 
+-const server = setupServer(
+-    http.get('https://checkoutshopper-live.adyen.com/checkoutshopper/datasets/countries/en-US.json', () => {
+-        return HttpResponse.json([{ id: 'DE', name: 'Germany' }]);
+-    }) as any
+-);
+-
+-beforeAll(() => server.listen());
+-afterEach(() => server.resetHandlers());
+-afterAll(() => server.close());
++jest.mock('../../core/Services/get-dataset');
++(getDataset as jest.Mock).mockImplementation((dataset: string) => Promise.resolve(dataset === 'countries' ? [{ id: 'DE', name: 'Germany' }] : []));
+ 
+ describe('RatePay Direct Debit', () => {
+     test('should make a payment', async () => {
+diff --git a/packages/lib/src/components/UPI/UPI.scss b/packages/lib/src/components/UPI/UPI.scss
+new file mode 100644
+index 0000000..15e3d33
+--- /dev/null
++++ b/packages/lib/src/components/UPI/UPI.scss
+@@ -0,0 +1,9 @@
++.adyen-checkout__qr-loader--upi_qr > img {
++    width: 293px;
++    height: auto;
++    max-width: 100%;
++
++    // Fallback for older Firefox versions
++    image-rendering: crisp-edges;
++    image-rendering: pixelated;
++}
+diff --git a/packages/lib/src/components/UPI/UPI.test.tsx b/packages/lib/src/components/UPI/UPI.test.tsx
+index 71adb30..7fa0201 100644
+--- a/packages/lib/src/components/UPI/UPI.test.tsx
++++ b/packages/lib/src/components/UPI/UPI.test.tsx
+@@ -212,6 +212,26 @@ describe('UPI', () => {
+             expect(QRLoaderMock).toHaveBeenCalledWith(expect.objectContaining({ qrCodeData: encodeURIComponent('test data') }), expect.anything());
+         });
+ 
++        test('should render QRLoader with the UPI and BHIM logos by default', () => {
++            const upi = new UPI(core, { ...props, type: 'qrCode' });
++            render(upi.render());
++            expect(QRLoaderMock).toHaveBeenCalledWith(
++                expect.objectContaining({
++                    brandLogo: [
++                        { src: expect.stringContaining('images/logos/bhim.svg'), alt: 'BHIM' },
++                        { src: upi.icon, alt: upi.displayName }
++                    ]
++                }),
++                expect.anything()
++            );
++        });
++
++        test('should render QRLoader with the merchant brandLogo when provided', () => {
++            const upi = new UPI(core, { ...props, type: 'qrCode', brandLogo: 'custom-logo.svg' });
++            render(upi.render());
++            expect(QRLoaderMock).toHaveBeenCalledWith(expect.objectContaining({ brandLogo: 'custom-logo.svg' }), expect.anything());
++        });
++
+         test('should render Await with provided paymentMethodType and clientKey', () => {
+             const upi = new UPI(core, {
+                 ...props,
+diff --git a/packages/lib/src/components/UPI/UPI.tsx b/packages/lib/src/components/UPI/UPI.tsx
+index 656de92..a1ac8b4 100644
+--- a/packages/lib/src/components/UPI/UPI.tsx
++++ b/packages/lib/src/components/UPI/UPI.tsx
+@@ -9,6 +9,7 @@ import isMobile from '../../utils/isMobile';
+ import { UPI_COUNTDOWN_TIME, UPI_MODE } from './constants';
+ import { PaymentMethodBrand } from '../../types/global-types';
+ import { ICore } from '../../types';
++import './UPI.scss';
+ 
+ /**
+  * For mobile:
+@@ -89,21 +90,27 @@ class UPI extends UIElement<UPIConfiguration> {
+         const isAutoPay = !!this.props.mandate;
+ 
+         switch (type) {
+-            case 'qrCode':
++            case 'qrCode': {
++                const qrBrandLogos = [
++                    { src: this.resources.getImage()('bhim'), alt: 'BHIM' },
++                    { src: this.icon, alt: this.displayName }
++                ];
+                 return (
+                     <QRLoader
+                         {...this.props}
+                         qrCodeData={this.props.qrCodeData ? encodeURIComponent(this.props.qrCodeData) : undefined}
+                         type={TxVariants.upi_qr}
+-                        brandLogo={this.props.brandLogo || this.icon}
++                        brandLogo={this.props.brandLogo || qrBrandLogos}
+                         brandName={this.displayName}
+                         onComplete={this.onComplete}
+                         introduction={this.props.i18n?.get('upi.qrCodeWaitingMessage') ?? ''}
+                         countdownTime={this.props.countdownTime}
+                         onActionHandled={this.onActionHandled}
++                        timeToPay="payme.timeToPay"
+                         showAmount={!isAutoPay}
+                     />
+                 );
++            }
+             case 'await':
+                 return (
+                     <Await
+diff --git a/packages/lib/src/components/internal/Await/Await.test.tsx b/packages/lib/src/components/internal/Await/Await.test.tsx
+index 7b67fe9..f103620 100644
+--- a/packages/lib/src/components/internal/Await/Await.test.tsx
++++ b/packages/lib/src/components/internal/Await/Await.test.tsx
+@@ -42,7 +42,6 @@ const renderAwait = ({
+ };
+ 
+ describe('Await', () => {
+-
+     const brandName = 'MBWay';
+ 
+     const defaultProps: AwaitComponentProps = {
+diff --git a/packages/lib/src/components/internal/QRLoader/QRLoader.scss b/packages/lib/src/components/internal/QRLoader/QRLoader.scss
+index 082184c..3041a1d 100644
+--- a/packages/lib/src/components/internal/QRLoader/QRLoader.scss
++++ b/packages/lib/src/components/internal/QRLoader/QRLoader.scss
+@@ -24,6 +24,22 @@
+     overflow: hidden;
+ }
+ 
++.adyen-checkout__qr-loader__brand-logos {
++    display: flex;
++    gap: variable-generator.token(spacer-070);
++    margin-bottom: variable-generator.token(spacer-090);
++
++    .adyen-checkout__qr-loader__brand-logo-wrapper {
++        margin-bottom: 0;
++    }
++}
++
++.adyen-checkout__qr-loader__brand-logos-separator {
++    align-self: stretch;
++    width: variable-generator.token(border-width-s);
++    background: variable-generator.token(color-outline-secondary);
++}
++
+ .adyen-checkout__qr-loader__brand-logo {
+     width: 80px;
+     display: block;
+diff --git a/packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx b/packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx
+index bed75e5..edc1121 100644
+--- a/packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx
++++ b/packages/lib/src/components/internal/QRLoader/QRLoader.test.tsx
+@@ -166,6 +166,53 @@ describe('QRLoader', () => {
+         expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), throttledInterval);
+     });
+ 
++    test('should render every brand logo when brandLogo is an array', async () => {
++        (checkPaymentStatus as jest.Mock).mockResolvedValue({ resultCode: 'pending' });
++        renderQRLoader({
++            qrLoaderProps: {
++                brandLogo: [
++                    { src: 'first-logo.png', alt: 'First brand' },
++                    { src: 'second-logo.png', alt: 'Second brand' }
++                ]
++            }
++        });
++        expect(await screen.findByText('Scan QR code')).toBeInTheDocument();
++        expect(screen.getByRole('img', { name: 'First brand' })).toHaveAttribute('src', 'first-logo.png');
++        expect(screen.getByRole('img', { name: 'Second brand' })).toHaveAttribute('src', 'second-logo.png');
++    });
++
++    test('should skip array brand logos without a src', async () => {
++        (checkPaymentStatus as jest.Mock).mockResolvedValue({ resultCode: 'pending' });
++        renderQRLoader({
++            qrLoaderProps: {
++                brandLogo: [
++                    { src: '', alt: 'Empty brand' },
++                    { src: 'second-logo.png', alt: 'Second brand' }
++                ]
++            }
++        });
++        expect(await screen.findByText('Scan QR code')).toBeInTheDocument();
++        expect(screen.queryByRole('img', { name: 'Empty brand' })).not.toBeInTheDocument();
++        expect(screen.getByRole('img', { name: 'Second brand' })).toHaveAttribute('src', 'second-logo.png');
++    });
++
++    test('should render a single brand logo string with brandName as its alt text', async () => {
++        (checkPaymentStatus as jest.Mock).mockResolvedValue({ resultCode: 'pending' });
++        renderQRLoader({ qrLoaderProps: {} });
++        expect(await screen.findByText('Scan QR code')).toBeInTheDocument();
++        expect(screen.getByRole('img', { name: 'Pix' })).toHaveAttribute('src', 'logo.png');
++    });
++
++    test.each([
++        ['an empty string', ''],
++        ['undefined', undefined]
++    ])('should render no brand logo when brandLogo is %s', async (_, brandLogo) => {
++        (checkPaymentStatus as jest.Mock).mockResolvedValue({ resultCode: 'pending' });
++        renderQRLoader({ qrLoaderProps: { brandLogo } });
++        expect(await screen.findByText('Scan QR code')).toBeInTheDocument();
++        expect(screen.queryByRole('img', { name: 'Pix' })).not.toBeInTheDocument();
++    });
++
+     describe('Accessibility', () => {
+         test('should report the loading status to the SRPanel while waiting for the initial payment status check', async () => {
+             const pendingResponse = { payload: 'Ab02b4c0!', resultCode: 'pending', type: 'complete' };
+diff --git a/packages/lib/src/components/internal/QRLoader/QRLoader.tsx b/packages/lib/src/components/internal/QRLoader/QRLoader.tsx
+index 11c9a3b..062333d 100644
+--- a/packages/lib/src/components/internal/QRLoader/QRLoader.tsx
++++ b/packages/lib/src/components/internal/QRLoader/QRLoader.tsx
+@@ -15,6 +15,7 @@ import { CountdownTime } from '../Countdown/types';
+ import { QRDetails } from './components/QRDetails';
+ import { QRFinalState } from './components/QRFinalState';
+ import { QRLoaderPendingState } from './components/QRLoaderPendingState';
++import { QRBrandLogos } from './components/QRBrandLogos';
+ import { useLoadingA11yReporter } from '../../../core/Errors/useLoadingA11yReporter';
+ import { QRLoaderDetailsProvider } from './QRLoaderDetailsProvider';
+ import { QRLoaderProps } from './types';
+@@ -45,6 +46,7 @@ export function QRLoader(props: Readonly<QRLoaderProps>) {
+ 
+     const { showAmount, url, brandLogo, brandName, countdownTime, type, onActionHandled } = props;
+     const { amount } = useAmount();
++    const brandLogos = (Array.isArray(brandLogo) ? brandLogo : [{ src: brandLogo, alt: brandName }]).filter(logo => logo.src);
+ 
+     const qrCodeImage = props.qrCodeData ? `${loadingContext}${QRCODE_URL}${props.qrCodeData}&clientKey=${props.clientKey}` : props.qrCodeImage;
+ 
+@@ -86,18 +88,14 @@ export function QRLoader(props: Readonly<QRLoaderProps>) {
+     }
+ 
+     if (loading) {
+-        return <QRLoaderPendingState brandLogo={brandLogo} brandName={brandName} />;
++        return <QRLoaderPendingState brandLogos={brandLogos} />;
+     }
+ 
+     const classnames = props.classNameModifiers.map(m => `adyen-checkout__qr-loader--${m}`);
+ 
+     return (
+         <div className={`adyen-checkout__qr-loader adyen-checkout__qr-loader--${type} ${classnames.join(' ')}`} data-testid={`${type}-qr-loader`}>
+-            {brandLogo && (
+-                <div className="adyen-checkout__qr-loader__brand-logo-wrapper">
+-                    <img src={brandLogo} alt={brandName} className="adyen-checkout__qr-loader__brand-logo" />
+-                </div>
+-            )}
++            <QRBrandLogos brandLogos={brandLogos} />
+ 
+             {showAmount && amount && amount.value !== null && !!amount.currency && (
+                 <h1 className="adyen-checkout__qr-loader__payment_amount">{i18n.amount(amount.value, amount.currency)}</h1>
+diff --git a/packages/lib/src/components/internal/QRLoader/components/QRBrandLogos.test.tsx b/packages/lib/src/components/internal/QRLoader/components/QRBrandLogos.test.tsx
+new file mode 100644
+index 0000000..f4d9ba3
+--- /dev/null
++++ b/packages/lib/src/components/internal/QRLoader/components/QRBrandLogos.test.tsx
+@@ -0,0 +1,34 @@
++import { h } from 'preact';
++import { render, screen } from '@testing-library/preact';
++import { QRBrandLogos } from './QRBrandLogos';
++
++describe('QRBrandLogos', () => {
++    test('should render a single logo with the original wrapper markup, without a row container or separator', () => {
++        const { container } = render(<QRBrandLogos brandLogos={[{ src: 'logo.svg', alt: 'UPI' }]} />);
++        expect(container.innerHTML).toBe(
++            '<div class="adyen-checkout__qr-loader__brand-logo-wrapper"><img src="logo.svg" alt="UPI" class="adyen-checkout__qr-loader__brand-logo"></div>'
++        );
++    });
++
++    test('should announce every logo with its own alt text and render a hidden separator between them', () => {
++        render(
++            <QRBrandLogos
++                brandLogos={[
++                    { src: 'a.svg', alt: 'A' },
++                    { src: 'b.svg', alt: 'B' },
++                    { src: 'c.svg', alt: 'C' }
++                ]}
++            />
++        );
++        expect(screen.getAllByRole('img').map(img => img.getAttribute('alt'))).toEqual(['A', 'B', 'C']);
++        expect(screen.getByRole('img', { name: 'B' })).toHaveAttribute('src', 'b.svg');
++        const separators = screen.getAllByTestId('qr-brand-logos-separator');
++        expect(separators).toHaveLength(2);
++        separators.forEach(separator => expect(separator).toHaveAttribute('aria-hidden', 'true'));
++    });
++
++    test('should render nothing when there is no logo', () => {
++        render(<QRBrandLogos brandLogos={[]} />);
++        expect(screen.queryByRole('img')).not.toBeInTheDocument();
++    });
++});
+diff --git a/packages/lib/src/components/internal/QRLoader/components/QRBrandLogos.tsx b/packages/lib/src/components/internal/QRLoader/components/QRBrandLogos.tsx
+new file mode 100644
+index 0000000..639fdcd
+--- /dev/null
++++ b/packages/lib/src/components/internal/QRLoader/components/QRBrandLogos.tsx
+@@ -0,0 +1,21 @@
++import { h, Fragment } from 'preact';
++import type { QRBrandLogo } from '../types';
++
++interface QRBrandLogosProps {
++    brandLogos: QRBrandLogo[];
++}
++
++export const QRBrandLogos = ({ brandLogos }: Readonly<QRBrandLogosProps>) => {
++    const items = brandLogos.map((logo, index) => (
++        <Fragment key={logo.src}>
++            {index > 0 && (
++                <span className="adyen-checkout__qr-loader__brand-logos-separator" aria-hidden="true" data-testid="qr-brand-logos-separator" />
++            )}
++            <div className="adyen-checkout__qr-loader__brand-logo-wrapper">
++                <img src={logo.src} alt={logo.alt} className="adyen-checkout__qr-loader__brand-logo" />
++            </div>
++        </Fragment>
++    ));
++
++    return brandLogos.length > 1 ? <div className="adyen-checkout__qr-loader__brand-logos">{items}</div> : items;
++};
+diff --git a/packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx b/packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx
+index cec66ef..7b832f5 100644
+--- a/packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx
++++ b/packages/lib/src/components/internal/QRLoader/components/QRLoaderPendingState.tsx
+@@ -1,9 +1,10 @@
+ import { h } from 'preact';
+ import Spinner from '../../Spinner';
++import { QRBrandLogos } from './QRBrandLogos';
++import type { QRBrandLogo } from '../types';
+ 
+ interface QRLoaderPendingStateProps {
+-    brandLogo?: string;
+-    brandName?: string;
++    brandLogos: QRBrandLogo[];
+ }
+ 
+ /**
+@@ -11,14 +12,10 @@ interface QRLoaderPendingStateProps {
+  * The loading status is announced by QRLoader, which stays mounted across the transition and so
+  * can also announce that loading has finished.
+  */
+-export const QRLoaderPendingState = ({ brandLogo, brandName }: Readonly<QRLoaderPendingStateProps>) => {
++export const QRLoaderPendingState = ({ brandLogos }: Readonly<QRLoaderPendingStateProps>) => {
+     return (
+         <div className="adyen-checkout__qr-loader">
+-            {brandLogo && (
+-                <div className="adyen-checkout__qr-loader__brand-logo-wrapper">
+-                    <img alt={brandName} src={brandLogo} className="adyen-checkout__qr-loader__brand-logo" />
+-                </div>
+-            )}
++            <QRBrandLogos brandLogos={brandLogos} />
+             <Spinner />
+         </div>
+     );
+diff --git a/packages/lib/src/components/internal/QRLoader/types.ts b/packages/lib/src/components/internal/QRLoader/types.ts
+index a24cf96..009f018 100644
+--- a/packages/lib/src/components/internal/QRLoader/types.ts
++++ b/packages/lib/src/components/internal/QRLoader/types.ts
+@@ -4,6 +4,11 @@ import { AbstractAnalyticsEvent } from '../../../core/Analytics/events/AbstractA
+ import { CountdownTime } from '../Countdown/types';
+ import { UsePaymentStatusTimerProps } from '../../../hooks/usePaymentStatusTimer/types';
+ 
++export interface QRBrandLogo {
++    src: string;
++    alt: string;
++}
++
+ export type QRLoaderProps = Pick<
+     UsePaymentStatusTimerProps,
+     'loadingContext' | 'paymentData' | 'clientKey' | 'delay' | 'throttleTime' | 'type' | 'onError' | 'onComplete' | 'onActionHandled'
+@@ -16,7 +21,7 @@ export type QRLoaderProps = Pick<
+     showAmount?: boolean;
+     i18n?: Language;
+     classNameModifiers?: string[];
+-    brandLogo: string;
++    brandLogo: string | QRBrandLogo[];
+     brandName: string;
+     buttonLabel?: string;
+     redirectIntroduction?: string;
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/constants.ts b/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
+index 7a38dc8..6b798bd 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
+@@ -15,7 +15,7 @@ export const ENCRYPTED_SECURITY_CODE_4_DIGITS = 'encryptedSecurityCode4digits';
+ 
+ export const GIFT_CARD = 'giftcard';
+ 
+-export const SF_VERSION = '6.4.0';
++export const SF_VERSION = '6.4.1';
+ 
+ export const DEFAULT_CARD_GROUP_TYPES = ['amex', 'mc', 'visa'];
+ 
+diff --git a/packages/lib/storybook/public/mockServiceWorker.js b/packages/lib/storybook/public/mockServiceWorker.js
+index b17fcd6..5497876 100644
+--- a/packages/lib/storybook/public/mockServiceWorker.js
++++ b/packages/lib/storybook/public/mockServiceWorker.js
+@@ -7,10 +7,15 @@
+  * - Please do NOT modify this file.
+  */
+ 
+-const PACKAGE_VERSION = '2.12.14'
+-const INTEGRITY_CHECKSUM = '4db4a41e972cec1b64cc569c66952d82'
++const PACKAGE_VERSION = '3.0.3'
++const INTEGRITY_CHECKSUM = '5cd5cf8b54c3a90f82960cedcd637772'
+ const IS_MOCKED_RESPONSE = Symbol('isMockedResponse')
++
+ const activeClientIds = new Set()
++/**
++ * @type {Map<string, Set<Promise<Response>>>}
++ */
++const pendingRequests = new Map()
+ 
+ addEventListener('install', function () {
+   self.skipWaiting()
+@@ -20,82 +25,101 @@ addEventListener('activate', function (event) {
+   event.waitUntil(self.clients.claim())
+ })
+ 
+-addEventListener('message', async function (event) {
++addEventListener('message', function (event) {
+   const clientId = Reflect.get(event.source || {}, 'id')
+ 
+   if (!clientId || !self.clients) {
+     return
+   }
+ 
+-  const client = await self.clients.get(clientId)
+-
+-  if (!client) {
+-    return
+-  }
+-
+-  const allClients = await self.clients.matchAll({
+-    type: 'window',
+-  })
+-
+-  switch (event.data) {
+-    case 'KEEPALIVE_REQUEST': {
+-      sendToClient(client, {
+-        type: 'KEEPALIVE_RESPONSE',
+-      })
+-      break
+-    }
+-
+-    case 'INTEGRITY_CHECK_REQUEST': {
+-      sendToClient(client, {
+-        type: 'INTEGRITY_CHECK_RESPONSE',
+-        payload: {
+-          packageVersion: PACKAGE_VERSION,
+-          checksum: INTEGRITY_CHECKSUM,
+-        },
+-      })
+-      break
+-    }
+-
+-    case 'MOCK_ACTIVATE': {
+-      activeClientIds.add(clientId)
+-
+-      sendToClient(client, {
+-        type: 'MOCKING_ENABLED',
+-        payload: {
+-          client: {
+-            id: client.id,
+-            frameType: client.frameType,
+-          },
+-        },
+-      })
+-      break
+-    }
+-
+-    case 'CLIENT_CLOSED': {
+-      activeClientIds.delete(clientId)
++  event.waitUntil(
++    (async () => {
++      if (event.data === 'CLIENT_CLOSE') {
++        const allClients = await self.clients.matchAll({
++          type: 'window',
++        })
++
++        activeClientIds.delete(clientId)
++
++        // Await any pending requests from the closing client.
++        // This makes sure that those requests are handled and not passthrough.
++        const pending = pendingRequests.get(clientId)
++        if (pending != null && pending.size > 0) {
++          await Promise.allSettled(pending)
++        }
++        pendingRequests.delete(clientId)
++
++        const remainingClients = allClients.filter((client) => {
++          return client.id !== clientId
++        })
++
++        // Unregister itself when there are no more clients
++        if (remainingClients.length === 0) {
++          await self.registration.unregister()
++        }
++
++        const client = await self.clients.get(clientId)
++
++        if (client != null) {
++          await sendToClient(client, {
++            type: 'CLIENT_CLOSED',
++          })
++        }
++
++        return
++      }
+ 
+-      const remainingClients = allClients.filter((client) => {
+-        return client.id !== clientId
+-      })
++      /**
++       * @note Check for the client AFTER handling "CLIENT_CLOSE".
++       * This prevents early return on "!client" in case the page has reloaded
++       * and disassociated itself from the worker. This ensures self-unregistration
++       * still fires for those pages.
++       */
++      const client = await self.clients.get(clientId)
+ 
+-      // Unregister itself when there are no more clients
+-      if (remainingClients.length === 0) {
+-        self.registration.unregister()
++      if (!client) {
++        return
+       }
+ 
+-      break
+-    }
+-  }
++      switch (event.data) {
++        case 'KEEPALIVE_REQUEST': {
++          await sendToClient(client, {
++            type: 'KEEPALIVE_RESPONSE',
++          })
++          break
++        }
++
++        case 'INTEGRITY_CHECK_REQUEST': {
++          await sendToClient(client, {
++            type: 'INTEGRITY_CHECK_RESPONSE',
++            payload: {
++              packageVersion: PACKAGE_VERSION,
++              checksum: INTEGRITY_CHECKSUM,
++            },
++          })
++          break
++        }
++
++        case 'MOCK_ACTIVATE': {
++          activeClientIds.add(clientId)
++
++          await sendToClient(client, {
++            type: 'MOCKING_ENABLED',
++            payload: {
++              client: {
++                id: client.id,
++                frameType: client.frameType,
++              },
++            },
++          })
++          break
++        }
++      }
++    })(),
++  )
+ })
+ 
+ addEventListener('fetch', function (event) {
+-  const requestInterceptedAt = Date.now()
+-
+-  // Bypass navigation requests.
+-  if (event.request.mode === 'navigate') {
+-    return
+-  }
+-
+   // Opening the DevTools triggers the "only-if-cached" request
+   // that cannot be handled by the worker. Bypass such requests.
+   if (
+@@ -113,23 +137,54 @@ addEventListener('fetch', function (event) {
+   }
+ 
+   const requestId = crypto.randomUUID()
+-  event.respondWith(handleRequest(event, requestId, requestInterceptedAt))
++  event.respondWith(handleRequest(event, requestId))
+ })
+ 
+ /**
+  * @param {FetchEvent} event
+  * @param {string} requestId
+- * @param {number} requestInterceptedAt
+  */
+-async function handleRequest(event, requestId, requestInterceptedAt) {
++async function handleRequest(event, requestId) {
+   const client = await resolveMainClient(event)
+   const requestCloneForEvents = event.request.clone()
+-  const response = await getResponse(
+-    event,
+-    client,
+-    requestId,
+-    requestInterceptedAt,
+-  )
++
++  const responsePromise = getResponse(event, client, requestId)
++
++  if (client != null) {
++    let pending = pendingRequests.get(client.id)
++
++    if (pending == null) {
++      pendingRequests.set(client.id, (pending = new Set()))
++    }
++
++    pending.add(responsePromise)
++    responsePromise
++      .finally(() => pending.delete(responsePromise))
++      .catch(() => {})
++  }
++
++  let response
++
++  try {
++    response = await responsePromise
++  } catch (error) {
++    // The request has settled without a response (e.g. a passthrough
++    // request failed with a network error). Notify the client so it
++    // can release the resources associated with this request.
++    if (client && activeClientIds.has(client.id)) {
++      sendToClient(client, {
++        type: 'REQUEST_ERROR',
++        payload: {
++          request: {
++            id: requestId,
++          },
++          error: serializeError(error),
++        },
++      })
++    }
++
++    throw error
++  }
+ 
+   // Send back the response clone for the "response:*" life-cycle events.
+   // Ensure MSW is active and ready to handle the message, otherwise
+@@ -137,8 +192,18 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
+   if (client && activeClientIds.has(client.id)) {
+     const serializedRequest = await serializeRequest(requestCloneForEvents)
+ 
++    // Omit the body of server-sent event stream responses.
++    // Cloning such responses would prevent client-side stream cancelations
++    // from reaching the original stream (a teed stream only cancels its
++    // source once both of its branches cancel) and would buffer the
++    // entire stream into the unconsumed clone indefinitely.
++    const isEventStreamResponse = response.headers
++      .get('content-type')
++      ?.toLowerCase()
++      .startsWith('text/event-stream')
++
+     // Clone the response so both the client and the library could consume it.
+-    const responseClone = response.clone()
++    const responseClone = isEventStreamResponse ? null : response.clone()
+ 
+     sendToClient(
+       client,
+@@ -151,15 +216,17 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
+             ...serializedRequest,
+           },
+           response: {
+-            type: responseClone.type,
+-            status: responseClone.status,
+-            statusText: responseClone.statusText,
+-            headers: Object.fromEntries(responseClone.headers.entries()),
+-            body: responseClone.body,
++            type: response.type,
++            status: response.status,
++            statusText: response.statusText,
++            headers: Object.fromEntries(response.headers.entries()),
++            body: responseClone ? responseClone.body : null,
+           },
+         },
+       },
+-      responseClone.body ? [serializedRequest.body, responseClone.body] : [],
++      responseClone && responseClone.body
++        ? [serializedRequest.body, responseClone.body]
++        : [],
+     )
+   }
+ 
+@@ -205,18 +272,32 @@ async function resolveMainClient(event) {
+  * @param {FetchEvent} event
+  * @param {Client | undefined} client
+  * @param {string} requestId
+- * @param {number} requestInterceptedAt
+  * @returns {Promise<Response>}
+  */
+-async function getResponse(event, client, requestId, requestInterceptedAt) {
++async function getResponse(event, client, requestId) {
+   // Clone the request because it might've been already used
+   // (i.e. its body has been read and sent to the client).
+   const requestClone = event.request.clone()
+ 
+-  function passthrough() {
+-    // Cast the request headers to a new Headers instance
+-    // so the headers can be manipulated with.
+-    const headers = new Headers(requestClone.headers)
++  /**
++   * @param {{ request?: { headers?: Array<[string, string]> } }} [data]
++   */
++  function passthrough(data) {
++    const headers = new Headers()
++    const requestHeaders = data?.request?.headers
++
++    if (Array.isArray(requestHeaders)) {
++      // Apply the request headers provided by the client.
++      // Those reflect any modifications made in the request handlers.
++      // Use ".append()" to support multiple headers with the same name.
++      for (const [name, value] of requestHeaders) {
++        headers.append(name, value)
++      }
++    } else {
++      for (const [name, value] of requestClone.headers) {
++        headers.append(name, value)
++      }
++    }
+ 
+     // Remove the "accept" header value that marked this request as passthrough.
+     // This prevents request alteration and also keeps it compliant with the
+@@ -259,7 +340,6 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
+       type: 'REQUEST',
+       payload: {
+         id: requestId,
+-        interceptedAt: requestInterceptedAt,
+         ...serializedRequest,
+       },
+     },
+@@ -268,17 +348,35 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
+ 
+   switch (clientMessage.type) {
+     case 'MOCK_RESPONSE': {
+-      return respondWithMock(clientMessage.data)
++      return respondWithMock(clientMessage.data, event)
+     }
+ 
+     case 'PASSTHROUGH': {
+-      return passthrough()
++      return passthrough(clientMessage.data)
+     }
+   }
+ 
+   return passthrough()
+ }
+ 
++/**
++ * @param {unknown} error
++ * @returns {{ name: string, message: string }}
++ */
++function serializeError(error) {
++  if (error instanceof Error) {
++    return {
++      name: error.name,
++      message: error.message,
++    }
++  }
++
++  return {
++    name: 'Error',
++    message: String(error),
++  }
++}
++
+ /**
+  * @param {Client} client
+  * @param {any} message
+@@ -306,9 +404,10 @@ function sendToClient(client, message, transferrables = []) {
+ 
+ /**
+  * @param {Response} response
+- * @returns {Response}
++ * @param {FetchEvent} event
++ * @returns {Promise<Response>}
+  */
+-function respondWithMock(response) {
++async function respondWithMock(response, event) {
+   // Setting response status code to 0 is a no-op.
+   // However, when responding with a "Response.error()", the produced Response
+   // instance will have status code set to 0. Since it's not possible to create
+@@ -317,7 +416,19 @@ function respondWithMock(response) {
+     return Response.error()
+   }
+ 
+-  const mockedResponse = new Response(response.body, response)
++  let body = response.body
++
++  // Buffer the streamed mocked response body for navigation requests.
++  // The stream is transferred from the client that is being navigated
++  // away from. Once the navigation commits, that client gets destroyed
++  // and the stream will never complete, resulting in an empty document.
++  // Buffering here keeps "event.respondWith()" pending (the navigation
++  // cannot commit) until the entire body arrives from the client.
++  if (event.request.mode === 'navigate' && body instanceof ReadableStream) {
++    body = await new Response(body).arrayBuffer()
++  }
++
++  const mockedResponse = new Response(body, response)
+ 
+   Reflect.defineProperty(mockedResponse, IS_MOCKED_RESPONSE, {
+     value: true,

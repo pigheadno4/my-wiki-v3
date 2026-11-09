@@ -1,0 +1,111 @@
+# GitHub ingest packet
+
+- Repository: `adyen/adyen-web`
+- Work item: `github-7af6b1df429e8b0d75bf`
+- Snapshot: `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `@adyen/adyen-web`
+
+- Version: `6.47.0` -> `6.48.0`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `212`
+
+### Required reading
+
+- `raw/github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/manifest.json`
+- `raw/github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/release-notes.md`
+- `raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/package.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/package.json`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/components/ThreeDS2/components/utils.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/core/core.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/core/types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/files/packages/lib/src/types/global-types.ts`
+- `raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/manifest.json`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.47.0--6.48.0/comparison.json`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.47.0--6.48.0/comparison.md`
+- `tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.47.0--6.48.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `.github/workflows/release-notifications.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `.github/workflows/slack-channel-message.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/sonarcloud.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.yarnrc.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
+- `modified` `packages/e2e-playwright/fixtures/URL_MAP.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/e2e-playwright/models/card.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/e2e-playwright/models/dropin.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/e2e-playwright/package.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/e2e-playwright/tests/e2e/dropin/sessions/dropin.teardown.during.challenge.spec.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/.storybook/preview.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/CHANGELOG.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/eslint-rules/strict-null-checks.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/package.json`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/ApplePay/services/ApplePayService.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/ApplePay/services/ApplePayService.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/ClickToPay/ClickToPay.stories.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/ClickToPay/ClickToPay.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/ClickToPay/ClickToPay.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/Giftcard/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`: `retained-evidence` (snapshot-file)
+- `added` `packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/ThreeDS2/components/utils.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/components/internal/Address/components/AddressSearch.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/Address/components/AddressSearch.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCards.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCardsList/CtPCardsList.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfo.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfoModal/CtPInfoModal.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLogin.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePassword.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPResendOtpLink.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/context/ClickToPayContext.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/errors/TimeoutError.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/models/ShopperCard.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/ClickToPayService.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/create-clicktopay-service.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/execute-with-timeout.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/sdks/SrcSdkLoader.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/ClickToPay/services/utils.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/FormFields/Select/Select.scss`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/FormFields/Select/Select.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/FormFields/Select/Select.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/FormFields/Select/types.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Modal/Modal.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/Modal/useModal.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/handleConfig.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/constants.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/components/internal/UIElement/UIElement.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/core.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `packages/lib/src/core/core.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/core/types.ts`: `retained-evidence` (snapshot-file)
+- `modified` `packages/lib/src/types/global-types.ts`: `retained-evidence` (snapshot-file)
+- `added` `packages/lib/storybook/components/SRPanelDebugger.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReload.stories.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReloadDemo.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/playground/package.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/playground/src/pages/GiftCards/GiftCards.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `packages/server/package.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `yarn.lock`: `intentional-policy-exclusion` (outside-capsule-policy)

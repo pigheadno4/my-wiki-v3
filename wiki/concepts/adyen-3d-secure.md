@@ -25,6 +25,10 @@ This concept covers the high-level merchant website guide across web and mobile 
 
 In `@adyen/adyen-web@6.47.0`, the challenge handler checks for a missing `result` before inspecting its error fields; challenge/fingerprint preparation gains null-aware guards and fallback keys, and the form submits/reports submission only when its form reference exists. The challenge receives the Core translation module explicitly and a default window size when neither size option is supplied. Optional error callbacks are guarded. These changes retain URL/origin checks and the existing Sessions/Advanced ownership; they do not establish successful authentication, a new merchant-facing passkey API, or universal malformed-token acceptance. Some guards distinguish missing/error objects rather than validating every token property. [[source-github-adyen-web]] and [[changelog-github-adyen-web]] preserve exact source and prior versions; no browser, issuer or payment execution was performed.
 
+### Web 6.48.0 detached-component callback protection
+
+Both Challenge and DeviceFingerprint handlers remove their message listener when the timeout-wrapped promise settles, then suppress completion/error callbacks if `!base?.isConnected`. This protects against a stale callback when raw DOM removal bypasses Preact unmount. The helper uses Node.isConnected so an attached shadow tree is not automatically treated as detached. Normal unmount still cancels the wrapper and removes the listener. This is not immediate listener removal at raw DOM teardown, cancellation of issuer/backend work, universal duplicate-request prevention or evidence of payment success. The retained TwoInstances story illustrates two Drop-ins sharing one Checkout/Session; it was not executed as a regression test. [[source-github-adyen-web]] [[changelog-github-adyen-web]]
+
 ## Related
 
 - [[source-adyen-api-explorer-binlookup-latest-post-get3dsavailability]] — 2026-09-15-captured BinLookup API v54 test-server reference for BIN/card-brand 3DS availability and optional 3DS2 card-range/device-key data; lookup does not establish authentication or payment outcome.

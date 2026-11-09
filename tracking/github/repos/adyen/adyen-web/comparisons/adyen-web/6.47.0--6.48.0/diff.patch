@@ -1,0 +1,2880 @@
+diff --git a/packages/lib/.storybook/preview.tsx b/packages/lib/.storybook/preview.tsx
+index 24bd172..3f72d0b 100644
+--- a/packages/lib/.storybook/preview.tsx
++++ b/packages/lib/.storybook/preview.tsx
+@@ -1,5 +1,7 @@
+ import './main.css';
++import { h, Fragment } from 'preact';
+ import { Preview } from '@storybook/preact-vite';
++import { SRPanelDebugger } from '../storybook/components/SRPanelDebugger';
+ import { DEFAULT_COUNTRY_CODE, DEFAULT_SHOPPER_LOCALE, DEFAULT_AMOUNT_VALUE, STORYBOOK_SHOPPERLOCALES } from '../storybook/config/commonConfig';
+ import { setupWorker } from 'msw/browser';
+ import { mswLoader } from 'msw-storybook-addon/csf3';
+@@ -29,6 +31,31 @@ if (!disableMsw) {
+ }
+ 
+ const preview: Preview = {
++    globalTypes: {
++        srPanelDebugger: {
++            description: 'Log every screen reader panel mutation and setMessages call on screen',
++            toolbar: {
++                title: 'SR panel debugger',
++                icon: 'accessibility',
++                items: [
++                    { value: false, title: 'SR debugger: off' },
++                    { value: true, title: 'SR debugger: on' }
++                ],
++                dynamicTitle: true
++            }
++        }
++    },
++    initialGlobals: {
++        srPanelDebugger: false
++    },
++    decorators: [
++        (Story, context) => (
++            <Fragment>
++                <Story />
++                {context.globals.srPanelDebugger && <SRPanelDebugger />}
++            </Fragment>
++        )
++    ],
+     argTypes: {
+         useSessions: {
+             control: 'boolean'
+diff --git a/packages/lib/CHANGELOG.md b/packages/lib/CHANGELOG.md
+index f9604b2..d0d4c6a 100644
+--- a/packages/lib/CHANGELOG.md
++++ b/packages/lib/CHANGELOG.md
+@@ -1,5 +1,23 @@
+ # @adyen/adyen-web
+ 
++## 6.48.0
++
++### Minor Changes
++
++- New: `onOrderUpdated` now also returns the latest `sessionData` in Sessions flow. ([#4235](https://github.com/Adyen/adyen-web/pull/4235))
++
++- Improved: securedFields now send messages informing about invalid hosting. This PR picks up these messages and converts them to analytic error events ([#4271](https://github.com/Adyen/adyen-web/pull/4271))
++
++### Patch Changes
++
++- Fixed: Apple Pay no longer throws unhandled promise rejections when the payment sheet can no longer be completed or aborted, while completing the payment or the merchant validation ([#4265](https://github.com/Adyen/adyen-web/pull/4265))
++
++- Improved: Null-safety in ClickToPay and the shared Modal component ([#4254](https://github.com/Adyen/adyen-web/pull/4254))
++
++- Fixed: Preserve the address lookup query when focus leaves the search field. ([#4266](https://github.com/Adyen/adyen-web/pull/4266))
++
++- Fixed: a stale 3DS2 challenge `postMessage` listener no longer resolves after its component is removed from the DOM outside of Preact's lifecycle, preventing a duplicate `onAdditionalDetails`/`/paymentDetails` call. ([#4273](https://github.com/Adyen/adyen-web/pull/4273))
++
+ ## 6.47.0
+ 
+ ### Minor Changes
+diff --git a/packages/lib/eslint-rules/strict-null-checks.js b/packages/lib/eslint-rules/strict-null-checks.js
+index f472d99..b7b01d2 100644
+--- a/packages/lib/eslint-rules/strict-null-checks.js
++++ b/packages/lib/eslint-rules/strict-null-checks.js
+@@ -126,7 +126,6 @@ const STRICT_NULL_CHECKS_BACKLOG = [
+     'src/components/Card/components/ClickToPayHolder.tsx',
+     'src/components/Card/components/Fastlane/FastlaneSignup.tsx',
+     'src/components/Card/components/Fastlane/InfoButton.tsx',
+-    'src/components/Card/components/Fastlane/InfoModal.tsx',
+     'src/components/Card/components/Fastlane/USOnlyPhoneInput.tsx',
+     'src/components/CustomCard/CustomCard.tsx',
+     'src/components/CustomCard/CustomCardInput/CustomCardInput.tsx',
+@@ -152,28 +151,6 @@ const STRICT_NULL_CHECKS_BACKLOG = [
+     'src/components/GooglePay/models/PaymentDataRequest.ts',
+     'src/components/GooglePay/requests.ts',
+ 
+-    // ── Ticket 10: Click to Pay (98 errors) ──
+-    'src/components/ClickToPay/ClickToPay.tsx',
+-    'src/components/internal/ClickToPay/ClickToPayComponent.tsx',
+-    'src/components/internal/ClickToPay/components/CtPCards/CtPCards.tsx',
+-    'src/components/internal/ClickToPay/components/CtPCards/CtPCardsList/CtPCardsList.tsx',
+-    'src/components/internal/ClickToPay/components/CtPInfo/CtPInfo.tsx',
+-    'src/components/internal/ClickToPay/components/CtPInfo/CtPInfoModal/CtPInfoModal.tsx',
+-    'src/components/internal/ClickToPay/components/CtPLogin/CtPLogin.tsx',
+-    'src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx',
+-    'src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePassword.tsx',
+-    'src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx',
+-    'src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPResendOtpLink.tsx',
+-    'src/components/internal/ClickToPay/context/ClickToPayContext.ts',
+-    'src/components/internal/ClickToPay/context/ClickToPayProvider.tsx',
+-    'src/components/internal/ClickToPay/models/ShopperCard.ts',
+-    'src/components/internal/ClickToPay/services/ClickToPayService.ts',
+-    'src/components/internal/ClickToPay/services/create-clicktopay-service.ts',
+-    'src/components/internal/ClickToPay/services/execute-with-timeout.ts',
+-    'src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts',
+-    'src/components/internal/ClickToPay/services/sdks/SrcSdkLoader.ts',
+-    'src/components/internal/ClickToPay/services/utils.ts',
+-
+     // ── No ticket yet (316 errors) ──
+     // src/components/Ach (19 errors)
+     'src/components/Ach/Ach.tsx',
+diff --git a/packages/lib/package.json b/packages/lib/package.json
+index a68e8ea..aaf7de0 100644
+--- a/packages/lib/package.json
++++ b/packages/lib/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@adyen/adyen-web",
+-    "version": "6.47.0",
++    "version": "6.48.0",
+     "license": "MIT",
+     "homepage": "https://docs.adyen.com/checkout",
+     "type": "module",
+@@ -91,8 +91,8 @@
+         "@rollup/plugin-node-resolve": "16.0.3",
+         "@rollup/plugin-replace": "6.0.3",
+         "@rollup/plugin-terser": "1.0.0",
+-        "@size-limit/file": "14.0.0",
+-        "@size-limit/webpack": "14.0.0",
++        "@size-limit/file": "14.1.0",
++        "@size-limit/webpack": "14.1.0",
+         "@storybook/addon-a11y": "10.6.2",
+         "@storybook/addon-docs": "10.6.2",
+         "@storybook/preact-vite": "10.6.2",
+@@ -103,42 +103,42 @@
+         "@testing-library/user-event": "14.6.7",
+         "@types/jest": "30.0.0",
+         "autoprefixer": "10.6.1",
+-        "cssnano": "9.0.5",
+-        "dotenv": "17.4.2",
+-        "eslint": "10.10.0",
++        "cssnano": "9.1.2",
++        "dotenv": "18.0.5",
++        "eslint": "10.11.0",
+         "eslint-plugin-import": "2.32.0",
+         "eslint-plugin-jsx-a11y": "6.10.2",
+         "eslint-plugin-react": "7.37.5",
+         "eslint-plugin-storybook": "10.6.2",
+         "eslint-plugin-testing-library": "7.16.2",
+-        "globals": "17.12.0",
+-        "jest": "30.5.1",
+-        "jest-environment-jsdom": "30.5.1",
++        "globals": "17.13.0",
++        "jest": "30.5.2",
++        "jest-environment-jsdom": "30.5.2",
+         "jest-fixed-jsdom": "^0.0.11",
+         "jest-mock-extended": "4.0.1",
+         "msw": "2.15.0",
+         "msw-storybook-addon": "3.0.3",
+         "postcss": "8.5.28",
+-        "rollup": "4.63.3",
++        "rollup": "4.63.6",
+         "rollup-plugin-dts": "6.5.1",
+         "rollup-plugin-postcss": "4.0.2",
+         "rollup-plugin-stylelint": "1.0.0",
+         "rollup-plugin-swc3": "0.12.1",
+-        "sass": "1.104.1",
+-        "size-limit": "14.0.0",
++        "sass": "1.105.1",
++        "size-limit": "14.1.0",
+         "storybook": "10.6.2",
+         "stylelint": "17.15.0",
+         "stylelint-config-standard-scss": "17.0.0",
+-        "ts-jest": "29.4.12",
++        "ts-jest": "29.4.14",
+         "tslib": "2.8.1",
+         "typescript": "6.0.3",
+-        "typescript-eslint": "8.70.0",
++        "typescript-eslint": "8.71.0",
+         "vite": "6.4.3",
+         "vite-plugin-stylelint": "6.3.0",
+         "whatwg-fetch": "3.6.20"
+     },
+     "dependencies": {
+-        "@paypal/paypal-js": "11.1.0",
++        "@paypal/paypal-js": "11.2.0",
+         "@types/applepayjs": "14.0.9",
+         "@types/googlepay": "0.7.13",
+         "classnames": "2.5.1",
+diff --git a/packages/lib/src/components/ApplePay/services/ApplePayService.test.ts b/packages/lib/src/components/ApplePay/services/ApplePayService.test.ts
+index 7d70832..beaf725 100644
+--- a/packages/lib/src/components/ApplePay/services/ApplePayService.test.ts
++++ b/packages/lib/src/components/ApplePay/services/ApplePayService.test.ts
+@@ -3,7 +3,7 @@ import { mock } from 'jest-mock-extended';
+ 
+ describe('ApplePaySession', () => {
+     beforeEach(() => {
+-        window.ApplePaySession = jest.fn().mockImplementation((version: number, paymentRequest: ApplePayJS.ApplePayPaymentRequest) => ({
++        const applePaySessionMock = jest.fn().mockImplementation((version: number, paymentRequest: ApplePayJS.ApplePayPaymentRequest) => ({
+             version,
+             paymentRequest,
+             begin: jest.fn(),
+@@ -23,7 +23,12 @@ describe('ApplePaySession', () => {
+             onshippingcontactselected: jest.fn(),
+             onshippingmethodselected: jest.fn(),
+             oncouponcodechanged: jest.fn()
+-        })) as unknown as ApplePaySession;
++        }));
++
++        // Status codes are static members of the Apple Pay session
++        Object.assign(applePaySessionMock, { STATUS_SUCCESS: 0, STATUS_FAILURE: 1 });
++
++        window.ApplePaySession = applePaySessionMock as unknown as ApplePaySession;
+     });
+ 
+     afterEach(() => {
+@@ -77,6 +82,31 @@ describe('ApplePaySession', () => {
+             expect(service['session'].abort).toHaveBeenCalledTimes(1);
+             expect(options.onError).toHaveBeenCalledTimes(1);
+         });
++
++        test('should not throw nor report an error when the session was already canceled', async () => {
++            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
++            const paymentRequest = mock<ApplePayJS.ApplePayPaymentRequest>();
++            const options = mock<ApplePayServiceOptions>({
++                onValidateMerchant: jest.fn().mockImplementation(resolve => {
++                    resolve('merchant-session');
++                })
++            });
++            const event = mock<ApplePayJS.ApplePayValidateMerchantEvent>();
++
++            const service = new ApplePayService(paymentRequest, options);
++            jest.mocked(service['session'].completeMerchantValidation).mockImplementation(() => {
++                throw new DOMException('The object does not support the operation or argument.', 'InvalidAccessError');
++            });
++            jest.mocked(service['session'].abort).mockImplementation(() => {
++                throw new DOMException('The object does not support the operation or argument.', 'InvalidAccessError');
++            });
++
++            await expect(service.onvalidatemerchant(event, options.onValidateMerchant)).resolves.toBeUndefined();
++
++            expect(service['session'].abort).toHaveBeenCalledTimes(1);
++            expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
++            expect(options.onError).not.toHaveBeenCalled();
++        });
+     });
+ 
+     describe('onpaymentauthorized()', () => {
+@@ -113,6 +143,66 @@ describe('ApplePaySession', () => {
+ 
+             expect(service['session'].completePayment).toHaveBeenCalledWith({ status: 0 });
+         });
++
++        test('should not complete the payment again with the thrown exception when the session is no longer completable', async () => {
++            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
++            const paymentRequest = mock<ApplePayJS.ApplePayPaymentRequest>();
++            const options = mock<ApplePayServiceOptions>({
++                onPaymentAuthorized: jest.fn().mockImplementation(resolve => {
++                    resolve({ status: ApplePaySession.STATUS_SUCCESS });
++                })
++            });
++            const event = mock<ApplePayJS.ApplePayPaymentAuthorizedEvent>();
++
++            const service = new ApplePayService(paymentRequest, options);
++            jest.mocked(service['session'].completePayment).mockImplementation(() => {
++                throw new DOMException('The object does not support the operation or argument.', 'InvalidAccessError');
++            });
++
++            await expect(service.onpaymentauthorized(event, options.onPaymentAuthorized)).resolves.toBeUndefined();
++
++            expect(service['session'].completePayment).toHaveBeenCalledTimes(1);
++            expect(service['session'].completePayment).toHaveBeenCalledWith({ status: ApplePaySession.STATUS_SUCCESS });
++            expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
++        });
++
++        test('should not throw when the session can no longer complete a refused payment', async () => {
++            const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
++            const paymentRequest = mock<ApplePayJS.ApplePayPaymentRequest>();
++            const options = mock<ApplePayServiceOptions>({
++                onPaymentAuthorized: jest.fn().mockImplementation((resolve, reject) => {
++                    reject({ status: ApplePaySession.STATUS_FAILURE });
++                })
++            });
++            const event = mock<ApplePayJS.ApplePayPaymentAuthorizedEvent>();
++
++            const service = new ApplePayService(paymentRequest, options);
++            jest.mocked(service['session'].completePayment).mockImplementation(() => {
++                throw new DOMException('The object does not support the operation or argument.', 'InvalidAccessError');
++            });
++
++            await expect(service.onpaymentauthorized(event, options.onPaymentAuthorized)).resolves.toBeUndefined();
++
++            expect(service['session'].completePayment).toHaveBeenCalledTimes(1);
++            expect(service['session'].completePayment).toHaveBeenCalledWith({ status: ApplePaySession.STATUS_FAILURE });
++            expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
++        });
++
++        test('should complete the payment as a failure when the payment is rejected without an authorization result', async () => {
++            const paymentRequest = mock<ApplePayJS.ApplePayPaymentRequest>();
++            const options = mock<ApplePayServiceOptions>({
++                onPaymentAuthorized: jest.fn().mockImplementation((resolve, reject) => {
++                    reject(new Error('Payment failed'));
++                })
++            });
++            const event = mock<ApplePayJS.ApplePayPaymentAuthorizedEvent>();
++
++            const service = new ApplePayService(paymentRequest, options);
++
++            await expect(service.onpaymentauthorized(event, options.onPaymentAuthorized)).resolves.toBeUndefined();
++
++            expect(service['session'].completePayment).toHaveBeenCalledWith({ status: ApplePaySession.STATUS_FAILURE });
++        });
+     });
+ 
+     describe('oncancel()', () => {
+diff --git a/packages/lib/src/components/ApplePay/services/ApplePayService.ts b/packages/lib/src/components/ApplePay/services/ApplePayService.ts
+index 0ec016f..3addebb 100644
+--- a/packages/lib/src/components/ApplePay/services/ApplePayService.ts
++++ b/packages/lib/src/components/ApplePay/services/ApplePayService.ts
+@@ -16,6 +16,14 @@ export interface ApplePayServiceOptions {
+     ) => void;
+ }
+ 
++/**
++ * An authorization result always carries a numeric 'status'. Anything else reaching the completion of a
++ * payment is a rejection reason that is not a result - an exception thrown by the payment chain, typically.
++ */
++function isAuthorizationResult(value: unknown): value is ApplePayPaymentAuthorizationResult {
++    return typeof (value as ApplePayPaymentAuthorizationResult)?.status === 'number';
++}
++
+ class ApplePayService {
+     private session: ApplePaySession;
+     private readonly options: ApplePayServiceOptions;
+@@ -84,8 +92,13 @@ class ApplePayService {
+                 this.session.completeMerchantValidation(response);
+             })
+             .catch(error => {
+-                console.error(error);
+-                this.session.abort();
++                try {
++                    this.session.abort();
++                } catch (abortError) {
++                    // The session was already canceled, and the 'oncancel' event has reported it. No need to call 'onError' again
++                    console.warn('ApplePayService: onvalidatemerchant session.abort() failed', abortError);
++                    return;
++                }
+                 this.options.onError(error);
+             });
+     }
+@@ -104,13 +117,31 @@ class ApplePayService {
+     ): Promise<void> {
+         return new Promise((resolve, reject) => onPaymentAuthorized(resolve, reject, event))
+             .then((result: ApplePayPaymentAuthorizationResult) => {
+-                this.session.completePayment(result);
++                this.completePayment(result);
+             })
+-            .catch((result: ApplePayPaymentAuthorizationResult) => {
+-                this.session.completePayment(result);
++            .catch((resultOrError: unknown) => {
++                const result = isAuthorizationResult(resultOrError) ? resultOrError : { status: ApplePaySession.STATUS_FAILURE };
++                this.completePayment(result);
+             });
+     }
+ 
++    /**
++     * Completes the payment, telling the Apple Pay sheet whether it succeeded or failed.
++     *
++     * The session throws when it can no longer be completed (the shopper dismissed the sheet or the 30 second
++     * completion window elapsed), or when it rejects the result. The exception is logged here rather than
++     * escaping as an unhandled rejection.
++     *
++     * @param result - The authorization result to complete the payment with
++     */
++    private completePayment(result: ApplePayPaymentAuthorizationResult): void {
++        try {
++            this.session.completePayment(result);
++        } catch (error) {
++            console.warn('ApplePayService: onpaymentauthorized session.completePayment() failed', error);
++        }
++    }
++
+     /**
+      * An event handler that is called when a new payment method is selected.
+      * The onpaymentmethodselected function must resolve before the 30 second timeout
+diff --git a/packages/lib/src/components/ClickToPay/ClickToPay.stories.tsx b/packages/lib/src/components/ClickToPay/ClickToPay.stories.tsx
+index 0f339d6..5c363af 100644
+--- a/packages/lib/src/components/ClickToPay/ClickToPay.stories.tsx
++++ b/packages/lib/src/components/ClickToPay/ClickToPay.stories.tsx
+@@ -26,8 +26,8 @@ export const StandaloneComponent: ClickToPayStory = {
+             shopperEmail: new URLSearchParams(document.location.search).get('shopperEmail') || 'gui.ctp@adyen.com',
+             merchantDisplayName: 'Adyen Merchant Name',
+             configuration: {
+-                visaSrciDpaId: '8e6e347c-254e-863f-0e6a-196bf2d9df02',
+-                visaSrcInitiatorId: 'B9SECVKIQX2SOBQ6J9X721dVBBKHhJJl1nxxVbemHGn5oB6S8',
++                // visaSrciDpaId: '8e6e347c-254e-863f-0e6a-196bf2d9df02',
++                // visaSrcInitiatorId: 'B9SECVKIQX2SOBQ6J9X721dVBBKHhJJl1nxxVbemHGn5oB6S8',
+                 mcDpaId: '6d41d4d6-45b1-42c3-a5d0-a28c0e69d4b1_dpa2',
+                 mcSrcClientId: '6d41d4d6-45b1-42c3-a5d0-a28c0e69d4b1'
+             }
+diff --git a/packages/lib/src/components/ClickToPay/ClickToPay.test.ts b/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
+index b332db7..67836b3 100644
+--- a/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
++++ b/packages/lib/src/components/ClickToPay/ClickToPay.test.ts
+@@ -13,13 +13,14 @@ import { setupCoreMock } from '../../../config/testMocks/setup-core-mock';
+ 
+ jest.mock('../internal/ClickToPay/services/create-clicktopay-service');
+ 
++const createClickToPayServiceMock = createClickToPayService as jest.MockedFunction<typeof createClickToPayService>;
++
+ const core = setupCoreMock();
+ 
+ test('should initialize ClickToPayService when creating the element', () => {
+     const mockCtpService = mock<IClickToPayService>();
+     mockCtpService.initialize.mockImplementation(() => Promise.resolve());
+-    // @ts-ignore mockImplementation not inferred
+-    createClickToPayService.mockImplementation(() => mockCtpService);
++    createClickToPayServiceMock.mockImplementation(() => mockCtpService);
+ 
+     const configuration = {
+         visaSrcInitiatorId: '$123456$',
+@@ -29,10 +30,10 @@ test('should initialize ClickToPayService when creating the element', () => {
+         shopperEmail: 'shopper@example.com'
+     };
+ 
+-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     const element = new ClickToPayElement(core, { environment: 'test', configuration, ...ctpConfiguration });
+ 
+-    expect(createClickToPayService).toHaveBeenCalledWith(configuration, ctpConfiguration, 'test', core.modules.analytics);
++    expect(element.props.shopperEmail).toBe('shopper@example.com');
++    expect(createClickToPayServiceMock).toHaveBeenCalledWith(configuration, ctpConfiguration, 'test', core.modules.analytics);
+     expect(mockCtpService.initialize).toHaveBeenCalledTimes(1);
+ });
+ 
+@@ -63,7 +64,11 @@ test('should formatData() to click to pay /payment request format', () => {
+ });
+ 
+ test('should get shopperEmail from session if available', () => {
+-    const modifiedCore = { ...core, options: { ...core.options, session: { ...core.options.session, shopperEmail: 'shopper@example.com' } } };
++    const modifiedCore = setupCoreMock();
++    modifiedCore.options = {
++        ...modifiedCore.options,
++        session: { ...modifiedCore.options.session, id: 'session-id', shopperEmail: 'shopper@example.com' }
++    };
+ 
+     const element = new ClickToPayElement(modifiedCore);
+ 
+@@ -73,8 +78,7 @@ test('should get shopperEmail from session if available', () => {
+ test('should resolve isAvailable if shopper account is found', async () => {
+     const mockCtpService = mock<IClickToPayService>();
+     mockCtpService.initialize.mockImplementation(() => Promise.resolve());
+-    // @ts-ignore mockImplementation not inferred
+-    createClickToPayService.mockImplementation(() => mockCtpService);
++    createClickToPayServiceMock.mockImplementation(() => mockCtpService);
+ 
+     Object.defineProperty(mockCtpService, 'shopperAccountFound', {
+         get: jest.fn(() => true)
+@@ -88,8 +92,7 @@ test('should resolve isAvailable if shopper account is found', async () => {
+ test('should reject isAvailable if shopper account is not found', async () => {
+     const mockCtpService = mock<IClickToPayService>();
+     mockCtpService.initialize.mockImplementation(() => Promise.resolve());
+-    // @ts-ignore mockImplementation not inferred
+-    createClickToPayService.mockImplementation(() => mockCtpService);
++    createClickToPayServiceMock.mockImplementation(() => mockCtpService);
+ 
+     mockCtpService.subscribeOnStateChange.mockImplementation(callback => {
+         callback(CtpState.NotAvailable);
+@@ -118,8 +121,7 @@ describe('Click to Pay: ENTER keydown should perform an action only within the C
+             callback(CtpState.Login);
+         });
+ 
+-        // @ts-ignore mockImplementation not inferred
+-        createClickToPayService.mockImplementation(() => mockCtpService);
++        createClickToPayServiceMock.mockImplementation(() => mockCtpService);
+ 
+         const resources = mock<Resources>();
+         resources.getImage.mockReturnValue((icon: string) => `https://checkout-adyen.com/${icon}`);
+@@ -157,8 +159,7 @@ describe('Click to Pay: ENTER keydown should perform an action only within the C
+             callback(CtpState.OneTimePassword);
+         });
+ 
+-        // @ts-ignore mockImplementation not inferred
+-        createClickToPayService.mockImplementation(() => mockCtpService);
++        createClickToPayServiceMock.mockImplementation(() => mockCtpService);
+ 
+         const resources = mock<Resources>();
+         resources.getImage.mockReturnValue((icon: string) => `https://checkout-adyen.com/${icon}`);
+@@ -195,7 +196,7 @@ describe('Click to Pay: ENTER keydown should perform an action only within the C
+         mockCtpService.subscribeOnStateChange.mockImplementation(callback => {
+             callback(CtpState.Ready);
+         });
+-        mockCtpService.shopperCards = [
++        const shopperCards: ShopperCard[] = [
+             new ShopperCard(
+                 {
+                     srcDigitalCardId: '654321',
+@@ -216,14 +217,14 @@ describe('Click to Pay: ENTER keydown should perform an action only within the C
+                 '1234566'
+             )
+         ];
++        mockCtpService.shopperCards = shopperCards;
+         mockCtpService.checkout.mockResolvedValue({
+             srcDigitalCardId: 'xxxx',
+             srcCorrelationId: 'yyyy',
+             srcScheme: 'visa'
+         });
+ 
+-        // @ts-ignore mockImplementation not inferred by Typescript
+-        createClickToPayService.mockImplementation(() => mockCtpService);
++        createClickToPayServiceMock.mockImplementation(() => mockCtpService);
+ 
+         const resources = mock<Resources>();
+         resources.getImage.mockReturnValue((icon: string) => `https://checkout-adyen.com/${icon}`);
+@@ -248,7 +249,7 @@ describe('Click to Pay: ENTER keydown should perform an action only within the C
+         await user.keyboard('[Enter]');
+ 
+         await waitFor(() => {
+-            expect(mockCtpService.checkout).toHaveBeenCalledWith(mockCtpService.shopperCards[0]);
++            expect(mockCtpService.checkout).toHaveBeenCalledWith(shopperCards[0]);
+         });
+ 
+         expect(onSubmitMock).toHaveBeenCalled();
+diff --git a/packages/lib/src/components/ClickToPay/ClickToPay.tsx b/packages/lib/src/components/ClickToPay/ClickToPay.tsx
+index dc37e6c..2261139 100644
+--- a/packages/lib/src/components/ClickToPay/ClickToPay.tsx
++++ b/packages/lib/src/components/ClickToPay/ClickToPay.tsx
+@@ -30,7 +30,12 @@ export class ClickToPayElement extends UIElement<ClickToPayConfiguration> {
+             onTimeout: this.props.onTimeout
+         };
+ 
+-        this.clickToPayService = createClickToPayService(this.props.configuration, this.ctpConfiguration, this.props.environment, this.analytics);
++        this.clickToPayService = createClickToPayService(
++            this.props.configuration,
++            this.ctpConfiguration,
++            this.props.environment ?? '',
++            this.analytics
++        );
+ 
+         this.clickToPayService?.initialize().catch(error => {
+             this.handleError(new AdyenCheckoutError('ERROR', error.toString(), { cause: error }));
+@@ -82,17 +87,18 @@ export class ClickToPayElement extends UIElement<ClickToPayConfiguration> {
+      * Rejects Promise if account isn't found or if Login screen is triggered
+      */
+     public override async isAvailable(): Promise<void> {
+-        if (!this.clickToPayService) {
++        const ctpService = this.clickToPayService;
++        if (!ctpService) {
+             return Promise.reject();
+         }
+ 
+-        if (this.clickToPayService.shopperAccountFound) {
++        if (ctpService.shopperAccountFound) {
+             return Promise.resolve();
+         }
+ 
+         return new Promise((resolve, reject) => {
+-            this.clickToPayService.subscribeOnStateChange((state: CtpState) => {
+-                if (this.clickToPayService.shopperAccountFound) resolve();
++            ctpService.subscribeOnStateChange((state: CtpState) => {
++                if (ctpService.shopperAccountFound) resolve();
+                 if (state === CtpState.NotAvailable || state === CtpState.Login || state === CtpState.Idle) reject();
+             });
+         });
+diff --git a/packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx b/packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx
+index 4843691..650bc76 100644
+--- a/packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx
++++ b/packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx
+@@ -208,4 +208,35 @@ export const SessionsDonationReparented: DropinStory = {
+     }
+ };
+ 
++/**
++ * Renders two independent Drop-in instances, both created against the *same* Checkout/session,
++ * side by side. Used to test scenarios where one Drop-in instance is torn down (e.g. via raw DOM
++ * manipulation that bypasses Preact's unmount lifecycle) while a second, sibling instance - sharing
++ * the same session - is still in use. See DoChallenge3DS2's stale postMessage listener handling.
++ */
++export const TwoInstances: DropinStory = {
++    args: {
++        componentConfiguration: {
++            showStoredPaymentMethods: false
++        }
++    },
++    render: ({ componentConfiguration, ...checkoutConfig }: PaymentMethodStoryProps<DropinConfiguration>) => {
++        // Register all Components
++        const { Dropin, ...Components } = components;
++        const Classes = Object.values(Components) as NewableComponent[];
++        AdyenCheckout.register(...Classes);
++
++        return (
++            <Checkout checkoutConfig={checkoutConfig}>
++                {checkout => (
++                    <Fragment>
++                        <ComponentContainer id="component-root-1" element={new DropinComponent(checkout, componentConfiguration)} />
++                        <ComponentContainer id="component-root-2" element={new DropinComponent(checkout, componentConfiguration)} />
++                    </Fragment>
++                )}
++            </Checkout>
++        );
++    }
++};
++
+ export default meta;
+diff --git a/packages/lib/src/components/Giftcard/types.ts b/packages/lib/src/components/Giftcard/types.ts
+index 95b87a4..544c872 100644
+--- a/packages/lib/src/components/Giftcard/types.ts
++++ b/packages/lib/src/components/Giftcard/types.ts
+@@ -1,7 +1,7 @@
+ import { FunctionComponent } from 'preact';
+ import { GiftcardFieldsProps } from './components/types';
+ import { UIElementProps } from '../internal/UIElement/types';
+-import { Order, PaymentAmount, PaymentData } from '../../types/global-types';
++import { Order, OrderUpdatedData, PaymentAmount, PaymentData } from '../../types/global-types';
+ import type { BrandConfiguration } from '../internal/SecuredFields/lib/types';
+ import type { Placeholders } from './components/types';
+ 
+@@ -14,6 +14,7 @@ export interface GiftCardBrandConfiguration extends BrandConfiguration {
+ 
+ export type GiftCardBrandsConfiguration = Record<string, GiftCardBrandConfiguration>;
+ 
++
+ export interface GiftCardElementData {
+     paymentMethod: {
+         type: 'giftcard';
+@@ -37,7 +38,7 @@ export type onBalanceCheckCallbackType = (
+     data: GiftCardElementData
+ ) => Promise<void>;
+ 
+-export type onOrderUpdatedCallbackType = (data: { order: Order }) => void;
++export type onOrderUpdatedCallbackType = (data: OrderUpdatedData) => void;
+ 
+ export type onRequiringConfirmationCallbackType = (resolve: () => void, reject: (error: Error) => void) => Promise<void>;
+ 
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx
+index b447fb7..5925fca 100644
+--- a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx
+@@ -1,7 +1,13 @@
+ import { h } from 'preact';
+ import { render } from '@testing-library/preact';
+ import DoChallenge3DS2 from './DoChallenge3DS2';
+-import { PASSKEY_3DS2_IFRAME_ALLOW, PASSKEY_VISA_IFRAME_ALLOW, PASSKEY_VISA_IFRAME_SANDBOX } from '../../constants';
++import {
++    CHALLENGE_TIMEOUT,
++    CHALLENGE_TIMEOUT_REJECT_OBJECT,
++    PASSKEY_3DS2_IFRAME_ALLOW,
++    PASSKEY_VISA_IFRAME_ALLOW,
++    PASSKEY_VISA_IFRAME_SANDBOX
++} from '../../constants';
+ 
+ let mockIframeProps: any = {};
+ 
+@@ -57,4 +63,79 @@ describe('DoChallenge3DS2', () => {
+             expect(mockIframeProps.sandbox).toBe(PASSKEY_VISA_IFRAME_SANDBOX);
+         });
+     });
++
++    describe('Handling the challengeResult postMessage after the component has been torn down outside of Preact', () => {
++        const dispatchChallengeResultMessage = () => {
++            window.dispatchEvent(
++                new MessageEvent('message', {
++                    origin: defaultProps.postMessageDomain,
++                    data: JSON.stringify({ type: 'challengeResult', transStatus: 'Y' })
++                })
++            );
++        };
++
++        beforeEach(() => {
++            defaultProps.onCompleteChallenge.mockClear();
++            defaultProps.onErrorChallenge.mockClear();
++        });
++
++        // Resolving goes through promiseTimeout's own .then() before DoChallenge3DS2's .then() runs, so
++        // allow a macrotask tick for both hops of the promise chain to flush before asserting.
++        const flushPromiseChain = () => new Promise(resolve => setTimeout(resolve, 0));
++
++        test('should call onCompleteChallenge when the challengeResult arrives while still mounted', async () => {
++            render(<DoChallenge3DS2 {...defaultProps} />);
++
++            dispatchChallengeResultMessage();
++            await flushPromiseChain();
++
++            expect(defaultProps.onCompleteChallenge).toHaveBeenCalledTimes(1);
++        });
++
++        test('should not call onCompleteChallenge when the challengeResult arrives after the root node was removed from the DOM without going through Preact\'s unmount lifecycle (e.g. a merchant doing el.innerHTML = "")', async () => {
++            const { container } = render(<DoChallenge3DS2 {...defaultProps} />);
++
++            // Detach without going through Preact's unmount lifecycle - componentWillUnmount never runs.
++            // eslint-disable-next-line testing-library/no-container -- intentionally need raw DOM access to simulate a non-Preact-mediated removal
++            container.remove();
++
++            dispatchChallengeResultMessage();
++            await flushPromiseChain();
++
++            expect(defaultProps.onCompleteChallenge).not.toHaveBeenCalled();
++        });
++    });
++
++    describe('Handling a challenge timeout after the component has been torn down outside of Preact', () => {
++        beforeEach(() => {
++            jest.useFakeTimers();
++            defaultProps.onCompleteChallenge.mockClear();
++            defaultProps.onErrorChallenge.mockClear();
++        });
++
++        afterEach(() => {
++            jest.useRealTimers();
++        });
++
++        test('should call onErrorChallenge when the challenge times out while still mounted', async () => {
++            render(<DoChallenge3DS2 {...defaultProps} />);
++
++            await jest.advanceTimersByTimeAsync(CHALLENGE_TIMEOUT);
++
++            expect(defaultProps.onErrorChallenge).toHaveBeenCalledTimes(1);
++            expect(defaultProps.onErrorChallenge).toHaveBeenCalledWith(CHALLENGE_TIMEOUT_REJECT_OBJECT);
++        });
++
++        test('should not call onErrorChallenge when the challenge times out after the root node was removed from the DOM without going through Preact\'s unmount lifecycle (e.g. a merchant doing el.innerHTML = "")', async () => {
++            const { container } = render(<DoChallenge3DS2 {...defaultProps} />);
++
++            // Detach without going through Preact's unmount lifecycle - componentWillUnmount never runs.
++            // eslint-disable-next-line testing-library/no-container -- intentionally need raw DOM access to simulate a non-Preact-mediated removal
++            container.remove();
++
++            await jest.advanceTimersByTimeAsync(CHALLENGE_TIMEOUT);
++
++            expect(defaultProps.onErrorChallenge).not.toHaveBeenCalled();
++        });
++    });
+ });
+diff --git a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
+index a1ffba3..3d86f09 100644
+--- a/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
++++ b/packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx
+@@ -4,7 +4,7 @@ import Iframe from '../../../internal/IFrame';
+ import Spinner from '../../../internal/Spinner';
+ import ThreeDS2Form from '../Form';
+ import getProcessMessageHandler from '../../../../utils/get-process-message-handler';
+-import { encodeBase64URL } from '../utils';
++import { encodeBase64URL, isDetachedFromDOM } from '../utils';
+ import promiseTimeout from '../../../../utils/promiseTimeout';
+ import {
+     CHALLENGE_TIMEOUT,
+@@ -60,11 +60,21 @@ class DoChallenge3DS2 extends Component<DoChallenge3DS2Props, DoChallenge3DS2Sta
+         this.challengePromise.promise
+             .then((resolveObject: ThreeDS2FlowObject) => {
+                 window.removeEventListener('message', this.processMessageHandler);
++
++                if (isDetachedFromDOM(this.base)) {
++                    return;
++                }
++
+                 this.props.onCompleteChallenge(resolveObject);
+             })
+             /** Catch, for when Challenge times-out */
+             .catch((rejectObject: ThreeDS2FlowObject) => {
+                 window.removeEventListener('message', this.processMessageHandler);
++
++                if (isDetachedFromDOM(this.base)) {
++                    return;
++                }
++
+                 this.props.onErrorChallenge(rejectObject);
+             });
+     }
+diff --git a/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.test.tsx b/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.test.tsx
+new file mode 100644
+index 0000000..bdee226
+--- /dev/null
++++ b/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.test.tsx
+@@ -0,0 +1,100 @@
++import { h } from 'preact';
++import { render } from '@testing-library/preact';
++import DoFingerprint3DS2 from './DoFingerprint3DS2';
++import { THREEDS_METHOD_TIMEOUT, FAILED_METHOD_STATUS_RESOLVE_OBJECT_TIMEOUT } from '../../constants';
++
++jest.mock('../../../internal/IFrame', () => ({
++    __esModule: true,
++    default: function MockIframe() {
++        return null;
++    }
++}));
++
++const defaultProps = {
++    threeDSServerTransID: '3fc4ead',
++    threeDSMethodURL: 'https://pal-test.adyen.com/threeds2simulator/acs/fingerprint.shtml',
++    threeDSMethodNotificationURL: 'https://checkoutshopper-test.adyen.com/checkoutshopper/3ds2in1/notificationURL.shtml',
++    postMessageDomain: 'https://checkoutshopper-test.adyen.com',
++    showSpinner: true,
++    onCompleteFingerprint: jest.fn(),
++    onErrorFingerprint: jest.fn(),
++    onActionHandled: jest.fn(),
++    onFormSubmit: jest.fn()
++};
++
++describe('DoFingerprint3DS2', () => {
++    describe('Handling the fingerPrintResult postMessage after the component has been torn down outside of Preact', () => {
++        const dispatchFingerPrintResultMessage = () => {
++            window.dispatchEvent(
++                new MessageEvent('message', {
++                    origin: defaultProps.postMessageDomain,
++                    data: JSON.stringify({ type: 'fingerPrintResult', threeDSCompInd: 'Y' })
++                })
++            );
++        };
++
++        // Resolving goes through promiseTimeout's own .then() before DoFingerprint3DS2's .then() runs, so
++        // allow a macrotask tick for both hops of the promise chain to flush before asserting.
++        const flushPromiseChain = () => new Promise(resolve => setTimeout(resolve, 0));
++
++        beforeEach(() => {
++            defaultProps.onCompleteFingerprint.mockClear();
++            defaultProps.onErrorFingerprint.mockClear();
++        });
++
++        test('should call onCompleteFingerprint when the fingerPrintResult arrives while still mounted', async () => {
++            render(<DoFingerprint3DS2 {...defaultProps} />);
++
++            dispatchFingerPrintResultMessage();
++            await flushPromiseChain();
++
++            expect(defaultProps.onCompleteFingerprint).toHaveBeenCalledTimes(1);
++        });
++
++        test('should not call onCompleteFingerprint when the fingerPrintResult arrives after the root node was removed from the DOM without going through Preact\'s unmount lifecycle (e.g. a merchant doing el.innerHTML = "")', async () => {
++            const { container } = render(<DoFingerprint3DS2 {...defaultProps} />);
++
++            // Detach without going through Preact's unmount lifecycle - componentWillUnmount never runs.
++            // eslint-disable-next-line testing-library/no-container -- intentionally need raw DOM access to simulate a non-Preact-mediated removal
++            container.remove();
++
++            dispatchFingerPrintResultMessage();
++            await flushPromiseChain();
++
++            expect(defaultProps.onCompleteFingerprint).not.toHaveBeenCalled();
++        });
++    });
++
++    describe('Handling a fingerprint timeout after the component has been torn down outside of Preact', () => {
++        beforeEach(() => {
++            jest.useFakeTimers();
++            defaultProps.onCompleteFingerprint.mockClear();
++            defaultProps.onErrorFingerprint.mockClear();
++        });
++
++        afterEach(() => {
++            jest.useRealTimers();
++        });
++
++        test('should call onErrorFingerprint when the fingerprint times out while still mounted', async () => {
++            render(<DoFingerprint3DS2 {...defaultProps} />);
++
++            await jest.advanceTimersByTimeAsync(THREEDS_METHOD_TIMEOUT);
++
++            expect(defaultProps.onErrorFingerprint).toHaveBeenCalledTimes(1);
++            expect(defaultProps.onErrorFingerprint).toHaveBeenCalledWith(FAILED_METHOD_STATUS_RESOLVE_OBJECT_TIMEOUT);
++        });
++
++        test('should not call onErrorFingerprint when the fingerprint times out after the root node was removed from the DOM without going through Preact\'s unmount lifecycle (e.g. a merchant doing el.innerHTML = "")', async () => {
++            const { container } = render(<DoFingerprint3DS2 {...defaultProps} />);
++
++            // Detach without going through Preact's unmount lifecycle - componentWillUnmount never runs.
++            // eslint-disable-next-line testing-library/no-container -- intentionally need raw DOM access to simulate a non-Preact-mediated removal
++            container.remove();
++
++            await jest.advanceTimersByTimeAsync(THREEDS_METHOD_TIMEOUT);
++
++            expect(defaultProps.onErrorFingerprint).not.toHaveBeenCalled();
++        });
++    });
++});
+diff --git a/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx b/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx
+index 7afe885..1c4fade 100644
+--- a/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx
++++ b/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx
+@@ -5,7 +5,7 @@ import ThreeDS2Form from '../Form';
+ import promiseTimeout from '../../../../utils/promiseTimeout';
+ import getProcessMessageHandler from '../../../../utils/get-process-message-handler';
+ import { THREEDS_METHOD_TIMEOUT, FAILED_METHOD_STATUS_RESOLVE_OBJECT_TIMEOUT, THREEDS2_NUM } from '../../constants';
+-import { encodeBase64URL } from '../utils';
++import { encodeBase64URL, isDetachedFromDOM } from '../utils';
+ import { DoFingerprint3DS2Props, DoFingerprint3DS2State } from './types';
+ import { ThreeDS2FlowObject } from '../../types';
+ 
+@@ -60,10 +60,20 @@ class DoFingerprint3DS2 extends Component<DoFingerprint3DS2Props, DoFingerprint3
+         this.fingerPrintPromise.promise
+             .then((resolveObject: ThreeDS2FlowObject) => {
+                 window.removeEventListener('message', this.processMessageHandler);
++
++                if (isDetachedFromDOM(this.base)) {
++                    return;
++                }
++
+                 this.props.onCompleteFingerprint(resolveObject);
+             })
+             .catch((rejectObject: ThreeDS2FlowObject) => {
+                 window.removeEventListener('message', this.processMessageHandler);
++
++                if (isDetachedFromDOM(this.base)) {
++                    return;
++                }
++
+                 this.props.onErrorFingerprint(rejectObject);
+             });
+     }
+diff --git a/packages/lib/src/components/ThreeDS2/components/utils.ts b/packages/lib/src/components/ThreeDS2/components/utils.ts
+index b1e96e8..f9adb4e 100644
+--- a/packages/lib/src/components/ThreeDS2/components/utils.ts
++++ b/packages/lib/src/components/ThreeDS2/components/utils.ts
+@@ -179,6 +179,19 @@ export const encodeBase64URL = (dataStr: string): string => {
+     return base64url;
+ };
+ 
++/**
++ * Confirm if a component's root node is still connected to the DOM, r.e. the component being torn down
++ * incorrectly (without going through Preact's unmount lifecycle, e.g. a parent doing `el.innerHTML = ''`).
++ *
++ * Uses Node.isConnected rather than document.contains(), since the latter does not look into shadow roots
++ * and would always report "detached" for a component mounted inside an (attached) shadow tree.
++ *
++ * @param base - a Preact Component's `base` property, i.e. its rendered root DOM node
++ */
++export const isDetachedFromDOM = (base: Element | Text | undefined): boolean => {
++    return !base?.isConnected;
++};
++
+ /**
+  * Add props specifically needed for the type of 3DS2 flow: fingerprint or challenge
+  *
+diff --git a/packages/lib/src/components/internal/Address/components/AddressSearch.test.tsx b/packages/lib/src/components/internal/Address/components/AddressSearch.test.tsx
+index 92dcf34..c1b0a58 100644
+--- a/packages/lib/src/components/internal/Address/components/AddressSearch.test.tsx
++++ b/packages/lib/src/components/internal/Address/components/AddressSearch.test.tsx
+@@ -3,6 +3,9 @@ import userEvent from '@testing-library/user-event';
+ import { render, screen, waitFor } from '@testing-library/preact';
+ import AddressSearch from './AddressSearch';
+ import { CoreProvider } from '../../../../core/Context/CoreProvider';
++import { setupCoreMock } from '../../../../../config/testMocks/setup-core-mock';
++
++const core = setupCoreMock();
+ 
+ const ADDRESS_LOOKUP_RESULT = [
+     {
+@@ -24,7 +27,7 @@ const ADDRESS_LOOKUP_RESULT = [
+ 
+ const customRender = (ui: h.JSX.Element) => {
+     return render(
+-        <CoreProvider i18n={global.i18n} loadingContext="test" resources={global.resources}>
++        <CoreProvider i18n={core.modules.i18n} loadingContext="test" resources={core.modules.resources}>
+             {ui}
+         </CoreProvider>
+     );
+@@ -94,6 +97,55 @@ test('onAddressLookupMock should be triggered when typing', async () => {
+     expect(resultList).toHaveTextContent('Road 1, 2000, UK');
+ });
+ 
++describe('address query persistence', () => {
++    test('should preserve the query and matching suggestions after clicking outside and reopening', async () => {
++        const user = userEvent.setup();
++        const onSelect = jest.fn();
++        const onAddressLookup = jest.fn(onAddressLookupMockFn);
++
++        customRender(
++            <div>
++                <AddressSearch
++                    onSelect={onSelect}
++                    onManualAddress={() => {}}
++                    externalErrorMessage={''}
++                    onAddressLookup={onAddressLookup}
++                    hideManualButton={true}
++                    addressSearchDebounceMs={0}
++                />
++                <button type="button">Outside</button>
++            </div>
++        );
++
++        const input = screen.getByRole('combobox');
++        await user.type(input, 'Road');
++        await waitFor(() => expect(screen.getByRole('listbox')).toHaveTextContent('Road 1, 2000, UK'));
++        await user.click(screen.getByRole('button', { name: 'Outside' }));
++        expect(input).toHaveValue('Road');
++        expect(input).toHaveAttribute('aria-expanded', 'false');
++
++        await user.click(input);
++        expect(input).toHaveValue('Road');
++        expect(screen.getByRole('listbox')).toHaveTextContent('Road 1, 2000, UK');
++        expect(onSelect).not.toHaveBeenCalled();
++
++        await user.keyboard('[Escape]');
++        expect(input).not.toHaveFocus();
++        expect(input).toHaveValue('Road');
++        expect(input).toHaveAttribute('aria-expanded', 'false');
++
++        await user.click(input);
++        await user.tab();
++        expect(input).toHaveAttribute('aria-expanded', 'false');
++        expect(input).toHaveValue('Road');
++
++        await user.click(input);
++        await user.click(screen.getByRole('option', { name: 'Road 1, 2000, UK' }));
++        expect(onSelect).toHaveBeenCalledWith(ADDRESS_LOOKUP_RESULT[0]);
++        expect(input).toHaveValue('');
++    });
++});
++
+ test('onSelect is triggered with correct data', async () => {
+     const user = userEvent.setup({ delay: 100 });
+ 
+diff --git a/packages/lib/src/components/internal/Address/components/AddressSearch.tsx b/packages/lib/src/components/internal/Address/components/AddressSearch.tsx
+index 53d4846..41a33af 100644
+--- a/packages/lib/src/components/internal/Address/components/AddressSearch.tsx
++++ b/packages/lib/src/components/internal/Address/components/AddressSearch.tsx
+@@ -136,6 +136,8 @@ export default function AddressSearch({
+                     onChange={onSelectItem}
+                     disableTextFilter={true}
+                     blurOnClose={true}
++                    preserveInput={true}
++                    clearOnSelect={true}
+                 />
+             </Field>
+             {!hideManualButton && (
+diff --git a/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx b/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
+index d337872..a466d62 100644
+--- a/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx
+@@ -13,7 +13,7 @@ type ClickToPayComponentProps = {
+     onDisplayCardComponent?(): void;
+ };
+ 
+-const ClickToPayComponent = ({ onDisplayCardComponent }: Readonly<ClickToPayComponentProps>): h.JSX.Element => {
++const ClickToPayComponent = ({ onDisplayCardComponent }: Readonly<ClickToPayComponentProps>): h.JSX.Element | null => {
+     const { ctpState, onReady, startIdentityValidation, logoutShopper } = useClickToPayContext();
+ 
+     useEffect(() => {
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCards.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCards.tsx
+index 2a02fa1..0e19a6b 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCards.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCards.tsx
+@@ -24,21 +24,21 @@ type CtPCardsProps = {
+     onDisplayCardComponent?(): void;
+ };
+ 
+-function getErrorLabel(errorCode: string, i18n: Language): string {
+-    if (!errorCode) return null;
++function getErrorLabel(errorCode: string | null, i18n: Language): string | undefined {
++    if (!errorCode) return undefined;
+ 
+     const errorLabel = i18n.get(`ctp.errors.${errorCode}`);
+     if (errorLabel.includes('ctp.errors')) return i18n.get(`ctp.errors.UNKNOWN_ERROR`);
+     return errorLabel;
+ }
+ 
+-function getPayButtonLabel(i18n: Language, amount: PaymentAmount, checkoutCard?: ShopperCard): string | null {
++function getPayButtonLabel(i18n: Language, amount: PaymentAmount | undefined, checkoutCard?: ShopperCard): string | undefined {
+     if (!checkoutCard) return i18n.get('payButton');
+     if (!isMobile())
+         return i18n.get('payButton.with', {
+             values: { value: amountLabel(i18n, amount), maskedData: `•••• ${checkoutCard?.panLastFour}` }
+         });
+-    return null;
++    return undefined;
+ }
+ 
+ const CtPCards = ({ onDisplayCardComponent }: Readonly<CtPCardsProps>) => {
+@@ -46,7 +46,7 @@ const CtPCards = ({ onDisplayCardComponent }: Readonly<CtPCardsProps>) => {
+     const getImage = useImage();
+     const { cards, checkout, isCtpPrimaryPaymentMethod, status, onSubmit, onSetStatus, onError } = useClickToPayContext();
+     const [checkoutCard, setCheckoutCard] = useState<ShopperCard | undefined>(cards.find(card => !card.isExpired) || cards[0]);
+-    const [errorCode, setErrorCode] = useState<string>(null);
++    const [errorCode, setErrorCode] = useState<string | null>(null);
+     const isEveryCardExpired = cards.every(card => card.isExpired);
+     const [isShopperCheckingOutWithCtp, setIsShopperCheckingOutWithCtp] = useState<boolean>(false);
+     const { amount } = useAmount();
+@@ -78,7 +78,7 @@ const CtPCards = ({ onDisplayCardComponent }: Readonly<CtPCardsProps>) => {
+         }
+     }, [checkout, checkoutCard]);
+ 
+-    const handleOnChangeCard = useCallback((card: ShopperCard) => {
++    const handleOnChangeCard = useCallback((card: ShopperCard | undefined) => {
+         setCheckoutCard(card);
+     }, []);
+ 
+@@ -125,8 +125,9 @@ const CtPCards = ({ onDisplayCardComponent }: Readonly<CtPCardsProps>) => {
+                         status={status}
+                         variant={isCtpPrimaryPaymentMethod ? 'primary' : 'secondary'}
+                         icon={
+-                            cards.length !== 0 &&
+-                            getImage({ imageFolder: 'components/' })(isCtpPrimaryPaymentMethod ? `${PREFIX}lock` : `${PREFIX}lock_black`)
++                            cards.length !== 0
++                                ? getImage({ imageFolder: 'components/' })(isCtpPrimaryPaymentMethod ? `${PREFIX}lock` : `${PREFIX}lock_black`)
++                                : undefined
+                         }
+                         onClick={doCheckout}
+                         onKeyDown={handlePayButtonKeyDown}
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCardsList/CtPCardsList.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCardsList/CtPCardsList.tsx
+index a162d63..8a705b3 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCardsList/CtPCardsList.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCardsList/CtPCardsList.tsx
+@@ -12,13 +12,13 @@ import Select from '../../../../FormFields/Select';
+ 
+ type CtPCardsListProps = {
+     cards: ShopperCard[];
+-    cardSelected: ShopperCard;
++    cardSelected?: ShopperCard;
+     errorMessage?: string;
+-    onChangeCard(card: ShopperCard): void;
++    onChangeCard(card: ShopperCard | undefined): void;
+ };
+ 
+ type CardsSelectorDataState = {
+-    srcDigitalCardId: string;
++    srcDigitalCardId?: string;
+ };
+ 
+ const schema = ['srcDigitalCardId'];
+@@ -29,14 +29,14 @@ const CtPCardsList = ({ cardSelected, cards, errorMessage, onChangeCard }: Reado
+     const { status } = useClickToPayContext();
+     const { handleChangeFor, data } = useForm<CardsSelectorDataState>({
+         schema,
+-        defaultData: { srcDigitalCardId: cardSelected.srcDigitalCardId }
++        defaultData: { srcDigitalCardId: cardSelected?.srcDigitalCardId }
+     });
+ 
+     const items = useMemo(() => {
+         return cards.map(card => ({
+             icon: card.artUri || getImage()(card.scheme),
+             name: `${isMobile() ? '' : card.title} •••• ${card.panLastFour} `,
+-            secondaryText: card.isExpired && i18n.get('ctp.cards.expiredCard'),
++            secondaryText: card.isExpired ? i18n.get('ctp.cards.expiredCard') : undefined,
+             id: card.srcDigitalCardId,
+             disabled: card.isExpired
+         }));
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfo.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfo.tsx
+index 5e39b2d..3460bfa 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfo.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfo.tsx
+@@ -8,7 +8,7 @@ import './CtPInfo.scss';
+ 
+ const CtPInfo = () => {
+     const [isInfoModalOpen, setIsInfoModalOpen] = useState<boolean>(false);
+-    const buttonRef = useRef<HTMLButtonElement>();
++    const buttonRef = useRef<HTMLButtonElement>(null);
+     const { i18n } = useCoreContext();
+     const getImage = useImage();
+     const url = getImage({ imageFolder: 'components/' })('info');
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfoModal/CtPInfoModal.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfoModal/CtPInfoModal.tsx
+index 00f3dec..0b4260d 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfoModal/CtPInfoModal.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfoModal/CtPInfoModal.tsx
+@@ -18,11 +18,11 @@ function getUniqueId() {
+ type CtPInfoModalProps = {
+     isOpen: boolean;
+     onClose(): void;
+-    focusAfterClose: HTMLElement;
++    focusAfterClose: HTMLElement | null;
+ };
+ 
+ const CtPInfoModal = ({ isOpen, onClose, focusAfterClose }: Readonly<CtPInfoModalProps>) => {
+-    const focusFirstElement = useRef<HTMLParagraphElement>();
++    const focusFirstElement = useRef<HTMLParagraphElement>(null);
+     const { i18n } = useCoreContext();
+     const getImage = useImage();
+ 
+@@ -36,7 +36,7 @@ const CtPInfoModal = ({ isOpen, onClose, focusAfterClose }: Readonly<CtPInfoModa
+             classNameModifiers={['ctp']}
+             labelledBy={labelledBy}
+             describedBy={describedBy}
+-            focusFirst={focusFirstElement.current}
++            focusFirst={focusFirstElement.current ?? undefined}
+             focusAfterClose={focusAfterClose}
+         >
+             {({ onCloseModal }) => (
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLogin.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLogin.tsx
+index a942ac4..cfde695 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLogin.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLogin.tsx
+@@ -14,11 +14,11 @@ import { isSrciError } from '../../services/utils';
+ const CtPLogin = (): h.JSX.Element => {
+     const { i18n } = useCoreContext();
+     const { isCtpPrimaryPaymentMethod, setIsCtpPrimaryPaymentMethod, verifyIfShopperIsEnrolled, startIdentityValidation } = useClickToPayContext();
+-    const [shopperLogin, setShopperLogin] = useState<string>(null);
++    const [shopperLogin, setShopperLogin] = useState<string>('');
+     const [isValid, setIsValid] = useState<boolean>(false);
+-    const [errorCode, setErrorCode] = useState<string>(null);
++    const [errorCode, setErrorCode] = useState<string | null>(null);
+     const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+-    const [loginInputHandlers, setLoginInputHandlers] = useState<CtPLoginInputHandlers>(null);
++    const [loginInputHandlers, setLoginInputHandlers] = useState<CtPLoginInputHandlers | null>(null);
+ 
+     const onSetLoginInputHandlers = useCallback((handlers: CtPLoginInputHandlers) => {
+         setLoginInputHandlers(handlers);
+@@ -38,7 +38,7 @@ const CtPLogin = (): h.JSX.Element => {
+         setErrorCode(null);
+ 
+         if (!isValid) {
+-            loginInputHandlers.validateInput();
++            loginInputHandlers?.validateInput();
+             return;
+         }
+ 
+@@ -82,14 +82,14 @@ const CtPLogin = (): h.JSX.Element => {
+                 onChange={handleOnLoginChange}
+                 onSetInputHandlers={onSetLoginInputHandlers}
+                 disabled={isLoggingIn}
+-                errorMessage={errorCode && i18n.get(`ctp.errors.${errorCode}`)}
++                errorMessage={errorCode ? i18n.get(`ctp.errors.${errorCode}`) : undefined}
+                 onPressEnter={handleOnLoginButtonClick}
+             />
+ 
+             <Button
+                 label={i18n.get('continue')}
+                 variant={isCtpPrimaryPaymentMethod ? 'primary' : 'secondary'}
+-                status={isLoggingIn && 'loading'}
++                status={isLoggingIn ? 'loading' : undefined}
+                 onClick={() => {
+                     void handleOnLoginButtonClick();
+                 }}
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
+index c42cf45..228c28e 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx
+@@ -7,7 +7,7 @@ import Field from '../../../FormFields/Field';
+ import InputEmail from '../../../FormFields/InputEmail';
+ import { setFocusOnField } from '../../../../../utils/setFocus';
+ 
+-type OnChangeProps = { data: CtPLoginInputDataState; valid; errors; isValid: boolean };
++type OnChangeProps = { data: CtPLoginInputDataState; valid; errors; isValid: boolean | undefined };
+ 
+ interface CtPLoginInputProps {
+     disabled: boolean;
+@@ -23,7 +23,6 @@ interface CtPLoginInputDataState {
+ 
+ export type CtPLoginInputHandlers = {
+     validateInput(): void;
+-    focusInput(): void;
+ };
+ 
+ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+@@ -35,7 +34,6 @@ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+         rules: loginValidationRules,
+         formHolder: containerRef
+     });
+-    const loginInputHandlersRef = useRef<CtPLoginInputHandlers>({ validateInput: null, focusInput: null });
+     const [isLoginInputDirty, setIsLoginInputDirty] = useState<boolean>(false);
+ 
+     const validateInput = useCallback(() => {
+@@ -43,6 +41,8 @@ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+         triggerValidation();
+     }, [triggerValidation]);
+ 
++    const loginInputHandlersRef = useRef<CtPLoginInputHandlers>({ validateInput });
++
+     useEffect(() => {
+         if (containerRef.current && props.errorMessage) {
+             setFocusOnField(containerRef.current, 'shopperLogin');
+@@ -81,8 +81,8 @@ const CtPLoginInput = (props: Readonly<CtPLoginInputProps>): h.JSX.Element => {
+                         ? props.errorMessage ||
+                           (errors.shopperLogin && typeof errors.shopperLogin?.errorMessage === 'string'
+                               ? i18n.get(errors.shopperLogin.errorMessage)
+-                              : null)
+-                        : null
++                              : undefined)
++                        : undefined
+                 }
+                 classNameModifiers={['shopperLogin']}
+                 errorLive={true}
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePassword.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePassword.tsx
+index c94522a..8dba5bf 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePassword.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePassword.tsx
+@@ -17,11 +17,11 @@ type CtPOneTimePasswordProps = {
+ const CtPOneTimePassword = ({ onDisplayCardComponent }: Readonly<CtPOneTimePasswordProps>): h.JSX.Element => {
+     const { i18n } = useCoreContext();
+     const { finishIdentityValidation, otpMaskedContact, otpNetwork, isCtpPrimaryPaymentMethod } = useClickToPayContext();
+-    const [otp, setOtp] = useState<string>(null);
++    const [otp, setOtp] = useState<string>('');
+     const [isValid, setIsValid] = useState<boolean>(false);
+     const [isValidatingOtp, setIsValidatingOtp] = useState<boolean>(false);
+-    const [errorCode, setErrorCode] = useState<string>(null);
+-    const [otpInputHandlers, setOtpInputHandlers] = useState<CtPOneTimePasswordInputHandlers>(null);
++    const [errorCode, setErrorCode] = useState<string | null>(null);
++    const [otpInputHandlers, setOtpInputHandlers] = useState<CtPOneTimePasswordInputHandlers | null>(null);
+     const [isAccountLocked, setIsAccountLocked] = useState<boolean>(false);
+ 
+     const onSetOtpInputHandlers = useCallback((handlers: CtPOneTimePasswordInputHandlers) => {
+@@ -41,7 +41,7 @@ const CtPOneTimePassword = ({ onDisplayCardComponent }: Readonly<CtPOneTimePassw
+         setErrorCode(null);
+ 
+         if (!isValid) {
+-            otpInputHandlers.validateInput();
++            otpInputHandlers?.validateInput();
+             return;
+         }
+ 
+@@ -91,7 +91,7 @@ const CtPOneTimePassword = ({ onDisplayCardComponent }: Readonly<CtPOneTimePassw
+                 onChange={onChangeOtpInput}
+                 onSetInputHandlers={onSetOtpInputHandlers}
+                 disabled={isValidatingOtp}
+-                errorMessage={errorCode && i18n.get(`ctp.errors.${errorCode}`)}
++                errorMessage={errorCode ? i18n.get(`ctp.errors.${errorCode}`) : undefined}
+                 onPressEnter={onSubmitPassword}
+                 onResendCode={onResendCode}
+                 isValidatingOtp={isValidatingOtp}
+@@ -104,7 +104,7 @@ const CtPOneTimePassword = ({ onDisplayCardComponent }: Readonly<CtPOneTimePassw
+                 label={i18n.get('continue')}
+                 variant={isCtpPrimaryPaymentMethod ? 'primary' : 'secondary'}
+                 onClick={onSubmitPassword}
+-                status={isValidatingOtp && 'loading'}
++                status={isValidatingOtp ? 'loading' : undefined}
+                 onKeyDown={handleButtonKeyDown}
+             />
+         </Fragment>
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
+index 1aa84d4..414568b 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx
+@@ -11,7 +11,7 @@ import './CtPOneTimePasswordInput.scss';
+ import InputText from '../../../../FormFields/InputText';
+ import { getErrorMessage } from '../../../../../../utils/getErrorMessage';
+ 
+-type OnChangeProps = { data: CtPOneTimePasswordInputDataState; valid; errors; isValid: boolean };
++type OnChangeProps = { data: CtPOneTimePasswordInputDataState; valid; errors; isValid: boolean | undefined };
+ 
+ interface CtPOneTimePasswordInputProps {
+     hideResendOtpButton: boolean;
+@@ -39,14 +39,13 @@ const CtPOneTimePasswordInput = (props: Readonly<CtPOneTimePasswordInputProps>):
+     } = useClickToPayContext();
+ 
+     const formSchema = ['otp'];
+-    const [resendOtpError, setResendOtpError] = useState<string>(null);
++    const [resendOtpError, setResendOtpError] = useState<string | null>(null);
+     const containerRef = useRef<HTMLDivElement>(null);
+     const { handleChangeFor, data, triggerValidation, valid, errors, isValid, setData } = useFormWithA11y<CtPOneTimePasswordInputDataState>({
+         schema: formSchema,
+         rules: otpValidationRules,
+         formHolder: containerRef
+     });
+-    const otpInputHandlersRef = useRef<CtPOneTimePasswordInputHandlers>({ validateInput: null });
+     const inputRef = useRef<HTMLInputElement>(null);
+     const [isOtpFielDirty, setIsOtpFieldDirty] = useState<boolean>(false);
+ 
+@@ -55,6 +54,8 @@ const CtPOneTimePasswordInput = (props: Readonly<CtPOneTimePasswordInputProps>):
+         triggerValidation();
+     }, [triggerValidation]);
+ 
++    const otpInputHandlersRef = useRef<CtPOneTimePasswordInputHandlers>({ validateInput });
++
+     /**
+      * If shopper changes the value of the OTP fields, input becomes dirty
+      */
+@@ -83,7 +84,7 @@ const CtPOneTimePasswordInput = (props: Readonly<CtPOneTimePasswordInputProps>):
+         setData('otp', '');
+         setResendOtpError(null);
+         if (!disableOtpAutoFocus) {
+-            inputRef.current.focus();
++            inputRef.current?.focus();
+         }
+         props.onResendCode();
+     }, [props.onResendCode, inputRef.current, disableOtpAutoFocus]);
+@@ -110,7 +111,7 @@ const CtPOneTimePasswordInput = (props: Readonly<CtPOneTimePasswordInputProps>):
+     }, [data, valid, errors]);
+ 
+     const getOtpErrorMessage = useCallback(() => {
+-        if (!isOtpFielDirty) return null;
++        if (!isOtpFielDirty) return undefined;
+ 
+         return resendOtpError || props.errorMessage || getErrorMessage(i18n, errors.otp, i18n.get('ctp.otp.fieldLabel'));
+     }, [isOtpFielDirty, resendOtpError, props.errorMessage, errors.otp, i18n]);
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPResendOtpLink.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPResendOtpLink.tsx
+index b37e370..85d4f73 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPResendOtpLink.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPResendOtpLink.tsx
+@@ -28,7 +28,7 @@ const CtPResendOtpLink = ({ onError, onResendCode, disabled }: Readonly<CtPResen
+ 
+     useEffect(() => {
+         let timeout: ReturnType<typeof setTimeout> | undefined;
+-        if (counter > 0) {
++        if (counter !== null && counter > 0) {
+             timeout = setTimeout(() => setCounter(counter - 1), 1000);
+         }
+         if (counter === RESEND_OTP_COUNTDOWN_SECONDS) {
+@@ -83,7 +83,7 @@ const CtPResendOtpLink = ({ onError, onResendCode, disabled }: Readonly<CtPResen
+         );
+     }
+ 
+-    if (counter > 0) {
++    if (counter !== null && counter > 0) {
+         return (
+             <div role="timer" className="adyen-checkout-ctp__otp-resend-code--disabled">
+                 {i18n.get('ctp.otp.resendCode')} -{' '}
+diff --git a/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx b/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
+index 22cacb9..1e2f099 100644
+--- a/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx
+@@ -1,4 +1,4 @@
+-import { h, TargetedKeyboardEvent } from 'preact';
++import { ComponentChildren, h, TargetedKeyboardEvent } from 'preact';
+ import classnames from 'classnames';
+ import CtPLogoutLink from './CtPLogoutLink';
+ import { CtPBrand } from '../CtPBrand';
+@@ -7,7 +7,7 @@ import './CtPSection.scss';
+ 
+ interface CtPSectionProps {
+     onEnterKeyPress: (event: TargetedKeyboardEvent<HTMLInputElement>) => void;
+-    children?: h.JSX.Element[];
++    children?: ComponentChildren;
+ }
+ 
+ const CtPSection = ({ children, onEnterKeyPress }: Readonly<CtPSectionProps>): h.JSX.Element => {
+diff --git a/packages/lib/src/components/internal/ClickToPay/context/ClickToPayContext.ts b/packages/lib/src/components/internal/ClickToPay/context/ClickToPayContext.ts
+index 9d73c6a..63ed889 100644
+--- a/packages/lib/src/components/internal/ClickToPay/context/ClickToPayContext.ts
++++ b/packages/lib/src/components/internal/ClickToPay/context/ClickToPayContext.ts
+@@ -19,8 +19,8 @@ export interface IClickToPayContext extends Pick<
+     ctpState: CtpState;
+     cards: ShopperCard[];
+     schemes: string[];
+-    otpMaskedContact: string;
+-    otpNetwork: string;
++    otpMaskedContact: string | undefined;
++    otpNetwork: string | undefined;
+     configuration: ClickToPayProps;
+     status: UIElementStatus;
+     onSubmit(payload: ClickToPayCheckoutPayload): void;
+@@ -29,28 +29,30 @@ export interface IClickToPayContext extends Pick<
+     onReady(): void;
+ }
+ 
++const noop = (): void => undefined;
++
+ const ClickToPayContext = createContext<IClickToPayContext>({
+-    status: null,
+-    onSubmit: null,
+-    onSetStatus: null,
+-    onError: null,
+-    onReady: null,
+-    configuration: null,
+-    isStandaloneComponent: null,
+-    isCtpPrimaryPaymentMethod: null,
++    status: 'ready',
++    onSubmit: noop,
++    onSetStatus: noop,
++    onError: noop,
++    onReady: noop,
++    configuration: {},
++    isStandaloneComponent: false,
++    isCtpPrimaryPaymentMethod: true,
+     isStoringCookies: false,
+-    setIsCtpPrimaryPaymentMethod: null,
+-    logoutShopper: null,
+-    updateStoreCookiesConsent: null,
+-    ctpState: null,
++    setIsCtpPrimaryPaymentMethod: noop,
++    logoutShopper: () => Promise.resolve(),
++    updateStoreCookiesConsent: noop,
++    ctpState: CtpState.NotAvailable,
+     cards: [],
+     schemes: [],
+-    otpMaskedContact: null,
+-    otpNetwork: null,
+-    checkout: null,
+-    verifyIfShopperIsEnrolled: null,
+-    startIdentityValidation: null,
+-    finishIdentityValidation: null
++    otpMaskedContact: undefined,
++    otpNetwork: undefined,
++    checkout: () => Promise.reject(new AdyenCheckoutError('ERROR', 'ClickToPay checkout is not available')),
++    verifyIfShopperIsEnrolled: () => Promise.reject(new AdyenCheckoutError('ERROR', 'ClickToPay is not available')),
++    startIdentityValidation: () => Promise.reject(new AdyenCheckoutError('ERROR', 'ClickToPay is not available')),
++    finishIdentityValidation: () => Promise.reject(new AdyenCheckoutError('ERROR', 'ClickToPay is not available'))
+ });
+ 
+ export { ClickToPayContext };
+diff --git a/packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx b/packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx
+index 5051d3e..0a4173f 100644
+--- a/packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx
++++ b/packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx
+@@ -73,14 +73,16 @@ const ClickToPayProvider = ({
+ 
+     const checkout = useCallback(
+         async (card: ShopperCard) => {
+-            return await ctpService?.checkout(card);
++            if (!ctpService) throw new AdyenCheckoutError('ERROR', 'ClickToPay service is not initialized');
++            return await ctpService.checkout(card);
+         },
+         [ctpService]
+     );
+ 
+     const verifyIfShopperIsEnrolled = useCallback(
+         async (shopperIdentity: IdentityLookupParams) => {
+-            return await ctpService?.verifyIfShopperIsEnrolled(shopperIdentity);
++            if (!ctpService) throw new AdyenCheckoutError('ERROR', 'ClickToPay service is not initialized');
++            return await ctpService.verifyIfShopperIsEnrolled(shopperIdentity);
+         },
+         [ctpService]
+     );
+@@ -91,7 +93,7 @@ const ClickToPayProvider = ({
+ 
+     const updateStoreCookiesConsent = useCallback(
+         (shouldStore: boolean) => {
+-            ctpService.updateStoreCookiesConsent(shouldStore);
++            ctpService?.updateStoreCookiesConsent(shouldStore);
+         },
+         [ctpService]
+     );
+@@ -104,14 +106,14 @@ const ClickToPayProvider = ({
+                 onError,
+                 onSetStatus,
+                 configuration,
+-                isStoringCookies: ctpService?.storeCookies,
++                isStoringCookies: ctpService?.storeCookies ?? false,
+                 isStandaloneComponent,
+                 isCtpPrimaryPaymentMethod,
+                 setIsCtpPrimaryPaymentMethod,
+                 ctpState,
+                 verifyIfShopperIsEnrolled,
+-                cards: ctpService?.shopperCards,
+-                schemes: ctpService?.schemes,
++                cards: ctpService?.shopperCards ?? [],
++                schemes: ctpService?.schemes ?? [],
+                 otpMaskedContact: ctpService?.identityValidationData?.maskedShopperContact,
+                 otpNetwork: ctpService?.identityValidationData?.selectedNetwork,
+                 checkout,
+diff --git a/packages/lib/src/components/internal/ClickToPay/errors/TimeoutError.ts b/packages/lib/src/components/internal/ClickToPay/errors/TimeoutError.ts
+index a3896c3..73ceac7 100644
+--- a/packages/lib/src/components/internal/ClickToPay/errors/TimeoutError.ts
++++ b/packages/lib/src/components/internal/ClickToPay/errors/TimeoutError.ts
+@@ -21,7 +21,7 @@ class TimeoutError extends Error {
+         this.isTimeoutTriggeredBySchemeSdk = options.isTimeoutTriggeredBySchemeSdk;
+     }
+ 
+-    public setCorrelationId(correlationId: string): void {
++    public setCorrelationId(correlationId: string | undefined): void {
+         this.correlationId = correlationId;
+     }
+ 
+diff --git a/packages/lib/src/components/internal/ClickToPay/models/ShopperCard.ts b/packages/lib/src/components/internal/ClickToPay/models/ShopperCard.ts
+index 3701dfd..73a4976 100644
+--- a/packages/lib/src/components/internal/ClickToPay/models/ShopperCard.ts
++++ b/packages/lib/src/components/internal/ClickToPay/models/ShopperCard.ts
+@@ -16,7 +16,7 @@ class ShopperCard {
+     private readonly panExpirationMonth: string;
+     private readonly panExpirationYear: string;
+     private readonly descriptorName?: string;
+-    private readonly status?: DigitalCardStatus = null;
++    private readonly status?: DigitalCardStatus | null = null;
+ 
+     constructor(maskedCard: SrcCard, scheme: ClickToPayScheme, srcCorrelationId: string) {
+         this.dateOfCardLastUsed = maskedCard.dateOfCardLastUsed;
+@@ -44,7 +44,7 @@ class ShopperCard {
+     }
+ 
+     private confirmCardIsExpired(): boolean {
+-        if (!['ACTIVE', 'PENDING'].includes(this.status)) return true;
++        if (!this.status || !['ACTIVE', 'PENDING'].includes(this.status)) return true;
+ 
+         if (!this.panExpirationYear && !this.panExpirationMonth) return false;
+ 
+diff --git a/packages/lib/src/components/internal/ClickToPay/services/ClickToPayService.ts b/packages/lib/src/components/internal/ClickToPay/services/ClickToPayService.ts
+index 221020b..6f2c203 100644
+--- a/packages/lib/src/components/internal/ClickToPay/services/ClickToPayService.ts
++++ b/packages/lib/src/components/internal/ClickToPay/services/ClickToPayService.ts
+@@ -34,7 +34,7 @@ export enum CtpState {
+ class ClickToPayService implements IClickToPayService {
+     private readonly sdkLoader: ISrcSdkLoader;
+     private readonly schemesConfig: SchemesConfiguration;
+-    private readonly shopperIdentity?: IdentityLookupParams;
++    private readonly shopperIdentity?: IdentityLookupParams | null;
+     private readonly environment: string;
+     private readonly analytics: IAnalytics;
+ 
+@@ -46,12 +46,12 @@ class ClickToPayService implements IClickToPayService {
+     private readonly srciTransactionId: string = uuidv4();
+ 
+     private sdks: ISrcInitiator[];
+-    private validationSchemeSdk: ISrcInitiator = null;
++    private validationSchemeSdk: ISrcInitiator | null = null;
+     private stateSubscriber: CallbackStateSubscriber;
+ 
+     public state: CtpState = CtpState.Idle;
+-    public shopperCards: ShopperCard[] = null;
+-    public identityValidationData: IdentityValidationData = null;
++    public shopperCards: ShopperCard[] | null = null;
++    public identityValidationData: IdentityValidationData | null = null;
+ 
+     /**
+      * Indicates if the shopper opted for saving cookies during the transaction
+@@ -63,7 +63,7 @@ class ClickToPayService implements IClickToPayService {
+         sdkLoader: ISrcSdkLoader,
+         environment: string,
+         analytics: IAnalytics,
+-        shopperIdentity?: IdentityLookupParams,
++        shopperIdentity?: IdentityLookupParams | null,
+         onTimeout?: (error: TimeoutError) => void
+     ) {
+         this.sdkLoader = sdkLoader;
+@@ -93,9 +93,9 @@ class ClickToPayService implements IClickToPayService {
+             this.sdks = await this.sdkLoader.load(this.environment, this.analytics);
+             await this.initiateSdks();
+ 
+-            const { recognized = false, idTokens = null } = await this.verifyIfShopperIsRecognized();
++            const { recognized = false, idTokens } = await this.verifyIfShopperIsRecognized();
+ 
+-            if (recognized) {
++            if (recognized && idTokens) {
+                 await this.getShopperProfile(idTokens);
+                 this.setState(CtpState.Ready);
+                 return;
+@@ -139,7 +139,7 @@ class ClickToPayService implements IClickToPayService {
+      **/
+     public async startIdentityValidation(): Promise<void> {
+         if (!this.validationSchemeSdk) {
+-            throw Error('startIdentityValidation: No ValidationSDK set for the validation process');
++            throw new Error('startIdentityValidation: No ValidationSDK set for the validation process');
+         }
+         try {
+             const { maskedValidationChannel } = await this.validationSchemeSdk.initiateIdentityValidation();
+@@ -162,7 +162,7 @@ class ClickToPayService implements IClickToPayService {
+      */
+     public async finishIdentityValidation(otpCode: string): Promise<void> {
+         if (!this.validationSchemeSdk) {
+-            throw Error('finishIdentityValidation: No ValidationSDK set for the validation process');
++            throw new Error('finishIdentityValidation: No ValidationSDK set for the validation process');
+         }
+ 
+         const validationToken = await this.validationSchemeSdk.completeIdentityValidation(otpCode);
+@@ -176,10 +176,13 @@ class ClickToPayService implements IClickToPayService {
+      */
+     public async checkout(card: ShopperCard): Promise<ClickToPayCheckoutPayload> {
+         if (!card) {
+-            throw Error('ClickToPayService # checkout: Missing card data');
++            throw new Error('ClickToPayService # checkout: Missing card data');
+         }
+ 
+         const checkoutSdk = this.sdks.find(sdk => sdk.schemeName === card.scheme);
++        if (!checkoutSdk) {
++            throw new AdyenCheckoutError('ERROR', `ClickToPayService # checkout: No SDK available for scheme ${card.scheme}`);
++        }
+ 
+         const checkoutResponse = await checkoutSdk.checkout({
+             srcDigitalCardId: card.srcDigitalCardId,
+@@ -230,6 +233,7 @@ class ClickToPayService implements IClickToPayService {
+      */
+     public verifyIfShopperIsEnrolled(shopperIdentity: IdentityLookupParams): Promise<{ isEnrolled: boolean }> {
+         const { shopperEmail } = shopperIdentity;
++        if (!shopperEmail) return Promise.resolve({ isEnrolled: false });
+ 
+         return new Promise((resolve, reject) => {
+             const lookupPromises = this.sdks.map(sdk => {
+@@ -279,11 +283,11 @@ class ClickToPayService implements IClickToPayService {
+                 : error;
+ 
+         if (timeoutError.scheme === 'visa') {
+-            timeoutError.setCorrelationId(window.VISA_SDK?.correlationId);
++            timeoutError.setCorrelationId(globalThis.VISA_SDK?.correlationId);
+ 
+             // Visa srciDpaId must be passed when there is no correlation ID available
+-            if (window.VISA_SDK?.correlationId) window.VISA_SDK?.buildClientProfile?.();
+-            else window.VISA_SDK?.buildClientProfile?.(this.schemesConfig.visa.srciDpaId);
++            if (globalThis.VISA_SDK?.correlationId) globalThis.VISA_SDK?.buildClientProfile?.();
++            else globalThis.VISA_SDK?.buildClientProfile?.(this.schemesConfig.visa?.srciDpaId);
+         }
+         this.onTimeout?.(timeoutError);
+     }
+@@ -304,7 +308,9 @@ class ClickToPayService implements IClickToPayService {
+                 const createProfileWithScheme = (promiseResult: PromiseSettledResult<SrcProfile>, index) =>
+                     isFulfilled(promiseResult) && { ...promiseResult.value, scheme: this.sdks[index].schemeName };
+ 
+-                const profilesWithScheme: SrcProfileWithScheme[] = srcProfilesResponses.map(createProfileWithScheme).filter(profile => !!profile);
++                const profilesWithScheme: SrcProfileWithScheme[] = srcProfilesResponses
++                    .map((promiseResult, index) => createProfileWithScheme(promiseResult, index))
++                    .filter((profile): profile is SrcProfileWithScheme => !!profile);
+ 
+                 this.shopperCards = createShopperCardsList(profilesWithScheme);
+                 resolve();
+@@ -349,6 +355,9 @@ class ClickToPayService implements IClickToPayService {
+     private initiateSdks(): Promise<void[]> {
+         const initPromises = this.sdks.map(sdk => {
+             const cfg = this.schemesConfig[sdk.schemeName];
++            if (!cfg) {
++                throw new AdyenCheckoutError('ERROR', `ClickToPayService # init: Missing configuration for scheme ${sdk.schemeName}`);
++            }
+ 
+             return executeWithTimeout<void>(
+                 () => sdk.init(cfg, this.srciTransactionId),
+diff --git a/packages/lib/src/components/internal/ClickToPay/services/create-clicktopay-service.ts b/packages/lib/src/components/internal/ClickToPay/services/create-clicktopay-service.ts
+index 372092a..674d20e 100644
+--- a/packages/lib/src/components/internal/ClickToPay/services/create-clicktopay-service.ts
++++ b/packages/lib/src/components/internal/ClickToPay/services/create-clicktopay-service.ts
+@@ -1,16 +1,15 @@
+ import SrcSdkLoader from './sdks/SrcSdkLoader';
+ import ClickToPayService from './ClickToPayService';
+-import { IClickToPayService, IdentityLookupParams } from './types';
+-import { SrcInitParams } from './sdks/types';
++import { IClickToPayService, IdentityLookupParams, SchemesConfiguration } from './types';
+ import { CardBackendConfiguration } from '../../../Card/types';
+-import { ClickToPayProps, ClickToPayScheme } from '../types';
++import { ClickToPayProps } from '../types';
+ import type { IAnalytics } from '../../../../core/Analytics/Analytics';
+ 
+ /**
+  * Creates the Click to Pay service in case the required configuration is provided
+  */
+ export default function createClickToPayService(
+-    configuration: CardBackendConfiguration,
++    configuration: CardBackendConfiguration | undefined,
+     clickToPayConfiguration: ClickToPayProps | undefined,
+     environment: string,
+     analytics: IAnalytics
+@@ -33,7 +32,7 @@ export default function createClickToPayService(
+ }
+ 
+ // eslint-disable-next-line @typescript-eslint/no-unused-vars
+-const createShopperIdentityObject = (shopperEmail: string, telephoneNumber: string): IdentityLookupParams | null => {
++const createShopperIdentityObject = (shopperEmail: string | undefined, telephoneNumber: string | undefined): IdentityLookupParams | null => {
+     const identityLookup = {
+         ...(shopperEmail && { shopperEmail })
+         // ...(telephoneNumber && { telephoneNumber }) telephoneNumber not supported yet
+@@ -46,14 +45,14 @@ const createShopperIdentityObject = (shopperEmail: string, telephoneNumber: stri
+  * Parses 'configuration' object that comes from the Card payment method config, and try to create the Click to Pay
+  * initialization object in case the values are provided.
+  */
+-const createSchemesInitConfiguration = (configuration: CardBackendConfiguration): Record<ClickToPayScheme, SrcInitParams> => {
++const createSchemesInitConfiguration = (configuration: CardBackendConfiguration | undefined): SchemesConfiguration | null => {
+     if (!configuration) {
+         return null;
+     }
+ 
+     const { visaSrciDpaId, visaSrcInitiatorId, mcDpaId, mcSrcClientId } = configuration;
+ 
+-    const schemesConfig: Record<ClickToPayScheme, SrcInitParams> = {
++    const schemesConfig: SchemesConfiguration = {
+         ...(mcDpaId && mcSrcClientId && { mc: { srciDpaId: mcDpaId, srcInitiatorId: mcSrcClientId } }),
+         ...(visaSrciDpaId &&
+             visaSrcInitiatorId && {
+diff --git a/packages/lib/src/components/internal/ClickToPay/services/execute-with-timeout.ts b/packages/lib/src/components/internal/ClickToPay/services/execute-with-timeout.ts
+index 99ef894..7136d65 100644
+--- a/packages/lib/src/components/internal/ClickToPay/services/execute-with-timeout.ts
++++ b/packages/lib/src/components/internal/ClickToPay/services/execute-with-timeout.ts
+@@ -1,7 +1,7 @@
+ import TimeoutError from '../errors/TimeoutError';
+ 
+ function executeWithTimeout<T>(asyncFn: () => Promise<T>, timer: number, error: TimeoutError): Promise<T> {
+-    let timeout = null;
++    let timeout: ReturnType<typeof setTimeout> | undefined;
+     const wait = (seconds: number) =>
+         new Promise<T>((_, reject) => {
+             timeout = setTimeout(() => reject(error), seconds);
+diff --git a/packages/lib/src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts b/packages/lib/src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts
+index c322e35..a9c0b59 100644
+--- a/packages/lib/src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts
++++ b/packages/lib/src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts
+@@ -43,7 +43,7 @@ export default abstract class AbstractSrcInitiator implements ISrcInitiator {
+     private scriptElement: Script | null = null;
+ 
+     protected constructor(sdkUrl: string, customSdkConfiguration: CustomSdkConfiguration, analytics: IAnalytics) {
+-        if (!sdkUrl) throw Error('AbstractSrcInitiator: Invalid SDK URL');
++        if (!sdkUrl) throw new Error('AbstractSrcInitiator: Invalid SDK URL');
+ 
+         this.sdkUrl = sdkUrl;
+         this.customSdkConfiguration = customSdkConfiguration;
+@@ -64,7 +64,7 @@ export default abstract class AbstractSrcInitiator implements ISrcInitiator {
+     }
+ 
+     public removeSdkScript(): void {
+-        this.scriptElement.remove();
++        this.scriptElement?.remove();
+     }
+ 
+     /**
+diff --git a/packages/lib/src/components/internal/ClickToPay/services/sdks/SrcSdkLoader.ts b/packages/lib/src/components/internal/ClickToPay/services/sdks/SrcSdkLoader.ts
+index 28880c0..386b873 100644
+--- a/packages/lib/src/components/internal/ClickToPay/services/sdks/SrcSdkLoader.ts
++++ b/packages/lib/src/components/internal/ClickToPay/services/sdks/SrcSdkLoader.ts
+@@ -38,7 +38,9 @@ class SrcSdkLoader implements ISrcSdkLoader {
+         }
+ 
+         return new Promise((resolve, reject) => {
+-            const sdks: ISrcInitiator[] = this.schemes.map(scheme => getSchemeSdk(scheme, environment, this.customSdkConfiguration, analytics));
++            const sdks: ISrcInitiator[] = this.schemes
++                .map(scheme => getSchemeSdk(scheme, environment, this.customSdkConfiguration, analytics))
++                .filter((sdk): sdk is ISrcInitiator => sdk !== null);
+             const loadScriptPromises = sdks.map(sdk => sdk.loadSdkScript());
+ 
+             void Promise.allSettled(loadScriptPromises).then(loadScriptResponses => {
+diff --git a/packages/lib/src/components/internal/ClickToPay/services/types.ts b/packages/lib/src/components/internal/ClickToPay/services/types.ts
+index e42fe3f..96768d9 100644
+--- a/packages/lib/src/components/internal/ClickToPay/services/types.ts
++++ b/packages/lib/src/components/internal/ClickToPay/services/types.ts
+@@ -5,8 +5,8 @@ import { ClickToPayScheme } from '../types';
+ 
+ export interface IClickToPayService {
+     state: CtpState;
+-    shopperCards: ShopperCard[];
+-    identityValidationData: IdentityValidationData;
++    shopperCards: ShopperCard[] | null;
++    identityValidationData: IdentityValidationData | null;
+     schemes: string[];
+     shopperAccountFound: boolean;
+     storeCookies: boolean;
+@@ -54,6 +54,16 @@ export type CardTypes = {
+     expiredCards: ShopperCard[];
+ };
+ 
++/**
++ * A card the shopper has paid with at least once, therefore 'dateOfCardLastUsed' is guaranteed to be set
++ */
++export type UsedShopperCard = ShopperCard & Required<Pick<ShopperCard, 'dateOfCardLastUsed'>>;
++
++export type CardsByUsage = {
++    usedCards: UsedShopperCard[];
++    unusedCards: ShopperCard[];
++};
++
+ export type SchemesConfiguration = Partial<Record<ClickToPayScheme, SrcInitParams>>;
+ 
+ export type ClickToPayCheckoutPayload = VisaCheckout | MastercardCheckout;
+diff --git a/packages/lib/src/components/internal/ClickToPay/services/utils.ts b/packages/lib/src/components/internal/ClickToPay/services/utils.ts
+index 46cb7e4..682ed1e 100644
+--- a/packages/lib/src/components/internal/ClickToPay/services/utils.ts
++++ b/packages/lib/src/components/internal/ClickToPay/services/utils.ts
+@@ -1,4 +1,4 @@
+-import { CardTypes, ClickToPayCheckoutPayload, SrcProfileWithScheme } from './types';
++import { CardsByUsage, CardTypes, ClickToPayCheckoutPayload, SrcProfileWithScheme, UsedShopperCard } from './types';
+ import { SrciCheckoutResponse } from './sdks/types';
+ import ShopperCard from '../models/ShopperCard';
+ import SrciError from './sdks/SrciError';
+@@ -44,7 +44,7 @@ function createShopperMaskedCardsData(memo: ShopperCard[], srcProfile: SrcProfil
+     return [...memo, ...cards];
+ }
+ 
+-function sortCardByLastTimeUsed(card1: ShopperCard, card2: ShopperCard) {
++function sortCardByLastTimeUsed(card1: UsedShopperCard, card2: UsedShopperCard) {
+     return new Date(card2.dateOfCardLastUsed).getTime() - new Date(card1.dateOfCardLastUsed).getTime();
+ }
+ 
+@@ -58,21 +58,39 @@ function splitAvailableAndExpiredCards(memo: CardTypes, card: ShopperCard): Card
+     return memo;
+ }
+ 
+-function splitUnusedAndUsedCards(memo: { unusedCards: ShopperCard[]; usedCards: ShopperCard[] }, card: ShopperCard) {
+-    if (card.dateOfCardLastUsed) memo.usedCards.push(card);
+-    else memo.unusedCards.push(card);
+-    return memo;
++function hasBeenUsed(card: ShopperCard): card is UsedShopperCard {
++    return !!card.dateOfCardLastUsed;
++}
++
++function splitCardsByUsage(cards: ShopperCard[]): CardsByUsage {
++    return cards.reduce<CardsByUsage>(
++        (memo, card) => {
++            if (hasBeenUsed(card)) memo.usedCards.push(card);
++            else memo.unusedCards.push(card);
++            return memo;
++        },
++        { usedCards: [], unusedCards: [] }
++    );
+ }
+ 
+ /**
+  * Creates the Shopper card list. The available cards are placed before the expired cards
+  */
+ function createShopperCardsList(srcProfiles: SrcProfileWithScheme[]): ShopperCard[] {
+-    const cards: ShopperCard[] = srcProfiles.reduce(createShopperMaskedCardsData, []);
+-    const { availableCards, expiredCards } = cards.reduce(splitAvailableAndExpiredCards, { availableCards: [], expiredCards: [] });
+-    const { unusedCards, usedCards } = availableCards.reduce(splitUnusedAndUsedCards, { unusedCards: [], usedCards: [] });
++    const cards: ShopperCard[] = srcProfiles.reduce<ShopperCard[]>((memo, srcProfile) => createShopperMaskedCardsData(memo, srcProfile), []);
++    const { availableCards, expiredCards } = cards.reduce<CardTypes>((memo, card) => splitAvailableAndExpiredCards(memo, card), {
++        availableCards: [],
++        expiredCards: []
++    });
++    const available = splitCardsByUsage(availableCards);
++    const expired = splitCardsByUsage(expiredCards);
+ 
+-    return [...usedCards.sort(sortCardByLastTimeUsed), ...unusedCards.sort(sortCardByLastTimeCreated), ...expiredCards.sort(sortCardByLastTimeUsed)];
++    return [
++        ...available.usedCards.sort(sortCardByLastTimeUsed),
++        ...available.unusedCards.sort(sortCardByLastTimeCreated),
++        ...expired.usedCards.sort(sortCardByLastTimeUsed),
++        ...expired.unusedCards
++    ];
+ }
+ 
+ function isSrciError(error: unknown): error is SrciError {
+diff --git a/packages/lib/src/components/internal/FormFields/Select/Select.scss b/packages/lib/src/components/internal/FormFields/Select/Select.scss
+index c4a4341..1349e1a 100644
+--- a/packages/lib/src/components/internal/FormFields/Select/Select.scss
++++ b/packages/lib/src/components/internal/FormFields/Select/Select.scss
+@@ -44,7 +44,7 @@
+     height: variable-generator.token(spacer-030);
+     right: variable-generator.token(spacer-070);
+     width: variable-generator.token(spacer-040);
+-    background-image: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2216%22%20height=%2217%22%20viewBox=%220%200%2016%2017%22%20fill=%22none%22%3E%0A%20%20%3Cpath%20fill-rule=%22evenodd%22%20clip-rule=%22evenodd%22%20d=%22M4.46971%206.46967C4.7626%206.17678%205.23748%206.17678%205.53037%206.46967L8.00004%208.93934L10.4697%206.46967C10.7626%206.17678%2011.2375%206.17678%2011.5304%206.46967C11.8233%206.76256%2011.8233%207.23744%2011.5304%207.53033L8.53037%2010.5303C8.23747%2010.8232%207.7626%2010.8232%207.46971%2010.5303L4.46971%207.53033C4.17681%207.23744%204.17681%206.76256%204.46971%206.46967Z%22%20fill=%22#00112C%22/%3E%0A%3C/svg%3E');
++    background-image: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2216%22%20height=%2217%22%20viewBox=%220%200%2016%2017%22%20fill=%22none%22%3E%0A%20%20%3Cpath%20fill-rule=%22evenodd%22%20clip-rule=%22evenodd%22%20d=%22M4.46971%206.46967C4.7626%206.17678%205.23748%206.17678%205.53037%206.46967L8.00004%208.93934L10.4697%206.46967C10.7626%206.17678%2011.2375%206.17678%2011.5304%206.46967C11.8233%206.76256%2011.8233%207.23744%2011.5304%207.53033L8.53037%2010.5303C8.23747%2010.8232%207.7626%2010.8232%207.46971%2010.5303L4.46971%207.53033C4.17681%207.23744%204.17681%206.76256%204.46971%206.46967Z%22%20fill=%22%2300112C%22/%3E%0A%3C/svg%3E');
+     background-repeat: no-repeat;
+     background-position: center;
+ 
+diff --git a/packages/lib/src/components/internal/FormFields/Select/Select.test.tsx b/packages/lib/src/components/internal/FormFields/Select/Select.test.tsx
+index 16a079a..2e79117 100644
+--- a/packages/lib/src/components/internal/FormFields/Select/Select.test.tsx
++++ b/packages/lib/src/components/internal/FormFields/Select/Select.test.tsx
+@@ -389,6 +389,27 @@ describe('Select', () => {
+         });
+     });
+ 
++    test('should reset the query and show all options when a default select is reopened', async () => {
++        renderSelect({
++            items: [
++                { id: '1', name: 'Apple' },
++                { id: '2', name: 'Banana' }
++            ],
++            placeholder: 'Choose a fruit'
++        });
++
++        const input = screen.getByRole('combobox');
++        await user.type(input, 'Apple');
++        expect(screen.queryByRole('option', { name: 'Banana' })).not.toBeInTheDocument();
++        await user.click(document.body);
++        expect(input).toHaveValue('Choose a fruit');
++
++        await user.click(input);
++        expect(input).toHaveValue('');
++        expect(screen.getByRole('option', { name: 'Apple' })).toBeVisible();
++        expect(screen.getByRole('option', { name: 'Banana' })).toBeVisible();
++    });
++
+     describe('filtering', () => {
+         test('does not match on secondaryText', async () => {
+             renderSelect({
+diff --git a/packages/lib/src/components/internal/FormFields/Select/Select.tsx b/packages/lib/src/components/internal/FormFields/Select/Select.tsx
+index 6b3e1bf..4ff9ab8 100644
+--- a/packages/lib/src/components/internal/FormFields/Select/Select.tsx
++++ b/packages/lib/src/components/internal/FormFields/Select/Select.tsx
+@@ -29,6 +29,7 @@ function Select({
+     disabled,
+     disableTextFilter,
+     clearOnSelect,
++    preserveInput = false,
+     blurOnClose,
+     onListToggle,
+     required,
+@@ -230,19 +231,28 @@ function Select({
+     const toggleList = (e: Event) => {
+         e.preventDefault();
+         if (!showList) {
+-            setInputText(null);
++            if (!preserveInput) {
++                setInputText(null);
++            }
+             openList();
+         } else {
+-            setInputText(selectedOption.name);
++            if (!preserveInput) {
++                setInputText(selectedOption.name);
++            }
+             closeList();
+         }
+     };
+ 
+     useEffect(() => {
++        if (preserveInput) return;
+         if (showList) {
+             // clean the value in the input when opening the list so can start typing fresh
+             setInputText(null);
+-        } else {
++        }
++    }, [showList, preserveInput]);
++
++    useEffect(() => {
++        if (!showList) {
+             // clean the text filter when closing the list
+             setTextFilter(null);
+         }
+@@ -301,6 +311,7 @@ function Select({
+         >
+             <SelectButton
+                 inputText={inputText}
++                preserveInput={preserveInput}
+                 id={uniqueId}
+                 active={activeOption}
+                 selected={selectedOption}
+diff --git a/packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx b/packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx
+index fa5fa31..ad21132 100644
+--- a/packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx
++++ b/packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx
+@@ -52,7 +52,7 @@ function SelectButton(props: Readonly<SelectButtonProps>) {
+     // hide it and show the "selected" value when collapsed
+     // When list is open, show user's typed input (or empty); otherwise show selected value
+     const textWhenListOpen = inputText ?? '';
+-    const displayInputText = showList ? textWhenListOpen : displayText;
++    const displayInputText = showList || (props.preserveInput && inputText !== null) ? textWhenListOpen : displayText;
+ 
+     const handleClick = (e: Event) => {
+         e.preventDefault();
+diff --git a/packages/lib/src/components/internal/FormFields/Select/types.ts b/packages/lib/src/components/internal/FormFields/Select/types.ts
+index 371a237..11d85d3 100644
+--- a/packages/lib/src/components/internal/FormFields/Select/types.ts
++++ b/packages/lib/src/components/internal/FormFields/Select/types.ts
+@@ -40,6 +40,7 @@ export interface SelectProps {
+     disabled?: boolean;
+     disableTextFilter?: boolean;
+     clearOnSelect?: boolean;
++    preserveInput?: boolean;
+     blurOnClose?: boolean;
+     onListToggle?: (isOpen: boolean) => void;
+     additionalDescribedBy?: string;
+@@ -47,6 +48,7 @@ export interface SelectProps {
+ 
+ export interface SelectButtonProps {
+     inputText: string | null;
++    preserveInput?: boolean;
+     active: SelectItem;
+     selected: SelectItem;
+     filterInputRef: RefObject<HTMLInputElement>;
+diff --git a/packages/lib/src/components/internal/Modal/Modal.tsx b/packages/lib/src/components/internal/Modal/Modal.tsx
+index fc7898f..692def2 100644
+--- a/packages/lib/src/components/internal/Modal/Modal.tsx
++++ b/packages/lib/src/components/internal/Modal/Modal.tsx
+@@ -23,11 +23,11 @@ type ModalProps = {
+     /**
+      * Reference to the element that should be focused when the modal is opened
+      */
+-    focusFirst: HTMLElement;
++    focusFirst: HTMLElement | undefined;
+     /**
+      * Reference to the element that should be focused when the modal is closed
+      */
+-    focusAfterClose: HTMLElement;
++    focusAfterClose: HTMLElement | null;
+ };
+ 
+ const Modal = ({
+diff --git a/packages/lib/src/components/internal/Modal/useModal.ts b/packages/lib/src/components/internal/Modal/useModal.ts
+index 2022c11..045fb88 100644
+--- a/packages/lib/src/components/internal/Modal/useModal.ts
++++ b/packages/lib/src/components/internal/Modal/useModal.ts
+@@ -5,8 +5,8 @@ type UseModalProps = {
+     modalElement?: HTMLElement;
+     isOpen: boolean;
+     isDismissible: boolean;
+-    focusFirst: HTMLElement;
+-    focusAfterClose: HTMLElement;
++    focusFirst: HTMLElement | undefined;
++    focusAfterClose: HTMLElement | null;
+     onClose(): void;
+ };
+ 
+@@ -24,7 +24,7 @@ const useModal = ({ modalElement, isOpen, isDismissible, focusFirst, focusAfterC
+     useTrapFocus({ rootElement: modalElement, shouldTrap: isOpen, focusFirst });
+ 
+     const closeModal = useCallback(() => {
+-        focusAfterClose.focus();
++        focusAfterClose?.focus();
+         onClose();
+     }, [onClose, focusAfterClose]);
+ 
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/handleConfig.ts b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/handleConfig.ts
+index f0d536e..c5f0e58 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/handleConfig.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/handleConfig.ts
+@@ -72,8 +72,9 @@ export function handleConfig(props: CSFSetupObject): void {
+     this.config.iframeSrc = `${this.config.loadingContext}securedfields/${props.clientKey}/${SF_VERSION}/securedFields.html?type=${bundleType}&d=${d}`;
+ 
+     // TODO###### FOR QUICK LOCAL TESTING of sf
++    /* istanbul ignore next -- dev-only local-testing override, NODE_ENV is 'test' under Jest so this never runs */
+     if (process.env.NODE_ENV === 'development' && process.env.__SF_ENV__ !== 'build') {
+-        this.config.iframeSrc = `${process.env.__SF_ENV__}securedFields.${SF_VERSION}.html?type=${sfBundleType}`;
++        this.config.iframeSrc = `${process.env.__SF_ENV__}securedFields.html?type=${sfBundleType}&vn=${SF_VERSION}`;
+     }
+     // TODO######
+ }
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/constants.ts b/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
+index 96f6f6a..7a38dc8 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/constants.ts
+@@ -15,7 +15,7 @@ export const ENCRYPTED_SECURITY_CODE_4_DIGITS = 'encryptedSecurityCode4digits';
+ 
+ export const GIFT_CARD = 'giftcard';
+ 
+-export const SF_VERSION = '6.3.0';
++export const SF_VERSION = '6.4.0';
+ 
+ export const DEFAULT_CARD_GROUP_TYPES = ['amex', 'mc', 'visa'];
+ 
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
+index 991fba5..65ef32f 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts
+@@ -464,6 +464,84 @@ describe('SecuredField handling placeholders from the placeholders config', () =
+             });
+         });
+ 
++        test('Check analytics event is submitted after "invalidHosting" action', () => {
++            const submitAnalyticsSpy = jest.fn(() => {});
++
++            const localCard = new SecuredField(
++                // @ts-ignore test-only
++                {
++                    ...setupObj,
++                    fieldType: ENCRYPTED_SECURITY_CODE,
++                    submitAnalytics: submitAnalyticsSpy
++                },
++                i18n
++            );
++
++            const feedbackObj = {
++                action: 'invalidHosting',
++                fieldType: ENCRYPTED_SECURITY_CODE,
++                numKey: localCard.numKey,
++                code: ErrorEventCode.SECURED_FIELDS_INVALID_HOSTING,
++                error: 'Invalid hosting'
++            };
++
++            const messageEvent = {
++                origin,
++                data: JSON.stringify(feedbackObj)
++            };
++
++            // @ts-ignore event type
++            localCard.postMessageListenerFn(messageEvent);
++
++            expect(submitAnalyticsSpy).toHaveBeenCalledWith({
++                timestamp: expect.any(String),
++                id: expect.any(String),
++                component: 'scheme',
++                errorType: ErrorEventType.internal,
++                code: ErrorEventCode.SECURED_FIELDS_INVALID_HOSTING,
++                message: 'Invalid hosting. Field=encryptedSecurityCode'
++            });
++        });
++
++        test('Check analytics event is submitted after "insecureMerchantDomain" action', () => {
++            const submitAnalyticsSpy = jest.fn(() => {});
++
++            const localCard = new SecuredField(
++                // @ts-ignore test only
++                {
++                    ...setupObj,
++                    fieldType: ENCRYPTED_SECURITY_CODE,
++                    submitAnalytics: submitAnalyticsSpy
++                },
++                i18n
++            );
++
++            const feedbackObj = {
++                action: 'insecureMerchantDomain',
++                fieldType: ENCRYPTED_SECURITY_CODE,
++                numKey: localCard.numKey,
++                code: ErrorEventCode.SECURED_FIELDS_INSECURE_MERCHANT_DOMAIN,
++                error: 'Insecure merchant domain'
++            };
++
++            const messageEvent = {
++                origin,
++                data: JSON.stringify(feedbackObj)
++            };
++
++            // @ts-ignore event type
++            localCard.postMessageListenerFn(messageEvent);
++
++            expect(submitAnalyticsSpy).toHaveBeenCalledWith({
++                timestamp: expect.any(String),
++                id: expect.any(String),
++                component: 'scheme',
++                errorType: ErrorEventType.internal,
++                code: ErrorEventCode.SECURED_FIELDS_INSECURE_MERCHANT_DOMAIN,
++                message: 'Insecure merchant domain. Field=encryptedSecurityCode'
++            });
++        });
++
+         test('Check callback is called after "focus" action', () => {
+             card.onFocus(myCallback);
+ 
+diff --git a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
+index 5219ff2..dffb2ac 100644
+--- a/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
++++ b/packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts
+@@ -81,6 +81,7 @@ class SecuredField extends AbstractSecuredField {
+         this.cvcPolicy = pSetupObj.cvcPolicy;
+         this.expiryDatePolicy = pSetupObj.expiryDatePolicy;
+ 
++        /* istanbul ignore next -- dev-only debug logging, gated behind a hardcoded `false` flag */
+         if (process.env.NODE_ENV === 'development' && doLog) {
+             logger.log(
+                 '### SecuredField::constructor:: this.sfConfig.fieldType=',
+@@ -185,6 +186,7 @@ class SecuredField extends AbstractSecuredField {
+         // TODO - for debugging purposes this would always be useful to see
+         //        logger.log('\n',this.sfConfig.fieldType,'### CSF SecuredField::postMessageListener:: event.data=',event.data);
+ 
++        /* istanbul ignore next -- dev-only debug logging, gated behind a hardcoded `false` flag */
+         if (process.env.NODE_ENV === 'development' && logPostMsg) {
+             logger.log(
+                 '\n###CSF SecuredField::postMessageListener:: DOMAIN & ORIGIN MATCH, NO WEBPACK WEIRDNESS fieldType=',
+@@ -197,36 +199,57 @@ class SecuredField extends AbstractSecuredField {
+         }
+ 
+         // PARSE DATA OBJECT (thus testing if it is a JSON string) - OR TRY & WORK OUT WHY THE PARSING FAILED
+-        let feedbackObj: SFFeedbackObj;
++        const feedbackObj = this.parsePostMessageData(event);
++        if (!feedbackObj) return;
+ 
++        // CHECK FOR EXPECTED PROPS & MATCHING numKey
++        if (!this.isFeedbackObjValid(feedbackObj)) return;
++
++        // VALIDATION CHECKS PASSED - DECIDE ON COURSE OF ACTION
++        /* istanbul ignore next -- dev-only debug logging, gated behind a hardcoded `false` flag */
++        if (process.env.NODE_ENV === 'development' && logPostMsg) {
++            logger.log(
++                '### SecuredField::postMessageListener:: numkeys match PROCEED WITH POST MESSAGE PROCESSING fieldType=',
++                this.sfConfig.fieldType,
++                'txVariant=',
++                this.sfConfig.txVariant
++            );
++        }
++
++        this.handleFeedbackAction(feedbackObj);
++    }
++
++    private parsePostMessageData(event: MessageEvent): SFFeedbackObj | null {
+         try {
+-            feedbackObj = JSON.parse(event.data);
++            return JSON.parse(event.data);
+         } catch (e) {
+             // Was the message generated by webpack?
+             if (isWebpackPostMsg(event)) {
+                 if (this.sfConfig.showWarnings) logger.log('### SecuredField::postMessageListenerFn:: PARSE FAIL - WEBPACK');
+-                return;
++                return null;
+             }
+ 
+             // Was the message generated by ChromeVox?
+             if (isChromeVoxPostMsg(event)) {
+                 if (this.sfConfig.showWarnings) logger.log('### SecuredField::postMessageListenerFn:: PARSE FAIL - CHROMEVOX');
+-                return;
++                return null;
+             }
+ 
+             if (this.sfConfig.showWarnings)
+                 logger.log('### SecuredField::postMessageListenerFn:: PARSE FAIL - UNKNOWN REASON: event.data=', event.data);
+-            return;
++            return null;
+         }
++    }
+ 
+-        // CHECK FOR EXPECTED PROPS
++    private isFeedbackObjValid(feedbackObj: SFFeedbackObj): boolean {
+         const hasMainProps: boolean = hasOwnProperty(feedbackObj, 'action') && hasOwnProperty(feedbackObj, 'numKey');
+ 
+         if (!hasMainProps) {
+             if (this.sfConfig.showWarnings) logger.warn('WARNING SecuredField :: postMessage listener for iframe :: data mismatch!');
+-            return;
++            return false;
+         }
+ 
++        /* istanbul ignore next -- dev-only debug logging, gated behind a hardcoded `false` flag */
+         if (process.env.NODE_ENV === 'development' && logPostMsg) {
+             logger.log('### SecuredField::postMessageListener:: feedbackObj.numKey=', feedbackObj.numKey);
+         }
+@@ -237,19 +260,13 @@ class SecuredField extends AbstractSecuredField {
+                     'WARNING SecuredField :: postMessage listener for iframe :: data mismatch! (Probably a message from an unrelated securedField)'
+                 );
+             }
+-            return;
++            return false;
+         }
+ 
+-        // VALIDATION CHECKS PASSED - DECIDE ON COURSE OF ACTION
+-        if (process.env.NODE_ENV === 'development' && logPostMsg) {
+-            logger.log(
+-                '### SecuredField::postMessageListener:: numkeys match PROCEED WITH POST MESSAGE PROCESSING fieldType=',
+-                this.sfConfig.fieldType,
+-                'txVariant=',
+-                this.sfConfig.txVariant
+-            );
+-        }
++        return true;
++    }
+ 
++    private handleFeedbackAction(feedbackObj: SFFeedbackObj): void {
+         switch (feedbackObj.action) {
+             case 'encryption':
+                 this.isValid = true;
+@@ -288,15 +305,24 @@ class SecuredField extends AbstractSecuredField {
+                 this.onKeyDownCallback(feedbackObj);
+                 break;
+ 
+-            case 'encryptionError': {
+-                const event = new AnalyticsErrorEvent({
+-                    component: this.componentType,
+-                    code: feedbackObj.code,
+-                    errorType: ErrorEventType.internal,
+-                    message: `${feedbackObj.error}. Field= ${this.sfConfig.fieldType}`
+-                });
++            case 'encryptionError':
++                // Strictly speaking code could be 608, 609 or 610. But it *will* always be present, so falling back to 610
++                // (SECURED_FIELDS_ENCRYPTION_ERROR) will keep TS happy
++                this.submitFeedbackErrorAnalytics(
++                    feedbackObj.code ?? ErrorEventCode.SECURED_FIELDS_ENCRYPTION_ERROR,
++                    `${feedbackObj.error}. Field= ${this.sfConfig.fieldType}`
++                );
++                break;
+ 
+-                this.submitAnalytics?.(event);
++            // Listen for actions indicating SF iframe has detected errors with how it's hosted
++            case 'invalidHosting':
++            case 'insecureMerchantDomain': {
++                const fallbackCode =
++                    feedbackObj.action === 'invalidHosting'
++                        ? ErrorEventCode.SECURED_FIELDS_INVALID_HOSTING
++                        : ErrorEventCode.SECURED_FIELDS_INSECURE_MERCHANT_DOMAIN;
++
++                this.submitFeedbackErrorAnalytics(feedbackObj.code ?? fallbackCode, `${feedbackObj.error}. Field=${this.sfConfig.fieldType}`);
+                 break;
+             }
+ 
+@@ -319,6 +345,17 @@ class SecuredField extends AbstractSecuredField {
+         }
+     }
+ 
++    private submitFeedbackErrorAnalytics(code: string, message: string): void {
++        const event = new AnalyticsErrorEvent({
++            component: this.componentType,
++            code,
++            errorType: ErrorEventType.internal,
++            message
++        });
++
++        this.submitAnalytics?.(event);
++    }
++
+     destroy(): void {
+         off(window, 'message', this.postMessageListener, false);
+         off(this.iframeRef, 'load', this.iframeOnLoadListener, false);
+@@ -476,6 +513,7 @@ class SecuredField extends AbstractSecuredField {
+         // Only set if value has changed
+         if (value === this.cvcPolicy) return;
+ 
++        /* istanbul ignore next -- dev-only debug logging, gated behind a hardcoded `false` flag */
+         if (process.env.NODE_ENV === 'development' && doLog) logger.log(this.sfConfig.fieldType, '### SecuredField::cvcPolicy:: value=', value);
+ 
+         this._cvcPolicy = value;
+@@ -504,6 +542,7 @@ class SecuredField extends AbstractSecuredField {
+         // Only set if value has changed
+         if (value === this.expiryDatePolicy) return;
+ 
++        /* istanbul ignore next -- dev-only debug logging, gated behind a hardcoded `false` flag */
+         if (process.env.NODE_ENV === 'development' && doLog) logger.log(this.sfConfig.fieldType, '### SecuredField:expiryDatePolicy:: value=', value);
+ 
+         this._expiryDatePolicy = value;
+diff --git a/packages/lib/src/components/internal/UIElement/UIElement.test.tsx b/packages/lib/src/components/internal/UIElement/UIElement.test.tsx
+index 6a7a31e..8445263 100644
+--- a/packages/lib/src/components/internal/UIElement/UIElement.test.tsx
++++ b/packages/lib/src/components/internal/UIElement/UIElement.test.tsx
+@@ -478,9 +478,13 @@ describe('UIElement', () => {
+             };
+ 
+             const onOrderUpdatedMock = jest.fn();
++            const sessionDataAfterUpdate = 'session-data-after-update';
+ 
+             jest.spyOn(MyElement.prototype, 'isValid', 'get').mockReturnValue(true);
+-            (core.update as jest.Mock).mockResolvedValue(core);
++            (core.update as jest.Mock).mockImplementation(() => {
++                (core.session as unknown as { data: string }).data = sessionDataAfterUpdate;
++                return Promise.resolve(core);
++            });
+             (core.session?.submitPayment as jest.Mock).mockResolvedValue({
+                 resultCode: 'Pending',
+                 // @ts-ignore  ADD ORDER TO SESSION CHECKOUT RESPONSE
+@@ -501,7 +505,7 @@ describe('UIElement', () => {
+             expect(core.update).toHaveBeenCalledWith({ order });
+ 
+             expect(onOrderUpdatedMock).toHaveBeenCalledTimes(1);
+-            expect(onOrderUpdatedMock).toHaveBeenCalledWith({ order });
++            expect(onOrderUpdatedMock).toHaveBeenCalledWith({ order, sessionData: sessionDataAfterUpdate });
+         });
+ 
+         test('should trigger onPaymentMethodsRequest if there is a pending order when using advanced flow', async () => {
+@@ -568,7 +572,7 @@ describe('UIElement', () => {
+             });
+ 
+             expect(onOrderUpdatedMock).toHaveBeenCalledTimes(1);
+-            expect(onOrderUpdatedMock).toHaveBeenCalledWith({ order });
++            expect(onOrderUpdatedMock.mock.calls[0][0]).toStrictEqual({ order });
+         });
+ 
+         test('should NOT throw an error if onPaymentMethodsRequest is not implemented, and the flow should continue', async () => {
+@@ -619,7 +623,7 @@ describe('UIElement', () => {
+             });
+ 
+             expect(onOrderUpdatedMock).toHaveBeenCalledTimes(1);
+-            expect(onOrderUpdatedMock).toHaveBeenCalledWith({ order });
++            expect(onOrderUpdatedMock.mock.calls[0][0]).toStrictEqual({ order });
+         });
+ 
+         test('should call onError with an IMPLEMENTATION_ERROR, but not onPaymentFailed, if neither onSubmit nor a session is available', async () => {
+diff --git a/packages/lib/src/components/internal/UIElement/UIElement.tsx b/packages/lib/src/components/internal/UIElement/UIElement.tsx
+index 6c70108..82167d4 100644
+--- a/packages/lib/src/components/internal/UIElement/UIElement.tsx
++++ b/packages/lib/src/components/internal/UIElement/UIElement.tsx
+@@ -477,8 +477,10 @@ export abstract class UIElement<P extends UIElementProps = UIElementProps> exten
+               })
+             : this.handleAdvanceFlowPaymentMethodsUpdate(order);
+ 
+-        void updateCorePromise.then(() => {
+-            this.props.onOrderUpdated?.({ order });
++        void updateCorePromise.then(core => {
++            const session = core?.session;
++            // The resolved core already ran /setup, so its session holds a newer blob than /payments returned
++            this.props.onOrderUpdated?.({ order, ...(session?.data && { sessionData: session.data }) });
+         });
+     };
+ 
+diff --git a/packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts b/packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts
+index babbdc7..5bbcab2 100644
+--- a/packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts
++++ b/packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts
+@@ -22,6 +22,16 @@ export enum ErrorEventType {
+ export enum ErrorEventCode {
+     /** Trying to initialise a securedField iframe, but the iframe.contentWindow is undefined (meaning the containing element is not in the DOM */
+     SECURED_FIELDS_IFRAME_CONTENT_WINDOW_NOT_FOUND = '500',
++
++    /** Generated by the securedField if its actual url doesn't match what it thinks it should be */
++    SECURED_FIELDS_INVALID_HOSTING = '501',
++
++    /**
++     * Generated by the securedField if it detects that it's running in a live environment but that the merchant domain
++     * (as extracted from the clientKey and inserted into the securedField file) is not secure i.e. not https
++     */
++    SECURED_FIELDS_INSECURE_MERCHANT_DOMAIN = '502',
++
+     /** */
+     REDIRECT = '600',
+     /**
+diff --git a/packages/lib/src/core/core.test.ts b/packages/lib/src/core/core.test.ts
+index 92d68d1..1fe0b5e 100644
+--- a/packages/lib/src/core/core.test.ts
++++ b/packages/lib/src/core/core.test.ts
+@@ -842,10 +842,12 @@ describe('Core', () => {
+                 onError: mockOnError
+             });
+             await core.initialize();
++            // submitPayment is mocked, so emulate the session storing the new data blob
++            (core.session as unknown as { data: string }).data = 'dummySessionData';
+             core.processPayment(paymentData);
+             const flushPromises = () => new Promise(process.nextTick);
+             await flushPromises();
+-            expect(mockOnOrderUpdated).toHaveBeenCalledWith({ order });
++            expect(mockOnOrderUpdated).toHaveBeenCalledWith({ order, sessionData: 'dummySessionData' });
+             expect(mockOnPaymentCompleted).not.toHaveBeenCalled();
+         });
+     });
+diff --git a/packages/lib/src/core/core.ts b/packages/lib/src/core/core.ts
+index f89ccae..888ca5b 100644
+--- a/packages/lib/src/core/core.ts
++++ b/packages/lib/src/core/core.ts
+@@ -412,7 +412,8 @@ class Core implements ICore {
+                 }
+                 const order = response.order;
+                 if (order && (order.remainingAmount?.value ?? 0) > 0) {
+-                    this.options.onOrderUpdated?.({ order });
++                    const sessionData = this.session?.data;
++                    this.options.onOrderUpdated?.({ order, ...(sessionData && { sessionData }) });
+                     return;
+                 }
+                 cleanupFinalResult(response);
+diff --git a/packages/lib/src/core/types.ts b/packages/lib/src/core/types.ts
+index 8299113..33d7cdf 100644
+--- a/packages/lib/src/core/types.ts
++++ b/packages/lib/src/core/types.ts
+@@ -5,6 +5,7 @@ import UIElement from '../components/internal/UIElement';
+ import type { CustomTranslations } from '../language/types';
+ import type {
+     Order,
++    OrderUpdatedData,
+     OrderStatus,
+     PaymentAction,
+     PaymentMethodsResponse,
+@@ -383,9 +384,11 @@ export interface CoreConfiguration {
+     /**
+      * Called when the gift card balance is less than the transaction amount.
+      * Returns an Order object that includes the remaining amount to be paid.
++     * In the Sessions flow, it also returns the latest `sessionData`, which should be persisted
++     * by the merchant (e.g. to restore the session after a page reload).
+      * https://docs.adyen.com/payment-methods/gift-cards/web-component?tab=config-sessions_1
+      */
+-    onOrderUpdated?(data: { order: Order }): void;
++    onOrderUpdated?(data: OrderUpdatedData): void;
+ 
+     /**
+      * @internal
+diff --git a/packages/lib/src/types/global-types.ts b/packages/lib/src/types/global-types.ts
+index 5505433..26d112e 100644
+--- a/packages/lib/src/types/global-types.ts
++++ b/packages/lib/src/types/global-types.ts
+@@ -239,6 +239,14 @@ export interface Order {
+     remainingAmount?: PaymentAmount;
+ }
+ 
++export interface OrderUpdatedData {
++    order: Order;
++    /**
++     * The latest session data. Only present in the Sessions flow.
++     */
++    sessionData?: string;
++}
++
+ export interface OrderStatus {
+     expiresAt: string;
+     paymentMethods: {
+diff --git a/packages/lib/storybook/components/SRPanelDebugger.tsx b/packages/lib/storybook/components/SRPanelDebugger.tsx
+new file mode 100644
+index 0000000..028299e
+--- /dev/null
++++ b/packages/lib/storybook/components/SRPanelDebugger.tsx
+@@ -0,0 +1,174 @@
++import { h } from 'preact';
++import { useEffect, useRef, useState } from 'preact/hooks';
++
++/**
++ * Debugging aid for the screen reader panel. Toggle it from the Storybook toolbar
++ * ("SR panel debugger"); it is mounted globally by .storybook/preview.tsx.
++ *
++ * Watches the SR panel live region and prints every DOM mutation on screen, so announcements
++ * heard in a screen reader can be correlated against what actually changed in the DOM. A screen
++ * reader only announces an actual change to the region, which makes "nothing was announced" and
++ * "nothing changed" impossible to tell apart without a log like this.
++ *
++ * What to look for:
++ *  - ATTR rows in red  = the attribute VALUE really changed. Changing a live region's own
++ *                        attributes can make an AT re-register it and drop a queued announcement.
++ *  - ATTR rows in grey = setAttribute called with an identical value (no-op write).
++ *  - CHILD rows        = message text added/removed. No CHILD row means nothing was announced,
++ *                        because aria-live only fires on an actual content change.
++ *  - A message that is added and removed within a few milliseconds was very likely never read.
++ */
++
++const SR_PANEL_SELECTOR = '[class^="adyen-checkout-sr-panel"]';
++
++// Entries arriving more than this long after the previous one start a new group.
++const SR_GROUP_DEBOUNCE_MS = 500;
++
++const GROUP_SEPARATOR = '=========';
++
++interface LogEntry {
++    id: number;
++    t: string;
++    kind: 'ATTR' | 'CHILD' | 'TEXT' | 'INFO' | 'SEPARATOR';
++    text: string;
++    changed: boolean;
++}
++
++const COLORS: Record<LogEntry['kind'], string> = {
++    ATTR: '#d32f2f',
++    CHILD: '#2e7d32',
++    TEXT: '#1565c0',
++    INFO: '#777',
++    SEPARATOR: '#777'
++};
++
++export const SRPanelDebugger = () => {
++    const [entries, setEntries] = useState<LogEntry[]>([]);
++    const idRef = useRef(0);
++    const listRef = useRef<HTMLDivElement>(null);
++
++    useEffect(() => {
++        let observer: MutationObserver;
++        let cancelled = false;
++        const start = performance.now();
++
++        let lastOutputTime = 0;
++
++        const push = (kind: LogEntry['kind'], text: string, changed = false) => {
++            const now = performance.now();
++            const t = ((now - start) / 1000).toFixed(2) + 's';
++            const startsNewGroup = lastOutputTime !== 0 && now - lastOutputTime > SR_GROUP_DEBOUNCE_MS;
++            lastOutputTime = now;
++
++            setEntries(prev =>
++                [
++                    ...prev,
++                    ...(startsNewGroup ? [{ id: idRef.current++, t, kind: 'SEPARATOR' as const, text: GROUP_SEPARATOR, changed: false }] : []),
++                    { id: idRef.current++, t, kind, text, changed }
++                ].slice(-200)
++            );
++        };
++
++        // The SR panel is created by Core, so it may not exist on first paint.
++        const waitForPanel = () => {
++            if (cancelled) return;
++            const panel = document.querySelector(SR_PANEL_SELECTOR);
++            if (!panel) return void requestAnimationFrame(waitForPanel);
++
++            push('INFO', `observing ${panel.className} [aria-relevant="${panel.getAttribute('aria-relevant')}"]`);
++
++            observer = new MutationObserver(mutations => {
++                mutations.forEach((m, i) => {
++                    if (m.type === 'attributes') {
++                        // MutationObserver only reports oldValue, and records arrive batched, so
++                        // reading getAttribute() here returns the value AFTER the whole batch.
++                        // The true new value is the oldValue of the next record for this same
++                        // attribute/target, falling back to the current value for the last one.
++                        const later = mutations
++                            .slice(i + 1)
++                            .find(n => n.type === 'attributes' && n.attributeName === m.attributeName && n.target === m.target);
++                        const next = later ? later.oldValue : (m.target as HTMLElement).getAttribute(m.attributeName ?? '');
++                        const changed = m.oldValue !== next;
++                        push('ATTR', `${m.attributeName}: "${m.oldValue}" -> "${next}"${changed ? '' : '  (no-op write)'}`, changed);
++                    } else if (m.type === 'characterData') {
++                        push('TEXT', `"${m.oldValue}" -> "${m.target.textContent}"`, true);
++                    } else {
++                        m.removedNodes.forEach(n => push('CHILD', `- "${n.textContent}"`));
++                        m.addedNodes.forEach(n => push('CHILD', `+ "${n.textContent}"`));
++                    }
++                });
++            });
++
++            observer.observe(panel, {
++                attributes: true,
++                attributeOldValue: true,
++                childList: true,
++                subtree: true,
++                characterData: true,
++                characterDataOldValue: true
++            });
++        };
++
++        waitForPanel();
++
++        return () => {
++            cancelled = true;
++            observer?.disconnect();
++        };
++    }, []);
++
++    useEffect(() => {
++        if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
++    }, [entries]);
++
++    return (
++        <div
++            style={{
++                position: 'fixed',
++                right: '12px',
++                bottom: '12px',
++                width: '440px',
++                maxHeight: '45vh',
++                display: 'flex',
++                flexDirection: 'column',
++                background: '#fff',
++                border: '2px solid #333',
++                borderRadius: '6px',
++                fontFamily: 'monospace',
++                fontSize: '11px',
++                zIndex: 99999,
++                boxShadow: '0 4px 16px rgba(0,0,0,.25)'
++            }}
++        >
++            <div
++                style={{
++                    display: 'flex',
++                    justifyContent: 'space-between',
++                    alignItems: 'center',
++                    padding: '6px 8px',
++                    borderBottom: '1px solid #ddd',
++                    fontWeight: 'bold'
++                }}
++            >
++                <span>SR panel mutations ({entries.filter(e => e.kind !== 'SEPARATOR').length})</span>
++                <button type="button" onClick={() => setEntries([])} style={{ fontFamily: 'monospace', fontSize: '11px', cursor: 'pointer' }}>
++                    clear
++                </button>
++            </div>
++            <div ref={listRef} style={{ overflowY: 'auto', padding: '4px 8px' }}>
++                {entries.length === 0 && <div style={{ color: '#999' }}>no mutations yet…</div>}
++                {entries.map(e =>
++                    e.kind === 'SEPARATOR' ? (
++                        <div key={e.id} style={{ color: COLORS.SEPARATOR }}>
++                            {e.text}
++                        </div>
++                    ) : (
++                        <div key={e.id} style={{ color: COLORS[e.kind], fontWeight: e.changed ? 'bold' : 'normal', whiteSpace: 'pre-wrap' }}>
++                            {e.t} {e.kind} {e.text}
++                        </div>
++                    )
++                )}
++            </div>
++        </div>
++    );
++};
+diff --git a/packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReload.stories.tsx b/packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReload.stories.tsx
+new file mode 100644
+index 0000000..06a2d50
+--- /dev/null
++++ b/packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReload.stories.tsx
+@@ -0,0 +1,29 @@
++import { h } from 'preact';
++import { GiftcardReloadDemo } from './GiftcardReloadDemo';
++import type { Meta } from '@storybook/preact-vite';
++import type { StoryConfiguration } from '../../../types';
++import type { DropinConfiguration } from '../../../../src/components/Dropin/types';
++
++type GiftcardReloadStory = StoryConfiguration<DropinConfiguration>;
++
++const meta: Meta = {
++    title: 'Demos/GiftcardReload',
++    tags: ['no-automated-visual-test'],
++    args: { countryCode: 'NL', useSessions: true }
++};
++
++/**
++ * Unlike other stories, the session is persisted in `localStorage` and reused on the next load.
++ * The persisted `sessionData` is refreshed every time `onOrderUpdated` fires.
++ */
++export const WithDropin: GiftcardReloadStory = {
++    render: checkoutConfig => {
++        const { amount, countryCode, shopperLocale } = checkoutConfig;
++        return <GiftcardReloadDemo amount={amount} countryCode={countryCode} shopperLocale={shopperLocale} />;
++    },
++    parameters: {
++        controls: { exclude: ['useSessions', 'showPayButton'] }
++    }
++};
++
++export default meta;
+diff --git a/packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReloadDemo.tsx b/packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReloadDemo.tsx
+new file mode 100644
+index 0000000..be3474a
+--- /dev/null
++++ b/packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReloadDemo.tsx
+@@ -0,0 +1,146 @@
++import { h } from 'preact';
++import { useEffect, useRef, useState } from 'preact/hooks';
++import { AdyenCheckout, components, Dropin as DropinComponent } from '@adyen/adyen-web';
++import { createSession } from '../../../helpers/checkout-api-calls';
++import { RETURN_URL, SHOPPER_REFERENCE, STORYBOOK_ENVIRONMENT_URLS } from '../../../config/commonConfig';
++import getCurrency from '../../../utils/get-currency';
++import type { CoreConfiguration } from '../../../../src/core/types';
++import type { NewableComponent } from '../../../../src/core/core.registry';
++import type { OrderUpdatedData } from '../../../../src/types';
++
++const { Dropin, ...Components } = components;
++AdyenCheckout.register(...(Object.values(Components) as NewableComponent[]));
++
++const STORAGE_KEY = 'adyen-web-storybook:giftcard-reload-session-id';
++
++interface GiftcardReloadDemoProps {
++    amount: number;
++    countryCode: string;
++    shopperLocale: string;
++}
++
++/**
++ * Simulates a merchant that only persists the session id. When the checkout is initialised again with just the id,
++ * the SDK restores the latest `sessionData` for that session instead of a new session being created on every page load.
++ */
++export const GiftcardReloadDemo = ({ amount, countryCode, shopperLocale }: Readonly<GiftcardReloadDemoProps>) => {
++    const containerRef = useRef<HTMLDivElement>(null);
++    const [initializationKey, setInitializationKey] = useState(0);
++    const [persistedSessionId, setPersistedSessionId] = useState<string | null>(() => localStorage.getItem(STORAGE_KEY));
++    const [sessionOrigin, setSessionOrigin] = useState<'new' | 'restored' | null>(null);
++    const [errorMessage, setErrorMessage] = useState<string | null>(null);
++
++    const persistSessionId = (sessionId: string): void => {
++        localStorage.setItem(STORAGE_KEY, sessionId);
++        setPersistedSessionId(sessionId);
++    };
++
++    const discardSessionId = (): void => {
++        localStorage.removeItem(STORAGE_KEY);
++        setPersistedSessionId(null);
++    };
++
++    useEffect(() => {
++        let dropin: InstanceType<typeof DropinComponent> | undefined;
++        let cancelled = false;
++
++        const init = async () => {
++            setErrorMessage(null);
++            setSessionOrigin(null);
++
++            const storedSessionId = localStorage.getItem(STORAGE_KEY);
++            let session: { id: string; sessionData?: string };
++
++            if (storedSessionId) {
++                session = { id: storedSessionId };
++            } else {
++                const response = await createSession({
++                    amount: { currency: getCurrency(countryCode), value: Number(amount) },
++                    shopperLocale,
++                    countryCode,
++                    reference: 'GIFTCARD-RELOAD',
++                    returnUrl: RETURN_URL,
++                    shopperReference: SHOPPER_REFERENCE,
++                    shopperEmail: 'shopper.ctp1@adyen.com'
++                });
++                session = { id: response.id, sessionData: response.sessionData };
++                persistSessionId(response.id);
++            }
++
++            const checkout = await AdyenCheckout({
++                clientKey: process.env.CLIENT_KEY,
++                environment: process.env.CLIENT_ENV as CoreConfiguration['environment'],
++                countryCode,
++                locale: shopperLocale,
++                session,
++                onOrderUpdated: (data: OrderUpdatedData) => {
++                    console.log('onOrderUpdated', data);
++                },
++                onPaymentCompleted: result => {
++                    console.log('onPaymentCompleted', result);
++                    discardSessionId();
++                },
++                onPaymentFailed: result => {
++                    console.log('onPaymentFailed', result);
++                },
++                onError: error => {
++                    if (error.name === 'CANCEL') return;
++                    console.error(error);
++                },
++                _environmentUrls: STORYBOOK_ENVIRONMENT_URLS
++            });
++
++            if (cancelled || !containerRef.current) return;
++
++            dropin = new DropinComponent(checkout);
++            dropin.mount(containerRef.current);
++            setSessionOrigin(storedSessionId ? 'restored' : 'new');
++        };
++
++        init().catch((error: unknown) => {
++            console.error('GiftcardReload: failed to initialise the checkout', error);
++            if (cancelled) return;
++            // A persisted session can expire. Drop it so the next attempt creates a fresh one
++            discardSessionId();
++            setErrorMessage('Could not initialise the checkout. The persisted session id was cleared, use "Reload Drop-in" to start again.');
++        });
++
++        return () => {
++            cancelled = true;
++            dropin?.unmount();
++        };
++    }, [initializationKey, countryCode, amount, shopperLocale]);
++
++    const reloadDropin = () => setInitializationKey(key => key + 1);
++
++    const startNewSession = () => {
++        discardSessionId();
++        reloadDropin();
++    };
++
++    return (
++        <div>
++            <p>
++                1. Pay with a gift card for less than the total. 2. Reload the page (or use &quot;Reload Drop-in&quot;). Only the session id is
++                persisted, and the applied gift card should be displayed after the reload. Use &quot;Start new session&quot; after changing the amount
++                or country.
++            </p>
++            <div>
++                <button type="button" onClick={reloadDropin}>
++                    Reload Drop-in
++                </button>
++                <button type="button" onClick={startNewSession}>
++                    Start new session
++                </button>
++            </div>
++            <dl>
++                <dt>Session</dt>
++                <dd>{sessionOrigin ?? 'loading...'}</dd>
++                <dt>Persisted session id</dt>
++                <dd>{persistedSessionId ?? 'none'}</dd>
++            </dl>
++            {errorMessage && <div role="alert">{errorMessage}</div>}
++            <div ref={containerRef} id="component-root" className="component-wrapper" />
++        </div>
++    );
++};

@@ -2442,6 +2442,32 @@
   To SHA: `fdd18681f486a3b2f1c60e3c47f8669f55a73a96`
   Comparison: [manifest](repos/paypal/paypal-messages-ios/comparisons/default-branch/432d6b8--fdd1868/comparison.json)
 
+## `github-63a67800194fcf63cd6f`
+
+- Repository: `adyen/adyen-web`
+- SHA: `6ccc03f83b064c2171bc836edd9b35444e582823`
+- Collection date: `2026-11-08`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-11-08-6ccc03f/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-63a67800194fcf63cd6f/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-63a67800194fcf63cd6f/attachment.json)
+- Review priority: `high`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.48.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.48.0--6.48.1/comparison.json)
+
 ## `github-63d1c788da3330896fd0`
 
 - Repository: `stripe/react-stripe-js`
@@ -3149,6 +3175,32 @@
 - `@stripe/stripe-react-native@0.81.0` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.81.0/2026-10-14/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.80.0--0.81.0/comparison.json)
+
+## `github-7af6b1df429e8b0d75bf`
+
+- Repository: `adyen/adyen-web`
+- SHA: `a05c1184195fa73ce7dc9e956fa080cb40638209`
+- Collection date: `2026-11-08`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-7af6b1df429e8b0d75bf/packet.md)
+- Evidence attachment: [manifest](repos/adyen/adyen-web/evidence-attachments/github-7af6b1df429e8b0d75bf/attachment.json)
+- Review priority: `high`
+- Required reading: `26` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.48.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.47.0--6.48.0/comparison.json)
 
 ## `github-7afbbbad6ed794ece5d5`
 

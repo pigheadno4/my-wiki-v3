@@ -29,6 +29,12 @@ The retained 6.46.0 UIElement preserves the opt-in review submit branch and Sess
 
 The new shared payment disclaimer in [[adyen-web-disclaimers]] can accompany supported SDK button paths, including the review presentation. It does not alter who owns final confirmation, action cleanup, duplicate prevention, or backend payment calls.
 
+## 6.48.0 partial-order continuation data
+
+The public `onOrderUpdated` payload adds optional `sessionData` beside `order`. In retained Core.processPayment, an order with positive remaining amount emits current `this.session.data` when truthy, then returns; this branch still does not call Core.update. Ordinary UIElement.handleOrder instead waits for Core.update/reinitialization and emits the resolved Core Session blob. Do not present the two paths as an identical refresh sequence. Session already updates/stores response blobs; this change exposes continuation data to the callback rather than introducing persistence for the first time. [[source-github-adyen-web]] [[changelog-github-adyen-web]]
+
+Merchants can retain callback-provided data for restoration, guarded for its absence. The payload does not prove completion of the remaining order, a captured payment or fulfillment eligibility; existing confirmation/action cleanup, stale-submission and backend-verification responsibilities remain. The historical ADR/Core.update discrepancy below remains relevant and is not silently corrected by this addition.
+
 ## Payment-method boundaries
 
 - Card, Bacs Direct Debit, stored PayByBankUS, stored PayTo, and Twint wire the internal review button presentation. The primary label becomes Continue; this is not a universal public `showReview` option.

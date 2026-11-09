@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-11-08] ingest | Adyen Web `6.48.1`
+
+Approved focused delta after completed 6.48.0, including constants supplement: hosted secured fields 6.4.1 / PayPal JS 11.2.1 pins; IRIS/UPI/beta-host announcements qualified. All older history/warnings preserved; source_count unchanged. Details [[adyen-log]], [[source-github-adyen-web]] and [[changelog-github-adyen-web]]. No SDK/browser/compliance/payment execution, commit or push.
+
+## [2026-11-08] ingest | Adyen Web `6.48.0`
+
+Approved focused delta with five-file supplement: optional Session continuation, detached-3DS2 callbacks, bounded Apple Pay errors and secured-field diagnostics. All prior history/warnings preserved; source_count unchanged. Details [[adyen-log]], [[source-github-adyen-web]] and [[changelog-github-adyen-web]]. No SDK/browser/payment execution, commit or push; complete this cycle before 6.48.1.
+
 ## [2026-11-07] ingest | Adyen React Native `2.14.0`
 
 Approved focused-reading full additive ingest preserves all earlier history: Android support/toolchain migration, AGP9/Expo classpath fixes, iOS embedded CardView appearance and native Android 5.22.0 / iOS 5.27.0 pins. Metadata/support contradictions qualified; source_count unchanged. Details [[adyen-log]], [[source-github-adyen-react-native]] and [[changelog-github-adyen-react-native]]. No SDK/device/payment execution, commit or push.

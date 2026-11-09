@@ -2,9 +2,15 @@
 title: "GitHub changelog: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
-date_updated: 2026-10-19
+date_updated: 2026-11-08
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-11-08-6ccc03f/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-11-08-6ccc03f-543c5280/manifest.json"
+  - "github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/manifest.json"
+  - "github/adyen/adyen-web/snapshots/2026-11-08-a05c118/manifest.json"
+  - "github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/manifest.json"
+  - "github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json"
   - "github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json"
@@ -27,6 +33,34 @@ tags: [adyen, checkout, web-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `Adyen/adyen-web`. Cumulative implementation knowledge belongs in [[source-github-adyen-web]] and the linked immutable snapshots.
+
+## `@adyen/adyen-web@6.48.1` (2026-11-05)
+
+`@adyen/adyen-web@6.48.0` -> `@adyen/adyen-web@6.48.1`; exact SHA `6ccc03f83b064c2171bc836edd9b35444e582823`; approved additive delta with focused reading on 2026-11-08, only after 6.48.0 completed. Includes the one-file exact-SHA constants supplement; all earlier history/warnings retained.
+
+**Code-backed changes:** hosted SF_VERSION 6.4.0 -> 6.4.1; PayPal JS 11.2.0 -> 11.2.1. Other constants and package exports remain unchanged. Development tooling/build:size changes are not new merchant runtime capabilities. Neither a hosted version pin nor a PayPal dependency bump proves remote behavior.
+
+**Qualified announcements:** IRIS mobile displays a bank list without QR; UPI receives regulatory-related updates; secured-fields URL validation allows checkoutshopper-beta. IRIS/UPI/shared-QR complete implementations remain outside this capsule; hosted validation code is uncollected. No device-detection recipe, legal-compliance guarantee, merchant eligibility or payment success inferred.
+
+**Migration/read scope:** recheck affected beta-host/card and IRIS/UPI journeys. Two modified package manifests and complete constants supplement read with prior context; 220 unchanged retained files and generated/duplicated inventories verified mechanically. Both 222-file snapshots pass all 444 size/SHA-256/Git blob checks. Effective reading 14 paths / 353,098 bytes; 81 upstream dispositions (two retained, 79 excluded), no gaps/unclassified changes. Cumulative source/history/links preserved; online-payments concept updated first, then company/catalog/logs. No new source/comparison, count change, further collection, SDK build/upstream/browser/compliance/payment test, commit or push.
+
+**Evidence:** [snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-6ccc03f/manifest.json), [release](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/manifest.json), [notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.1/2026-11-08/release-notes.md), [supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-6ccc03f-543c5280/manifest.json), [attachment](../../../../tracking/github/repos/adyen/adyen-web/evidence-attachments/github-63a67800194fcf63cd6f/attachment.json), [comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.48.0--6.48.1/comparison.json). Qualifications and grounding: [[source-github-adyen-web]].
+
+## `@adyen/adyen-web@6.48.0` (2026-10-28)
+
+`@adyen/adyen-web@6.47.0` -> `@adyen/adyen-web@6.48.0`; exact SHA `a05c1184195fa73ce7dc9e956fa080cb40638209`; approved additive delta with focused reading on 2026-11-08, including the five-file exact-SHA supplement. All earlier release knowledge and the 6.45.1 do-not-use warning remain preserved.
+
+**Session continuation:** exported OrderUpdatedData adds optional sessionData beside order. Ordinary UIElement partial-order handling waits for Core.update/reinitialization before forwarding data; review-page Core.processPayment forwards the current Session blob without that extra update branch. Session already persisted refreshed blobs, so this is new callback exposure, not first-time persistence. No final-payment or fulfillment proof follows.
+
+**Lifecycle/error fixes:** challenge and fingerprint skip callbacks after promise settlement when their DOM root is detached, with Node.isConnected supporting attached shadow trees. Listener removal at settlement and normal unmount remain distinct from immediate raw-DOM teardown or backend cancellation. Apple Pay catches completePayment exceptions and guards abort failures; rejection reasons without numeric status become STATUS_FAILURE. Abort failure returns without another onError; other wallet selection handlers are not universally newly protected.
+
+**Diagnostics/dependencies:** secured-field invalid-hosting/insecure-domain messages become optional analytics with 501/502 fallbacks after existing message guards, not direct merchant validation/payment rejection. Hosted SF_VERSION advances 6.3.0 -> 6.4.0; hosted validation internals remain unverified. PayPal JS 11.1.0 -> 11.2.0; no delegated capability inferred. Address-query preservation and Click to Pay/Modal null-safety remain release-note-qualified.
+
+**Migration and updated pages:** guard optional continuation data, retain path-specific refresh/merchant recovery responsibilities, and regression-test 3DS teardown, wallet cancellation and diagnostics. Existing online-payments, review-page and 3D Secure concepts updated first, then source/company/catalog/logs. No new comparison/source or source-count change; no SDK build, upstream/browser/payment tests or extra collection.
+
+**Read/evidence:** 222-file capsules, 10 modified/212 unchanged; all 444 current/prior size/SHA-256/Git blob checks plus five supplemental identities pass. All changed retained files, complete supplemental files, affected prior/dependency context and cumulative history read; inventories, unchanged history and duplicated diff checked mechanically. Effective assignment 26 paths / 587,140 bytes; 75 upstream dispositions (10 retained, 65 excluded), no gaps/unclassified changes.
+
+**Evidence:** [snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-11-08-a05c118/manifest.json), [release](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/manifest.json), [notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.48.0/2026-11-08/release-notes.md), [supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-11-08-a05c118-97e12dcc/manifest.json), [attachment](../../../../tracking/github/repos/adyen/adyen-web/evidence-attachments/github-7af6b1df429e8b0d75bf/attachment.json), [comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.47.0--6.48.0/comparison.json). Code, five grounding excerpts and historical sections: [[source-github-adyen-web]].
 
 ## `@adyen/adyen-web@6.47.0` (2026-10-15)
 

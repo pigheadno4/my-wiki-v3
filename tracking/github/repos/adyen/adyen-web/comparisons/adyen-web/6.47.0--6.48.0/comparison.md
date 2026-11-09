@@ -1,0 +1,135 @@
+# GitHub package comparison
+
+- Repository: `adyen/adyen-web`
+- Package: `@adyen/adyen-web`
+- From: `6.47.0` (`6068f43579dfbf50bad7505113b369e4e0d4df54`)
+- To: `6.48.0` (`a05c1184195fa73ce7dc9e956fa080cb40638209`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `packages/lib/.storybook/preview.tsx`
+- `packages/lib/CHANGELOG.md`
+- `packages/lib/eslint-rules/strict-null-checks.js`
+- `packages/lib/package.json`
+- `packages/lib/src/components/ApplePay/services/ApplePayService.test.ts`
+- `packages/lib/src/components/ApplePay/services/ApplePayService.ts`
+- `packages/lib/src/components/ClickToPay/ClickToPay.stories.tsx`
+- `packages/lib/src/components/ClickToPay/ClickToPay.test.ts`
+- `packages/lib/src/components/ClickToPay/ClickToPay.tsx`
+- `packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx`
+- `packages/lib/src/components/Giftcard/types.ts`
+- `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx`
+- `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`
+- `packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.test.tsx`
+- `packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx`
+- `packages/lib/src/components/ThreeDS2/components/utils.ts`
+- `packages/lib/src/components/internal/Address/components/AddressSearch.test.tsx`
+- `packages/lib/src/components/internal/Address/components/AddressSearch.tsx`
+- `packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCards.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCardsList/CtPCardsList.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfo.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfoModal/CtPInfoModal.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLogin.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePassword.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPResendOtpLink.tsx`
+- `packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx`
+- `packages/lib/src/components/internal/ClickToPay/context/ClickToPayContext.ts`
+- `packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx`
+- `packages/lib/src/components/internal/ClickToPay/errors/TimeoutError.ts`
+- `packages/lib/src/components/internal/ClickToPay/models/ShopperCard.ts`
+- `packages/lib/src/components/internal/ClickToPay/services/ClickToPayService.ts`
+- `packages/lib/src/components/internal/ClickToPay/services/create-clicktopay-service.ts`
+- `packages/lib/src/components/internal/ClickToPay/services/execute-with-timeout.ts`
+- `packages/lib/src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts`
+- `packages/lib/src/components/internal/ClickToPay/services/sdks/SrcSdkLoader.ts`
+- `packages/lib/src/components/internal/ClickToPay/services/types.ts`
+- `packages/lib/src/components/internal/ClickToPay/services/utils.ts`
+- `packages/lib/src/components/internal/FormFields/Select/Select.scss`
+- `packages/lib/src/components/internal/FormFields/Select/Select.test.tsx`
+- `packages/lib/src/components/internal/FormFields/Select/Select.tsx`
+- `packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx`
+- `packages/lib/src/components/internal/FormFields/Select/types.ts`
+- `packages/lib/src/components/internal/Modal/Modal.tsx`
+- `packages/lib/src/components/internal/Modal/useModal.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/handleConfig.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/constants.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts`
+- `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`
+- `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`
+- `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts`
+- `packages/lib/src/core/core.test.ts`
+- `packages/lib/src/core/core.ts`
+- `packages/lib/src/core/types.ts`
+- `packages/lib/src/types/global-types.ts`
+- `packages/lib/storybook/components/SRPanelDebugger.tsx`
+- `packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReload.stories.tsx`
+- `packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReloadDemo.tsx`
+
+## Upstream changes
+
+- `modified`: `packages/lib/.storybook/preview.tsx`
+- `modified`: `packages/lib/CHANGELOG.md`
+- `modified`: `packages/lib/eslint-rules/strict-null-checks.js`
+- `modified`: `packages/lib/package.json`
+- `modified`: `packages/lib/src/components/ApplePay/services/ApplePayService.test.ts`
+- `modified`: `packages/lib/src/components/ApplePay/services/ApplePayService.ts`
+- `modified`: `packages/lib/src/components/ClickToPay/ClickToPay.stories.tsx`
+- `modified`: `packages/lib/src/components/ClickToPay/ClickToPay.test.ts`
+- `modified`: `packages/lib/src/components/ClickToPay/ClickToPay.tsx`
+- `modified`: `packages/lib/src/components/Dropin/stories/dropin/Dropin.stories.tsx`
+- `modified`: `packages/lib/src/components/Giftcard/types.ts`
+- `modified`: `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.test.tsx`
+- `modified`: `packages/lib/src/components/ThreeDS2/components/Challenge/DoChallenge3DS2.tsx`
+- `added`: `packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.test.tsx`
+- `modified`: `packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/DoFingerprint3DS2.tsx`
+- `modified`: `packages/lib/src/components/ThreeDS2/components/utils.ts`
+- `modified`: `packages/lib/src/components/internal/Address/components/AddressSearch.test.tsx`
+- `modified`: `packages/lib/src/components/internal/Address/components/AddressSearch.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/ClickToPayComponent.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCards.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPCards/CtPCardsList/CtPCardsList.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfo.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPInfo/CtPInfoModal/CtPInfoModal.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLogin.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPLogin/CtPLoginInput.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePassword.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPOneTimePasswordInput.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPOneTimePassword/CtPOneTimePasswordInput/CtPResendOtpLink.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/components/CtPSection/CtPSection.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/context/ClickToPayContext.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/context/ClickToPayProvider.tsx`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/errors/TimeoutError.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/models/ShopperCard.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/services/ClickToPayService.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/services/create-clicktopay-service.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/services/execute-with-timeout.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/services/sdks/AbstractSrcInitiator.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/services/sdks/SrcSdkLoader.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/services/types.ts`
+- `modified`: `packages/lib/src/components/internal/ClickToPay/services/utils.ts`
+- `modified`: `packages/lib/src/components/internal/FormFields/Select/Select.scss`
+- `modified`: `packages/lib/src/components/internal/FormFields/Select/Select.test.tsx`
+- `modified`: `packages/lib/src/components/internal/FormFields/Select/Select.tsx`
+- `modified`: `packages/lib/src/components/internal/FormFields/Select/components/SelectButton.tsx`
+- `modified`: `packages/lib/src/components/internal/FormFields/Select/types.ts`
+- `modified`: `packages/lib/src/components/internal/Modal/Modal.tsx`
+- `modified`: `packages/lib/src/components/internal/Modal/useModal.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/CSF/extensions/handleConfig.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/constants.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.test.ts`
+- `modified`: `packages/lib/src/components/internal/SecuredFields/lib/securedField/SecuredField.ts`
+- `modified`: `packages/lib/src/components/internal/UIElement/UIElement.test.tsx`
+- `modified`: `packages/lib/src/components/internal/UIElement/UIElement.tsx`
+- `modified`: `packages/lib/src/core/Analytics/events/AnalyticsErrorEvent.ts`
+- `modified`: `packages/lib/src/core/core.test.ts`
+- `modified`: `packages/lib/src/core/core.ts`
+- `modified`: `packages/lib/src/core/types.ts`
+- `modified`: `packages/lib/src/types/global-types.ts`
+- `added`: `packages/lib/storybook/components/SRPanelDebugger.tsx`
+- `added`: `packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReload.stories.tsx`
+- `added`: `packages/lib/storybook/stories/demos/GiftcardReload/GiftcardReloadDemo.tsx`
