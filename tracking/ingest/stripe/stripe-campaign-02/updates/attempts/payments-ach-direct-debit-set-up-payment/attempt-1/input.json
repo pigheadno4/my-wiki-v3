@@ -1,0 +1,83 @@
+{
+  "job_id": "payments-ach-direct-debit-set-up-payment",
+  "queue_id": 141,
+  "canonical_url": "https://docs.stripe.com/payments/ach-direct-debit/set-up-payment",
+  "raw_path": "raw/stripe-payments-ach-direct-debit-set-up-payment-2026-11-07.md",
+  "raw_sha256": "aa34589fb8a2a4dd1be05fefc17bc3d9e1ad84cdf744002ad82d5b2e3552334a",
+  "prior_raw_path": "raw/stripe-ach-set-up-payment-2025.md",
+  "prior_raw_sha256": "9315bf43253dd9f02ca39cca35fdcea7e4c4c9990250740a8d43efd5ac567a9e",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ca8651b493e18c211620644b/content.diff",
+  "diff_sha256": "b64670ae4b059aca8bce0765119e6de9c75bfb80fe429c95efbaad304d572332",
+  "source_target": "wiki/sources/source-stripe-ach-set-up-payment.md",
+  "source_before_sha256": "1988a49435d237548a0fb8c45337495090a6b7034018f73b71436519bdbd65fd",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/receipt.json",
+  "receipt_sha256": "3efe065e272d58e9aba504fce2ceab9a06790851d23d632bb972e0c037d7451a",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/review.json",
+  "review_sha256": "33aaddb49eb6eeacb7540c34fd0b8bffa1ed0d259093a2fea3ce123e6d7fe501",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The 2026-11-07 base-URL capture is an 18-line variant index with Checkout, Elements, iOS, Android, and React Native links (new raw:9-18). The matched 2026-05-02 raw contains detailed sections for all five (old raw:16-18,306-308,898-900,1504-1506,2081-2083). The diff's wholesale removal reflects a capture/navigation shape change, not proof of withdrawn behavior; variant destinations were not fetched for this job.",
+    "Source:13 and :35 summarize only Checkout and Elements despite the old raw's three mobile sections and the new index's mobile routes. Update the mapped source's route inventory as dated navigation while retaining the old detailed raw as historical factual evidence; do not append the navigation-only new capture to factual raw_files.",
+    "Source:17 tells readers to update invoice_settings.default_payment_method after setup_intent.succeeded as though part of the Checkout setup mode steps. Old raw:284-286 labels this optional and says the customer default can be updated after SetupIntent success. Mark it optional and distinguish saving a reusable PaymentMethod from making it the default or actually initiating a later PaymentIntent (old raw:181-185,767-784).",
+    "Source:19-25 omits the mandate authorization before confirming a SetupIntent (old raw:586-592) and the difference between SetupIntent succeeded or requires_action and eventual ACH debit notification (old raw:621-628,26,316). Add that boundary if the source is revised: successful setup or bank verification does not mean a subsequent ACH debit has settled.",
+    "Source:29's balance-check advice needs scope: additional Financial Connections data requires requested permission and authenticated linking (old raw:539-545); manual bank entry with microdeposits yields no financial_connections_account ID and no such balance data (old raw:531,545). Balances permission in old raw:373-383 is an example for the Elements SetupIntent, while Checkout requires payment_method permission (old raw:70-75).",
+    "Concept:123 and Stripe index:244 route this source as web Checkout/Elements only; align their route descriptors with the dated mobile inventory if approved. Concept:10,14-19 already distinguishes delayed ACH debit from setup, so do not treat the index as updated settlement evidence."
+  ],
+  "approved_conflicts": [
+    "Source:17's imperative default-PaymentMethod update conflicts with the explicitly Optional heading and 'can update' wording at old raw:284-286.",
+    "Source:13 and :35 plus concept:123/index:244 omit mobile routes shown in both captures; this is incomplete discoverability, not a deprecated-route signal.",
+    "Old raw iOS/Android/RN sections contain PaymentIntent/payment wording inside SetupIntent steps (for example old raw:1277,1848,2517). Preserve the object identity from the SetupIntent headings, status tables, and setup_intent webhooks rather than promoting apparent copy errors into a payment-finality claim."
+  ],
+  "historical_claims_to_preserve": [
+    "The dated old guide covered Checkout setup mode and Elements SetupIntents, plus iOS, Android, and React Native SetupIntents (old raw:16-20,306-310,898-902,1504-1508,2081-2085).",
+    "In the old guide, Checkout required us_bank_account and Financial Connections payment_method permission (old raw:70-75); Elements samples requested payment_method plus balances, and extra data access required permissions and Financial Connections authentication (old raw:373-383,539-545).",
+    "The old guide required mandate terms and authorization before setup confirmation (old raw:586-592), allowed microdeposit verification with 10/3 attempt limits and 10-day timeout (old raw:630-654), and described ACH payments as delayed notification (old raw:26).",
+    "The 2026-05-02 sandbox examples settle instantly in test balance unlike livemode (old raw:177-179,763-765); they do not demonstrate real bank receipt or current timing."
+  ],
+  "unresolved_questions": [
+    "The 2026-11-07 variant pages themselves were not captured. Their current instructions, SDK versions, account availability, and any changed setup or verification behavior remain unverified in this exact job.",
+    "No specific live SetupIntent, bank verification, PaymentIntent, ACH notification, or received settlement was observed; examples and sandbox test outcomes are not such proof."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-ach-direct-debit.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "3efe065e272d58e9aba504fce2ceab9a06790851d23d632bb972e0c037d7451a",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/review.json",
+  "approved_triage_review_sha256": "33aaddb49eb6eeacb7540c34fd0b8bffa1ed0d259093a2fea3ce123e6d7fe501",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw3",
+  "reviewer_agent": "/root/s2ur2",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-ach-direct-debit-set-up-payment-2026-11-07.md",
+      "sha256": "aa34589fb8a2a4dd1be05fefc17bc3d9e1ad84cdf744002ad82d5b2e3552334a",
+      "lines": 18
+    },
+    {
+      "path": "raw/stripe-ach-set-up-payment-2025.md",
+      "sha256": "9315bf43253dd9f02ca39cca35fdcea7e4c4c9990250740a8d43efd5ac567a9e",
+      "lines": 2809
+    },
+    {
+      "path": "wiki/sources/source-stripe-ach-set-up-payment.md",
+      "sha256": "1988a49435d237548a0fb8c45337495090a6b7034018f73b71436519bdbd65fd",
+      "lines": 35
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ca8651b493e18c211620644b/content.diff",
+      "sha256": "b64670ae4b059aca8bce0765119e6de9c75bfb80fe429c95efbaad304d572332",
+      "lines": 2815
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/payments-ach-direct-debit-set-up-payment-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/payments-ach-direct-debit-set-up-payment-review.json"
+}

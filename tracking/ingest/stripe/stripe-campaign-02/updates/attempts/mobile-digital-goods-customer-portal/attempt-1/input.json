@@ -1,0 +1,83 @@
+{
+  "job_id": "mobile-digital-goods-customer-portal",
+  "queue_id": 119,
+  "canonical_url": "https://docs.stripe.com/mobile/digital-goods/customer-portal",
+  "raw_path": "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md",
+  "raw_sha256": "7f0f2876b1b01541bb91fed5e0bf7f6cb64b5903f5c637ddbd9009c99e37b785",
+  "prior_raw_path": "raw/stripe-inapp-digital-goods-customer-portal-2025.md",
+  "prior_raw_sha256": "9a5e7fa69357a22edac04ae3bc7688f853e556aca6497c3682303c686fd2bba4",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/7b765e1e1b110a43bd31d4a0/content.diff",
+  "diff_sha256": "8770e87110a3b2ea007701d775c3c852d81ec04c8447682d6137f359c774b421",
+  "source_target": "wiki/sources/source-stripe-inapp-digital-goods-customer-portal.md",
+  "source_before_sha256": "db2c2546870619b2d2f711fbb2f77ea4969401fd228b31515a19c4bc9e011133",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/mobile-digital-goods-customer-portal/attempt-2/receipt.json",
+  "receipt_sha256": "eae360b5585aa6e2b2ea4c19a56f3fc7cf193742b8e72ada3df3560503b1fe4a",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/mobile-digital-goods-customer-portal/attempt-2/review.json",
+  "review_sha256": "1af7dbcfbdb18a93254d724ce36cfbe4302a03bd9af744fa001df5d61b079519",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "Both same-URL captures describe iOS digital-goods subscription management through a Stripe-hosted customer portal opened in Safari. They explicitly exclude subscription purchase flow, user authentication, and StoreKit native purchases (new raw:5-32; old raw:4-31). The US/EEA Apple Pay external-page sentence is context for a separate purchase guide, not permission or implementation detail for every app.",
+    "Both captures require portal configuration separately in sandbox and live mode. In this Connect flow, configure the portal for the platform rather than as the connected account (new raw:40; old raw:39). Adjacent text expressly allows the Connect platform to use the API to manage multiple portal configurations for its connected accounts or different customer groups (new raw:42-48; old raw:41-55). Product catalog setup is required for upgrade, downgrade, or quantity changes but not invoicing-only use (new raw:50-60; old raw:57-65). Tax-ID collection is optional in the stated Stripe Tax context; preview/testing require sandbox context and Dashboard edit permission (new raw:62-78; old raw:67-79).",
+    "The portal session URL is created server-side using the customer's Stripe customer ID and a return_url; the app calls its server, opens the returned URL in Safari, and uses universal links plus a fallback return page for navigation (new raw:156-179,185-245; old raw:158-180,184-244). The sample's placeholder customer lookup is not proof of an authentication or authorization implementation.",
+    "Both captures say production should have a webhook endpoint subscribed to appropriate event types and should handle all events needed to monitor configured subscription statuses; created, updated, and deleted are examples (new raw:276-280; old raw:275-279). The Node sample only branches on created and deleted and maps them directly to true/false without inspecting status (new raw:320-334; old raw:319-333). The current source:48-50 turns these simplified event branches into a general action table; created alone does not prove active access, and updated events need actual status handling.",
+    "The diff changes the guide's sample setup language and installation choices (Node install to Ruby gem, removes CocoaPods steps, expands CLI install/login), reformats code and lists, and changes image or reference links (diff:1-393). These are documentation/example changes; the portal session, customer identity, universal-link, configuration, and webhook lifecycle rules remain substantively the same. Removal of CocoaPods instructions here does not establish SDK deprecation."
+  ],
+  "approved_conflicts": [
+    "Current source wiki/sources/source-stripe-inapp-digital-goods-customer-portal.md:54 says only 'Configure portal for the platform, not a connected account'; wiki/concepts/stripe-inapp-payments.md:109 and wiki/stripe-index.md:124 compress this to 'platform only.' Both captures give the platform configuration instruction (old raw:39; new raw:40) and an adjacent API option for a Connect platform to manage portal configurations for connected accounts (old raw:41; new raw:42). Qualify all three labels with that platform-managed API option. This does not mean connected accounts themselves configure the portal.",
+    "Current wiki/sources/source-stripe-inapp-digital-goods-customer-portal.md:48 instructs 'customer.subscription.created | Mark subscription active' as a general rule. Both captures make that direct mapping only inside a simplified Node example (old raw:319-333; new raw:320-334), while the guide says to handle all events necessary to accurately monitor subscription statuses (old raw:277; new raw:278). Correct the table to inspect the subscription's actual status before granting active access; created alone is not an active-status guarantee.",
+    "Current source:49 says updated events handle pause/upgrade/cancel changes, but the example has no updated branch; distinguish the documented event name and required comprehensive status monitoring from illustrative code that implements only created/deleted (old raw:277,319-333; new raw:278,320-334).",
+    "Current source:39 groups product name, description, and quantity restrictions as editable without retaining that quantity restrictions are Dashboard-editable while names and descriptions are editable in Dashboard and API (old raw:63-65; new raw:58-60). Keep that distinction if this detail remains in the source."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the older capture as dated evidence of the management-only flow, portal session customer ID, Safari opening, universal-link return/fallback, and webhook-based subscription monitoring (old raw:17-30,158-244,275-279; new raw:18-31,156-245,276-280).",
+    "Retain both adjacent Connect statements: configure this portal for the platform, not as a connected account (old raw:39; new raw:40), while a Connect platform may manage differentiated configurations for its connected accounts through the API (old raw:41-55; new raw:42-48). Do not collapse either into a platform-only prohibition on platform-managed connected-account configurations.",
+    "Retain the sandbox/edit-permission preview limit, optional tax-ID setting, product-catalog condition, and webhook event completeness requirement (old raw:59-79,277-279; new raw:52-78,278-280)."
+  ],
+  "unresolved_questions": [
+    "The linked subscription webhook guide and lifecycle references were navigation only for this job; the assigned page alone does not enumerate every status transition or prove a given customer's entitlement state.",
+    "The changed SDK installation snippets do not establish whether CocoaPods or the old Node setup remains supported; no package or platform compatibility check was performed."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-inapp-payments.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/mobile-digital-goods-customer-portal/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "eae360b5585aa6e2b2ea4c19a56f3fc7cf193742b8e72ada3df3560503b1fe4a",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/mobile-digital-goods-customer-portal/attempt-2/review.json",
+  "approved_triage_review_sha256": "1af7dbcfbdb18a93254d724ce36cfbe4302a03bd9af744fa001df5d61b079519",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw3",
+  "reviewer_agent": "/root/s2ur2",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md",
+      "sha256": "7f0f2876b1b01541bb91fed5e0bf7f6cb64b5903f5c637ddbd9009c99e37b785",
+      "lines": 348
+    },
+    {
+      "path": "raw/stripe-inapp-digital-goods-customer-portal-2025.md",
+      "sha256": "9a5e7fa69357a22edac04ae3bc7688f853e556aca6497c3682303c686fd2bba4",
+      "lines": 347
+    },
+    {
+      "path": "wiki/sources/source-stripe-inapp-digital-goods-customer-portal.md",
+      "sha256": "db2c2546870619b2d2f711fbb2f77ea4969401fd228b31515a19c4bc9e011133",
+      "lines": 69
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/7b765e1e1b110a43bd31d4a0/content.diff",
+      "sha256": "8770e87110a3b2ea007701d775c3c852d81ec04c8447682d6137f359c774b421",
+      "lines": 393
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/mobile-digital-goods-customer-portal-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/mobile-digital-goods-customer-portal-review.json"
+}

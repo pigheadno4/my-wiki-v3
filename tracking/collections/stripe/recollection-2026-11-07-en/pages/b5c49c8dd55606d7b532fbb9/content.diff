@@ -1,0 +1,82 @@
+--- raw/stripe-payment-links-promotions-2025.md
++++ raw/stripe-payment-links-promotions-2026-11-07.md
+@@ -16,20 +16,12 @@
+ 
+ Create and configure coupons and promotion codes for your payment links by using the [Dashboard](https://dashboard.stripe.com/test/coupons) or [Promotion Code API](https://docs.stripe.com/api/promotion_codes.md). Pass `allow_promotion_codes: true` when you create a payment link:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentLink = await stripe.paymentLinks.create({
+-  line_items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-      quantity: 1,
+-    },
+-  ],
+-  allow_promotion_codes: true,
+-});
++```curl
++curl https://api.stripe.com/v1/payment_links \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "line_items[0][price]={{PRICE_ID}}" \
++  -d "line_items[0][quantity]=1" \
++  -d allow_promotion_codes=true
+ ```
+ 
+ Use the `prefilled_promo_code` [URL parameter](https://docs.stripe.com/payment-links/customize.md#customize-checkout-with-url-parameters) to prefill a promotion code when sharing a payment link. Learn more about how to generate [promotion codes for Checkout](https://docs.stripe.com/payments/checkout/discounts.md#create-a-promotion-code).
+@@ -45,15 +37,14 @@
+ To set up a subscription upsell:
+ 
+ 1. Choose a subscription under [Subscriptions](https://dashboard.stripe.com/subscriptions), navigate down to **Pricing**.
+-1. Use the overflow menu to select **View price details**.
+-1. Navigate down to Upsells, and in the **Upsells to** dropdown menu, select or add a price.
+-   ![](assets/upsell-preview.2a43c1a8acb9f167178b7fda6a2b0796.gif)
++2. Use the overflow menu to select **View price details**.
++3. Navigate down to Upsells, and in the **Upsells to** dropdown menu, select or add a price.
++![](https://b.stripecdn.com/docs-statics-srv/assets/upsell-preview.2a43c1a8acb9f167178b7fda6a2b0796.gif)
+ 
+ ## Offer optional items
+ 
+ You can offer up to 10 optional items on your payment link. Optional items allow your customers to purchase additional products before checking out. You can offer multiple products, and specify initial or adjustable quantity.
+-![](assets/stripe-optional-items-demo.mp4)
+-
++![](https://docs.stripecdn.com/84b8dfc6dd8a1b5c8d1375a930b8c2d38f48d151fb004cbdd88f048e25a79ff5.mp4)
+ #### Dashboard
+ 
+ When you [create a payment link](https://dashboard.stripe.com/payment-links/create) in the Stripe Dashboard, you can click **+ Add recommended products** to add up to 10 optional products to the payment link.
+@@ -69,17 +60,17 @@
+   // ...
+   line_items: [
+     {
+-      price: "{{PRICE_ID}}",
++      price: '{{PRICE_ID}}',
+       quantity: 1,
+     },
+   ],
+   optional_items: [
+     {
+-      price: "{{OTHER_PRICE_ID}}",
++      price: '{{OTHER_PRICE_ID}}',
+       quantity: 1,
+     },
+     {
+-      price: "{{ANOTHER_PRICE_ID}}",
++      price: '{{ANOTHER_PRICE_ID}}',
+       quantity: 1,
+       adjustable_quantity: {
+         enabled: true,
+@@ -98,7 +89,10 @@
+ To configure a cross-sell:
+ 
+ 1. On the [Product catalog](https://dashboard.stripe.com/test/products) page, select your product.
+-1. On the product details page, under **Cross-sells**, find the product you want to cross-sell.
++2. On the product details page, under **Cross-sells**, find the product you want to cross-sell.
+ 
+ After you configure a cross-sell, the payment links that contain your designated product automatically add the cross-sell as an optional item.
+-![](assets/stripe-cross-sells-demo.mp4)+![](https://docs.stripecdn.com/73a4baa89ea5ac0e30a39cd03f33b21e35979759cdc9293b680695226a5b7dbe.mp4)
++## See also
++
++- [Subscription upsells](https://docs.stripe.com/payments/checkout/upsells.md)

@@ -226,11 +226,11 @@ Extends Radar's global model with business-specific metadata (e.g. account age, 
 
 ## Advanced Fraud Detection (Stripe.js / Mobile SDKs)
 
-Two risk factor types: **device characteristics** (browser/screen/device — identifies anomalous environments) and **activity indicators** (mouse movement, time-on-page, copy-paste detection — bot vs human). Scoped to single session; page contents only collected if matching Stripe Elements fields. Include Stripe.js on **every page** for richest signals; hCaptcha also loaded per page.
+Two risk factor types: **device characteristics** (browser/screen/device — identifies anomalous environments) and **activity indicators** (mouse movement, time-on-page, copy-paste detection — bot vs human). Activity signals are scoped to one shopping session on one site or app; page contents are collected only for matching Stripe Elements input fields. Stripe recommends Stripe.js throughout shopping for richer signals; on each page where it loads, it **can** load hCaptcha. Contact Stripe Support to opt out of hCaptcha integration.
 
 Stripe prevents >$500M/month in fraud. Data never used for advertising.
 
-**Disable** (increases fraud risk): `loadStripe.setLoadParameters({advancedFraudSignals: false})` (JS), `StripeAPI.setAdvancedFraudSignalsEnabled(false)` (iOS v19.1.1+), `Stripe.advancedFraudSignalsEnabled = false` (Android v14.4.0+). **Cannot disable**: Stripe Elements events or 3DS2 device info. See [[source-stripe-disputes-advanced-fraud-detection]].
+**Disable advanced signals on your own site/app** (increases fraud risk): for Stripe.js, set `advancedFraudSignals=false` in the script-tag query parameter **or** use the latest pure module with `loadStripe.setLoadParameters({ advancedFraudSignals: false })`; the November HTML example does not remove the older module option. iOS SDK v19.1.1+ uses `StripeAPI.setAdvancedFraudSignalsEnabled(false)`; Android SDK v14.4.0+ uses `Stripe.advancedFraudSignalsEnabled = false` before any SDK object is accessed or instantiated. This does not stop collection on Stripe domains, Stripe-managed Elements events, or basic 3DS2 device information sent to issuers. See [[source-stripe-disputes-advanced-fraud-detection]].
 
 ## Radar Sessions
 

@@ -1,0 +1,84 @@
+{
+  "job_id": "payments-ach-direct-debit-migrating-to-new-apis",
+  "queue_id": 139,
+  "canonical_url": "https://docs.stripe.com/payments/ach-direct-debit/migrating-to-new-apis",
+  "raw_path": "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md",
+  "raw_sha256": "5d5d52af7f76d22e5a912c96467b779810f9fd8af96c3583237960bcf31f25d3",
+  "prior_raw_path": "raw/stripe-ach-migration-2025.md",
+  "prior_raw_sha256": "cb70eb3f3efe9cee762e50abf0ab5f3d9b1361096a9f7c2ad3e9b09c208e1e24",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e803949339befc8c55832c6a/content.diff",
+  "diff_sha256": "4d33f752c54bac81b8d0887c108820befd26f639d3001e113662fe1247a764dc",
+  "source_target": "wiki/sources/source-stripe-ach-migration.md",
+  "source_before_sha256": "3c287e92731482aaffc5c3b8d17f5a2a83ebab796c9010cdec61d8c1e5ab08ac",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/receipt.json",
+  "receipt_sha256": "1279ca11bdbffe8b719e73230303054eae01a350f087439df570b10801f8024f",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/review.json",
+  "review_sha256": "36bea69d89c271aa46b564a6a22ee5b645097646c11d766d65b6ed783c49b545",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The new same-URL snapshot preserves the migration requirement, T+6 versus T+4/T+2 comparison, active-mandate requirement, balance-transaction timing, conditional payout/transfer routing, microdeposit alternatives, and Checkout versus Payment Intents event columns (new:9-11,17-27,59-78,84-101; old:8-10,16-27,59-78,84-101). Most diff hunks are table formatting, list numbering, heading whitespace, and link rewrites (diff:7-100,104-135).",
+    "One substantive addition is that payout statement descriptors might differ between source_type=bank_account and source_type=card payouts (new:71; diff:93). Preserve 'might' and the two payout balance types; this is not a guarantee of a changed descriptor for every account or payout.",
+    "Current source:19 says payout/transfer logic 'must' change unconditionally. The new and old guides condition this on manually specifying balance type for payouts or Connect transfers, and separately require waiting for charge.updated before separate charges and transfers using source_transaction (new:67-71; old:68-71). Source:21 correctly states the timing difference but must not equate banking-partner submission or balance-transaction creation with customer bank receipt or final payment success.",
+    "Current source:25 compresses new microdeposits into one 1-cent descriptor-code deposit and automatic emails. Both snapshots include rare two-deposit fallback, ten-day verification deadline, PaymentIntent/SetupIntent reversion to requiring new details, and the option to disable Stripe emails and send custom notices (new:72-78; old:72-78). These conditions should accompany the compressed claim.",
+    "Current source:29-33 collapses the webhook table into Payment Intents-only mappings. The guide distinguishes Checkout's checkout.session.completed for the charge.succeeded row and same-session retry until expiration for the charge.failed row from Payment Intents' payment_intent.succeeded/payment_intent.payment_failed, while charge.succeeded/charge.failed events remain sent and mandate.updated reports inactive mandates (new:84-91; old:84-91). Correct the branch labels and retain charge.updated timing for balance-transaction and source_transaction transfer dependencies.",
+    "The legacy identity predicate is a Charge payment_method_details.type of ach_debit versus us_bank_account, with legacy creation examples including direct Charges, subscription/invoice default_source only when no default_payment_method is set, and Payment Intents using ach_debit (new:93-101; old:93-101). Source:27 includes the type but not these creation conditions; keep them available through the dated raw route."
+  ],
+  "approved_conflicts": [
+    "Mapped source:19 overstates the conditional payout/transfer code change documented at old:69/new:68.",
+    "Mapped source:29-33 omits the Checkout column and its charge.failed exception documented at old:88-89/new:88-89."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the dated older raw as evidence for legacy-to-new API migration and its existing T+6 versus T+4/T+2 comparison (old:8-22).",
+    "Preserve that an active mandate is required, a mandate can become inactive, and reused Tokens API BankAccount objects need mandates before use (old:61-64; new:61-63).",
+    "Preserve balance-transaction timing, conditional payout/Connect transfer balance updates, and the separate source_transaction wait for charge.updated (old:65-71; new:64-71).",
+    "Preserve rare two-microdeposit fallback, ten-day verification, optional Stripe email disablement, and separate Checkout versus Payment Intents webhook behavior (old:72-91; new:72-91)."
+  ],
+  "unresolved_questions": [
+    "The guide says payout statement descriptors might differ (new:71); it does not identify exact descriptor values or which payouts will differ.",
+    "The guide's table is migration guidance for ACH, not direct confirmation of actual settlement dates, bank receipt, eligibility for faster settlement, or live payment results for a given account."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-ach-direct-debit.md",
+    "wiki/concepts/stripe-payment-intents.md",
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "1279ca11bdbffe8b719e73230303054eae01a350f087439df570b10801f8024f",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/review.json",
+  "approved_triage_review_sha256": "36bea69d89c271aa46b564a6a22ee5b645097646c11d766d65b6ed783c49b545",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw6",
+  "reviewer_agent": "/root/s2ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md",
+      "sha256": "5d5d52af7f76d22e5a912c96467b779810f9fd8af96c3583237960bcf31f25d3",
+      "lines": 101
+    },
+    {
+      "path": "raw/stripe-ach-migration-2025.md",
+      "sha256": "cb70eb3f3efe9cee762e50abf0ab5f3d9b1361096a9f7c2ad3e9b09c208e1e24",
+      "lines": 101
+    },
+    {
+      "path": "wiki/sources/source-stripe-ach-migration.md",
+      "sha256": "3c287e92731482aaffc5c3b8d17f5a2a83ebab796c9010cdec61d8c1e5ab08ac",
+      "lines": 37
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e803949339befc8c55832c6a/content.diff",
+      "sha256": "4d33f752c54bac81b8d0887c108820befd26f639d3001e113662fe1247a764dc",
+      "lines": 135
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/payments-ach-direct-debit-migrating-to-new-apis-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/payments-ach-direct-debit-migrating-to-new-apis-review.json"
+}

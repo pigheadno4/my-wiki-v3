@@ -1,0 +1,147 @@
+{
+  "job_id": "payments-3d-secure-strong-customer-authentication-exemptions",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md",
+  "raw_sha256": "97c72fc6e29d44d91f3809091dd3dc073a2baaee7543b6cca13ed8b3128901d4",
+  "source_before_sha256": "f4fc16b1fe56b0d90f6d8dc4b938c4ed98eea561a0e1195ffbbce4415407d546",
+  "source_page": "---\ntitle: \"Stripe Docs \u2014 Strong Customer Authentication (SCA) exemptions\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/3d-secure/strong-customer-authentication-exemptions\"\nraw_files:\n  - \"stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md\"\n  - \"stripe-sca-exemptions-2025.md\"\ntags: [stripe, sca, 3d-secure, exemptions, tra, low-value, mit, data-only, eea, uk, liability-shift]\n---\n\n## Summary\n\nThe 2026-05-08 and 2026-11-07 captures describe SCA exemptions and Data Only for EEA, Switzerland, and UK card payments. Stripe **requests applicable exemptions** on the merchant's behalf; the customer bank decides whether to approve. A nominal low-value amount or risk classification does not guarantee a frictionless payment or remove the issuer's ability to require SCA (new raw lines 9\u201321). The captures give dated thresholds and access descriptions, not a live account-eligibility or legal-compliance determination.\n\n## Bank-approved exemptions and liability\n\nWhen the customer's bank approves an exemption request, fraudulent-transaction liability does **not** shift to the issuer (new raw line 13). That statement is about a bank-approved exemption. Merchant-initiated transactions and Data Only have their own scope and liability statements below; neither is evidence that the bank approved a different exemption.\n\n| Route | Captured conditions |\n| --- | --- |\n| **Low Value** | Transaction amount below 30 EUR or 25 GBP. Even then, the issuer might require SCA when cardholder-initiated transactions since the last SCA cumulatively exceed 100 EUR or 85 GBP, or after five such transactions (new raw lines 19\u201321). |\n| **TRA / Low Risk** | The provider's overall relevant card-fraud rate must stay below 0.13% for up to 100 EUR/85 GBP, below 0.06% for up to 250 EUR/220 GBP, or below 0.01% for up to 500 EUR/440 GBP; local equivalents can apply (new raw lines 22\u201328). These are qualifying ceilings, not guarantees of an issuer-approved exemption. |\n| **Merchant-initiated transaction (MIT)** | A saved-card, off-session later charge may qualify as MIT and is technically outside SCA scope. Authenticate the card when saved and secure the customer's agreement or mandate for later charges. The guide analogizes its treatment to an exemption, saying the MIT path has no customer challenge or liability shift; this description does not establish that every future charge is correctly classified or cannot require action (new raw line 29). |\n\n## Dated TRA access limits\n\nThe capture says the TRA ceiling available to a Stripe user depends on Stripe's overall fraud rates and access to authentication offerings **including** Adaptive Acceptance. It reports qualifying low-risk amounts up to 250 EUR for EEA merchants and 220 GBP for UK and Swiss merchants (new raw lines 31\u201336). \u201cIncluding\u201d does not make Adaptive Acceptance a universal prerequisite, and the captured \u201ccurrently\u201d wording does not prove any particular account's access today.\n\n## Data Only\n\nData Only is supported by some card schemes and uses 3DS data. The **authentication request goes to the card network**, which includes risk data in an authorization message sent onward to the issuer. Thus the issuer does receive an authorization message, though it does **not** receive an issuer authentication request in this flow. The guide says **successful** Data Only requests can offer a frictionless experience and improve approval rates for payments **not subject to SCA**; this is a qualified product claim, not an observed outcome for an account (new raw lines 38\u201340). Data Only does **not** shift fraudulent-transaction liability to the issuer (new raw line 42).\n\nThe **standard Data Only flow** requires 3DS 2.2 or later. Mastercard Identity Check Insights is separately named; the capture says Stripe offered it to Adaptive Acceptance **and Authorisation Boost** users in the EEA and UK at capture time. It does not state the standard-flow 3DS-version prerequisite for every Mastercard product or establish eligibility for every user of either program (new raw line 44). The November capture adds a link to a separate Data Only guide that mentions Data Share Only and DCAP (new raw line 46); that guide's detailed behavior was not captured in this unit.\n\n## Related pages\n\n- [[stripe-3d-secure]] \u2014 3DS concept and SCA exemption route\n- [[stripe-authorization-boost]] \u2014 authentication and authorization optimization context\n- [[stripe]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07|2026-11-07 SCA exemptions capture]]\n- [[raw/stripe-sca-exemptions-2025|2026-05-08 earlier SCA exemptions capture]]\n",
+  "quotes": [
+    {
+      "text": "Stripe requests applicable [SCA exemptions](https://stripe.com/guides/strong-customer-authentication#exemptions-to-strong-customer-authentication) on your behalf",
+      "location": "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md:11"
+    },
+    {
+      "text": "SCA might still be required by the issuer for low value transactions",
+      "location": "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md:19"
+    },
+    {
+      "text": "The exemption limit available for you depends on the Stripe overall fraud rates and your access to the Stripe authentication offerings, including [Adaptive Acceptance]",
+      "location": "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md:33"
+    },
+    {
+      "text": "Successful Data Only requests offer a frictionless experience that improve approval rates for payments that aren\u2019t subject to SCA.",
+      "location": "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md:40"
+    },
+    {
+      "text": "The standard Data Only flow requires 3DS version 2.2 or later. Mastercard has its own Data Only product, Mastercard Identity Check Insights, which Stripe currently offers to Adaptive Acceptance and [Authorisation Boost](https://stripe.com/payments/authorization) users in the EEA and UK only.",
+      "location": "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md:44"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Stripe requests applicable [SCA exemptions]",
+      "location": "raw/stripe-sca-exemptions-2025.md:10"
+    },
+    {
+      "text": "Successful Data Only requests offer a frictionless experience",
+      "location": "raw/stripe-sca-exemptions-2025.md:40"
+    },
+    {
+      "text": "The standard Data Only flow requires 3DS version 2.2 or later.",
+      "location": "raw/stripe-sca-exemptions-2025.md:44"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 25
+      },
+      {
+        "start": 26,
+        "end": 46
+      }
+    ],
+    "raw/stripe-sca-exemptions-2025.md": [
+      {
+        "start": 1,
+        "end": 22
+      },
+      {
+        "start": 23,
+        "end": 44
+      }
+    ],
+    "wiki/sources/source-stripe-sca-exemptions.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a8aba5161680c18951b743ca/content.diff": [
+      {
+        "start": 1,
+        "end": 25
+      },
+      {
+        "start": 26,
+        "end": 45
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "sca-exemptions-concept-data-only",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "**Data Only** (3DS2.2+): frictionless; no liability shift (issuer not contacted); Mastercard Identity Check Insights via Adaptive Acceptance / Authorization Boost only (EEA/UK). Stripe AI handles automatically.",
+      "new_text": "**Data Only**: A successful request can offer a frictionless experience for a payment not subject to SCA, without liability shift. Authentication goes to the card network; the issuer still receives an authorization message carrying network risk data, though no issuer authentication request is sent. The standard Data Only flow requires 3DS 2.2+; separately named Mastercard Identity Check Insights was described in the 2026-11-07 capture as offered to Adaptive Acceptance and Authorisation Boost users in EEA/UK. This does not establish every account's eligibility or transfer the standard-flow version rule to all Data Only products.",
+      "reason": "Correct issuer-contact, frictionless, version, and product-access overstatements directly in the active concept claim.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Captured access is dated and account eligibility remains unverified."
+      ]
+    },
+    {
+      "update_id": "sca-exemptions-concept-tra-limits",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "| **TRA / Low Risk** | Stripe fraud rate: 0.13% \u2192 100 EUR; 0.06% \u2192 250 EUR; 0.01% \u2192 500 EUR. Current Stripe limits: EEA \u2264 250 EUR, UK/Swiss \u2264 220 GBP |",
+      "new_text": "| **TRA / Low Risk** | Provider fraud-rate ceilings: 0.13% \u2192 up to 100 EUR/85 GBP; 0.06% \u2192 up to 250 EUR/220 GBP; 0.01% \u2192 up to 500 EUR/440 GBP. The 2026-11-07 capture reports qualifying EEA transactions up to 250 EUR and UK/Swiss up to 220 GBP; availability depends on Stripe-wide fraud rates and offering access, not a guaranteed account entitlement. |",
+      "reason": "Date the 'current' threshold claim and retain fraud-rate/access qualifications.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sca-exemptions-concept-low-value",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "| **Low Value** | < 30 EUR / 25 GBP; cumulative cap: 100 EUR or 5 txns since last SCA |",
+      "new_text": "| **Low Value** | < 30 EUR / 25 GBP; issuer SCA can still be required after cardholder-initiated cumulative spend exceeds 100 EUR/85 GBP or five transactions since the last SCA. |",
+      "reason": "Restore issuer discretion and GBP cumulative threshold.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "sca-exemptions-concept-mit",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "| **MIT (off-session)** | Outside SCA scope; no challenge, no liability shift; requires mandate + auth at save time |",
+      "new_text": "| **MIT (off-session)** | Qualifying saved-card later charges are technically outside SCA; authenticate the card when saved and obtain agreement for later charges. The guide describes no challenge or liability shift for the MIT path, without proving every future charge qualifies or cannot need action. |",
+      "reason": "Keep the source's MIT scope and mandate while avoiding a universal future-charge guarantee.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "sca-exemptions-concept-route",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- [[source-stripe-sca-exemptions]] \u2014 SCA exemptions (EEA/CH/UK): Low Value, TRA limits, MIT, Data Only (no liability shift on exemption/Data Only)",
+      "new_text": "- [[source-stripe-sca-exemptions]] \u2014 captured EEA/Swiss/UK SCA request and issuer-approval scope, dated low-value/TRA limits, qualifying MIT, and Data Only network-versus-issuer routing without liability shift",
+      "reason": "Align the reciprocal route with the corrected source and concept qualifications.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/3d-secure/strong-customer-authentication-exemptions, [[source-stripe-sca-exemptions]] now says Stripe requests applicable exemptions and the customer bank decides approval. Both captures say the issuer can still require SCA even on nominal low-value payments after cumulative or transaction-count thresholds (old raw lines 10\u201321; new raw lines 11\u201321). Bank-approved exemptions have no fraudulent-transaction liability shift; no capture proves approval, a frictionless outcome, or eligibility for a particular account.",
+    "Q2": "For https://docs.stripe.com/payments/3d-secure/strong-customer-authentication-exemptions, [[source-stripe-sca-exemptions]] distinguishes Data Only authentication from issuer authorization contact. The authentication request goes to the card network, then a risk-data authorization message reaches the issuer; successful requests may be frictionless for payments not subject to SCA (old raw lines 40\u201344; new raw lines 40\u201344). Standard Data Only needs 3DS 2.2+, while separately named Mastercard Insights has dated Adaptive Acceptance or Authorisation Boost access language, not a universal account entitlement."
+  },
+  "status": "candidate_ready"
+}

@@ -1,0 +1,216 @@
+{
+  "job_id": "payments-3d-secure-authentication-flow",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md",
+  "raw_sha256": "1c5ac2ea29b6fb27be340f2fececa6871ad33f517ccdb129ce02591d6dc93c09",
+  "source_before_sha256": "d61ede7abf96aba7254c3e8ea5cd2a8f0f7942e9e69fc6177cdebefd9e6e22ae",
+  "source_page": "---\ntitle: \"Stripe Docs \u2014 Authenticate with 3D Secure\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/3d-secure/authentication-flow\"\nraw_files:\n  - \"stripe-payments-3d-secure-authentication-flow-2026-11-07.md\"\n  - \"stripe-3d-secure-authentication-flow-2025.md\"\ntags: [stripe, 3d-secure, 3ds2, sca, payment-intents, liability-shift, radar, ios, android, react-native]\n---\n\n## Summary\n\nStripe's 3D Secure (3DS) authentication guide covers Web, iOS, Android, and React Native, with automatic and manual triggering, web display, mobile customization, test cases, and conditional fraud-dispute liability shift. Standalone 3DS can authenticate on Stripe while another PSP acquires the transaction. The November 2026 capture states support through 3DS protocol version 2.3.1. Both captures say major brands no longer support 3DS1 and recommend Payment Intents/Setup Intents, yet also describe fallback to 3DS1 if a bank lacks 3DS2; that captured tension is not proof of an available 3DS1 path for any present card or network. See [[stripe-3d-secure]]. [May capture](../../raw/stripe-3d-secure-authentication-flow-2025.md#L8-L15); [November capture](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L9-L17).\n\n## Authentication and payment outcomes\n\nStripe may trigger 3DS for regulation or guidelines, issuer soft declines, or its optimizations; Radar rules or `payment_method_options[card][request_three_d_secure]` can request it. Not every transaction supports 3DS; the guide gives wallets and off-session payments as examples, while its off-session test card describes a conditional authentication case. Manual `any` prefers frictionless and `challenge` prefers a challenge, but the issuer determines the final flow. The manual parameter overrides dynamic Radar 3DS rules for that Intent or Checkout Session, while mandatory authentication runs independently. The November capture expressly says Stripe APIs cannot manually turn off 3DS. Its custom-rule tier is named **Radar Plus**; the May capture used **Radar for Fraud Teams**. [May capture](../../raw/stripe-3d-secure-authentication-flow-2025.md#L55-L59), [May manual](../../raw/stripe-3d-secure-authentication-flow-2025.md#L87-L93), [May preferences](../../raw/stripe-3d-secure-authentication-flow-2025.md#L164-L172); [November triggers](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L54-L58), [November manual](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L86-L94), [November preferences](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L137-L145), [off-session test](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L441-L443).\n\nIn the described PaymentIntent flow, required 3DS leads to `requires_action`, and a successful authentication leads Stripe to attempt a charge and the Intent to `processing`. The subsequent payment outcome can be `succeeded`, `requires_capture`, or `requires_payment_method`. A `three_d_secure.result` of `authenticated` establishes authentication, not payment authorization, capture, or settlement; a test card in both captures authenticates and then declines. Read the Charge's `payment_method_details.card.three_d_secure` for authentication outcome. The before-2019-02-11 API aliases `requires_source` and `requires_source_action` are historical version names. [May flow](../../raw/stripe-3d-secure-authentication-flow-2025.md#L61-L81), [May test](../../raw/stripe-3d-secure-authentication-flow-2025.md#L485), [May alias](../../raw/stripe-3d-secure-authentication-flow-2025.md#L266); [November flow](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L60-L80), [November test](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L443), [November alias](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L230).\n\n## Display, mobile, and test locators\n\nWeb integrations can use Stripe's popup with `confirmCardPayment`/`handleCardAction`, a bank redirect, or an iframe. For a redirected iframe, the return page sends `postMessage` to the parent; the parent then retrieves the current PaymentIntent and checks its status. The return URL or message alone does not prove payment completion. The bank controls the web challenge UI, and the guide warns against the iframe `sandbox` attribute; see its supported sizes and CSP origins. [May web](../../raw/stripe-3d-secure-authentication-flow-2025.md#L176-L219), [May iframe](../../raw/stripe-3d-secure-authentication-flow-2025.md#L255-L294); [November web](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L149-L192), [November iframe](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L219-L258).\n\nPaymentSheet/FlowController handle 3DS for the mobile paths cited; the separate custom integration guidance covers iOS `STPPaymentHandler`, Android `PaymentAuthConfig.Stripe3ds2Config`, and React Native `StripeProvider.threeDSecureParams`. The described custom authentication timeouts must be at least five minutes; iOS and React Native include return URL/webview handling. The sandbox tables distinguish required, supported, and unsupported cards and include a card that declines after authentication; mobile tables list four challenge screens. These are test cases, not live payment outcomes. [May mobile](../../raw/stripe-3d-secure-authentication-flow-2025.md#L328-L468), [May tests](../../raw/stripe-3d-secure-authentication-flow-2025.md#L471-L535); [November mobile](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L287-L427), [November tests](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L429-L493).\n\n## Disputes and liability shift\n\nSuccessful 3DS authentication does **not** guarantee liability shift for a particular payment or dispute. It can be expected for successfully authenticated payments later receiving eligible fraud disputes, subject to network rules and payment/dispute conditions. `charge.succeeded` confirms payment success only, `three_d_secure.result=authenticated` confirms authentication only, and an ECI in `three_d_secure.electronic_commerce_indicator` can help assess eligibility but guarantees no shift. The May guide already said shift *typically* applies and listed exceptions. Shift may occur when a network requires unavailable 3DS; conversely, monitoring-program or network/industry exclusions and post-authorization downgrades can prevent it even after successful authentication. Its Visa examples are Visa-specific, not general network rules. Non-fraud dispute reasons follow the standard process. [May liability](../../raw/stripe-3d-secure-authentication-flow-2025.md#L537-L557); [November guidance](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L495-L513), [November exceptions/ECI](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L521-L529).\n\nA 3DS-authenticated payment can still receive an inquiry. Stripe says the merchant **must respond**: otherwise the bank can initiate a financial no-reply chargeback that could invalidate liability shift. An Early Fraud Warning or a low percentage of fraud disputes can also occur despite expected shift. Neither inquiry response nor supplying ECI proves a dispute will be won. [May capture](../../raw/stripe-3d-secure-authentication-flow-2025.md#L543-L547); [November capture](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L515-L519).\n\n## Historical assets\n\nThe May capture references ten local screenshots retained in that raw: Web `stripe-3ds-checkout-page.png`, `stripe-3ds-frictionless-flow.png`, `stripe-3ds-challenge-flow.png`; iOS `stripe-3ds-ios-checkout.png`, `stripe-3ds-ios-loading.png`, `stripe-3ds-ios-otp.png`, `stripe-3ds-ios-customization.png`; Android `stripe-3ds-android-confirm.png`, `stripe-3ds-android-processing.png`, `stripe-3ds-android-otp.png`. The November Markdown links to Stripe CDN images. The captures do not establish pixel-equivalent image bytes. [May assets](../../raw/stripe-3d-secure-authentication-flow-2025.md#L17-L49), [May customization](../../raw/stripe-3d-secure-authentication-flow-2025.md#L339); [November images](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L19-L48), [November customization](../../raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md#L298).\n\n## Related Pages\n\n- [[stripe-3d-secure]] \u2014 main 3DS concept\n- [[stripe-authorization-boost]] \u2014 recommendations on reducing 3DS challenges\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-3d-secure-authentication-flow-2026-11-07|November 7, 2026 3DS authentication-flow capture]] \u2014 full webpage content (540 lines)\n- [[raw/stripe-3d-secure-authentication-flow-2025|May 8, 2026 3DS authentication-flow capture]] \u2014 historical webpage content (566 lines; includes ten local screenshot references)\n",
+  "quotes": [
+    {
+      "text": "Stripe supports the 3DS protocol up to and including version 2.3.1.",
+      "location": "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:17"
+    },
+    {
+      "text": "You can\u2019t use Stripe APIs to manually turn off 3DS.",
+      "location": "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:94"
+    },
+    {
+      "text": "If you have [Radar Plus](https://stripe.com/radar/fraud-teams), you can add [custom 3DS rules](https://docs.stripe.com/radar/rules.md#request-3d-secure).",
+      "location": "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:86"
+    },
+    {
+      "text": "Successful 3DS authentication doesn\u2019t guarantee liability shift. You can expect liability shift for successfully authenticated payments that later receive eligible fraud disputes, but it isn\u2019t guaranteed for any specific payment or dispute.",
+      "location": "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:497"
+    },
+    {
+      "text": "A `payment_method_details.card.three_d_secure.result` value of `authenticated` confirms only that 3DS authentication succeeded.",
+      "location": "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:505"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The _liability shift_ (With some 3D Secure transactions, the liability for fraudulent chargebacks (stolen or counterfeit cards) shifts from you to the card issuer) rule typically applies to payments successfully authenticated using 3DS.",
+      "location": "raw/stripe-3d-secure-authentication-flow-2025.md:539"
+    },
+    {
+      "text": "Sometimes payments that are successfully authenticated using 3DS don\u2019t fall under liability shift.",
+      "location": "raw/stripe-3d-secure-authentication-flow-2025.md:555"
+    },
+    {
+      "text": "3DS authentication is required, but payments will be declined with a `card_declined` failure code after authentication.",
+      "location": "raw/stripe-3d-secure-authentication-flow-2025.md:485"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 540
+      }
+    ],
+    "raw/stripe-3d-secure-authentication-flow-2025.md": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 190
+      },
+      {
+        "start": 191,
+        "end": 285
+      },
+      {
+        "start": 286,
+        "end": 380
+      },
+      {
+        "start": 381,
+        "end": 475
+      },
+      {
+        "start": 476,
+        "end": 566
+      }
+    ],
+    "wiki/sources/source-stripe-3d-secure-authentication-flow.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e5278c435129a3141cdd8a5f/content.diff": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 190
+      },
+      {
+        "start": 191,
+        "end": 285
+      },
+      {
+        "start": 286,
+        "end": 375
+      },
+      {
+        "start": 376,
+        "end": 465
+      },
+      {
+        "start": 466,
+        "end": 555
+      },
+      {
+        "start": 556,
+        "end": 641
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-3ds1-support-tension",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "3D Secure (3DS) is a card authentication protocol that verifies the cardholder's identity before payment authorization. Stripe supports 3DS2 (runs when bank supports it, falls back to 3DS1). 3DS1 is deprecated \u2014 use Payment Intents/Setup Intents API for 3DS2.",
+      "new_text": "3D Secure (3DS) is cardholder authentication before payment authorization. The May and November 2026 captures recommend Payment Intents or Setup Intents for 3DS2 and say major card brands no longer support 3DS1, yet both also describe fallback to 3DS1 when a bank lacks 3DS2. This tension does not establish that any current card or network can use that fallback. The November guide states protocol support through version 2.3.1. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:8-15; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:9-17).",
+      "reason": "Remove an unqualified active fallback promise while preserving both captured statements and the new protocol ceiling.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Captured no-3DS1-support notice and fallback sentence conflict; no present network/card path verified."
+      ]
+    },
+    {
+      "update_id": "s02-3ds-off-session-scope",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "3DS does NOT apply to: wallets, off-session payments.",
+      "new_text": "Not every transaction supports 3DS; this guide gives wallets and off-session payments as examples. Its test table also describes a card requiring 3DS2 for off-session payment unless set up for future use, so do not infer a blanket off-session exclusion. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:57,484; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:56,442).",
+      "reason": "Fix categorical exclusion that conflicts with a conditional off-session test case in both captures.",
+      "quote_indexes": [],
+      "warnings": [
+        "Test card describes sandbox behavior, not a live account or card outcome."
+      ]
+    },
+    {
+      "update_id": "s02-3ds-payment-outcome",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "3. After authentication: `processing` \u2192 `succeeded` / `requires_capture`\n4. If failed: `requires_payment_method`",
+      "new_text": "3. Successful authentication leads Stripe to attempt a charge and the PaymentIntent to `processing`; the later payment outcome can be `succeeded`, `requires_capture`, or `requires_payment_method`.\n4. Failed authentication can lead to `requires_payment_method`. Authentication, authorization, capture, and settlement are distinct outcomes; a sandbox test card authenticates and then declines. After an iframe return, retrieve the PaymentIntent and inspect its status. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:74-81,284-294,485; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:73-80,248-258,443).",
+      "reason": "Correct the active flow so successful authentication is not equated with payment success or capture.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The PaymentIntent status and sandbox decline show possible outcomes, not proof of a particular payment."
+      ]
+    },
+    {
+      "update_id": "s02-3ds-manual-mandatory",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- Overrides Radar rules on that PaymentIntent/SetupIntent/Checkout Session\n- Works at create or confirm time; issuer determines final flow",
+      "new_text": "- Overrides dynamic Radar 3DS rules on that PaymentIntent/SetupIntent/Checkout Session, but Stripe's mandatory authentication rules still run; the November guide says Stripe APIs cannot manually turn off 3DS.\n- For PaymentIntents/SetupIntents, request at create or confirm time; for Checkout Sessions, at creation. The issuer determines the final authentication flow, so `any` and `challenge` are preferences. The May capture calls the custom-rule tier Radar for Fraud Teams; November calls it Radar Plus. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:87-93,164-172; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:86-94,137-145).",
+      "reason": "Scope override to dynamic rules and preserve mandatory authentication, issuer choice, timing, and dated tier names.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-3ds-liability-conditional",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- Successful 3DS \u2192 fraudulent disputes shift to card issuer\n- Dispute inquiries on 3DS payments **must be responded to** (risk \"no-reply\" chargeback invalidating shift)\n- Liability may also shift if 3DS required by network but unavailable (issuer outage)\n- Exceptions: excessive fraud monitoring programs; some industries (e.g., Visa excludes wire transfer/money orders)\n- ECI returned in `three_d_secure.electronic_commerce_indicator` on Charge",
+      "new_text": "- Successful 3DS authentication alone does **not** guarantee liability shift for any payment or dispute. Shift can be expected for successfully authenticated payments later receiving eligible fraud disputes, subject to network and payment/dispute conditions; the older guide already said it *typically* applies and listed exceptions.\n- A `charge.succeeded` event confirms payment success only; `three_d_secure.result=authenticated` confirms 3DS authentication only. ECI in `three_d_secure.electronic_commerce_indicator` on the Charge can help assess eligibility but guarantees no shift.\n- Respond to inquiries on 3DS-authenticated charges: failure can cause a no-reply financial chargeback that could invalidate shift. An inquiry is a request for information, distinct from a financial chargeback.\n- Shift can sometimes apply if the network requires 3DS but the card or issuer lacks it; monitoring programs, network/industry exclusions, or post-authorization downgrade can instead prevent shift after authentication. The wire-transfer/money-order examples are specifically Visa exclusions; other dispute reasons follow the standard process. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:539-557; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:497-529).",
+      "reason": "Directly replace the unconditional liability arrow while preserving inquiry, ECI, network, and exception boundaries.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Neither authentication, payment success, nor ECI proves liability shift or a dispute result."
+      ]
+    },
+    {
+      "update_id": "s02-3ds-source-route",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- [[source-stripe-3d-secure-authentication-flow]] \u2014 primary: full flow, manual triggering, web/iOS/Android/RN display, liability shift, test cards",
+      "new_text": "- [[source-stripe-3d-secure-authentication-flow]] \u2014 May and November 2026 Web/mobile authentication-flow guide, manual triggering, sandbox tests, and conditional fraud-dispute liability guidance",
+      "reason": "Retain the reciprocal route with dated scope and conditional liability framing.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/3d-secure/authentication-flow, [[source-stripe-3d-secure-authentication-flow]] now records November's protocol ceiling of 2.3.1 (new raw:17), explicit inability to turn off 3DS manually via Stripe APIs (new:94), and Radar Plus custom-rule naming (new:86) against the May Radar for Fraud Teams name (old:87). Both captures leave issuer choice of manual flow intact (old:164-172; new:137-145). The source treats the simultaneous 3DS1 support notice and fallback sentence as a captured tension (old:8-15; new:9-15), without claiming present fallback availability.",
+    "Q2": "At https://docs.stripe.com/payments/3d-secure/authentication-flow, [[source-stripe-3d-secure-authentication-flow]] and the linked concept state that an authenticated 3DS result proves authentication only and `charge.succeeded` proves payment only; neither guarantees liability shift (new raw:497-509). The May guide already said shift typically applies and named exceptions (old:539,551-557). Successful authentication can precede a declined charge (old:485; new:443), and after iframe return the PaymentIntent status must be checked (old:284-294; new:248-258); neither authentication, redirect, ECI, nor inquiry response proves capture, settlement, or a dispute win. The no-reply chargeback risk remains (old:545-547; new:517-519)."
+  },
+  "status": "candidate_ready"
+}

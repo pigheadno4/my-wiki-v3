@@ -1,0 +1,100 @@
+{
+  "job_id": "payments-advanced-dashboard-payment-methods",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md",
+  "raw_sha256": "53a22924460a0d4256f0317156f12a9dccb7d4ee0d4d4a0fe96efe90310d769b",
+  "source_before_sha256": "804b6d12e585aa700dc5b55541ff45998d2ae1a7f497383d3c6c63b01f4daab7",
+  "source_page": "---\ntitle: \"Migrate Payment Methods to the Dashboard\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/advanced/dashboard-payment-methods\nraw_files:\n  - \"stripe-migrate-payment-methods-dashboard-2025.md\"\ntags: [stripe, payment-methods, dashboard, dynamic-payment-methods, payment-intents, checkout-sessions, delayed-notification, apple-pay, google-pay, webhooks, testing]\n---\n\n## Summary\n\nThe April 21, 2026 capture contains separate Checkout Sessions (embedded-components) and Payment Intents (Elements) migration guides under this URL. Both describe moving existing integrations from explicit `payment_method_types` to Dashboard-managed payment-method preferences, with distinct webhook event families. The November 7, 2026 capture is a variant index linking those two paths; it does not contain their current instructions. The older guide below is retained as dated guidance, not verified November behavior or evidence of deprecation.\n\n> See also [[source-stripe-checkout-dashboard-payment-methods]] for the separately captured Checkout Sessions guide.\n\n## Migration in the April 21 Guide\n\n- **Checkout Sessions path**: remove `payment_method_types` from existing Checkout Session creation to use Dashboard preferences. The guide says currency, customer location, and payment-method restrictions affect which compatible methods appear; non-default methods such as bank redirects are initially disabled on upgrade and must be enabled in Dashboard if previously added to the integration.\n- **Payment Intents path**: separately remove `payment_method_types` from existing PaymentIntent creation for Dashboard preferences with Elements. Its guide likewise says non-default methods are initially disabled on upgrade and need Dashboard re-enablement. Currency and method restrictions influence the compatible methods shown.\n- Dashboard settings allow enabling or disabling individual methods; some require **Set up** or **Review terms** rather than simply **Turn on**. The April examples describe popular methods shown prominently and others in an overflow menu. These are descriptions of those captured variants, not claims that every method is available for every integration.\n\n## Wallet Examples in the April 21 Guide\n\nThe captured examples say Apple Pay is enabled and Google Pay is disabled by default in the described setup. They also say Google Pay might be hidden even when enabled, including when automatic tax is enabled without collecting a shipping address. Treat these as dated examples subject to the integration and payment-method conditions in the guide.\n\n## Delayed Notification and Fulfillment\n\nThe April Checkout Sessions variant marks its delayed-notification step as required **only if the integration plans to use** one of these listed methods: Bacs Direct Debit, bank transfers, Boleto, Canadian pre-authorized debits, Konbini, OXXO, Pay by Bank, SEPA Direct Debit, or ACH Direct Debit. It says an integration using webhooks to fulfill orders automatically **might need** an update when adding its first method with delayed notifications. This is not a blanket webhook migration requirement for every integration.\n\nFor delayed methods, the older guide notes funds are not immediately available and recommends waiting before fulfillment. Payment authorization, payment success, and funds becoming available in an account are distinct states; the event table describes payment success, not settlement or balance availability. Its sample checks `session.payment_status === \"paid\"` before fulfilling on `checkout.session.completed`; a delayed payment can be `unpaid` at completion and later produce an async success or failure event.\n\n### Checkout Sessions events in the April guide\n\n| Event | Described meaning | Guide's example action |\n| --- | --- | --- |\n| `checkout.session.completed` | Customer submitted the form and authorized a debit; delayed payment may still be unpaid | Create the order; fulfill at this point only when `payment_status === \"paid\"` |\n| `checkout.session.async_payment_succeeded` | Customer payment succeeded | Fulfill the purchase |\n| `checkout.session.async_payment_failed` | Payment declined or otherwise failed | Handle failure; the sample emails the customer to place a new order |\n\n### Payment Intents events in the April guide\n\nThe separate Payment Intents variant recommends listening for `payment_intent.succeeded` to handle successful payments. For methods with delayed notifications, it also recommends `payment_intent.payment_failed` to handle failure after initial confirmation. Its sample fulfills on success and handles failure separately. These are PaymentIntent events, not Checkout Session events.\n\n## Test Examples in the April Guide\n\nThese values and outcomes are **test-mode scenarios from the captured guide**, not production guarantees.\n\n| Test value | Captured scenario |\n| --- | --- |\n| Card `4242424242424242` | Successful payment without authentication |\n| Card `4000002500003155` | Authentication required |\n| Card `4000000000009995` | Decline such as `insufficient_funds` |\n| Card `6205500000000000004` | UnionPay variable-length card-number example |\n| BECS `900123456`, BSB `000000` | Sample success after `processing`; `111111113` is a failure example |\n| SEPA `AT321904300235473204` | Sample success after `processing`; `AT861904300235473202` is a failure example |\n\nThe captured table also describes redirect test-page success and failure choices for Alipay, Bancontact, EPS, iDEAL, Przelewy24, and Pay by Bank; BLIK email patterns for failure simulation; and Boleto/OXXO voucher flows. The example delay of about three minutes for BECS and SEPA is a test scenario, not a production timing promise.\n\n## Related Pages\n\n- [[source-stripe-checkout-dashboard-payment-methods]] \u2014 separately captured Checkout Sessions path\n- [[stripe-checkout]] \u2014 Checkout concept\n- [[stripe-payment-intents]] \u2014 Payment Intents concept\n\n## Related raw API references\n\n- [[stripe-payments-advanced-dashboard-payment-methods-2026-11-07]] \u2014 November 7 variant index with Checkout Sessions and Payment Intents links; the linked variant bodies were not captured in this update\n\n## Raw Sources\n\n- [[stripe-migrate-payment-methods-dashboard-2025]] \u2014 April 21 capture of the two detailed variant bodies\n",
+  "quotes": [
+    {
+      "text": "# Migrate payment methods to the Dashboard",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:5"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout Sessions API](https://docs.stripe.com/payments/advanced/dashboard-payment-methods.md?payment-ui=embedded-components)",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:13"
+    },
+    {
+      "text": "[Payment Intents API](https://docs.stripe.com/payments/advanced/dashboard-payment-methods.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "For existing Stripe Checkout integrations, you must remove the `payment_method_types` parameter to migrate payment methods preferences to the Dashboard.",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:18"
+    },
+    {
+      "text": "This step is only required if you plan to use any of the following payment methods:",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:64"
+    },
+    {
+      "text": "The customer\u2019s payment succeeded.",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:73"
+    },
+    {
+      "text": "For existing Payment Intents integrations, you must remove the `payment_method_types` parameter to migrate payment methods preferences to the Dashboard.",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:227"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-migrate-payment-methods-dashboard-2025.md": [
+      {
+        "start": 1,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 327
+      }
+    ],
+    "wiki/sources/source-stripe-migrate-payment-methods-dashboard.md": [
+      {
+        "start": 1,
+        "end": 75
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d5a4d9c760553896c3a94f3f/content.diff": [
+      {
+        "start": 1,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 329
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "payments-advanced-dashboard-payment-methods-checkout-delayed-conditional",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "- **Delayed notification PMs** (2\u201314 day delay): Bacs, bank transfers, Boleto, Canadian PAD, Konbini, OXXO, Pay by Bank, SEPA, ACH \u2014 must handle `checkout.session.async_payment_succeeded` + `checkout.session.async_payment_failed`; on `checkout.session.completed` check `payment_status === 'paid'` before fulfilling",
+      "new_text": "- **Delayed notification PMs** (April 21, 2026 guide): if the integration plans to use Bacs, bank transfers, Boleto, Canadian PAD, Konbini, OXXO, Pay by Bank, SEPA, or ACH, its delayed-payment fulfillment flow needs to distinguish authorization from payment success. For webhook-driven automatic fulfillment, the guide says an update might be needed when adding the first delayed method: check `payment_status === 'paid'` before fulfilling on `checkout.session.completed`, and handle later `checkout.session.async_payment_succeeded` or `checkout.session.async_payment_failed`. See [[source-stripe-migrate-payment-methods-dashboard]].",
+      "reason": "Current concept turns a conditional Checkout Sessions step into a blanket must-handle rule. The paired April guide conditions the step on plans to use listed methods (old:64) and says automatic-fulfillment webhooks might need updating for the first delayed method (old:62). The November capture is an index (new:11-14) and does not renew or contradict that dated behavior.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "The April guide is dated; the November 7 capture only links variant bodies, which were not captured here."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/advanced/dashboard-payment-methods, the November 7 capture is a variant index (new:9-14), linking Checkout Sessions embedded components and Payment Intents Elements. The existing source route is wiki/sources/source-stripe-migrate-payment-methods-dashboard.md, whose factual instructions remain tied to the April guide. That guide contains separate migration sections (old:8-21 and 217-229); the new index alone does not establish changed behavior or deprecation.",
+    "Q2": "For https://docs.stripe.com/payments/advanced/dashboard-payment-methods, the source route wiki/sources/source-stripe-migrate-payment-methods-dashboard.md now narrows the nine-method webhook language to the April Checkout guide's conditional scope (old:60-64), and labels `checkout.session.async_payment_succeeded` as payment success rather than funds cleared (old:66,72-74). It preserves the paid-status check (old:125-156) and distinct PaymentIntent events (old:259-263). The November index (new:11-14) cannot verify current variant details."
+  },
+  "status": "candidate_ready"
+}

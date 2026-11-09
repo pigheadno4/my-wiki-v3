@@ -1,0 +1,102 @@
+{
+  "job_id": "payments-3d-secure-standalone-3d-secure",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md",
+  "raw_sha256": "4e639d71480432596cf57e501d9db000a08d695c2c3e2a02c853b6932e032bb6",
+  "source_before_sha256": "8aeca5b93428a924db9c09a752d50c87e9e9dfa9fb515102046f6d21ad310a58",
+  "source_page": "---\ntitle: \"Stripe Docs \u2014 Standalone 3DS\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/3d-secure/standalone-3d-secure\"\nraw_files:\n  - \"stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md\"\n  - \"stripe-standalone-3ds-2025.md\"\ntags: [stripe, 3d-secure, standalone-3ds, interchange-plus, authentication, cryptogram, psp, connect]\n---\n\n## Summary\n\nStripe's standalone 3DS API runs EMV 3D Secure authentication separately from payment authorization. A merchant can authenticate through Stripe and then submit the authentication output in a separate authorization request through Stripe's result-import route or another payment service provider. Authentication success and a cryptogram alone do not prove payment authorization, capture, settlement, issuer approval, or liability shift.\n\n## Features in the 2026-11-07 Capture\n\n- **Request control:** request frictionless, challenge, or data-share-only flows, or supply a 3DS reason such as liability shift, processing cost, or regulatory compliance for Stripe's flow selection. These are documented request modes, not a guarantee that every issuer or transaction takes a requested path.\n- **Issuer output:** the authentication result, Electronic Commerce Indicator (ECI), Directory Server (DS) Transaction ID, and cryptogram are available for authorization logic and performance analysis.\n- **Complex scenarios:** parameters address recurring payments, installments, and card-on-file setups. 3DS Requestor Initiated (3RI) authentication can reference a previous authentication to obtain a new cryptogram for a later authorization when the cardholder is absent, such as travel booking or split shipments.\n- **Non-payment use:** authentication for account verification, card enrollment, or identity confirmation without an associated payment amount.\n- **Connect:** a platform can run standalone 3DS on behalf of connected accounts.\n\n## Authentication Sequence and Payment Boundary\n\nThe 2026-11-07 guide describes creating a 3DS Authentication object with amount, currency, card details, and device browser information; optionally collecting device fingerprint data through an iframe or Stripe.js if the issuer supports it; submitting through the network Directory Server and issuer Access Control Server; presenting an issuer challenge if required, with a completion webhook; and retrieving the outcome. On authentication success, the returned cryptogram, ECI, and DS Transaction ID are available. A separate payment authorization request can then carry the cryptogram, either through Stripe's 3DS result-import path or another PSP. The older 2026-05-08 capture also distinguishes authentication output from later payment authorization. Neither capture documents an executed authorization or payment outcome for any transaction.\n\n## Networks, Geography, and Protocol\n\nThe 2026-11-07 page lists Visa, Mastercard, American Express, Discover, and Cartes Bancaires. It describes availability in countries where Stripe supports card payments except Malaysia and Thailand, and Stripe protocol support through version 2.3.1. This geographic statement and protocol ceiling do not establish a particular account's entitlement, network/issuer path, transaction eligibility, or support for every mode on every protocol version.\n\n## Pricing Qualification\n\nThe 2026-05-08 capture said standalone 3DS was available to businesses on Interchange Plus pricing. It did **not** state that Interchange Plus was the exclusive tier. The 2026-11-07 capture omits pricing eligibility altogether. Current pricing-tier and account-specific eligibility cannot be resolved from these two captures; the omission is not evidence that the earlier condition was removed.\n\n## Related Pages\n\n- [[stripe-3d-secure]] \u2014 3D Secure concept, including a distinct result-import topic\n- [[stripe]] \u2014 Stripe company page\n- [Import 3D Secure results with Stripe](https://docs.stripe.com/payments/payment-intents/three-d-secure-import) \u2014 linked authorization path; its separate availability rules were not assessed in this update\n\n## Raw Sources\n\n- [[raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07|2026-11-07 standalone 3DS guide]] \u2014 feature modes, workflow, output, networks, geography, and protocol version\n- [[raw/stripe-standalone-3ds-2025|2026-05-08 standalone 3DS overview]] \u2014 dated Interchange Plus availability and authentication/authorization distinction\n",
+  "quotes": [
+    {
+      "text": "Use the standalone 3DS API to run EMV 3D Secure authentication independently from payment authorization.",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:9"
+    },
+    {
+      "text": "request frictionless flows for low-risk transactions, request challenges when stronger verification is needed, or use data share only flows",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:13"
+    },
+    {
+      "text": "the authentication result, Electronic Commerce Indicator (ECI), Directory Server (DS) Transaction ID, and the cryptogram.",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:15"
+    },
+    {
+      "text": "When authenticated, submit the cryptogram as part of a payment authorization request.",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:33"
+    },
+    {
+      "text": "Stripe supports the 3DS protocol up to and including version 2.3.1.",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:39"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The successful completion of a standalone 3DS authentication results in a 3DS cryptogram, which you might submit as part of a payment authorization request",
+      "location": "raw/stripe-standalone-3ds-2025.md:18"
+    },
+    {
+      "text": "It\u2019s available to businesses on Interchange Plus pricing",
+      "location": "raw/stripe-standalone-3ds-2025.md:24"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "raw/stripe-standalone-3ds-2025.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "wiki/sources/source-stripe-standalone-3ds.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/84aa3e201d54437e1d695628/content.diff": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "standalone-3ds-concept-scope-and-eligibility",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "Decouples 3DS authentication from payment authorization \u2014 run auth on Stripe, authorize with any PSP. Enterprise use: API-level control, issuer observability, per-transaction customized flows.\n\n**Output**: 3DS cryptogram \u2192 import into Stripe OR send to any other PSP.\n\n**Availability**: IC+ pricing only; Visa/MC/Amex/Discover/Cartes Bancaires; all Stripe card-payment countries except Malaysia and Thailand.",
+      "new_text": "Decouples 3DS authentication from payment authorization: run authentication on Stripe, then submit the cryptogram in a separate payment authorization request through Stripe's import route or another PSP. Authentication success alone does not establish authorization, capture, settlement, issuer payment approval, or liability shift. The 2026-11-07 guide details request modes, issuer output, 3RI and non-payment cases, and the authentication sequence; see [[source-stripe-standalone-3ds]].\n\n**Availability**: The 2026-05-08 capture said available to businesses on Interchange Plus pricing, without claiming exclusivity. The 2026-11-07 capture omits pricing eligibility, so current account/tier requirements remain unresolved. Both captures list Visa, Mastercard, American Express, Discover, and Cartes Bancaires and exclude Malaysia and Thailand from the stated Stripe card-payment-country footprint. This standalone scope is separate from the result-import availability matrix above.",
+      "reason": "Corrects unsupported IC+ exclusivity and preserves the authentication-versus-payment boundary while routing new details to the source.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Current pricing tier and account-specific eligibility are unresolved by the two captures."
+      ]
+    },
+    {
+      "update_id": "standalone-3ds-concept-source-label",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- [[source-stripe-standalone-3ds]] \u2014 Standalone 3DS: decouple auth from authorization, IC+ only, cryptogram output to any PSP, no Malaysia/Thailand",
+      "new_text": "- [[source-stripe-standalone-3ds]] \u2014 Standalone 3DS: separate authentication and authorization, 2026-11-07 feature/workflow detail, dated 2026-05-08 Interchange Plus statement with current tier eligibility unresolved",
+      "reason": "Removes unproven exclusivity from the source label and points to the expanded guide.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/3d-secure/standalone-3d-secure, [[source-stripe-standalone-3ds]] now describes the new authentication modes, issuer output, 3RI, non-payment uses, Connect platform use, and the conditional fingerprint and challenge sequence. Old raw lines 8 and 18-22 and new raw lines 13-33 establish that authentication output must be carried into a separate payment authorization request; the cryptogram is not payment success.",
+    "Q2": "At https://docs.stripe.com/payments/3d-secure/standalone-3d-secure, [[source-stripe-standalone-3ds]] preserves the May Interchange Plus availability statement as dated history without saying that pricing tier was exclusive. Old raw line 24 and new raw lines 35-43 support the network, geographic, and version summary, while the newer page's silence on pricing leaves current account eligibility unresolved. Result-import availability remains a separate topic."
+  },
+  "status": "candidate_ready"
+}

@@ -1,0 +1,14 @@
+<!-- Source URL: https://docs.stripe.com/payments/advanced/dashboard-payment-methods -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Migrate payment methods to the Dashboard
+
+Learn how to turn on payment methods for your Checkout Session in the Dashboard.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Checkout Sessions API](https://docs.stripe.com/payments/advanced/dashboard-payment-methods.md?payment-ui=embedded-components)
+- [Payment Intents API](https://docs.stripe.com/payments/advanced/dashboard-payment-methods.md?payment-ui=elements)

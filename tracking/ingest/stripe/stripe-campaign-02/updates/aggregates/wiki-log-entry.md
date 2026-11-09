@@ -1,0 +1,4 @@
+
+## [2026-11-09] ingest | Stripe S02 canonical updates
+
+- Applied the approved 91 contributions to 86 existing source summaries after full independent first reviews and bounded corrections. Consolidated six Payment Links updates plus unchanged URL-parameter context in one independently reviewed source, preserving all eight historical raw identities. Audited 29 existing concepts and applied reviewed concept merges before sources. 68 new captures provide factual evidence; 23 remain navigation only. Three fixed coordinator evidence audits and 182 actual answers passed, with scoped validation under `tracking/ingest/stripe/stripe-campaign-02/updates/`. Zero new sources; recorded count 666 and historical owner-inventory 668 discrepancy remain. Broader catalog repair, outside-scope counterparts, S03, collection and publication are separate. No commit or push.

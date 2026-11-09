@@ -7,7 +7,7 @@ tags: [stripe, spt, shared-payment-token, agentic-commerce, agent, seller, machi
 
 ## Overview
 
-A **Shared Payment Token (SPT)** is a scoped, time-limited grant of a customer's payment method from an agent to a seller. The agent controls the scope (max amount, expiration, currency); the seller uses the SPT to create a PaymentIntent without ever seeing the raw payment method. US only.
+A **Shared Payment Token (SPT)** is a scoped, time-limited grant of a customer's payment method from an agent to a seller. The agent controls the scope (max amount, expiration, currency); the seller uses the SPT to create a PaymentIntent without ever seeing the raw payment method. The full May 12, 2026 Stripe guide described availability to agents, customers, and sellers in the US; the November 7 variant index does not establish current geography or account eligibility.
 
 Two API objects:
 - `shared_payment.issued_token` — the agent's view (they issue it)
@@ -53,7 +53,7 @@ At the retained `@stripe/link-cli@0.13.0` baseline, a consumer-side agent can al
 
 ## Supported Payment Methods
 
-Cards (Mastercard Agent Pay / Visa Intelligent Commerce), Link, Apple Pay, Google Pay, Klarna, Affirm (limited — no programmatic UI interaction).
+The May 12, 2026 seller-and-agent guide lists cards, Link, Apple Pay, Google Pay, Klarna, and limited Affirm. Stripe says it might use Mastercard Agent Pay or Visa Intelligent Commerce network tokens on an agent's behalf. For Affirm, the buyer must navigate and confirm the loan-application UI; the agent might not interact with it programmatically or render it on a browser outside its navigation control, and agent marketing must follow Affirm's payment-option-specific compliance guidance. The November 7 variant index does not establish current method eligibility.
 
 ## Agent Webhooks
 
@@ -61,7 +61,7 @@ Cards (Mastercard Agent Pay / Visa Intelligent Commerce), Link, Apple Pay, Googl
 | --- | --- |
 | `requires_action` | Customer must complete 3DS/redirect |
 | `active` | Required action completed |
-| `used` | Seller charged the SPT |
+| `used` | Seller used the SPT; check the PaymentIntent separately for the payment outcome |
 | `deactivated` | Revoked or expired |
 
 ## Usage Limits
@@ -70,5 +70,5 @@ Agent sets `max_amount`, `currency`, `expires_at`. Usage limits enforce the tran
 
 ## Sources
 
-- [[source-stripe-shared-payment-tokens]] — full seller + agent integration guide with code
+- [[source-stripe-shared-payment-tokens]] — May 12, 2026 full seller and agent SPT guide with public-preview examples; November 7 base URL is a Sellers/Agents/Connect variant index only
 - [[source-github-link-cli]] — package-qualified Link CLI implementation of approval-gated SPT issuance and MPP payment

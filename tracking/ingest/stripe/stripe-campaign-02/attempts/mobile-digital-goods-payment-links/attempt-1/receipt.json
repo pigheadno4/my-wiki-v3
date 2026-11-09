@@ -1,0 +1,119 @@
+{
+  "job_id": "mobile-digital-goods-payment-links",
+  "attempt": 1,
+  "raw_path": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md",
+  "raw_sha256": "cc13bd9e7fa4a1ccb213069e080b4f1b2793355fcd8469158122efef6f31e763",
+  "prior_raw_path": "raw/stripe-inapp-digital-goods-payment-links-2025.md",
+  "prior_raw_sha256": "23d436ed54dcc37b4c33f04168ab481f083247c57e1728a807d6f1b3fc00bb80",
+  "source_target": "wiki/sources/source-stripe-inapp-digital-goods-payment-links.md",
+  "source_before_sha256": "8efc296421bbbde157560df884512a0cf646b248d2564ed720c85989a0171c89",
+  "read_ranges": {
+    "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 163
+      }
+    ],
+    "raw/stripe-inapp-digital-goods-payment-links-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 165
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-digital-goods-payment-links.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b0fbd8cfafae0e74cfb443b8/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 181
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "For digital products, content, and subscriptions sold in the United States or European Economic Area (EEA), your iOS app can accept Apple Pay using [Payment Links](https://docs.stripe.com/payment-links.md).",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:9"
+    },
+    {
+      "text": "Use Payment Links when you have a limited number of products and prices and don\u2019t want to run a server.",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:15"
+    },
+    {
+      "text": "If both `prefilled_email` and `locked_prefilled_email` are passed, `locked_prefilled_email` takes precedence.",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:125"
+    },
+    {
+      "text": "Invalid values are disregarded and your payment page continues to work as expected.",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:128"
+    },
+    {
+      "text": "After the purchase succeeds, Stripe sends you a `checkout.session.completed` *webhook*",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:143"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "For digital products, content, and subscriptions sold in the United States or European Economic Area (EEA), your iOS app can accept Apple Pay using [Payment Links](https://docs.stripe.com/payment-links.md).",
+      "location": "raw/stripe-inapp-digital-goods-payment-links-2025.md:8"
+    },
+    {
+      "text": "Use Payment Links when you have a limited number of products and prices and don\u2019t want to run a server.",
+      "location": "raw/stripe-inapp-digital-goods-payment-links-2025.md:14"
+    },
+    {
+      "text": "Invalid values are disregarded and your payment page continues to work as expected.",
+      "location": "raw/stripe-inapp-digital-goods-payment-links-2025.md:129"
+    },
+    {
+      "text": "After the purchase succeeds, Stripe sends you a `checkout.session.completed` *webhook*",
+      "location": "raw/stripe-inapp-digital-goods-payment-links-2025.md:144"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The exact-URL new and old captures retain the same iOS digital-goods Payment Links guide: US/EEA Apple Pay wording, regional caveat, limited-products Payment Links path, Universal Links, Dashboard success URL, URL parameters, and checkout.session.completed webhook (old:8-14,38-44,96-110,115-146; new:9-15,39-45,95-109,114-145). The diff is Markdown emphasis, list numbering, JSON/table padding, and removal of stray code fences at old:78 and 165; there is no demonstrated substantive product or policy change.",
+    "The current source:13 calls this a 'No-server guide,' source:19-23 marks Payment Links server needed 'No,' and concept wiki/concepts/stripe-inapp-payments.md:107 plus wiki/stripe-index.md:122 repeat '(no server)'. Both captures say the link itself is created in the Dashboard (old:96-113; new:95-112), but also instruct monitoring webhooks and configuring a production webhook endpoint for fulfillment (old:29,142-146; new:30,141-145). Qualify the claim as no server endpoint needed to create a static Payment Link; fulfillment still needs a server-side webhook endpoint or equivalent trusted receiver. Source:54 already states this distinction and should be reflected in summary/table/navigation.",
+    "Concept wiki/concepts/stripe-inapp-payments.md:83,105 and wiki/stripe-index.md:120 describe iOS digital goods as requiring Stripe Checkout specifically, while this exact guide explicitly documents an iOS Payment Links redirect and names Checkout or Elements as alternatives for dynamic carts or attaching a Customer (old:8-16; new:9-17). Revise the broad concept/index claim to a scoped app-to-web/hosted-payment route and preserve the three documented paths; do not infer a universal platform-law rule from a dated Stripe example.",
+    "Current source:27 says Apple Pay 'works' in US+EEA. Both captures say the app 'can accept' Apple Pay there and cannot accept it for digital goods in other regions (old:8-10; new:9-11). Use conditional captured wording rather than guaranteeing wallet display, account eligibility, or current approval in every US/EEA checkout.",
+    "The source's URL parameter table:34-36 omits the failure boundary: invalid prefilled or locked email and invalid client_reference_id are disregarded while the payment page still works (old:123-129; new:122-128). The editable prefilled_email may differ from the checkout email, locked_prefilled_email takes precedence, and client_reference_id is a reconciliation string in checkout.session.completed, not authentication or proof of user ownership. Preserve these conditions so fulfillment cannot be keyed solely on an assumed URL parameter.",
+    "Current source:52 says the webhook identifies user/order then grants entitlement. Raw old:144-146 and new:143-145 support server business logic and a production webhook endpoint, but do not demonstrate signature verification, one-time idempotent grant, or successful entitlement state. Keep this as a flow description, not a tested fulfillment guarantee."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the captured US/EEA versus other-region Apple Pay scope for iOS digital goods, with 'can accept' wording rather than live eligibility guarantee (old:8-10; new:9-11).",
+    "Retain Dashboard-created static links and Dashboard-configured success Universal Link for limited catalogs, with Checkout/Elements as more dynamic alternatives and production webhook fulfillment separately required (old:14,96-110,142-146; new:15,95-109,141-145).",
+    "Retain URL parameter distinctions: editable prefilled_email, locked precedence, invalid-value disregard, and client_reference_id webhook reconciliation, without treating a supplied URL value as an authenticated user identity (old:115-133; new:114-132)."
+  ],
+  "conflicts": [
+    "Source:13,19-23 and concept:107/index:122 label Payment Links 'no server' without the fulfillment qualification, despite old:142-146/new:141-145 requiring a production webhook endpoint. Propagate the narrower no-link-creation-server statement across source, concept route, and index.",
+    "Concept wiki/concepts/stripe-inapp-payments.md:83,105 and wiki/stripe-index.md:120 claim iOS digital goods must use Stripe Checkout, but this guide documents a Payment Links route (old:8-16; new:9-17) and points to Elements too. Narrow the broad Checkout-only assertion instead of obscuring this source route.",
+    "Source:27 changes 'can accept Apple Pay' into 'works' and source:34-36 omits invalid URL-parameter disregard (new:9-11,122-128; old:8-10,123-129). Qualify availability and reconciliation."
+  ],
+  "unresolved_questions": [
+    "The four pinned files do not verify current Apple Pay eligibility, regional/App Store rules, or runtime wallet display; dated guide wording remains the evidence boundary.",
+    "The guide describes but does not implement production webhook authentication, deduplication, or user matching. Those operational details need separate evidence before prescribing an entitlement algorithm."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-inapp-payments.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/mobile/digital-goods/payment-links, the new capture remains a full iOS Payment Links guide with the same US/EEA Apple Pay 'can accept' wording, Dashboard-created limited-catalog link, Universal Link return, URL parameters, and server-side checkout.session.completed fulfillment (new raw:9-15,95-145; old raw:8-14,96-146). The matched diff mainly normalizes Markdown, list numbers, and table formatting and removes stray old fences; it does not show a substantive policy or feature change. [[source-stripe-inapp-digital-goods-payment-links]] is still the mapped historical summary.",
+    "Q2": "For https://docs.stripe.com/mobile/digital-goods/payment-links, recommend updating [[source-stripe-inapp-digital-goods-payment-links]] despite the presentational raw delta: source:13,19-23 calls Payment Links no-server, but old raw:142-146 and new raw:141-145 require a production webhook endpoint for fulfillment; only link creation avoids a server. Propagate that qualification to wiki/concepts/stripe-inapp-payments.md:107 and wiki/stripe-index.md:122. Also correct concept:83,105 and index:120 Checkout-only wording because this guide documents Payment Links and links Elements as another app-to-web path (old:8-16; new:9-17). Qualify Apple Pay as 'can accept' in US/EEA and preserve invalid URL-parameter disregard (old:123-129; new:122-128), rather than treating prefill or client_reference_id as verified identity."
+  }
+}

@@ -118,7 +118,7 @@ Use `stripe.taxRates.create()` when you need hard-coded rates instead of automat
 - [[source-stripe-checkout-shipping]] — Shipping tax: `tax_code: 'txcd_92010001'` for ShippingRate objects
 - [[source-stripe-checkout-manual-tax-rates]] — Manual Tax Rates: TaxRate API, fixed + dynamic rates, 30-country list, wallet constraints, Dashboard reporting exports
 - [[source-stripe-checkout-collect-taxes]] — Comprehensive tax guide: CS automatic_tax + Tax ID Element + real-time verification; PI Tax API (calculate/record/reverse), 100+ tax ID types
-- [[source-stripe-billing-taxes-collect]] — Billing tax guide: Stripe Tax + Tax Rates for subscriptions, Elements without Intent flow, address validation, invoice.finalization_failed webhook, Credit Note refunds
+- [[source-stripe-billing-taxes-collect]] — May 2026 Billing tax guide with Stripe Tax and Tax Rates subscription variants; November 2026 same-URL capture is a navigation index only, and its variant bodies were not read here.
 - [[source-stripe-billing-customer-tax-ids]] — Stripe Billing Customer Tax IDs guide (2026-05-13 and 2026-11-07 captures): dated type tables, qualified tax-impact footnote, AU ABN/EU VAT/GB VAT government checks, and object-specific validation events
-- [[source-stripe-billing-taxes-migration]] — migrating subscriptions to Stripe Tax: automated tooling + manual steps, tax_behavior immutability, schedule approach to avoid prorations
+- [[source-stripe-billing-taxes-migration]] — May and November 2026 subscription migration guide: live-mode automated tool, conditional inferred-location eligibility, manual tax-rate clearing, immutable price `tax_behavior`, schedules and preview checks
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Metronome customer/product mapping, finalization-time calculation, and threshold override

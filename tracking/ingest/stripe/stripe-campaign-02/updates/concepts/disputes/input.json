@@ -1,0 +1,761 @@
+{
+  "target_path": "wiki/concepts/disputes.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/disputes/base.md",
+  "base_sha256": "7a279740f031c01f626e6712a3350bc0a447ac1978b9fdc6739c250d4abbaad2",
+  "patches": [
+    {
+      "update_id": "disputes-api::s02-disputes-api-update-label",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "| Submit evidence | `stripe.disputes.update(id, { evidence: {...} })` |",
+      "new_text": "| Update a Dispute with evidence | `stripe.disputes.update(id, { evidence: {...} })` in the May 2026 Node example; November shows the same operation in curl |",
+      "reason": "Keep the May SDK syntax as dated example and avoid equating an evidence update with acceptance or a final dispute outcome.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "s02-disputes-api-update-label",
+      "job_id": "disputes-api",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api/attempt-1/receipt.json",
+      "receipt_sha256": "9c68713d929b1571bb5bff1ed64a0e6e47a09c0b534446d19af05f34b0c517a8",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api/attempt-1/candidate.md",
+      "source_candidate_sha256": "47946828882bded3a738a5ddd5681f43ebae1f608f5e6deb7eccce9db54d4dd3",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-api::s02-disputes-api-event-boundary",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "Evidence fields: text-based (strings) or file-based (`file_upload` object ID from File Upload API with `purpose: \"dispute_evidence\"`). Text limit: 150,000 characters. Deadline in `evidence_details.due_by`. See [[source-stripe-disputes-api]].",
+      "new_text": "Evidence fields: text-based (strings) or file-based (`file_upload` object ID from File Upload API with `purpose: \"dispute_evidence\"`). Text limit: 150,000 combined characters. The May/November API guides also name `uncategorized_text` and `uncategorized_file` for catch-all evidence; use specific fields where possible. Deadline in `evidence_details.due_by`. See [[source-stripe-disputes-api]].\n\nThe November 7, 2026 guide adds `charge.dispute.created`. A Dispute exposes a Charge reference and nullable PaymentIntent reference, with no direct invoice or subscription reference. For an associated subscription, follow its linked subscription webhook procedure and that procedure's version/null-ID conditions; a payment filter alone is not a subscription lookup. Evidence updates, event delivery and these references do not establish acceptance, cancellation, a won case or settlement.",
+      "reason": "Add the new material dispute-created event and reference boundary while preserving API-guide provenance for uncategorized_file and the existing evidence qualifications.",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "s02-disputes-api-event-boundary",
+      "job_id": "disputes-api",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api/attempt-1/receipt.json",
+      "receipt_sha256": "9c68713d929b1571bb5bff1ed64a0e6e47a09c0b534446d19af05f34b0c517a8",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api/attempt-1/candidate.md",
+      "source_candidate_sha256": "47946828882bded3a738a5ddd5681f43ebae1f608f5e6deb7eccce9db54d4dd3",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-api-visa-compliance::disputes-visa-compliance-flow-fee-qualifiers",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "Two options: **close** (no 500 USD fee, irreversible) or **respond** (must set `evidence.enhanced_evidence.visa_compliance.fee_acknowledged: true` \u2014 submitting without it returns an error; fee withdrawn 1\u20132 days later, refunded if won).",
+      "new_text": "Two options: **close** (acknowledges loss, avoids this Visa compliance network fee, irreversible) or **respond** (must set `evidence.enhanced_evidence.visa_compliance.fee_acknowledged: true` \u2014 otherwise Stripe rejects evidence; contesting incurs a 500 USD or local-equivalent Visa network fee in addition to applicable Stripe dispute fees, withdrawn asynchronously after submission, typically within 1\u20132 days, and refunded if won). The `fee_acknowledged` status records acknowledgment, not a won dispute. See [[source-stripe-disputes-visa-compliance]] for the 2026-05-10 and 2026-11-07 guide captures.",
+      "reason": "Directly correct the active summary's unqualified 1\u20132-day fee withdrawal and incomplete fee/close description using the same facts in both captures; distinguish acknowledgment from a win.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-visa-compliance-flow-fee-qualifiers",
+      "job_id": "disputes-api-visa-compliance",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api-visa-compliance/attempt-1/receipt.json",
+      "receipt_sha256": "c4f34ca64a84b9ab53401e0a2d13f5ef2d7508a5ae7d58c8bdfeaee2e35f7086",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api-visa-compliance/attempt-1/candidate.md",
+      "source_candidate_sha256": "6668933e49429977e9f54e8ccfd2210ad912b733453c4f5421c66878f1116d44",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api-visa-compliance/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-api-visa-compliance::disputes-visa-compliance-special-case-fee",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "- **Visa compliance disputes**: extra 500 USD network fee on top of standard dispute fee; refunded if won",
+      "new_text": "- **Visa compliance disputes**: contesting carries a 500 USD or local-equivalent network fee in addition to applicable Stripe dispute fees; the network fee is refunded if won. See [[source-stripe-disputes-visa-compliance]].",
+      "reason": "Qualify the repeated Visa network fee as local-equivalent and additional only to applicable Stripe dispute fees; retain win-conditional network-fee refund.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-visa-compliance-special-case-fee",
+      "job_id": "disputes-api-visa-compliance",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api-visa-compliance/attempt-1/receipt.json",
+      "receipt_sha256": "c4f34ca64a84b9ab53401e0a2d13f5ef2d7508a5ae7d58c8bdfeaee2e35f7086",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api-visa-compliance/attempt-1/candidate.md",
+      "source_candidate_sha256": "6668933e49429977e9f54e8ccfd2210ad912b733453c4f5421c66878f1116d44",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api-visa-compliance/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-best-practices::disputes-best-practices-limits",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "- **Win likelihood**: Radar scores 1\u20135 dots (5 dots = 60% win, 1 dot = 5%) \u2014 disputes are hard to overturn even at best\n- **File limits**: 4.5 MB / <50 pages total / 19 pages Mastercard / PDF+JPEG+PNG only; one file per evidence type\n- **Fraudulent = >50% of disputes**: include AVS, CVC, IP, 3DS; Stripe auto-populates these when available\n- **Accepting disputes**: fee still applies; counts toward dispute rate regardless \u2014 prevention > acceptance\n- **Partially refunded**: always respond with refund proof; issuer cancels + re-issues for corrected amount",
+      "new_text": "- **Win likelihood**: November 2026 page names Radar Plus; 1\u20135 dots estimate expected win percentages of 5%, 15%, 25%, 40%, and 60% after relevant evidence, subject to eligibility and without an outcome guarantee.\n- **File limits**: PDF/JPEG/PNG; combined files no more than 4.5 MB; formatting list says <50 pages, while the applicable page limit varies by dispute. One file per evidence type. An API evidence update exceeding the compiled-PDF limit returns HTTP 400 and `dispute_evidence_page_limit_exceeded` even with `submit=false`; handle `error.code`, reduce evidence, and retry.\n- **Authorization**: for fraudulent disputes, include relevant AVS/CVC, IP and 3DS evidence; Stripe includes available AVS/CVC results and purchase IP if the integration supplies it.\n- **Accepting disputes**: fee still applies; disputes received count toward dispute activity regardless of outcome.\n- **Partially refunded**: respond with refund amount and date; issuer commonly cancels and recreates the dispute for the corrected amount, subject to the Cartes Bancaires contesting limitation.\n\n> [!warning] Contradiction across dated captures\n> The May 2026 page separately stated a 19-page Mastercard maximum. The November page does not state that figure and instead describes a dispute-specific applicable limit. Its omission does not prove repeal or continued validity of 19 pages; the <50-page formatting rule alone is not an acceptance guarantee.",
+      "reason": "Correct static page-limit and score claims, add the new API error contract, and preserve the dated Mastercard statement with its uncertainty.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat 19 or 50 pages as a universal accepted limit; the May Mastercard number is historical."
+      ],
+      "original_update_id": "disputes-best-practices-limits",
+      "job_id": "disputes-best-practices",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-best-practices/attempt-1/receipt.json",
+      "receipt_sha256": "f656115720ce98d3730a3f9b8d0b488f9c8d3be8e64344b8744bd35b1970ffe4",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-best-practices/attempt-1/candidate.md",
+      "source_candidate_sha256": "10c61fc4ff75c7cad2deb9f6df01bfb2a23ff4d3ac9d7fd1d545bb931f331d18",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-best-practices/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-best-practices::disputes-best-practices-submission",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Evidence submission**: one-shot only; 4.5 MB max; 19-page max (Mastercard); one file per evidence type; no external links/audio/video.",
+      "new_text": "**Evidence submission**: see [[source-stripe-disputes-responding]] for finalization and deadline behavior. This best-practices capture allows PDF/JPEG/PNG and combined uploaded files up to 4.5 MB, with one file per evidence type; use the dispute's applicable page limit. The May 2026 capture stated a 19-page Mastercard maximum, but the November capture omits that figure and does not establish its current status. For API evidence updates, the compiled-PDF page-limit check can fail with `dispute_evidence_page_limit_exceeded` before submission (`submit=false`) as well as on submission.",
+      "reason": "Remove the unqualified current Mastercard maximum and distinguish update-time page checks from final evidence submission; leave response deadlines to the linked workflow source.",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The November page does not establish the actual limit for every network or dispute."
+      ],
+      "original_update_id": "disputes-best-practices-submission",
+      "job_id": "disputes-best-practices",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-best-practices/attempt-1/receipt.json",
+      "receipt_sha256": "f656115720ce98d3730a3f9b8d0b488f9c8d3be8e64344b8744bd35b1970ffe4",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-best-practices/attempt-1/candidate.md",
+      "source_candidate_sha256": "10c61fc4ff75c7cad2deb9f6df01bfb2a23ff4d3ac9d7fd1d545bb931f331d18",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-best-practices/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-categories::disputes-categories-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "## Stripe Dispute Categories (8 standardized)\n\nStripe maps all payment method reason codes into 8 categories (plus Visa-only `noncompliant`). Covered payment methods: Visa, Mastercard, Amex, Discover, Klarna, PayPal, Cash App Pay.",
+      "new_text": "## Stripe Dispute Categories\n\nThe eight-category framework in [[source-stripe-disputes-categories]] maps reason codes for the listed Visa, Mastercard, Amex, Discover, Klarna, PayPal, and Cash App Pay methods, with categories varying by method. Visa additionally has a `noncompliant` mapping for certain Visa compliance disputes.\n\n> [!warning] Category scope across captures\n> The 2026-05-09 category guide's opening describes the eight-category mapping broadly. Its 2026-11-07 capture explicitly excepts Instant Bank Payments: every dispute has reason `debit_not_authorized`, with the underlying ACH return as network reason code (R10, R07, R08, R11, R29, R05, or R31). Use the separate Instant Bank Payments mapping in [[source-stripe-disputes-categories]]; do not infer a card-category code for that method.",
+      "reason": "Correct the active universal mapping and make the 2026-11-07 Instant Bank Payments exception discoverable on the main concept.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "The linked Instant Bank Payments evidence page was not read; this patch states only the assigned categories guide's mapping."
+      ],
+      "original_update_id": "disputes-categories-scope",
+      "job_id": "disputes-categories",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-categories/attempt-1/receipt.json",
+      "receipt_sha256": "d4af7432b568e57ce6324f59ce8d069e3f740dedd8304f4054253b7f262c69ad",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-categories/attempt-1/candidate.md",
+      "source_candidate_sha256": "4268a6f2b29339ff183997872f69f263bed1aeda05a5922e20156231f9c7f6c0",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-categories/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-categories::disputes-categories-contact",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Cross-category rule**: Customer is obligated to contact merchant before filing \u2014 absence of prior contact is itself evidence to submit.",
+      "new_text": "**Customer-contact evidence**: In several category evidence tables, Stripe asks whether the customer contacted the business before filing; if they did not, state that fact. The categories guide does not establish a universal prior-contact obligation. See [[source-stripe-disputes-categories]].",
+      "reason": "Replace an unsupported universal obligation with the conditional evidence-table instruction.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-categories-contact",
+      "job_id": "disputes-categories",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-categories/attempt-1/receipt.json",
+      "receipt_sha256": "d4af7432b568e57ce6324f59ce8d069e3f740dedd8304f4054253b7f262c69ad",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-categories/attempt-1/candidate.md",
+      "source_candidate_sha256": "4268a6f2b29339ff183997872f69f263bed1aeda05a5922e20156231f9c7f6c0",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-categories/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-get-started-prevention::disputes-prevention-deflection-cc",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "| **Deflection** (Order Insights / Verifi) | Sends transaction data to cardholder before they dispute | Reduces inbound disputes; CE 3.0 eligible data can block entirely |",
+      "new_text": "| **Deflection** (Visa Order Insights / Verifi; Mastercard Consumer Clarity / Ethoca) | Sends available charge details for issuer/cardholder recognition lookups | Can reduce filings when details help recognition; Visa OI with qualifying CE 3.0 prior-transaction data requires an issuer block |",
+      "reason": "The November guide adds Mastercard Consumer Clarity as a separate lookup path and makes ordinary deflection contingent on data quality; CE 3.0 remains Visa OI only.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-prevention-deflection-cc",
+      "job_id": "disputes-get-started-prevention",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/receipt.json",
+      "receipt_sha256": "47c1a2dee4abaaae4d83102c5fde345a77d05d8dbeb24f8d7edaa1e99006e17b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/candidate.md",
+      "source_candidate_sha256": "801d4882bdece4e4fc288e2aaf91a1887cce76199c704149df1f68990190158c",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/review.json"
+    },
+    {
+      "update_id": "disputes-get-started-prevention::disputes-prevention-onboarding-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "No integration required \u2014 Stripe connects directly to Verifi. Configure at Dashboard \u2192 Dispute settings. See [[source-stripe-disputes-prevention]].",
+      "new_text": "RDR and Ethoca Alerts need no separate product integration, but resolution onboarding requires Radar rules to define refunds. Dashboard onboarding collects business details for Visa OI and Mastercard CC lookups; useful transaction-time data supports deflection. See [[source-stripe-disputes-prevention]] and [[source-stripe-disputes-prevention-how-it-works]].",
+      "reason": "The old sentence hides mandatory resolution rules and the newly documented OI/CC onboarding; it also addresses only Verifi.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-prevention-onboarding-scope",
+      "job_id": "disputes-get-started-prevention",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/receipt.json",
+      "receipt_sha256": "47c1a2dee4abaaae4d83102c5fde345a77d05d8dbeb24f8d7edaa1e99006e17b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/candidate.md",
+      "source_candidate_sha256": "801d4882bdece4e4fc288e2aaf91a1887cce76199c704149df1f68990190158c",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/review.json"
+    },
+    {
+      "update_id": "disputes-get-started-prevention::disputes-prevention-ce3-criteria-advice",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**CE 3.0 pre-dispute block (OI)**: if \u22652 prior transactions with cardholder have matching IP + email/delivery address + complete product descriptions \u2192 issuer **must block the dispute** (never filed, no fees, no rate impact). Requires IP address, customer email, and product descriptions on all transactions. See [[source-stripe-disputes-prevention-how-it-works]].",
+      "new_text": "**CE 3.0 pre-dispute block (Visa OI, 10.4 card-absent fraud)**: if at least two prior non-fraud transactions with the cardholder have complete product descriptions and matching IP addresses plus a matching email address or customer delivery address, the issuer **must block filing** (no dispute fees or rate impact). Stripe advises providing IP address, customer email, and product descriptions broadly at transaction time, plus shipping or customer address where possible, to improve the chance that qualifying prior data is available; this is guidance, not a universal lookup prerequisite. See [[source-stripe-disputes-prevention-how-it-works]].",
+      "reason": "The retained concept presented Stripe's broad transaction-field recommendation as a universal requirement and omitted the Visa 10.4 card-absent scope. The actual issuer block requires matching prior-transaction data; other available lookup details can still be sent.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-prevention-ce3-criteria-advice",
+      "job_id": "disputes-get-started-prevention",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/receipt.json",
+      "receipt_sha256": "47c1a2dee4abaaae4d83102c5fde345a77d05d8dbeb24f8d7edaa1e99006e17b",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/candidate.md",
+      "source_candidate_sha256": "801d4882bdece4e4fc288e2aaf91a1887cce76199c704149df1f68990190158c",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/review.json"
+    },
+    {
+      "update_id": "disputes-how-disputes-work::disputes-efw-estimate-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Early Fraud Warnings (EFWs)**: Visa TC40 + Mastercard SAFE reports flag suspected fraud before a dispute is filed. 80% convert to fraud disputes if ignored. With 3DS liability shift, Stripe auto-provides evidence. Optimal refund threshold: charges \u2264 dispute fee; reversal window is 2 hours post-capture.",
+      "new_text": "**Early Fraud Warnings (EFWs)**: Visa TC40 + Mastercard SAFE reports usually signal suspected fraud before a dispute, but an EFW can arrive even after a fraud dispute because network reporting and dispute systems are separate and can be out of sync. Stripe's 2026-11-07 guide estimates that about 40% of **unrefunded Visa and Mastercard** EFWs become fraud disputes, varying by network and payment amount; its 2026-05-09 guide gave an older 80% estimate for ignored EFWs without liability shift. With 3DS liability shift, a dispute can still occur and Stripe says it auto-provides some evidence. Stripe's refund heuristic is for charges roughly at or below the dispute fee; a reversal usually within two hours of capture can prevent the fraud report itself, not guarantee prevention of a later dispute. See [[source-stripe-disputes-how-disputes-work]].",
+      "reason": "Directly replace the active stale 80% conversion assertion with the qualified November estimate, retain the May figure as dated historical evidence, and qualify EFW timing using both captures' explicit after-dispute exception (new line 40; old line 39).",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-efw-estimate-scope",
+      "job_id": "disputes-how-disputes-work",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/receipt.json",
+      "receipt_sha256": "d44ea7c8ade0e520d633c31e126a9cc20af96fbb3005306481ce721fb417585a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/candidate.md",
+      "source_candidate_sha256": "562faf9b3d83c18c6781a4d5a71ea37eed8955d94f1449ecc96d2056452b6b2d",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/review.json"
+    },
+    {
+      "update_id": "disputes-how-disputes-work::disputes-inquiry-status-closure",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Inquiries**: Pre-dispute phase used by AmEx and Discover (not Mastercard/Visa). Resolve by submitting evidence or issuing full refund \u2014 no dispute fee. Unanswered inquiry \u2192 likely unwinnable chargeback. Inquiry statuses: `warning_needs_response` \u2192 `warning_under_review` \u2192 `warning_closed` (120 days).",
+      "new_text": "**Inquiries**: Preliminary issuer requests, most often for AmEx and Discover (the guide says Mastercard/Visa no longer use them); Mexico Domestic disputed charges across brands also use them. Satisfactory evidence or a full refund can resolve an inquiry without a dispute fee. An unanswered inquiry can escalate to a likely unwinnable chargeback. API statuses include `warning_needs_response` and `warning_under_review`; `warning_closed` applies after 120 days open without chargeback escalation and is not an issuer win message. See [[source-stripe-disputes-how-disputes-work]].",
+      "reason": "Avoid making inquiry statuses a mandatory sequence or conflating inquiry closure with winning a formal chargeback; retain the Mexico Domestic exception.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-inquiry-status-closure",
+      "job_id": "disputes-how-disputes-work",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/receipt.json",
+      "receipt_sha256": "d44ea7c8ade0e520d633c31e126a9cc20af96fbb3005306481ce721fb417585a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/candidate.md",
+      "source_candidate_sha256": "562faf9b3d83c18c6781a4d5a71ea37eed8955d94f1449ecc96d2056452b6b2d",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/review.json"
+    },
+    {
+      "update_id": "disputes-how-disputes-work::disputes-mexico-received-fee",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "- **Dispute received fee**: non-refundable (Mexico: refundable if won; SEPA/Cartes Bancaires: no fee)",
+      "new_text": "- **Dispute received fee**: generally nonrefundable outside Mexico unless the Stripe contract says otherwise; in Mexico it might be returned if the merchant wins or the cardholder withdraws. No received fee applies to card payments processed on Cartes Bancaires for SEPA businesses. See [[source-stripe-disputes-how-disputes-work]].",
+      "reason": "Restore the guide's conditional Mexico withdrawal and contract exceptions, and scope Cartes Bancaires to SEPA businesses processing on that network.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-mexico-received-fee",
+      "job_id": "disputes-how-disputes-work",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/receipt.json",
+      "receipt_sha256": "d44ea7c8ade0e520d633c31e126a9cc20af96fbb3005306481ce721fb417585a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/candidate.md",
+      "source_candidate_sha256": "562faf9b3d83c18c6781a4d5a71ea37eed8955d94f1449ecc96d2056452b6b2d",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/review.json"
+    },
+    {
+      "update_id": "disputes-measuring::s02-disputes-measuring-window-threshold",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "Industry threshold: >0.75% dispute activity = excessive. All disputes (won or lost) count. Dispute rate is mutable for dates <120 days old. EFWs counted by Visa toward VAMP monitoring program. See [[source-stripe-disputes-measuring]].",
+      "new_text": "Stripe's May and November 2026 measuring guide calls >0.75% dispute activity excessive as an industry standard, while a sudden spike or steep upward trend can trigger monitoring earlier; network-set thresholds exceeded for a prolonged period may lead to fines. All disputes, won or lost, count in the guide's monitoring discussion. Charge-date dispute rate can change for dates under 120 days old, and cardholders can sometimes dispute later, so day 120 is no guaranteed finality boundary. Issuer-generated EFWs on Visa, Mastercard, and JCB are a separate suspected-fraud signal; Visa counts them toward VAMP identification. See [[source-stripe-disputes-measuring]] (https://docs.stripe.com/disputes/measuring; May `raw/stripe-disputes-measuring-2026.md:22,29,34-49`; November `raw/stripe-disputes-measuring-2026-11-07.md:23,30,35-50`).",
+      "reason": "Correct the misleading 120-day finality implication and universal-looking 0.75% threshold while preserving separate dispute and EFW scopes.",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "Neither capture proves account-specific network placement, an assessed fine, or a final charge-date dispute rate."
+      ],
+      "original_update_id": "s02-disputes-measuring-window-threshold",
+      "job_id": "disputes-measuring",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-measuring/attempt-1/receipt.json",
+      "receipt_sha256": "4c16fb128a027b049311b93573345e6860b8a05069a7c42c8f7c709f9f48a4de",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-measuring/attempt-1/candidate.md",
+      "source_candidate_sha256": "c7761796456dc3bb2835ac8b0a698e6d8890198634c9807642373d3496a347c3",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-measuring/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-measuring::s02-disputes-measuring-source-route",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "| Dispute rate | Charge date | Fraud analysis; identifies problematic payments |",
+      "new_text": "| Dispute rate | Charge date | Fraud analysis; identifies problematic payments |\n\nThe May and November 2026 [[source-stripe-disputes-measuring]] captures define both metrics over successful payments: dispute activity cohorts disputes by receipt date, while dispute rate cohorts disputed payments by their original charge date (https://docs.stripe.com/disputes/measuring; May `raw/stripe-disputes-measuring-2026.md:8-18`; November `raw/stripe-disputes-measuring-2026-11-07.md:9-19`).",
+      "reason": "Keep the denominator and cohort-date distinction discoverable beside the concept's metric table, with a reciprocal source route.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "s02-disputes-measuring-source-route",
+      "job_id": "disputes-measuring",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-measuring/attempt-1/receipt.json",
+      "receipt_sha256": "4c16fb128a027b049311b93573345e6860b8a05069a7c42c8f7c709f9f48a4de",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-measuring/attempt-1/candidate.md",
+      "source_candidate_sha256": "c7761796456dc3bb2835ac8b0a698e6d8890198634c9807642373d3496a347c3",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-measuring/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-prevention-best-practices::s02-best-practices-conditional-guidance",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "- *Everyone*: full ToS text at checkout (link-only rejected by issuers), tracking screenshots (not links), clear statement descriptor, one account per business, proactive refund if sure it's fraud, 24-48hr shipping delay\n- *Radar Fraud Teams*: review queue + auth-capture, country/card blocking rules, ship only to AVS-verified addresses\n- *Developers*: process on Stripe (CE 3.0 eligibility), collect full data, 3DS, auth+capture, Stripe Identity",
+      "new_text": "- *Everyone*: Stripe recommends showing the full terms and policy at checkout or in a popup and says businesses can require agreement; a link-only checkbox might be rejected as insufficient issuer evidence. Use tracking screenshots, a clear descriptor, distinct accounts per business, and conditional refund/shipping-delay strategies. Shipping to an AVS-verified billing address is described as safest, while a different destination is allowed with risk mitigation and order review.\n- *Radar users*: manual review is available if the account plan supports it; reviewed payments are normally processed and charged unless authorization and capture are separated. Rules can use country and card attributes; manual capture in review also depends on plan support.\n- *Developers*: Stripe processing and complete customer/transaction data help it identify qualifying Visa CE 3.0 history but do not by themselves establish eligibility or a dispute win. 3D Secure-authenticated payments might receive liability-shift protection from most fraudulent disputes, while EFWs can still count toward monitoring. Identity verification adds customer friction; uncaptured card authorizations cannot be disputed, whereas captured payments can. See [[source-stripe-disputes-prevention-best-practices]] (https://docs.stripe.com/disputes/prevention/best-practices; May `raw/stripe-disputes-prevention-best-practices-2026.md:18-24,66-90,121-159`; November `raw/stripe-disputes-prevention-best-practices-2026-11-07.md:19-25,67-91,122-160`).",
+      "reason": "Replace universal ToS, shipping, CE 3.0 and 3DS assertions; date Radar naming and retain plan, payment-state and risk-mitigation conditions.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The capture does not identify the exact Radar plans or prove account access, CE 3.0 eligibility, liability shift, fraud prevention or a dispute win."
+      ],
+      "original_update_id": "s02-best-practices-conditional-guidance",
+      "job_id": "disputes-prevention-best-practices",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-best-practices/attempt-1/receipt.json",
+      "receipt_sha256": "b2d6918c57dbe454c6f915a03b3b944d6302cfbef49b3c772eab3400326456fc",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-best-practices/attempt-1/candidate.md",
+      "source_candidate_sha256": "ea54c58a81180ff6a08273d07b5a794fb28e55123294cbea244307e89d103ada",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-best-practices/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-prevention-fraud-types::disputes-stolen-card-outcome-condition",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "| Stolen cards | Stolen card/details used online; business bears loss + dispute fee |",
+      "new_text": "| Stolen cards | Stolen card/details used online; if the issuer dispute is resolved for the cardholder, the business loses the payment amount and goods or services already supplied and is subject to a dispute fee |",
+      "reason": "Both dated Stripe captures condition the stolen-card business loss on a cardholder-favorable dispute decision; a processed or merely disputed payment is not enough.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-stolen-card-outcome-condition",
+      "job_id": "disputes-prevention-fraud-types",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-fraud-types/attempt-1/receipt.json",
+      "receipt_sha256": "26554cfe0a32a19f85a38f940b76e0434d4d309bf9a7796131703ac2b2e5f2e1",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-fraud-types/attempt-1/candidate.md",
+      "source_candidate_sha256": "9cd04b3dfa189fbc29b963f311e498246673c6f4901fe2111a5693dd766f06b4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-fraud-types/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-prevention-identifying-fraud::disputes-identifying-fraud-donation-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "Donations: \"refund the difference\" request = credit limit test \u2192 refund entire amount. See [[source-stripe-disputes-identifying-fraud]].",
+      "new_text": "Donations: a large-donation request to \"refund the difference\" can be a suspected stolen-card credit-limit test; Stripe says a full refund might be prudent in that scenario, not an automatic requirement or proof of fraud. See [[source-stripe-disputes-identifying-fraud]].",
+      "reason": "Correct the existing certainty and imperative while retaining the useful fraud-identification route.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-identifying-fraud-donation-scope",
+      "job_id": "disputes-prevention-identifying-fraud",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-identifying-fraud/attempt-1/receipt.json",
+      "receipt_sha256": "f2d98a059a0435958119c2eeea4abb2974396577ea24059b603364f0905515b5",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-identifying-fraud/attempt-1/candidate.md",
+      "source_candidate_sha256": "4fd2d9b5a81496ea5432dcb09cb9e6a84b9312667ba855b12a16fd68b5166cab",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-identifying-fraud/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-prevention-verification::disputes-verification-cvc-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**CVC and AVS verification**: always collect CVC + postal + billing address at checkout. CVC protects against computer breaches (not physical theft); doesn't apply to wallets or off-session payments. AVS checks postal + street address \u2014 can fail for legitimate payments; mainly US/CA/UK. Enable Radar built-in rules to block failures. See [[source-stripe-disputes-verification]].",
+      "new_text": "**CVC and AVS verification**: Stripe recommends collecting CVC, postal code, and billing street address to enable applicable issuer checks; wallets such as Apple Pay and off-session payments do not require CVC. A configured Radar rule can block a **failed** CVC or postal code check in specified situations, but the failed-CVC rule does not affect a payment when that check cannot run or is unavailable. CVC is less likely to be obtained through a computer breach because businesses cannot store it, but it does not protect against physical card theft or insecure computers/websites. AVS support varies by country and issuer, and legitimate address errors or moves can cause failures; most US, Canadian, and UK cards support street address checks. A check result alone does not guarantee authorization or a dispute outcome. See [[source-stripe-disputes-verification]].",
+      "reason": "Qualify the overbroad CVC collection and wallet/off-session statements while preserving issuer, Radar, security, and AVS limitations in both captures.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "No account-specific Radar rule configuration, payment response, or authorization guarantee is established by this page."
+      ],
+      "original_update_id": "disputes-verification-cvc-scope",
+      "job_id": "disputes-prevention-verification",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-verification/attempt-1/receipt.json",
+      "receipt_sha256": "f775d1d51b6281772939c09d615246eed4803cac27c8626f575ff9d27f334915",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-verification/attempt-1/candidate.md",
+      "source_candidate_sha256": "663c26b515dde23f03a931b598feb0a85163b957172515860af003d6cf5f9afa",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-verification/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-reason-codes-defense-requirements::s02-disputes-reason-codes-contact-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Cross-category rule**: Customer is obligated to contact merchant before filing \u2014 absence of prior contact is itself evidence to submit.",
+      "new_text": "Selected Visa reason-code evidence examples mention prior customer contact, but the guide does not establish a universal cross-network duty to contact the merchant before disputing or make missing contact dispositive. Mastercard examples request communications if the customer contacted the merchant. See [[source-stripe-disputes-reason-codes]] for the code-specific examples.",
+      "reason": "The existing universal rule incorrectly promotes selected Visa evidence cells across networks and claims absence of contact is evidence; new guide lines 15, 163, and 193 qualify case-by-case and conditional communications.",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "The matching Stripe index row at wiki/stripe-index.md:493 also asserts a universal pre-dispute obligation; coordinator must correct it because that path is outside this worker's allowed concept targets."
+      ],
+      "original_update_id": "s02-disputes-reason-codes-contact-scope",
+      "job_id": "disputes-reason-codes-defense-requirements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-reason-codes-defense-requirements/attempt-1/receipt.json",
+      "receipt_sha256": "2813d59f66b961a1d77d0b396d9ee6d3827aadca966a689ac33225f3b783ca2d",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-reason-codes-defense-requirements/attempt-1/candidate.md",
+      "source_candidate_sha256": "68404889e28edde4e67909e671543702954bd4b67774db6ea998183b9bdf021f",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-reason-codes-defense-requirements/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-reason-codes-defense-requirements::s02-disputes-reason-codes-ibp-category-exception",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "Stripe maps all payment method reason codes into 8 categories (plus Visa-only `noncompliant`). Covered payment methods: Visa, Mastercard, Amex, Discover, Klarna, PayPal, Cash App Pay.",
+      "new_text": "Stripe groups listed Visa, Mastercard, Amex, Discover, Klarna, PayPal, and Cash App Pay dispute reasons by its documented categories (including Visa-only `noncompliant`); see [[source-stripe-disputes-categories]] for the category table.\n\n> [!warning] Contradiction\n> The [[source-stripe-disputes-reason-codes]] guide broadly says local payment method reasons map to the same seven card-dispute categories, while the newer categories capture explicitly excludes Instant Bank Payments from its eight-category framework. Instant Bank Payments disputes use `debit_not_authorized` with the underlying ACH return code. Do not generalize the card-network code table or category mapping to Instant Bank Payments.",
+      "reason": "Correct the existing all-payment-method assertion and retain the material contradiction between this guide's broad LPM sentence and the separately read categories capture at raw/stripe-disputes-categories-2026-11-07.md:278-292.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "This overlaps the disputes-categories unit's concept correction; coordinator should merge into one coherent concept edit."
+      ],
+      "original_update_id": "s02-disputes-reason-codes-ibp-category-exception",
+      "job_id": "disputes-reason-codes-defense-requirements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-reason-codes-defense-requirements/attempt-1/receipt.json",
+      "receipt_sha256": "2813d59f66b961a1d77d0b396d9ee6d3827aadca966a689ac33225f3b783ca2d",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-reason-codes-defense-requirements/attempt-1/candidate.md",
+      "source_candidate_sha256": "68404889e28edde4e67909e671543702954bd4b67774db6ea998183b9bdf021f",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-reason-codes-defense-requirements/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-responding::disputes-responding-compliance-fees",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "- **Visa compliance disputes**: extra 500 USD network fee on top of standard dispute fee; refunded if won\n- **Visa CE 3.0**: Stripe auto-evaluates for Visa 10.4 fraud disputes; pre-populates evidence \u2014 don't edit pre-populated fields\n- **Accepting an inquiry \u2260 resolving it**: must submit evidence to counter inquiries; accepting inquiry does not close it",
+      "new_text": "- **Visa compliance disputes**: if contested, Stripe's captured guide says a 500 USD or local-equivalent **network fee** is collected in addition to applicable Stripe dispute fees and returned if won. Visa has its own linked compliance API procedure.\n- **Mastercard compliance disputes**: the November 2026 capture separately says a contested case incurs a 500 USD or local-equivalent **network fee** in addition to applicable Stripe dispute fees, returned if won; an issuer-filed pre-compliance case can escalate to full compliance. The separate Mastercard API procedure is linked but not specified here.\n- **Stripe fee distinction**: the dispute countered fee is returned on a win and does not apply to Mexico and Japan businesses; the dispute received fee is generally retained unless the Stripe contract says otherwise. Network compliance fees above are separate.\n- **Visa CE 3.0**: Stripe evaluates Visa 10.4 fraud disputes for eligibility; if eligible, it usually improves win likelihood but is no guarantee. In most cases Stripe pre-populates required fields; do not edit already populated fields, and fill requested empty fields. 3DS/ECI evidence may be supplied for disputes that **might** have liability shift, without proving coverage.\n- **Accepting an inquiry \u2260 resolving it**: submit evidence to counter an inquiry; if it becomes a chargeback, send a separate response.",
+      "reason": "Add the newly captured Mastercard compliance route while keeping Visa separate, distinguish three fee identities, and qualify CE 3.0, liability shift, and inquiry response conditions.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This captured page does not establish Mastercard API parameters or account-specific fees/outcomes."
+      ],
+      "original_update_id": "disputes-responding-compliance-fees",
+      "job_id": "disputes-responding",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-responding/attempt-1/receipt.json",
+      "receipt_sha256": "396f7905b37067723c09f024af47e9e81f31501824b733d25a0d5c3fc3248719",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-responding/attempt-1/candidate.md",
+      "source_candidate_sha256": "d1fba87815330bb6b6c410758c256d2b610b6b1bb207ebe18eeb7194b77bf1d4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-responding/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-responding::disputes-responding-submission-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Evidence submission**: one-shot only; 4.5 MB max; 19-page max (Mastercard); one file per evidence type; no external links/audio/video.",
+      "new_text": "**Dashboard evidence submission**: one final submission opportunity; combined files no more than 4.5 MB; one file per evidence type; no external audio/video, calls or email requests, or links for the issuer to follow. This November responding capture states a combined 19-page Mastercard evidence maximum; the separate best-practices capture also describes an applicable page limit that can vary by dispute and can block an API evidence update before final submission. Check the actual dispute limit. Submitting evidence sends it for issuer consideration; the issuer decides whether it is won or lost.",
+      "reason": "Preserve the responding page's retained Mastercard figure but qualify it against dispute-specific page-limit guidance and distinguish final submission from issuer outcome.",
+      "quote_indexes": [],
+      "warnings": [
+        "The 19-page statement is page-specific captured guidance; do not use it as a universal API preflight limit."
+      ],
+      "original_update_id": "disputes-responding-submission-scope",
+      "job_id": "disputes-responding",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-responding/attempt-1/receipt.json",
+      "receipt_sha256": "396f7905b37067723c09f024af47e9e81f31501824b733d25a0d5c3fc3248719",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-responding/attempt-1/candidate.md",
+      "source_candidate_sha256": "d1fba87815330bb6b6c410758c256d2b610b6b1bb207ebe18eeb7194b77bf1d4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-responding/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-visual-evidence::disputes-visual-evidence-count-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "See [[source-stripe-disputes-visual-evidence]] for visual evidence packet examples (approved vs denied scenarios, 62 illustrative images).",
+      "new_text": "See [[source-stripe-disputes-visual-evidence]] for seven categories of illustrative, non-exhaustive evidence packets. **Credit not processed** and **Duplicate** have explicit Approved and Denied example sections; the other categories offer category-specific counter-evidence examples. Each captured Markdown page has 66 image references to 64 distinct paths; the May capture uses local saved assets and the November capture uses remote Stripe CDN URLs. These examples do not show actual issuer outcomes or guarantee a win.",
+      "reason": "Remove unsupported 62-image count and overly broad paired-scenario claim while retaining accurate image provenance and example-only scope.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Remote image bytes were not fetched or compared with saved local assets."
+      ],
+      "original_update_id": "disputes-visual-evidence-count-scope",
+      "job_id": "disputes-visual-evidence",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-visual-evidence/attempt-1/receipt.json",
+      "receipt_sha256": "dc83a1fe9854462873f231cf56ed43014c2e813fc04176048ad55b675646e462",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-visual-evidence/attempt-1/candidate.md",
+      "source_candidate_sha256": "ea371ea973503f9aa1445578c7570b72135a83f527fcaa8971a27cf99e2fdb76",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-visual-evidence/attempt-1/review.json"
+    },
+    {
+      "update_id": "disputes-withdrawing::disputes-withdrawal-issuer-and-timing",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "Withdrawn \u2260 won \u2014 must still submit evidence or issuer may treat silence as liability. Withdrawn disputes still count against dispute rate and don't resolve faster. Only chargebacks can be withdrawn (not EFWs or inquiries). Refunds remain blocked until issuer decides. Late withdrawals (even post-loss) are allowed by all networks but take weeks/months to process. See [[source-stripe-disputes-withdrawals]].",
+      "new_text": "Withdrawn \u2260 won \u2014 a cardholder's request to the issuer does not itself close the chargeback or return funds. To seek a win, submit evidence by the deadline or the issuer may treat silence as liability. Withdrawn disputes still count against dispute rate and do not resolve faster; only financial chargebacks can be fully withdrawn (not EFWs or inquiries). A refund on the disputed charge stays blocked until the issuer decides for the merchant. All card networks permit late withdrawal requests, even post-loss, but a particular issuer may not support one; the issuer might take weeks or months to process an adjustment, while the date it appears in Stripe is hard to predict. See [[source-stripe-disputes-withdrawals]].",
+      "reason": "Directly correct the active concept's unqualified late-withdrawal acceptance and fixed-sounding processing window; distinguish issuer processing from uncertain Stripe reflection while retaining withdrawal, evidence, refund, and inquiry boundaries.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "disputes-withdrawal-issuer-and-timing",
+      "job_id": "disputes-withdrawing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-withdrawing/attempt-1/receipt.json",
+      "receipt_sha256": "f01bf9c721f01d89eaf2f4d8a903ef3b4f3f148a7f482f88c21f58710a7c2f48",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-withdrawing/attempt-1/candidate.md",
+      "source_candidate_sha256": "e9e496c5f3ccbf91dc22f8dd65d5a83ac062024f3999cf7d2716041142be8a6f",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-withdrawing/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "disputes-api::s02-disputes-api-update-label",
+    "disputes-api::s02-disputes-api-event-boundary",
+    "disputes-api-visa-compliance::disputes-visa-compliance-flow-fee-qualifiers",
+    "disputes-api-visa-compliance::disputes-visa-compliance-special-case-fee",
+    "disputes-best-practices::disputes-best-practices-limits",
+    "disputes-best-practices::disputes-best-practices-submission",
+    "disputes-categories::disputes-categories-scope",
+    "disputes-categories::disputes-categories-contact",
+    "disputes-get-started-prevention::disputes-prevention-deflection-cc",
+    "disputes-get-started-prevention::disputes-prevention-onboarding-scope",
+    "disputes-get-started-prevention::disputes-prevention-ce3-criteria-advice",
+    "disputes-how-disputes-work::disputes-efw-estimate-scope",
+    "disputes-how-disputes-work::disputes-inquiry-status-closure",
+    "disputes-how-disputes-work::disputes-mexico-received-fee",
+    "disputes-measuring::s02-disputes-measuring-window-threshold",
+    "disputes-measuring::s02-disputes-measuring-source-route",
+    "disputes-prevention-best-practices::s02-best-practices-conditional-guidance",
+    "disputes-prevention-fraud-types::disputes-stolen-card-outcome-condition",
+    "disputes-prevention-identifying-fraud::disputes-identifying-fraud-donation-scope",
+    "disputes-prevention-verification::disputes-verification-cvc-scope",
+    "disputes-reason-codes-defense-requirements::s02-disputes-reason-codes-contact-scope",
+    "disputes-reason-codes-defense-requirements::s02-disputes-reason-codes-ibp-category-exception",
+    "disputes-responding::disputes-responding-compliance-fees",
+    "disputes-responding::disputes-responding-submission-scope",
+    "disputes-visual-evidence::disputes-visual-evidence-count-scope",
+    "disputes-withdrawing::disputes-withdrawal-issuer-and-timing"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/disputes/auto-candidate.md",
+  "auto_candidate_sha256": "8b6f01a3d0f86cbe8ab490bb507d20bad6a84baa0a4afbd23e9d427099d3fd26",
+  "conflict_clusters": [
+    [
+      {
+        "start": 4582,
+        "end": 4812,
+        "old_text": "## Stripe Dispute Categories (8 standardized)\n\nStripe maps all payment method reason codes into 8 categories (plus Visa-only `noncompliant`). Covered payment methods: Visa, Mastercard, Amex, Discover, Klarna, PayPal, Cash App Pay.",
+        "new_text": "## Stripe Dispute Categories\n\nThe eight-category framework in [[source-stripe-disputes-categories]] maps reason codes for the listed Visa, Mastercard, Amex, Discover, Klarna, PayPal, and Cash App Pay methods, with categories varying by method. Visa additionally has a `noncompliant` mapping for certain Visa compliance disputes.\n\n> [!warning] Category scope across captures\n> The 2026-05-09 category guide's opening describes the eight-category mapping broadly. Its 2026-11-07 capture explicitly excepts Instant Bank Payments: every dispute has reason `debit_not_authorized`, with the underlying ACH return as network reason code (R10, R07, R08, R11, R29, R05, or R31). Use the separate Instant Bank Payments mapping in [[source-stripe-disputes-categories]]; do not infer a card-category code for that method.",
+        "ids": [
+          "disputes-categories::disputes-categories-scope"
+        ]
+      },
+      {
+        "start": 4629,
+        "end": 4812,
+        "old_text": "Stripe maps all payment method reason codes into 8 categories (plus Visa-only `noncompliant`). Covered payment methods: Visa, Mastercard, Amex, Discover, Klarna, PayPal, Cash App Pay.",
+        "new_text": "Stripe groups listed Visa, Mastercard, Amex, Discover, Klarna, PayPal, and Cash App Pay dispute reasons by its documented categories (including Visa-only `noncompliant`); see [[source-stripe-disputes-categories]] for the category table.\n\n> [!warning] Contradiction\n> The [[source-stripe-disputes-reason-codes]] guide broadly says local payment method reasons map to the same seven card-dispute categories, while the newer categories capture explicitly excludes Instant Bank Payments from its eight-category framework. Instant Bank Payments disputes use `debit_not_authorized` with the underlying ACH return code. Do not generalize the card-network code table or category mapping to Instant Bank Payments.",
+        "ids": [
+          "disputes-reason-codes-defense-requirements::s02-disputes-reason-codes-ibp-category-exception"
+        ]
+      }
+    ],
+    [
+      {
+        "start": 5667,
+        "end": 5804,
+        "old_text": "**Cross-category rule**: Customer is obligated to contact merchant before filing \u2014 absence of prior contact is itself evidence to submit.",
+        "new_text": "**Customer-contact evidence**: In several category evidence tables, Stripe asks whether the customer contacted the business before filing; if they did not, state that fact. The categories guide does not establish a universal prior-contact obligation. See [[source-stripe-disputes-categories]].",
+        "ids": [
+          "disputes-categories::disputes-categories-contact"
+        ]
+      },
+      {
+        "start": 5667,
+        "end": 5804,
+        "old_text": "**Cross-category rule**: Customer is obligated to contact merchant before filing \u2014 absence of prior contact is itself evidence to submit.",
+        "new_text": "Selected Visa reason-code evidence examples mention prior customer contact, but the guide does not establish a universal cross-network duty to contact the merchant before disputing or make missing contact dispositive. Mastercard examples request communications if the customer contacted the merchant. See [[source-stripe-disputes-reason-codes]] for the code-specific examples.",
+        "ids": [
+          "disputes-reason-codes-defense-requirements::s02-disputes-reason-codes-contact-scope"
+        ]
+      }
+    ],
+    [
+      {
+        "start": 19607,
+        "end": 19712,
+        "old_text": "- **Visa compliance disputes**: extra 500 USD network fee on top of standard dispute fee; refunded if won",
+        "new_text": "- **Visa compliance disputes**: contesting carries a 500 USD or local-equivalent network fee in addition to applicable Stripe dispute fees; the network fee is refunded if won. See [[source-stripe-disputes-visa-compliance]].",
+        "ids": [
+          "disputes-api-visa-compliance::disputes-visa-compliance-special-case-fee"
+        ]
+      },
+      {
+        "start": 19607,
+        "end": 19962,
+        "old_text": "- **Visa compliance disputes**: extra 500 USD network fee on top of standard dispute fee; refunded if won\n- **Visa CE 3.0**: Stripe auto-evaluates for Visa 10.4 fraud disputes; pre-populates evidence \u2014 don't edit pre-populated fields\n- **Accepting an inquiry \u2260 resolving it**: must submit evidence to counter inquiries; accepting inquiry does not close it",
+        "new_text": "- **Visa compliance disputes**: if contested, Stripe's captured guide says a 500 USD or local-equivalent **network fee** is collected in addition to applicable Stripe dispute fees and returned if won. Visa has its own linked compliance API procedure.\n- **Mastercard compliance disputes**: the November 2026 capture separately says a contested case incurs a 500 USD or local-equivalent **network fee** in addition to applicable Stripe dispute fees, returned if won; an issuer-filed pre-compliance case can escalate to full compliance. The separate Mastercard API procedure is linked but not specified here.\n- **Stripe fee distinction**: the dispute countered fee is returned on a win and does not apply to Mexico and Japan businesses; the dispute received fee is generally retained unless the Stripe contract says otherwise. Network compliance fees above are separate.\n- **Visa CE 3.0**: Stripe evaluates Visa 10.4 fraud disputes for eligibility; if eligible, it usually improves win likelihood but is no guarantee. In most cases Stripe pre-populates required fields; do not edit already populated fields, and fill requested empty fields. 3DS/ECI evidence may be supplied for disputes that **might** have liability shift, without proving coverage.\n- **Accepting an inquiry \u2260 resolving it**: submit evidence to counter an inquiry; if it becomes a chargeback, send a separate response.",
+        "ids": [
+          "disputes-responding::disputes-responding-compliance-fees"
+        ]
+      }
+    ],
+    [
+      {
+        "start": 19964,
+        "end": 20100,
+        "old_text": "**Evidence submission**: one-shot only; 4.5 MB max; 19-page max (Mastercard); one file per evidence type; no external links/audio/video.",
+        "new_text": "**Evidence submission**: see [[source-stripe-disputes-responding]] for finalization and deadline behavior. This best-practices capture allows PDF/JPEG/PNG and combined uploaded files up to 4.5 MB, with one file per evidence type; use the dispute's applicable page limit. The May 2026 capture stated a 19-page Mastercard maximum, but the November capture omits that figure and does not establish its current status. For API evidence updates, the compiled-PDF page-limit check can fail with `dispute_evidence_page_limit_exceeded` before submission (`submit=false`) as well as on submission.",
+        "ids": [
+          "disputes-best-practices::disputes-best-practices-submission"
+        ]
+      },
+      {
+        "start": 19964,
+        "end": 20100,
+        "old_text": "**Evidence submission**: one-shot only; 4.5 MB max; 19-page max (Mastercard); one file per evidence type; no external links/audio/video.",
+        "new_text": "**Dashboard evidence submission**: one final submission opportunity; combined files no more than 4.5 MB; one file per evidence type; no external audio/video, calls or email requests, or links for the issuer to follow. This November responding capture states a combined 19-page Mastercard evidence maximum; the separate best-practices capture also describes an applicable page limit that can vary by dispute and can block an API evidence update before final submission. Check the actual dispute limit. Submitting evidence sends it for issuer consideration; the issuer decides whether it is won or lost.",
+        "ids": [
+          "disputes-responding::disputes-responding-submission-scope"
+        ]
+      }
+    ]
+  ],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s02-updates/disputes-concept.json",
+  "review_output": "/tmp/stripe-s02-updates/disputes-concept-review.json",
+  "context_only_units": [
+    {
+      "job_id": "disputes-api",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api/attempt-1/receipt.json",
+      "receipt_sha256": "9c68713d929b1571bb5bff1ed64a0e6e47a09c0b534446d19af05f34b0c517a8",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-api-visa-compliance",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api-visa-compliance/attempt-1/receipt.json",
+      "receipt_sha256": "c4f34ca64a84b9ab53401e0a2d13f5ef2d7508a5ae7d58c8bdfeaee2e35f7086",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-api-visa-compliance/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-best-practices",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-best-practices/attempt-1/receipt.json",
+      "receipt_sha256": "f656115720ce98d3730a3f9b8d0b488f9c8d3be8e64344b8744bd35b1970ffe4",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-best-practices/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-categories",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-categories/attempt-1/receipt.json",
+      "receipt_sha256": "d4af7432b568e57ce6324f59ce8d069e3f740dedd8304f4054253b7f262c69ad",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-categories/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-get-started-prevention",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/receipt.json",
+      "receipt_sha256": "47c1a2dee4abaaae4d83102c5fde345a77d05d8dbeb24f8d7edaa1e99006e17b",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-2/review.json"
+    },
+    {
+      "job_id": "disputes-how-disputes-work",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/receipt.json",
+      "receipt_sha256": "d44ea7c8ade0e520d633c31e126a9cc20af96fbb3005306481ce721fb417585a",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-how-disputes-work/attempt-2/review.json"
+    },
+    {
+      "job_id": "disputes-measuring",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-measuring/attempt-1/receipt.json",
+      "receipt_sha256": "4c16fb128a027b049311b93573345e6860b8a05069a7c42c8f7c709f9f48a4de",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-measuring/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-prevention-best-practices",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-best-practices/attempt-1/receipt.json",
+      "receipt_sha256": "b2d6918c57dbe454c6f915a03b3b944d6302cfbef49b3c772eab3400326456fc",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-best-practices/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-prevention-card-testing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-card-testing/attempt-1/receipt.json",
+      "receipt_sha256": "3286ab6cd52820a2664b069b4e39893f270b3970666a666798fdfabafef43e8c",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-card-testing/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-prevention-fraud-types",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-fraud-types/attempt-1/receipt.json",
+      "receipt_sha256": "26554cfe0a32a19f85a38f940b76e0434d4d309bf9a7796131703ac2b2e5f2e1",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-fraud-types/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-prevention-identifying-fraud",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-identifying-fraud/attempt-1/receipt.json",
+      "receipt_sha256": "f2d98a059a0435958119c2eeea4abb2974396577ea24059b603364f0905515b5",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-identifying-fraud/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-prevention-verification",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-verification/attempt-1/receipt.json",
+      "receipt_sha256": "f775d1d51b6281772939c09d615246eed4803cac27c8626f575ff9d27f334915",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-prevention-verification/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-reason-codes-defense-requirements",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-reason-codes-defense-requirements/attempt-1/receipt.json",
+      "receipt_sha256": "2813d59f66b961a1d77d0b396d9ee6d3827aadca966a689ac33225f3b783ca2d",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-reason-codes-defense-requirements/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-responding",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-responding/attempt-1/receipt.json",
+      "receipt_sha256": "396f7905b37067723c09f024af47e9e81f31501824b733d25a0d5c3fc3248719",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-responding/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-set-up-smart-disputes",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-set-up-smart-disputes/attempt-1/receipt.json",
+      "receipt_sha256": "dca768e77bfa1c13206b172239314f80487befc4a5f1d5e0941d74dd014d52f6",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-set-up-smart-disputes/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-smart-disputes",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-smart-disputes/attempt-1/receipt.json",
+      "receipt_sha256": "f00f5dcf4df1dc5262a68a120351ef8b3282a8f42dddffb9a1c232d7e7bce2bb",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-smart-disputes/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-visual-evidence",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-visual-evidence/attempt-1/receipt.json",
+      "receipt_sha256": "dc83a1fe9854462873f231cf56ed43014c2e813fc04176048ad55b675646e462",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-visual-evidence/attempt-1/review.json"
+    },
+    {
+      "job_id": "disputes-withdrawing",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-withdrawing/attempt-1/receipt.json",
+      "receipt_sha256": "f01bf9c721f01d89eaf2f4d8a903ef3b4f3f148a7f482f88c21f58710a7c2f48",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-withdrawing/attempt-1/review.json"
+    }
+  ]
+}

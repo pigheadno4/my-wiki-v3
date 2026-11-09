@@ -1,0 +1,146 @@
+{
+  "job_id": "declines-card",
+  "attempt": 1,
+  "raw_path": "raw/stripe-declines-card-2026-11-07.md",
+  "raw_sha256": "020865d1427738cc3ab922475e1431ef5e197e7367e9186ddb668db79a020480",
+  "source_before_sha256": "2ccf8bec250e195f34504c6bb98181952502e2f2c45cc6a33ce12c8008abc028",
+  "source_page": "---\ntitle: \"Stripe Card Declines\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/declines/card\"\nraw_files:\n  - \"stripe-declines-card-2026-11-07.md\"\n  - \"stripe-card-declines-2026.md\"\ntags: [stripe, declines, card-declines, radar, network-codes, retries, on-session, off-session, advice-code]\n---\n\n## Summary\n\nThe May 9 and November 7, 2026 [[stripe]] guide captures explain card-issuer declines, their network and Stripe advice fields, retry guidance, and on-session versus off-session handling. The guide addresses issuer authorization outcomes; Stripe or Radar blocks before network submission are a separate category in [[stripe-declines]]. A decline or retry suggestion does not imply the next payment will be authorized.\n\n## Common Decline Causes\n\n- **Insufficient funds:** the issuer declines; Stripe suggests considering a buy now, pay later option to reduce this cause.\n- **Incorrect card data:** the issuer might decline an incorrect card number, CVC, or expiry; ask the customer to re-enter details.\n- **Suspected fraud:** an issuer might decline when its systems flag activity; the customer may need to contact the issuer and confirm identity.\n\nIssuers categorize most card declines as `generic_decline`, so the exact reason can remain unclear. They generally discuss decline specifics only with the cardholder. Stripe suggests Sigma for decline-rate analysis or Card fingerprints rather than charge IDs when excluding repeat attempts.\n\n## Network Codes\n\nFor an issuer-declined charge, the November guide's field descriptions call `network_decline_code` and `network_advice_code` **2\u20134 digit codes from the card network**. Both can be null if Stripe receives no response code from the card network. Their meanings vary by network, so interpret them with the card brand; Mastercard calls network advice codes Merchant Advice Codes (MAC). These network fields are distinct from Stripe's `Charge.outcome.reason`, `Charge.outcome.advice_code`, and `PaymentIntent.last_payment_error.decline_code`. Do not infer a network response for a Stripe/Radar block that was not sent to the network.\n\n> [!warning] Contradiction\n> The May 9 capture attributes the two network codes to the issuing bank. November's individual field descriptions attribute them to the card network, although its introductory sentence still says the issuer provides two types of network codes. These dated descriptions do not verify the actual origin of any particular issuer response or supply a universal mapping.\n\n## `advice_code` Values and Retry Behavior\n\n| `advice_code` | Captured meaning | Next step in the guide |\n| --- | --- | --- |\n| `do_not_try_again` | Advice not to reuse the card for **the same transaction** | Inspect the decline code; customer might need issuer help |\n| `try_again_later` | Issuer declined; the card **can be retried**; the guide does not identify a temporary cause | Ask the customer to try again; if later attempts decline, contact issuer |\n| `confirm_card_data` | Issuer declined because supplied information is incorrect | Check decline code and have customer validate card details |\n\nNovember's captured advice table has a two-column header but three-cell rows. The May three-column table and the November row text support the meanings and next steps above; the malformed header is not a changed advice contract. `do_not_try_again` is advice for the same transaction, not a statement that an API enforces a universal card ban.\n\nFor **charges that permit retries**, Stripe recommends at most **eight** retries. Card networks also limit attempts, and issuers may interpret excess retries as possible fraud. Stripe Billing users can set subscription retry schedules or use Smart Retries to choose retry timing; neither feature makes every decline retryable or guarantees success.\n\n## Reducing Declines\n\n- For incorrect card details, ask the customer to correct them or use another card or method. Checkout is given as an example of presenting decline feedback and another attempt.\n- For suspected fraud, the guide advises collecting CVC and postal code. Other billing data can vary in effect by brand and country; 3D Secure **can** lower declines in supported countries. For `generic_decline` or `do_not_honor`, failed CVC or AVS checks are clues to verify before another charge, not proof of the issuer's exact reason.\n- A card-issue country and customer IP-country mismatch **might** be associated with a decline over possible unauthorized use; international travel is an exception. A card issued outside the Stripe-account country might have an increased decline rate.\n- FSA/HSA cards can be restricted to eligible merchant categories. Some issuers restrict purchases in other countries; the customer must ask their issuer about those restrictions. The guide also suggests considering local Stripe accounts in larger markets or regions with elevated declines for a global customer base.\n\n## Programmatic and Session Handling\n\nInspect `PaymentIntent.last_payment_error.decline_code`, attempted Charge `failure_message`, and `payment_intent.payment_failed` webhook events for unsuccessful attempts. Handle API exceptions and other possible failures. For an on-session customer, prompt another attempt or a different method. For an off-session customer, notify them to return and update the method; where Strong Customer Authentication applies, an attempt may require authentication and fail with `authentication_required`. These paths describe failure response, not a completed recovery.\n\n## Related Pages\n\n- [[stripe-declines]] \u2014 failure-category concept; distinguishes issuer declines from Stripe/Radar blocks\n- [[stripe-3d-secure]] \u2014 authentication in supported markets\n- [[source-stripe-declines-overview]] \u2014 broader decline taxonomy\n\n## Raw Sources\n\n- [[raw/stripe-declines-card-2026-11-07|November 7, 2026 card-declines guide]] \u2014 later capture with card-network field attribution and malformed advice-table header.\n- [[raw/stripe-card-declines-2026|May 9, 2026 card-declines guide]] \u2014 earlier issuing-bank attribution and three-column advice table; captured declined-payment image at `raw/assets/stripe-card-declined-payment-dashboard.png`.\n",
+  "quotes": [
+    {
+      "text": "The card network provides this 2-4 digit code. When Stripe doesn\u2019t receive a response code from the card network for a declined charge, the `network_decline_code` field is null.",
+      "location": "raw/stripe-declines-card-2026-11-07.md:31"
+    },
+    {
+      "text": "The card network provides this 2-4 digit code. The code offers guidance on managing a decline.",
+      "location": "raw/stripe-declines-card-2026-11-07.md:33"
+    },
+    {
+      "text": "Stripe recommends a maximum of eight retries for charges that permit retries.",
+      "location": "raw/stripe-declines-card-2026-11-07.md:60"
+    },
+    {
+      "text": "The card issuer declined the transaction, but you can [retry it](https://docs.stripe.com/declines/card.md#retrying-issuer-declines).",
+      "location": "raw/stripe-declines-card-2026-11-07.md:67"
+    },
+    {
+      "text": "it might be a legitimate decline due to possible unauthorized card use. However, exceptions can occur, particularly when customers are traveling internationally",
+      "location": "raw/stripe-declines-card-2026-11-07.md:43"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The card\u2019s issuing bank provides this 2-4 digit code.",
+      "location": "raw/stripe-card-declines-2026.md:32"
+    },
+    {
+      "text": "We recommend a maximum of eight retries for charges that permit retries.",
+      "location": "raw/stripe-card-declines-2026.md:61"
+    },
+    {
+      "text": "The card issuer declined the transaction, but you can [retry it](https://docs.stripe.com/declines/card.md#retrying-issuer-declines).",
+      "location": "raw/stripe-card-declines-2026.md:68"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-declines-card-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 93
+      }
+    ],
+    "raw/stripe-card-declines-2026.md": [
+      {
+        "start": 1,
+        "end": 59
+      },
+      {
+        "start": 60,
+        "end": 94
+      }
+    ],
+    "wiki/sources/source-stripe-card-declines.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/78f3e4a88aca6c834a4c6680/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 121
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-card-decline-network-codes",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "Two codes accompany every card decline (null if the network doesn't return one):\n\n| Field | Description |\n| --- | --- |\n| `network_decline_code` | 2-4 digit bank code; meaning differs by card brand |\n| `network_advice_code` | 2-4 digit bank code for managing the decline; Mastercard calls this MAC (Merchant Advice Code) |",
+      "new_text": "For issuer-declined card charges, network code fields can be null when Stripe receives no card-network response; Stripe/Radar blocks that were not sent to the network are a separate category. The November 7, 2026 guide's field descriptions call these 2\u20134 digit card-network codes, interpreted by card brand:\n\n| Field | Description |\n| --- | --- |\n| `network_decline_code` | Network decline code; meaning varies by card network |\n| `network_advice_code` | Network guidance for managing the decline; Mastercard calls this MAC (Merchant Advice Code) |\n\n> [!warning] Contradiction\n> The May 9 capture attributed both codes to the issuing bank; November's field descriptions attribute them to the card network, while its introduction still says the issuer provides the two code types. This wording does not verify any specific response's origin or mapping. See [[source-stripe-card-declines]].",
+      "reason": "Correct bank-only attribution and the every-decline overstatement, preserve brand and null qualifications, and expose the dated wording conflict without merging issuer outcomes with Radar blocks.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May issuing-bank wording and November card-network field wording differ; the November introduction still says issuer."
+      ]
+    },
+    {
+      "update_id": "s02-card-decline-advice-table",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "| `advice_code` | Meaning | Action |\n| --- | --- | --- |\n| `do_not_try_again` | Don't retry this card for this transaction | See decline code; customer may need to call issuer |\n| `try_again_later` | Temporary decline; retry permitted | Ask customer to try again |\n| `confirm_card_data` | Some card data is wrong | Customer must verify card info |",
+      "new_text": "| `advice_code` | Captured advice | Action |\n| --- | --- | --- |\n| `do_not_try_again` | Do not reuse this card for the same transaction; advice, not a universal API-enforced ban | See decline code; customer may need issuer help |\n| `try_again_later` | Issuer declined; the card can be retried, without a documented temporary-cause diagnosis | Ask customer to try again; if later attempts decline, contact issuer |\n| `confirm_card_data` | Some supplied card data is wrong | Customer should validate card info |",
+      "reason": "Remove the unsupported temporary-cause claim and scope do_not_try_again to advice for the same transaction despite November's malformed table header.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-card-decline-retry-limit",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "**Max 8 retries** recommended \u2014 excessive retries signal fraud to issuers.",
+      "new_text": "For charges that permit retries, Stripe recommends at most **eight** retries; card networks impose attempt limits, and issuers might treat additional attempts as possible fraud. This is guidance for eligible charges, not permission to retry every decline.",
+      "reason": "Restore the guide's retry-eligibility condition and distinguish Stripe's recommendation from network limits and issuer assessment.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-card-decline-geography",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "- Cross-country IP/card mismatch \u2192 geographic decline; customer contacts issuer",
+      "new_text": "- Cross-country IP/card mismatch might suggest possible unauthorized use; travel can explain it, so this signal alone does not establish the issuer's decline reason",
+      "reason": "Avoid turning the guide's possible unauthorized-use and travel example into a certain geographic decline.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-card-decline-source-route",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "- [[source-stripe-declines-overview]] \u2014 Stripe declines overview page",
+      "new_text": "- [[source-stripe-declines-overview]] \u2014 Stripe declines overview page\n- [[source-stripe-card-declines]] \u2014 May and November 2026 card-issuer decline guide: network-code wording, conditional retry advice, and on/off-session handling",
+      "reason": "Add the missing reciprocal route from the provider decline concept to the existing card-declines source.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/declines/card, [[source-stripe-card-declines]] should record the November field-level change: new lines 31 and 33 attribute network decline and advice codes to the card network, whereas old lines 32 and 34 attributed them to the issuing bank. The new introduction at line 29 still says the issuer provides the two types, so the candidate flags the wording conflict and retains null-response and brand-interpretation limits without inferring a specific payment outcome.",
+    "Q2": "For https://docs.stripe.com/declines/card, the candidate updates [[source-stripe-card-declines]] and its concept route to keep Stripe's eight-retry recommendation only for charges permitting retries (old line 61; new line 60), and removes the unsupported 'temporary' diagnosis from `try_again_later` (old line 68; new line 67). It treats `do_not_try_again` as same-transaction advice (old line 67; new line 66), preserves off-session authentication uncertainty, and narrows the cross-country IP/card example rather than claiming a certain legitimate decline."
+  },
+  "status": "candidate_ready"
+}

@@ -1,0 +1,208 @@
+{
+  "job_id": "elements-express-checkout-element-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "6ed2fa9090c7403adb6561cfefec38d2347a2989949ab4c61a7e48219e1a2127",
+  "source_before_sha256": "88c1e86bde874c258fc990c682d7e29d9752cf88a18e6f28133a5581312c28cd",
+  "source_page": "---\ntitle: \"Accept a Payment with the Express Checkout Element\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/elements/express-checkout-element/accept-a-payment\"\nraw_files:\n  - \"stripe-express-checkout-element-accept-payment-2025.md\"\ntags: [stripe, elements, express-checkout, apple-pay, google-pay, paypal, link, klarna, amazon-pay, checkout-sessions, payment-intents, integration-guide, connect]\n---\n\n## Summary\n\nThe 2026-04-21 capture is a combined Express Checkout Element integration guide for Checkout Sessions API and Payment Intents API. The 2026-11-07 capture of this base URL is an index pointing to those two variants, without their detailed contents. The apparent deletion of detailed instructions in the diff is a navigation split, not evidence that wallet methods, options, test values, or API behavior were deprecated or remain currently available. All technical instructions below are historical claims from the April guide; current variant behavior needs separately captured variant bodies.\n\n## Method configuration and availability in the 2026-04-21 guide\n\nBoth paths default to the Stripe Dashboard payment-method settings. Explicit method lists are **optional overrides**, not universally required. For Checkout Sessions, set `payment_method_types` on the Session if overriding. For Payment Intents, use `paymentMethodTypes` on deferred Elements options or `payment_method_types` on an Intent created before Elements. The historical guide's method tables differ:\n\n| Method | Checkout Sessions API | Payment Intents API | Types when explicitly configured |\n| --- | --- | --- | --- |\n| Apple Pay | Listed | Listed | `card` |\n| Google Pay | Listed | Listed | `card` |\n| Link | Listed | Listed | `link` and `card` |\n| PayPal | Listed | Listed | `paypal` |\n| Amazon Pay | Listed | Listed | `amazon_pay` |\n| Klarna | Not listed in that variant's table | Listed | `klarna` |\n\nA method's appearance still depends on account and payment-method settings, country, domain registration, device, browser, and a suitable customer wallet. The guide says the `ready` event's `availablePaymentMethods` indicates which buttons actually display. This table is not a claim of current eligibility or that both paths support the same six methods.\n\n## Checkout Sessions API path (historical)\n\nThe server creates a Checkout Session with line items, `mode: 'payment'`, `ui_mode: 'elements'`, and a return URL. Its **Session client secret** goes to the client for `stripe.initCheckoutElementsSdk({ clientSecret })`; the client creates and mounts the Express Checkout Element. In the HTML/JS flow, `checkout.loadActions()` must return success before its `actions.confirm({ expressCheckoutConfirmEvent: event })` is called from the Element's `confirm` event. The React variant uses `CheckoutElementsProvider`, `useCheckout()`, and `ExpressCheckoutElement` from `@stripe/react-stripe-js/checkout`. Optional Session settings in the older guide include phone collection, shipping collection and options, and automatic tax; these are options, not universal prerequisites.\n\n## Payment Intents API path (historical)\n\nThe older guide recommends **collecting payment details before creating an Intent within this path**. That is an ordering preference, not a ranking of Checkout Sessions over Payment Intents. Initialize deferred Elements with `mode`, `amount`, and `currency`, then mount the Express Checkout Element. The server must decide the actual charge amount, create the PaymentIntent with matching amount and currency, and return **that PaymentIntent's** client secret. A concise order for the guide's deferred flow is:\n\n1. In the Element's `confirm` handler, call `elements.submit()` and stop on its error.\n2. Call the server's Intent-creation endpoint; the server determines the amount and returns `client_secret` for its PaymentIntent.\n3. Call `stripe.confirmPayment({ elements, clientSecret, confirmParams: { return_url } })` with that returned secret, then handle immediate errors and later payment status appropriately.\n\nThe historical guide also shows a distinct ConfirmationToken route for server validation: submit Elements, create the token, create an Intent server-side, then use its client secret and the token to confirm. It is a separate option, not a missing step in the ordinary deferred-Intent route. The guide says the PaymentIntent amount must match the amount presented through Elements; for Amazon Pay, Klarna, and PayPal, confirmation must match the buyer's pre-authorized amount. A `confirmPayment` call or browser animation alone does not prove final settlement.\n\n### Elements options\n\nIn the older Payment Intents variant, `mode` and `currency` are required Elements options; `amount` is required for payment and subscription modes. Optional settings include `setupFutureUsage` (not supported for Klarna here), `captureMethod`, `onBehalfOf` for Connect, `paymentMethodTypes`, `paymentMethodCreation`, and `paymentMethodOptions`. Equivalent Elements options and Intent parameters must match or errors can result. The guide's options table and schema details are at historical raw lines 604\u2013629.\n\n## Customer details, wallet events, and tests\n\nThe historical Payment Intents variant can request payer email and phone, shipping address and rates, and line items. `billingAddressRequired` defaults to true unless one of the guide's specified shipping, payer, Apple Pay, line-item, or business options is supplied. PayPal normally omits billing address beyond country and phone; if required details are unavailable, the PayPal button is hidden. A browser may anonymize the shipping address before confirmation. If handling `shippingaddresschange` or `shippingratechange`, the handler must resolve or reject; a rate change can update the Elements amount. The `cancel` example resets the amount. The `ready` event can support a fallback UI when no wallet button is available. Apple Pay merchant-token options are documented for recurring, deferred, or auto-reload use cases, not automatically enabled by mounting the Element.\n\nThe April guide's sandbox tables include Link OTPs (any other six digits succeed; `000001`, `000002`, and `000003` are error cases), wallet testing and domain/browser prerequisites, Amazon Pay test-card outcomes, and Payment Intents-path Klarna country test data. These are **sandbox fixtures**, not live approvals or current country support. It says Google Pay and Apple Pay cannot be tested from an Indian IP address, even for a non-Indian Stripe account. The detailed fixtures remain in the historical raw, not in the November index.\n\n## Connect, environment, and disclosure\n\nThe Checkout Sessions Connect example creates the Session on the connected account with a `Stripe-Account` request header. The Payment Intents variant scopes the client Stripe instance with `stripeAccount` before creating the Element; its example specifies `apiVersion: '2026-03-25.dahlia'`. These are distinct path examples, not interchangeable secrets or a general version requirement. The guide also instructs registration of each domain where the Element appears. It describes HTTPS for development and production, wallet/browser conditions, and merchant responsibility to disclose Stripe's collection of interaction data and obtain needed rights and consents. Account-specific eligibility, final payment outcome, and current Connect behavior were not tested by this capture.\n\n## Detail locators\n\n- [[raw/stripe-express-checkout-element-accept-payment-2025|2026-04-21 combined guide]], Checkout Sessions path lines 28\u2013472; Dashboard default and optional override 51\u201365; server Session/client secret 67\u201387; client confirmation 221\u2013237; tests 378\u2013439; Connect 441\u2013466.\n- Same guide, Payment Intents path lines 474\u20131892; path-specific ordering preference 478; Dashboard default and method table 499\u2013519; Elements options 604\u2013629; customer details and wallet events 673\u2013995; ConfirmationToken option 1073\u20131219; server Intent and authoritative amount 1221\u20131323; deferred confirm order 1325\u20131439; sandbox/Klarna fixtures 1443\u20131864; Connect 1865\u20131886.\n\n## Related Pages\n\n- [[stripe-express-checkout-element]] \u2014 concept and integration context.\n- [[source-stripe-express-checkout-element]] \u2014 Element overview and button behavior.\n- [[source-stripe-express-checkout-element-migration]] \u2014 Payment Request Button migration.\n- [[stripe]] \u2014 provider.\n\n## Related raw API references\n\n- [[raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07|2026-11-07 base-URL variant index]] \u2014 links the Checkout Sessions API and Payment Intents API pages (lines 9\u201314); their bodies were not captured in this unit.\n\n## Raw Sources\n\n- [[raw/stripe-express-checkout-element-accept-payment-2025|Express Checkout Element combined guide, captured 2026-04-21]] \u2014 historical detailed evidence.\n",
+  "quotes": [
+    {
+      "text": "Use a single integration to accept payments through one-click payment buttons.",
+      "location": "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout Sessions API](https://docs.stripe.com/elements/express-checkout-element/accept-a-payment.md?payment-ui=embedded-components)",
+      "location": "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Payment Intents API](https://docs.stripe.com/elements/express-checkout-element/accept-a-payment.md?payment-ui=elements)",
+      "location": "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<!-- Fetched: 2026-04-21 -->",
+      "location": "raw/stripe-express-checkout-element-accept-payment-2025.md:2"
+    },
+    {
+      "text": "By default, Stripe uses your [payment methods settings](https://dashboard.stripe.com/settings/payment_methods) to determine which payment methods the Express Checkout Element presents.",
+      "location": "raw/stripe-express-checkout-element-accept-payment-2025.md:53"
+    },
+    {
+      "text": "Klarna",
+      "location": "raw/stripe-express-checkout-element-accept-payment-2025.md:519"
+    },
+    {
+      "text": "We recommend that you collect payment details before creating an Intent when using the Express Checkout Element.",
+      "location": "raw/stripe-express-checkout-element-accept-payment-2025.md:478"
+    },
+    {
+      "text": "Always decide how much to charge on the server-side, a trusted environment, as opposed to the client-side.",
+      "location": "raw/stripe-express-checkout-element-accept-payment-2025.md:1225"
+    },
+    {
+      "text": "const { error: submitError } = await elements.submit();",
+      "location": "raw/stripe-express-checkout-element-accept-payment-2025.md:1346"
+    },
+    {
+      "text": "const { client_secret: clientSecret } = await res.json();",
+      "location": "raw/stripe-express-checkout-element-accept-payment-2025.md:1356"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-express-checkout-element-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 1892
+      }
+    ],
+    "wiki/sources/source-stripe-express-checkout-element-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 213
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9ea397f1278ef854fb1a2803/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 1895
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "ece-path-ranking-scope",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "Two API paths \u2014 Checkout Sessions (recommended) and Payment Intents \u2014 share the same ECE component but differ in initialization and confirmation.",
+      "new_text": "The 2026-04-21 [[source-stripe-express-checkout-element-accept-payment]] guide documents Checkout Sessions and Payment Intents paths with different initialization and confirmation. Its Payment Intents path recommends collecting details before creating an Intent; neither that guide nor the 2026-11-07 base-URL index ranks Checkout Sessions over Payment Intents.",
+      "reason": "Remove unsupported path-wide ranking while preserving the two historical path distinctions; old guide line 478 and new index lines 13\u201314.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "The November index does not provide either current variant body."
+      ]
+    },
+    {
+      "update_id": "ece-checkout-heading",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "### Checkout Sessions Path (Recommended)",
+      "new_text": "### Checkout Sessions Path (2026-04-21 guide)",
+      "reason": "The heading repeats an unsupported path ranking; old guide and new index list paths without declaring Checkout Sessions universally recommended.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "ece-deferred-confirm-order",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "ece.on('confirm', async (event) => {\n  await stripe.confirmPayment({ elements, confirmParams: { return_url: '...' } });\n});",
+      "new_text": "ece.on('confirm', async (event) => {\n  const { error: submitError } = await elements.submit();\n  if (submitError) return handleError(submitError);\n  const response = await fetch('/create-intent', { method: 'POST' });\n  const { client_secret: clientSecret } = await response.json();\n  const { error } = await stripe.confirmPayment({\n    elements,\n    clientSecret,\n    confirmParams: { return_url: '...' },\n  });\n  if (error) handleError(error);\n});",
+      "reason": "The old concept's deferred-Intent snippet skips required submission and the server-created PaymentIntent client secret. Old guide lines 1221\u20131225 and 1345\u20131366 supply the ordering. The server must determine a matching amount, as stated in the source page.",
+      "quote_indexes": [],
+      "warnings": [
+        "This concise excerpt assumes a server endpoint that chooses a trusted amount matching Elements and returns a PaymentIntent client secret; it is not a standalone production implementation."
+      ]
+    },
+    {
+      "update_id": "ece-link-test-otp-exceptions",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "| Link | Any 6-digit OTP succeeds; 000001 = invalid, 000002 = expired, 000003 = max attempts |",
+      "new_text": "| Link | In the 2026-04-21 guide's sandbox, any other 6-digit OTP succeeds; 000001 = invalid, 000002 = expired, 000003 = max attempts |",
+      "reason": "The existing cell contradicts its own listed exceptions and omits sandbox/date scope; old guide lines 388\u2013395 and 1453\u20131460.",
+      "quote_indexes": [],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/elements/express-checkout-element/accept-a-payment, the new 2026-11-07 raw is only a variant index (raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md:9\u201314). The 2026-04-21 guide contains the historical Checkout Sessions path at raw/stripe-express-checkout-element-accept-payment-2025.md:28\u2013472 and Payment Intents path at old lines 474\u20131892. [[source-stripe-express-checkout-element-accept-payment]] preserves those as dated evidence. The index does not prove deprecation or current behavior of either linked variant.",
+    "Q2": "For https://docs.stripe.com/elements/express-checkout-element/accept-a-payment, [[source-stripe-express-checkout-element-accept-payment]] corrects three material overstatements: old guide lines 53 and 501\u2013506 say Dashboard settings are defaults and explicit payment-method types are optional; Checkout Sessions lists five methods at old lines 59\u201365, while Payment Intents adds Klarna at old lines 512\u2013519; and deferred Intent confirmation requires Elements submission and a server-created Intent client secret at old lines 1221\u20131225 and 1345\u20131366. The new raw index at raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md:11\u201314 does not establish current eligibility."
+  },
+  "status": "candidate_ready"
+}

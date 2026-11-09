@@ -1,0 +1,65 @@
+--- raw/stripe-api-tour-2025.md
++++ raw/stripe-payments-api-tour-2026-11-07.md
+@@ -1,8 +1,6 @@
+ # Tour of the API
+ 
+ See how Stripe API objects fit together and learn best practices for combining them.
+-
+-If your integration uses [customer-configured Accounts](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer), replace `Customer` and event references in the code examples with the equivalent Accounts v2 API references. For more information, see [Represent customers with Account objects](https://docs.stripe.com/connect/use-accounts-as-customers.md).
+ 
+ The Stripe APIs are powerful and flexible if you know how to use them. This tour of the API covers key information to help you understand the APIs more deeply:
+ 
+@@ -25,7 +23,7 @@
+ 
+ Stripe integrations handle complicated processes.
+ 
+-The API uses a single object to track each process. You create the object at the start of the process, and after every step you can check its `status` to see what needs to happen next—This is sometimes referred to as a _state machine_.
++The API uses a single object to track each process. You create the object at the start of the process, and after every step you can check its `status` to see what needs to happen next—This is sometimes referred to as a *state machine*.
+ 
+ For instance, while completing a payment, a customer might try several payment methods. If one payment method fails, a `status` of `requires_payment_method` lets you know to prompt the customer for another.
+ 
+@@ -37,7 +35,7 @@
+ 
+ Some integrations do a lot more than that: track customers, manage subscriptions, and so on. But their core payment functionality still comes from the same objects and steps, with more objects added around that core.
+ 
+-## Payment objects
++## Payment objects 
+ 
+ Stripe uses a variety of related objects to facilitate payments. Before you can build an integration that suits your specific needs, you must familiarize yourself with how these objects work together.
+ 
+@@ -51,14 +49,23 @@
+ - [Invoicing](https://docs.stripe.com/invoicing.md)
+ - [Payment Intents](https://docs.stripe.com/payments/payment-intents.md)
+ 
+-## The path to a payment
++## The path to a payment 
+ 
+-In a modern Stripe integration, every payment uses an object called a [PaymentIntent](https://docs.stripe.com/api/payment_intents.md). As its name suggests, it represents your _intent_ to collect a payment. This object tracks the steps you go through along the way to fulfilling that intent.
++In a modern Stripe integration, every payment uses an object called a [PaymentIntent](https://docs.stripe.com/api/payment_intents.md). As its name suggests, it represents your *intent* to collect a payment. This object tracks the steps you go through along the way to fulfilling that intent.
+ 
+-For instance, suppose a customer clicks a **Check out** button with a 100 USD item in their cart. They haven’t bought it yet, and they might never buy it (maybe at some point they abandon the payment flow, or their card issuer declines the payment). But clicking **Check out** indicates their _intent_ to buy—and you intend to help them. At that point, an integration creates a `PaymentIntent` object in the amount of 100 USD to track the rest of the process.
++For instance, suppose a customer clicks a **Check out** button with a 100 USD item in their cart. They haven’t bought it yet, and they might never buy it (maybe at some point they abandon the payment flow, or their card issuer declines the payment). But clicking **Check out** indicates their *intent* to buy—and you intend to help them. At that point, an integration creates a `PaymentIntent` object in the amount of 100 USD to track the rest of the process.
+ 
+ The `PaymentIntent`’s path to success goes through [several statuses](https://docs.stripe.com/payments/paymentintents/lifecycle.md)—here’s a simplified version:
++
+ Shows the status of a PaymentIntent changing from requires_payment_method to requires_confirmation to processing which either ends in a state of succeeded or canceled (See full diagram at https://docs.stripe.com/payments-api/tour)
++
++```text
++[requires_payment_method] --> [requires_confirmation]
++[requires_confirmation] --> [processing]
++[requires_confirmation] -- retry --> [requires_payment_method]
++[processing] --> [succeeded]
++[processing] --> [canceled]
++```
+ 
+ ### Payment methods
+ 
+@@ -80,4 +87,8 @@
+ 
+ Stripe always does this part for you—and it can have several steps. (For credit cards, these steps are part of [how cards work](https://docs.stripe.com/payments/cards/overview.md).) As we work through the steps, we update the intent’s state with the outcome: either `succeeded` or back to `requires_payment_method` if it fails.
+ 
+-When we’re done, one last object comes into play: the [Event](https://docs.stripe.com/api/events.md). We use `Event` objects to represent activity. In this case, the activity might be “the charge succeeded” or “the charge failed.” In some integrations, you write custom code to respond to events using [webhook endpoints](https://docs.stripe.com/webhooks.md). In others, such as [Checkout](https://docs.stripe.com/payments/checkout.md) or [Payment Links](https://docs.stripe.com/payment-links.md) integrations, Stripe listens for the event and provides a pre-written response.+When we’re done, one last object comes into play: the [Event](https://docs.stripe.com/api/events.md). We use `Event` objects to represent activity. In this case, the activity might be “the charge succeeded” or “the charge failed.” In some integrations, you write custom code to respond to events using [webhook endpoints](https://docs.stripe.com/webhooks.md). In others, such as [Checkout](https://docs.stripe.com/payments/checkout.md) or [Payment Links](https://docs.stripe.com/payment-links.md) integrations, Stripe listens for the event and provides a pre-written response.
++
++## See also
++
++- [How PaymentIntents work](https://docs.stripe.com/payments/paymentintents/lifecycle.md)

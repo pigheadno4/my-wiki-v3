@@ -1,0 +1,138 @@
+{
+  "job_id": "payment-links-create",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payment-links-create-2026-11-07.md",
+  "raw_sha256": "79a8e47fdf726438f640eaa518c61e00045f3621101074aab162acd482fa98a9",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "source_page": "---\ntitle: \"Stripe Payment Links Overview\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payment-links/create\"\nraw_files:\n  - \"stripe-payment-links-create-2026-11-07.md\"\n  - \"stripe-payment-links-overview-2025.md\"\n  - \"stripe-payment-links-create-2025.md\"\n  - \"stripe-payment-links-share-2025.md\"\n  - \"stripe-payment-links-track-2025.md\"\n  - \"stripe-payment-links-buy-button-2025.md\"\n  - \"stripe-payment-links-customize-2025.md\"\n  - \"stripe-payment-links-shipping-2025.md\"\n  - \"stripe-payment-links-promotions-2025.md\"\ntags: [stripe, payment-links, no-code, invoicing, adaptive-pricing, buy-button]\n---\n\n## Summary\n\nStripe Payment Links product overview \u2014 features, availability, no-code capabilities, and a detailed comparison against Stripe Invoicing.\n\n## Key Takeaways\n\n- **No code** \u2014 Stripe-hosted page; share link or embed buy button; no integration required\n- **40+ payment methods** managed in Dashboard; dynamic presentment\n- **Adaptive Pricing** \u2014 the create guide says it is always enabled for Payment Links, subject to the API-only automatic-surcharge private-preview incompatibility described below\n- **Browser language** auto-detection (30+ languages)\n- **Reusable** \u2014 share multiple times; optionally limit purchase count\n- **Subscription support** \u2014 create subscription payment links (Smart Retries + reminders apply)\n\n## Invoicing vs Payment Links\n\n| | Payment Links | Invoicing |\n| --- | --- | --- |\n| Customer | Anyone with link | Specific customer |\n| Partial payments | \u2717 | \u2713 |\n| Edit quantities | \u2713 | \u2717 |\n| Choose price | \u2713 | \u2717 |\n| Upsells | \u2713 | \u2717 |\n| Quote\u2192Invoice | \u2717 | \u2713 |\n| Smart Retries | Subscription links only | \u2713 all |\n| Reconciliation | URL parameters | Auto |\n\n## API Creation Details\n\nThe 2026-11-07 create guide adds [[raw/stripe-payment-links-create-2026-11-07|Checkout studio]] as a Dashboard hub for creating and managing Payment Links. This is a route described by the create guide; the studio page's detailed behavior was not captured for this source update.\n\nFor standard fixed products, the guide allows a Price ID in `line_items` or inline fixed `price_data`. For customer-chosen pricing, create a Price with `custom_unit_amount[enabled]=true`, then pass that Price ID as the sole line item with `quantity=1`. The older guide's inline `price_data` example with `unit_amount=1000` is a fixed-price example and should not be followed as the variable-price sequence. This example correction does not establish a new universal API restriction.\n\n- **`stripe.paymentLinks.create({ line_items: [{ price, quantity }] })`**\n- Up to **20 line items** for flat rate; for customer-defined prices, exactly **1 line item** with **quantity 1**\n- Use `price_data` to create product + price inline\n- Subscriptions: `subscription_data.trial_period_days` supported\n- Customer-defined price: `custom_unit_amount: { enabled: true }` on Price object\n- Override dynamic payment methods: `payment_method_types: ['card', 'klarna']`\n- Async methods (bank debits, vouchers): 2\u201314 days to confirm; use webhooks for fulfillment\n- **Adaptive Pricing** \u2014 both create captures describe it as always enabled for ordinary Payment Links and local-currency display in 150+ countries; this general wording does not establish compatibility with the separately documented automatic-surcharge private preview\n- **Mobile**: Stripe iOS Dashboard app supports creating links (products/subscriptions only)\n- **Customer-chosen-price Dashboard maximum wording**: the 2026-04-20 create capture says 10,000.00 SGD; the 2026-11-07 same-URL capture says 10,000.00 USD. Both direct readers to Stripe Support for an increase. Neither capture establishes the applicable maximum for a particular merchant or explains the currency difference.\n\n> [!warning] Contradiction\n> The create guide's broad \u201cAdaptive Pricing is always enabled\u201d wording does not cover every specialized Payment Link. The separately captured customize guide says API-only automatic surcharge in a US private preview requires a preview API version and a surcharge-provider app/onboarding; it supports one-off or customer-chosen pricing, excludes subscription links, limits applicable methods to cards and Apple Pay, and is incompatible with Adaptive Pricing. Do not infer a universal runtime outcome from the two dated statements.\n\n## Related Pages\n\n- [[stripe-payment-links]] \u2014 Stripe Payment Links concept page\n- [[paypal-payment-links]] \u2014 PayPal's equivalent product\n- [[stripe]] \u2014 Stripe company page\n- [[raw/stripe-payment-links-customize-2026-11-07|2026-11-07 customize capture]] \u2014 dated automatic-surcharge preview exception to broad Adaptive Pricing wording\n\n## Raw Sources\n\n- [[raw/stripe-payment-links-create-2026-11-07|2026-11-07 create guide]] \u2014 Checkout studio route, variable Price ID with one item and quantity 1, dated USD maximum wording\n- [[raw/stripe-payment-links-overview-2025|2026-04-20 capture]] \u2014 Payment Links features table, no-code capabilities, Invoicing vs Payment Links comparison\n- [[raw/stripe-payment-links-create-2025|2026-04-20 capture]] \u2014 Create a payment link: 2 pricing models, API (line_items, price_data, subscription_data), custom_unit_amount, payment_method_types, Adaptive Pricing, mobile iOS app, async methods\n- [[raw/stripe-payment-links-share-2025|2026-04-20 capture]] \u2014 Share a payment link: share channels, QR code (never expires), buy button embed, deactivate/reactivate (active: false); can't delete\n- [[raw/stripe-payment-links-track-2025|2026-04-20 capture]] \u2014 Track a payment link: 5 UTM params (150 char max), client_reference_id (200 char max, no secrets), after_completion redirect, checkout.session.completed webhook\n- [[raw/stripe-payment-links-buy-button-2025|2026-04-20 capture]] \u2014 Buy button: stripe-buy-button web component, 2 layouts, 3 attributes (client-reference-id/customer-email/customer-session-client-secret), CustomerSession (30min expiry, never cache), CSP requirements\n- [[raw/stripe-payment-links-customize-2025|2026-04-20 capture]] \u2014 Customize checkout: payment limits (restrictions.completed_sessions.limit), custom deactivation message, address/phone/name/tax ID collection, Stripe Tax, ToS consent, custom fields (3 types), URL params, free trials without PM, adjustable quantities, custom domain\n- [[raw/stripe-payment-links-shipping-2025|2026-04-20 capture]] \u2014 Shipping rates: shippingRates.create (fixed_amount + delivery_estimate), shipping_options on payment link; one-time prices only (not subscriptions)\n- [[raw/stripe-payment-links-promotions-2025|2026-04-20 capture]] \u2014 Promotions, upsells, optional items: allow_promotion_codes, guest customer caveat, subscription upsells (Dashboard only), optional_items (up to 10), cross-sells (product-level, overridden by optional_items)\n",
+  "quotes": [
+    {
+      "text": "You can also create and manage payment links through [Checkout studio](https://docs.stripe.com/payments/checkout-studio.md)",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:11"
+    },
+    {
+      "text": "By default, the maximum payment amount is 10,000.00 USD.",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:36"
+    },
+    {
+      "text": "You can\u2019t add any other line items and the quantity can only be `1`.",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:107"
+    },
+    {
+      "text": "-d \"line_items[0][price]={{PRICE_ID}}\"",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:112"
+    },
+    {
+      "text": "Adaptive Pricing is always enabled for Payment Links.",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:145"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "By default, the maximum payment amount is 10,000.00 SGD.",
+      "location": "raw/stripe-payment-links-create-2025.md:33"
+    },
+    {
+      "text": "You can include one line item for customer-defined prices.",
+      "location": "raw/stripe-payment-links-create-2025.md:132"
+    },
+    {
+      "text": "-d \"line_items[0][price_data][unit_amount]=1000\"",
+      "location": "raw/stripe-payment-links-create-2025.md:140"
+    },
+    {
+      "text": "Some payment methods, such as bank debits or vouchers, might take between 2 and 14 days to confirm the payment.",
+      "location": "raw/stripe-payment-links-create-2025.md:172"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payment-links-create-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 153
+      }
+    ],
+    "raw/stripe-payment-links-create-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 187
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/eb6f734bd978d7b11960b10c/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 222
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "payment_links_create_one_item_qty",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "- **Line items**: up to 20 for flat rate; 1 for customer-defined prices",
+      "new_text": "- **Line items**: up to 20 for flat-rate prices; customer-defined pricing uses a `custom_unit_amount` Price ID as the sole line item with quantity `1` (2026-11-07 create guide). Inline fixed `price_data.unit_amount` is a separate fixed-product example. See [[source-stripe-payment-links]].",
+      "reason": "The new create guide makes the quantity constraint and variable Price ID handoff explicit, correcting the old mixed example.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payment_links_create_max_dated",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "- Customer-chooses model: **no recurring payments**; default max 10,000 SGD (contact support to raise)",
+      "new_text": "- Customer-chooses model: **no recurring payments**; the create guide showed a default Dashboard maximum of 10,000.00 SGD on 2026-04-20 and 10,000.00 USD on 2026-11-07, with a Stripe Support route to request an increase. These are capture-specific wordings, not a verified maximum for every merchant. See [[source-stripe-payment-links]].",
+      "reason": "The same-URL captures differ in displayed maximum currency; the unqualified SGD claim is misleading.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payment_links_create_adaptive_scope",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "| Currency | Adaptive Pricing (always enabled) \u2014 displays local currency automatically; see [[stripe-adaptive-pricing]] |",
+      "new_text": "| Currency | The dated create guide describes Adaptive Pricing as generally enabled for Payment Links and local-currency presentation; see [[stripe-adaptive-pricing]] and [[source-stripe-payment-links]] for the separate preview exception. |\n\n> [!warning] Contradiction\n> The create guide's broad \u201calways enabled\u201d wording does not establish compatibility with the separately documented API-only US automatic-surcharge private preview. That path requires a preview API version, provider app/onboarding, supports one-off or customer-chosen prices but no subscriptions, applies to cards and Apple Pay, and is incompatible with Adaptive Pricing. See [[raw/stripe-payment-links-customize-2026-11-07|2026-11-07 customize capture]].",
+      "reason": "The separate customize capture explicitly excludes Adaptive Pricing from automatic-surcharge private preview; the broad concept claim needs a scoped exception.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Preview compatibility is supported by the separate 2026-11-07 customize capture at raw/stripe-payment-links-customize-2026-11-07.md:364-423, not by this create raw."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payment-links/create, [[source-stripe-payment-links]] now covers both Dashboard models: fixed-price products or subscriptions, and customer-chosen amounts for tips or donations, which do not support recurring payments or donations (OLD raw lines 12\u201334; NEW raw lines 15\u201337). The API path uses Products and Prices, up to 20 flat-rate line items, a recurring Price plus `subscription_data` for subscription trials, or a `custom_unit_amount` Price ID as the sole customer-chosen line item with quantity 1 (OLD raw lines 36\u2013132; NEW raw lines 39\u2013113). The iOS Dashboard app creates product or subscription links, not customer-chosen links (OLD raw line 146; NEW raw line 118). Bank debits or vouchers may take 2\u201314 days to confirm; webhook notification when payment clears is the fulfillment boundary, not link creation or customer submission (OLD raw line 172; NEW raw line 137).",
+    "Q2": "At https://docs.stripe.com/payment-links/create, [[source-stripe-payment-links]] classifies Checkout studio as a substantive new Dashboard discovery route (NEW raw lines 11 and 153) and the variable-price handoff as a substantive example repair: OLD raw lines 123\u2013141 created a custom Price but then showed fixed inline `price_data`; NEW raw lines 99\u2013113 pass that Price ID with one item and quantity 1. Node-to-curl samples, API link paths, list numbering, and wording are largely presentational or navigation changes (diff lines 1\u2013222). The Dashboard maximum differs as dated wording, 10,000.00 SGD in OLD raw line 33 versus 10,000.00 USD in NEW raw line 36, without proving a merchant limit change. General Adaptive Pricing wording (OLD raw line 180; NEW raw line 145) is qualified by the separate API-only US automatic-surcharge private preview, which requires a preview version and provider onboarding, excludes subscriptions, applies to cards and Apple Pay, and is incompatible with Adaptive Pricing (customize raw lines 364\u2013423). Delayed methods can take 2\u201314 days to confirm, so neither example nor link creation proves payment clearance or fulfillment (OLD raw line 172; NEW raw line 137)."
+  },
+  "status": "candidate_ready"
+}

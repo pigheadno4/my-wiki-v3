@@ -1,0 +1,130 @@
+{
+  "job_id": "disputes-get-started-prevention",
+  "attempt": 2,
+  "raw_path": "raw/stripe-disputes-get-started-prevention-2026-11-07.md",
+  "raw_sha256": "6d1fc3a418541bb7017fe2fd3a59c4de4703cdfa950ecff0411c0bf857a95d5e",
+  "source_before_sha256": "4c2bb15461ae36d804ca4036bf412c15419d62a1634588a95413397e1e7d347c",
+  "source_page": "---\ntitle: \"Stripe \u2014 How Dispute Prevention Works\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/disputes/get-started/prevention\nraw_files:\n  - \"stripe-disputes-get-started-prevention-2026-11-07.md\"\n  - \"stripe-disputes-prevention-how-it-works-2026.md\"\ntags: [stripe, disputes, prevention, rdr, ethoca, consumer-clarity, order-insights, verifi, ce-30, friendly-fraud, visa, mastercard]\n---\n\n## Summary\n\nStripe's 2026-11-07 guide covers Visa/Verifi Rapid Dispute Resolution (RDR) and Order Insights (OI), and Mastercard/Ethoca Alerts and Consumer Clarity (CC). RDR and Ethoca Alerts resolve qualifying disputes under configured rules; OI and CC supply charge details for recognition lookups. Visa CE 3.0 with OI can block a filing when its prior-transaction criteria are met. Lookups can help cardholders recognize a charge, but deflection depends on available data and is not guaranteed. RDR and Ethoca Alerts need no separate product integration but require Radar resolution rules during onboarding. Dashboard onboarding collects business details for OI and CC lookups. Stripe sends available charge data during a lookup; fuller transaction details can improve the chance of deflection, while CE 3.0 blocking has separate prior-transaction criteria.\n\n## Products Overview\n\n| Product | Network | Provider | What it does |\n| --- | --- | --- | --- |\n| RDR (Rapid Dispute Resolution) | Visa | Verifi | Resolves qualifying disputes via configured rules; fee per resolved dispute |\n| Ethoca Alerts | Mastercard | Ethoca | Resolves qualifying chargebacks via configured rules |\n| Order Insights (OI) | Visa | Verifi | Shares available transaction details with issuer/cardholder during a lookup to help identify a charge |\n| Consumer Clarity (CC) | Mastercard | Ethoca | Shares available purchase and merchant details for charge-recognition lookups |\n| CE 3.0 with OI | Visa | Verifi | Requires issuer to block filing when the stated prior-transaction evidence criteria are met |\n\n## RDR Details\n\n- Visa RDR uses a ruleset to resolve incoming qualifying disputes, for example potential fraud disputes under 10 USD; Stripe's guide says there is a fee per resolved dispute.\n- Resolved disputes do not count toward the stated dispute rate and have no separate dispute-received fee.\n- RDR resolves only disputes for the full original transaction amount on non-refunded transactions. Verifi does not support partial resolution or disputes on refunded transactions in this guide.\n\n## Ethoca Alerts Details\n\n- Mastercard Ethoca Alerts uses resolution rules; the guide says resolved disputes do not count toward dispute rates and may help with Mastercard ECM, HECM, and EFM monitoring by reducing those rates.\n- **Enrollment timing:** configured Ethoca Alerts rules apply only to chargebacks initiated after enrollment. Notices for chargebacks initiated before enrollment might still arrive later.\n\n## Resolution Onboarding\n\nRDR and Ethoca Alerts require no separate product integration effort, but onboarding requires resolution rules through Radar to access dispute resolution and define which transactions to refund. This is a configuration requirement, not a promise that every dispute will be resolved.\n\n## OI and CC Charge-Recognition Lookups\n\nOI applies to Visa transactions through Verifi; CC applies to Mastercard transactions through Ethoca. A cardholder may check a digital banking app or contact the issuer about an unrecognized charge; the issuer's customer support agent can send an API lookup request to Stripe. Stripe sends available transaction information to the issuer, potentially helping the cardholder recognize the purchase and avoid filing a dispute. If CE 3.0 prior-transaction data is unavailable, Stripe still sends other available data. Successful deflection depends on the quality and availability of transaction-time data. Stripe does not require a separate real-time lookup service.\n\nUsing OI and CC directs Stripe to share available charge data with issuers and ultimately cardholders. Verifi and Ethoca might update fields or operational requirements, which can require adaptation. The table below is the guide's **OI lookup-field inventory**, not a verified exhaustive CC API payload schema; it does not mean every listed OI field is mandatory.\n\n### OI Lookup Data Fields\n\n| Category | Key fields |\n| --- | --- |\n| Receipt | orderDate, orderNumber, invoiceNumber, subTotalAmount, orderTotalAmount |\n| Payment | paymentMethod (masked card, last 4 PAN digits), billingName, cvvChecked |\n| Product | productDescription, unitPriceAmount, quantity |\n| Customer | firstName, lastName, emailAddress, accountId (recognizable customer account identifier), lengthOfRelationship |\n| Billing address | address1, city, region, postalCode, country |\n| Merchant | merchantName, merchantUrl, merchantContactPhone, termsAndConditions |\n| Delivery | address + region + country (ISO 3166-1 alpha-3) |\n| Shipping | shippingCarrier, trackingNumber |\n| Device | ipAddress |\n\nStripe pulls the available data provided at transaction time. No separate real-time service is required for the lookup.\n\n## CE 3.0 Pre-Dispute Blocking (Visa OI)\n\nFor Visa 10.4 card-absent fraud disputes, OI-enrolled businesses can use CE 3.0 prior-transaction data during a lookup. If prior transactions exist, Visa selects the 2\u20135 most recent non-fraud transactions and requests data; Stripe provides the available information. If **at least two prior transactions** have complete product descriptions and matching IP addresses plus **a matching email address or customer delivery address**, the issuer must block filing. Under those conditions, the dispute is never filed and does not incur dispute fees or raise the dispute rate. OI enrollment alone does not establish that the evidence criteria have been met. The guide also describes CE 3.0 post-dispute evidence as a way to improve the chance of winning, not as a guaranteed outcome.\n\n## OI and CC Onboarding and Data Quality\n\nDashboard onboarding for OI and CC collects business name, business URL, business phone number, and email. For OI, Stripe advises supplying as many eligible lookup fields as possible at transaction time. To support CE 3.0 blocking, it advises including IP address, customer email address, and product descriptions on all transactions, plus shipping or customer address where possible. For CC, Stripe advises clear merchant and purchase information on Mastercard transactions, including recognizable merchant details, itemized receipts, and subscription details where applicable. These are the guide's data-quality recommendations; neither lookup is guaranteed to prevent a dispute.\n\n## Related Pages\n\n- [[disputes]] \u2014 concept page\n- [[source-stripe-disputes-prevention]] \u2014 dispute prevention overview\n- [[source-stripe-disputes-visa-ce3]] \u2014 CE 3.0 post-dispute API\n\n## Raw Sources\n\n- [[raw/stripe-disputes-get-started-prevention-2026-11-07|How dispute prevention works, 2026-11-07]] \u2014 current guide covering RDR, Ethoca Alerts, OI, CC, and conditional CE 3.0\n- [[raw/stripe-disputes-prevention-how-it-works-2026|How dispute prevention works, 2026-05-10]] \u2014 earlier guide retained for history and OI lookup-field context\n",
+  "quotes": [
+    {
+      "text": "The Ethoca solution includes Consumer Clarity (CC) and Ethoca Alerts.",
+      "location": "raw/stripe-disputes-get-started-prevention-2026-11-07.md:13"
+    },
+    {
+      "text": "OI applies to Visa transactions through Verifi. CC applies to Mastercard transactions through Ethoca.",
+      "location": "raw/stripe-disputes-get-started-prevention-2026-11-07.md:38"
+    },
+    {
+      "text": "Neither of the two solutions require any separate integration effort. However, the onboarding process requires you to set up resolution rules through Radar to access dispute resolution, and define which transactions to refund.",
+      "location": "raw/stripe-disputes-get-started-prevention-2026-11-07.md:34"
+    },
+    {
+      "text": "the issuer\u2019s customer support agent can send an API request to Stripe (a lookup)",
+      "location": "raw/stripe-disputes-get-started-prevention-2026-11-07.md:38"
+    },
+    {
+      "text": "If at least two prior transactions exist with complete product descriptions that have matching IP addresses and at least one matching email address or customer delivery address, the issuer must block the dispute.",
+      "location": "raw/stripe-disputes-get-started-prevention-2026-11-07.md:98"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The Verifi solution includes Order Insights (OI) and Rapid Dispute Resolution (RDR), and Ethoca includes Ethoca Alerts.",
+      "location": "raw/stripe-disputes-prevention-how-it-works-2026.md:12"
+    },
+    {
+      "text": "The rules you set only apply to chargebacks initiated after enrollment.",
+      "location": "raw/stripe-disputes-prevention-how-it-works-2026.md:29"
+    },
+    {
+      "text": "Neither of the two solutions require any separate integration effort. However, the onboarding process requires you to set up resolution rules through Radar to access dispute resolution, and define which transactions to refund.",
+      "location": "raw/stripe-disputes-prevention-how-it-works-2026.md:33"
+    },
+    {
+      "text": "If at least two prior transactions exist with complete product descriptions that have matching IP addresses and at least one matching email address or customer delivery address, the issuer must block the dispute.",
+      "location": "raw/stripe-disputes-prevention-how-it-works-2026.md:95"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-get-started-prevention-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 112
+      }
+    ],
+    "raw/stripe-disputes-prevention-how-it-works-2026.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 105
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-prevention-how-it-works.md": [
+      {
+        "start": 1,
+        "end": 73
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ba7228cd69b8a2c8a45da1ce/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 151
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "disputes-prevention-deflection-cc",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "| **Deflection** (Order Insights / Verifi) | Sends transaction data to cardholder before they dispute | Reduces inbound disputes; CE 3.0 eligible data can block entirely |",
+      "new_text": "| **Deflection** (Visa Order Insights / Verifi; Mastercard Consumer Clarity / Ethoca) | Sends available charge details for issuer/cardholder recognition lookups | Can reduce filings when details help recognition; Visa OI with qualifying CE 3.0 prior-transaction data requires an issuer block |",
+      "reason": "The November guide adds Mastercard Consumer Clarity as a separate lookup path and makes ordinary deflection contingent on data quality; CE 3.0 remains Visa OI only.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "disputes-prevention-onboarding-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "No integration required \u2014 Stripe connects directly to Verifi. Configure at Dashboard \u2192 Dispute settings. See [[source-stripe-disputes-prevention]].",
+      "new_text": "RDR and Ethoca Alerts need no separate product integration, but resolution onboarding requires Radar rules to define refunds. Dashboard onboarding collects business details for Visa OI and Mastercard CC lookups; useful transaction-time data supports deflection. See [[source-stripe-disputes-prevention]] and [[source-stripe-disputes-prevention-how-it-works]].",
+      "reason": "The old sentence hides mandatory resolution rules and the newly documented OI/CC onboarding; it also addresses only Verifi.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "disputes-prevention-ce3-criteria-advice",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**CE 3.0 pre-dispute block (OI)**: if \u22652 prior transactions with cardholder have matching IP + email/delivery address + complete product descriptions \u2192 issuer **must block the dispute** (never filed, no fees, no rate impact). Requires IP address, customer email, and product descriptions on all transactions. See [[source-stripe-disputes-prevention-how-it-works]].",
+      "new_text": "**CE 3.0 pre-dispute block (Visa OI, 10.4 card-absent fraud)**: if at least two prior non-fraud transactions with the cardholder have complete product descriptions and matching IP addresses plus a matching email address or customer delivery address, the issuer **must block filing** (no dispute fees or rate impact). Stripe advises providing IP address, customer email, and product descriptions broadly at transaction time, plus shipping or customer address where possible, to improve the chance that qualifying prior data is available; this is guidance, not a universal lookup prerequisite. See [[source-stripe-disputes-prevention-how-it-works]].",
+      "reason": "The retained concept presented Stripe's broad transaction-field recommendation as a universal requirement and omitted the Visa 10.4 card-absent scope. The actual issuer block requires matching prior-transaction data; other available lookup details can still be sent.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/get-started/prevention, the 2026-11-07 capture adds Consumer Clarity to Ethoca and identifies it as Mastercard's recognition lookup, while OI remains the Visa/Verifi lookup (new raw lines 13, 38). The earlier capture lists Ethoca Alerts but not CC (old raw line 12). The existing source route wiki/sources/source-stripe-disputes-prevention-how-it-works.md:13-22 was expanded to include CC, with its OI table scoped to OI. The issuer agent can send the API lookup after a cardholder checks an app or calls (new raw line 38); other available charge data can still be sent without CE 3.0 prior data (new raw lines 42, 44). Data quality affects deflection, not lookup eligibility.",
+    "Q2": "At https://docs.stripe.com/disputes/get-started/prevention, both captures say RDR and Ethoca Alerts need no separate integration but require Radar resolution rules (old raw line 33; new raw line 34). Both place the post-enrollment initiation restriction under Ethoca Alerts (old raw line 29; new raw line 30), whereas wiki/sources/source-stripe-disputes-prevention-how-it-works.md:24-34 placed it under RDR. The candidate moves that restriction, clarifies onboarding, and keeps Visa 10.4 CE 3.0 blocking conditional on matching prior-transaction evidence (old raw lines 91-95; new raw lines 94-98). Its broad field advice is a recommendation (new raw line 104), not a universal lookup requirement."
+  },
+  "status": "candidate_ready"
+}

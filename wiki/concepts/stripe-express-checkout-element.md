@@ -11,13 +11,13 @@ The Express Checkout Element is a Stripe UI component that renders multiple one-
 
 ## How It Works
 
-The element mounts to a single DOM node and renders whichever wallet buttons are:
-1. Active in the Stripe Dashboard
-2. Supported by the customer's browser
-3. Denominated in a supported currency
-4. Set up by the customer (e.g., Google Pay configured on device)
+The element mounts to a single DOM node. Which buttons can appear depends on the method and current environment:
+1. Merchant/account eligibility and any method-specific Dashboard enablement
+2. Support on the customer's browser, device, and platform
+3. A supported transaction currency
+4. Customer wallet setup when applicable; `paymentMethods.applePay: 'always'` or `paymentMethods.googlePay: 'always'` can allow a button to appear without prior setup, subject to the other gates
 
-Stripe automatically sorts buttons by relevance to the customer's location. When the element has determined which wallets are available, it fires a `ready` event with `availablePaymentMethods`.
+Stripe sorts eligible buttons by relevance to the customer's location. The November 2026 overview uses `availablepaymentmethodschange` with `paymentMethods` to check availability in the customer's current environment; its React prop is `onAvailablePaymentMethodsChange`. The April 2026 overview used `ready` with `availablePaymentMethods` for this check. The captures do not establish removal of `ready` for every purpose or actual payment completion.
 
 ## Supported Payment Methods
 
@@ -32,7 +32,7 @@ Stripe automatically sorts buttons by relevance to the customer's location. When
 
 ## Browser Support
 
-Firefox does not support Apple Pay, Link, or Klarna. All payment methods have limited or no support in in-app webviews — use the iOS or Android SDK for mobile apps instead.
+The November browser table lists Firefox desktop Apple Pay with the non-Safari desktop `paymentMethods.applePay: 'always'` condition, while Firefox still lacks Link and Klarna. The April table marked Firefox Apple Pay unsupported and its desktop Chromium footnote said macOS-only; November omits that OS restriction without proving support on every desktop OS. In eligible iOS webviews Apple Pay can work; Google Pay can work without a popup, and Android webviews additionally need host Payment Request API support. Link, PayPal, Klarna, and Amazon Pay are marked unsupported in webviews. All browser, currency, setup, and device gates still apply; consider native iOS/Android SDKs for mobile apps.
 
 Full browser support matrix: [[source-stripe-express-checkout-element]].
 
@@ -40,7 +40,7 @@ Full browser support matrix: [[source-stripe-express-checkout-element]].
 
 ### Button Type (`buttonType`)
 Controls the call-to-action text shown alongside each wallet's logo. Key options:
-- Apple Pay: `buy`, `checkout`, `subscribe`, `donate`, `order`, `plain`, and 8 more
+- Apple Pay: `buy`, `check-out`, `subscribe`, `donate`, `order`, `plain`, and 8 more
 - Google Pay: `buy`, `checkout`, `pay`, `subscribe`, `donate`, `order`, `plain`
 - PayPal: `checkout`, `buynow`, `pay`, `paypal` (logo only)
 - Klarna: `continue`, `pay`
@@ -62,26 +62,25 @@ Default: grid layout, with an overflow menu for low-relevance methods if space i
 - **Activate/deactivate**: via Stripe Dashboard
 - **Order**: `paymentMethodOrder` option overrides Stripe's relevance-based default
 - **Hide**: `paymentMethods.applePay: 'never'` or `paymentMethods.googlePay: 'never'`
-- **Force show**: `paymentMethods.applePay: 'always'` or `paymentMethods.googlePay: 'always'` — still blocked on unsupported platforms
+- **Allow when wallet is not set up**: `paymentMethods.applePay: 'always'` or `paymentMethods.googlePay: 'always'` can allow the button to appear, subject to merchant/account and current-device eligibility. It cannot force display on an unsupported platform or for an unsupported currency.
 
 > [!info] Regulations in Finland and Sweden require debit payment methods to appear before credit methods.
 
-## Ready Event Pattern
+## Availability Event Pattern
+
+The November overview uses the event below to check the methods currently available for the Element to display and to choose a fallback UI when none are available:
 
 ```js
-expressCheckoutElement.on("ready", ({ availablePaymentMethods }) => {
-  if (!availablePaymentMethods) {
-    // No wallets available — show fallback payment UI
-    showPaymentElement();
-  }
+expressCheckoutElement.on("availablepaymentmethodschange", ({ paymentMethods }) => {
+  if (!paymentMethods) showPaymentElement();
 });
 ```
 
-React: use the `onReady` prop on `<ExpressCheckoutElement>`. Check `availablePaymentMethods` in the callback; if falsy, show a fallback (e.g., `<PaymentElement>`).
+React uses `onAvailablePaymentMethodsChange={({ paymentMethods }) => ...}` on `<ExpressCheckoutElement>`. The April overview used `ready`/`availablePaymentMethods` and React `onReady` for this availability example; that is dated historical guidance, not proof that `ready` itself was removed. An availability callback does not prove merchant eligibility or payment completion.
 
 ## Integration Paths
 
-Two API paths — Checkout Sessions (recommended) and Payment Intents — share the same ECE component but differ in initialization and confirmation.
+The 2026-04-21 [[source-stripe-express-checkout-element-accept-payment]] guide documents Checkout Sessions and Payment Intents paths with different initialization and confirmation. Its Payment Intents path recommends collecting details before creating an Intent; neither that guide nor the 2026-11-07 base-URL index ranks Checkout Sessions over Payment Intents.
 
 ### Payment Method Type Mappings
 
@@ -96,7 +95,7 @@ Two API paths — Checkout Sessions (recommended) and Payment Intents — share 
 | Amazon Pay | `amazon_pay` |
 | Klarna | `klarna` (Payment Intents only) |
 
-### Checkout Sessions Path (Recommended)
+### Checkout Sessions Path (2026-04-21 guide)
 
 Server: create session with `ui_mode: 'elements'` → client secret.
 
@@ -106,8 +105,12 @@ Client:
 const checkout = stripe.initCheckoutElementsSdk({ clientSecret });
 const ece = checkout.createExpressCheckoutElement();
 ece.mount('#express-checkout-element');
-const { actions } = await checkout.loadActions();
-ece.on('confirm', (event) => actions.confirm({ expressCheckoutConfirmEvent: event }));
+const loadActionsResult = await checkout.loadActions();
+if (loadActionsResult.type === 'success') {
+  ece.on('confirm', (event) =>
+    loadActionsResult.actions.confirm({ expressCheckoutConfirmEvent: event })
+  );
+}
 ```
 
 React: `CheckoutElementsProvider` + `useCheckout()` hook + `<ExpressCheckoutElement onConfirm={...} />` from `@stripe/react-stripe-js/checkout`.
@@ -121,7 +124,16 @@ const elements = stripe.elements({ mode: 'payment', amount: 1099, currency: 'usd
 const ece = elements.create('expressCheckout');
 ece.mount('#express-checkout-element');
 ece.on('confirm', async (event) => {
-  await stripe.confirmPayment({ elements, confirmParams: { return_url: '...' } });
+  const { error: submitError } = await elements.submit();
+  if (submitError) return handleError(submitError);
+  const response = await fetch('/create-intent', { method: 'POST' });
+  const { client_secret: clientSecret } = await response.json();
+  const { error } = await stripe.confirmPayment({
+    elements,
+    clientSecret,
+    confirmParams: { return_url: '...' },
+  });
+  if (error) handleError(error);
 });
 ```
 
@@ -145,7 +157,7 @@ Options passed when creating the ECE:
 | Event | Trigger | Action Required |
 | --- | --- | --- |
 | `confirm` | Customer confirms payment | Call `confirmPayment` or `actions.confirm()` |
-| `ready` | Available methods determined | Show/hide fallback UI |
+| `availablepaymentmethodschange` (November overview) | `paymentMethods` reports methods available to display | Show/hide fallback UI; April overview used `ready`/`availablePaymentMethods` for this check |
 | `shippingaddresschange` | Customer selects shipping address | `resolve({lineItems})` or `reject()` |
 | `shippingratechange` | Customer selects shipping rate | `resolve({lineItems})` + `elements.update({amount})` |
 | `cancel` | Customer dismisses UI | Reset amount: `elements.update({amount: original})` |
@@ -156,7 +168,7 @@ Options passed when creating the ECE:
 The `@stripe/stripe-js@9.14.0` type contract allows a `cpmt_` Custom Payment Method to define an `expressCheckout` configuration with `type: 'embedded'`, a required `handleRender(container)` callback, and optional `handleDestroy()` cleanup. The `availablepaymentmethodschange` event can report dynamically keyed custom payment-method IDs alongside the six built-in method keys.
 
 > [!warning] Versioned availability
-> Earlier product documentation describes Express Checkout Element as unsupported for Custom Payment Methods. The v9.14 declarations prove a beta typed integration surface, not general runtime rollout or account eligibility. Confirm beta access and live behavior before offering this path to a merchant.
+> The April 2026 product overview said methods could not be specified, while the November 2026 overview describes `customPaymentMethods` buttons on `stripe.elements()` with valid Dashboard `cpmt_` IDs and a working `handleRender`. The separately captured v9.14 declarations prove a beta typed surface. These snapshots do not prove general runtime rollout, account eligibility, or successful rendering; confirm access and live behavior before offering this path.
 
 ## Apple Pay Merchant Tokens (MIT)
 
@@ -170,7 +182,7 @@ For recurring, deferred, or auto-reload Apple Pay payments, request the relevant
 
 | Method | How |
 | --- | --- |
-| Link | Any 6-digit OTP succeeds; 000001 = invalid, 000002 = expired, 000003 = max attempts |
+| Link | In the 2026-04-21 guide's sandbox, any other 6-digit OTP succeeds; 000001 = invalid, 000002 = expired, 000003 = max attempts |
 | Apple Pay | Use test API keys — Stripe returns test token; live card not charged |
 | Google Pay | Use test API keys; also supports Google's own test card suite |
 | PayPal | Create sandbox account at developer.paypal.com (sandbox mode only) |
@@ -200,7 +212,7 @@ The ECE replaces the older Payment Request Button Element. Key changes:
 
 > If migrating from the Charges API, first migrate to Payment Intents before adopting ECE.
 
-Full migration guide: [[source-stripe-express-checkout-element-migration]]
+Payment Request Button → ECE migration: [[source-stripe-express-checkout-element-migration]] preserves the Payment Intents steps captured on 2026-04-21 and identifies the Checkout Sessions and Payment Intents variant routes in Stripe's 2026-11-07 index. The index does not establish either variant's current implementation details.
 
 ### React wrapper boundary at 7.0.0
 
@@ -226,7 +238,7 @@ The separately collected `@stripe/stripe-js@10.0.0` Endive baseline removes `Str
 ## Sources
 
 - [[source-github-react-stripe-js]] - version-qualified React 7.0.0 Payment Request Button removal and retained Express Checkout wrapper
-- [[source-stripe-express-checkout-element]] — overview reference: supported methods, browser matrix, customization options, ready event
+- [[source-stripe-express-checkout-element]] — April and November overview captures for built-in methods, qualified Firefox/webview matrix, custom buttons, styling, and dated availability events
 - [[source-stripe-express-checkout-element-accept-payment]] — full integration guide: both API paths, customer detail collection, wallet events, testing, Connect
 - [[source-stripe-express-checkout-element-migration]] — migration guide: Payment Request Button → ECE, before/after code, MPAN support
 - [[source-github-stripe-js]] — package-qualified v9.14 beta Custom Payment Method button and dynamic availability-event typing

@@ -1,0 +1,171 @@
+{
+  "job_id": "payment-links-customize",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payment-links-customize-2026-11-07.md",
+  "raw_sha256": "40d4a4cbd6233b0c26eb574363f6230e9a4882e0ab8d0ebfe9f020733c08ad85",
+  "prior_raw_path": "raw/stripe-payment-links-customize-2025.md",
+  "prior_raw_sha256": "963c26bd1ff64fdf0b94fbd8fcc17295a151092eee8c9e8bf5acf90b577a3239",
+  "source_target": "wiki/sources/source-stripe-payment-links.md",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "read_ranges": {
+    "raw/stripe-payment-links-customize-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 280
+      },
+      {
+        "start": 281,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 423
+      }
+    ],
+    "raw/stripe-payment-links-customize-2025.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 280
+      },
+      {
+        "start": 281,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 412
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/43eb6b966c5f1f758a2a939e/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 558
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Use `prefilled_amount` to set the initial amount on a pay-what-you-want payment link. Your customer can still edit this amount before completing the payment. This parameter has no effect on fixed-price payment links.",
+      "location": "new raw line 308"
+    },
+    {
+      "text": "`prefilled_amount` limits the functionality of [multi-currency prices](https://docs.stripe.com/products-prices/manage-prices.md#use-multi-currency-prices).",
+      "location": "new raw line 312"
+    },
+    {
+      "text": "If you sell digital products, Managed Payments allows you to offload tax liability to Stripe",
+      "location": "new raw line 178"
+    },
+    {
+      "text": "This feature is in private preview.",
+      "location": "new raw line 368"
+    },
+    {
+      "text": "Automatic surcharge for Payment Links is available through the API only. It works with one-off products and [customer-chooses-what-to-pay](https://docs.stripe.com/products-prices/how-products-and-prices-work.md#variable-pricing) pricing, but doesn\u2019t support payment links that include subscriptions",
+      "location": "new raw line 396"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Each Payment Link you share automatically allows your customers to complete payment in their local currency with [Adaptive Pricing](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md).",
+      "location": "old raw line 299"
+    },
+    {
+      "text": "Use `locale` to display your payment link in a specific language for your customers regardless of their location.",
+      "location": "old raw line 355"
+    },
+    {
+      "text": "To configure trials without payment methods for Payment Links in the API:",
+      "location": "old raw line 376"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw lines 308-312 add `prefilled_amount` for pay-what-you-want links, with a mutable initial value, smallest-unit positive integer and configured min/max constraints, invalid-value fallback, no fixed-price effect, and a significant multi-currency limitation. Current shared source's customize entry at line 70 and concept wiki/concepts/stripe-payment-links.md line 90 list older URL parameters only; update this customization unit with those conditions rather than suggesting the parameter works for all links.",
+    "New raw lines 176-180 add a Managed Payments section for digital products, describing Stripe as merchant of record for tax, fraud, disputes and support. This is a distinct product route from ordinary Stripe Tax. The shared source already includes other Payment Links raw units, and the concept links a separate Managed Payments source; scope any update to this customize capture and do not rewrite other raw provenance.",
+    "New raw lines 364-423 add automatic surcharge as private preview. It requires a third-party provider app and preview API version, is API-only, supports one-off and customer-chooses-what-to-pay links but not subscription links or Adaptive Pricing, and during preview is US-only for cards and Apple Pay. Record this as captured preview scope, not general feature availability or a claim of legal compliance. The source line 53 and concept line 20 say Adaptive Pricing is always enabled, so qualify that blanket wording for the surcharge incompatibility rather than implying both can run together.",
+    "New raw line 271 adds Checkout studio branding; much of the remaining delta is Node-to-curl examples, link destinations, table/list formatting, and wording. Core payment limits, address/phone/name collection, Stripe Tax, ToS, custom fields, trials, and adjustable quantities persist.",
+    "New raw line 15 still treats a link as paid after Checkout Session completion; new line 31 ties completed_sessions limit to checkout.session.completed. Preserve this lifecycle threshold and avoid interpreting link creation or an attempted payment as a consumed use."
+  ],
+  "substantive_changes": [
+    "`prefilled_amount` URL parameter added for pay-what-you-want links with editable initial amount, smallest-unit validation, fallback, and multi-currency restriction (new lines 308-312).",
+    "Managed Payments added as a separate merchant-of-record option in the tax section (new lines 176-180).",
+    "Automatic surcharge private preview added with provider, preview API, API-only, product/payment-method/geographic, tax, and Adaptive Pricing restrictions (new lines 364-423).",
+    "Checkout studio added as an additional branding surface (new line 271)."
+  ],
+  "historical_claims_to_preserve": [
+    "Payment-link use limits count completed Checkout Sessions and deactivate the link after the configured count (old lines 14-30; new lines 15-31).",
+    "Address, phone and name collection requirements differ between Dashboard options and API parameters; shipping allowed countries are required when collecting shipping addresses (old lines 83-159; new lines 64-141).",
+    "Custom fields remain limited to text, numbers and dropdown with the 10 Dashboard versus 200 API dropdown-option distinction (old lines 237-262; new lines 204-229).",
+    "Payment-method-free trials apply to subscription-product links and require trial-end handling; one-time links do not inherit that path (old lines 363-380; new lines 321-340)."
+  ],
+  "conflicts": [
+    "Shared source line 70 and concept wiki/concepts/stripe-payment-links.md line 90 omit the new `prefilled_amount` customization and its material constraints.",
+    "Shared source line 53 and concept line 20 describe Adaptive Pricing as always enabled without noting the new surcharge preview's explicit incompatibility at new raw line 396; the exception needs scoped wording, not a global reversal.",
+    "Shared source raw_files contains eight Payment Links units; this job compares only `payment-links/customize` and must not treat other unit entries as changed."
+  ],
+  "unresolved_questions": [
+    "Preview access, provider onboarding and legal compliance for a particular account or jurisdiction are outside this captured comparison; no live eligibility is established by the documentation sample."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-links.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payment-links/customize, old raw lines 344-355 list URL parameters without `prefilled_amount`, while new raw lines 308-312 add it for pay-what-you-want links with editable initial amount, validation, fallback, and multi-currency limits. [[source-stripe-payment-links]] should update only its customization unit and the related Payment Links concept. The shared source's other raw identities and their historical claims remain distinct.",
+    "Q2": "For https://docs.stripe.com/payment-links/customize, new raw lines 364-423 add automatic surcharge as a private preview: third-party provider app, preview API version, API-only creation, one-off or customer-chooses pricing, no subscriptions or Adaptive Pricing, and US cards/Apple Pay scope. Old raw line 299 states ordinary Adaptive Pricing behavior, so [[source-stripe-payment-links]] needs a qualified exception instead of a blanket compatibility claim. New raw lines 176-180 separately describe Managed Payments merchant-of-record tax handling; neither section proves account eligibility or compliance."
+  }
+}

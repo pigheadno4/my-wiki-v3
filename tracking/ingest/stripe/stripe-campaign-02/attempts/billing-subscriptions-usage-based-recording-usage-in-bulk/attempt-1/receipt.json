@@ -1,0 +1,136 @@
+{
+  "job_id": "billing-subscriptions-usage-based-recording-usage-in-bulk",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-recording-usage-in-bulk-2026-11-07.md",
+  "raw_sha256": "c45c3b4dd49062b1901a0e411caf57460ef1e31568512e6261011853daee324b",
+  "prior_raw_path": "raw/stripe-usage-based-billing-recording-usage-s3-2025.md",
+  "prior_raw_sha256": "b140c41f79c16a45100576381e2685fd2835a848a078c71122021f21ba27371c",
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-recording-usage-s3.md",
+  "source_before_sha256": "7997fe12a750fff198e16b55e07a3e99098f99be86cac198bcb76697dab3c573",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-recording-usage-in-bulk-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 352
+      }
+    ],
+    "raw/stripe-usage-based-billing-recording-usage-s3-2025.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 352
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-recording-usage-s3.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/bc61ad8e2b59eb05044cf209/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 274
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Object keys follow [Amazon S3 naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html) and can contain up to 1,024 UTF-8 bytes across the complete key. Include the appropriate extension, such as `.csv`, `.json`, or `.jsonl`.",
+      "location": "new raw line 128"
+    },
+    {
+      "text": "Objects must be non-empty files no larger than 1 GB. Stripe skips zero-byte objects and folder markers. Poll-size and file-count limits can defer eligible files to a later sync.",
+      "location": "new raw line 129"
+    },
+    {
+      "text": "After you set up a new connector, the file preview validates that your credentials connect Stripe with the expected Amazon S3 bucket and folder. Stripe fetches all data modified in the last 90 days. This occurs every 5 minutes for objects with a `LastModified` date later than the last sync.",
+      "location": "new raw line 126"
+    },
+    {
+      "text": "Amazon S3 polls a maximum of 50 files or up to 10 GB of data, and processes your uploaded data at a rate of 10,000 events per second.",
+      "location": "new raw line 154"
+    },
+    {
+      "text": "Correct the invalid events and save them to a new file. Then, upload the file to your Amazon S3 bucket for processing.",
+      "location": "new raw line 352"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "File names must be under 255 characters and include the appropriate extension, such as `.csv`, `.json`, or `.jsonl`.",
+      "location": "old raw line 128"
+    },
+    {
+      "text": "After you set up a new connector, the file preview validates that your credentials connect Stripe with the expected Amazon S3 bucket and folder. Stripe fetches all data modified in the last 90 days. This occurs every 5 minutes for objects with a `LastModified` date later than the last sync.",
+      "location": "old raw line 126"
+    },
+    {
+      "text": "[Contact sales](https://stripe.com/contact/sales) if you need to process 100,000 events per second.",
+      "location": "old raw line 151"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Same canonical URL and same Amazon S3 meter-event import guide; the new capture retains CSV/JSON/JSON Lines, IAM connector setup, 90-day modified-object fetch, five-minute polling, 1 GB file cap, 10,000 events/s processing, and format-versus-data error handling (new lines 20-22, 94-138, 140-186; old lines 19-21, 94-137, 139-185).",
+    "Material file selection change: old line 128 says file names under 255 characters; new line 128 instead describes complete S3 object keys up to 1,024 UTF-8 bytes. New line 129 expressly excludes zero-byte objects and folder markers and says poll limits can defer otherwise eligible files. The source summary omits both the superseded naming guidance and the new details, so revise its dated Key Details and add the pinned November raw as evidence; keep the May raw as historical evidence.",
+    "New line 128 uses object-key bytes rather than filename characters. Its limit should not be paraphrased as a 1,024-character filename limit; the two captures conflict on file naming constraints. This comparison does not establish effective connector behavior for any particular account.",
+    "New lines 297-335 render a Python webhook example where old lines 296-335 rendered Node.js; link destinations, list numbering, image URL, table spacing, and whitespace also changed. These are example/presentation/navigation changes, not evidence that Node.js support ended or error-event semantics changed.",
+    "The existing source line 46 says contact sales 'for up to 100,000/s'; both captures instead say contact sales if 100,000 events/s processing is needed (new line 152; old line 151). Remove the implied guaranteed capacity when updating the source."
+  ],
+  "substantive_changes": [
+    "Old line 128's under-255-character filename rule is replaced by new line 128's S3 complete-object-key limit of 1,024 UTF-8 bytes.",
+    "New line 129 explicitly states that zero-byte objects and folder markers are skipped, and that poll-size/file-count limits can defer eligible objects to a later sync; old line 128 did not state these behaviors."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the old capture's under-255-character filename claim dated to May 5, 2026, without presenting it as the current rule (old line 128; new line 128 differs).",
+    "Preserve the shared guide's 1 GB file cap, 90-day modified-object fetch, five-minute polling, 50-file/10-GB poll ceiling, 10,000 events/s processing, and asynchronous error handling with its snapshot versus thin event distinction (old lines 88, 126, 153, 159-185; new lines 88, 126, 154, 160-186).",
+    "Keep the May Node.js and November Python webhook examples as capture variants, without inferring language support was removed (old lines 296-335; new lines 297-335)."
+  ],
+  "conflicts": [
+    "File naming guidance differs materially between captures: May old line 128 says filename under 255 characters; November new line 128 says complete object key up to 1,024 UTF-8 bytes. Preserve both with dates and avoid asserting a tested connector boundary.",
+    "Source line 46 turns the shared 'contact sales if you need 100,000 events/s' statement into 'for up to 100,000/s'; neither raw promises that capacity (old line 151; new line 152)."
+  ],
+  "unresolved_questions": [
+    "Whether Stripe's live connector enforces the November object-key guidance for a specific account is unverified by captured documentation alone.",
+    "The documentation does not quantify how long a particular object may be deferred when poll-size or file-count limits are reached (new line 129)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-in-bulk, [[source-stripe-usage-based-billing-recording-usage-s3]] should record a substantive change to file selection guidance. The May capture's old line 128 states a filename limit under 255 characters. The November capture's new lines 128-129 instead specify a complete S3 object key up to 1,024 UTF-8 bytes, skip zero-byte objects and folder markers, and warn that poll limits can defer eligible objects. The core connector and error workflow otherwise remains substantially the same.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-in-bulk, recommend source_required_update for [[source-stripe-usage-based-billing-recording-usage-s3]], with both dated raws retained. Update its file constraints and polling qualifications from new lines 128-129 while identifying the old line 128 filename rule as historical. Retain the common 90-day and five-minute behavior supported by old line 126 and new line 126. Correct the existing source's implied 100,000-events/s guarantee, since old line 151 and new line 152 only instruct readers to contact sales when that capacity is needed."
+  }
+}

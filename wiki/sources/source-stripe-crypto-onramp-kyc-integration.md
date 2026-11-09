@@ -1,58 +1,54 @@
 ---
 title: "Stripe — Crypto Onramp: KYC Tier Integration Guide"
 type: source
-date_ingested: 2026-05-11
+date_ingested: 2026-11-09
 original_format: webpage
+canonical_url: "https://docs.stripe.com/crypto/onramp/kyc-integration-guide"
 raw_files:
+  - "stripe-crypto-onramp-kyc-integration-guide-2026-11-07.md"
   - "stripe-crypto-onramp-kyc-integration-2026.md"
 tags: [stripe, crypto, onramp, kyc, embedded-components, identity-verification, private-preview]
 ---
 
-## Summary
+## Overview
 
-KYC tier system for the Embedded Components onramp. Three tiers (L0/L1/L2) with different identity requirements and purchase limits. Covers how to detect the user's current tier, interpret session creation errors, and determine next steps.
+Stripe's Embedded Components onramp KYC guide describes L0/L1/L2 identity tiers, asynchronous verification, CryptoCustomer status checks, and how to respond to token or session errors. All customers must pass sufficient KYC before buying crypto; collecting a payment method, submitting information, creating a payment token, and completing a purchase are separate steps. The guide assumes the Embedded Components integration. Its November 2026 capture adds a **mobile Platform Pay collection-before-KYC path**, EU-customer qualifications, and a narrower meaning for the minimum-identity error.
 
-## KYC Tiers
+> [!warning] Contradiction
+> The 2026-05-11 guide said L0 information must be submitted before collecting payment methods. The 2026-11-07 guide explicitly permits **Apple Pay or Google Pay** collection before Link registration/authentication and KYC submission on **iOS, Android, and React Native**. This does not authorize the same order for every payment method. Registration or authentication and minimum identity submission still precede `createCryptoPaymentToken`; collection alone verifies no one and completes no purchase.
 
-| Tier | Required Inputs | API |
+> [!warning] Contradiction
+> A separate 2026-05-11 Embedded Components integration capture described headless access as private preview and US-only excluding New York. This November KYC guide says EU customers have additional identifier and attestation requirements, but links an EU guide not read for this update. The captures do not settle current region or merchant eligibility, nor remove the older access qualification.
+
+## KYC tiers and API boundaries
+
+| Tier | Customer information in guide's tier table | Verification route |
 | --- | --- | --- |
-| L0 | Name, phone, email, address | `attachKYCInfo` |
-| L1 | + Date of birth, SSN | `attachKYCInfo` |
-| L2 | + Photo ID, selfie | `verifyIdentity` |
+| L0 | Name, phone, email, address | `attachKYCInfo` for first name, last name, address |
+| L1 | L0 plus date of birth and SSN | `attachKYCInfo` adds `dateOfBirth`, `idNumber`, `idType` |
+| L2 | L1 plus photo ID and selfie | Stripe-hosted `verifyIdentity` |
 
-- L0 required before `collectPaymentMethod` — returns `crypto_onramp_missing_minimum_identity_verification` otherwise
-- L0 and L1: asynchronous — must poll until no pending verifications before creating session
-- Session creation returns HTTP 400 if any tier has pending verification
+The tier table describes **customer information**, not one `attachKYCInfo` request body. In the new mobile Platform Pay path, wallet email and phone support **Link registration**; wallet name and address can prefill L0; submit `firstName`, `lastName`, and `address` through `attachKYCInfo` (`attachKycInfo` on Android/React Native). The guide explicitly says email and phone are **not** submitted through the KYC API (November lines 21–38).
 
-## Verification Status Values
+L0 and L1 verification are asynchronous: after submission, retrieve/check status until no verification is pending before creating a CryptoOnrampSession; session creation returns HTTP 400 while verification is pending. L2 document/selfie verification is also asynchronous and its result is available from CryptoCustomer. See November lines 40–46.
 
-`not_available` | `not_started` | `pending` | `rejected` | `verified`
+## Payment-token and session errors
 
-Current tier = highest tier where status is NOT `not_available` or `not_started`.
+- **Minimum identity:** The November guide interprets `crypto_onramp_missing_minimum_identity_verification` as missing **minimum identity submission** before token/session creation, whereas the May error table said L0 verification failed. Complete Link registration/authentication and any missing contact details, then submit the name/address KYC fields. November line 131 loosely says to send all name/phone/email/address through `attachKYCInfo`, conflicting with the explicit API split at line 38; do **not** infer that phone or email belong in that KYC call. If minimum information was submitted but L0 verification failed, the guide says the customer may still use the onramp after completing L1, which supersedes L0 (November lines 48–52, 129–131; May lines 43–45, 126–129).
+- **L1 required:** `crypto_onramp_missing_identity_verification` may mean an attempted L1 did not pass or a verified L0 transaction requires L1. Inspect `kyc_tiers`; from current L0 the guide gives a partial submission of only `dob`, `id_number`, `id_type`; from current L1, collect full L1 information. See November lines 132–136.
+- **L2 required:** `crypto_onramp_missing_document_verification` can reflect an L2 failure, a transaction requiring L2 from verified L0/L1, **or a risk-rule identity challenge even below the current tier's amount limit**. Inspect `kyc_tiers`; use `verifyIdentity` for L1/L2, and the guide's partial L1 step before `verifyIdentity` for L0. See November lines 137–144.
 
-## Session Error Codes → Next Steps
+## Status interpretation
 
-| Error | Meaning | Next Step |
-| --- | --- | --- |
-| `crypto_onramp_missing_minimum_identity_verification` | L0 failed | Collect full L0 |
-| `crypto_onramp_missing_identity_verification` | L1 required | If current=L1: full L1; if current=L0: partial (`dob`, `id_number`, `id_type` only) |
-| `crypto_onramp_missing_document_verification` | L2 required | If current=L1/L2: `verifyIdentity()`; if current=L0: partial L1 first, then `verifyIdentity()` |
+Retrieve CryptoCustomer by `customerId` and inspect `kyc_tiers`. The guide defines **current tier** as the highest tier with status other than `not_available` or `not_started`; `pending` and `rejected` count as attempted, **not verified**. Verify a tier only when its own `verification_status` is `verified`. Other values are `not_available`, `not_started`, `pending`, and `rejected`. The guide also lists the deprecated `verifications` fallback and a `provided_fields` table; consult November lines 54–115 for the exact response schema and example.
 
-## Current Tier Detection (JS)
+## Related
 
-```js
-const currentTier = ["l2", "l1", "l0"].find((t) =>
-  ["pending", "rejected", "verified"].includes(
-    customer.kyc_tiers.find((k) => k.tier === t)?.verification_status
-  )
-);
-```
-
-## Related Pages
-
-- [[stripe-crypto-onramp]] — concept page (updated with KYC tier system)
-- [[source-stripe-crypto-onramp-embedded-components-integration]] — full integration guide
+- [[stripe-crypto-onramp]] — onramp modes, historical access scope, and related sources.
+- [[stripe]] — Stripe provider.
+- [[source-stripe-crypto-onramp-embedded-components-integration]] — separate Embedded Components integration guide with May 2026 regional/access qualifications.
 
 ## Raw Sources
 
-- [[stripe-crypto-onramp-kyc-integration-2026]] — verbatim KYC tier guide (142 lines)
+- [[raw/stripe-crypto-onramp-kyc-integration-guide-2026-11-07|Embedded Components KYC guide, 2026-11-07]] — new Platform Pay sequencing, identity/error semantics, EU note and risk challenge.
+- [[raw/stripe-crypto-onramp-kyc-integration-2026|Embedded Components KYC guide, 2026-05-11]] — earlier KYC sequence and tier/error table.

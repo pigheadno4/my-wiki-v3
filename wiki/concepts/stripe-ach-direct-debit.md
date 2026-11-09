@@ -7,9 +7,9 @@ tags: [stripe, ach, bank-debit, us-bank-account, mandates, disputes, financial-c
 
 ## Definition
 
-ACH Direct Debit lets US businesses pull funds from customers' US bank accounts. API enum: `us_bank_account`. Business-initiated, delayed notification, reusable. Not guaranteed — disputes and payment failures possible.
+ACH Direct Debit lets eligible businesses in the documented US and European locations pull funds from customers' US bank accounts, with Canada labeled private preview in the 2026-11-07 capture. API enum: `us_bank_account`. USD presentment, delayed notification, reusable, and not guaranteed — disputes and payment failures remain possible. Account and industry eligibility require separate confirmation.
 
-**Currency**: USD only. **Country**: US customers; 33+ business countries.
+**Presentment currency**: USD. **Settlement**: the 2026-11-07 capture lists local-currency settlement for eligible merchant Stripe accounts. **Customer location**: US; business locations include the listed European countries and US, with Canada in private preview.
 
 ## Settlement
 
@@ -25,7 +25,7 @@ Required before any debit. Two types:
 - **Online**: embedded in checkout UI (Stripe-hosted flows handle automatically)
 - **Offline**: written/verbal authorization for custom flows
 
-Custom payment forms must display mandate text. Stripe emails mandate confirmation + microdeposit notification to customer's billing email.
+Custom Payment Intents forms must display mandate terms before confirmation. Nacha requires an electronic or hard copy of the mandate. With a billing email, Stripe defaults to sending mandate confirmation and, if microdeposit verification is needed, its verification notification. Custom notification flows also require microdeposit reminders.
 
 ## Verification
 
@@ -43,20 +43,23 @@ This requires beta access and server-side eligibility/validation. Supplying it d
 - **Personal accounts**: up to 60 calendar days
 - **Business accounts**: up to 2 business days
 - **Final and uncontestable** through ACH network — resolve directly with customer
-- First dispute: mandate invalidated (must collect new mandate)
-- Second dispute: bank account blocked entirely
+- A disputed payment invalidates the mandate associated with that PaymentMethod. Resolve the dispute with the customer and collect new mandate authorization before attempting another charge with it.
+- If a subsequent payment from the same bank account is disputed, Stripe blocks that account from further reuse. This is a same-bank-account threshold, not an unrelated second dispute; the dated 2026-05-02 [[source-stripe-ach-accept-payment]] guide also describes it as more than one disputed payment from that account.
 
-**Proof of Authorization inquiry**: upload evidence via Dashboard or Files API; `charge.dispute.created` with `warning_needs_response` status.
+**Proof of Authorization inquiry**: when Stripe requests proof before the bank decides a late return, `charge.dispute.created` can carry `warning_needs_response`; submit authorization evidence only on request and only once via Dashboard or Files API. This inquiry is not an appeal of a final ACH dispute.
 
 ## Blocked Accounts
 
-Stripe blocks accounts on certain ACH returns. Listen for `payment_method.automatically_updated` event; check `us_bank_account.status_details.blocked`. Block removed event signals account is usable again.
+Stripe can block bank accounts on certain ACH returns. Listen for `payment_method.automatically_updated` and inspect `us_bank_account.status_details.blocked`. When Stripe removes a block, the payment method can be reused only if an active mandate exists or a new one is collected.
 
 ## Refunds
 
 - Max 180 days from original payment
-- Min 3 business days to process
+- 2026-11-07 capture: asynchronous full refunds, up to 3 business days to complete; partial refunds marked unsupported. The 2026-05-02 capture instead listed partial refunds supported and at least 3 business days to process.
 - Appears as credit on bank statement (not labeled "refund")
+
+> [!warning] Contradiction
+> The two dated ACH captures disagree on partial-refund support and the direction of the three-business-day timing. Neither establishes an effective change date or behavior for a specific historical payment; verify the account and payment before promising either.
 
 ## Statement Descriptor
 
@@ -96,16 +99,18 @@ Connect: platform Dashboard setting covers direct charges + destination charges 
 
 ## SEC Codes
 
-Standard Entry Class (SEC) codes define how a customer authorized the transaction. Stripe defaults to WEB (consumers) and CCD (businesses).
+Standard Entry Class (SEC) codes define how a customer authorized the transaction. **When no mandate collection method is specified**, the captured Stripe guide says WEB is the default for consumer bank accounts and CCD for business bank accounts.
 
 | Code | Name | Use case |
 | --- | --- | --- |
 | WEB | Internet/Mobile Initiated | Consumer, internet or mobile; refunds use PPD |
 | CCD | Corporate Credit or Debit | All `account_holder_type=company` PaymentMethods |
-| PPD | Prearranged Payment and Deposit | Written/signed consumer authorization; requires `collection_method: 'paper'` |
-| TEL | Telephone-Initiated | Oral authorization over phone; private beta; single entries only |
+| PPD | Prearranged Payment and Deposit | Standing or single-entry consumer authorization in writing, signed **or otherwise authenticated**; provide a copy to the customer; the captured PPD mandate flow uses `collection_method: 'paper'` |
+| TEL | Telephone-Initiated | Oral authorization over phone; November 7, 2026 capture labels private preview; single entries only, no standing or recurring TEL entries |
 
-PPD requires `mandate_data.customer_acceptance.type: 'offline'` + `payment_method_options.us_bank_account.mandate_options.collection_method: 'paper'`. TEL requires an existing customer relationship and captured oral authorization (recording or prior written notice).
+PPD requires offline customer acceptance and `payment_method_options.us_bank_account.mandate_options.collection_method: 'paper'` in the captured examples. For TEL, the November guide permits either a qualifying direct existing merchant-customer relationship **or**, without one, a customer-initiated telephone call; an affiliate-only relationship does not qualify. It also requires commercially reasonable identity and routing-number verification and explicit oral authorization containing online-mandate information and a customer inquiry number. Capture that authorization through an audio recording (subject to applicable recording law) or written notice **before the first debit**; the guide's sample wording is not prescribed verbatim. See [[source-stripe-ach-sec-codes]].
+
+> [!warning] Contradiction: the previous concept said TEL was private beta and universally required an existing relationship. The November 7, 2026 capture labels it private preview and includes the customer-initiated-call alternative. Neither capture proves access for a particular account.
 
 ## vs Instant Bank Payments
 
@@ -120,10 +125,10 @@ PPD requires `mandate_data.customer_acceptance.type: 'offline'` + `payment_metho
 
 - [[source-stripe-ach-direct-debit]] — primary source: settlement, mandates, disputes, verification, refunds, Connect, testing
 - [[source-stripe-ach-accept-payment]] — integration guide: Checkout/Elements/PaymentIntents, verification options, Financial Connections, payment reference, target debit date
-- [[source-stripe-ach-set-up-payment]] — save for future: Checkout setup mode + SetupIntents API, Financial Connections, microdeposit verification, balance check
-- [[source-stripe-ach-migration]] — legacy migration: T+6→T+4, balance type change, mandate enforcement, microdeposit change, webhook mapping
-- [[source-stripe-ach-migrate-bank-accounts]] — migrate existing bank accounts: mandate creation, BankAccount as PaymentMethod, Checkout saved accounts, Invoices/Subscriptions
+- [[source-stripe-ach-set-up-payment]] — save for future: dated 2026-05-02 Checkout setup mode, Elements and iOS/Android/React Native SetupIntent variants, Financial Connections and microdeposit verification; 2026-11-07 base URL is a five-route navigation index, with variant instructions not fetched
+- [[source-stripe-ach-migration]] — dated legacy-to-Payment Intents/Checkout migration: T+6 versus T+4 (conditional T+2), active mandates, conditional balance-type updates, rare two-microdeposit fallback, and branch-specific webhook matrix; payout descriptors might differ
+- [[source-stripe-ach-migrate-bank-accounts]] — 2026-05-02 full legacy BankAccount migration guide: verified-account prerequisites differ for Checkout and Payment Intents, with active mandate for the latter and mandate acknowledgment before Invoicing/Subscriptions defaults; 2026-11-07 base URL is a two-variant index
 - [[source-stripe-subscriptions-ach-debit]] — ACH subscription setup: 10-day microdeposit window, default PM webhook required, trial flow via SetupIntent, Checkout delayed notification events, test account table
 - [[source-stripe-ach-migrate-from-processor]] — migrate from another processor: Stripe-managed vs self-service, verification_method skip, raw bank details SetupIntent
-- [[source-stripe-ach-sec-codes]] — SEC codes: WEB/CCD/PPD/TEL definitions, defaults, PPD paper mandate integration, TEL beta requirements
+- [[source-stripe-ach-sec-codes]] — SEC codes: WEB/CCD/PPD/TEL definitions, defaults, PPD paper mandate examples, and November 7 private-preview TEL conditions
 - [[source-stripe-ach-nacha-compliance]] — Nacha compliance (2026-03-20): PURCHASE label requirement, transaction_purpose API field, Dashboard classification setting

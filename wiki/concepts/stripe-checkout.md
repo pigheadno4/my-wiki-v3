@@ -23,7 +23,7 @@ Stripe's low/no-code hosted or embedded payment form, built on the Checkout Sess
 
 ## 3 Hosting Modes
 
-1. **Stripe-hosted redirect** — customer redirected to `checkout.stripe.com`; simplest; server redirects to `session.url`; client checks `?success=true`/`?canceled=true`
+1. **Stripe-hosted redirect** — customer is sent to Stripe's hosted Checkout page via `session.url`; the April 2026 client sample checks `?success=true`/`?canceled=true` for return-page messaging. Wait for payment success before fulfillment; the URL query is not payment proof.
 2. **Embedded form** (`ui_mode: 'embedded_page'`) — Checkout renders in iframe on your site; server returns `clientSecret`; `return_url` with `{CHECKOUT_SESSION_ID}` template; return page checks `session.status` via `/session-status` endpoint; `open` → remount, `complete` → success
 3. **Checkout Elements** (`ui_mode: 'elements'`) — initialize with `stripe.initCheckoutElementsSdk`; full CSS control; no order summary
 
@@ -52,7 +52,7 @@ The retained `@stripe/stripe-js@9.12.1` declarations target the `dahlia` Stripe.
 - Checkout actions add element validation and optional-line-item add/remove operations.
 - Session state adds optional items, removable line items, price IDs, decimal unit amounts, currency options, and surcharge status and totals.
 
-This is a cumulative v8-to-v9 package comparison, not the 9.12.1 patch note alone. The older [[source-stripe-checkout-elements-beta-changelog]] remains useful as dated Clover migration evidence, but its “latest” label and `initCheckout()` example are not current for the retained v9 declarations.
+This is a cumulative v8-to-v9 package comparison, not the 9.12.1 patch note alone. The [[source-stripe-checkout-elements-beta-changelog]] remains dated beta-to-Basil-to-Clover migration evidence; its November 7, 2026 capture explicitly excludes integrations on Clover or later. Its former “latest” label and Clover `initCheckout()` example are not current for the retained v9 declarations. The refreshed illustrative pre-Basil Endive beta header does not establish an Endive beta integration path.
 
 The approved `@stripe/stripe-js@9.13.0` delta adds `features.promotionCodeCollection?: 'auto' | 'never'` to Checkout Form options. Its default is `auto`; `never` suppresses the collection UI. This is only a display control when the server-created Checkout Session already enables `allow_promotion_codes`, not a client-side replacement for that Session setting.
 
@@ -131,13 +131,13 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 - **Custom domains**: paid feature; applies to Checkout (hosted page only), **Payment Links**, and the **customer portal**
 - **Session expiry**: 24h default; configurable 30min–24h via `expires_at`; can also expire manually via API
 - **Mixed cart**: set `mode: 'subscription'` + include both recurring + one-time Price IDs in `line_items`
-- **Save payment methods**: `payment_intent_data.setup_future_usage` (payment mode) or automatic (subscription mode); saved PMs don't appear for return purchases in Checkout
+- **Save payment methods**: `payment_intent_data.setup_future_usage` (payment mode) or automatic saving in subscription mode can save cards for later charges, but those cards have `allow_redisplay: 'limited'` and don't prefill returning Checkout purchases. With `saved_payment_method_options.payment_method_save: 'enabled'`, an optional customer consent checkbox can save an eligible card with `allow_redisplay: 'always'` for Checkout prefill; Checkout only prefills saved cards.
 - **Guest customers**: Sessions without a Customer use guest customers; Stripe groups by card/email/phone; read-only (can't save PMs or charge later); `customer_creation` param controls auto-creation; Dashboard → Customers → Guests tab (not in Payments exports)
 - **Checkout for agents**: structured controls + programmatic guidance for AI agents navigating checkout pages (currency, limits, next steps)
 - **Address collection**: `billing_address_collection: 'required'` to always collect billing address; `shipping_address_collection.allowed_countries` for shipping (ISO two-letter codes); shipping details in `shipping_details` property + `checkout.session.completed` webhook
-- **Shipping rates**: `shipping_options` param with pre-created ShippingRate ID or inline `shipping_rate_data`; fixed amount only; payment mode only; first option pre-selected; delivery estimates with `hour`/`day`/`business_day` units; shipping tax via `tax_code: 'txcd_92010001'`
+- **Shipping rates (2026-04-21 guide)**: `shipping_options` with a pre-created ShippingRate ID or inline `shipping_rate_data` on payment-mode Sessions; its fixed-rate examples charge one amount for the order rather than scaling by item count. The first option in the `shipping_options` array is pre-selected for the customer. Delivery estimates use `hour`/`day`/`business_day`; shipping tax can use `tax_code: 'txcd_92010001'`. That guide separately linked dynamic shipping-rate updates as a preview feature. See [[source-stripe-charge-shipping]] for the dated two-path guide and later variant index.
 - **Payment method migration**: remove `payment_method_types` to use Dashboard-managed dynamic methods; non-default PMs (bank redirects) turn off on migration — re-enable in Dashboard; Apple Pay on by default, Google Pay off by default; Google Pay filtered when automatic_tax + no shipping address
-- **Delayed notification PMs** (2–14 day delay): Bacs, bank transfers, Boleto, Canadian PAD, Konbini, OXXO, Pay by Bank, SEPA, ACH — must handle `checkout.session.async_payment_succeeded` + `checkout.session.async_payment_failed`; on `checkout.session.completed` check `payment_status === 'paid'` before fulfilling
+- **Delayed notification PMs** (April 21, 2026 guide): if the integration plans to use Bacs, bank transfers, Boleto, Canadian PAD, Konbini, OXXO, Pay by Bank, SEPA, or ACH, its delayed-payment fulfillment flow needs to distinguish authorization from payment success. For webhook-driven automatic fulfillment, the guide says an update might be needed when adding the first delayed method: check `payment_status === 'paid'` before fulfilling on `checkout.session.completed`, and handle later `checkout.session.async_payment_succeeded` or `checkout.session.async_payment_failed`. See [[source-stripe-migrate-payment-methods-dashboard]].
 - **Dynamic shipping options (historical Embedded Checkout path)**: `permissions.update_shipping_details: 'server_only'` and `onShippingDetailsChange` previously supported server recalculation, but `@stripe/stripe-js@9.14.0` deprecates the callback because dynamic shipping updates are deprecated in Embedded Checkout. Preserve older guidance for existing-version maintenance and verify the current replacement before new implementation.
 - **Dynamic line items**: **not supported** in hosted or embedded Checkout; **supported** in Elements path (Checkout Sessions API) via beta `runServerUpdate` pattern (SDK `2025-03-31.basil`+) — use cases: inventory checks, cross-sells, subscription interval toggle, order-total-based shipping/tax updates; see [[source-stripe-checkout-dynamic-line-items]]
 - **Manual approval** (CS only): run server-side logic (fraud, inventory, PM checks) before finalizing payment; compatible with dynamic line items; PI alternative is "finalize payments on server" — see [[source-stripe-checkout-manual-approval]]
@@ -200,7 +200,7 @@ The APIs remain private preview. Host visibility/resume and per-controller confi
 ## Fulfillment Pattern
 
 - **Dual trigger**: webhook (required) + landing page (optional, for immediate UX)
-- **`fulfill_checkout` function**: idempotent; expand `line_items`; check `payment_status !== 'unpaid'`; record fulfillment status
+- **`fulfill_checkout` function**: idempotent; expand `line_items`; record fulfillment status. The retained `payment_status !== 'unpaid'` pattern includes orders that require no immediate payment; for paid digital credits, require `payment_status === 'paid'` before granting, or wait for `checkout.session.async_payment_succeeded` when payment is delayed.
 - **Events**: `checkout.session.completed` (immediate) + `checkout.session.async_payment_succeeded` (delayed PMs like ACH)
 - **Landing page URL**: `success_url` (hosted), `return_url` (embedded), `after_completion.redirect.url` (Payment Links) — all use `{CHECKOUT_SESSION_ID}` template
 - Hosted Checkout waits up to 10s for webhook response before redirect; not supported for organization webhook endpoints
@@ -209,7 +209,7 @@ The APIs remain private preview. Host visibility/resume and per-controller confi
 
 | Event | Trigger | Action |
 | --- | --- | --- |
-| `checkout.session.completed` | Payment succeeded | Fulfill order |
+| `checkout.session.completed` | Checkout Session completed; payment may still be pending for a delayed method | For paid orders, require `session.payment_status === 'paid'` before fulfillment; otherwise await asynchronous success and handle failure. For no-cost orders, fulfill on completion under the no-payment-required rule above. |
 | `checkout.session.async_payment_succeeded` | Async method (ACH/voucher) succeeded | Fulfill order |
 | `checkout.session.async_payment_failed` | Async method failed | Notify customer |
 
@@ -242,7 +242,7 @@ The APIs remain private preview. Host visibility/resume and per-controller confi
 - [[source-stripe-checkout-build-subscriptions]] — End-to-end subscription integration: product catalog, Checkout Session, webhooks, portal
 - [[source-stripe-checkout-subscriptions-quickstart]] — May and November 2026 hosted subscription sample; recurring Price lookup key, portal identity and active-status check
 - [[source-stripe-checkout-sessions]] — Checkout Sessions API deep dive
-- [[source-stripe-accept-a-payment]] — full integration guide (4 UI modes, mobile, test cards)
+- [[source-stripe-accept-a-payment]] — 2026-11-07 variant index plus retained 2026-04-20 guide: hosted and embedded Checkout, Checkout Sessions Elements, separate Payment Intents Elements, mobile PaymentSheet, and test examples
 - [[source-stripe-build-payments-page]] — Checkout Page vs Elements comparison table
 
 ## Sources
@@ -250,16 +250,15 @@ The APIs remain private preview. Host visibility/resume and per-controller confi
 - [[source-github-stripe-react-native]] - native 0.81.0 private-preview presentation/confirmation bridge and fulfillment/status boundary
 - [[source-stripe-checkout-sessions]] — Checkout Sessions API: 3 UI modes, 5 built-in features, Adaptive Pricing, vs Payment Intents
 - [[source-stripe-how-checkout-works]] — How Checkout works: 24-feature table (built-in vs customizable), mixed cart, session expiry, save payment details, guest customers, Checkout for agents
-- [[source-stripe-checkout-quickstart]] — Hosted + embedded quickstart: 3 modes, key session params, React client, EmbeddedCheckoutProvider, return_url pattern
+- [[source-stripe-checkout-quickstart]] — April and November 2026 hosted redirect quickstart, with a separate April 2026 embedded sample; November adds server-owned price/availability and payment-success fulfillment cautions.
 - [[source-stripe-checkout-form]] — Checkout form (custom path): single iframe, 100+ methods, built-in returning UI, Appearance API, 2 layouts
 - [[source-stripe-checkout-appearance]] — Branding: branding_settings API, logo/icon logic (hosted), Connect override, 24-font compatibility table
 - [[source-stripe-checkout-card-brands]] — Card brand blocking: brands_blocked param, 4 brands (discover_global_network covers Discover/Diners/JCB/UnionPay/Elo), filters Link/Apple Pay/Google Pay/saved PMs
 - [[source-stripe-checkout-product-images]] — Product images: products.create images param, inline price_data.product_data, drives conversion
-- [[source-stripe-accept-a-payment]] — Full guide: webhooks, saved PMs, auth+capture, mobile PaymentSheet
 - [[source-stripe-build-payments-page]] — Checkout Page vs Elements: feature matrix, maintenance tradeoffs
 - [[source-stripe-checkout-shipping]] — Charge for shipping: ShippingRate API, shipping_options, delivery estimates, shipping tax
 - [[source-stripe-checkout-taxes]] — Collect taxes: automatic_tax param, new/existing customer flows, Accounts v2 + Customers v1, customer_update, wallet constraints
-- [[source-stripe-checkout-custom-shipping-options]] — Dynamic shipping: embedded only, permissions.update_shipping_details, onShippingDetailsChange callback, server endpoint pattern
+- [[source-stripe-checkout-custom-shipping-options]] — Historical 2026-04-20 Embedded Checkout payment-mode guide: server endpoint, `permissions.update_shipping_details`, and `onShippingDetailsChange`; the callback is deprecated in Stripe.js 9.14.0 (see version boundary above).
 - [[source-stripe-checkout-dashboard-payment-methods]] — Dashboard payment methods: migration guide, Apple Pay/Google Pay defaults, delayed notification PM webhook pattern, test table
 - [[source-stripe-adaptive-pricing]] — Adaptive Pricing: 150+ countries, 20 local PMs, presentment_details, testing, restrictions, 0% merchant / 2–4% customer fee
 - [[source-stripe-checkout-discounts]] — Discounts: Coupon API, apply to session, promotion codes, all restriction params, uniqueness rules, lifecycle
@@ -281,5 +280,5 @@ The APIs remain private preview. Host visibility/resume and per-controller confi
 - [[changelog-github-react-stripe-js]] — package-qualified React Stripe.js release history
 - [[stripe-elements]] — Stripe Elements concept page (all 7 elements, React integration patterns)
 - [[source-stripe-checkout-custom-components]] — Custom fields (3 types), custom text (4 placements), ToS consent, payment method reuse agreement, localization, Dashboard policies
-- [[source-stripe-inapp-digital-goods-checkout]] — iOS digital goods app-to-web flow: origin_context=mobile_app, Universal Links, SKPaymentQueue gate, checkout.session.completed fulfillment
+- [[source-stripe-inapp-digital-goods-checkout]] — captured US iOS digital-goods app-to-web flow: qualified Accounts v2 or retained Customers v1, Universal Links and StoreKit gate; paid-status or asynchronous-success server fulfillment
 - [[source-stripe-managed-payments-setup]] — Checkout with Managed Payments: managed_payments.enabled, API 2025-03-31.basil, all-products-eligible rule, tax behavior config

@@ -1,0 +1,121 @@
+{
+  "job_id": "payments-ach-direct-debit-migrating-from-charges",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07.md",
+  "raw_sha256": "af65f8f540ac35713b814ff1a927c3527f268ac45942d56280519c28046e7f32",
+  "source_before_sha256": "c09784c5a1ae65818ffb82921afc3e469525f93ef6e9fcf301181944d3a23372",
+  "source_page": "---\ntitle: \"Stripe: Migrate Existing ACH Bank Accounts\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ach-direct-debit/migrating-from-charges\"\nraw_files:\n  - \"stripe-ach-migrate-bank-accounts-2025.md\"\ntags: [stripe, ach, us-bank-account, migration, bank-account, mandates, checkout-sessions, payment-intents]\n---\n\n## Summary\n\nThe 2026-05-02 guide at this canonical URL explains how to reuse existing ACH `BankAccount` objects collected through Stripe's Tokens API with Checkout Sessions or the Payment Intents API. It includes verified-account prerequisites, mandate acknowledgment for Payment Intents, saved-bank-account display, Invoicing and Subscriptions defaults, and a criterion for identifying legacy Charges. The 2026-11-07 capture of the same base URL is a short index linking to separate Checkout Sessions and Payment Intents variants; it does not reproduce those instructions. The linked variants were not captured in this unit, so the older mechanics remain dated evidence rather than verified November behavior.\n\n> [!warning] Historical migration notice\n> The 2026-05-02 guide said Stripe was removing support for legacy ACH Direct Debit integrations and that merchants creating legacy ACH payments must migrate to Payment Intents or Checkout Sessions (old raw lines 16\u201318). The November index does not establish the current retirement schedule or status.\n\n## Prerequisites by integration path (2026-05-02 guide)\n\n| Path | Saved bank-account prerequisite |\n| --- | --- |\n| Checkout Sessions API | The customer's bank account is verified. |\n| Payment Intents API | The customer's bank account is verified **and** an active mandate exists for that bank account. |\n\nAn already verified BankAccount does not need repeat verification for either path (old raw lines 22\u201328). An existing active mandate can satisfy the Payment Intents prerequisite; creating another mandate is not universally required before every use. This distinction qualifies the guide's later first-use mandate examples.\n\n## Checkout Sessions path (2026-05-02 guide)\n\nTo display saved verified bank accounts, the guide's Checkout Sessions example passes a `customer`, sets `payment_method_types: ['us_bank_account']`, and uses `saved_payment_method_options.allow_redisplay_filters: ['unspecified', 'always']` (old raw lines 34\u201370). It says Checkout then displays saved verified accounts for that customer. The example uses `ui_mode: 'elements'` and `return_url`; do not treat those fields as a universal Checkout configuration.\n\nIf the Customer already has an email, the guide says Checkout pre-fills it and does not let the customer edit it; the React and HTML examples check the Session email before rendering an editable input (old raw lines 73\u201399).\n\n## Payment Intents path and mandate (2026-05-02 guide)\n\nConfirming a PaymentIntent or SetupIntent requires authorization to debit the account. If a previously saved verified BankAccount already has an active mandate, it can be reused under the guide's stated prerequisite. Otherwise, the guide shows these ways to document authorization before first use: confirm a SetupIntent with `mandate_data.customer_acceptance` (including an offline example); provide `mandate_data` at PaymentIntent confirmation; or use a PPD mandate for qualifying offline preauthorization. It also describes prior online authorization data and warns that placeholder IP or user-agent data should be identifiable if used (old raw lines 105\u2013161). Authorization collected for the first use can support later reuse of the BankAccount as a PaymentMethod, subject to mandate validity (old raw line 114).\n\nThe captured examples pass the saved `BankAccount` ID directly as `payment_method` in PaymentIntent or SetupIntent calls (old raw lines 164\u2013193). `paymentMethods.retrieve(BANKACCOUNT_ID)` returns a `us_bank_account` PaymentMethod view; the guide says this does **not** create a second object, only another view of the same underlying bank account (old raw lines 196\u2013263).\n\n## Invoicing and Subscriptions (2026-05-02 guide)\n\nFor continued use of a saved BankAccount, **collect mandate acknowledgment first**. Then update the customer's `invoice_settings.default_payment_method`, or set `default_payment_method` directly on the invoice or subscription as appropriate (old raw lines 265\u2013329). Setting a default alone is not authorization to debit. The example uses the same saved bank-account ID in these fields.\n\n## Identify legacy ACH Charges (2026-05-02 guide)\n\nThe guide says `Charge.payment_method_details.type` is `ach_debit` for a legacy integration and `us_bank_account` for the newer integration (old raw lines 332\u2013334). It lists legacy creation paths: Create Charge API; Invoices or Subscriptions charging a Customer's legacy BankAccount `default_source` without a `default_payment_method` on the Customer, invoice, or subscription; and a PaymentIntent using `payment_method_type: ach_debit` (old raw lines 336\u2013340). These are dated identification criteria from the May capture, not new November API rules.\n\n## Related\n\n- [[stripe-ach-direct-debit]] \u2014 ACH Direct Debit concept\n- [[source-stripe-ach-direct-debit]] \u2014 payment-method timing, mandates, disputes, and refunds\n- [[source-stripe-ach-migration]] \u2014 broader legacy ACH migration\n\n## Related raw API references\n\n- [[raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07|2026-11-07 migration variant index]] \u2014 links to Checkout Sessions and Payment Intents variants; no instructions captured in this base-page snapshot.\n\n## Raw Sources\n\n- [[raw/stripe-ach-migrate-bank-accounts-2025|2026-05-02 full migration guide]]\n",
+  "quotes": [
+    {
+      "text": "Learn how to migrate existing bank accounts to the Payment Intents API or Checkout Sessions API.",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout Sessions API](https://docs.stripe.com/payments/ach-direct-debit/migrating-from-charges.md?integration-path=checkout)",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Payment Intents API](https://docs.stripe.com/payments/ach-direct-debit/migrating-from-charges.md?integration-path=payment-intent)",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you create legacy ACH Direct Debit payments, you must migrate to the [Payment Intents API]",
+      "location": "raw/stripe-ach-migrate-bank-accounts-2025.md:18"
+    },
+    {
+      "text": "- **Checkout Sessions API:** The customer\u2019s bank account has been verified.",
+      "location": "raw/stripe-ach-migrate-bank-accounts-2025.md:24"
+    },
+    {
+      "text": "- **Payment Intents API:** The customer\u2019s bank account has been verified, and an [active mandate]",
+      "location": "raw/stripe-ach-migrate-bank-accounts-2025.md:26"
+    },
+    {
+      "text": "After you collect mandate acknowledgment, to continue using [Invoicing]",
+      "location": "raw/stripe-ach-migrate-bank-accounts-2025.md:267"
+    },
+    {
+      "text": "On a [Charge](https://docs.stripe.com/api/charges/object.md) object, the `payment_method_details.type` property is `ach_debit` for the legacy integration and `us_bank_account` for the newer integration.",
+      "location": "raw/stripe-ach-migrate-bank-accounts-2025.md:334"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-ach-migrate-bank-accounts-2025.md": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 255
+      },
+      {
+        "start": 256,
+        "end": 340
+      }
+    ],
+    "wiki/sources/source-stripe-ach-migrate-bank-accounts.md": [
+      {
+        "start": 1,
+        "end": 32
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d5118ad7727262cadc4d3a7b/content.diff": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 255
+      },
+      {
+        "start": 256,
+        "end": 342
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "ach-migrate-bank-accounts-dated-route",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- [[source-stripe-ach-migrate-bank-accounts]] \u2014 migrate existing bank accounts: mandate creation, BankAccount as PaymentMethod, Checkout saved accounts, Invoices/Subscriptions",
+      "new_text": "- [[source-stripe-ach-migrate-bank-accounts]] \u2014 2026-05-02 full legacy BankAccount migration guide: verified-account prerequisites differ for Checkout and Payment Intents, with active mandate for the latter and mandate acknowledgment before Invoicing/Subscriptions defaults; 2026-11-07 base URL is a two-variant index",
+      "reason": "Make the route's dated guide and navigation-only November capture discoverable without projecting older integration details as current variant behavior.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The linked November variants were not captured in this unit."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/ach-direct-debit/migrating-from-charges, [[source-stripe-ach-migrate-bank-accounts]] preserves the detailed 2026-05-02 migration guidance but treats the 2026-11-07 base page as navigation. The old capture contains path-specific prerequisites and migration steps (old raw lines 16\u201328, 34\u2013340); the new capture has only a variant index linking to Checkout Sessions and Payment Intents pages (new raw lines 7\u201314). The linked variant bodies were not collected, so their current behavior remains unverified.",
+    "Q2": "For https://docs.stripe.com/payments/ach-direct-debit/migrating-from-charges, [[source-stripe-ach-migrate-bank-accounts]] corrects the former unconditional mandate wording. The May guide requires a verified account for Checkout and a verified account plus active mandate for Payment Intents, with no repeat verification for an already verified account (old raw lines 22\u201328); mandate acknowledgment precedes invoice or subscription default updates (old raw lines 265\u2013299). The November index merely names those two paths (new raw lines 11\u201314) and cannot update these prerequisites."
+  },
+  "status": "candidate_ready"
+}

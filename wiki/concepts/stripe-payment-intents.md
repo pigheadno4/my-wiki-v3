@@ -22,7 +22,7 @@ Stripe's core payment API for building fully custom checkout flows. Tracks the c
 
 ## Limitations vs Checkout Sessions
 
-- **No native shipping rates** — must add shipping cost to product total manually, or switch to Checkout Sessions
+- **No built-in shipping-rate calculation or definition** — the 2026-04-21 Payment Intents guide describes calculating the shipping-inclusive total yourself or using Checkout Sessions; neither route is presented as the sole recommendation. See [[source-stripe-charge-shipping]].
 - **No built-in tax** — must call Tax API separately and link calculations
 - **No built-in discounts/coupons** — must calculate manually
 - **No session expiration** — sessions don't auto-expire (Checkout Sessions expire after 24h)
@@ -133,6 +133,7 @@ stripe.paymentIntents.create({
 
 ## Sources
 
+- [[source-stripe-api-tour]] — conceptual same-URL tour of PaymentIntent, PaymentMethod, Charge, and Event roles; its state sketch is simplified and its Charge/retry language is conditional.
 - [[source-stripe-payment-intents-quickstart]] — Full quickstart: server setup, Elements wiring, confirmPayment, return page, Stripe Tax, email receipts, off-session charging
 - [[source-stripe-elements-advanced-payments]] — Checkout Sessions vs Payment Intents comparison matrix
 - [[source-stripe-payment-element-design-integration]] — 2×2 integration design framework: when to create Intent × where to confirm (deferred vs eager, client vs server)
@@ -143,7 +144,7 @@ stripe.paymentIntents.create({
 - [[source-stripe-auth-and-capture]] — Auth+capture: validity windows per card brand, per-PM capture rules, capture_method=manual vs automatic_delayed (private preview), partial capture
 - [[source-stripe-payment-element-migration]] — Migration guide: CardElement → PaymentElement, elements.submit() pattern, 11 Elements options, ConfirmationToken migration
 - [[source-stripe-two-step-confirmation]] — Two-step checkout: ConfirmationToken flow, Elements options table, saved PMs, tax calc, layouts, limitations
-- [[source-stripe-accept-payment-deferred]] — Deferred intent: render Element before PI, elements.submit() required, dynamic updates, payment+setup modes
+- [[source-stripe-accept-payment-deferred]] — Deferred intent: retained 2026-05-11 guide covers payment, setup, and subscription modes; render Element before server-side Intent or Subscription creation, submit before branch-specific confirmation, and update displayed amounts when needed. The 2026-11-07 canonical capture is a variant index, not current implementation evidence.
 - [[source-stripe-finalize-payments-server]] — Server-side confirmation: paymentMethodCreation='manual', ConfirmationToken (12hr expiry), handleNextAction, SDK min versions
 - [[source-github-stripe-js]] — package-qualified Stripe.js loader and declaration history through `@stripe/stripe-js@9.15.0`, including ConfirmationToken metadata typing
 - [[source-stripe-payments-without-auth]] — Legacy US/CA-only: CardElement + createPaymentMethod, error_on_requires_action, synchronous, no webhooks

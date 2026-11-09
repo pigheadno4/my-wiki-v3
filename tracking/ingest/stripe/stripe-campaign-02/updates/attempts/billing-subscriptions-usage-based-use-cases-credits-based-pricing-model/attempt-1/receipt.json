@@ -1,0 +1,186 @@
+{
+  "job_id": "billing-subscriptions-usage-based-use-cases-credits-based-pricing-model",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07.md",
+  "raw_sha256": "cd464815aa8343cc45bc827f8ab1283cad7fb5c169a433622c91fdcc951e9f40",
+  "source_before_sha256": "3e4338de5be3a13eb5f14192e3252306d8e4b6db4166c80fc544c9cef3f7e584",
+  "source_page": "---\ntitle: \"Stripe: Set Up a Credit-Based Pricing Model\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/usage-based/use-cases/credits-based-pricing-model\"\nraw_files:\n  - \"stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07.md\"\n  - \"stripe-usage-based-billing-credits-2025.md\"\ntags: [stripe, billing, usage-based, meters, subscriptions, pricing, credits, credit-grants]\n---\n\n## Overview\n\nStripe's May 5 and November 7, 2026 captures of this credit-based pricing guide describe the basic Billing Meters path: customers pre-purchase a monetary amount for eligible metered usage, with a two-meter Hypernian example, Credit Grants, balance and transaction lookups, and optional invoice funding. The November guide recommends Metronome for new usage-based integrations unless maintaining an existing Billing Meters integration. This is dated product guidance, not a statement that Billing Meters is deprecated or that an account has Metronome access. See [[stripe]] and [[stripe-usage-based-billing]].\n\n## Key takeaways\n\n- The Hypernian example has separate input and output token meters and monthly metered prices of 0.03 USD and 0.05 USD per token on one subscription. The May Node SDK price examples use `Decimal.from(\"3\")` and `Decimal.from(\"5\")`; the November curl examples use `unit_amount_decimal=3` and `=5`. These are capture-specific examples, not a general Node SDK requirement or evidence of Node SDK removal.\n- In this basic Billing Meters flow, credits burn when an invoice is created at the end of the billing period. After the invoice finalizes, Stripe applies applicable billing credits and updates the grant's available balance. Customers may exceed their prepaid balance during a cycle; this guide does not describe real-time credit burndown. The November guide labels advanced usage-based billing with real-time grants a private preview.\n- Billing credits apply only to subscription line items linked to meter prices, not Usage Records API items. A grant can optionally be limited to specified usage-based prices and given a priority.\n- The November guide describes customer-configured Accounts v2 as generally available for Connect users and in public preview for other Stripe users. Preview participants need a preview API version; its Account creation example sets `configuration.customer` and uses `Stripe-Version: 2026-10-28.preview`. The guide recommends customer-configured Accounts for most use cases, while also retaining Customers v1 examples. This capture does not establish an individual account's preview access.\n- In the November API examples, Credit Grant, Subscription, Credit Balance Summary, Credit Balance Transaction, invoice and invoice-item requests use `customer_account` for Accounts v2 versus `customer` for Customers v1. The May guide had a generic customer-configured Account substitution note but showed Node Customer examples.\n- The guide permits available-balance lookup and custom-period meter-event summaries. Because meter events process asynchronously, summaries and upcoming invoices may lag; these lookups are not a live, reconciled mid-cycle credit balance.\n\n> [!warning] Contradiction\n> Both captures say credits apply \"indiscriminately across meters,\" while their grant setup permits optional Eligibility limited to selected usage-based prices. The broad example must not be read as an unconditional all-meter guarantee.\n\n> [!warning] Contradiction\n> The November comparison says basic Billing Meters users cannot see live credit balances or usage totals mid-cycle, but later sections provide balance lookup and custom-period usage summaries. Read the comparison as a lack of real-time reconciliation, not an absence of any mid-cycle query.\n\n> [!warning] Contradiction\n> The November event-summary prose says to pass an Account ID to its `customer` parameter for customer-configured Accounts, yet its curl example retains `CUSTOMER_ID`. Its meter-event example likewise uses `CUSTOMER_ID` with no Accounts v2-specific payload example. These examples do not prove an Account-based meter-event payload shape.\n\n## Detail locators\n\n- Meters, optional dimensions, Hypernian prices and subscription: November raw lines 43\u2013160, 272\u2013315; May raw lines 25\u2013183, 261\u2013302.\n- Customer identity and preview scope: November raw lines 163\u2013215, including the preview header at 193\u2013206; May raw lines 185\u2013209.\n- Grant configuration, optional Eligibility and timing: November raw lines 218\u2013269, 373\u2013381; May raw lines 211\u2013259, 369\u2013377.\n- Meter events and asynchronous invoice preview: November raw lines 317\u2013370; May raw lines 304\u2013366.\n- Balance and transaction API route pairs: November raw lines 383\u2013441; May raw lines 379\u2013429.\n- Optional funding: create a one-off invoice and invoice item, then listen for `invoice.paid` before granting credits. The November Accounts v2 examples show invoice and item creation, while only the Customers v1 example shows finalization; that omission does not prove a different finalization rule. See November raw lines 444\u2013500 and May raw lines 432\u2013478.\n- Custom-period meter-event summary and Account-ID wording: November raw lines 502\u2013516; May raw lines 480\u2013501.\n- The May capture contains Node SDK examples, including `Decimal.from(\"1000\")` for an invoice item. The November capture uses curl. See the pinned raw for exact request examples; neither capture is an executed payment or invoice result.\n\n## Related\n\n- [[stripe-usage-based-billing]] \u2014 basic Billing Meters concepts and related source routes\n- [[source-stripe-usage-based-billing-credits-overview]] \u2014 Billing Credits eligibility and grant lifecycle\n- [[source-stripe-usage-based-billing-credits-setup]] \u2014 broader Credit Grant setup\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07|Stripe credit-based pricing guide, captured 2026-11-07]]\n- [[raw/stripe-usage-based-billing-credits-2025|Stripe credit-based pricing guide, captured 2026-05-05]]\n",
+  "quotes": [
+    {
+      "text": "Unless you\u2019re maintaining an existing Billing Meters integration, use [Metronome](https://docs.stripe.com/billing/usage-based.md) \u2014 Stripe\u2019s primary usage-based billing platform \u2014 for any new integration, including adding usage-based pricing to existing flat-rate subscriptions.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07.md:11"
+    },
+    {
+      "text": "Basic usage-based billing supports billing credits that reconcile at invoice time, but customers can exceed their balance during the cycle.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07.md:18"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07.md:179"
+    },
+    {
+      "text": "Billing credits only apply to [subscription](https://docs.stripe.com/api/invoices/object.md#invoice_object-subscription) line items that link to a [meter price](https://docs.stripe.com/api/prices/object.md#price_object-recurring-meter). The [Usage Records API](https://docs.stripe.com/api/usage_records.md) isn\u2019t supported.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07.md:226"
+    },
+    {
+      "text": "If you represent your customers as customer-configured [Accounts](https://docs.stripe.com/api/v2/core/accounts/object.md), pass the `Account` ID to the `customer` parameter.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07.md:504"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If your integration uses [customer-configured Accounts](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer), replace `Customer` and event references in the code examples with the equivalent Accounts v2 API references.",
+      "location": "raw/stripe-usage-based-billing-credits-2025.md:187"
+    },
+    {
+      "text": "With this version of usage-based billing, credits are burned down when the invoice is created at the end of the billing period.",
+      "location": "raw/stripe-usage-based-billing-credits-2025.md:217"
+    },
+    {
+      "text": "(Optional) Under **Eligibility**, specify a list of usage-based prices that this credit grant applies to.",
+      "location": "raw/stripe-usage-based-billing-credits-2025.md:232"
+    },
+    {
+      "text": "unit_amount_decimal: Decimal.from(\"3\"),",
+      "location": "raw/stripe-usage-based-billing-credits-2025.md:149"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-use-cases-credits-based-pricing-model-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 325
+      },
+      {
+        "start": 326,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 455
+      },
+      {
+        "start": 456,
+        "end": 516
+      }
+    ],
+    "raw/stripe-usage-based-billing-credits-2025.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 325
+      },
+      {
+        "start": 326,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 455
+      },
+      {
+        "start": 456,
+        "end": 501
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-credits.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a9c1a6fffd4a3fba44744863/content.diff": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 225
+      },
+      {
+        "start": 226,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 375
+      },
+      {
+        "start": 376,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 525
+      },
+      {
+        "start": 526,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 675
+      },
+      {
+        "start": 676,
+        "end": 750
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "credits-pricing-model-reciprocal-s02",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-credits]] \u2014 credit-based pricing: credit grants, burn timing, balance summary/transactions, funding flow, meter dimensions",
+      "new_text": "- [[source-stripe-usage-based-billing-credits]] \u2014 May and November 2026 basic Billing Meters credit-based pricing guide: invoice-time grants, scoped Accounts v2/Customers v1 routes, balance and funding examples, with Stripe's dated Metronome recommendation for new integrations",
+      "reason": "Update the reciprocal route for the same-URL November capture and its scoped customer identity examples without duplicating detailed flow.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/use-cases/credits-based-pricing-model, [[source-stripe-usage-based-billing-credits]] now distinguishes Stripe's November 7, 2026 recommendation of Metronome for new integrations from the basic Billing Meters flow it documents (new lines 9\u201324; May lines 4\u201310 had no comparison). November adds scoped Accounts v2/Customers v1 routes (new lines 177\u2013215, 244\u2013269, 297\u2013315, 394\u2013441, 456\u2013493), whereas May line 187 only gave a generic Account substitution note. Curl replacing Node examples alone does not prove a runtime change.",
+    "Q2": "At https://docs.stripe.com/billing/subscriptions/usage-based/use-cases/credits-based-pricing-model, [[source-stripe-usage-based-billing-credits]] requires a source update: the current source lines 13\u201359 omit the November product recommendation and qualified Account/Customer route split, while lines 19 and 42 overstate universal all-meter applicability. Old raw lines 215\u2013219 and 231\u2013232, together with new raw lines 222\u2013226 and 238\u2013239, retain invoice-time burn, metered-price-only application, Usage Records exclusion and optional price eligibility. The captures leave account-specific Accounts v2 preview access and an Accounts v2 meter-event payload example unverified; the November balance lookup and asynchronous summaries do not constitute real-time reconciliation."
+  },
+  "status": "candidate_ready"
+}

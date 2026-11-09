@@ -1,0 +1,42 @@
+--- raw/stripe-disputes-advanced-fraud-detection-2026.md
++++ raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md
+@@ -4,7 +4,7 @@
+ 
+ [Stripe.js](https://docs.stripe.com/js.md) is Stripe’s JavaScript library designed to enable businesses to securely collect sensitive payment information from the customer’s browser. The [Stripe In-App Payments](https://docs.stripe.com/payments/mobile.md) provides the native iOS and Android counterparts to Stripe.js.
+ 
+-Stripe.js and the mobile SDKs provide advanced fraud detection by looking at risk factors about device characteristics and user activity that help distinguish between legitimate and fraudulent transactions. These risk factors power Stripe’s fraud prevention systems, such as _Radar_ (Stripe Radar helps detect and block fraud for any type of business using machine learning that trains on data across millions of global companies. It’s built into Stripe and requires no additional setup to get started). The risk factors are transmitted to Stripe’s back end by periodically making requests to the `m.stripe.com` endpoint.
++Stripe.js and the mobile SDKs provide advanced fraud detection by looking at risk factors about device characteristics and user activity that help distinguish between legitimate and fraudulent transactions. These risk factors power Stripe’s fraud prevention systems, such as *Radar* (Stripe Radar helps detect and block fraud for any type of business using machine learning that trains on data across millions of global companies. It’s built into Stripe and requires no additional setup to get started). The risk factors are transmitted to Stripe’s back end by periodically making requests to the `m.stripe.com` endpoint.
+ 
+ Also, on each page where you load Stripe.js, it can load hCaptcha. hCaptcha is a type of CAPTCHA that helps stop fraud and provides additional risk factors to Stripe while being low friction for legitimate customers. To opt out of use of hCAPTCHA integration, reach out to [Stripe Support](https://support.stripe.com/contact/login).
+ 
+@@ -28,7 +28,7 @@
+ 
+ The more activity Stripe’s fraud engines can observe, the better Stripe’s fraud prevention will be. Stripe therefore encourages including Stripe.js on every page of the shopping experience, not just the checkout page. This level of Stripe.js coverage gives Stripe the richest possible set of such risk factors to distinguish fraudulent purchasers from real customers.
+ 
+-If Stripe.js isn’t used at all, the business must take on the full responsibility of _PCI compliance_ (Any party involved in processing, transmitting, or storing credit card data must comply with the rules specified in the Payment Card Industry (PCI) Data Security Standards. PCI compliance is a shared responsibility and applies to both Stripe and your business), and additional fraud risk.
++If Stripe.js isn’t used at all, the business must take on the full responsibility of *PCI compliance* (Any party involved in processing, transmitting, or storing credit card data must comply with the rules specified in the Payment Card Industry (PCI) Data Security Standards. PCI compliance is a shared responsibility and applies to both Stripe and your business), and additional fraud risk.
+ 
+ The iOS and Android SDK collect advanced fraud detection risk factors for an app when the SDK object is instantiated. The data is only transmitted to Stripe during a tokenization request.
+ 
+@@ -44,17 +44,14 @@
+ 
+ Additionally, disabling advanced fraud detection doesn’t affect the collection of events logged when a customer interacts with Stripe-managed fields in your checkout page (we use these events to prevent fraud and make sure Stripe Elements is working) nor basic device information collected during [3D Secure 2 authentication](https://support.stripe.com/questions/3d-secure-2-device-information) (we’re required to send this information to the issuing bank for their risk analysis).
+ 
+-### Stripe.js
++### Stripe.js 
+ 
+ To disable advanced fraud detection risk factors with [Stripe.js](https://docs.stripe.com/js/including), set `advancedFraudSignals` as a query parameter in the Stripe.js script tag, or update to the latest version of the [Stripe.js module](https://github.com/stripe/stripe-js), use the `pure` export, and call `setLoadParameters`:
+ 
+-#### ES Module
++#### HTML
+ 
+-```javascript
+-import { loadStripe } from "@stripe/stripe-js/pure";
+-
+-loadStripe.setLoadParameters({ advancedFraudSignals: false });
+-const stripePromise = await loadStripe("<<YOUR_PUBLISHABLE_KEY>>");
++```html
++<script src="https://js.stripe.com/endive/stripe.js?advancedFraudSignals=false"></script>
+ ```
+ 
+ ### iOS SDK

@@ -1,0 +1,93 @@
+{
+  "job_id": "payments-api-tour",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-api-tour-2026-11-07.md",
+  "raw_sha256": "a64f6186e21c53b6762163b0bee79a4ce86bd1b261a6f8f3b09883862dd5fa83",
+  "source_before_sha256": "2b5426d0c7ba83c1475b5d059c6615165a080d17431dd9c2f8d8790fe751cf8b",
+  "source_page": "---\ntitle: \"Stripe API Tour\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments-api/tour\"\nraw_files:\n  - \"stripe-payments-api-tour-2026-11-07.md\"\n  - \"stripe-api-tour-2025.md\"\ntags: [stripe, payment-intents, payment-methods, charge, checkout, webhooks, events]\n---\n\n## Summary\n\nConceptual tour of how Stripe API objects cooperate across payment integrations, including an illustrative PaymentIntent path and the roles of PaymentMethod, Charge, and Event. This is an object and process overview, not a complete integration-option taxonomy or an exhaustive state-transition contract. The 2026-04-19 and 2026-11-07 same-URL captures both support the central object descriptions.\n\n## Key Takeaways\n\n- Stripe represents balances, subscriptions, payment details, products, and payment processes as API objects. Dashboard and low-code/no-code actions also produce objects.\n- A PaymentIntent tracks the intent to collect a payment across states; `requires_payment_method` can indicate another payment method is needed. A PaymentMethod represents credentials, and Setup Intents can save a method for future PaymentIntents.\n- **In most cases**, confirming a PaymentIntent creates a Charge representing that particular attempt to move money. The Charge can succeed or fail. If it fails, the payment **can** be retried by confirming the same PaymentIntent, **usually** with new payment details; this tour does not guarantee every confirmation creates a Charge or that any retry succeeds.\n- Event objects represent activity, such as a Charge succeeding or failing. Some integrations respond through merchant webhook code; Checkout and Payment Links provide prewritten responses in the tour's description.\n- The page links five integration guides: Payment Links, Checkout, Subscriptions, Invoicing, and Payment Intents. It separately describes Stripe Elements as drop-in UI components within integrations, not as a sixth guide.\n- The 2026-04-19 capture says integrations using **customer-configured Accounts** should substitute equivalent Accounts v2 references for `Customer` and event references in code examples. The 2026-11-07 capture omits that caveat; its omission does not establish repeal or account-specific applicability. A customer-configured Account is distinct from a merchant Stripe account and from an ordinary Customer object.\n\n## Illustrative PaymentIntent Path\n\nBoth captures label the path simplified. The 2026-11-07 text rendering shows `requires_payment_method \u2192 requires_confirmation \u2192 processing \u2192 succeeded`, a retry arrow from `requires_confirmation` to `requires_payment_method`, and a `processing \u2192 canceled` branch. The accompanying prose also says processing can yield `succeeded` or return to `requires_payment_method` on failure. These are illustrative branches, not a complete or exact transition graph; consult the linked [PaymentIntent lifecycle guide](https://docs.stripe.com/payments/paymentintents/lifecycle) for precise state rules.\n\nIn the example, a customer clicking checkout for a 100 USD cart expresses intent, not a completed purchase. An integration creates a PaymentIntent to track that intent. Payment details can be gathered by merchant code or Stripe, depending on the integration. Confirmation can be handled by merchant code or Stripe's Checkout/Payment Links flow. Stripe then attempts processing. The tour does not document an observed payment outcome.\n\n## Key Objects\n\n| Object | Role in this conceptual tour |\n| --- | --- |\n| PaymentIntent | Tracks intent to collect a payment and its process status. |\n| PaymentMethod | Carries card or other payment credentials. |\n| Charge | In most cases, represents a particular attempt after PaymentIntent confirmation; may succeed or fail. |\n| SetupIntent | Can save a payment method for future PaymentIntents. |\n| Event | Represents activity; integrations may respond through webhooks or prewritten Stripe handling. |\n| Customer / customer-configured Account | Customer references require account-model qualification; the older capture identifies Accounts v2 substitution for customer-configured Account integrations. |\n| Subscription | Tracks recurring customer charges. |\n| Product | Represents a catalog product, including one created in Dashboard. |\n\n## Related Pages\n\n- [[stripe-payment-intents]] \u2014 PaymentIntent concept and more detailed routes\n- [[stripe]] \u2014 Stripe company page\n- [[recurring-payments]] \u2014 generic recurring payments concept\n- [[disputes]] \u2014 generic disputes concept\n- [PaymentIntent lifecycle guide](https://docs.stripe.com/payments/paymentintents/lifecycle) \u2014 linked detailed state reference; content not assessed for this update\n- [Accounts v2 customer modeling guide](https://docs.stripe.com/connect/use-accounts-as-customers) \u2014 linked in the older capture; content not assessed for this update\n\n## Raw Sources\n\n- [[raw/stripe-payments-api-tour-2026-11-07|2026-11-07 Stripe API Tour capture]] \u2014 conceptual objects, illustrative text status diagram, retry and Charge qualifiers\n- [[raw/stripe-api-tour-2025|2026-04-19 Stripe API Tour capture]] \u2014 earlier conceptual tour and customer-configured Accounts v2 caveat\n",
+  "quotes": [
+    {
+      "text": "The `PaymentIntent`\u2019s path to success goes through [several statuses](https://docs.stripe.com/payments/paymentintents/lifecycle.md)\u2014here\u2019s a simplified version:",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:62"
+    },
+    {
+      "text": "In most cases a [Charge](https://docs.stripe.com/api/charges.md) will be created when a PaymentIntent is confirmed",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:86"
+    },
+    {
+      "text": "If it fails the payment can be retried by confirming the PaymentIntent again, usually with new payment details.",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:86"
+    },
+    {
+      "text": "- [Subscriptions](https://docs.stripe.com/billing.md)",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:52"
+    },
+    {
+      "text": "Stripe provides drop-in UI elements, called [Stripe Elements]",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:84"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If your integration uses [customer-configured Accounts]",
+      "location": "raw/stripe-api-tour-2025.md:8"
+    },
+    {
+      "text": "In most cases a [Charge](https://docs.stripe.com/api/charges.md) will be created when a PaymentIntent is confirmed",
+      "location": "raw/stripe-api-tour-2025.md:78"
+    },
+    {
+      "text": "The `PaymentIntent`\u2019s path to success goes through [several statuses](https://docs.stripe.com/payments/paymentintents/lifecycle.md)\u2014here\u2019s a simplified version:",
+      "location": "raw/stripe-api-tour-2025.md:63"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-api-tour-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 98
+      }
+    ],
+    "raw/stripe-api-tour-2025.md": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "wiki/sources/source-stripe-api-tour.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/40536d00b166d79169ee948b/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "payments-api-tour-concept-route",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "old_text": "## Sources\n\n- [[source-stripe-payment-intents-quickstart]]",
+      "new_text": "## Sources\n\n- [[source-stripe-api-tour]] \u2014 conceptual same-URL tour of PaymentIntent, PaymentMethod, Charge, and Event roles; its state sketch is simplified and its Charge/retry language is conditional.\n- [[source-stripe-payment-intents-quickstart]]",
+      "reason": "Adds a reciprocal route to the tour without replacing the concept's more detailed PaymentIntent lifecycle sources.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "The April capture's customer-configured Accounts v2 caveat is preserved in the source as dated context."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments-api/tour, the revised [[source-stripe-api-tour]] treats the status sketch as simplified and keeps the prose's possible failure return to requires_payment_method. Old raw lines 63-64 and 84 and new raw lines 62-72 and 92 support that reading. The linked lifecycle guide remains a separate, unread authority for exact transitions.",
+    "Q2": "At https://docs.stripe.com/payments-api/tour, [[source-stripe-api-tour]] says a Charge is created in most confirmation cases, and a failed attempt can be retried on the same PaymentIntent, usually with new details. Old raw lines 8 and 78 and new raw lines 50-54 and 86 support the dated Accounts v2 caveat, five listed guides, and conditional retry wording. Elements is discussed as UI, not a sixth linked guide."
+  },
+  "status": "candidate_ready"
+}

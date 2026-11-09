@@ -7,11 +7,13 @@ tags: [stripe, elements, tax-id, vat, invoicing, address-element, checkout-sessi
 
 ## Definition
 
-The Tax ID Element is a Stripe UI component for collecting customer business tax IDs. It's used to calculate sales tax accurately and to display tax IDs on invoices. It supports 100+ countries across 6 regions and works with both the Checkout Sessions API and Payment Intents API.
+The Tax ID Element is a Stripe UI component for collecting customer business tax IDs for tax calculation and invoice display. The April 21, 2026 guide covers Checkout Sessions and Payment Intents and lists 95 country or region codes across six regions; this count is dated, not verified current coverage.
 
-> **Beta**: Both integration paths require a beta flag in the Stripe constructor.
+> [!warning] Contradiction: the prior 100+ country and current beta claims exceed the captured evidence. The April 21, 2026 examples show path-specific beta flags, while the November 7 index contains only variant links. Current beta status and flag requirements need the separately linked variant bodies.
 
 ## API Paths
+
+The following are **April 21, 2026 captured examples**, not verified current initialization requirements. Checkout Sessions uses `custom_checkout_tax_id_1`; Payment Intents uses `elements_tax_id_1` in that dated code.
 
 ### Checkout Sessions
 
@@ -31,9 +33,11 @@ const taxIdElement = elements.create('taxId', { visibility: 'always' });
 taxIdElement.mount('#tax-id-element');
 ```
 
-Payment Intents path requires a `CustomerSession` to save and redisplay a previously entered tax ID.
+For the Payment Intents path, the April guide says a `CustomerSession` is required **to save and redisplay** a previously entered tax ID. It does not state that a CustomerSession is required for every Tax ID Element use.
 
 ## Visibility Modes
+
+The following visibility, Address Element, and business-name descriptions come from the April 21, 2026 guide; the November index does not verify present-day behavior.
 
 | Mode | Behavior |
 | --- | --- |
@@ -52,7 +56,7 @@ Optional option — enables a business name field. The collected name appears as
 
 ## Supported Regions
 
-100+ countries across 6 regions:
+95 country or region codes enumerated across six sections in the April 21, 2026 capture (6 + 5 + 44 + 19 + 2 + 19), not a current coverage guarantee:
 
 | Region | Countries (count) |
 | --- | --- |
@@ -71,4 +75,4 @@ Full list in [[source-stripe-tax-id-element]].
 
 ## Sources
 
-- [[source-stripe-tax-id-element]] — primary reference: beta flags, both API paths, visibility logic, supported regions, CustomerSession requirement
+- [[source-stripe-tax-id-element]] — April 21 captured examples for both API paths, listed regions, visibility, and conditional Payment Intents save/redisplay; November 7 variant index linked for navigation

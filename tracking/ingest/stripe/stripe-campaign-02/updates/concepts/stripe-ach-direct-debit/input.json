@@ -1,0 +1,402 @@
+{
+  "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-ach-direct-debit/base.md",
+  "base_sha256": "16526cb01d56664e440916aeeee82668dc9e270e5d2e5dfa41b2d677412caea2",
+  "patches": [
+    {
+      "update_id": "payments-ach-direct-debit::payments-ach-direct-debit-definition",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "ACH Direct Debit lets US businesses pull funds from customers' US bank accounts. API enum: `us_bank_account`. Business-initiated, delayed notification, reusable. Not guaranteed \u2014 disputes and payment failures possible.",
+      "new_text": "ACH Direct Debit lets eligible businesses in the documented US and European locations pull funds from customers' US bank accounts, with Canada labeled private preview in the 2026-11-07 capture. API enum: `us_bank_account`. USD presentment, delayed notification, reusable, and not guaranteed \u2014 disputes and payment failures remain possible. Account and industry eligibility require separate confirmation.",
+      "reason": "Correct the US-only merchant claim while keeping US customer and USD payment scope distinct.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Dated availability is not individual-account eligibility."
+      ],
+      "original_update_id": "payments-ach-direct-debit-definition",
+      "job_id": "payments-ach-direct-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/receipt.json",
+      "receipt_sha256": "54bba96d242e0328cb0b53c88168ebc1603640212da49fee9eacb61ac6d51634",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "4e35472cc27ddd06bdf398f2226ec3bbecd8b465a41788b5b3103d6528c2b9b6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit::payments-ach-direct-debit-mandate-email",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "Custom payment forms must display mandate text. Stripe emails mandate confirmation + microdeposit notification to customer's billing email.",
+      "new_text": "Custom Payment Intents forms must display mandate terms before confirmation. Nacha requires an electronic or hard copy of the mandate. With a billing email, Stripe defaults to sending mandate confirmation and, if microdeposit verification is needed, its verification notification. Custom notification flows also require microdeposit reminders.",
+      "reason": "Make default delivery conditional on billing email and microdeposit need, and distinguish Nacha's mandate-copy rule from email delivery.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "payments-ach-direct-debit-mandate-email",
+      "job_id": "payments-ach-direct-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/receipt.json",
+      "receipt_sha256": "54bba96d242e0328cb0b53c88168ebc1603640212da49fee9eacb61ac6d51634",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "4e35472cc27ddd06bdf398f2226ec3bbecd8b465a41788b5b3103d6528c2b9b6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit::payments-ach-direct-debit-inquiry",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "**Proof of Authorization inquiry**: upload evidence via Dashboard or Files API; `charge.dispute.created` with `warning_needs_response` status.",
+      "new_text": "**Proof of Authorization inquiry**: when Stripe requests proof before the bank decides a late return, `charge.dispute.created` can carry `warning_needs_response`; submit authorization evidence only on request and only once via Dashboard or Files API. This inquiry is not an appeal of a final ACH dispute.",
+      "reason": "Separate a requested predecision inquiry from uncontestable final disputes.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "payments-ach-direct-debit-inquiry",
+      "job_id": "payments-ach-direct-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/receipt.json",
+      "receipt_sha256": "54bba96d242e0328cb0b53c88168ebc1603640212da49fee9eacb61ac6d51634",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "4e35472cc27ddd06bdf398f2226ec3bbecd8b465a41788b5b3103d6528c2b9b6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit::payments-ach-direct-debit-refunds",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- Min 3 business days to process",
+      "new_text": "- 2026-11-07 capture: asynchronous full refunds, up to 3 business days to complete; partial refunds marked unsupported. The 2026-05-02 capture instead listed partial refunds supported and at least 3 business days to process.\n\n> [!warning] Contradiction\n> The two dated ACH captures disagree on partial-refund support and the direction of the three-business-day timing. Neither establishes an effective change date or behavior for a specific historical payment; verify the account and payment before promising either.",
+      "reason": "Correct the retained minimum-time claim and expose the material dated conflict.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Source captures do not resolve live account eligibility or old-transaction behavior."
+      ],
+      "original_update_id": "payments-ach-direct-debit-refunds",
+      "job_id": "payments-ach-direct-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/receipt.json",
+      "receipt_sha256": "54bba96d242e0328cb0b53c88168ebc1603640212da49fee9eacb61ac6d51634",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "4e35472cc27ddd06bdf398f2226ec3bbecd8b465a41788b5b3103d6528c2b9b6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit::payments-ach-direct-debit-subsequent-dispute",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- First dispute: mandate invalidated (must collect new mandate)\n- Second dispute: bank account blocked entirely",
+      "new_text": "- A disputed payment invalidates the mandate associated with that PaymentMethod. Resolve the dispute with the customer and collect a new mandate before attempting another charge with it.\n- If a subsequent payment from the same bank account is disputed, Stripe blocks that bank account from further reuse.",
+      "reason": "Scope the first-dispute effect to the disputed PaymentMethod and the later block to a subsequent disputed payment from the same bank account, consistent with the accepted ACH acceptance candidate.",
+      "quote_indexes": [],
+      "warnings": [
+        "Overlaps the accepted ACH accept-a-payment candidate's dispute concept correction; coordinator must merge once."
+      ],
+      "original_update_id": "payments-ach-direct-debit-subsequent-dispute",
+      "job_id": "payments-ach-direct-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/receipt.json",
+      "receipt_sha256": "54bba96d242e0328cb0b53c88168ebc1603640212da49fee9eacb61ac6d51634",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "4e35472cc27ddd06bdf398f2226ec3bbecd8b465a41788b5b3103d6528c2b9b6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit::payments-ach-direct-debit-currency-scope",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "**Currency**: USD only. **Country**: US customers; 33+ business countries.",
+      "new_text": "**Presentment currency**: USD. **Settlement**: the 2026-11-07 capture lists local-currency settlement for eligible merchant Stripe accounts. **Customer location**: US; business locations include the listed European countries and US, with Canada in private preview.",
+      "reason": "Separate USD presentment from eligible merchant local-currency settlement, correcting the unqualified USD-only claim.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Dated page support is not account-specific eligibility."
+      ],
+      "original_update_id": "payments-ach-direct-debit-currency-scope",
+      "job_id": "payments-ach-direct-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/receipt.json",
+      "receipt_sha256": "54bba96d242e0328cb0b53c88168ebc1603640212da49fee9eacb61ac6d51634",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "4e35472cc27ddd06bdf398f2226ec3bbecd8b465a41788b5b3103d6528c2b9b6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit::payments-ach-direct-debit-block-removal-mandate",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "Stripe blocks accounts on certain ACH returns. Listen for `payment_method.automatically_updated` event; check `us_bank_account.status_details.blocked`. Block removed event signals account is usable again.",
+      "new_text": "Stripe can block bank accounts on certain ACH returns. Listen for `payment_method.automatically_updated` and inspect `us_bank_account.status_details.blocked`. When Stripe removes a block, the payment method can be reused only if an active mandate exists or a new one is collected.",
+      "reason": "Correct the implication that block removal alone restores authorization to debit.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "payments-ach-direct-debit-block-removal-mandate",
+      "job_id": "payments-ach-direct-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/receipt.json",
+      "receipt_sha256": "54bba96d242e0328cb0b53c88168ebc1603640212da49fee9eacb61ac6d51634",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/candidate.md",
+      "source_candidate_sha256": "4e35472cc27ddd06bdf398f2226ec3bbecd8b465a41788b5b3103d6528c2b9b6",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-accept-a-payment::ach-dispute-authorization-and-bank-account-scope",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- First dispute: mandate invalidated (must collect new mandate)\n- Second dispute: bank account blocked entirely",
+      "new_text": "- A disputed payment revokes authorization on that PaymentMethod. Reusing it requires resolving the dispute with the customer and obtaining authorization again; see the 2026-05-02 [[source-stripe-ach-accept-payment]] guide.\n- Stripe says it blocks the same bank account after more than one disputed payment from that bank account. This is a same-bank-account threshold, not a universal second-dispute rule.",
+      "reason": "The current concept overstates both the first-dispute object and the second-dispute threshold. Old guide lines 413 and 424\u2013444 qualify them. The November base-URL index contains no dispute mechanics.",
+      "quote_indexes": [],
+      "warnings": [
+        "Historical 2026-05-02 guide only; the November index does not establish current dispute behavior."
+      ],
+      "original_update_id": "ach-dispute-authorization-and-bank-account-scope",
+      "job_id": "payments-ach-direct-debit-accept-a-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "fa10808d08fb927081eb626b7a9726ef67392a73801586903353ed7f05ab7706",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-accept-a-payment/attempt-1/candidate.md",
+      "source_candidate_sha256": "83229b84a4b4fad23a230b4cdfb0d33f31b0b8b6be917fc6780635c15549b7a4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-accept-a-payment/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-migrating-from-charges::ach-migrate-bank-accounts-dated-route",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- [[source-stripe-ach-migrate-bank-accounts]] \u2014 migrate existing bank accounts: mandate creation, BankAccount as PaymentMethod, Checkout saved accounts, Invoices/Subscriptions",
+      "new_text": "- [[source-stripe-ach-migrate-bank-accounts]] \u2014 2026-05-02 full legacy BankAccount migration guide: verified-account prerequisites differ for Checkout and Payment Intents, with active mandate for the latter and mandate acknowledgment before Invoicing/Subscriptions defaults; 2026-11-07 base URL is a two-variant index",
+      "reason": "Make the route's dated guide and navigation-only November capture discoverable without projecting older integration details as current variant behavior.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The linked November variants were not captured in this unit."
+      ],
+      "original_update_id": "ach-migrate-bank-accounts-dated-route",
+      "job_id": "payments-ach-direct-debit-migrating-from-charges",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-1/receipt.json",
+      "receipt_sha256": "6cf86a2d02ef3dfd011e5246172d09d080d0dd24d701d96efe36df0c5ac95aa7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-1/candidate.md",
+      "source_candidate_sha256": "8e57970999550514933c6f76e2926fb0ad82dbaf2eb68e227dce7533c285b2a8",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-migrating-to-new-apis::ach-new-api-migration-route",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- [[source-stripe-ach-migration]] \u2014 legacy migration: T+6\u2192T+4, balance type change, mandate enforcement, microdeposit change, webhook mapping",
+      "new_text": "- [[source-stripe-ach-migration]] \u2014 dated legacy-to-Payment Intents/Checkout migration: T+6 versus T+4 (conditional T+2), active mandates, conditional balance-type updates, rare two-microdeposit fallback, and branch-specific webhook matrix; payout descriptors might differ",
+      "reason": "Keep the reciprocal route aligned with the corrected conditional payout and webhook branches and the new descriptor caveat.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The table describes migration guidance, not actual payout or payment results."
+      ],
+      "original_update_id": "ach-new-api-migration-route",
+      "job_id": "payments-ach-direct-debit-migrating-to-new-apis",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/receipt.json",
+      "receipt_sha256": "894143997948b02aeec6810cdfb7b93de796141eb757d27e2c44aca29e4356be",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/candidate.md",
+      "source_candidate_sha256": "8845793bbe4233d0822c69f0da74932dd228546a7e00c1b2bc1e043ed6c7a008",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-tel-table",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "| TEL | Telephone-Initiated | Oral authorization over phone; private beta; single entries only |",
+      "new_text": "| TEL | Telephone-Initiated | Oral authorization over phone; November 7, 2026 capture labels private preview; single entries only, no standing or recurring TEL entries |",
+      "reason": "New:51-57 labels TEL private preview and limits TEL to single entries. The current concept table retains private beta (old:84-90).",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Private preview is a captured availability label; merchant account access is unverified."
+      ],
+      "original_update_id": "payments-ach-direct-debit-sec-codes-tel-table",
+      "job_id": "payments-ach-direct-debit-sec-codes",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/receipt.json",
+      "receipt_sha256": "c34f320294e0f02b3258279f487ae5b003ba4d2fb71767d22a5cc14371814456",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/candidate.md",
+      "source_candidate_sha256": "7480ff9fd67bf1382b832c3e43d5656884879f3a6ec3f926e28849f862f96444",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-tel-conditions",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "PPD requires `mandate_data.customer_acceptance.type: 'offline'` + `payment_method_options.us_bank_account.mandate_options.collection_method: 'paper'`. TEL requires an existing customer relationship and captured oral authorization (recording or prior written notice).",
+      "new_text": "PPD requires offline customer acceptance and `payment_method_options.us_bank_account.mandate_options.collection_method: 'paper'` in the captured examples. For TEL, the November guide permits either a qualifying direct existing merchant-customer relationship **or**, without one, a customer-initiated telephone call; an affiliate-only relationship does not qualify. It also requires commercially reasonable identity and routing-number verification and explicit oral authorization containing online-mandate information and a customer inquiry number. Capture that authorization through an audio recording (subject to applicable recording law) or written notice **before the first debit**; the guide's sample wording is not prescribed verbatim. See [[source-stripe-ach-sec-codes]].\n\n> [!warning] Contradiction: the previous concept said TEL was private beta and universally required an existing relationship. The November 7, 2026 capture labels it private preview and includes the customer-initiated-call alternative. Neither capture proves access for a particular account.",
+      "reason": "Both old:94-115 and new:61-82 allow the customer-initiated-call alternative, require separate verification and authorization content, and distinguish recording from written notice before first debit. The prior concept overstates existing-relationship necessity and omits the authorization conditions.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "TEL requirements are separate from PPD offline acceptance; preview access is not established."
+      ],
+      "original_update_id": "payments-ach-direct-debit-sec-codes-tel-conditions",
+      "job_id": "payments-ach-direct-debit-sec-codes",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/receipt.json",
+      "receipt_sha256": "c34f320294e0f02b3258279f487ae5b003ba4d2fb71767d22a5cc14371814456",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/candidate.md",
+      "source_candidate_sha256": "7480ff9fd67bf1382b832c3e43d5656884879f3a6ec3f926e28849f862f96444",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-source-route",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- [[source-stripe-ach-sec-codes]] \u2014 SEC codes: WEB/CCD/PPD/TEL definitions, defaults, PPD paper mandate integration, TEL beta requirements",
+      "new_text": "- [[source-stripe-ach-sec-codes]] \u2014 SEC codes: WEB/CCD/PPD/TEL definitions, defaults, PPD paper mandate examples, and November 7 private-preview TEL conditions",
+      "reason": "Retains reciprocal source route while replacing stale beta terminology with the November private-preview capture.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "payments-ach-direct-debit-sec-codes-source-route",
+      "job_id": "payments-ach-direct-debit-sec-codes",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/receipt.json",
+      "receipt_sha256": "c34f320294e0f02b3258279f487ae5b003ba4d2fb71767d22a5cc14371814456",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/candidate.md",
+      "source_candidate_sha256": "7480ff9fd67bf1382b832c3e43d5656884879f3a6ec3f926e28849f862f96444",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-default-condition",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "Standard Entry Class (SEC) codes define how a customer authorized the transaction. Stripe defaults to WEB (consumers) and CCD (businesses).",
+      "new_text": "Standard Entry Class (SEC) codes define how a customer authorized the transaction. **When no mandate collection method is specified**, the captured Stripe guide says WEB is the default for consumer bank accounts and CCD for business bank accounts.",
+      "reason": "Both captures explicitly condition WEB/CCD defaults on no mandate collection method being specified (old:12; new:13); current concept line 99 omits that condition.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "payments-ach-direct-debit-sec-codes-default-condition",
+      "job_id": "payments-ach-direct-debit-sec-codes",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/receipt.json",
+      "receipt_sha256": "c34f320294e0f02b3258279f487ae5b003ba4d2fb71767d22a5cc14371814456",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/candidate.md",
+      "source_candidate_sha256": "7480ff9fd67bf1382b832c3e43d5656884879f3a6ec3f926e28849f862f96444",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-ppd-authorization",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "| PPD | Prearranged Payment and Deposit | Written/signed consumer authorization; requires `collection_method: 'paper'` |",
+      "new_text": "| PPD | Prearranged Payment and Deposit | Standing or single-entry consumer authorization in writing, signed **or otherwise authenticated**; provide a copy to the customer; the captured PPD mandate flow uses `collection_method: 'paper'` |",
+      "reason": "Both captures say PPD authorization is in writing and signed or otherwise authenticated, with a copy provided to the customer (old:24-28; new:25-29). Current concept line 105 reads as signature-only; retain the paper mandate option.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "payments-ach-direct-debit-sec-codes-ppd-authorization",
+      "job_id": "payments-ach-direct-debit-sec-codes",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/receipt.json",
+      "receipt_sha256": "c34f320294e0f02b3258279f487ae5b003ba4d2fb71767d22a5cc14371814456",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/candidate.md",
+      "source_candidate_sha256": "7480ff9fd67bf1382b832c3e43d5656884879f3a6ec3f926e28849f862f96444",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/review.json"
+    },
+    {
+      "update_id": "payments-ach-direct-debit-set-up-payment::s02-ach-set-up-payment-route-inventory",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- [[source-stripe-ach-set-up-payment]] \u2014 save for future: Checkout setup mode + SetupIntents API, Financial Connections, microdeposit verification, balance check",
+      "new_text": "- [[source-stripe-ach-set-up-payment]] \u2014 save for future: dated 2026-05-02 Checkout setup mode, Elements and iOS/Android/React Native SetupIntent variants, Financial Connections and microdeposit verification; 2026-11-07 base URL is a five-route navigation index, with variant instructions not fetched",
+      "reason": "The older detailed capture and newer navigation index both enumerate mobile routes, while the current concept route description omits them. This is a dated discoverability correction, not evidence of current mobile SDK behavior or payment settlement.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The counterpart Stripe index entry at wiki/stripe-index.md:244 also omits mobile routes, but is outside this unit's approved concept target; coordinator should handle its correction."
+      ],
+      "original_update_id": "s02-ach-set-up-payment-route-inventory",
+      "job_id": "payments-ach-direct-debit-set-up-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/receipt.json",
+      "receipt_sha256": "3273257e563becba51b41e925d28f91a6fce35e9d8fc1f6ebdfb0cfd49c660e0",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/candidate.md",
+      "source_candidate_sha256": "46a932b9b0bde441562b8820f75e884be2d7596b230a7a4b82a3e00006cce15a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "payments-ach-direct-debit::payments-ach-direct-debit-definition",
+    "payments-ach-direct-debit::payments-ach-direct-debit-mandate-email",
+    "payments-ach-direct-debit::payments-ach-direct-debit-inquiry",
+    "payments-ach-direct-debit::payments-ach-direct-debit-refunds",
+    "payments-ach-direct-debit::payments-ach-direct-debit-subsequent-dispute",
+    "payments-ach-direct-debit::payments-ach-direct-debit-currency-scope",
+    "payments-ach-direct-debit::payments-ach-direct-debit-block-removal-mandate",
+    "payments-ach-direct-debit-accept-a-payment::ach-dispute-authorization-and-bank-account-scope",
+    "payments-ach-direct-debit-migrating-from-charges::ach-migrate-bank-accounts-dated-route",
+    "payments-ach-direct-debit-migrating-to-new-apis::ach-new-api-migration-route",
+    "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-tel-table",
+    "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-tel-conditions",
+    "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-source-route",
+    "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-default-condition",
+    "payments-ach-direct-debit-sec-codes::payments-ach-direct-debit-sec-codes-ppd-authorization",
+    "payments-ach-direct-debit-set-up-payment::s02-ach-set-up-payment-route-inventory"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-ach-direct-debit/auto-candidate.md",
+  "auto_candidate_sha256": "b5e5b86d131d7219b86d6adc20acb8e4e792bea3f0d3f6ff554d983ddfc6a7d4",
+  "conflict_clusters": [
+    [
+      {
+        "start": 2197,
+        "end": 2308,
+        "old_text": "- First dispute: mandate invalidated (must collect new mandate)\n- Second dispute: bank account blocked entirely",
+        "new_text": "- A disputed payment invalidates the mandate associated with that PaymentMethod. Resolve the dispute with the customer and collect a new mandate before attempting another charge with it.\n- If a subsequent payment from the same bank account is disputed, Stripe blocks that bank account from further reuse.",
+        "ids": [
+          "payments-ach-direct-debit::payments-ach-direct-debit-subsequent-dispute"
+        ]
+      },
+      {
+        "start": 2197,
+        "end": 2308,
+        "old_text": "- First dispute: mandate invalidated (must collect new mandate)\n- Second dispute: bank account blocked entirely",
+        "new_text": "- A disputed payment revokes authorization on that PaymentMethod. Reusing it requires resolving the dispute with the customer and obtaining authorization again; see the 2026-05-02 [[source-stripe-ach-accept-payment]] guide.\n- Stripe says it blocks the same bank account after more than one disputed payment from that bank account. This is a same-bank-account threshold, not a universal second-dispute rule.",
+        "ids": [
+          "payments-ach-direct-debit-accept-a-payment::ach-dispute-authorization-and-bank-account-scope"
+        ]
+      }
+    ]
+  ],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s02-updates/stripe-ach-direct-debit-concept.json",
+  "review_output": "/tmp/stripe-s02-updates/stripe-ach-direct-debit-concept-review.json",
+  "context_only_units": [
+    {
+      "job_id": "payments-ach-direct-debit",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/receipt.json",
+      "receipt_sha256": "54bba96d242e0328cb0b53c88168ebc1603640212da49fee9eacb61ac6d51634",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit/attempt-2/review.json"
+    },
+    {
+      "job_id": "payments-ach-direct-debit-accept-a-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "fa10808d08fb927081eb626b7a9726ef67392a73801586903353ed7f05ab7706",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-accept-a-payment/attempt-1/review.json"
+    },
+    {
+      "job_id": "payments-ach-direct-debit-migrating-from-charges",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-1/receipt.json",
+      "receipt_sha256": "6cf86a2d02ef3dfd011e5246172d09d080d0dd24d701d96efe36df0c5ac95aa7",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-1/review.json"
+    },
+    {
+      "job_id": "payments-ach-direct-debit-migrating-to-new-apis",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/receipt.json",
+      "receipt_sha256": "894143997948b02aeec6810cdfb7b93de796141eb757d27e2c44aca29e4356be",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-migrating-to-new-apis/attempt-1/review.json"
+    },
+    {
+      "job_id": "payments-ach-direct-debit-sec-codes",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/receipt.json",
+      "receipt_sha256": "c34f320294e0f02b3258279f487ae5b003ba4d2fb71767d22a5cc14371814456",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-sec-codes/attempt-2/review.json"
+    },
+    {
+      "job_id": "payments-ach-direct-debit-set-up-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/receipt.json",
+      "receipt_sha256": "3273257e563becba51b41e925d28f91a6fce35e9d8fc1f6ebdfb0cfd49c660e0",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-ach-direct-debit-set-up-payment/attempt-1/review.json"
+    }
+  ]
+}

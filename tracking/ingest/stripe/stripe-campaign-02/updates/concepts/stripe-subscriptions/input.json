@@ -1,0 +1,125 @@
+{
+  "target_path": "wiki/concepts/stripe-subscriptions.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-subscriptions/base.md",
+  "base_sha256": "1e5d205acc3578f596badf0f28296f57a0ffc224e300a18ca9a833b5ffc9c45a",
+  "patches": [
+    {
+      "update_id": "billing-subscriptions-webhooks::billing-subscriptions-webhooks-concept-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-webhooks]] \u2014 22 subscription webhook events, invoice.created 72h risk, access expiration pattern, EventBridge/Event Grid routing",
+      "new_text": "- [[source-stripe-subscriptions-webhooks]] \u2014 May and November 2026 subscription webhook guide: 26 main-table events, four additional risk/customer-data rows, versioned risk-event lookup, active-status access gate, invoice.created finalization risk, and EventBridge/Event Grid routing",
+      "reason": "Correct the existing 22-event miscount and route readers to the November risk-event and access-gate additions without repeating the full guide.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "billing-subscriptions-webhooks-concept-route",
+      "job_id": "billing-subscriptions-webhooks",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/billing-subscriptions-webhooks/attempt-1/receipt.json",
+      "receipt_sha256": "a711d230f6e974e18e9a0c9d1f19af9986a1157a0e7a13dd236e35d5493e4d10",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/billing-subscriptions-webhooks/attempt-1/candidate.md",
+      "source_candidate_sha256": "b5f33ad0c33c33be3654ac7c7d6f21db95457edb2489cc8308e9c29cdf00b27b",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/billing-subscriptions-webhooks/attempt-1/review.json"
+    },
+    {
+      "update_id": "mobile-digital-goods-custom-checkout::s02-subscription-mobile-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-inapp-digital-goods-custom-checkout]] \u2014 iOS digital goods subscriptions (mobile context): default_incomplete + expand latest_invoice, invoice webhooks, Universal Links return, Apple Pay US+EEA",
+      "new_text": "- [[source-stripe-inapp-digital-goods-custom-checkout]] \u2014 April/November 2026 iOS digital-goods subscription guide: merchant-owned Elements web checkout, Accounts v2 or Customers v1 identity, default_incomplete initial payment, verified invoice/subscription webhooks, and universal-link return; Apple Pay US/EEA scope is a dated guide statement",
+      "reason": "Update the existing reciprocal subscription route for the two customer models and verified-event access boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "s02-subscription-mobile-route",
+      "job_id": "mobile-digital-goods-custom-checkout",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-custom-checkout/attempt-1/receipt.json",
+      "receipt_sha256": "ce034cd0425104a1eb0a2b7392c73f11d0396619ed2b4ff6d6d31921575ea283",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-custom-checkout/attempt-1/candidate.md",
+      "source_candidate_sha256": "c7cbe47869666c0899fe754b20f602e9a05c34489184afd008fe47aa28d9a98f",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-custom-checkout/attempt-1/review.json"
+    },
+    {
+      "update_id": "mobile-digital-goods-customer-portal::s02-customer-portal-status-monitoring",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- Monitor: `customer.subscription.updated`, `customer.subscription.deleted`",
+      "new_text": "- Monitor subscription status through appropriate webhooks, including relevant `customer.subscription.created`, `customer.subscription.updated`, and `customer.subscription.deleted` events; check actual subscription status or active entitlements before granting access. The [[source-stripe-inapp-digital-goods-customer-portal]] sample only branches on created/deleted and does not implement the full status handling its guide requires.",
+      "reason": "The new and old portal guides list created, updated, and deleted as examples and require all events needed for accurate subscription status; their simplified created/deleted code does not justify entitlement from the event name.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "s02-customer-portal-status-monitoring",
+      "job_id": "mobile-digital-goods-customer-portal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-customer-portal/attempt-1/receipt.json",
+      "receipt_sha256": "c2d3f7f1227a369193c2f9399011412044ffc01ae6301eb0708af1df1dd6c340",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-customer-portal/attempt-1/candidate.md",
+      "source_candidate_sha256": "203ab48d276ee4f34db49a99d1fd4b67e6d006ca4756af5f54499d37c6fb704a",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-customer-portal/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-advanced-build-subscriptions::stripe-subscriptions-accounts-v2-preview-version",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- **Accounts v2** (recommended for Connect): `stripe.v2.core.accounts.create(...)` with `configuration.customer` \u2014 `customer_account` param on session; requires API version `2026-03-25.dahlia`",
+      "new_text": "- **Accounts v2**: The 2026-04-21 Elements subscriptions guide recommends customer-configured Accounts for most use cases and says Accounts v2 was generally available to Connect users but in public preview for other Stripe users; preview participants needed a preview API version. Its `2026-03-25.dahlia` is a dated example pin, not a universal requirement or current account-access proof. The guide uses `stripe.v2.core.accounts.create(...)` with `configuration.customer` and `customer_account` on a Checkout Session. See [[source-stripe-build-subscriptions-elements]].",
+      "reason": "Directly correct the concept's universal API-version claim using the old guide's Connect versus public-preview distinction; retain the dated example version without claiming current eligibility from the November index.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "stripe-subscriptions-accounts-v2-preview-version",
+      "job_id": "payments-advanced-build-subscriptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-advanced-build-subscriptions/attempt-1/receipt.json",
+      "receipt_sha256": "4702299919f9d4e6d3240d50cdbe4da1fd33e674e1c862cf7684aca056a8d197",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-advanced-build-subscriptions/attempt-1/candidate.md",
+      "source_candidate_sha256": "6e6bf81e108d3b69c6ce484106487d8168d5a482f56e81a1a7e810f86798e5ef",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-advanced-build-subscriptions/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "billing-subscriptions-webhooks::billing-subscriptions-webhooks-concept-route",
+    "mobile-digital-goods-custom-checkout::s02-subscription-mobile-route",
+    "mobile-digital-goods-customer-portal::s02-customer-portal-status-monitoring",
+    "payments-advanced-build-subscriptions::stripe-subscriptions-accounts-v2-preview-version"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-subscriptions/auto-candidate.md",
+  "auto_candidate_sha256": "87637b173f613a0d415d079bb40ac1b86110f8854a62fd5495a4a940776ba071",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s02-updates/stripe-subscriptions-concept.json",
+  "review_output": "/tmp/stripe-s02-updates/stripe-subscriptions-concept-review.json",
+  "context_only_units": [
+    {
+      "job_id": "billing-subscriptions-webhooks",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/billing-subscriptions-webhooks/attempt-1/receipt.json",
+      "receipt_sha256": "a711d230f6e974e18e9a0c9d1f19af9986a1157a0e7a13dd236e35d5493e4d10",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/billing-subscriptions-webhooks/attempt-1/review.json"
+    },
+    {
+      "job_id": "mobile-digital-goods-custom-checkout",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-custom-checkout/attempt-1/receipt.json",
+      "receipt_sha256": "ce034cd0425104a1eb0a2b7392c73f11d0396619ed2b4ff6d6d31921575ea283",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-custom-checkout/attempt-1/review.json"
+    },
+    {
+      "job_id": "mobile-digital-goods-customer-portal",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-customer-portal/attempt-1/receipt.json",
+      "receipt_sha256": "c2d3f7f1227a369193c2f9399011412044ffc01ae6301eb0708af1df1dd6c340",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-customer-portal/attempt-1/review.json"
+    },
+    {
+      "job_id": "payments-advanced-build-subscriptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-advanced-build-subscriptions/attempt-1/receipt.json",
+      "receipt_sha256": "4702299919f9d4e6d3240d50cdbe4da1fd33e674e1c862cf7684aca056a8d197",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-advanced-build-subscriptions/attempt-1/review.json"
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "job_id": "disputes-set-up-smart-disputes",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-set-up-smart-disputes-2026-11-07.md",
+  "raw_sha256": "2c42421d77fb617743922658c7d6718497133148e114548da2a74aa2e73b2301",
+  "prior_raw_path": "raw/stripe-disputes-smart-disputes-setup-2026.md",
+  "prior_raw_sha256": "0d27425ef9a9cbe33dc09fa181b5f852df4d711307aa28a630bf70d58dde6669",
+  "source_target": "wiki/sources/source-stripe-smart-disputes-setup.md",
+  "source_before_sha256": "2c17470561e677d97cde5de93072804c0e9a9af99d2fd54daa4577152849800a",
+  "read_ranges": {
+    "raw/stripe-disputes-set-up-smart-disputes-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 41
+      },
+      {
+        "start": 42,
+        "end": 82
+      },
+      {
+        "start": 83,
+        "end": 122
+      },
+      {
+        "start": 123,
+        "end": 162
+      }
+    ],
+    "raw/stripe-disputes-smart-disputes-setup-2026.md": [
+      {
+        "start": 1,
+        "end": 42
+      },
+      {
+        "start": 43,
+        "end": 84
+      },
+      {
+        "start": 85,
+        "end": 126
+      },
+      {
+        "start": 127,
+        "end": 168
+      }
+    ],
+    "wiki/sources/source-stripe-smart-disputes-setup.md": [
+      {
+        "start": 1,
+        "end": 44
+      },
+      {
+        "start": 45,
+        "end": 87
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d1aa612b1442686fa91deae0/content.diff": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 149
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Default setting. Stripe submits your evidence if you\u2019ve added any. If you haven\u2019t, Stripe submits a Smart Disputes packet (if available).",
+      "location": "new raw line 39"
+    },
+    {
+      "text": "A Smart Disputes packet becomes available if you provide the required evidence listed in the `recommended_evidence`. Supplying the required fields moves the dispute to `available`.",
+      "location": "new raw line 114"
+    },
+    {
+      "text": "[\"shipping_carrier\", \"shipping_tracking_number\"]",
+      "location": "new raw line 133"
+    },
+    {
+      "text": "Supplying *either* `customer_email` *or both* `shipping_carrier` and `shipping_tracking_number` causes Stripe to re-evaluate the dispute and (if scoped rules are satisfied) update `smart_disputes.status` to `available`.",
+      "location": "new raw line 143"
+    },
+    {
+      "text": "After you submit a dispute, you can view the submission method through the [evidence_details.submission_method](https://docs.stripe.com/api/disputes/object.md?api-version=2025-10-29.clover#dispute_object-evidence_details-submission_method) parameter on the `Dispute` object.",
+      "location": "new raw line 162"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "[\"shipping_carrier\", \"tracking_number\"]",
+      "location": "old raw line 132"
+    },
+    {
+      "text": "Supplying _either_ `customer_email` _or both_ `shipping_carrier` and `tracking_number` causes Stripe to re-evaluate the dispute and (if scoped rules are satisfied) update `smart_disputes.status` to `available`.",
+      "location": "old raw line 142"
+    },
+    {
+      "text": "shipping_tracking_number: \"123\",",
+      "location": "old raw line 154"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw lines 133 and 143 correct the recommended_evidence example group from old raw lines 132 and 142: `shipping_tracking_number` now matches the evidence key used in both captures' submission examples. Current source line 62 still calls the recommended field `tracking_number`; update that example label to `shipping_tracking_number` while retaining the charge-time shipping tracking data description at source line 52.",
+    "New raw lines 147-154 present the submit example as curl instead of old raw lines 146-160 Node. Both set the same `evidence[shipping_tracking_number]`, `evidence[shipping_carrier]`, `intended_submission_method=prefer_smart_disputes`, and `submit=true`; this is a language/rendering change, not a new runtime requirement.",
+    "Core enrollment prerequisite, default `prefer_manual`, optional `prefer_smart_disputes`, status meanings, conditional fallback, and post-submission submission_method remain materially consistent. Table delimiter and heading changes are presentational. Do not infer that a preview API link establishes general availability.",
+    "Current source line 63 names `uncategorized_file` as an additional-evidence field, while new raw line 99 and old raw line 98 describe an additional evidence field without naming that API key. The key needs separate support if retained as attributed to this guide."
+  ],
+  "substantive_changes": [
+    "The recommended_evidence example now names `shipping_tracking_number` in the grouped required fields and explanatory text (new lines 133,143 versus old lines 132,142); the prior `tracking_number` wording conflicted with the submission examples."
+  ],
+  "historical_claims_to_preserve": [
+    "Account enrollment precedes automatic packet creation; packets are built when enough data is available (old line 10; new line 11).",
+    "`prefer_manual` is the stated default and uses a Smart Disputes packet only if no merchant evidence was added and a packet is available (old line 38; new line 39).",
+    "`requires_evidence` and `available` are status states, and adding recommended fields can change eligibility only if scoped rules are satisfied (old lines 113,142; new lines 114,143).",
+    "`unavailable` cannot be made available by supplying more fields (old line 114; new line 115)."
+  ],
+  "conflicts": [
+    "Current source line 62 repeats the old raw's `tracking_number` recommended-evidence example, whereas the new raw's corrected recommended key is `shipping_tracking_number` (new lines 133,143).",
+    "Current source line 63 includes `uncategorized_file`, which neither capture explicitly supplies in the additional-evidence discussion."
+  ],
+  "unresolved_questions": [
+    "Whether another pinned Stripe dispute API source supports the source summary's `uncategorized_file` attribution; this captured URL alone does not."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/disputes.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/set-up-smart-disputes, the meaningful correction is the recommended evidence key: old raw lines 132 and 142 say `tracking_number`, while new raw lines 133 and 143 say `shipping_tracking_number`. [[source-stripe-smart-disputes-setup]] line 62 should use the corrected recommended key; its line 52 can still describe charge-time shipping tracking data without treating that object path as the dispute evidence field.",
+    "Q2": "The same https://docs.stripe.com/disputes/set-up-smart-disputes capture retains the default `prefer_manual` behavior at old raw line 38 and new raw line 39, as well as conditional availability at old raw lines 113-116 and new raw lines 114-117. [[source-stripe-smart-disputes-setup]] should preserve these qualifications. The change from the old Node submission example at lines 146-160 to new curl at lines 147-154 changes presentation, while the submitted evidence and method remain equivalent."
+  }
+}

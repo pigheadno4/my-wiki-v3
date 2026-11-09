@@ -1,0 +1,176 @@
+{
+  "job_id": "billing-taxes-migration",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-taxes-migration-2026-11-07.md",
+  "raw_sha256": "014fcc9bff54724cb391c93a07ddfb5f23d8df338304fbc2fefb928ab9672162",
+  "prior_raw_path": "raw/stripe-billing-taxes-migration-2026.md",
+  "prior_raw_sha256": "339d0e6c0c83b5849926f9141b51f797924f84fc6f8989377f3dfeaefde60646",
+  "source_target": "wiki/sources/source-stripe-billing-taxes-migration.md",
+  "source_before_sha256": "fe686e923b14cfdac99f3656750d0c155570a183e71285b3f0a42c7cbbd942da",
+  "read_ranges": {
+    "raw/stripe-billing-taxes-migration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 401
+      },
+      {
+        "start": 17,
+        "end": 50
+      },
+      {
+        "start": 155,
+        "end": 183
+      },
+      {
+        "start": 390,
+        "end": 397
+      }
+    ],
+    "raw/stripe-billing-taxes-migration-2026.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 405
+      }
+    ],
+    "wiki/sources/source-stripe-billing-taxes-migration.md": [
+      {
+        "start": 1,
+        "end": 87
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/147d12da983b69c6a9fd27ff/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 525
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The automated migration tool is available only in live mode. It doesn\u2019t support sandboxes, test subscriptions, or legacy test mode for existing users.",
+      "location": "new raw line 17"
+    },
+    {
+      "text": "Choose whether to include subscriptions without a billing address, where Stripe supplies an [inferred location](https://docs.stripe.com/billing/taxes/migration.md#inferred-locations). Stripe enables this option by default, but you can disable it to exclude these subscriptions.",
+      "location": "new raw line 24"
+    },
+    {
+      "text": "Stripe checks the customer\u2019s shipping address, billing address, payment-method billing details, and IP address before considering an inferred location. Stripe uses an inferred location only for missing or empty higher-priority sources. Stripe doesn\u2019t substitute an inferred location for a present, but invalid or incomplete higher-priority address.",
+      "location": "new raw line 157"
+    },
+    {
+      "text": "Using inferred locations requires an active [customer portal](https://docs.stripe.com/customer-management.md) with address updates enabled to allow your customers to provide a full address at any time for more precise tax calculation.",
+      "location": "new raw line 166"
+    },
+    {
+      "text": "**Add an invalid or incomplete address**: The invalid address takes precedence over the stored inferred location and invalid-location behavior applies. Any non-empty address supersedes an inferred address.",
+      "location": "new raw line 182"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Stripe removes manual [tax rates](https://docs.stripe.com/tax/tax-rates.md) from the subscriptions, which can take up to 5 business days. When the process is complete, we notify you by email.",
+      "location": "old raw line 23"
+    },
+    {
+      "text": "Have sufficient [address information](https://docs.stripe.com/tax/customer-locations.md#address-hierarchy-other) to calculate tax",
+      "location": "old raw line 31"
+    },
+    {
+      "text": "The automated tool doesn\u2019t work with test subscriptions.",
+      "location": "old raw line 41"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Same canonical URL and overall two-path Stripe Tax migration guide, but the November capture materially expands automated migration eligibility, mode restrictions, inferred-location behavior, and confirmation guidance (new lines 13-50, 155-183, 384-396; old lines 12-43, 390-400).",
+    "Automated tooling is now expressly live-mode-only: no sandboxes, test subscriptions, or existing users' legacy test mode. The new guide gives a distinct sandbox test route by manually editing each subscription in the Dashboard for future invoices (new line 17). Current source line 24 lists only test subscriptions as excluded and should be qualified.",
+    "The automated tool presents an enabled-by-default choice to include subscriptions without a billing address and shows billing-address, inferred-location, and unresolved projected outcomes before confirmation (new lines 24-27). This choice does not make every subscription lacking a billing address eligible for inference: new lines 157-164 require all higher-priority shipping/billing/payment-method/IP sources to be missing or empty, and line 161 limits inference to cases where the alternative is collecting no tax at all. A present invalid or incomplete higher-priority address blocks fallback. The address-or-inference eligibility wording in new lines 33-38 is subject to these conditions, unlike old line 31 and current source line 22.",
+    "Inference is conditional: Stripe checks shipping and billing addresses, payment-method billing details, and IP first; a present invalid/incomplete higher-priority address prevents fallback (new lines 155-164). The email must match prior transaction location data in Stripe's first-party network; no email or no match can leave a subscription unresolved (new lines 45-48, 159-164). An active customer portal with address updates enabled is required for using inferred locations (new line 166). Without a street address, an inferred postal code might not identify the exact tax jurisdiction where rates vary within that postal-code area (new line 168); this is a precision warning, not proof that a particular invoice is wrong.",
+    "New lines 174-183 distinguish stored inference from new inference: changing email/name does not recalculate it; valid address takes precedence; any non-empty invalid/incomplete address also takes precedence; clearing an address can reuse previously stored inference only when no higher-priority source remains. New line 396 says a formerly location-input-blocked preview might become complete if inference is enabled, not that tax necessarily assesses correctly or payment finalizes.",
+    "Old line 23's up-to-five-business-days statement is absent from new line 29, which only promises an email on completion. Current source line 18 should retain the old duration as dated history, not assert it for November. Both captures retain no proration and next-cycle effect (old line 25; new line 31), a few-day delay before rerunning (old line 43; new line 50), immutable configured price tax behavior (old line 186; new line 211), and manual tax-rate clearing/schedule rules (old lines 217-285; new lines 238-301).",
+    "Node.js examples in the May capture are replaced mostly by curl and Ruby variants in November (diff lines 78-165, 202-504). The operations remain substantially the same; sample-language replacement is not deprecation. The current source's Node-specific example should be clearly dated or generalized when updated."
+  ],
+  "substantive_changes": [
+    "Live-mode-only restriction plus sandbox manual-testing route added (new line 17; old line 41 only excluded test subscriptions).",
+    "Default-enabled inferred-location inclusion choice, projected outcome categories, and conditional address-or-inference eligibility added (new lines 24-25, 35-38; old lines 18-32). Lacking a billing address alone is insufficient: all higher-priority shipping/billing/payment-method/IP sources must be missing or empty, inference applies only when the alternative is no tax collection, and a present invalid or incomplete higher-priority address blocks it (new lines 157-164).",
+    "Detailed first-party email inference hierarchy, active customer-portal prerequisite, and stored-inference customer-update effects added (new lines 155-183). Without a street address, the inferred postal code might not resolve the exact tax jurisdiction where rates vary within that postal-code area (new line 168); no particular invoice error follows from this caution.",
+    "The earlier up-to-five-business-days processing bound is removed from the November description (old line 23; new line 29); no current duration should be inferred.",
+    "New preview-invoice note says inference may change requires_location_inputs to complete (new lines 393-396); this is conditional and does not establish payment completion."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the May-capture statement that automated tax-rate removal could take up to five business days as dated history only (old line 23); November no longer states a duration (new line 29).",
+    "Retain the unchanged manual path: product tax code fallback, immutable inclusive/exclusive price tax behavior, remove subscription and item tax rates before automatic tax, proration_behavior none, complete schedule phases, and preview invoice confirmation (old lines 156-186, 211-285, 390-400; new lines 185-211, 232-301, 384-396).",
+    "Preserve no-proration and next-billing-cycle effect for the automated update, and a few-day wait before rerunning it (old lines 25, 43; new lines 31, 50).",
+    "Keep Node.js snippets as May example variants while treating November curl/Ruby snippets as capture variants, without inferring runtime support changes."
+  ],
+  "conflicts": [
+    "Current source line 22 requires a sufficient address, while November new line 37 permits an inferred location as the alternative when its documented conditions hold.",
+    "Current source line 18 presents the May up-to-five-business-days duration without a date; November new line 29 omits this bound. Its omission does not prove an altered processing time.",
+    "Current source line 24 understates the new live-mode-only restriction as merely excluding test subscriptions (new line 17)."
+  ],
+  "unresolved_questions": [
+    "The captures do not prove that inferred-location migration is available or enabled for a particular Stripe account; the November document describes the option and conditions only. Lacking a billing address alone does not prove inference will be used (new lines 157-164).",
+    "The November capture gives no new completion time for automated tax-rate removal after dropping the May five-business-day wording.",
+    "The new preview-invoice footnote says inferred locations might resolve requires_location_inputs; it does not establish the exact computed tax or completed payment for any subscription."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-tax.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/taxes/migration, [[source-stripe-billing-taxes-migration]] needs a substantive November update. Old lines 23, 31, and 41 describe a five-business-day bound, address-only eligibility, and exclusion of test subscriptions. New lines 17, 24-25, 37, and 155-183 add live-mode-only tooling, a default-enabled inference choice, and projected outcomes. New lines 157-164 limit inference to missing or empty higher-priority sources and cases where the alternative is no tax collection; lacking a billing address alone does not suffice. The old duration is absent from new line 29.",
+    "Q2": "Recommend source_required_update for [[source-stripe-billing-taxes-migration]] at https://docs.stripe.com/billing/taxes/migration. State the new line 17 live-mode boundary and sandbox manual route. Explain that the default-enabled choice in new lines 24-25 permits inferred locations only when all higher-priority shipping, billing, payment-method, and IP sources are missing or empty, and only when the alternative is collecting no tax (new lines 157-164); a present invalid address blocks fallback. Include the active customer-portal requirement at new line 166. Warn that without a street address, an inferred postal code might miss an exact jurisdiction where rates vary within that area (new line 168), without asserting an incorrect invoice. Preserve old line 23's five-business-day statement only as May history because new line 29 omits the duration."
+  }
+}

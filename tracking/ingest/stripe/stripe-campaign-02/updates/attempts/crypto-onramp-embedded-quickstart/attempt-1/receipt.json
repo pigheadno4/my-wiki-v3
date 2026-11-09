@@ -1,0 +1,178 @@
+{
+  "job_id": "crypto-onramp-embedded-quickstart",
+  "attempt": 1,
+  "raw_path": "raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07.md",
+  "raw_sha256": "1bf17758120595200723a0f064b48c0a6ceb76e525e8a5c11e7246281439531a",
+  "source_before_sha256": "c3ff5fa9d9a6ad1c83db792308a93d4f22537257ebef6c7ae823c63eb825fcd5",
+  "source_page": "---\ntitle: \"Stripe \u2014 Crypto Onramp: Embedded Quickstart\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/crypto/onramp/embedded-quickstart\"\nraw_files:\n  - \"stripe-crypto-onramp-embedded-quickstart-2026-11-07.md\"\n  - \"stripe-crypto-onramp-embedded-quickstart-2026.md\"\ntags: [stripe, crypto, onramp, embedded, react, node, fiat-to-crypto, session-api]\n---\n\n## Overview\n\nStripe's [[stripe]] embedded fiat-to-crypto onramp quickstart describes a test-key integration that creates an `OnrampSession` on a server, returns its client secret, and mounts a client-side iframe. The May 11, 2026 capture gives a Node/Express plus React example; the November 7 capture adds alternative server-language panels and a direct browser-script path. These are examples for [[stripe-crypto-onramp]], not proof of account access, an executed purchase, payment finality, or crypto delivery.\n\n## Key takeaways\n\n- Add the hosting domains to the onramp domain allowlist before using the page. The guide frames the example with test keys and sandbox values. The server uses a secret key to create an `OnrampSession` and returns `clientSecret`; the browser uses a publishable key and that client secret to mount the widget. Stripe describes the session object as tracking the onramp lifecycle and order details to avoid charging twice, but the captured examples do not demonstrate a completed charge.\n- In the May Node/Express example, the browser sends `transaction_details` with `destination_currency`, `destination_exchange_amount`, and `destination_network`; the server separately gets `customer_ip_address` from the request socket and passes those values in its session-creation example. The shown `usdc`, `13.37`, and `ethereum` values are sandbox example inputs. Neither dated capture supplies a complete request schema proving these sample fields universally required.\n- The May Node example extends `Stripe.StripeResource` to call `crypto/onramp_sessions`. The November capture retains this example and adds Ruby, Python, PHP, Go, .NET, and Java server snippets. These panels and setup commands are alternatives, not one runnable program. The flattened November text even places two endpoint strings in single displayed fetch calls; select a coherent variant before adapting sample code.\n- The React variant installs `@stripe/crypto` and `@stripe/stripe-js`, calls `loadStripeOnramp` with a publishable key outside render, and mounts `createSession({ clientSecret, appearance })` through a custom `CryptoElements`/`OnrampElement` wrapper. The example listens to `onramp_ui_loaded` and `onramp_session_updated`; a displayed `session.status` message is a UI update, not evidence of settled payment or delivered crypto. The page says the wrapper components are to be released as an ES module in the future.\n- A **separate direct browser-script variant** loads Stripe.js and crypto-js scripts from `js.stripe.com` and `crypto-js.stripe.com`. The November guide says those scripts must load directly from Stripe domains and not be bundled or self-hosted. This restriction is scoped to the script variant; it does not contradict the documented React package installation.\n- The page still calls the onramp API **limited beta**. Its general note says official libraries lack built-in endpoint support and demonstrates custom extensions, yet the same November capture shows a Java `client.v1().crypto().onrampSessions().create(params)` call and a .NET `OnrampSessionService` example. The capture does not establish which SDK versions implement those examples or this merchant's access.\n\n> [!warning] Contradiction\n> The November 7 guide's blanket statement that official libraries lack built-in onramp endpoint support conflicts with its Java and .NET service examples. Retain the May Node custom-extension example as dated code; do not infer a universal library-support status from this page alone.\n\n## Detail locators\n\n- Domain allowlist, sample server fields and client secret: [[raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07|November 7 quickstart]], lines 9\u201336; the original Node/Express sequence is in [[raw/stripe-crypto-onramp-embedded-quickstart-2026|May 11 quickstart]], lines 4\u201362.\n- November server alternatives and React/browser variants: November lines 37\u2013338; per-language setup commands and package panels, lines 339\u2013845.\n- Limited-beta text, script-domain requirement, iframe, callbacks, and sandbox framing: November lines 848\u2013902 and 916\u2013922. May React wrappers, callbacks, and sample values: May lines 64\u201396, 98\u2013233, 267\u2013296.\n\n## Related\n\n- [[stripe-crypto-onramp]] \u2014 onramp integration context.\n- [[source-stripe-crypto-onramp-embedded]] \u2014 embedded onramp overview.\n\n## Raw Sources\n\n- [[raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07|Stripe embedded onramp quickstart, 2026-11-07]]\n- [[raw/stripe-crypto-onramp-embedded-quickstart-2026|Stripe embedded onramp quickstart, 2026-05-11]]\n",
+  "quotes": [
+    {
+      "text": "make sure you\u2019ve added domains to the [domain allowlist](https://dashboard.stripe.com/crypto-onramp/allowlist-domains) for the domains you\u2019ll use to host the onramp page.",
+      "location": "raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07.md:9"
+    },
+    {
+      "text": "destination_currency: transaction_details[\"destination_currency\"],",
+      "location": "raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07.md:27"
+    },
+    {
+      "text": "OnrampSession onrampSession = client.v1().crypto().onrampSessions().create(params);",
+      "location": "raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07.md:166"
+    },
+    {
+      "text": "Our official libraries don\u2019t contain built-in support for the API endpoints because the onramp API is in limited beta.",
+      "location": "raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07.md:852"
+    },
+    {
+      "text": "These scripts must always load directly from Stripe\u2019s domains (https://js.stripe.com and https://crypto-js.stripe.com) for compatibility. Don\u2019t include the scripts in a bundle or host a copy yourself.",
+      "location": "raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07.md:868"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Our official libraries don't contain built-in support for the API endpoints because the onramp API is in limited beta.",
+      "location": "raw/stripe-crypto-onramp-embedded-quickstart-2026.md:22"
+    },
+    {
+      "text": "customer_ip_address: req.socket.remoteAddress,",
+      "location": "raw/stripe-crypto-onramp-embedded-quickstart-2026.md:53"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-crypto-onramp-embedded-quickstart-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 940
+      }
+    ],
+    "raw/stripe-crypto-onramp-embedded-quickstart-2026.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 296
+      }
+    ],
+    "wiki/sources/source-stripe-crypto-onramp-embedded-quickstart.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/29260382ee7995d180cee009/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1050
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-crypto-onramp-embedded-quickstart-concept",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "## Embedded Integration (React + Node.js)\n\n**Packages**: `@stripe/crypto`, `@stripe/stripe-js`\n\n**Server** (custom extension \u2014 official library doesn't support onramp API yet):\n\n```js\nconst OnrampSessionResource = Stripe.StripeResource.extend({\n  create: Stripe.StripeResource.method({ method: 'POST', path: 'crypto/onramp_sessions' }),\n});\n// POST /create-onramp-session \u2192 { clientSecret }\n// Required params: destination_currency, destination_exchange_amount, destination_network, customer_ip_address\n```\n\n**Client**:\n\n```js\nconst stripeOnramp = await loadStripeOnramp(publishableKey);\nstripeOnramp.createSession({ clientSecret, appearance: { theme: 'dark' } }).mount(containerRef);\n```\n\n**Events**: `onramp_ui_loaded` (UI ready) and `onramp_session_updated` (status change)\n\n**Sandbox test values**: `destination_currency: 'usdc'`, `destination_exchange_amount: '13.37'`, `destination_network: 'ethereum'`\n\n",
+      "new_text": "## Embedded Integration (dated Node/React and November variants)\n\nThe May 11, 2026 quickstart shows Node/Express creating an `OnrampSession` with a custom `Stripe.StripeResource` extension and returning `clientSecret`. Its browser example uses `@stripe/crypto` and `@stripe/stripe-js`, calls `loadStripeOnramp` with the publishable key, then mounts an iframe using the client secret. The client sends sample `transaction_details` (`destination_currency`, `destination_exchange_amount`, `destination_network`); the server separately reads `customer_ip_address` from its request. These are passed sample fields, not a complete schema showing universal requiredness. The shown `usdc`, `13.37`, and `ethereum` values are sandbox examples.\n\nThe November 7 capture adds alternative Ruby, Python, PHP, Go, .NET and Java server snippets and a direct browser-script variant. For that script variant, Stripe instructs loading its Stripe.js and crypto-js scripts from Stripe domains, without bundling or self-hosting them. The React package path remains separately documented. `onramp_ui_loaded` means the UI loaded and `onramp_session_updated` reports a session status change; neither alone proves payment finality or crypto delivery. See [[source-stripe-crypto-onramp-embedded-quickstart]].\n\n> [!warning] Contradiction\n> Both dated quickstarts call the onramp API limited beta and say official libraries lack built-in endpoint support, while the November page also shows Java `client.v1().crypto().onrampSessions().create(params)` and a .NET `OnrampSessionService`. The May Node custom extension is a historical example; this page does not verify which SDK versions implement those other snippets or merchant access.\n\n",
+      "reason": "Correct the existing universal library-support and required-field assertions, retain the May Node/React example as dated, and route November alternative snippets and direct-script conditions with the internal conflict visible.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The guide's blanket built-in SDK statement conflicts with its Java and .NET snippets; specific SDK version and merchant access remain unverified."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/crypto/onramp/embedded-quickstart, [[source-stripe-crypto-onramp-embedded-quickstart]] now keeps the May Node/React route visible: old lines 18\u201362 and 64\u201396 describe server-created OnrampSession and React mounting. New lines 37\u2013170, 306\u2013338, and 702\u2013845 add alternative server languages, direct browser scripts, and setup panels, while the old and new domain allowlist appears at old line 6 and new line 9. These flattened alternatives are not one runnable program or evidence of a completed purchase.",
+    "Q2": "At https://docs.stripe.com/crypto/onramp/embedded-quickstart, [[source-stripe-crypto-onramp-embedded-quickstart]] narrows two unsupported absolutes: old line 22 and new line 852 say official libraries lack built-in support, yet new lines 139\u2013166 show .NET and Java service examples; old lines 43\u201357 and new lines 24\u201336 pass sample transaction fields without a full required-property schema. The browser sends transaction_details while the server obtains customer_ip_address. New lines 866\u2013872 confine direct Stripe-domain loading to the browser-script variant. Neither callback status nor sample code proves payment, delivery, SDK-version availability, or merchant access."
+  },
+  "status": "candidate_ready"
+}

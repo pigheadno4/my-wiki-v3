@@ -1,0 +1,98 @@
+{
+  "job_id": "google-pay",
+  "attempt": 1,
+  "raw_path": "raw/stripe-google-pay-2026-11-07.md",
+  "raw_sha256": "73d4d961bc98a794e27c488b8998c63d27c6a47dc171c8f53ca7a166a80f88e6",
+  "source_before_sha256": "bd0b0935397906ae33a5a5f6782ab9bc7dab75d22dba726ad593d633de7a3951",
+  "source_page": "---\ntitle: \"Stripe: Google Pay\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/google-pay\nraw_files:\n  - \"stripe-google-pay-2025.md\"\ntags: [stripe, wallets, google-pay, android, react-native, web, dpan, fpan, liability-shift, domain-registration, sigma]\n---\n\n## Summary\n\nThe 2026-11-07 base URL capture is a navigation index linking Android, React Native, and Web variants; those variant bodies were not fetched in this job. The historical 2026-05-07 combined capture contains general Google Pay properties and detailed instructions for all three routes. The integration, eligibility, testing, domain registration, and liability statements below describe that older capture, not verified current variant instructions or a guarantee that Google Pay will render for a particular buyer.\n\n## Integration routes in the 2026-05-07 capture\n\n- **Android**: enable `com.google.android.gms.wallet.api.enabled` in AndroidManifest.xml. `GooglePayLauncher` can confirm a PaymentIntent or SetupIntent after its readiness callback; `GooglePayPaymentMethodLauncher` collects only a PaymentMethod for later server-side confirmation. The older guide calls for production access through the Google Pay & Wallet Console, a signed release build and live keys for production testing. Its test instructions require a physical Android device in a supported country and a real card saved in Google Wallet.\n- **React Native**: use `PlatformPayButton` and check `isPlatformPaySupported`; `confirmPlatformPayPayment` confirms a PaymentIntent, `confirmPlatformPaySetupIntent` is the SetupIntent route, and `createPlatformPayPaymentMethod` only collects a PaymentMethod for later confirmation. The older guide says Expo Go does not support this flow and calls for a development build. It likewise describes Google production access and physical-device testing.\n- **Web**: the older guide describes Checkout and Elements, with Google Pay enabled in payment method settings. Checkout needed no additional Google Pay code in that route; Elements pointed to the Express Checkout Element or accept-a-payment guide. It required an HTTPS page with a TLS domain-validated certificate.\n\n## Web domains and display conditions\n\nThe 2026-05-07 Web instructions say to register every domain that displays the Google Pay button in both test and production, including subdomains such as `www`. For Connect direct charges, register the domain for each connected account; the guide says that extra per-account registration is not required for other charge types. The old Web test section says a real card must first be added to the wallet for Google Pay to display and that Stripe will not render the option when device or integration requirements are unmet. These are dated instructions; the new index does not confirm current domain or browser behavior.\n\n## Token types, disputes, and liability in the 2026-05-07 capture\n\nThe old guide distinguishes **DPAN** device cards (liability shift by default), **FPAN** cards saved in Chrome or a Google property (global liability shift with 3D Secure, including Visa), and **e-commerce tokens** (neither liability shift nor 3D Secure supported **at that time**). For Visa transactions outside a Stripe-hosted product, it instructs merchants to enable Fraud Liability Protection for Visa Device Tokens in Google Pay & Wallet Console. Sigma's `charges.card_token_type` distinguishes `fpan` from `dpan_or_ecommerce_token`. These statements are historical, conditional on token and integration path, and do not guarantee a liability outcome for a charge; the newer index contains no updated liability or 3D Secure details. The old guide also says Google Pay payments can still be disputed and successful payments can be fully or partially refunded.\n\n## Other dated scope\n\nThe 2026-05-07 general properties describe customer and business locations as worldwide except India and refer to Stripe's supported presentment currencies rather than listing a universal currency set. They mark recurring payments, Connect, disputes, manual capture, and refunds as supported, subject to the route and payment requirements. The older in-app digital-goods statement is scoped to Android apps selling digital products, content, or subscriptions in the US or EEA, and points readers to Google Play developer terms for purchases that must use its billing system. The 2026-11-07 index does not recheck those regional, store-policy, wallet availability, or currency conditions.\n\n## Raw Sources\n\n- [[raw/stripe-google-pay-2025|2026-05-07 Google Pay combined guide]] \u2014 historical Android, React Native, and Web route instructions, general properties, tests, domain registration, token types, liability, disputes, and refunds.\n\n## Related raw API references\n\n- [[raw/stripe-google-pay-2026-11-07|2026-11-07 Google Pay platform index]] \u2014 navigation links to Android, React Native, and Web variants only; linked bodies were not captured.\n",
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-google-pay-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Android](https://docs.stripe.com/google-pay.md?platform=android)",
+      "location": "raw/stripe-google-pay-2026-11-07.md:13"
+    },
+    {
+      "text": "- [React Native](https://docs.stripe.com/google-pay.md?platform=react-native)",
+      "location": "raw/stripe-google-pay-2026-11-07.md:14"
+    },
+    {
+      "text": "- [Web](https://docs.stripe.com/google-pay.md?platform=web)",
+      "location": "raw/stripe-google-pay-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "# Android",
+      "location": "raw/stripe-google-pay-2025.md:85"
+    },
+    {
+      "text": "# React Native",
+      "location": "raw/stripe-google-pay-2025.md:377"
+    },
+    {
+      "text": "# Web",
+      "location": "raw/stripe-google-pay-2025.md:660"
+    },
+    {
+      "text": "`www` is a subdomain (for example, **www.stripe.com**) that you must also register.",
+      "location": "raw/stripe-google-pay-2025.md:676"
+    },
+    {
+      "text": "Neither liability shift nor 3D Secure are supported for e-commerce tokens at this time.",
+      "location": "raw/stripe-google-pay-2025.md:710"
+    },
+    {
+      "text": "For digital products, content, and subscriptions sold in the US or the European Economic Area (EEA), your Android app can accept payments directly in-app through a third-party payment processor such as Stripe.",
+      "location": "raw/stripe-google-pay-2025.md:77"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-google-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-google-pay-2025.md": [
+      {
+        "start": 1,
+        "end": 716
+      }
+    ],
+    "wiki/sources/source-stripe-google-pay.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/de4c668eab9b4f6182a8a39d/content.diff": [
+      {
+        "start": 1,
+        "end": 719
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "s02-google-pay-ecommerce-liability-dated",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "**Liability shift \u2014 three token types**:\n\n1. **DPAN** (Android device card): liability shift by default\n2. **FPAN** (Chrome/Google property card): 3D Secure required for global Visa liability shift; customize via Radar rules\n3. **E-commerce tokens**: **no liability shift, no 3D Secure**",
+      "new_text": "**Liability shift \u2014 three token types (2026-05-07 Google Pay capture)**:\n\n1. **DPAN** (Android device card): described as supporting liability shift by default\n2. **FPAN** (Chrome/Google property card): described as supporting global liability shift, including Visa, when 3D Secure is used; Radar rules can request 3D Secure\n3. **E-commerce tokens**: described as having neither liability shift nor 3D Secure support **at that time**\n\nThe 2026-11-07 base-URL capture is a platform index only; current token-specific liability and 3D Secure support were not verified there. These dated descriptions do not guarantee a charge's liability outcome.",
+      "reason": "The concept's timeless e-commerce-token negative drops the older raw's 'at this time' qualifier. Date the entire token comparison and preserve the DPAN/FPAN conditions without treating the new navigation index as liability evidence.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/google-pay, the 2026-11-07 capture links Android, React Native, and Web variants but contains no variant instructions (new raw:9-15). The earlier combined guide actually contains all three platform bodies (old raw:85-91,377-383,660-668). [[source-stripe-google-pay]] preserves those route details as 2026-05-07 evidence and places the new raw under related navigation only. The index neither withdraws the older paths nor verifies their current integration, eligibility, or rendering behavior.",
+    "Q2": "For https://docs.stripe.com/google-pay, [[source-stripe-google-pay]] now preserves the older token distinction: DPAN device cards, FPAN cards with 3D Secure, and e-commerce tokens described as lacking liability shift and 3D Secure support 'at this time' (old raw:702-712). It retains the dated Web registration conditions, including `www` and per-connected-account registration for direct charges (old raw:670-690), plus Android and React Native production/testing conditions (old raw:302-312,648-658). The new capture lists routes only (new raw:9-15), so none of these details is revalidated as current or a guaranteed charge outcome."
+  },
+  "status": "candidate_ready"
+}

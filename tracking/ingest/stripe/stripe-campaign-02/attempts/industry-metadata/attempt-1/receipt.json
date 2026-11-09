@@ -1,0 +1,184 @@
+{
+  "job_id": "industry-metadata",
+  "attempt": 1,
+  "raw_path": "raw/stripe-industry-metadata-2026-11-07.md",
+  "raw_sha256": "3d75640f0bfc64fd4ab79a6cc610a2fe958e7726b2e6d760dc850c31c2e8bac6",
+  "prior_raw_path": "raw/stripe-industry-metadata-2026.md",
+  "prior_raw_sha256": "3ba245510b209f7cd44c77338e14beeb43b230d3d0d8cccfe72877124a7c9cc7",
+  "source_target": "wiki/sources/source-stripe-industry-metadata.md",
+  "source_before_sha256": "dce07e14b37a9879d1d619cc02b46dec078af1847e526018618e65a01bb6d535",
+  "read_ranges": {
+    "raw/stripe-industry-metadata-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 850
+      },
+      {
+        "start": 851,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1052
+      }
+    ],
+    "raw/stripe-industry-metadata-2026.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 750
+      },
+      {
+        "start": 751,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1055
+      }
+    ],
+    "wiki/sources/source-stripe-industry-metadata.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa626b6e749f6b0964bfb943/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 750
+      },
+      {
+        "start": 751,
+        "end": 882
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You can use this public preview feature by including the version header `2026-07-29.preview` or a later preview version header in your API request.",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:11"
+    },
+    {
+      "text": "Industry Metadata is in private preview for card transactions and public preview only for Klarna. Additionally, card transactions don\u2019t support passing cruise data.",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:45"
+    },
+    {
+      "text": "In live mode, you must use a valid phone number per E.164 standards. Begin non-US numbers with `+` and include the country code. If a US number begins with `+`, use country code `1` followed by the 10-digit number.",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:271"
+    },
+    {
+      "text": "`total.tax.tax_items[].rate`",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:301"
+    },
+    {
+      "text": "Make sure the data you provide is complete because `payment_details` can\u2019t be modified after a PaymentIntent is captured.",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:818"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You can use this public preview feature by including the version header `2025-11-17.preview` or a later preview version header in your API request.",
+      "location": "raw/stripe-industry-metadata-2026.md:10"
+    },
+    {
+      "text": "Must be a valid phone number (numbers only), can also be all zeros (`0000000000`) in a sandbox",
+      "location": "raw/stripe-industry-metadata-2026.md:273"
+    },
+    {
+      "text": "`total.tax.taxes[].rate`",
+      "location": "raw/stripe-industry-metadata-2026.md:303"
+    },
+    {
+      "text": "Make sure the data you provide is complete because `payment_details` can\u2019t be modified after a PaymentIntent is captured.",
+      "location": "raw/stripe-industry-metadata-2026.md:821"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same URL retains PaymentIntents industry metadata for supported travel and entertainment MCCs, with card network compliance requirements and only a possible Klarna authorization or risk benefit (new raw:13-28; old raw:12-27). The capture now states a 2026-07-29.preview or later preview header, replacing the old 2025-11-17.preview wording (new raw:11; old raw:10). This is a documented preview-version change, not proof an older header fails at runtime.",
+    "Card transactions remain private preview, Klarna public preview; card cruise data is unsupported, and flight-card metadata specifically requires feature enablement (new raw:43-45,205-207; old raw:42-44,205-207). The public-preview header alone must not be read as open card access.",
+    "The new field tables and repeated create, confirm, capture, and multi-vertical examples use total.tax.tax_items[] where the old tables and examples use total.tax.taxes[] for car rental, lodging, and flight (new raw:301-304,345-348,396-399,569-572,610-613,662-664; old raw:303-306,348-351,400-403,575-578,617-619,668-670). Preserve the old spelling as dated evidence, but do not silently present it as the new documented request path.",
+    "The new card car-rental and lodging customer-service phone rules and lodging property-phone rule specify valid E.164 numbers in live mode, including country code for non-US numbers and US country code 1 if prefixed with plus; all zeros remain a sandbox allowance (new raw:270-272,329-331,355-356; old raw:272-274,332-334,358-359). Current source:82's 'numbers only' phrasing conflicts with the new live format.",
+    "The samples switch from explicit payment_method_types[0]=card to automatic_payment_methods[enabled]=true, add return_url to confirm examples, and revise sample car daily rate and lodging total/tax numbers (new raw:534-673,679-814; old raw:540-679,687-817; diff:644-790). These are example changes; they do not establish automatic methods as required for industry metadata or a new monetary rule.",
+    "Unchanged boundaries remain consequential: cards send only each array's first entry to networks, Klarna processes all; payment-method-specific unsupported properties are ignored; payment_details updates replace the full hash; and metadata cannot be modified after capture (new raw:57-73,524-530,816-818; old raw:56-71,528-536,819-821). Sandbox success does not establish network interchange qualification or Klarna authorization outcomes (new raw:1042-1052; old raw:1045-1055)."
+  ],
+  "substantive_changes": [
+    "Public preview header wording changes from `2025-11-17.preview` or later to `2026-07-29.preview` or later (old raw:10; new raw:11).",
+    "The documented tax-entry path changes from `total.tax.taxes[]` to `total.tax.tax_items[]` across car-rental, lodging, and flight property tables and API examples (old raw:303-306,348-351,400-403; new raw:301-304,345-348,396-399).",
+    "Live phone validation is described in E.164 terms with explicit country-code treatment; the all-zero sandbox allowance remains (old raw:272-274,332-334,358-359; new raw:270-272,329-331,355-356)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain old 2025-11-17.preview, taxes[] path, and older phone wording as dated 2026-05-11 capture, without treating the new wording as proof of actual API rejection or a migration deadline.",
+    "Retain the private-preview card versus public-preview Klarna distinction, eligible MCC and brand scope, flight-card enablement, and unsupported cruise-data limit (old raw:18-44,205-207; new raw:19-45,205-207).",
+    "Retain cards-first-entry versus Klarna-all-entries behavior, full-hash replacement, capture finality, and the sandbox-outcome limitation (old raw:56-71,530-536,819-821,1055; new raw:57-73,524-530,816-818,1052)."
+  ],
+  "conflicts": [
+    "Current wiki/sources/source-stripe-industry-metadata.md:13 and wiki/concepts/stripe-industry-metadata.md:10 present `2025-11-17.preview` as the feature's unqualified current header; new raw:11 documents `2026-07-29.preview` or later. Revise the current guidance while retaining the earlier version as historical evidence and card private-preview qualification.",
+    "Current source:82 says phone numbers are 'numbers only' while the new live card fields require valid E.164 with leading plus for non-US numbers and a specified US-plus form (new raw:270-272,329-331,355-356). Revise that note, keeping the all-zero sandbox exception.",
+    "Current source:13 and concept:10 state Klarna authorization/risk improvement as an outcome, while both captures say industry data 'might improve' those outcomes (old raw:14; new raw:15). Qualify the retained benefit as possible, not guaranteed.",
+    "Current source:15 and concept:12 assert mutual exclusivity with payment line items, but this assigned page does not mention line items in either capture. Preserve as a separately sourced claim only if its linked source supports it; do not infer it from this comparison."
+  ],
+  "unresolved_questions": [
+    "The page does not establish whether existing 2025-11-17.preview integrations fail after the documentation header change, whether taxes[] is rejected or aliased, or current account-specific feature enablement; no live API or provider test was authorized.",
+    "Payment-line-item mutual exclusivity requires its separate source for verification; this same-URL comparison supplies no direct evidence for that retained cross-feature claim."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-industry-metadata.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/industry-metadata, the new capture still describes PaymentIntent payment_details arrays for car rental, lodging, and flight, with card private-preview access and Klarna public-preview access (new raw:43-65; old raw:42-63). [[source-stripe-industry-metadata]] correctly preserves cards' first-entry-only network submission, Klarna's all-entry processing, full-hash updates, and post-capture immutability (new raw:61-73,524-530,818; old raw:60-71,530-536,821). Benefits to Klarna authorization or risk assessment are possible, not guaranteed; sandbox testing does not measure them (new raw:15,1052; old raw:14,1055).",
+    "Q2": "For https://docs.stripe.com/industry-metadata, this is a source_required_update for [[source-stripe-industry-metadata]]: the documented preview header changed from old raw:10 `2025-11-17.preview` to new raw:11 `2026-07-29.preview`; tax item request paths changed from old raw:303,348,400 taxes[] to new raw:301,345,396 tax_items[]; and live card phone wording now specifies E.164 while retaining sandbox zeros (old raw:272-274; new raw:270-272). Correct source:13,82 and concept:10, and qualify their existing guaranteed Klarna benefit to 'might improve' (old raw:14; new raw:15). The examples also switch to automatic payment methods and add return_url, but this does not prove either is required (old raw:541,688; new raw:539,684)."
+  }
+}

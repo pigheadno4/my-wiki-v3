@@ -1,0 +1,84 @@
+{
+  "job_id": "mobile-digital-goods-checkout",
+  "queue_id": 117,
+  "canonical_url": "https://docs.stripe.com/mobile/digital-goods/checkout",
+  "raw_path": "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md",
+  "raw_sha256": "41a900b23567684cd6a83bdfd65a64b2a630bb3936bca1f2c750359e7f8f1d1b",
+  "prior_raw_path": "raw/stripe-inapp-digital-goods-checkout-2025.md",
+  "prior_raw_sha256": "2724efa55ad88498f0aea7227f4848b35da5aaefbcb15ce6007fc27a1b8336c4",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/b8e4d2d51ff975970bd39ffe/content.diff",
+  "diff_sha256": "0d62cde8d833486b953b9a1c39d647331a3b3719dd1e5cb35aa3cedf2e676ba2",
+  "source_target": "wiki/sources/source-stripe-inapp-digital-goods-checkout.md",
+  "source_before_sha256": "ed6a5ba8c9cf2fe7c1ca42b1635533794653379a7b5c4ac7b892a0d458a302fd",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-checkout/attempt-1/receipt.json",
+  "receipt_sha256": "b3fbd2101160eee8e5205c2f077923a1e575d8c1c2e21fb8ca67c0c5926f54ad",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-checkout/attempt-1/review.json",
+  "review_sha256": "5a2ee7c29f2f96bab0ebe4cc5604ce4b24c68c9797157be4432b837bae4b4641",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The new capture is a 765-line full iOS app-to-web Checkout guide, not a navigation index. The US iOS digital-goods scope and StoreKit storefront test remain (old:10-18; new:13-21); Android US direct in-app processing is a separate route, and Managed Payments is an optional merchant-of-record guide (old:8,12,555-557; new:9,15,751-753). A captured statement does not establish current regional eligibility or App Store approval.",
+    "New raw:26,30-36 adds a customer-configured Accounts v2 path, explicitly generally available for Connect users but public preview for other Stripe users, with preview-version and Dashboard preview instructions for preview participants. It recommends Accounts for most use cases; Customers v1 remains a full branch at new:227-256,419-524. Old raw:22-25,143-172,228-332 only modeled Customer v1. Current source:13,27-28,54-65,82-88 implies Customer-only; update those sections with separate qualified v2/v1 identities and examples, not a universal replacement.",
+    "Accounts v2 examples create stripe.v2.core.accounts at new:198-219 and pass customer_account in one-time and subscription Checkout Sessions at new:345-358,391-404. The older Customers v1 examples still pass customer at new:451-464,498-511. New integration_identifier appears in both paths as an integration label/conversion-measurement example (new:356-357,402-403,462-463,509-510); it is not evidence of a required field or realized conversion tracking.",
+    "New raw:11 adds Checkout studio configure/preview navigation, and new:755-757 adds optional yearly-subscription monthly-term and tax display settings. Neither changes the US iOS eligibility premise. The old/new Universal Links, Safari, StoreKit gate, and checkout.session.completed fulfillment instructions persist (old:174-226,334-378,427-431; new:258-310,526-570,620-624).",
+    "Current source:27-32 lists Checkout redirect at step 5 before server receipt and entitlement grant at step 6, while both captures explain Checkout waits for webhook acknowledgement before redirect or falls back after 10 seconds if not acknowledged (old:429-431; new:620-624). Replace the strict sequence with a separately timed return and server-owned fulfillment. More importantly, checkout.session.completed and success_url do not alone prove paid funds when optional dynamic methods are enabled (new:417,524). Related pinned authority wiki/sources/source-stripe-checkout-dashboard-payment-methods.md:22-34 states delayed methods can leave completed with payment_status unpaid; grant coins only for paid status, or on checkout.session.async_payment_succeeded, and handle async_payment_failed. Concept wiki/concepts/stripe-checkout.md:140,202-204 agrees; its :212 shorthand must be read with the paid-status qualification.",
+    "Current source Swift excerpt at source:69-80 sets paymentComplete from a success URL substring and omits the raw guide's instruction to fetch latest customer entitlements from the server (old:365-371; new:557-563). Treat this as illustrative UI handling only; paid status plus trusted server entitlement state control credits. The shared raw webhook sample has an inherited JavaScript block-scope error: old:447-474 and new:641-668 declare let event inside if (webhookSecret) and later read event.data.object outside it, so either branch fails before identity lookup. It also uses session.customer at new:666-673 while the new Accounts v2 Session supplies customer_account at new:354,400. Do not present either v1 or v2 sample as an executable fulfillment implementation."
+  ],
+  "approved_conflicts": [
+    "Source:13,27-28,54-65,82-88 presents the Checkout identity/fulfillment path as Customer-only. New raw:30-36,194-256,312-524 documents qualified customer-configured Accounts v2 alongside retained Customers v1. Source and any one-line concept route should distinguish the two branches and the preview gate; do not replace v1 wholesale.",
+    "Source:22,27-32,69-88 suggests checkout.session.completed or redirect can authorize immediate coin grant. Old:429-431/new:620-624 describe webhook acknowledgement and redirect timing, but related authority wiki/sources/source-stripe-checkout-dashboard-payment-methods.md:22-34 states completed may be unpaid for delayed methods. Require payment_status paid before grant, use async_payment_succeeded for later clearance, and handle async_payment_failed; a success_url or completed event alone is not paid finality. The source Swift excerpt omits server entitlement refresh (old:365-371; new:557-563).",
+    "Both raw webhook examples declare let event within if (webhookSecret) (old:447-449; new:641-643) and access event.data.object outside that block (old:472-474; new:666-668), an executable scope failure before either identity lookup. Separately, new Accounts v2 Session examples use customer_account (new:354,400) while the shared webhook sample indexes session.customer (new:668-673). Neither v1 nor v2 sample is verified runnable fulfillment code; the v2 identity mapping remains unresolved."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the prior US iOS digital-goods app-to-web scope and distinction from Android in-app payments, physical/outside-app goods, and optional Managed Payments (old:8-18; new:9,13-21,751-753).",
+    "Keep Customers v1 as a documented path, not a deprecated path inferred from the new v2 recommendation (old:143-172,228-332; new:227-256,419-524).",
+    "Keep Universal Link association, fallback page, Safari opening, and StoreKit canMakePayments gate as separate steps (old:174-226,334-378,427-431; new:258-310,526-570,620-624). Preserve webhook-backed coin grant only after verifying paid status on checkout.session.completed or receiving checkout.session.async_payment_succeeded for delayed methods, with async failure handled (wiki/sources/source-stripe-checkout-dashboard-payment-methods.md:22-34; wiki/concepts/stripe-checkout.md:140,202-204)."
+  ],
+  "unresolved_questions": [
+    "The four pinned files do not resolve how session.customer_account should map to an app user for v2 fulfillment. The shared webhook example also fails by reading block-scoped event outside its if block in both captures, before either v1 or v2 lookup. A corrected, verified event-object extraction and paid-status/async handling are needed before publishing executable implementation guidance; related Checkout authority supplies the paid-status rule but not this sample repair.",
+    "The capture documents dated US iOS storefront and Accounts v2 availability/preview wording; live App Store policy, account eligibility, and runtime behavior were not checked in this review."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-inapp-payments.md",
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/mobile-digital-goods-checkout/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "f8663a29a573e80c51ae38f043a257120c588aaaa767526fa6526ca04fcca7a4",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/mobile-digital-goods-checkout/attempt-2/review.json",
+  "approved_triage_review_sha256": "1aa624d86b4b89ab548c690f8db5f58f3b222adb1f7e2f65d66930a5cdf0378d",
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw6",
+  "reviewer_agent": "/root/s2ur3",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md",
+      "sha256": "41a900b23567684cd6a83bdfd65a64b2a630bb3936bca1f2c750359e7f8f1d1b",
+      "lines": 765
+    },
+    {
+      "path": "raw/stripe-inapp-digital-goods-checkout-2025.md",
+      "sha256": "2724efa55ad88498f0aea7227f4848b35da5aaefbcb15ce6007fc27a1b8336c4",
+      "lines": 565
+    },
+    {
+      "path": "wiki/sources/source-stripe-inapp-digital-goods-checkout.md",
+      "sha256": "ed6a5ba8c9cf2fe7c1ca42b1635533794653379a7b5c4ac7b892a0d458a302fd",
+      "lines": 115
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/b8e4d2d51ff975970bd39ffe/content.diff",
+      "sha256": "0d62cde8d833486b953b9a1c39d647331a3b3719dd1e5cb35aa3cedf2e676ba2",
+      "lines": 728
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/mobile-digital-goods-checkout-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/mobile-digital-goods-checkout-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-checkout/attempt-1"
+}

@@ -1,0 +1,130 @@
+{
+  "job_id": "disputes-best-practices",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-best-practices-2026-11-07.md",
+  "raw_sha256": "63ed5948e3983c9892a24a769a3e79c9f1d7b41a14b959a37c01e208f3ee968b",
+  "source_before_sha256": "902a892cc912b621e60ede4a67960b28e31da0a4d943df460dedc0c561da680b",
+  "source_page": "---\ntitle: \"Stripe \u2014 Dispute Evidence Best Practices\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/disputes/best-practices\nraw_files:\n  - \"stripe-disputes-best-practices-2026-11-07.md\"\n  - \"stripe-disputes-best-practices-2026.md\"\ntags: [stripe, disputes, chargebacks, evidence, best-practices, visa-ce-30, radar, fraud]\n---\n\n## Summary\n\nStripe's November 7, 2026 capture describes evidence organization, estimated win likelihood, dispute-specific page limits and the API page-limit error, authorization and delivery proof, partial refunds, and Visa compelling evidence. Stripe does not influence the bank's final decision. This is guidance for a response, not a guarantee that evidence is accepted or a dispute is won.\n\n## Win Likelihood (Radar Plus)\n\nThe November capture calls the Dashboard prediction **Radar Plus**; the May capture called it **Radar for Fraud Teams**. This observed label change does not establish an account's enrollment or a specific dispute's eligibility. If a Radar-enrolled account has no prediction, Stripe lists non-credit-card payment, inquiry rather than dispute, or a prediction error as possible reasons.\n\nThe 1\u20135 dot ranking estimates the chance of winning **after relevant evidence is submitted**. Stripe gives these expected percentages, unchanged between the two captures:\n\n| Dots | Expected win percentage |\n| --- | --- |\n| 5 | 60% |\n| 4 | 40% |\n| 3 | 25% |\n| 2 | 15% |\n| 1 | 5% |\n\nThe estimate is not an outcome guarantee. The dispute type, Visa CE 3.0 eligibility, evidence strength, payment type, and purchase type can affect the chance of overturning a dispute.\n\n## Evidence Organization Rules\n\n- Present the chronology of events, group receipts, customer communication, policies, and logs by type, and briefly explain what each item proves.\n- Match the evidence to the dispute reason or network reason code. For a cancellation-policy claim, submit the relevant policy excerpt and emphasize the disputed provision; do not upload the entire Terms of Service.\n- Keep language neutral, factual, concise, and legible. Emails and text exchanges can support a claim but do not by themselves verify customer identity. Include relevant excerpts and remove duplicate quoted messages.\n- Upload evidence itself rather than external links. Issuers might not follow links to separate sites or drives.\n- A receipt should show the disputed items' date, currency, and amount; shipping proof should show delivery date and full address; customer communication should identify the customer and relevant message.\n\n## File Limits and Presentation\n\n| Item | November capture |\n| --- | --- |\n| Accepted file types | PDF, JPEG, PNG |\n| Combined uploaded file size | No more than 4.5 MB |\n| Formatting-list page count | Less than 50 pages combined |\n| Dispute-specific page limit | Keep evidence within the applicable limit for that dispute; it can vary |\n\n> [!warning] Contradiction across dated captures\n> The May capture separately stated a 19-page Mastercard maximum. The November capture omits that network-specific figure and instead says the applicable limit can vary by dispute. Omission does not establish that the older Mastercard figure was repealed or remains current; do not use 19 or 50 as a universal acceptance threshold.\n\nFor legibility, Stripe **recommends** a 12-point font or larger, US Letter or A4 portrait documents (screenshots may be landscape), clear images, and callouts or arrows rather than color highlighting. These are presentation recommendations, not stated API validation rules. Crop screenshots to the relevant area and describe them in the evidence form. Stripe says the issuer will not review a response with illegible data.\n\nSpecify an evidence type for each uploaded file. Only one file can be submitted per evidence type, so combine multiple emails or screenshots of customer communication into one file.\n\n### Handle page-limit errors on API evidence updates\n\nWhen a page limit applies, Stripe estimates the final compiled evidence PDF from text and uploaded files already saved on the dispute **plus the proposed update**. If that estimate exceeds the applicable limit, the update returns HTTP `400`, `error.type=invalid_request_error`, and `error.code=dispute_evidence_page_limit_exceeded`. This can happen with `submit=true` **or** `submit=false`.\n\nHandle `error.code` programmatically. Use `error.message` to explain the applicable limit and text/file breakdown to a human, then shorten text or reduce uploaded file pages and retry. Do not parse the message for a fixed page threshold: Stripe's example of 17 allowed pages and 36 uploaded pages is illustrative, and the limit varies by dispute.\n\n## Authorization and Delivery Proof\n\nFor a fraudulent dispute, useful authorization evidence includes AVS matches, CVC confirmation, a signed receipt or contract, and an IP address matching the cardholder's verified billing address. Stripe includes available AVS/CVC results and purchase IP **if available from the integration**. Add other authorization proof such as 3DS authentication when available.\n\nFor a physical product, include shipment and delivery proof with the **full delivery address**, not only city and postal code. Explain a different ship-to name when relevant. For digital goods or services, include an IP address, system log, download record, or usage record supporting delivery or use.\n\nFor returns or refunds, show how the relevant Terms of Service or refund policy was presented at checkout and the provision relevant to the case. Use a clear screenshot of the checkout presentation and a relevant excerpt, not the entire policy.\n\n## Background and Discrediting Evidence\n\nWhen the integration collects and passes the data, Stripe can pre-populate many background fields in the Dashboard and API evidence object; these fields are conditional on availability:\n\n| API evidence parameter | Relevant data |\n| --- | --- |\n| `billing_address` | Customer billing address, when AVS succeeded |\n| `customer_name` | Customer name |\n| `customer_email_address` | Customer email |\n| `customer_purchase_ip` | Purchase IP, with geographic data when captured |\n| `receipt` | Stripe-generated email receipt, if one was sent |\n| `product_description` | Product or service details |\n\nOther useful evidence includes `customer_signature` for a signed document, `customer_communication` for relevant correspondence or dispute withdrawal, and `refund_refusal_explanation` for prior compensation. Consolidate multiple communications in one file. See the raw table for Dashboard evidence categories and API parameter mappings.\n\n## Accepting, Withdrawing, and Partial Refunds\n\nAccepting a dispute is not an admission of wrongdoing. The dispute fee still applies, and disputes received count toward dispute activity whether won or lost. Accept when you do not intend to respond or recover the funds. For a misunderstanding, a cardholder may withdraw with their issuer, but Stripe recommends submitting evidence of validity; a withdrawal still counts as a dispute.\n\nA customer can dispute the full original amount after a partial refund. Respond with the **amount and date** of the refund and, when helpful, a Dashboard screenshot, even if you will accept the unrefunded portion. In most cases the issuer cancels the original dispute and creates a corrected-amount dispute. Stripe tracks the overall outcome on the existing dispute; if not fully resolved in the merchant's favor, its status is `lost` and the merchant receives only the partially refunded amount. Cartes Bancaires merchants cannot contest these disputes, so they cannot request issuer consideration of an existing partial refund.\n\n## Visa Compelling Evidence and CE 3.0\n\nFor a **Visa fraudulent** dispute, Visa's Compelling Evidence specification calls for at least one qualifying item; without it, Stripe says the likelihood of overturning the dispute is very low. More relevant evidence can help, but it does not guarantee a win. Stripe recommends applying the practice more broadly even though Visa names this specification.\n\nVisa CE 3.0 can use qualifying prior non-fraudulent cardholder history against friendly fraud. For eligible disputes, Stripe says it searches prior transactions, flags eligibility, notifies through email and the dispute details page, adds qualifying transactions, marks required form elements, pre-populates available required information, and supports API evidence submission. Eligibility and pre-populated data depend on the actual dispute and available history; the November page does not name a particular Visa reason code here.\n\n## Related Pages\n\n- [[disputes]] \u2014 dispute concept and evidence workflow context\n- [[stripe]] \u2014 provider overview\n- [[source-stripe-disputes-responding]] \u2014 responding and submission workflow\n- [[source-stripe-disputes-visual-evidence]] \u2014 visual evidence packet examples\n- [[stripe-3d-secure]] \u2014 3DS as possible authorization evidence\n\n## Raw Sources\n\n- [[raw/stripe-disputes-best-practices-2026-11-07|Stripe dispute evidence best practices, 2026-11-07 capture]] \u2014 current captured guidance and API page-limit error\n- [[raw/stripe-disputes-best-practices-2026|Stripe dispute evidence best practices, 2026-05 capture]] \u2014 earlier guidance including historical 19-page Mastercard statement\n",
+  "quotes": [
+    {
+      "text": "Stripe\u2019s [Radar Plus](https://stripe.com/radar/fraud-teams) uses Radar\u2019s AI models to estimate your chances of winning a dispute.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:36"
+    },
+    {
+      "text": "If the updated evidence exceeds the applicable limit, Stripe returns an HTTP `400` response with `error.type` set to `invalid_request_error` and `error.code` set to `dispute_evidence_page_limit_exceeded`. This check applies whether `submit` is `true` or `false`.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:99"
+    },
+    {
+      "text": "The limit and page counts in this example are illustrative. The applicable limit can vary by dispute.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:115"
+    },
+    {
+      "text": "The combined page count must be less than 50 pages",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:160"
+    },
+    {
+      "text": "Keep the combined file size within 4.5 MB and the evidence within the applicable page limit for the dispute.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:207"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "19 pages for Mastercard.",
+      "location": "raw/stripe-disputes-best-practices-2026.md:188"
+    },
+    {
+      "text": "Radar for Fraud Teams",
+      "location": "raw/stripe-disputes-best-practices-2026.md:35"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-best-practices-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 259
+      }
+    ],
+    "raw/stripe-disputes-best-practices-2026.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 235
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-best-practices.md": [
+      {
+        "start": 1,
+        "end": 115
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/00f621528326ae3253adbe77/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 206
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "disputes-best-practices-limits",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "- **Win likelihood**: Radar scores 1\u20135 dots (5 dots = 60% win, 1 dot = 5%) \u2014 disputes are hard to overturn even at best\n- **File limits**: 4.5 MB / <50 pages total / 19 pages Mastercard / PDF+JPEG+PNG only; one file per evidence type\n- **Fraudulent = >50% of disputes**: include AVS, CVC, IP, 3DS; Stripe auto-populates these when available\n- **Accepting disputes**: fee still applies; counts toward dispute rate regardless \u2014 prevention > acceptance\n- **Partially refunded**: always respond with refund proof; issuer cancels + re-issues for corrected amount",
+      "new_text": "- **Win likelihood**: November 2026 page names Radar Plus; 1\u20135 dots estimate expected win percentages of 5%, 15%, 25%, 40%, and 60% after relevant evidence, subject to eligibility and without an outcome guarantee.\n- **File limits**: PDF/JPEG/PNG; combined files no more than 4.5 MB; formatting list says <50 pages, while the applicable page limit varies by dispute. One file per evidence type. An API evidence update exceeding the compiled-PDF limit returns HTTP 400 and `dispute_evidence_page_limit_exceeded` even with `submit=false`; handle `error.code`, reduce evidence, and retry.\n- **Authorization**: for fraudulent disputes, include relevant AVS/CVC, IP and 3DS evidence; Stripe includes available AVS/CVC results and purchase IP if the integration supplies it.\n- **Accepting disputes**: fee still applies; disputes received count toward dispute activity regardless of outcome.\n- **Partially refunded**: respond with refund amount and date; issuer commonly cancels and recreates the dispute for the corrected amount, subject to the Cartes Bancaires contesting limitation.\n\n> [!warning] Contradiction across dated captures\n> The May 2026 page separately stated a 19-page Mastercard maximum. The November page does not state that figure and instead describes a dispute-specific applicable limit. Its omission does not prove repeal or continued validity of 19 pages; the <50-page formatting rule alone is not an acceptance guarantee.",
+      "reason": "Correct static page-limit and score claims, add the new API error contract, and preserve the dated Mastercard statement with its uncertainty.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Do not treat 19 or 50 pages as a universal accepted limit; the May Mastercard number is historical."
+      ]
+    },
+    {
+      "update_id": "disputes-best-practices-submission",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Evidence submission**: one-shot only; 4.5 MB max; 19-page max (Mastercard); one file per evidence type; no external links/audio/video.",
+      "new_text": "**Evidence submission**: see [[source-stripe-disputes-responding]] for finalization and deadline behavior. This best-practices capture allows PDF/JPEG/PNG and combined uploaded files up to 4.5 MB, with one file per evidence type; use the dispute's applicable page limit. The May 2026 capture stated a 19-page Mastercard maximum, but the November capture omits that figure and does not establish its current status. For API evidence updates, the compiled-PDF page-limit check can fail with `dispute_evidence_page_limit_exceeded` before submission (`submit=false`) as well as on submission.",
+      "reason": "Remove the unqualified current Mastercard maximum and distinguish update-time page checks from final evidence submission; leave response deadlines to the linked workflow source.",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The November page does not establish the actual limit for every network or dispute."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/best-practices, [[source-stripe-disputes-best-practices]] now explains that an API evidence update estimates the compiled PDF from saved evidence plus proposed changes. The November capture at raw/stripe-disputes-best-practices-2026-11-07.md:97-115 specifies HTTP 400 and `dispute_evidence_page_limit_exceeded` for both `submit=true` and `submit=false`; code should branch on `error.code`, then reduce pages and retry. The May capture at raw/stripe-disputes-best-practices-2026.md:135-137 and :188 supplies the earlier formatting and Mastercard figures, but it does not make 19 or 50 a reliable universal preflight threshold.",
+    "Q2": "At https://docs.stripe.com/disputes/best-practices, [[source-stripe-disputes-best-practices]] preserves the earlier evidence guidance while correcting the observed changes. The November capture at raw/stripe-disputes-best-practices-2026-11-07.md:36 names Radar Plus, and :44-52 keeps conditional expected percentages from one to five dots; the May capture at raw/stripe-disputes-best-practices-2026.md:35 and :43-51 used Radar for Fraud Teams with the same estimates. Relevant authorization and delivery proof, clear file presentation, partial-refund evidence, and Visa compelling evidence remain recommended; the estimates and evidence do not promise a bank win."
+  },
+  "status": "candidate_ready"
+}

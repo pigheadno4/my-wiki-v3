@@ -1,0 +1,127 @@
+{
+  "job_id": "declines",
+  "attempt": 1,
+  "raw_path": "raw/stripe-declines-2026-11-07.md",
+  "raw_sha256": "fba23d6e88b39c51d1c4b5e4d4c0348d25263b171e658ac7715df1aa308d8bab",
+  "source_before_sha256": "654bec9c092127bf0467f02cd256539bfb55860603ad0c04435472ef2008877e",
+  "source_page": "---\ntitle: \"Stripe Declines Overview\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/declines\"\nraw_files:\n  - \"stripe-declines-2026-11-07.md\"\n  - \"stripe-declines-2026.md\"\ntags: [stripe, declines, radar, fraud, issuer-declines, adaptive-acceptance, payment-failure]\n---\n\n## Overview\n\nStripe's May 9 and November 7, 2026 guides distinguish issuer or payment-provider declines, Stripe-blocked payments, and invalid API calls. For a failure, the guide directs readers to the Dashboard or the `Charge.outcome` attribute to inspect the type and cause. Its issuer, block, incorrect-CVC error, and `invalid` outcome snippets are separate examples, not a complete input-to-outcome mapping or evidence of a particular executed payment. See [[stripe-declines]].\n\n## Three failure categories and diagnostic examples\n\n| Guide category | Dated example | Decision/diagnostic boundary |\n| --- | --- | --- |\n| Issuer decline | `outcome.type: issuer_declined`, `network_status: declined_by_network`, `reason: expired_card` | Issuer or payment provider decides whether to authorize; Stripe reports the information received, including network decline codes when provided |\n| Blocked payment | `outcome.type: blocked`, `network_status: not_sent_to_network`; examples show `highest_risk_level` or `low_probability_of_authorization` | Stripe Radar rule/risk block or, for users with IC+ pricing, Adaptive Acceptance's low-authorization-probability/network-cost block |\n| Invalid API call | A separate sample `outcome.type: invalid`, `network_status: not_sent_to_network` | The guide says invalid calls typically do not produce a Dashboard payment, though some may; it does not map every malformed request or incorrect CVC to this outcome |\n\nThe guide's wrong-CVC PaymentIntent illustration uses `amount=2000`, `currency=usd`, `payment_method=pm_card_chargeDeclinedIncorrectCvc`, and `confirm=true`, then displays a possible `incorrect_cvc` `card_error` response. The May sample is Node; the November sample is equivalent curl. The later `outcome.type: invalid` snippet is separate; neither capture shows that the same incorrect-CVC request yielded that Charge outcome. The November error `doc_url` points to a `docs.stripe.com` anchor; this presentation change does not prove a runtime schema change.\n\n## Issuer declines\n\nA card issuer or other payment provider may evaluate spending habits, balance and card data such as expiration, address and CVC. Stripe surfaces received decline information through Stripe decline codes, and specific issuer explanations may arrive as network decline codes. The guide says non-card payment-method declines are handled similarly and includes an issuer-declined example with network code `54`, advice code `03`, `reason: expired_card`, and `advice_code: confirm_card_data`. The example is not a guarantee that a given decline has those codes.\n\n## Stripe-blocked payments\n\nStripe says a blocked payment does not obtain card-issuer authorization through Stripe and has not been charged or withdrawn by Stripe. **For some card types**, a customer nevertheless might see an issuer authorization for the amount on their statement, which the issuer typically removes within a few days. These statements do not establish whether the issuer temporarily reserves the customer's available balance. Do not equate a statement authorization with a Stripe charge or settled payment.\n\nRadar can block a high-risk payment or one violating custom rules. The guide's block example uses `reason: highest_risk_level`, `risk_level: highest`, and `type: blocked`. For users with **IC+ pricing**, Adaptive Acceptance can block some low-probability payments to avoid network costs or retry penalties; its example uses `reason: low_probability_of_authorization` and `risk_level: normal`. Both examples have `network_status: not_sent_to_network`.\n\nIf a configured Radar rule blocks a legitimate payment, **Add to allow list** in the Dashboard can stop other matching rules from blocking future attempts. It does not retry the already blocked payment. The guide says to contact Stripe if the button is unavailable.\n\n## Detail locators\n\n- [[raw/stripe-declines-2026-11-07|November 7, 2026 guide]]: failure categories and `Charge.outcome` lines 9\u201321; issuer handling lines 23\u201331; blocked-payment authorization caveat and allow list lines 33\u201345; Radar/Adaptive Acceptance examples and IC+ scope lines 47\u201377; incorrect-CVC curl/error, issuer outcome, and separate invalid outcome lines 79\u2013134.\n- [[raw/stripe-declines-2026|May 9, 2026 guide]]: categories and diagnostic route lines 8\u201326; block caveat and allow list lines 28\u201340; examples and IC+ scope lines 42\u201372; incorrect-CVC Node/error and distinct outcomes lines 74\u2013133.\n\n## Related\n\n- [[stripe]]; [[stripe-declines]]; [[stripe-authorization-boost]]; [[stripe-3d-secure]]\n\n## Raw Sources\n\n- [[raw/stripe-declines-2026-11-07|November 7, 2026 decline guide]]\n- [[raw/stripe-declines-2026|May 9, 2026 decline guide]]\n",
+  "quotes": [
+    {
+      "text": "When using the API, look at the `Charge` object\u2019s [outcome](https://docs.stripe.com/api/charges/object.md#charge_object-outcome). This attribute covers the payment failure type and provides information about its cause.",
+      "location": "raw/stripe-declines-2026-11-07.md:13"
+    },
+    {
+      "text": "When Stripe blocks a payment, it doesn\u2019t obtain authorization from the card issuer.",
+      "location": "raw/stripe-declines-2026-11-07.md:37"
+    },
+    {
+      "text": "For some card types, customers might see the card issuer\u2019s authorization for the payment amount on their statement. However, Stripe hasn\u2019t charged this amount or withdrawn funds.",
+      "location": "raw/stripe-declines-2026-11-07.md:39"
+    },
+    {
+      "text": "This action doesn\u2019t retry the payment. Instead, it overrides all of your other rules from blocking future payment attempts that match the list attribute.",
+      "location": "raw/stripe-declines-2026-11-07.md:41"
+    },
+    {
+      "text": "Invalid API calls typically don\u2019t result in a payment appearing in your Dashboard. However, you might see the payment appear in a few cases.",
+      "location": "raw/stripe-declines-2026-11-07.md:123"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "For some card types, customers might see the card issuer\u2019s authorization for the payment amount on their statement. However, Stripe hasn\u2019t charged this amount or withdrawn funds.",
+      "location": "raw/stripe-declines-2026.md:34"
+    },
+    {
+      "text": "The invalid API call generates an error response that might look like this:",
+      "location": "raw/stripe-declines-2026.md:91"
+    },
+    {
+      "text": "Invalid API calls typically don\u2019t result in a payment appearing in your Dashboard. However, you might see the payment appear in a few cases.",
+      "location": "raw/stripe-declines-2026.md:122"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-declines-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 140
+      }
+    ],
+    "raw/stripe-declines-2026.md": [
+      {
+        "start": 1,
+        "end": 140
+      }
+    ],
+    "wiki/sources/source-stripe-declines-overview.md": [
+      {
+        "start": 1,
+        "end": 91
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ffcc244a2ae8c2590d03c393/content.diff": [
+      {
+        "start": 1,
+        "end": 191
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-declines-invalid-table",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "| Invalid API call | `invalid` | `not_sent_to_network` | Stripe (malformed request) |",
+      "new_text": "| Invalid API call | `invalid` in a separate example | `not_sent_to_network` in that example | Invalid-call category; the guide does not establish a universal malformed-request or wrong-CVC mapping |",
+      "reason": "The old table incorrectly asserts a universal cause-to-outcome mapping from distinct examples.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-declines-blocked-auth",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "Stripe Radar blocks payments before sending to the network \u2014 no authorization is attempted and no funds are held (though some card types may briefly show a pending authorization that resolves within a few days).",
+      "new_text": "Stripe says a Radar-blocked payment does not obtain card-issuer authorization through Stripe and that Stripe has not charged or withdrawn the amount. For some card types, the customer might nevertheless see an issuer authorization for the amount on a statement, typically removed by the issuer within a few days. These captures do not establish whether the issuer temporarily reserves available balance; a statement authorization is not proof of a Stripe charge.",
+      "reason": "Remove unsupported no-funds-held claim and preserve the card-type issuer-statement caveat without collapsing issuer and Stripe actions.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-declines-invalid-prose",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "Malformed API calls (wrong CVC, invalid card number, bad parameters) produce a `card_error` with `outcome.type = \"invalid\"`. These usually don't appear in the Dashboard.",
+      "new_text": "The May Node and November curl examples submit a declined-test PaymentMethod and show a possible `incorrect_cvc` `card_error` response. Separately, the guides show a Charge `outcome.type = \"invalid\"` example and say invalid API calls typically do not produce a Dashboard payment, though a payment may appear in some cases. They do not show that the same incorrect-CVC request produced the invalid Charge outcome, or that every malformed request maps to it.",
+      "reason": "Separate the incorrect-CVC error response from the later invalid Charge outcome and preserve the Dashboard exception.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-declines-source-route",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "- [[source-stripe-declines-overview]] \u2014 Stripe declines overview page",
+      "new_text": "- [[source-stripe-declines-overview]] \u2014 May/November 2026 decline guide: issuer versus Stripe-blocked examples, invalid-call examples, Radar allow-list scope and issuer-statement authorization caveat",
+      "reason": "Make the corrected source and its dated evidence boundaries discoverable from the concept.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/declines, [[source-stripe-declines-overview]] now preserves three failure categories and the Charge.outcome diagnostic route (old lines 12\u201318; new lines 13\u201321), while treating the May Node and November curl incorrect-CVC requests as presentation examples (old lines 78\u2013103; new lines 83\u2013104). The issuer-declined and invalid outcome snippets remain separate (old lines 107\u2013133; new lines 108\u2013134), so neither capture proves that the incorrect-CVC request yielded `outcome.type: invalid` or that all malformed requests do.",
+    "Q2": "At https://docs.stripe.com/declines, [[source-stripe-declines-overview]] now states that Stripe's block does not obtain issuer authorization through Stripe, while some card types may still show an issuer authorization on the statement with no Stripe charge or withdrawal (old lines 32\u201334; new lines 37\u201339). Neither capture establishes whether an issuer temporarily holds available balance. The guide retains future-matching allow-list scope without retrying the current payment (old line 36; new line 41) and limits the Adaptive Acceptance network-cost block explanation to IC+ pricing (old line 57; new line 62)."
+  },
+  "status": "candidate_ready"
+}

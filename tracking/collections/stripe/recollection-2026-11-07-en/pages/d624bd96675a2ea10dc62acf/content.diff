@@ -1,0 +1,49 @@
+--- raw/stripe-apple-pay-recurring-2025.md
++++ raw/stripe-apple-pay-apple-pay-recurring-2026-11-07.md
+@@ -28,8 +28,8 @@
+ To implement recurring Apple Pay transactions using the API:
+ 
+ 1. Save the DPAN (or MPAN) and cryptogram in a `Card`.
+-1. Initiate a CIT to consume the cryptogram before its expiration. [Use a SetupIntent](https://docs.stripe.com/apple-pay/apple-pay-recurring.md#create-setup-intent) to send a 0 USD validation or a charge transaction to the authorization network, and keep a record of the returned network transaction.
+-1. Reuse the payment method for future off-session MITs. Stripe sends the DPAN (or MPAN) and the network transaction ID of the original CIT to the authorization network to improve authorization rate.
++2. Initiate a CIT to consume the cryptogram before its expiration. [Use a SetupIntent](https://docs.stripe.com/apple-pay/apple-pay-recurring.md#create-setup-intent) to send a 0 USD validation or a charge transaction to the authorization network, and keep a record of the returned network transaction.
++3. Reuse the payment method for future off-session MITs. Stripe sends the DPAN (or MPAN) and the network transaction ID of the original CIT to the authorization network to improve authorization rate.
+ 
+ Consume cryptograms as soon as they’re created using the following recommendations.
+ 
+@@ -39,7 +39,7 @@
+ 
+ You can also [create a SetupIntent](https://docs.stripe.com/api/setup_intents/create.md) directly to save the [Apple Pay PaymentMethod](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-card-wallet-apple_pay) for future usage. SetupIntent confirmation initiates the same CIT 0 USD validation to consume the cryptogram. Then you can use the authorized [Apple Pay PaymentMethod](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-card-wallet-apple_pay) to create a Subscription later.
+ 
+-### Create a SetupIntent for Tokens API integrations (Legacy)
++### Create a SetupIntent for Tokens API integrations (Legacy) 
+ 
+ We discourage using the legacy Tokens and Charges APIs for recurring Apple Pay payments. It causes the cryptogram expiration authorization failure described in this document. The Tokens API doesn’t trigger the authorization request in time to consume the cryptogram. Additionally, the Charges API doesn’t support the following features, many of which are required for credit card compliance:
+ 
+@@ -52,7 +52,6 @@
+ If you’re using the legacy [Tokens](https://docs.stripe.com/api/tokens.md) to create an Apple Pay payment token and then calling [Charges](https://docs.stripe.com/api/charges.md) later to charge the user when the trial ends, you can improve your authorization rate following these steps.
+ 
+ 1. Create a Payment Method immediately after you create the token.
+-
+    #### curl
+ 
+    ```bash
+@@ -61,8 +60,7 @@
+      -d "type"="card" \
+      -d "card[token]"="tok_123"
+    ```
+-
+-1. Immediately create a [SetupIntent](https://docs.stripe.com/api/setup_intents.md) with the new PaymentMethod to perform a 0 USD validation transaction.
++2. Immediately create a [SetupIntent](https://docs.stripe.com/api/setup_intents.md) with the new PaymentMethod to perform a 0 USD validation transaction.
+ 
+ Completing these two steps performs the CIT and sends the cryptogram to the network for authorization before it expires. If you’re using Stripe.js, you can combine these steps by calling [stripe.confirmCardSetup with token](https://docs.stripe.com/js/setup_intents/confirm_card_setup#stripe_confirm_card_setup-token).
+ 
+@@ -75,7 +73,7 @@
+ Apple Pay supports [usage=off_session](https://docs.stripe.com/api/setup_intents/object.md#setup_intent_object-usage) payments using DPANs (or MPANs) when the customer is outside of the checkout flow. However, they have a slightly higher risk because they don’t get a liability shift from the network and might get lower authorization rates than average.
+ 
+ > #### Saved payments restriction
+->
++> 
+ > Apple Pay terms forbid using a saved payment method for [usage=on_session](https://docs.stripe.com/api/setup_intents/object.md#setup_intent_object-usage) payments. If the customer is in the flow, you’re required to have them authorize and generate a new cryptogram for that transaction.
+ 
+ Apple Pay supports incremental authorizations only when you increase the amount of an authorized charge before capturing it.

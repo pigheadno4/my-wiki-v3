@@ -1,0 +1,118 @@
+{
+  "target_path": "wiki/concepts/stripe-currencies.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-currencies/base.md",
+  "base_sha256": "5d1201b8b82cee5120ae0cf3acf758d0e3f35e6fc76a58ee32a1c651f8f4fc09",
+  "patches": [
+    {
+      "update_id": "currencies::currencies-integration-currency",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "Three distinct currency concepts apply to every payment: payment method currency, presentment currency, and settlement currency.",
+      "new_text": "The guide describes payment method, presentment, and settlement currencies, and separately defines the integration currency set on a Price or PaymentIntent. That integration currency appears in the Dashboard and is used by Stripe Tax when recording tax liability in Stripe Tax reports. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; November capture `raw/stripe-currencies-2026-11-07.md:13-29`, May capture `raw/stripe-currencies-2025.md:12-24`).",
+      "reason": "The November source adds a distinct integration-currency definition absent from the concept.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [],
+      "original_update_id": "currencies-integration-currency",
+      "job_id": "currencies",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/receipt.json",
+      "receipt_sha256": "1babab9ca4fa03961e65357b1bda465a8149a75f3cba3eddb286a8367e1b5b35",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/candidate.md",
+      "source_candidate_sha256": "388739f394e4f663dfca7f4f01cd1ecd4d211576ff6829056fea378370aa1514",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/review.json"
+    },
+    {
+      "update_id": "currencies::currencies-amex-availability",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "**American Express**: doesn't support currencies marked with `*` in Stripe's presentment currency list.",
+      "new_text": "**American Express**: asterisk-marked currencies are unsupported in every Stripe account country; an unmarked currency might still be unavailable for Amex in a particular account country. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; November capture `raw/stripe-currencies-2026-11-07.md:39-41`, May capture `raw/stripe-currencies-2025.md:32-34`).",
+      "reason": "The prior sentence omitted the new country-specific qualification for unmarked currencies.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "currencies-amex-availability",
+      "job_id": "currencies",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/receipt.json",
+      "receipt_sha256": "1babab9ca4fa03961e65357b1bda465a8149a75f3cba3eddb286a8367e1b5b35",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/candidate.md",
+      "source_candidate_sha256": "388739f394e4f663dfca7f4f01cd1ecd4d211576ff6829056fea378370aa1514",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/review.json"
+    },
+    {
+      "update_id": "currencies::currencies-max-charge-scope",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "## Maximum Charge Amounts\n\n- **8 digits** for most currencies: max 999,999.99 (e.g., `99999999`)\n- **12 digits**: IDR, LBP\n- **10 digits**: COP, HUF, JPY (card only)\n- **9 digits**: INR, IDR+Amex\n\nJCB/Diners/Discover from Japan: 8 digit max (99,999,999 JPY) regardless.",
+      "new_text": "## Maximum Charge Amounts\n\n> [!warning] Contradiction\n> The May capture describes a general eight-digit ceiling with currency-specific card exceptions; the November capture separates card-network and non-card limits. The May COP/HUF/JPY card examples also have inconsistent stated digit counts and numeric values. Apply the relevant dated network, method, currency and region rule; an omitted May example is not evidence of withdrawn support. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; May `raw/stripe-currencies-2025.md:108-126`, November `raw/stripe-currencies-2026-11-07.md:115-140`).\n\n- **Cards, November capture:** most card payments support 12 minor-unit digits (`999999999999`); Cartes Bancaires 10 (`9999999999`); Amex 9 (`999999999`) in most currencies. Network limits can be tighter by currency or region. JCB, Diners Club and Discover processed from Japanese Stripe accounts have an eight-digit JPY maximum (`99999999`).\n- **Other payment methods, November capture:** IDR supports 12 minor-unit digits, COP 10, INR 9, and other currencies 8, subject to tighter method-specific limits. These documented ceilings do not guarantee an accepted charge.",
+      "reason": "The old unqualified currency-first classification conflicts with the November card-network versus non-card split.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Account, network, region and payment method rules can lower the applicable maximum; old COP/HUF/JPY examples are internally inconsistent."
+      ],
+      "original_update_id": "currencies-max-charge-scope",
+      "job_id": "currencies",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/receipt.json",
+      "receipt_sha256": "1babab9ca4fa03961e65357b1bda465a8149a75f3cba3eddb286a8367e1b5b35",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/candidate.md",
+      "source_candidate_sha256": "388739f394e4f663dfca7f4f01cd1ecd4d211576ff6829056fea378370aa1514",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/review.json"
+    },
+    {
+      "update_id": "currencies::currencies-eea-pricing-group",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "Cards from 44 EEA countries (EU + UK, Iceland, Norway, Liechtenstein + others) may incur different cross-border fees. T\u00fcrkiye and UK are included in Stripe's EEA definition.",
+      "new_text": "Stripe's captured EEA card-pricing inventory contains 43 country or territory entries in both captures, including the UK and T\u00fcrkiye. It is a Stripe fee-classification list, not an independent legal EEA definition or a fixed fee quote; fees can vary with issuing region and transaction currency. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; May `raw/stripe-currencies-2025.md:134-182`, November `raw/stripe-currencies-2026-11-07.md:148-196`).",
+      "reason": "Both raw lists have 43 entries; the existing count of 44 and legal-sounding EEA phrasing are misleading.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "currencies-eea-pricing-group",
+      "job_id": "currencies",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/receipt.json",
+      "receipt_sha256": "1babab9ca4fa03961e65357b1bda465a8149a75f3cba3eddb286a8367e1b5b35",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/candidate.md",
+      "source_candidate_sha256": "388739f394e4f663dfca7f4f01cd1ecd4d211576ff6829056fea378370aa1514",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/review.json"
+    },
+    {
+      "update_id": "currencies::currencies-minimum-settlement-scope",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "Note: iDEAL allows `amount` as low as `1`.",
+      "new_text": "The applicable minimum depends on the payout bank account's settlement currency; a charge converted into the default settlement currency must meet that currency's equivalent minimum. Subscription charges may be zero for coupons or free trials, but nonzero amounts still face the applicable minimum. iDEAL is a payment-method exception allowing `amount` as low as `1`. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; May `raw/stripe-currencies-2025.md:60-106`, November `raw/stripe-currencies-2026-11-07.md:67-113`).",
+      "reason": "Preserves the minimum's settlement-currency and zero-amount conditions next to the numeric examples.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "currencies-minimum-settlement-scope",
+      "job_id": "currencies",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/receipt.json",
+      "receipt_sha256": "1babab9ca4fa03961e65357b1bda465a8149a75f3cba3eddb286a8367e1b5b35",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/candidate.md",
+      "source_candidate_sha256": "388739f394e4f663dfca7f4f01cd1ecd4d211576ff6829056fea378370aa1514",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "currencies::currencies-integration-currency",
+    "currencies::currencies-amex-availability",
+    "currencies::currencies-max-charge-scope",
+    "currencies::currencies-eea-pricing-group",
+    "currencies::currencies-minimum-settlement-scope"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-currencies/auto-candidate.md",
+  "auto_candidate_sha256": "f9c01b5f807016474be4dda79a1951f41eb51c24786bf87c7a9a9ecacb284172",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s02-updates/stripe-currencies-concept.json",
+  "review_output": "/tmp/stripe-s02-updates/stripe-currencies-concept-review.json",
+  "context_only_units": [
+    {
+      "job_id": "currencies",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/receipt.json",
+      "receipt_sha256": "1babab9ca4fa03961e65357b1bda465a8149a75f3cba3eddb286a8367e1b5b35",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/currencies/attempt-2/review.json"
+    }
+  ]
+}

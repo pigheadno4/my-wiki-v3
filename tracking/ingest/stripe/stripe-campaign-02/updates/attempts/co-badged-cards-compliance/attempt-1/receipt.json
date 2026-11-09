@@ -1,0 +1,179 @@
+{
+  "job_id": "co-badged-cards-compliance",
+  "attempt": 1,
+  "raw_path": "raw/stripe-co-badged-cards-compliance-2026-11-07.md",
+  "raw_sha256": "83ae1bf12fc55fa079e0826df37763413c163b684588d1e5d109b969e646b4af",
+  "source_before_sha256": "cff16206b0591ca14751842791ce3feb1bdb60607b2df682064e6c2683f21cbf",
+  "source_page": "---\ntitle: \"Stripe: Co-badged Cards Compliance\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/co-badged-cards-compliance\"\nraw_files:\n  - \"stripe-co-badged-cards-compliance-2025.md\"\ntags: [stripe, co-badged, cartes-bancaires, girocard, eu-regulation, elements, terminal]\n---\n\n## Overview\n\nThe 2026-05-01 Stripe guide explains cardholder network choice for co-badged cards, including regional applicability, Stripe integration variants, Connect merchant-of-record conditions, and test examples. The 2026-11-07 capture of the same URL is an index to ten variant pages; it contains no variant-specific instructions. Its shorter default render does not establish repeal, deprecation, current SDK behavior, account eligibility, or compliance of any merchant's implementation. See [[stripe]] and [[co-badged-cards]].\n\n## Key takeaways\n\n- **Choice and eligibility, as captured 2026-05-01:** The guide says to display available networks clearly and equally, honor the cardholder's selected network for payment confirmation or saved credentials, and allow changes when saved payment details are updated. Its table covers online EEA businesses able to process Cartes Bancaires when the card is co-badged and currency is EUR; in-person France for eligible Cartes Bancaires; and in-person Germany for eligible Girocard. Stripe directs account-specific applicability to sign-in. These are the guide's dated descriptions, not a current compliance determination.\n- **Hosted interfaces, as captured 2026-05-01:** Stripe says Checkout, Payment Links, Elements and Terminal show a selector when the applicability criteria are met and the interfaces are configured as described. A sandbox may show online Cartes Bancaires choice even when the merchant has not enabled it, so the sandbox display does not prove live eligibility. Other integrations remain the implementer's responsibility.\n- **Connect condition:** The May guide's extra `onBehalfOf` instruction applies to Connect platforms using `on_behalf_of` with separate charges and transfers or destination charges, with the merchant of record determining applicability; the merchant of record can be the platform or connected account. The setting's location differs by variant: Elements group for Web Payment Element created without an Intent, Web Card Element and Express Checkout Element; `paymentRequest` for Payment Request Button; `IntentConfiguration` for Payment Sheet and Embedded Mobile Payment Element; and the Card Element variant for Mobile Card Element. It is not a blanket requirement for every Connect transaction.\n- **Web Card Element:** The Combined variant needs `hideIcon: false` or `undefined`; the Split variant needs `showIcon: true`. The Card Element cannot detect transaction currency, so its dropdown may appear outside EUR and another network may process if the selected one cannot. Card Element choice is incompatible with Sources: the dropdown may appear, but Stripe says it will not honor the selected network. If using `preferredNetwork`, enable icons and do not override the network at confirmation. The former custom `networkschange` choice path is described as deprecated in the May guide in favor of the Card Element dropdown.\n- **Mobile variants, as captured 2026-05-01:** Payment Sheet, Embedded Payment Element, Customer Sheet and Card Element support selection under their respective configurations. The guide gives iOS 23.22.1+ and Android 20.37.4+ as the baseline for these variants. For a Mobile Card Element Connect flow using `on_behalf_of`, it places `onBehalfOf` on the Card Element variant and gives higher minimums of iOS 23.27.1+ and Android 20.42.0+; the Payment Sheet and Embedded Payment Element paths use `IntentConfiguration`. `preferredNetworks` supplies defaults when the cardholder does not choose.\n- **Terminal:** The May guide names WisePad 3 and Stripe Reader S700/S710 as supporting selection when applicable. Tap to Pay on iPhone instead requires the integration to collect the network choice and pass `requested_priority` before the tap.\n- **Verification examples:** The May guide shows co-badged test card numbers, tokens, PaymentMethod IDs, and a `charge.payment_method_details.card.network` example for identifying the processing network. These are test and example data, not proof of live merchant enablement, a completed payment, or successful network routing.\n\n## Detail locators\n\n- Regulation description, three choice requirements and regional table: May raw lines 8\u201326. Hosted UI and sandbox qualifications: lines 61\u201369.\n- Checkout/Payment Links and Web Payment Element: May raw lines 71\u2013123. Web Card Element icon modes, currency, Sources, default network and deprecated event path: lines 125\u2013176.\n- Payment Request Button and Express Checkout Element, including conditional Connect placement: May raw lines 178\u2013230.\n- Payment Sheet, Embedded Payment Element and Customer Sheet: May raw lines 232\u2013378. Mobile Card Element and its higher Connect SDK minimums: lines 380\u2013406.\n- Terminal and processing-network lookup: May raw lines 415\u2013448. Test cards, tokens, PaymentMethods and simulated reader: lines 450\u2013475.\n\n## Related\n\n- [[co-badged-cards]] \u2014 source-qualified network choice and provider comparison\n\n## Raw Sources\n\n- [[raw/stripe-co-badged-cards-compliance-2025|Stripe full co-badged guide, captured 2026-05-01]] \u2014 historical factual instructions and examples.\n\n## Related raw API references\n\n- [[raw/stripe-co-badged-cards-compliance-2026-11-07|Stripe co-badged variant index, captured 2026-11-07]] \u2014 navigation only; the linked variant pages were not part of this four-file evidence set.\n- [Checkout and Payment Links](https://docs.stripe.com/co-badged-cards-compliance.md?type=checkout-payment-links)\n- Web: [Payment Element](https://docs.stripe.com/co-badged-cards-compliance.md?type=web-elements&ui=payment-element), [Express Checkout Element](https://docs.stripe.com/co-badged-cards-compliance.md?type=web-elements&ui=express-checkout-element), [Card Element](https://docs.stripe.com/co-badged-cards-compliance.md?type=web-elements&ui=card-element), [Payment Request Button Element](https://docs.stripe.com/co-badged-cards-compliance.md?type=web-elements&ui=payment-request-button-element)\n- Mobile: [Payment Sheet](https://docs.stripe.com/co-badged-cards-compliance.md?type=mobile-elements&mobile-ui=payment-sheet), [Payment Element](https://docs.stripe.com/co-badged-cards-compliance.md?type=mobile-elements&mobile-ui=payment-element), [Customer Sheet](https://docs.stripe.com/co-badged-cards-compliance.md?type=mobile-elements&mobile-ui=customer-sheet), [Card Element](https://docs.stripe.com/co-badged-cards-compliance.md?type=mobile-elements&mobile-ui=card-element)\n- [Terminal](https://docs.stripe.com/co-badged-cards-compliance.md?type=terminal)\n",
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-co-badged-cards-compliance-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout and Payment Links](https://docs.stripe.com/co-badged-cards-compliance.md?type=checkout-payment-links)",
+      "location": "raw/stripe-co-badged-cards-compliance-2026-11-07.md:13"
+    },
+    {
+      "text": "  - [Card Element](https://docs.stripe.com/co-badged-cards-compliance.md?type=web-elements&ui=card-element)",
+      "location": "raw/stripe-co-badged-cards-compliance-2026-11-07.md:17"
+    },
+    {
+      "text": "  - [Card Element](https://docs.stripe.com/co-badged-cards-compliance.md?type=mobile-elements&mobile-ui=card-element)",
+      "location": "raw/stripe-co-badged-cards-compliance-2026-11-07.md:23"
+    },
+    {
+      "text": "- [Terminal](https://docs.stripe.com/co-badged-cards-compliance.md?type=terminal)",
+      "location": "raw/stripe-co-badged-cards-compliance-2026-11-07.md:24"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "To enable card brand choice in the Combined Card Element, set [hideIcon](https://docs.stripe.com/js/elements_object/create_element?type=card#elements_create-options-hideIcon) to `false` or `undefined`.",
+      "location": "raw/stripe-co-badged-cards-compliance-2025.md:131"
+    },
+    {
+      "text": "To enable card brand choice in the Split Card Element, set [showIcon](https://docs.stripe.com/js/elements_object/create_element?type=cardNumber#elements_create-options-showIcon) to `true`.",
+      "location": "raw/stripe-co-badged-cards-compliance-2025.md:132"
+    },
+    {
+      "text": "Connect platforms that use the [on_behalf_of](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-on_behalf_of) property with [separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers.md#settlement-merchant) or [destination charges](https://docs.stripe.com/connect/destination-charges.md#settlement-merchant) must also specify that same value as `onBehalfOf` on the Card Element variant.",
+      "location": "raw/stripe-co-badged-cards-compliance-2025.md:397"
+    },
+    {
+      "text": "To enable card brand choice with `on_behalf_of`, you must use iOS SDK 23.27.1 or later on iOS, or Android SDK 20.42.0 or later on Android.",
+      "location": "raw/stripe-co-badged-cards-compliance-2025.md:399"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-co-badged-cards-compliance-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "raw/stripe-co-badged-cards-compliance-2025.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 475
+      }
+    ],
+    "wiki/sources/source-stripe-co-badged-cards-compliance.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/16c0ae681259262b40a7a10a/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 487
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "co-badged-stripe-connect-condition-s02",
+      "target_path": "wiki/concepts/co-badged-cards.md",
+      "old_text": "Stripe-hosted UIs (Checkout, Payment Links, Elements, Terminal) auto-display network selector when applicable. Connect platforms using `on_behalf_of` must pass `onBehalfOf` to establish merchant of record.",
+      "new_text": "In Stripe's 2026-05-01 guide, hosted UIs (Checkout, Payment Links, Elements, Terminal) display a network selector when applicable and configured for the variant. For Connect platforms using `on_behalf_of` with separate charges and transfers or destination charges, the guide places `onBehalfOf` in the relevant UI configuration so Stripe can determine whether to display the selector; merchant-of-record applicability can attach to the platform or connected account. The 2026-11-07 default page is navigation only and does not revalidate those variant instructions.",
+      "reason": "Directly narrows an overbroad Connect requirement and dates behavioral support to the fully read May guide; old lines 61\u201365, 89\u201393, 141\u2013145, 187\u2013191, 218\u2013222.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "co-badged-stripe-mobile-variants-s02",
+      "target_path": "wiki/concepts/co-badged-cards.md",
+      "old_text": "**Mobile SDKs** (`preferredNetworks`): iOS 23.22.1+ / Android 20.37.4+ required. For connect: `onBehalfOf` in `IntentConfiguration`.",
+      "new_text": "**Mobile SDKs, May 2026 guide** (`preferredNetworks`): iOS 23.22.1+ / Android 20.37.4+ is the selection baseline shown for Payment Sheet, Embedded Payment Element, Customer Sheet and Card Element. For the specified Connect `on_behalf_of` flows, Payment Sheet and Embedded Payment Element put `onBehalfOf` in `IntentConfiguration`; Mobile Card Element puts it on the Card Element variant and requires iOS 23.27.1+ / Android 20.42.0+ for that path.",
+      "reason": "Corrects the mobile Card Element's distinct Connect placement and higher SDK minimum without generalizing the November navigation index into current SDK evidence; old lines 232\u2013259, 291\u2013320, 350\u2013399.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "co-badged-stripe-source-route-s02",
+      "target_path": "wiki/concepts/co-badged-cards.md",
+      "old_text": "- [[source-stripe-co-badged-cards-compliance]] \u2014 primary source: regulation scope, integration guides (all Elements, mobile, Terminal), test cards",
+      "new_text": "- [[source-stripe-co-badged-cards-compliance]] \u2014 May 2026 full Stripe guide for regional choice, variant setup and tests; November 2026 default page is a ten-variant navigation index, not updated behavioral evidence.",
+      "reason": "Updates the reciprocal source route with the structural change while retaining the May factual provenance.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/co-badged-cards-compliance, [[source-stripe-co-badged-cards-compliance]] retains the full May 2026 regulation and integration capture (old lines 8\u2013475) as dated factual evidence. The November 2026 same-URL capture supplies only a ten-variant index (new lines 9\u201324), so the linked variants are navigation and their current instructions remain unread. The shorter index does not prove repeal, deprecation, merchant eligibility or compliance certification.",
+    "Q2": "At https://docs.stripe.com/co-badged-cards-compliance, [[source-stripe-co-badged-cards-compliance]] corrects the May-derived Web Card Element split: Combined uses hideIcon false or undefined and Split uses showIcon true (old lines 125\u2013132), while the November index merely links that variant (new line 17). It also narrows Connect onBehalfOf to the stated charge patterns and preserves Mobile Card Element's distinct placement and higher SDK minimum (old lines 89\u201393, 395\u2013399; new lines 19\u201324 only navigate). Current variant-specific behavior and merchant eligibility remain unverified."
+  },
+  "status": "candidate_ready"
+}

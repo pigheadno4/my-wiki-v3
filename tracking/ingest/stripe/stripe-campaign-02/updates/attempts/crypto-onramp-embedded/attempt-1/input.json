@@ -1,0 +1,84 @@
+{
+  "job_id": "crypto-onramp-embedded",
+  "queue_id": 72,
+  "canonical_url": "https://docs.stripe.com/crypto/onramp/embedded",
+  "raw_path": "raw/stripe-crypto-onramp-embedded-2026-11-07.md",
+  "raw_sha256": "c472272361f895d8665d5d5b86a0502b5ceeb3f87540a852702958c7cbdcbf58",
+  "prior_raw_path": "raw/stripe-crypto-onramp-embedded-setup-2026.md",
+  "prior_raw_sha256": "88d9ed037c5798a4d998746c0e8ae8315c92d77cd944b5682bd73d77dd65c17d",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/747babf40cd89c858c9d34a3/content.diff",
+  "diff_sha256": "575a987fd37a8d819ddf5c313aefea490846a613c01e1f4011f1c5ccca049ae4",
+  "source_target": "wiki/sources/source-stripe-crypto-onramp-embedded-setup.md",
+  "source_before_sha256": "792d0b7e4fdd64726324646d4c7fe996ae9ce4377d889447611962333863472e",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/crypto-onramp-embedded/attempt-1/receipt.json",
+  "receipt_sha256": "71bee293e24275cb1ed465e88c77ed1ed9bb1888d700ff9f375549cc9caced85",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/crypto-onramp-embedded/attempt-1/review.json",
+  "review_sha256": "465122813d4f224a3e7c6ea0716fc1c678d30ee78b0faba77e05323ae3cee521",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The same canonical URL remains an extended Embedded onramp setup guide. Both captures describe EU/US-except-Hawaii availability, public-preview application gate, Stripe-hosted scripts, server-minted one-per-customer sessions, five states, pre-population, mobile flow, quotes, webhooks, fraud/support errors, and session persistence (new lines 17-153, 247-349, 500-1117; old lines 16-143, 226-322, 467-1081). Neither capture proves a particular account has access or that a sample transaction succeeded.",
+    "The new sample script URL uses https://js.stripe.com/endive/stripe.js rather than the old dahlia URL (new lines 34, 56, 365; old lines 33, 55, 338). Both require direct loading from Stripe domains rather than bundling/self-hosting (new lines 25-29; old lines 24-28). Treat the named script channel as a dated example difference, not proof of a new mandatory API version or runtime behavior.",
+    "November adds an explicit quotes calculation statement: by default transaction and network fees are added on top of source_amount, and source_total_amount is the fiat total including fees (new line 571). The old quote prose lacks this rule (old lines 537-543), although old example responses contain both fee and source_total_amount fields (old lines 573-595). Current source line 44 lists fee fields but omits the default total qualification. Add it without treating example numbers as a guarantee.",
+    "A material existing contradiction spans both captures: mobile instructions put client_secret in a front-end URL path (new lines 510, 529-550; old lines 477, 499-520), while the persistence section expressly says the secret exposes wallet addresses and must not be logged, embedded in URLs, or exposed beyond the customer, with TLS on pages that include it (new line 995; old line 959). Current source line 60 promotes the URL pattern without warning. Recommend removing that instruction from the summary or marking the guide's conflict prominently; do not silently resolve it by inventing a transport design.",
+    "Both captures distinguish fulfillment_processing, where payment completed but crypto is not delivered, from fulfillment_complete, where delivery is confirmed (new lines 147-153; old lines 135-143). The mobile text permits a redirect at fulfillment_processing with background status polling (new lines 561-565; old lines 531-535); that must not be summarized as completed delivery.",
+    "The November preview gate is worded as submitting the application before development in a sandbox, versus old 'testing environment' (new line 20; old line 19). Both still describe public preview; the wording change is not evidence of general availability. Many remaining diff hunks are numbering, formatting, JSON layout, image URL, punctuation, and heading changes."
+  ],
+  "approved_conflicts": [
+    "Within each capture, the mobile URL example contains client_secret (old line 477; new line 510) while the persistence warning forbids embedding it in URLs because it exposes wallet-address information (old line 959; new line 995). Current source line 60 repeats the unsafe example without the warning.",
+    "Current source line 64 suggests local storage for Web3 session persistence; both raws call privacy-preserving local storage an acceptable customer experience but also restrict secret disclosure and require TLS (old lines 959-961; new lines 995-997). That advice needs the credential-handling qualification.",
+    "Source line 44 omits new line 571's default fees-on-top and total-fiat meaning of source_total_amount."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May dahlia script URL as a dated sample; November gives endive, and both require Stripe-hosted direct script loading (old lines 26-34; new lines 27-35).",
+    "Preserve public-preview application gate and EU/US-except-Hawaii scope, without inferring live merchant availability (old lines 18-20; new lines 19-21).",
+    "Preserve the five session states and the distinction between payment completion and confirmed crypto delivery (old lines 135-143; new lines 145-153).",
+    "Preserve the URL/client-secret conflict as a documented contradiction present in both snapshots, not a newly introduced behavior (old lines 477 and 959; new lines 510 and 995)."
+  ],
+  "unresolved_questions": [
+    "The documentation does not reconcile its own URL-path mobile example with its explicit prohibition on embedding client_secret in URLs; no alternative transport is validated by this comparison.",
+    "The new endive loader example alone does not establish mandatory Stripe.js channel migration or compatibility for an account.",
+    "The page's public-preview and geographic statements do not verify an individual platform's onboarding approval, customer supportability, or payment and crypto delivery outcome."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-crypto-onramp.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/crypto-onramp-embedded/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "71bee293e24275cb1ed465e88c77ed1ed9bb1888d700ff9f375549cc9caced85",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/crypto-onramp-embedded/attempt-1/review.json",
+  "approved_triage_review_sha256": "465122813d4f224a3e7c6ea0716fc1c678d30ee78b0faba77e05323ae3cee521",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw3",
+  "reviewer_agent": "/root/s2ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-crypto-onramp-embedded-2026-11-07.md",
+      "sha256": "c472272361f895d8665d5d5b86a0502b5ceeb3f87540a852702958c7cbdcbf58",
+      "lines": 1117
+    },
+    {
+      "path": "raw/stripe-crypto-onramp-embedded-setup-2026.md",
+      "sha256": "88d9ed037c5798a4d998746c0e8ae8315c92d77cd944b5682bd73d77dd65c17d",
+      "lines": 1081
+    },
+    {
+      "path": "wiki/sources/source-stripe-crypto-onramp-embedded-setup.md",
+      "sha256": "792d0b7e4fdd64726324646d4c7fe996ae9ce4377d889447611962333863472e",
+      "lines": 80
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/747babf40cd89c858c9d34a3/content.diff",
+      "sha256": "575a987fd37a8d819ddf5c313aefea490846a613c01e1f4011f1c5ccca049ae4",
+      "lines": 500
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/crypto-onramp-embedded-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/crypto-onramp-embedded-review.json"
+}

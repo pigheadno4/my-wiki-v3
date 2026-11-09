@@ -1,0 +1,111 @@
+{
+  "job_id": "disputes-prevention-advanced-fraud-detection",
+  "attempt": 2,
+  "raw_path": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md",
+  "raw_sha256": "cf568ff872d765b19cc3a49a4c6ec1ca3434ab91c35ffffacea780a024900454",
+  "prior_raw_path": "raw/stripe-disputes-advanced-fraud-detection-2026.md",
+  "prior_raw_sha256": "3f2bbb61df67fd64ee322461e860d74c7e1ca75962977e1ac1212a99a57a8cad",
+  "source_target": "wiki/sources/source-stripe-disputes-advanced-fraud-detection.md",
+  "source_before_sha256": "5970c55ac5e989499a4eeb6d8a999e275b588135fcd0cdf8685329ef1e3cdcca",
+  "read_ranges": {
+    "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 91
+      }
+    ],
+    "raw/stripe-disputes-advanced-fraud-detection-2026.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 93
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-advanced-fraud-detection.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0f56c7e9da0f10e80667cb44/content.diff": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "set `advancedFraudSignals` as a query parameter in the Stripe.js script tag, or update to the latest version",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:53"
+    },
+    {
+      "text": "<script src=\"https://js.stripe.com/endive/stripe.js?advancedFraudSignals=false\"></script>",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:58"
+    },
+    {
+      "text": "The data is only transmitted to Stripe during a tokenization request.",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:37"
+    },
+    {
+      "text": "on each page where you load Stripe.js, it can load hCaptcha.",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:13"
+    },
+    {
+      "text": "Stripe.advancedFraudSignalsEnabled = false",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:83"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "set `advancedFraudSignals` as a query parameter in the Stripe.js script tag, or update to the latest version",
+      "location": "raw/stripe-disputes-advanced-fraud-detection-2026.md:52"
+    },
+    {
+      "text": "loadStripe.setLoadParameters({ advancedFraudSignals: false });",
+      "location": "raw/stripe-disputes-advanced-fraud-detection-2026.md:59"
+    },
+    {
+      "text": "Stripe.advancedFraudSignalsEnabled = false",
+      "location": "raw/stripe-disputes-advanced-fraud-detection-2026.md:85"
+    },
+    {
+      "text": "on each page where you load Stripe.js, it can load hCaptcha.",
+      "location": "raw/stripe-disputes-advanced-fraud-detection-2026.md:12"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The only content change beyond formatting is a Stripe.js example swap: old raw lines 54\u201361 show a pure ES module example; new raw lines 55\u201359 show an HTML script-tag example with the literal endive URL. Both captures' preceding prose (old line 52, new line 53) still explicitly lists the query-parameter script-tag and pure-module setLoadParameters options, so the omitted example is not evidence of deprecation.",
+    "The existing source at lines 29\u201337 summarizes disabling and retains a valid pure-module code path, while wiki/concepts/stripe-radar.md line 233 also repeats that option. Add the new raw reference and preserve the pure-module route; the new HTML example may be noted as the displayed example without implying a removed option.",
+    "Both captures say Stripe.js can load hCaptcha on each page where it is loaded (old raw line 12; new raw line 13), with opt-out through Stripe Support. Source line 24 and wiki/concepts/stripe-radar.md line 229 categorically say hCaptcha is loaded per page. Correct both to conditional 'can load' wording; this is a retained overstatement, not a newly changed hCaptcha behavior.",
+    "Risk factor collection, session and Elements boundaries, privacy, Stripe-hosted domain behavior, 3DS2 data exception, iOS minimum v19.1.1 and Android minimum v14.4.0 plus before-instantiation ordering are materially unchanged."
+  ],
+  "substantive_changes": [
+    "The newly displayed HTML example illustrates an already documented Stripe.js script-tag option; there is no changed behavior or requirement in the accompanying prose. A separate narrow source/concept correction is required for the pre-existing categorical hCaptcha wording: both old and new raw say 'can load,' not 'always loads'."
+  ],
+  "historical_claims_to_preserve": [
+    "The old pure ES module example and source/concept references to setLoadParameters remain supported by the new prose; do not infer deprecation from example omission.",
+    "Disabling advanced signals increases fraud risk and does not disable Stripe-managed Elements events, 3DS2 required device information, or Stripe-domain collection."
+  ],
+  "conflicts": [
+    "wiki/sources/source-stripe-disputes-advanced-fraud-detection.md:24 says hCaptcha is loaded per page, and wiki/concepts/stripe-radar.md:229 says the same; old raw line 12 and new raw line 13 only say it can load on pages where Stripe.js loads. Qualify both retained claims and keep the Stripe Support opt-out."
+  ],
+  "unresolved_questions": [
+    "The new HTML example uses a literal /endive/stripe.js script URL. This capture alone does not establish whether that URL is intended as a general production integration path; preserve it as an exact captured example rather than normalizing it into a recommendation."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-radar.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/prevention/advanced-fraud-detection, the captured difference is the Stripe.js example: old raw lines 54\u201361 display the pure ES module; new raw lines 55\u201359 display an HTML script tag. Both option descriptions persist (old line 52; new line 53). [[source-stripe-disputes-advanced-fraud-detection]] also needs a narrow retained-claim correction: its hCaptcha wording at line 24 is categorical, while both captures say Stripe.js can load it (old line 12; new line 13).",
+    "Q2": "For https://docs.stripe.com/disputes/prevention/advanced-fraud-detection, update [[source-stripe-disputes-advanced-fraud-detection]] line 24 to say hCaptcha can load on pages where Stripe.js loads, and retain the Stripe Support opt-out; old raw line 12 and new raw line 13 support that conditional wording. Flag the same correction in wiki/concepts/stripe-radar.md line 229. Preserve the pure-module disable option from old line 59 because new line 53 still describes it; the new line 58 HTML example does not show deprecation or new hCaptcha behavior."
+  }
+}

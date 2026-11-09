@@ -1,0 +1,107 @@
+{
+  "job_id": "disputes-categories",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-categories-2026-11-07.md",
+  "raw_sha256": "8640b18757be6d66318c27eac2bc42c2b841b88e949003e85c86cfc3ec925131",
+  "source_before_sha256": "664a3d7a691cdb8aa38cbdbb7615b46d9869ccb06be7d2850d553fc8c493df4d",
+  "source_page": "---\ntitle: \"Stripe — Dispute Reason Code Categories\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/disputes/categories\"\nraw_files:\n  - \"stripe-disputes-categories-2026-11-07.md\"\n  - \"stripe-disputes-categories-2026.md\"\ntags: [stripe, disputes, chargebacks, dispute-categories, reason-codes, evidence, visa, mastercard, amex, discover, klarna, paypal, cash-app-pay, instant-bank-payments]\n---\n\n## Overview\n\nStripe's dispute category guide maps the listed card, wallet, and Buy now, Pay Later reason codes to category-specific defense guidance. The 2026-05-09 capture covers Visa, Mastercard, American Express, Discover, Klarna, PayPal, and Cash App Pay. The 2026-11-07 capture adds a distinct Instant Bank Payments mapping and Mastercard code 4999. Use the tables in the dated raw captures for individual network codes and evidence fields; the mapped categories are not present for every listed method. See [[stripe]] and [[disputes]].\n\n> [!warning] Category scope across captures\n> The 2026-05-09 guide's opening describes an eight-category mapping broadly. The 2026-11-07 guide explicitly excepts Instant Bank Payments: all its disputes use `debit_not_authorized` and show an ACH return as the network reason code. Do not apply the card/wallet/BNPL category count to this method. [[disputes]]\n\n## Category mapping\n\nThe listed methods use these category names where their tables contain a mapping: `credit_not_processed`, `duplicate`, `fraudulent`, `general`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, and `unrecognized`. Visa additionally has `noncompliant` for certain Visa network-rule compliance disputes; it is not an additional category shown for all methods. In the 2026-11-07 tables, Visa has no `unrecognized` row code, Mastercard's `noncompliant` row says None, and Discover has no `product_unacceptable` or `unrecognized` mapping. Check the specific method's table rather than inferring a code from the category names. [[raw/stripe-disputes-categories-2026-11-07#Reason code categories|Reason code tables]]\n\n| Method in the assigned captures | Scope locator |\n| --- | --- |\n| Visa, Mastercard, American Express, Discover | [[raw/stripe-disputes-categories-2026-11-07#Reason code categories|Card network tables]] |\n| Klarna, PayPal, Cash App Pay | [[raw/stripe-disputes-categories-2026-11-07#Reason code categories|Other payment method tables]] |\n| Instant Bank Payments (added 2026-11-07) | [[raw/stripe-disputes-categories-2026-11-07#Instant Bank Payments|ACH return mapping]] |\n\nFor Instant Bank Payments, the 2026-11-07 table lists R10 (unauthorized), R07 (authorization revoked), R08 (payment stopped), R11 (not per terms), R29 (corporate not authorized), R05 (unauthorized consumer debit using a corporate SEC code), and R31 (permissible return for corporate CCD/CTX accounts). These are underlying ACH network reason codes under the single Stripe dispute reason `debit_not_authorized`; the linked Disputed Instant Bank Payments page is a separate evidence guide and is not evidence of response requirements here. [[raw/stripe-disputes-categories-2026-11-07#Instant Bank Payments|Instant Bank Payments table]]\n\nThe 2026-11-07 Mastercard General table adds `4999 Domestic Chargeback Dispute (Europe Region Only)`, absent from the matched 2026-05-09 table. The Mastercard `Noncompliant | None` row makes its lack of that Visa-specific mapping explicit. [[raw/stripe-disputes-categories-2026-11-07#Mastercard|Mastercard table]]\n\n## Evidence guidance\n\nThe category defense sections distinguish physical products, digital products or services, and offline services. Their tables suggest evidence and Dashboard/API fields by claim and product type: for example, refund or cancellation policy and disclosure, a rebuttal, customer communication when available, shipping documents and tracking for physical products, access/activity logs for digital products, and service dates or documents for offline services. These are context-specific suggestions, not a universal set of mandatory fields or proof of a successful challenge. [[raw/stripe-disputes-categories-2026-11-07#Category defense guidelines|Defense guidelines]]\n\nUseful field locators include `refund_policy`, `refund_policy_disclosure`, `refund_refusal_explanation`, `cancellation_policy`, `cancellation_policy_disclosure`, `cancellation_rebuttal`, `customer_communication`, `uncategorized_text`, `uncategorized_file`, `shipping_carrier`, `shipping_tracking_number`, `customer_name`, `shipping_address`, `customer_purchase_ip`, `access_activity_log`, `service_date`, and `service_documentation`. The specific table and circumstance determine relevance. Where the guide asks whether a customer contacted the business before filing, it says to state that fact, including when there was no contact; it does not establish a universal prior-contact obligation. [[raw/stripe-disputes-categories-2026-11-07#Category defense guidelines|Evidence tables]]\n\nFor a fraudulent claim, the guide suggests showing that the legitimate cardholder or an authorized representative made the payment, or that successful 3D Secure authentication supports liability shift; it says Stripe provides the ECI automatically. It also points to Visa Compelling Evidence and suggests product-specific fields. These captures do not state Visa CE 3.0 eligibility, required or pre-populated CE 3.0 fields, an edit restriction, or automatic population of 3DS data. See [[source-stripe-disputes-visa-ce3]] for that separate topic. Visa reason code 10.5 is described here as having no evidence remedy. [[raw/stripe-disputes-categories-2026-11-07#Fraudulent|Fraudulent guidance]]\n\nThe guide's prevention advice is category-specific: clear refund/cancellation terms and timely entitled refunds for credit-not-processed claims; distinguish separate payments and correct accidental duplicates; recognizable statement descriptors and receipts for fraud or unrecognized claims; accurate delivery expectations and saved shipping proof for nonreceipt; accurate product descriptions for unacceptable-product claims; and prompt, clearly communicated subscription cancellation. These are the guide's suggestions, not guarantees of prevention or dispute outcomes. [[raw/stripe-disputes-categories-2026-11-07#Category defense guidelines|Prevention sections]]\n\n## Visa compliance disputes\n\nThe guide describes Visa-only `noncompliant` disputes when an issuer believes a transaction violates network rules. If unresolved between parties, the network resolves the case for a fee. In these dated captures, contesting such a dispute incurs a 500 USD (or local equivalent) network cost in addition to applicable Stripe dispute fees, refunded if the dispute is won. This is a documented fee condition, not a current account quote or outcome promise. [[raw/stripe-disputes-categories-2026-11-07#Noncompliant|Noncompliant section]]\n\n## Related\n\n- [[disputes]] — Stripe category framework and dispute context\n- [[source-stripe-disputes-responding]] — evidence submission process\n- [[source-stripe-disputes-how-disputes-work]] — dispute lifecycle\n- [[source-stripe-disputes-visa-ce3]] — separate Visa CE 3.0 authority\n- [[stripe-3d-secure]] — 3DS context\n\n## Raw Sources\n\n- [[raw/stripe-disputes-categories-2026-11-07|Stripe dispute categories and evidence guidelines, captured 2026-11-07]]\n- [[raw/stripe-disputes-categories-2026|Stripe dispute categories and evidence guidelines, captured 2026-05-09]]\n",
+  "quotes": [
+    {
+      "text": "Disputes for Instant Bank Payments don’t map to the same eight categories as other payment methods. Every dispute for Instant Bank Payments uses the same dispute reason, `debit_not_authorized`, with the underlying ACH return code shown as the network reason code.",
+      "location": "raw/stripe-disputes-categories-2026-11-07.md:280"
+    },
+    {
+      "text": "A permissible return entry, for corporate (CCD and CTX) accounts only.",
+      "location": "raw/stripe-disputes-categories-2026-11-07.md:290"
+    },
+    {
+      "text": "4999\tDomestic Chargeback Dispute (Europe Region Only)",
+      "location": "raw/stripe-disputes-categories-2026-11-07.md:107"
+    },
+    {
+      "text": "Stripe provides the *Electronic Commerce Indicator (ECI)*",
+      "location": "raw/stripe-disputes-categories-2026-11-07.md:493"
+    },
+    {
+      "text": "Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.",
+      "location": "raw/stripe-disputes-categories-2026-11-07.md:633"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "These reasons often overlap across all of the different payment networks, thus Stripe organizes each payment method’s codes into one of eight categories.",
+      "location": "raw/stripe-disputes-categories-2026.md:8"
+    },
+    {
+      "text": "CD12 The goods or services were not received.",
+      "location": "raw/stripe-disputes-categories-2026.md:278"
+    },
+    {
+      "text": "- 4908 Invalid Acquirer Reference Data; Documentation Received",
+      "location": "raw/stripe-disputes-categories-2026.md:107"
+    },
+    {
+      "text": "Stripe provides the _Electronic Commerce Indicator (ECI)_",
+      "location": "raw/stripe-disputes-categories-2026.md:488"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-categories-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 1002
+      }
+    ],
+    "raw/stripe-disputes-categories-2026.md": [
+      {
+        "start": 1,
+        "end": 1009
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-categories.md": [
+      {
+        "start": 1,
+        "end": 89
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5c6335be97bb1a528c8d9941/content.diff": [
+      {
+        "start": 1,
+        "end": 1265
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "disputes-categories-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "## Stripe Dispute Categories (8 standardized)\n\nStripe maps all payment method reason codes into 8 categories (plus Visa-only `noncompliant`). Covered payment methods: Visa, Mastercard, Amex, Discover, Klarna, PayPal, Cash App Pay.",
+      "new_text": "## Stripe Dispute Categories\n\nThe eight-category framework in [[source-stripe-disputes-categories]] maps reason codes for the listed Visa, Mastercard, Amex, Discover, Klarna, PayPal, and Cash App Pay methods, with categories varying by method. Visa additionally has a `noncompliant` mapping for certain Visa compliance disputes.\n\n> [!warning] Category scope across captures\n> The 2026-05-09 category guide's opening describes the eight-category mapping broadly. Its 2026-11-07 capture explicitly excepts Instant Bank Payments: every dispute has reason `debit_not_authorized`, with the underlying ACH return as network reason code (R10, R07, R08, R11, R29, R05, or R31). Use the separate Instant Bank Payments mapping in [[source-stripe-disputes-categories]]; do not infer a card-category code for that method.",
+      "reason": "Correct the active universal mapping and make the 2026-11-07 Instant Bank Payments exception discoverable on the main concept.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "The linked Instant Bank Payments evidence page was not read; this patch states only the assigned categories guide's mapping."
+      ]
+    },
+    {
+      "update_id": "disputes-categories-contact",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Cross-category rule**: Customer is obligated to contact merchant before filing — absence of prior contact is itself evidence to submit.",
+      "new_text": "**Customer-contact evidence**: In several category evidence tables, Stripe asks whether the customer contacted the business before filing; if they did not, state that fact. The categories guide does not establish a universal prior-contact obligation. See [[source-stripe-disputes-categories]].",
+      "reason": "Replace an unsupported universal obligation with the conditional evidence-table instruction.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/categories, [[source-stripe-disputes-categories]] now captures the 2026-11-07 Instant Bank Payments exception: `debit_not_authorized` plus ACH network return codes R10/R07/R08/R11/R29/R05/R31 (new raw:278-292), absent between the old Cash App Pay ending and defense-guideline heading (old raw:266-280). It also records Mastercard 4999 as Europe Region Only (new raw:107; old raw:103-109), while retaining the dated card/wallet/BNPL mappings. The old and new captures both support generic evidence suggestions and 3DS/ECI wording, not the previous source's CE 3.0 requirements (old raw:487-559; new raw:492-562).",
+    "Q2": "The existing [[disputes]] concept route is corrected via two scoped patches: its universal eight-category sentence at concept:66-68 is qualified for the Instant Bank Payments exception (new raw:278-290 versus old raw:266-280), and its universal customer-contact obligation at concept:84 is replaced with the conditional evidence-table instruction (new raw:633-639; old raw:632-638). [[source-stripe-disputes-categories]] retains the old and new raw routes and removes unsupported CE 3.0 required/pre-populated/no-edit and automatic 3DS-data claims; only the dated ECI and product-type guidance remain (new raw:492-562; old raw:487-559). The linked bank-payment evidence guide and separate CE 3.0 page are navigation, not evidence imported into this candidate."
+  },
+  "status": "candidate_ready"
+}

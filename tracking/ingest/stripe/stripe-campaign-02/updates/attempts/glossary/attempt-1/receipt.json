@@ -1,0 +1,161 @@
+{
+  "job_id": "glossary",
+  "attempt": 1,
+  "raw_path": "raw/stripe-glossary-2026-11-07.md",
+  "raw_sha256": "b9b7d5971bef50130e19e329085b781a16916ae14b97cdb84ba3fc4033ff2353",
+  "source_before_sha256": "dcd45ace8a22c11a2b76f78b80115d84d1adbd55b3bd3b5933805a1144a88116",
+  "source_page": "---\ntitle: \"Stripe Glossary\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/glossary\"\nraw_files:\n  - \"stripe-glossary-2026-11-07.md\"\n  - \"stripe-glossary-2025.md\"\ntags: [stripe, glossary, reference, terminology, payments]\n---\n\n## Summary\n\nDated Stripe terminology reference. The 2026-04-20 capture has 240 two-line entries; the 2026-11-07 capture has 286 one-line entries. The later capture expands some definitions and adds terms across payment APIs, Connect, billing, event delivery, crypto, release phases, and authorization/capture. The format replacement, label normalization, or absence of an older label does not by itself establish deprecation or changed product availability. Use product-specific documentation for implementation and eligibility.\n\n## Key Payment API Terms\n\n| Term | Glossary meaning |\n| --- | --- |\n| PaymentIntent | API object tracking charge attempts and payment-state changes |\n| Setup Intents API | Collects payment-method details for future payments; tracks setup flow and can require authentication |\n| PaymentMethods | Customer payment instruments used with Payment Intents or Setup Intents APIs |\n| ConfirmationTokens | Capture client-side payment-instrument and shipping data used to confirm a PaymentIntent or SetupIntent |\n| client secret | Unique key used with the publishable key to access a single object; object-specific PI, SI, and AccountSession secrets have distinct scopes |\n| delayed notification payment method | Cannot immediately return payment status; an order commonly stays pending until success |\n\nThe glossary does not make every confirmation a successful charge. The April capture's general webhook definition describes HTTPS JSON delivery; the November event-type entries below add separate payload and version semantics.\n\n## Key Regulatory / Network Terms\n\n| Term | Glossary meaning |\n| --- | --- |\n| SCA | Strong Customer Authentication; described as affecting many European online payments since September 14, 2019 |\n| 3DS / 3DS2 | Card authentication layer; 3DS2 is a main method for European SCA and a mechanism for requesting exemptions |\n| liability shift | With some 3DS transactions, fraudulent chargeback liability shifts to the issuer |\n| ECI | Code indicating 3DS authentication method and result; may inform liability-shift eligibility |\n| e-mandate | Cardholder authorization to issuer for recurring card payments, with registration and authentication requirements in the glossary |\n| merchant-initiated transaction | An off-session payment with a properly authenticated saved card **can qualify** for an SCA exemption |\n| chargeback | Cardholder's bank debits a business account in response to a dispute, pending resolution |\n| dispute inquiry | Issuer's pre-dispute information request, which may or may not escalate |\n| AVS | Billing-address information passed to issuers for verification when available |\n| CVC | Three- or four-digit card verification code |\n| hard / soft decline | Glossary distinguishes an issuer rejection that cannot be retried from one that can; soft decline specifically includes authentication-required cases |\n\n## Key Billing Terms\n\n| Term | Glossary meaning |\n| --- | --- |\n| billing period | Invoice frequency, independent of service period |\n| service period | Usage-measurement period, independent of billing period |\n| service interval | Usage-measurement interval resetting independently of billing cadence; present in **both** captures (old lines 590\u2013591; new line 234) |\n| metered billing | Subscription billing based on consumption during the billing cycle |\n| usage-based billing | Pricing based on usage in a billing period |\n| dimensional pricing | In the November glossary, one meter tracks events with attributes such as model type or region, with rates by attribute combination |\n| credit based pricing | November definition: credits provide a fixed monetary amount of usage across usage-based products |\n| MRR | Monthly Recurring Revenue |\n| dunning email | Payment reminder asking a customer to update their payment method |\n| minor currency unit | API amount in the currency's smallest unit, for example 1099 for USD 10.99 and 10 for JPY 10 |\n\n## Key Connect Terms\n\n| Term | Glossary meaning |\n| --- | --- |\n| Connect | Stripe's multi-party routing solution for platforms and marketplaces |\n| direct charge | Customer transacts with connected account, which is merchant of record |\n| destination charge | Customer transacts with platform for a connected account's goods/services; platform pays Stripe fees and transfers funds |\n| separate charges and transfers | Platform charge with separate transfers to one or more connected accounts |\n| on_behalf_of | Parameter making connected account merchant of record on an indirect payment |\n| merchant of record | Legal entity responsible for facilitating sale and applicable obligations |\n| application fee | April glossary: fee a Connect platform collects from a connected account for each payment received. November definition expands this to **each payment or payout**; it does not say every integration collects both fee types. New raw line 24; old raw lines 53\u201354. |\n\n## Event Delivery Terms (2026-11-07 glossary)\n\n| Term | Definition and limit |\n| --- | --- |\n| snapshot event | Complete Event object with point-in-time related-resource snapshot. Payload follows the event destination API version and can be stale by processing time (new line 244). |\n| thin event | Lightweight notification with event type and IDs of Event and related resource. Retrieve complete event or latest resource state when more data is needed; thin notifications are not API-version-bound (new line 273). |\n| webhook | General HTTPS JSON push notification, retained from the older glossary (old lines 719\u2013720; new line 292). This transport definition alone does not define snapshot or thin event behavior. |\n\n## Stablecoin and Other New Vocabulary (2026-11-07 glossary)\n\nThe April definition called a stablecoin a cryptocurrency pegged to fiat or another asset to limit volatility (old lines 623\u2013624). The November glossary says Stripe balances use OUSD or USDC while Tempo transfers use USDC.e (new line 248), and distinguishes a stablecoin asset from a balance, custody, and issuance (new lines 249\u2013252). Assets representing the same currency are not necessarily interchangeable because issuers, reserves, availability, and networks can differ. These are dated glossary statements, not independent verification of account or geographic availability.\n\nOther November terms include partial capture (collect part of held amount and release the rest, line 41), frontier APIs (Dashboard opt-in, lower interoperability/extensibility and likely breaking changes, line 116), and Orchestration (Dashboard processor-selection rules, retries, analytics, lines 171 and 260). The glossary is a definition reference and does not replace detailed feature-status or processor-constraint evidence in [[stripe-orchestration]].\n\n## Other Notable Terms\n\n- **IC+**: Network cost plus Stripe fee rather than a flat transaction rate.\n- **interchange fee**: Generally paid by the acquiring bank to the issuing bank for card acceptance.\n- **payout**: Transfer to an external account, usually a bank account; country and schedule affect timing.\n- **settlement currency**: Currency used by the bank account, distinct from presentment currency.\n- **Radar**: Stripe fraud detection; Radar for Fraud Teams is described separately.\n- **Link**: Stripe digital wallet for saved and autofilled payment/address information.\n- **sandbox**: Isolated test environment without effects on the live integration.\n- **requires_action / requires_payment_method**: Older API versions before 2019-02-11 used `requires_source_action` / `requires_source`.\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company page\n- [[source-stripe-payment-intents]] \u2014 PaymentIntent + SetupIntent lifecycle\n- [[source-stripe-payment-methods]] \u2014 PaymentMethod API\n- [[stripe-orchestration]] \u2014 feature-specific Orchestration scope and constraints\n\n## Raw Sources\n\n- [[raw/stripe-glossary-2026-11-07|2026-11-07 glossary, 286 entries]]\n- [[raw/stripe-glossary-2025|2026-04-20 glossary, 240 entries]]\n",
+  "quotes": [
+    {
+      "text": "A fee that Connect platforms collect from connected accounts for each payment or payout.",
+      "location": "raw/stripe-glossary-2026-11-07.md:24"
+    },
+    {
+      "text": "Its payload follows the API version configured for the event destination, and the snapshot might be outdated when you process it.",
+      "location": "raw/stripe-glossary-2026-11-07.md:244"
+    },
+    {
+      "text": "Thin event notifications aren't tied to an API version.",
+      "location": "raw/stripe-glossary-2026-11-07.md:273"
+    },
+    {
+      "text": "Stripe supports OUSD and USDC for stablecoin balances, although transfers on the Tempo network use USDC.e.",
+      "location": "raw/stripe-glossary-2026-11-07.md:248"
+    },
+    {
+      "text": "Pricing model where a single meter tracks usage events with attributes like model type or region, applying different rates based on each event's attribute combination.",
+      "location": "raw/stripe-glossary-2026-11-07.md:87"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "A fee that Connect platforms collect from connected accounts for each payment they receive.",
+      "location": "raw/stripe-glossary-2025.md:54"
+    },
+    {
+      "text": "A cryptocurrency that's pegged to the value of a fiat currency or other asset in order to limit volatility.",
+      "location": "raw/stripe-glossary-2025.md:624"
+    },
+    {
+      "text": "A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests.",
+      "location": "raw/stripe-glossary-2025.md:720"
+    },
+    {
+      "text": "The timeframe used to measure usage and apply pricing. The service interval resets independently of the billing cadence.",
+      "location": "raw/stripe-glossary-2025.md:591"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-glossary-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 294
+      }
+    ],
+    "raw/stripe-glossary-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 726
+      }
+    ],
+    "wiki/sources/source-stripe-glossary.md": [
+      {
+        "start": 1,
+        "end": 88
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7b20237d561234d1cc99e63a/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 850
+      },
+      {
+        "start": 851,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 950
+      },
+      {
+        "start": 951,
+        "end": 1010
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/glossary, the 2026-11-07 capture contains 286 one-line entries, compared with 240 entries in the 2026-04-20 capture. The revised [[source-stripe-glossary]] preserves the older reference and corrects application fee from per payment at old raw lines 53\u201354 to per payment or payout at new raw line 24. The definition does not imply that every Connect arrangement charges both kinds of fee.",
+    "Q2": "The revised [[source-stripe-glossary]] at https://docs.stripe.com/glossary distinguishes November snapshot events, whose resource payload follows the destination API version and can be stale (new raw line 244), from thin notifications, which carry identifiers, require retrieval for more data, and are not version-bound (new raw line 273). The older webhook definition at old raw lines 719\u2013720 describes only HTTPS JSON transport. The new stablecoin examples are dated glossary assertions, not proof of account availability or network interchangeability."
+  },
+  "status": "candidate_ready"
+}

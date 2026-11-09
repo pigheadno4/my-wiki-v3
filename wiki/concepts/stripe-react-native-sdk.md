@@ -228,5 +228,5 @@ The package root now exports `useCheckout`, `createCheckout` and `CheckoutPaymen
 
 ## Sources
 
-- [[source-github-stripe-react-native]] — cumulative GitHub source through v0.82.0; private-preview currency selector, compatibility/mutation changes and Onramp prefill; older knowledge preserved
+- [[source-github-stripe-react-native]] — cumulative GitHub source through v0.84.0; private-preview currency selector, compatibility/mutation changes and Onramp prefill at 0.82.0; older knowledge preserved
 - [[changelog-github-stripe-react-native]] — package-qualified release history and migration impact

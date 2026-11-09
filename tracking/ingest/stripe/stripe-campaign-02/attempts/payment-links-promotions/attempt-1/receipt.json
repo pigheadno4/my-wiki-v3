@@ -1,0 +1,115 @@
+{
+  "job_id": "payment-links-promotions",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payment-links-promotions-2026-11-07.md",
+  "raw_sha256": "4c56772a74fbcb64c8f1df92b514ffc8e6cd9da0862970946ba6f22106048f5e",
+  "prior_raw_path": "raw/stripe-payment-links-promotions-2025.md",
+  "prior_raw_sha256": "2475daa62141f930e62faefac640e605f2cc0ddadd7e6554ddc11c69669a94c0",
+  "source_target": "wiki/sources/source-stripe-payment-links.md",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "read_ranges": {
+    "raw/stripe-payment-links-promotions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 102
+      }
+    ],
+    "raw/stripe-payment-links-promotions-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 107
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b5c49c8dd55606d7b532fbb9/content.diff": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Pass `allow_promotion_codes: true` when you create a payment link:",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:21"
+    },
+    {
+      "text": "By default, payment links create [guest customers](https://support.stripe.com/questions/guest-customer-faq) for one-time payments. As a result, promotion codes that are only eligible for first-time orders won\u2019t work as expected.",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:33"
+    },
+    {
+      "text": "You can configure a subscription upsell in the Dashboard on the **Price detail** page.",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:39"
+    },
+    {
+      "text": "You can offer up to 10 optional items on your payment link.",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:50"
+    },
+    {
+      "text": "Cross-sells won\u2019t appear if you specify additional optional items on a payment link.",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:91"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Pass `allow_promotion_codes: true` when you create a payment link:",
+      "location": "raw/stripe-payment-links-promotions-2025.md:20"
+    },
+    {
+      "text": "promotion codes that are only eligible for first-time orders won\u2019t work as expected.",
+      "location": "raw/stripe-payment-links-promotions-2025.md:40"
+    },
+    {
+      "text": "You can configure a subscription upsell in the Dashboard on the **Price detail** page.",
+      "location": "raw/stripe-payment-links-promotions-2025.md:46"
+    },
+    {
+      "text": "Cross-sells won\u2019t appear if you specify additional optional items on a payment link.",
+      "location": "raw/stripe-payment-links-promotions-2025.md:99"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same-URL November and April captures retain the same promotion-code, first-time-order guest-customer caveat, subscription upsell, optional item, and product-associated cross-sell behavior (new raw:15-17,21,31-39,48-50,58-91; old raw:14-16,20,38-46,55-57,66-99). The diff changes the promotion-code example from Node to curl, list numbering, quote style in the optional-item JavaScript example, image/video asset URLs, and See also navigation; no substantive behavior delta is established.",
+    "The shared source's promotions raw description at line 72 says 'subscription upsells (Dashboard only)'. Both guide captures say an upsell can be configured on the Dashboard Price detail page (old raw:46, new raw:39), but neither says Dashboard is the exclusive configuration channel. Correct the source to 'Dashboard Price detail setup documented' without inferring that an API alternative exists. The concept at wiki/concepts/stripe-payment-links.md:121 repeats the unsupported 'Dashboard-only' exclusivity and should receive the same narrow correction.",
+    "The concept at wiki/concepts/stripe-payment-links.md:120 states first-time-order codes 'won't work'. Both captures use the narrower 'won\u2019t work as expected' for promotion codes restricted to first-time orders because one-time Payment Links create guest customers by default (old raw:40, new raw:33). Restore that qualification rather than claiming every such code categorically fails.",
+    "Source lines 7-14 and 65-72 map eight dated Payment Links raw units to one source. Any correction or optional addition of the November promotions raw must stay confined to promotions evidence and preserve the seven unrelated overview/create/share/track/buy-button/customize/shipping histories and descriptions."
+  ],
+  "substantive_changes": [
+    "No substantive same-URL product behavior change is established; the required update corrects two pre-existing retained claims in the mapped source and concept."
+  ],
+  "historical_claims_to_preserve": [
+    "Promotion codes are enabled with allow_promotion_codes, and prefilled_promo_code can prefill a URL-shared code (old raw:20,38; new raw:21,31).",
+    "For one-time Payment Links, guest-customer creation by default means first-time-order-only codes may not work as expected (old raw:40; new raw:33).",
+    "The guide documents Dashboard Price detail configuration for subscription upsells, up to ten optional items, and cross-sell suppression when link-specific optional items are specified (old raw:46,57,99; new raw:39,50,91).",
+    "Other dated Payment Links raw-file histories in the shared source at source lines 7-13 and 65-71 remain separate evidence units."
+  ],
+  "conflicts": [
+    "Source line 72 and concept line 121 add 'Dashboard only' to the upsell setup claim, but old raw:46 and new raw:39 document Dashboard setup without exclusivity.",
+    "Concept line 120 converts the guide's 'won\u2019t work as expected' at old raw:40 and new raw:33 into categorical 'won't work'."
+  ],
+  "unresolved_questions": [
+    "The captures do not establish whether another subscription-upsell configuration channel exists; removing 'only' does not assert one.",
+    "The captures do not quantify how often first-time-order promotion codes fail or describe all guest-customer eligibility conditions."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-links.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payment-links/promotions, the November capture preserves the April promotion behavior: old raw:20,40,46,57,99 align with new raw:21,33,39,50,91. The visible diff mostly changes sample language and formatting. [[source-stripe-payment-links]] still needs a bounded correction at source line 72 because 'Dashboard only' overstates a documented Dashboard setup path as exclusive; this is a retained-source issue, not a new product behavior change.",
+    "Q2": "For https://docs.stripe.com/payment-links/promotions, keep the old dated promotions raw and the other seven Payment Links histories in [[source-stripe-payment-links]]. Change its line 72 upsell label to describe the Dashboard Price detail path without 'only', since old raw:46 and new raw:39 give no exclusivity claim. In the linked concept, qualify the first-time-order promotion-code caveat as 'won\u2019t work as expected' from old raw:40 and new raw:33, rather than a categorical failure."
+  }
+}

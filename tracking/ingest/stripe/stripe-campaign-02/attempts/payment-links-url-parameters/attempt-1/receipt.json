@@ -1,0 +1,106 @@
+{
+  "job_id": "payment-links-url-parameters",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payment-links-url-parameters-2026-11-07.md",
+  "raw_sha256": "fb5248860d85abc1dba7fe735f297799b1e75210ded0dede1d4c080914909f90",
+  "prior_raw_path": "raw/stripe-payment-links-track-2025.md",
+  "prior_raw_sha256": "e25ae35a0248d349b2f08341b67d45a666f8e51e3a4098c5455fdf8b0972f6b1",
+  "source_target": "wiki/sources/source-stripe-payment-links.md",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "read_ranges": {
+    "raw/stripe-payment-links-url-parameters-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "raw/stripe-payment-links-track-2025.md": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/731035db973ef1f1e45899b1/content.diff": [
+      {
+        "start": 1,
+        "end": 89
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "`utm_source`, `utm_content`, `utm_medium`, `utm_term`, and `utm_campaign`.",
+      "location": "raw/stripe-payment-links-url-parameters-2026-11-07.md:13"
+    },
+    {
+      "text": "To add UTM codes, specify `redirect` as your [confirmation behavior](https://docs.stripe.com/payment-links/post-payment.md#change-confirmation-behavior).",
+      "location": "raw/stripe-payment-links-url-parameters-2026-11-07.md:23"
+    },
+    {
+      "text": "Construct UTM codes using alphanumeric characters, dashes, or underscores, ensuring they don\u2019t exceed a 150-character limit.",
+      "location": "raw/stripe-payment-links-url-parameters-2026-11-07.md:25"
+    },
+    {
+      "text": "`client_reference_id` can be composed of alphanumeric characters, dashes, or underscores, and be any value up to 200 characters. Invalid values are silently dropped, but your payment page continues to work as expected.",
+      "location": "raw/stripe-payment-links-url-parameters-2026-11-07.md:39"
+    },
+    {
+      "text": "Make sure to listen to additional webhooks in case you\u2019ve enabled payment methods like bank debits or vouchers, which can take 2-14 days to confirm the payment.",
+      "location": "raw/stripe-payment-links-url-parameters-2026-11-07.md:47"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "`utm_source`, `utm_content`, `utm_medium`, `utm_term`, and `utm_campaign`.",
+      "location": "raw/stripe-payment-links-track-2025.md:12"
+    },
+    {
+      "text": "To add UTM codes, specify `redirect` as your [confirmation behavior](https://docs.stripe.com/payment-links/post-payment.md#change-confirmation-behavior).",
+      "location": "raw/stripe-payment-links-track-2025.md:22"
+    },
+    {
+      "text": "Construct UTM codes using alphanumeric characters, dashes, or underscores, ensuring they don\u2019t exceed a 150-character limit.",
+      "location": "raw/stripe-payment-links-track-2025.md:24"
+    },
+    {
+      "text": "Invalid values are silently dropped, but your payment page continues to work as expected.",
+      "location": "raw/stripe-payment-links-track-2025.md:38"
+    },
+    {
+      "text": "Make sure to listen to additional webhooks in case you\u2019ve enabled payment methods like bank debits or vouchers, which can take 2-14 days to confirm the payment.",
+      "location": "raw/stripe-payment-links-track-2025.md:46"
+    }
+  ],
+  "proposed_disposition": "no_substantive_update",
+  "findings": [
+    "The matched URL continues to describe tracking Payment Links with five UTM query parameters and client_reference_id, not a new checkout or payment method (new raw:5-13,27-39; old raw:4-12,26-38). The UTM fields retain their meanings for source, content, medium, term, and campaign in both tables.",
+    "UTM propagation to the post-payment redirect depends on selecting redirect as the confirmation behavior; the resulting redirect URL carries the UTM parameters supplied on the payment link (new raw:23; old raw:22). UTM values allow alphanumerics, hyphens, underscores, up to 150 characters; invalid ones are silently discarded (new raw:25; old raw:24). The link still working does not prove a malformed tracking value survived.",
+    "client_reference_id remains an optional reconciliation string attached to the Checkout Session and sent with checkout.session.completed after payment completion. Its limit remains 200 alphanumeric, dash, or underscore characters; invalid values silently drop without stopping the payment page (new raw:29-41; old raw:28-40). Both captures warn not to put secrets in shareable URLs and to share parameterized links only with intended recipients.",
+    "The page retains checkout.session.completed for fulfillment and reconciliation, but warns that enabled asynchronous methods such as bank debits and vouchers can take 2-14 days to confirm and require additional webhooks (new raw:43-47; old raw:42-46). The sample after_completion redirect API request is a configuration example, not evidence that a browser redirect or webhook was observed (new raw:49-58; old raw:48-69).",
+    "Diff 1-89 changes wording, heading/list/table formatting, the display formatting of an example UTM URL, and replaces a Node Payment Link creation snippet with equivalent curl parameters. It adds no tracked field, changed limit, new confirmation condition, changed webhook event, or payment finality rule."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the dated track-page raw identity and its five UTM names, redirect-dependent propagation, 150-character limit, client_reference_id 200-character limit and no-secrets warning (old raw:12-40; new raw:13-41).",
+    "Retain the distinction between checkout.session.completed and later confirmation of asynchronous bank debit or voucher payments (old raw:44-46; new raw:45-47).",
+    "Keep the other raw identities in wiki/sources/source-stripe-payment-links.md:7-14 as separately dated evidence; this single-URL comparison does not decide their reviews."
+  ],
+  "conflicts": [],
+  "unresolved_questions": [
+    "The linked post-payment, webhook, and fulfillment pages were navigation only in this job; the assigned capture does not prove a specific merchant configuration, received webhook, or final payment state.",
+    "The new UTM example's Markdown bold and backslash-escaped underscores should be understood as display formatting, not a newly required literal URL encoding rule."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-links.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payment-links/url-parameters, the new capture confirms the same tracking guidance retained by [[source-stripe-payment-links]] and the Payment Links concept: five UTM parameters, redirect confirmation behavior for carrying them to the redirect URL, a 150-character UTM limit, and a 200-character client_reference_id for Checkout Session reconciliation (new raw:13,23-25,39; old raw:12,22-24,38). Invalid values are silently dropped while checkout can still work, and shareable URLs must not contain secrets (new raw:39-41; old raw:38-40).",
+    "Q2": "For https://docs.stripe.com/payment-links/url-parameters, the old/new delta is editorial and example presentation, with Node after_completion configuration rewritten as curl; it does not change tracking limits or payment finality (old raw:50-69; new raw:51-58). [[source-stripe-payment-links]]:68 already routes to this dated raw identity, and the concept retains the redirect and no-secrets qualifications. No substantive source update is needed from this URL alone. checkout.session.completed is useful for reconciliation, while enabled bank debits or vouchers may require additional webhooks during their 2-14 day confirmation window (old raw:44-46; new raw:45-47). The other source raw identities remain separate."
+  }
+}

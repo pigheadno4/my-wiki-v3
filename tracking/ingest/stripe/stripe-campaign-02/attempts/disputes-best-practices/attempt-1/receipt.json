@@ -1,0 +1,144 @@
+{
+  "job_id": "disputes-best-practices",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-best-practices-2026-11-07.md",
+  "raw_sha256": "63ed5948e3983c9892a24a769a3e79c9f1d7b41a14b959a37c01e208f3ee968b",
+  "prior_raw_path": "raw/stripe-disputes-best-practices-2026.md",
+  "prior_raw_sha256": "445272ec27dcf6dcb9601dbd0c4276d84830520530876a320842996b8449e2dc",
+  "source_target": "wiki/sources/source-stripe-disputes-best-practices.md",
+  "source_before_sha256": "902a892cc912b621e60ede4a67960b28e31da0a4d943df460dedc0c561da680b",
+  "read_ranges": {
+    "raw/stripe-disputes-best-practices-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 259
+      }
+    ],
+    "raw/stripe-disputes-best-practices-2026.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 235
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-best-practices.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 115
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/00f621528326ae3253adbe77/content.diff": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 206
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Stripe\u2019s [Radar Plus](https://stripe.com/radar/fraud-teams) uses Radar\u2019s AI models to estimate your chances of winning a dispute.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:36"
+    },
+    {
+      "text": "When a page limit applies, Stripe estimates the total number of pages in the final evidence PDF as part of an [API evidence update](https://docs.stripe.com/api/disputes/update.md). The estimate includes text and uploaded files already saved on the dispute, with your updates applied.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:97"
+    },
+    {
+      "text": "If the updated evidence exceeds the applicable limit, Stripe returns an HTTP `400` response with `error.type` set to `invalid_request_error` and `error.code` set to `dispute_evidence_page_limit_exceeded`. This check applies whether `submit` is `true` or `false`.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:99"
+    },
+    {
+      "text": "Don\u2019t extract page limits or page counts from `error.message` for programmatic validation. The limit and page counts in this example are illustrative. The applicable limit can vary by dispute.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:115"
+    },
+    {
+      "text": "Keep the combined file size within 4.5 MB and the evidence within the applicable page limit for the dispute.",
+      "location": "raw/stripe-disputes-best-practices-2026-11-07.md:207"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Stripe\u2019s [Radar for Fraud Teams](https://stripe.com/radar/fraud-teams) uses Radar\u2019s AI models to estimate your chances of winning a dispute.",
+      "location": "raw/stripe-disputes-best-practices-2026.md:35"
+    },
+    {
+      "text": "The combined page count must be less than 50 pages",
+      "location": "raw/stripe-disputes-best-practices-2026.md:137"
+    },
+    {
+      "text": "19 pages for Mastercard.",
+      "location": "raw/stripe-disputes-best-practices-2026.md:188"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The new page adds an operational API page-limit error contract at lines 95-115. On evidence update, Stripe estimates the final compiled PDF using previously saved text/files plus the proposed changes; if the applicable limit is exceeded, it returns HTTP 400, invalid_request_error, dispute_evidence_page_limit_exceeded whether submit=true or false. Handle error.code, use error.message only for human explanation, reduce evidence and retry; do not parse the example's 17-page limit or page breakdown as a fixed rule.",
+    "The May page separately stated less than 50 combined pages and a 19-page Mastercard limit (old lines 135-137, 182-188). November retains less than 50 in its formatting list (new lines 158-160), but replaces the later network-specific general note with 'applicable page limit for the dispute' (new lines 205-207). This does not prove Mastercard's old limit was abolished or that 50 pages will be accepted for every dispute; the source table and disputes concept currently present 19 as an unqualified current maximum and should be dated/qualified.",
+    "The named win-likelihood product changes from Radar for Fraud Teams (old line 35) to Radar Plus (new line 36) while the five-dot percentage table remains unchanged (old lines 43-51; new lines 44-52). This is a captured product-label change, not proof of account entitlement, model accuracy, or a new prediction feature.",
+    "Core evidence guidance remains: chronological and grouped presentation, relevant excerpts, authorization/delivery proof, file format PDF/JPEG/PNG and combined 4.5MB, one file per evidence type, partial-refund evidence, and Visa CE 3.0 guidance (old lines 14-235; new lines 15-254). The 12-point font and portrait layout remain recommendations rather than validation constraints (new lines 163-168); current source line 46 calls the font a minimum without that distinction.",
+    "The new error example at lines 103-115 includes 17 and 36 page counts only as illustrative message values. The current source's fixed limits cannot be used as the sole preflight logic; a page-limit error can occur even on an unsubmitted evidence update (new lines 97-101)."
+  ],
+  "substantive_changes": [
+    "New page-limit API error handling, including compiled-PDF page estimate, existing-plus-updated evidence scope, HTTP 400/type/code, submit-independent check and code-driven handling (new lines 95-115).",
+    "General limit note now directs readers to the dispute's applicable page limit rather than repeating the old 19-page Mastercard number (old lines 182-188; new lines 205-207); old number is historical, not affirmatively rescinded.",
+    "Win-likelihood product label changes from Radar for Fraud Teams to Radar Plus (old line 35; new line 36), without a change to the captured percentage table."
+  ],
+  "historical_claims_to_preserve": [
+    "The May capture's 19-page Mastercard statement remains dated historical evidence (old line 188); omission from November does not establish repeal. Both captures say combined uploaded files cannot exceed 4.5MB and total formatting-list pages must be less than 50 (old lines 135-137; new lines 158-160).",
+    "The original one-file-per-evidence-type, relevant-excerpt, authorization/delivery, partial-refund and CE 3.0 guidance remains in November (old lines 65-235; new lines 66-254).",
+    "Win-likelihood 1-to-5-dot percentages remain 5%, 15%, 25%, 40%, 60% and are estimates conditional on relevant evidence, not outcome guarantees (old lines 43-51; new lines 44-52).",
+    "Stripe says it does not influence the bank's ultimate decision (old line 12; new line 13), and accepting a dispute still incurs a dispute fee (old lines 154-160; new lines 177-183)."
+  ],
+  "conflicts": [
+    "Current source lines 43-44 and disputes concept lines 97 and 324 present <50 and 19 Mastercard pages as static comprehensive limits. New lines 97-115 and 205-207 say the applicable limit can vary by dispute and an update may fail on compiled-PDF page estimation; retain old 19 only as dated evidence.",
+    "Current source line 15 names Radar for Fraud Teams; new line 36 names Radar Plus. Do not infer an account's Radar tier or feature eligibility from the rename.",
+    "Current source line 46 states 12pt as a hard minimum, whereas new lines 163-168 introduce it as a legibility recommendation, not an API validation limit."
+  ],
+  "unresolved_questions": [
+    "The capture does not enumerate the per-dispute/network page limit or establish that the former 19-page Mastercard figure is still current or has been removed.",
+    "The HTTP error example's 17-page and 36-page counts are illustrative and cannot serve as global validation thresholds.",
+    "The Radar Plus label in the snapshot does not prove this account's enrollment or any particular dispute's prediction or outcome."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/disputes.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/best-practices, the November capture adds API page-limit handling absent from May: Stripe estimates the final evidence PDF and can return HTTP 400 with dispute_evidence_page_limit_exceeded on updates whether submit is true or false (new lines 95-115; old lines 85-94). [[source-stripe-disputes-best-practices]] needs this behavior, plus a dated note on the old Mastercard number. Radar's displayed name changes from Fraud Teams at old line 35 to Radar Plus at new line 36.",
+    "Q2": "For https://docs.stripe.com/disputes/best-practices, [[source-stripe-disputes-best-practices]] should retain the 4.5MB and less-than-50 formatting limits (old lines 135-137; new lines 158-160), but avoid treating May's 19-page Mastercard note at old line 188 as a verified universal current cutoff. November directs callers to the applicable limit per dispute (new lines 97-115, 205-207); use error.code for logic and treat the example's 17-page message as illustrative. Preserve evidence quality and bank-decision boundaries."
+  }
+}

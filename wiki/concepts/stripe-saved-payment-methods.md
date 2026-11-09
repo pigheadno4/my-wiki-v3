@@ -22,7 +22,7 @@ Controls whether a saved PM appears in the Payment Element for future sessions:
 
 | Value | Meaning |
 | --- | --- |
-| `always` | PM renders and can be reused — customer gave explicit consent |
+| `always` | An eligible saved PM can be redisplayed; the Checkout save-consent path sets this value when the customer selects the checkbox |
 | `limited` | PM won't appear for future purchases (e.g. setup_future_usage without consent checkbox) |
 | `unspecified` | Legacy PMs (saved outside checkout) — won't render by default |
 
@@ -31,10 +31,12 @@ Controls whether a saved PM appears in the Payment Element for future sessions:
 ```js
 stripe.checkout.sessions.create({
   saved_payment_method_options: { payment_method_save: 'enabled' },
-  customer_creation: 'always', // or customer/customer_account
+  customer_creation: 'always', // create a new Customer
   ui_mode: 'elements',
 });
 ```
+
+For an existing identity, use `customer` for a Customers v1 Customer or `customer_account` for a customer-configured Accounts v2 Account. The 2026-04-20 [[source-stripe-accept-a-payment|Accept a payment guide]] describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users; preview participants need a preview API version. These are alternative identity routes, subject to that availability.
 
 - **Supported methods**: card, ACH Direct Debit only (not bank redirects, etc.)
 - Payment Element auto-shows consent checkbox when enabled
@@ -78,7 +80,7 @@ When saved for future use, these redirect-based methods generate a `sepa_debit` 
 
 ## Displaying Saved PMs
 
-- **Checkout Sessions**: Payment Element auto-redisplays when customer/customer_account is on session
+- **Checkout Sessions**: A `customer` or eligible `customer_account` identifies whose saved methods Checkout can consider, but identity alone does not make them prefill. In the 2026-04-20 [[source-stripe-accept-a-payment|Accept a payment guide]], selecting the optional save-consent checkbox sets `allow_redisplay: always`; eligible saved **cards** can then prefill returning Checkout purchases. Cards saved through `setup_future_usage` or subscription mode without that consent can have `limited` and do not prefill. `unspecified` methods are excluded by default unless redisplay behavior is appropriately changed or overridden; Checkout prefills saved cards only.
 - **Payment Intents**: requires CustomerSession with `payment_method_redisplay: 'enabled'`
 - **Legacy `unspecified` PMs**: either update `allow_redisplay` to `'always'` via API, or configure CustomerSession filters
 - **Display order**: most recently added first; default PM always first

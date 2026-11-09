@@ -1,0 +1,234 @@
+{
+  "job_id": "payments-ach-direct-debit",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-ach-direct-debit-2026-11-07.md",
+  "raw_sha256": "41e348c296155a1cabc3ea4c369ad45296e0f64d1ab80103313c6bef939f1fa0",
+  "source_before_sha256": "18b0eb3234176352258e5d94ac6ca6fe4473dc4033c2a44e34c044113d35a531",
+  "source_page": "---\ntitle: \"Stripe: ACH Direct Debit\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ach-direct-debit\"\nraw_files:\n  - \"stripe-payments-ach-direct-debit-2026-11-07.md\"\n  - \"stripe-ach-direct-debit-2025.md\"\ntags: [stripe, ach, us-bank-account, bank-debit, mandates, disputes, refunds, financial-connections, connect]\n---\n\n## Summary\n\nACH Direct Debit is a reusable, delayed-notification, nonguaranteed debit from a customer's US bank account, presented in USD. A bank-account verification or the page's \u201cinstant provisional access\u201d label is not final debit confirmation or funds settlement. The 2026-11-07 capture lists US customers and bank accounts, but eligible merchant locations include listed European countries and the US, with Canada in private preview; it also lists crossborder coverage and local-currency settlement for eligible Stripe accounts. This is a dated product and eligibility statement, not proof of access for an individual account.\n\n## Eligibility, billing details, and support\n\n- **Customer and transaction scope:** US customer location and bank account, USD presentment, domestic or crossborder coverage, minimum 0.50 USD (new raw lines 58\u201398). The page lists restrictions for some UK and EU business categories and says accounts might be reviewed after activation. Canadian business location is labeled private preview.\n- **Billing details:** `billing_details` must include the account holder's name. Include a complete address when the merchant of record is outside the US; that address condition is not unconditional (new raw line 15).\n- **Captured product support:** The page lists full-page Checkout, Payment Links, embedded Checkout, Payment Element, Billing, Invoicing, Radar and Connect, with Checkout Sessions and Payment Intents/Setup Intents API paths. It marks Express Checkout Element, in-app payments, Managed Payments, Customer Portal and Terminal unsupported in this capture (new raw lines 340\u2013362). This does not establish a particular account's entitlement.\n- **Comparison:** Instant Bank Payments is a separate Link-only route with instant confirmation and Stripe-guaranteed bank-initiated returns; ACH Direct Debit can take up to four business days to acknowledge success or failure (new raw lines 9, 22\u201327).\n\n## Timing and verification\n\n- Standard settlement is T+4 business days from payment creation, with a 21:00 US/Eastern cutoff. Faster T+2 uses a 14:00 US/Eastern cutoff and is available only to eligible US users; eligibility and activation are checked in Payment method settings. Settlement means funds become available in the Stripe balance; bank payout then follows the account's payout schedule (new raw lines 29\u201340). The `expected_debit_date` is an estimate, and temporary Financial Connections account numbers may delay initial settlement (new raw lines 33\u201335).\n- The bank account must be verified before use. Financial Connections can link an account; manual entry may use hosted microdeposit verification. The customer has 10 days to verify microdeposits, after which the PaymentIntent or SetupIntent needs new payment-method details (new raw lines 330\u2013338). Neither verification nor provisional access guarantees the subsequent debit.\n- ACH transactions can fail during processing; a rare late bank failure can occur even after a PaymentIntent reaches `succeeded`. Stripe describes specific failure reasons and a fee in that situation (new raw lines 312\u2013328).\n\n## Mandates and blocked accounts\n\nCustomer authorization through a mandate is required before debit. Checkout, Payment Element and the hosted invoice page display the online mandate and record acceptance. A custom Payment Intents form must display mandate terms before confirming the PaymentIntent or SetupIntent. For recurring preauthorized debits, the capture requires amount disclosure or an expected range and at least seven calendar days' notice when timing changes (new raw lines 211\u2013265).\n\nNacha requires an electronic or hard copy of the mandate. When a billing email is provided, Stripe defaults to sending mandate confirmation; it also sends a microdeposit notification if microdeposit verification is needed. If the merchant sends custom notifications, the guide calls for mandate confirmation and separate microdeposit reminder emails (new raw lines 267\u2013306). It does not require every customer to have an email address.\n\nMandates can become inactive after disputes, some failures or blocked bank-account status. A `payment_method.automatically_updated` event can expose `us_bank_account.status_details.blocked`; reuse after the block lifts still requires an active or newly collected mandate (new raw lines 99\u2013107, 308\u2013310).\n\n## Refunds\n\nThe 2026-11-07 capture marks full refunds supported and **partial refunds unsupported**, with a 180-day submission window. Its prose says ACH refunds are asynchronous and take **up to three business days** to complete, cannot be canceled, and are submitted only after the original payment succeeds (new raw lines 125\u2013150). Refunds are a separate credit, not a reversal or explicitly labeled refund on the bank statement. Track the Refund status and `refund.updated` or `refund.failed`; if a refund fails, arrange another way to return funds. A refund does not prevent a dispute and can create a double credit if a bank dispute proceeds.\n\n> [!warning] Contradiction\n> The 2026-05-02 capture listed \u201cRefunds / Partial refunds\u201d as \u201cYes / Yes\u201d and said refunds require **at least three business days** (old raw lines 57\u201359, 383\u2013385). The 2026-11-07 capture instead marks partial refunds unsupported and says **up to three business days** (new raw lines 125\u2013138). The captures do not establish the effective change date or the behavior of an individual historical transaction; verify the relevant account and payment before promising refund options or timing.\n\n## Disputes and proof-of-authorization inquiries\n\nA customer can generally dispute a personal-account debit within 60 calendar days or a business-account debit within two business days. A final ACH dispute in these windows cannot be contested or appealed through the ACH network; rare late returns are managed and decided by the banks. A dispute invalidates that payment method's mandate; collect new authorization before another charge. If a subsequent payment from the same bank account is disputed, Stripe blocks that bank account from further reuse (new raw lines 154\u2013182; same-account scope also stated in the 2026-05-02 [[source-stripe-ach-accept-payment]] guide).\n\n**A requested proof-of-authorization inquiry is a separate predecision process.** For some late returns, Stripe can request evidence with `warning_needs_response` and a deadline. Stripe-hosted mandates are answered by Stripe; custom Payment Intents mandates may require the merchant to provide authorization proof. Submit evidence only when requested, and only once; the bank determines the outcome. Evidence for an inquiry is not a way to appeal a final dispute (new raw lines 174\u2013209). [[source-stripe-ach-accept-payment]] also routes the ACH integration context.\n\n## Connect, retries, and descriptors\n\nConnect requires `us_bank_account_ach_payments` active on the platform and relevant connected accounts. Charge type can change merchant of record, mandate and email identity, and which account's statement descriptor appears. Cloning a bank PaymentMethod duplicates the mandate but sends no new confirmation email; disclose that authorization extends to connected accounts. A mandate authorized `on_behalf_of` one connected account cannot be reused with another (new raw lines 365\u2013387, 421\u2013444). Settlement speed control also differs by account and charge type (new raw lines 47\u201356).\n\nStripe Billing's enabled insufficient-funds Direct Debit retries can run at most twice within 40 days of the original attempt; the new capture says Stripe-initiated automatic retry attempts incur no debit-failure fee (new raw lines 395\u2013401). This does not waive the separate late-failure fee described above.\n\nThe merchant's statement descriptor appears on the bank statement and may be set dynamically per PaymentIntent. The capture describes first-16-alphanumeric-character truncation and disallows `<`, `>`, `'`, and `\"`; Connect charge type determines which account's descriptor appears (new raw lines 421\u2013444).\n\n## Historical testing details\n\nThe 2026-05-02 capture includes sandbox transaction-email addressing, manually entered bank-account test numbers, microdeposit values and descriptor codes, and the distinction that test transactions settle instantly while live transactions can take days (old raw lines 455\u2013502). These are sandbox examples, not live settlement evidence.\n\n## Related\n\n- [[stripe-ach-direct-debit]] \u2014 ACH concept and reciprocal source route\n- [[source-stripe-ach-accept-payment]] \u2014 ACH acceptance integration guide\n- [[source-stripe-ach-set-up-payment]] \u2014 saving a bank account for future payments\n\n## Raw Sources\n\n- [[raw/stripe-payments-ach-direct-debit-2026-11-07|2026-11-07 ACH Direct Debit capture]]\n- [[raw/stripe-ach-direct-debit-2025|2026-05-02 earlier ACH Direct Debit capture]]\n",
+  "quotes": [
+    {
+      "text": "`billing_details` must include the account holder\u2019s name and, if the *merchant of record*",
+      "location": "raw/stripe-payments-ach-direct-debit-2026-11-07.md:15"
+    },
+    {
+      "text": "Private preview business location: CA",
+      "location": "raw/stripe-payments-ach-direct-debit-2026-11-07.md:62"
+    },
+    {
+      "text": "  \u2717 Partial refunds",
+      "location": "raw/stripe-payments-ach-direct-debit-2026-11-07.md:126"
+    },
+    {
+      "text": "Refunds for ACH Direct Debit payments are asynchronous and take up to 3 business days to complete.",
+      "location": "raw/stripe-payments-ach-direct-debit-2026-11-07.md:138"
+    },
+    {
+      "text": "You can\u2019t submit evidence to contest or appeal a final ACH Direct Debit dispute.",
+      "location": "raw/stripe-payments-ach-direct-debit-2026-11-07.md:176"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "[Yes / Yes](https://docs.stripe.com/payments/ach-direct-debit.md#refunds)",
+      "location": "raw/stripe-ach-direct-debit-2025.md:59"
+    },
+    {
+      "text": "Refunds require at least 3 business days to process.",
+      "location": "raw/stripe-ach-direct-debit-2025.md:385"
+    },
+    {
+      "text": "Disputes received within these timeframes are considered final and uncontestable through the ACH network.",
+      "location": "raw/stripe-ach-direct-debit-2025.md:288"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-ach-direct-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 450
+      }
+    ],
+    "raw/stripe-ach-direct-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 525
+      }
+    ],
+    "wiki/sources/source-stripe-ach-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/27dab879c213b9b866e56bb2/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 895
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "payments-ach-direct-debit-definition",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "ACH Direct Debit lets US businesses pull funds from customers' US bank accounts. API enum: `us_bank_account`. Business-initiated, delayed notification, reusable. Not guaranteed \u2014 disputes and payment failures possible.",
+      "new_text": "ACH Direct Debit lets eligible businesses in the documented US and European locations pull funds from customers' US bank accounts, with Canada labeled private preview in the 2026-11-07 capture. API enum: `us_bank_account`. USD presentment, delayed notification, reusable, and not guaranteed \u2014 disputes and payment failures remain possible. Account and industry eligibility require separate confirmation.",
+      "reason": "Correct the US-only merchant claim while keeping US customer and USD payment scope distinct.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Dated availability is not individual-account eligibility."
+      ]
+    },
+    {
+      "update_id": "payments-ach-direct-debit-mandate-email",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "Custom payment forms must display mandate text. Stripe emails mandate confirmation + microdeposit notification to customer's billing email.",
+      "new_text": "Custom Payment Intents forms must display mandate terms before confirmation. Nacha requires an electronic or hard copy of the mandate. With a billing email, Stripe defaults to sending mandate confirmation and, if microdeposit verification is needed, its verification notification. Custom notification flows also require microdeposit reminders.",
+      "reason": "Make default delivery conditional on billing email and microdeposit need, and distinguish Nacha's mandate-copy rule from email delivery.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-ach-direct-debit-inquiry",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "**Proof of Authorization inquiry**: upload evidence via Dashboard or Files API; `charge.dispute.created` with `warning_needs_response` status.",
+      "new_text": "**Proof of Authorization inquiry**: when Stripe requests proof before the bank decides a late return, `charge.dispute.created` can carry `warning_needs_response`; submit authorization evidence only on request and only once via Dashboard or Files API. This inquiry is not an appeal of a final ACH dispute.",
+      "reason": "Separate a requested predecision inquiry from uncontestable final disputes.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-ach-direct-debit-refunds",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- Min 3 business days to process",
+      "new_text": "- 2026-11-07 capture: asynchronous full refunds, up to 3 business days to complete; partial refunds marked unsupported. The 2026-05-02 capture instead listed partial refunds supported and at least 3 business days to process.\n\n> [!warning] Contradiction\n> The two dated ACH captures disagree on partial-refund support and the direction of the three-business-day timing. Neither establishes an effective change date or behavior for a specific historical payment; verify the account and payment before promising either.",
+      "reason": "Correct the retained minimum-time claim and expose the material dated conflict.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Source captures do not resolve live account eligibility or old-transaction behavior."
+      ]
+    },
+    {
+      "update_id": "payments-ach-direct-debit-subsequent-dispute",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- First dispute: mandate invalidated (must collect new mandate)\n- Second dispute: bank account blocked entirely",
+      "new_text": "- A disputed payment invalidates the mandate associated with that PaymentMethod. Resolve the dispute with the customer and collect a new mandate before attempting another charge with it.\n- If a subsequent payment from the same bank account is disputed, Stripe blocks that bank account from further reuse.",
+      "reason": "Scope the first-dispute effect to the disputed PaymentMethod and the later block to a subsequent disputed payment from the same bank account, consistent with the accepted ACH acceptance candidate.",
+      "quote_indexes": [],
+      "warnings": [
+        "Overlaps the accepted ACH accept-a-payment candidate's dispute concept correction; coordinator must merge once."
+      ]
+    },
+    {
+      "update_id": "payments-ach-direct-debit-currency-scope",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "**Currency**: USD only. **Country**: US customers; 33+ business countries.",
+      "new_text": "**Presentment currency**: USD. **Settlement**: the 2026-11-07 capture lists local-currency settlement for eligible merchant Stripe accounts. **Customer location**: US; business locations include the listed European countries and US, with Canada in private preview.",
+      "reason": "Separate USD presentment from eligible merchant local-currency settlement, correcting the unqualified USD-only claim.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Dated page support is not account-specific eligibility."
+      ]
+    },
+    {
+      "update_id": "payments-ach-direct-debit-block-removal-mandate",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "Stripe blocks accounts on certain ACH returns. Listen for `payment_method.automatically_updated` event; check `us_bank_account.status_details.blocked`. Block removed event signals account is usable again.",
+      "new_text": "Stripe can block bank accounts on certain ACH returns. Listen for `payment_method.automatically_updated` and inspect `us_bank_account.status_details.blocked`. When Stripe removes a block, the payment method can be reused only if an active mandate exists or a new one is collected.",
+      "reason": "Correct the implication that block removal alone restores authorization to debit.",
+      "quote_indexes": [],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/ach-direct-debit, [[source-stripe-ach-direct-debit]] now distinguishes a final ACH dispute from a requested proof-of-authorization inquiry. The older capture already describes final, uncontestable in-window disputes and an inquiry route (old raw lines 286\u2013318); the new capture explicitly says final disputes cannot be appealed while a warning_needs_response inquiry can receive one evidence submission before the bank decides (new raw lines 154\u2013209). The former source line 21 incorrectly joined these routes.",
+    "Q2": "For https://docs.stripe.com/payments/ach-direct-debit, [[source-stripe-ach-direct-debit]] records the dated refund conflict rather than promising one universal behavior. The 2026-05-02 capture lists partial refunds as supported and at least three business days (old raw lines 57\u201359, 383\u2013385); the 2026-11-07 capture marks partial refunds unsupported and says asynchronous full refunds take up to three business days (new raw lines 125\u2013150). Neither capture proves the effective change date or availability for a specific account or historical transaction."
+  },
+  "status": "candidate_ready"
+}

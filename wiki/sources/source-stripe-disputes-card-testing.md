@@ -1,66 +1,41 @@
 ---
 title: "Stripe — Protect Yourself From Card Testing"
 type: source
-date_ingested: 2026-05-10
+date_ingested: 2026-11-09
 original_format: webpage
+canonical_url: "https://docs.stripe.com/disputes/prevention/card-testing"
 raw_files:
+  - "stripe-disputes-prevention-card-testing-2026-11-07.md"
   - "stripe-disputes-card-testing-2026.md"
 tags: [stripe, card-testing, fraud, carding, captcha, rate-limiting, radar, disputes]
 ---
 
-## Summary
+## Overview
 
-Card testing (carding/enumeration): using stolen cards to validate them before fraudulent use. Prevention requires a combination of Stripe integration choice and custom controls.
+Stripe's card-testing prevention guide describes how stolen or enumerated card details can be tested through card setup or small payments, how to recognize possible attacks, and mitigations for integrations that save cards or make payments. The 2026-11-07 capture retains the older guide's core advice and changes the condition for Radar custom velocity rules to plan feature support. See [[stripe]] and [[disputes]]. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#How card testing works|Attack methods]]
 
-## What It Is
+Card testing is also called carding, account testing, enumeration, or card checking. The November capture additionally notes the Japanese term “credit master (クレジットマスター)” or クレマス. Card setup validations often do not appear on cardholder statements; small payment attempts may be less noticeable. The guide describes possible early fraud warnings/disputes, higher decline rates, fees that depend on pricing and disputes, infrastructure strain, monitoring-program exposure, and distorted business data—not inevitable results for every attack. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Card testing consequences|Consequences]]
 
-Also known as: carding, account testing, enumeration, card checking.
+## Recognition and response
 
-**Methods**: Card Setup (preferred — doesn't show on cardholder statements) and small Payments.
+Stripe lists spikes in failed or blocked payments, HTTP 402 errors or `generic_decline` outcomes, and suspicious low-value payments with odd names or emails as symptoms to investigate. These signals are diagnostic clues, not proof that any individual failure or decline is card testing. For an integration being exploited, the guide recommends identifying activity, refunding fraudulent payments to avoid disputes, using a recommended integration or adding controls, and monitoring whether the controls work. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Identify card testing|Identification]] [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Active card testing checklist|Checklist]]
 
-## 6 Consequences
+## Mitigations and conditions
 
-Disputes/EFWs, higher decline rates (damages issuer reputation), additional fees, infrastructure strain, monitoring program enrollment, data quality degradation.
+- **Recommended integrations:** The guide says the latest Payment Element or Checkout has automated and manual card-testing controls, including rate limiters, AI models and CAPTCHA triggers; payments blocked by Stripe can carry `Blocked by Stripe`. Their effectiveness depends on integration and supplied risk factors. Advanced fraud detection has the highest impact in its list, followed by IP address, customer email, customer name and billing address. Direct integrations might need to pass data explicitly. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Use a Stripe-recommended integration|Integration and factors]]
+- **Implementation controls:** For endpoints that save a card or make a payment, consider server-validated CAPTCHA, login or session checks, network and checkout-flow rate limits, and monitoring of cards per account, customers per IP, purchases or other anomalous patterns. The guide's one-IP-per-day limit and CAPTCHA-after-first-attempt flow are examples, not fixed universal thresholds. A single IP heuristic or firewall rule is generally insufficient. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Control implementation|Control sections]]
+- **Radar velocity rules:** The 2026-05-10 capture names Radar for Fraud Teams for custom rules. The 2026-11-07 capture says custom Radar rules can be used **if the merchant's plan supports the feature**, at both its anomaly-control and risk-appetite sections. It does not identify all qualifying plans or prove any plan changed eligibility. Check feature support before relying on custom rules; this is distinct from the guide's general card-testing controls. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Detect and prevent unusual behavior|Conditional custom rules]] [[raw/stripe-disputes-card-testing-2026#Detect and prevent unusual behavior|Older wording]]
+- **Keys, retries, and monitoring:** Keep secret keys private; leaked credentials can let card testers create payments or set up cards. Extreme spikes of low-success payment retries can resemble card testing; avoid retrying cards set up on fraudulent customers after an attack. The guide says Stripe Smart Retries takes this into consideration, not that it makes all retries safe. Combine controls while watching for impact on legitimate traffic. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Retry carefully|Retry guidance]]
 
-## Identification Symptoms
+These are mitigation recommendations from dated documentation. They do not establish a compliance requirement, current account entitlement, guaranteed attack prevention, or successful payment outcomes.
 
-- Spike in failed/blocked payments
-- Spike in 402 errors / `generic_decline` outcomes
-- Suspicious small payments with nonsensical names/emails
+## Related
 
-## Prevention
-
-### 1. Recommended Stripe Integration (Best)
-
-Payment Element or Checkout: automated CAPTCHA, AI models, rate limiters, dynamic attack suppression → payments marked `Blocked by Stripe`.
-
-**Most impactful risk factors to send**:
-1. Advanced fraud detection (highest impact)
-2. IP address
-3. Customer email
-4. Customer name
-5. Billing address
-
-### 2. Custom Controls
-
-- **CAPTCHA**: server-side validation; consider visible CAPTCHA for persistent attacks
-- **Require login**: reduces anonymous access to payment form
-- **Rate limits**: e.g. limit new customers per IP per day; limit cards per account
-- **Behavior detection**: limit purchases per product, filter by user agent
-- **Radar velocity rules**: custom rules for per-IP/per-account attempt limits (Fraud Teams)
-
-### Key Rules
-
-- Single heuristic (IP-only) is insufficient
-- Don't keep retrying cards on fraudulent customers after attack (Smart Retries handles this)
-- Keep secret keys safe — leaked keys enable card testing directly
-
-## Related Pages
-
-- [[disputes]] — concept page (updated with card testing note)
-- [[stripe-radar]] — Radar velocity rules for card testing
-- [[source-stripe-disputes-fraud-types]] — fraud types overview
+- [[disputes]] — card-testing context and dispute effects
+- [[stripe-radar]] — Radar context; consult its own sources for plan and rule details
+- [[source-stripe-disputes-fraud-types]] — fraud-type overview
 
 ## Raw Sources
 
-- [[stripe-disputes-card-testing-2026]] — verbatim card testing prevention guide
+- [[raw/stripe-disputes-prevention-card-testing-2026-11-07|Stripe card-testing prevention guide, captured 2026-11-07]]
+- [[raw/stripe-disputes-card-testing-2026|Stripe card-testing prevention guide, captured 2026-05-10]]

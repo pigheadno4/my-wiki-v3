@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "scope": "Supplementary closing classification audit of 12 complete accepted receipts and approved final reviews (11 original units plus payments-advanced-collect-addresses supplement); prior initial full independent reviews and unchanged four-file pins were verified. This is not a third full raw read or a canonical edit.",
+  "checked_units": [
+    {"job_id": "billing-subscriptions-usage-based-meters-configure", "receipt_sha256": "bfbfc13f038fadcc00d3d12e67b84fca1c24fd94a078be9d6780e05dff0c170b", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "raw_reference"},
+    {"job_id": "billing-subscriptions-usage-based-recording-usage-in-bulk-dashboard", "receipt_sha256": "fad3d9b6762c40c03571c6418274b860198a6eede4d5848f144d3e2ac70b20b8", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "raw_reference"},
+    {"job_id": "billing-subscriptions-usage-based-thresholds", "receipt_sha256": "7275a9714916240b8712caa0525cda01128654327c1e8bd2f4f40515c2fccbd1", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "raw_reference"},
+    {"job_id": "billing-taxes-collect-taxes", "receipt_sha256": "34be4277df7207c72a58e5895b78270980db4c22875203d9e1ac1a50163a5274", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "no_substantive_update"},
+    {"job_id": "apple-pay", "receipt_sha256": "4078aab8ebca12dd15766832f629fbd2e6c5a681626489f64e52ec298267cbcb", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "unresolved"},
+    {"job_id": "apple-pay-best-practices", "receipt_sha256": "a8a9df671d38da0222d63e5c9a9194a0be4bb4d40f37d52b6cdaee124a9b9a70", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/targeted", "initial_full_review": true, "disposition": "no_substantive_update"},
+    {"job_id": "apple-pay-disputes-refunds", "receipt_sha256": "75c66480c107692e2330b27f814fbf6319a1f1c6c80edbf0baee4bb8cd119d00", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "no_substantive_update"},
+    {"job_id": "elements-address-element", "receipt_sha256": "f440cd6d993d39d189fe113d4fdd485cfe24fdd625b947692c8f0020c4a5707c", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "no_substantive_update"},
+    {"job_id": "elements-appearance-api-embedded-mobile", "receipt_sha256": "e04ec7318416b6dcff14524479ae336b625b559a5cf14c67958121f89e518bd3", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/targeted", "initial_full_review": true, "disposition": "no_substantive_update"},
+    {"job_id": "elements-appearance-api-mobile", "receipt_sha256": "99cd5b2db6aec4c2f382f6ec47f1192db66afc218869d8dffa86382837b65a6c", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "raw_reference"},
+    {"job_id": "payment-links-url-parameters", "receipt_sha256": "590ec9e35f36ab923625dc9c215c5e7c7b76fc0406abc00a141ebaac7ccaf37b", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "no_substantive_update"},
+    {"job_id": "payments-advanced-collect-addresses", "receipt_sha256": "8f87f2de09803d97c2ec73da9b646337e3140a977df7a4ef4a4eb006cab09cfb", "hash_verified": true, "four_pins_verified": true, "final_review": "approved/full", "initial_full_review": true, "disposition": "no_substantive_update"}
+  ],
+  "proposed_baseline_correction_inclusions": [
+    {"job_id": "billing-taxes-collect-taxes", "include": true, "reason": "Current source line 70 presents payment_behavior: default_incomplete in a consolidated subscription example without its conditional purpose. The 2026-05-02 guide's example omits it at old raw lines 257-271, and old line 278 says to pass it when confirming newly collected payment details rather than allowing an existing default method to pay the first invoice automatically. Preserve this as a dated old-guide correction; the November raw lines 9-14 are only variant navigation."},
+    {"job_id": "apple-pay-best-practices", "include": true, "reason": "Current source lines 13 and 21 say Wish 2x conversion, implying the overall rate doubled. Both old raw line 36 and new raw line 37 describe a 2X higher conversion-rate increase for new Apple Pay-ready users in Wish's A/B test. Narrow the quantitative claim. The old/new guide-text diff is only spacing, so the no_substantive_update raw disposition remains sound."},
+    {"job_id": "apple-pay-disputes-refunds", "include": true, "reason": "Current source line 17 specifies evidence submission via Dashboard. Old raw line 12 and new raw line 13 only say evidence can be submitted directly and refer to a separate disputes guide. Remove the unsupported channel or separately source it; the same-URL substantive guidance is unchanged."}
+  ],
+  "recommended_additional_inclusions": [],
+  "other_unit_classification": [
+    "Meter configuration source line 31 says after creation where both raws say after configuration (old line 8; new line 9). The setup flow creates and configures the meter together; the accepted full review treats this as nonblocking wording precision, not a materially misleading separate lifecycle claim.",
+    "Dashboard bulk-usage source line 19 abbreviates the button label; both raws give Upload file to add usage (old/new line 56). This is optional UI-label precision, not a material correction.",
+    "Apple Pay, embedded-mobile Appearance, and mobile Appearance variant indexes do not establish removal of their older full guides. Their detailed source claims remain dated; the unread variant bodies require separate evidence before any current SDK or eligibility assertion. Dated provenance upkeep is not a fourth baseline correction.",
+    "The old React Native Appearance example is malformed at raw lines 203-205, while source line 72 shows a simplified appearance argument. Old raw line 167 states the appearance parameter relationship in prose. Neither example proves current runtime compatibility; the accepted review flags that limit, and no additional substantive correction is established by this navigation-only capture.",
+    "Thresholds, Address Element, and Payment Links URL parameters retain their qualified behavior in current summaries; presentation, example, and image URL changes do not require material source correction.",
+    "The supplemented collect-addresses unit is also a navigation-only split: new raw lines 9-14 route to Checkout Sessions and Payment Intents variants, while the dated old guide's distinct constructors, sync-checkbox default, multi-page handling, and conditional autocomplete remain correctly summarized at source lines 13-94. No fourth baseline correction arises from that index."
+  ],
+  "read_ranges": {
+    "accepted_receipts_and_final_reviews": [
+      {"job_id": "billing-subscriptions-usage-based-meters-configure", "receipt": [1, 110], "review": [1, 47]},
+      {"job_id": "billing-subscriptions-usage-based-recording-usage-in-bulk-dashboard", "receipt": [1, 108], "review": [1, 47]},
+      {"job_id": "billing-subscriptions-usage-based-thresholds", "receipt": [1, 109], "review": [1, 47]},
+      {"job_id": "billing-taxes-collect-taxes", "receipt": [1, 154], "review": [1, 83]},
+      {"job_id": "apple-pay", "receipt": [1, 186], "review": [1, 115]},
+      {"job_id": "apple-pay-best-practices", "receipt": [1, 105], "review": [1, 35]},
+      {"job_id": "apple-pay-disputes-refunds", "receipt": [1, 93], "review": [1, 35]},
+      {"job_id": "elements-address-element", "receipt": [1, 135], "review": [1, 75]},
+      {"job_id": "elements-appearance-api-embedded-mobile", "receipt": [1, 170], "review": [1, 63]},
+      {"job_id": "elements-appearance-api-mobile", "receipt": [1, 104], "review": [1, 35]},
+      {"job_id": "payment-links-url-parameters", "receipt": [1, 106], "review": [1, 39]},
+      {"job_id": "payments-advanced-collect-addresses", "receipt": [1, 134], "review": [1, 151]}
+    ],
+    "prior_required_changes_checked": ["apple-pay-best-practices attempt-1 review", "elements-appearance-api-embedded-mobile attempt-1 review"],
+    "scoped_source_raw_reads": {
+      "wiki/sources/source-stripe-billing-taxes-collect.md": [[60, 82]],
+      "raw/stripe-billing-taxes-collect-2026.md": [[255, 282]],
+      "raw/stripe-billing-taxes-collect-taxes-2026-11-07.md": [[1, 14]],
+      "wiki/sources/source-stripe-apple-pay-best-practices.md": [[11, 25]],
+      "raw/stripe-apple-pay-best-practices-2025.md": [[32, 39]],
+      "raw/stripe-apple-pay-best-practices-2026-11-07.md": [[33, 40]],
+      "wiki/sources/source-stripe-apple-pay-disputes-refunds.md": [[11, 23]],
+      "raw/stripe-apple-pay-disputes-refunds-2025.md": [[10, 20]],
+      "wiki/sources/source-stripe-inapp-appearance-api.md": [[1, 24], [60, 76]],
+      "raw/stripe-inapp-appearance-api-2025.md": [[163, 185], [195, 212]],
+      "wiki/sources/source-stripe-inapp-embedded-appearance-api.md": [[1, 17]],
+      "wiki/sources/source-stripe-usage-based-billing-meters-configure.md": [[26, 36]],
+      "raw/stripe-usage-based-billing-meters-configure-2025.md": [[5, 12]],
+      "wiki/sources/source-stripe-collect-addresses.md": [[11, 41], [50, 66], [77, 95]],
+      "raw/stripe-payments-advanced-collect-addresses-2026-11-07.md": [[1, 14]]
+    }
+  }
+}

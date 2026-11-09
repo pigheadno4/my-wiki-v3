@@ -1,0 +1,143 @@
+{
+  "job_id": "elements-payment-method-messaging",
+  "attempt": 1,
+  "raw_path": "raw/stripe-elements-payment-method-messaging-2026-11-07.md",
+  "raw_sha256": "85b6ffdc3a043966a7bc549bb0a702bb31625ba80b796df8d6ca94737198366c",
+  "source_before_sha256": "2c20516084df50d77995a4da2cf1af9bcb3b1b7eb15bcf56e027885374e46f5e",
+  "source_page": "---\ntitle: \"Stripe Payment Method Messaging Element\"\ntype: source\ndate_ingested: 2026-11-09\ncanonical_url: https://docs.stripe.com/elements/payment-method-messaging\noriginal_format: webpage\nraw_files:\n  - \"stripe-elements-payment-method-messaging-2026-11-07.md\"\n  - \"stripe-payment-method-messaging-element-2025.md\"\ntags: [stripe, elements, bnpl, buy-now-pay-later, payment-method-messaging, klarna, affirm, afterpay, clearpay, connect]\n---\n\n## Summary\n\nThe Payment Method Messaging Element is a web Stripe UI component that displays localized information about available buy now, pay later (BNPL) plans on product, cart, and payment pages. Its displayed plans depend on the customer's location, currency, and payment amount. It is messaging about possible plans, not evidence of payment authorization or completion of a financing application.\n\n## Key Takeaways\n\n- The captured plain Stripe.js and React examples initialize with a publishable key, pass `amount` and `currency`, and show `countryCode` as optional. The plain Stripe.js example uses `stripe.elements()` without a `clientSecret`; these examples alone do not establish every API validation rule or a universal PaymentIntent requirement.\n- When **Dynamic payment methods** are used, the Element pulls payment method preferences from the Stripe Dashboard. A manually specified `paymentMethodTypes` list is an alternative. Either way, it displays only plans for which the customer is eligible.\n- By default, payment methods use dynamic ordering optimized for the customer; `paymentMethodOrder` can set a preferred order. Ordering is distinct from Dashboard preference selection.\n- If only a \u201cpay now\u201d option is available, or the supplied `countryCode` and `currency` combination has no eligible plan, no messaging renders.\n- The captures list Affirm, Afterpay/Clearpay, and Klarna; Klarna is described here for one-time payments only.\n- The info icon opens a modal with a usage overview, a terms summary per available plan, and links to full terms. Merchants remain responsible for data-use disclosures and rights/consents, and for applicable BNPL promotion rules.\n\n## Initialization\n\nThe 2026-11-07 HTML example loads `https://js.stripe.com/endive/stripe.js`, creates a placeholder, and mounts the Element:\n\n```js\nconst stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');\nconst elements = stripe.elements();\nconst options = {\n  amount: 9900, // 99.00 USD\n  currency: 'USD',\n  countryCode: 'US', // optional buyer country\n};\nelements.create('paymentMethodMessaging', options).mount('#payment-method-messaging-element');\n```\n\nThe 2026-04-21 capture instead showed `https://js.stripe.com/dahlia/stripe.js`. The changed example path does not establish that the earlier path is unsupported or that a deployment must migrate. Both captures also show `<PaymentMethodMessagingElement options={{...}} />` from `@stripe/react-stripe-js` inside `<Elements>`.\n\n## Options Shown in the Captures\n\n| Option | Evidence and role |\n| --- | --- |\n| `amount` | Included in both plain Stripe.js and React examples as the payment amount in the smallest currency unit; the captures do not explicitly declare option requiredness. |\n| `currency` | Included in both examples as a currency code; the captures do not explicitly declare option requiredness. |\n| `countryCode` | Marked optional in examples; buyer country affects plan eligibility. |\n| `paymentMethodTypes` | Manual list of payment methods as an alternative to Dashboard preferences when using Dynamic payment methods; eligibility filtering still applies. |\n| `paymentMethodOrder` | Sets a preferred display order instead of the default dynamic ordering. |\n\nThe linked Stripe.js option reference and Dynamic payment methods guide were not assessed for this source. Their API validation and account-specific eligibility details should not be inferred from these captures.\n\n## Supported Plans and Display\n\nThe captured page lists plans from Affirm, Afterpay/Clearpay, and Klarna (one-time payments only). It does not state that every provider or plan is available for every customer. Eligibility depends on location, currency, and amount. Only \u201cpay now\u201d availability produces no message, as does a `countryCode`/`currency` combination with no eligible plan.\n\n## Info Modal\n\nSelecting the \u24d8 icon opens a modal with a step-by-step BNPL usage overview, a summary of terms for each available plan, and a link to each plan's full terms. The older capture contains [a local preview image](../raw/assets/stripe-payment-method-messaging-element-info-modal.png); the newer capture points to a different image URL. That link change is navigation, not evidence of changed modal behavior.\n\n## Connect\n\nFor Connect platforms creating direct charges, identify the connected account rendering the Element by setting `stripeAccount` on the Stripe instance before creating the Element:\n\n```js\nconst stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>', {\n  stripeAccount: '{{CONNECTED_ACCOUNT_ID}}',\n});\n```\n\n## Appearance\n\nThe captures show the Appearance API for color, typography, and spacing variables and a `.PaymentMethodMessaging` rule such as `textAlign`:\n\n```js\nconst appearance = {\n  variables: {\n    colorText: 'rgb(84, 51, 255)',\n    fontSizeBase: '16px',\n    fontFamily: 'Ideal Sans, system-ui, sans-serif',\n  },\n  rules: { '.PaymentMethodMessaging': { textAlign: 'right' } },\n};\nconst elements = stripe.elements({appearance});\n```\n\n## Disclosure and Promotion\n\nStripe says it collects customer interaction information with Elements, including cookies and IP addresses to identify Elements seen during a checkout session. The merchant is responsible for the disclosures, rights, and consents needed for that use. Stripe also places responsibility for compliance with applicable BNPL promotion laws, rules, and regulations on the merchant. These are obligations described by the captured page, not a claim that rendering the Element completes compliance.\n\n## Related Pages\n\n- [[stripe-payment-method-messaging-element]] \u2014 concept page\n- [[stripe-elements]] \u2014 parent Elements framework\n- [[stripe]] \u2014 company page\n- [Stripe.js Element option reference](https://docs.stripe.com/js/elements_object/create_element?type=paymentMethodMessaging) \u2014 linked reference; contents not assessed for this update\n- [Dynamic payment methods guide](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods) \u2014 linked guide; contents not assessed for this update\n\n## Raw Sources\n\n- [[raw/stripe-elements-payment-method-messaging-2026-11-07|2026-11-07 Stripe Payment Method Messaging Element capture]] \u2014 same canonical URL, current collected page\n- [[raw/stripe-payment-method-messaging-element-2025|2026-04-21 Stripe Payment Method Messaging Element capture]] \u2014 earlier same-URL page and dated example\n",
+  "quotes": [
+    {
+      "text": "The element dynamically displays payment plans that the customer is eligible for. These depend on the customer\u2019s location and currency.",
+      "location": "raw/stripe-elements-payment-method-messaging-2026-11-07.md:95"
+    },
+    {
+      "text": "If only a \u201cpay now\u201d option is available, nothing is shown.",
+      "location": "raw/stripe-elements-payment-method-messaging-2026-11-07.md:97"
+    },
+    {
+      "text": "If you use [Dynamic payment methods]",
+      "location": "raw/stripe-elements-payment-method-messaging-2026-11-07.md:101"
+    },
+    {
+      "text": "By default, the Payment Method Messaging Element uses a dynamic ordering that optimizes payment method display for each user.",
+      "location": "raw/stripe-elements-payment-method-messaging-2026-11-07.md:146"
+    },
+    {
+      "text": "- [Klarna](https://docs.stripe.com/payments/klarna.md#payment-options) (for one-time payments only)",
+      "location": "raw/stripe-elements-payment-method-messaging-2026-11-07.md:167"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you use [Dynamic payment methods]",
+      "location": "raw/stripe-payment-method-messaging-element-2025.md:106"
+    },
+    {
+      "text": "<script src=\"https://js.stripe.com/dahlia/stripe.js\"></script>",
+      "location": "raw/stripe-payment-method-messaging-element-2025.md:19"
+    },
+    {
+      "text": "Some payment methods offer \u201cpay now\u201d in addition to \u201cpay later\u201d plans. If only a \u201cpay now\u201d option is available, nothing is shown.",
+      "location": "raw/stripe-payment-method-messaging-element-2025.md:102"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-elements-payment-method-messaging-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 208
+      }
+    ],
+    "raw/stripe-payment-method-messaging-element-2025.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 222
+      }
+    ],
+    "wiki/sources/source-stripe-payment-method-messaging-element.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/91b04de0c43e8dd8c1355c37/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 241
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "elements-payment-method-messaging-concept-key-distinction",
+      "target_path": "wiki/concepts/stripe-payment-method-messaging-element.md",
+      "old_text": "Unlike other Elements, the Payment Method Messaging Element **does not require a `clientSecret`** or a PaymentIntent. It can be placed anywhere on the page \u2014 product listings, cart pages, and checkout \u2014 not just at the payment step.",
+      "new_text": "The captured web example creates this Element with `stripe.elements()` and no `clientSecret`, and places it on product, cart, and payment pages. That example does not establish a universal PaymentIntent or API validation rule. See [[source-stripe-payment-method-messaging-element]] for the dated example and its scope.",
+      "reason": "Both captures show an example without a client secret, but do not state a universal no-PaymentIntent rule.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The linked Stripe.js option reference was not read for this update."
+      ]
+    },
+    {
+      "update_id": "elements-payment-method-messaging-concept-preferences",
+      "target_path": "wiki/concepts/stripe-payment-method-messaging-element.md",
+      "old_text": "- **Default (dynamic)**: pulls BNPL preferences from Stripe Dashboard; automatically shows most relevant plans\n- **Manual override**: pass `paymentMethodTypes: ['klarna', 'afterpay_clearpay', 'affirm']` to specify explicitly\n- `paymentMethodOrder` option overrides the default dynamic ordering",
+      "new_text": "- **When using Dynamic payment methods**: the Element pulls payment method preferences from the Stripe Dashboard and shows eligible plans.\n- **Manual selection**: `paymentMethodTypes: ['klarna', 'afterpay_clearpay', 'affirm']` is an alternative; customer eligibility still filters displayed plans.\n- **Display order**: the Element uses dynamic ordering by default; `paymentMethodOrder` sets a preferred order. See [[source-stripe-payment-method-messaging-element]].",
+      "reason": "Corrects the unsupported universal Dashboard default while distinguishing preference selection from default display ordering.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "elements-payment-method-messaging-concept-options",
+      "target_path": "wiki/concepts/stripe-payment-method-messaging-element.md",
+      "old_text": "| Option | Required | Description |\n| --- | --- | --- |\n| `amount` | Yes | Amount in smallest currency unit (e.g. cents) |\n| `currency` | Yes | Currency code (e.g. `'USD'`) |\n| `countryCode` | No | Buyer's country \u2014 affects plan eligibility |\n| `paymentMethodTypes` | No | Manual list of BNPL providers to show |\n| `paymentMethodOrder` | No | Override dynamic plan ordering |",
+      "new_text": "| Option | Captured role |\n| --- | --- |\n| `amount` | Shown in both examples in the smallest currency unit; explicit requiredness is not established by these captures. |\n| `currency` | Shown in both examples as a currency code; explicit requiredness is not established by these captures. |\n| `countryCode` | Marked optional in examples; buyer country affects eligibility. |\n| `paymentMethodTypes` | Manual payment method selection; eligibility still applies. |\n| `paymentMethodOrder` | Sets a preferred display order in place of default dynamic ordering. |\n\nSee [[source-stripe-payment-method-messaging-element]] for the captured examples; the linked option reference was not assessed here.",
+      "reason": "Removes requiredness claims that examples alone do not establish, while preserving supported option roles.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Exact required-option validation requires the separate Stripe.js option reference."
+      ]
+    },
+    {
+      "update_id": "elements-payment-method-messaging-concept-provider-scope",
+      "target_path": "wiki/concepts/stripe-payment-method-messaging-element.md",
+      "old_text": "| Affirm | Full plan options |\n| Afterpay / Clearpay | Full plan options |\n| Klarna | One-time payments only |",
+      "new_text": "| Affirm | Listed as a supported plan provider; availability depends on customer eligibility. |\n| Afterpay / Clearpay | Listed as a supported plan provider; availability depends on customer eligibility. |\n| Klarna | Listed for one-time payments only; availability depends on customer eligibility. |",
+      "reason": "The captures list providers and eligibility conditions but do not promise full plan options for all customers.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/elements/payment-method-messaging, the revised [[source-stripe-payment-method-messaging-element]] describes web BNPL plan messaging and preserves the 2026-04-21 and 2026-11-07 captures. Eligibility by location, currency, and amount, the pay-now no-render case, conditional Dashboard preference loading, manual selection, and default dynamic ordering are supported by old raw lines 100-106 and 157 and new raw lines 95-101 and 146.",
+    "Q2": "At https://docs.stripe.com/elements/payment-method-messaging, [[source-stripe-payment-method-messaging-element]] now separates dated examples from universal API claims: the old raw line 19 uses the dahlia Stripe.js path and the new raw line 20 uses endive, without proving a migration requirement. Both captures show amount and currency in examples, but neither explicitly establishes option requiredness; the linked option reference and changed image or Afterpay anchor remain navigation only."
+  },
+  "status": "candidate_ready"
+}

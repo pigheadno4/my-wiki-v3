@@ -1,0 +1,125 @@
+{
+  "job_id": "payment-links-buy-button",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payment-links-buy-button-2026-11-07.md",
+  "raw_sha256": "961afafb6cc4003d182f50da4be16907d4ec5446c9b0d9e646cc8eb643aa82e6",
+  "prior_raw_path": "raw/stripe-payment-links-buy-button-2025.md",
+  "prior_raw_sha256": "6e956cf5de585f8c159606e1e173586265e3cc1acd40e211bfa44c588892ef5f",
+  "source_target": "wiki/sources/source-stripe-payment-links.md",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "read_ranges": {
+    "raw/stripe-payment-links-buy-button-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 131
+      }
+    ],
+    "raw/stripe-payment-links-buy-button-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 154
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9ca539d1a5412b01822aa9a2/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 179
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Stripe provides an embed code composed of a `<script>` tag and a `<stripe-buy-button>` web component.",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:25"
+    },
+    {
+      "text": "Invalid values are silently dropped, but your payment page continues to work as expected.",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:53"
+    },
+    {
+      "text": "To join the Accounts v2 preview, go to [Account previews and features](https://dashboard.stripe.com/settings/previews) in your Dashboard and enable **Reusable payment methods for Global Payouts**.",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:63"
+    },
+    {
+      "text": "You must provide the [client_secret](https://docs.stripe.com/api/customer_sessions/object.md#customer_session_object-client_secret) within 30 minutes. After providing the client secret, you have an additional 30 minutes until the `CustomerSession` expires.",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:91"
+    },
+    {
+      "text": "For one-time payments, the Checkout Session uses a [guest customer](https://docs.stripe.com/payments/checkout/guest-customers.md) instead.",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:129"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Stripe provides an embed code composed of a `<script>` tag and a `<stripe-buy-button>` web component.",
+      "location": "raw/stripe-payment-links-buy-button-2025.md:24"
+    },
+    {
+      "text": "Invalid values are silently dropped, but your payment page continues to work as expected.",
+      "location": "raw/stripe-payment-links-buy-button-2025.md:59"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-payment-links-buy-button-2025.md:67"
+    },
+    {
+      "text": "You must provide the [client_secret](https://docs.stripe.com/api/customer_sessions/object.md#customer_session_object-client_secret) within 30 minutes.",
+      "location": "raw/stripe-payment-links-buy-button-2025.md:113"
+    },
+    {
+      "text": "For one-time payments, the Checkout Session uses a [guest customer](https://docs.stripe.com/payments/checkout/guest-customers.md) instead.",
+      "location": "raw/stripe-payment-links-buy-button-2025.md:152"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "This exact URL remains a guide to turning an existing or new Payment Link into a website buy button. Dashboard design choices produce embed code with a script and stripe-buy-button web component, and revoking the account's publishable key requires updating that embed (new raw:5-29; old raw:4-28). The new HTML example replaces the prior React example, but the prose still says React can mount the same component from a script in index.html (new raw:27,31-47; old raw:26,30-53). This is an example choice, not evidence React support ended.",
+    "The three attributes remain client-reference-id, customer-email, and customer-session-client-secret. Client reference IDs are up to 200 permitted characters and invalid values silently drop; customer-email prefills an uneditable address and invalid values also drop; the customer-session secret comes from a CustomerSession (new raw:49-55; old raw:55-61). Silent dropping is important because a working checkout does not prove the supplied identifier or email was retained.",
+    "Existing-customer reuse still requires server authentication, server creation of a CustomerSession for the correct customer-configured Account or Customer v1, and passing its client_secret to the component (new raw:67-93; old raw:73-115). The secret must be provided within 30 minutes and expires another 30 minutes later; generate a fresh secret per render rather than caching it. Those are session timing statements, not a guarantee of a completed Checkout Session.",
+    "The Accounts v2 note still distinguishes Connect general availability from public preview for other Stripe users, but the new capture replaces the old incomplete access-request fragment with a Dashboard preview setting named Reusable payment methods for Global Payouts (new raw:59-65; old raw:65-71; diff:71-83). Treat that as a documented preview enrollment path, not evidence of account-specific eligibility or a requirement for Customer v1.",
+    "CSP frame-src and script-src both require https://js.stripe.com when a policy is deployed; rendering requires a website domain, so local tests need an HTTP server (new raw:112-121; old raw:135-144). Without an existing customer, subscription or saved-method flow creates a Customer, while one-time payment uses a guest customer (new raw:129; old raw:152).",
+    "The diff is mostly sample-format and navigation change: hosted image URL, React-to-HTML examples, Node SDK-to-curl CustomerSession examples, a new Accounts v2 preview enrollment instruction, and heading whitespace (diff:1-179). It does not change the embed component, attribute limits, customer identity split, CustomerSession lifetime, CSP, or guest-versus-created-customer behavior. Other raw units in the shared summary were not compared for this job."
+  ],
+  "substantive_changes": [
+    "The new guide supplies a concrete Dashboard setting for non-Connect users to join the Accounts v2 preview; the old guide has an incomplete access-request fragment (old raw:65-71; new raw:59-65)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-04-20 buy-button raw as dated evidence for React embedding and Node CustomerSession examples; their absence from the November examples does not establish deprecation (old raw:30-53,73-109; new raw:25-27,67-89).",
+    "Retain the exact customer identity split: CustomerSession customer_account for a customer-configured Account versus customer for Customer v1, with server authentication and client_secret delivery (old raw:73-115; new raw:67-93).",
+    "Retain 30-minute secret-delivery and subsequent 30-minute expiry limits, non-caching guidance, CSP/domain limits, and one-time guest-customer versus subscription/saved-method customer creation (old raw:111-152; new raw:89-129)."
+  ],
+  "conflicts": [
+    "Current shared source wiki/sources/source-stripe-payment-links.md:24 says 'No code' and 'share link or embed buy button; no integration required.' This exact buy-button guide requires pasting a script and stripe-buy-button component into the website (old raw:24-26; new raw:25-27). Qualify no-code as the hosted shareable-link path; embedding itself requires website code, and existing-customer reuse requires server authentication and CustomerSession creation (old raw:75,94; new raw:69,80). The concept's general no-code row at wiki/concepts/stripe-payment-links.md:18 should likewise be read as the hosted link mode, not every integration path.",
+    "Current source:69 summarizes the buy-button raw accurately but omits that invalid client-reference-id values are silently discarded while the payment page continues (old raw:59; new raw:53). If expanded, keep this failure mode and the server-authenticated CustomerSession flow rather than presenting a client-supplied customer ID as trusted.",
+    "Do not reinterpret other raw files listed at source:7-14. They belong to separate Payment Links URLs and their scope and conclusions require their own comparisons."
+  ],
+  "unresolved_questions": [
+    "The linked Accounts v2 preview/versioning and customer-account modeling pages were not read in this exact job; this snapshot does not prove a particular account has the preview enabled or that the Dashboard path is still available live.",
+    "No runtime/browser test establishes whether a malformed client-reference-id or customer-email is visible elsewhere despite the documented silent-drop behavior."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-links.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payment-links/buy-button, the November buy-button capture retains the same embed component, optional checkout attributes, CustomerSession identity choices, and lifetime rules as the matched old capture (new raw:25-55,67-93; old raw:24-61,73-115). [[source-stripe-payment-links]] includes this raw among several separate Payment Links guides. For this URL, using an existing customer requires server authentication and a fresh CustomerSession client secret; invalid client-reference-id values can be silently dropped even while checkout works (new raw:53,69-93; old raw:59,75-115).",
+    "Q2": "For https://docs.stripe.com/payment-links/buy-button, most same-URL differences are examples and presentation: the new page shows HTML and curl where the old shows React and Node, while the prose still supports React (old raw:26,30-53; new raw:27,31-47). The new concrete Accounts v2 preview enrollment setting replaces an incomplete old request sentence (old raw:65-71; new raw:59-65). Recommend a bounded [[source-stripe-payment-links]] correction: its line 24 no-code wording should be limited to sharing a hosted link because the button itself requires embed code (old raw:24; new raw:25), and existing-customer reuse requires a server session (old raw:75,94; new raw:69,80). Preserve the other raw units in the shared summary untouched."
+  }
+}

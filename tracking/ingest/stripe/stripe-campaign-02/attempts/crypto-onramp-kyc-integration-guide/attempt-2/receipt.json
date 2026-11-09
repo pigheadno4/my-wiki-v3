@@ -1,0 +1,136 @@
+{
+  "job_id": "crypto-onramp-kyc-integration-guide",
+  "attempt": 2,
+  "raw_path": "raw/stripe-crypto-onramp-kyc-integration-guide-2026-11-07.md",
+  "raw_sha256": "095deda345afce4ee26f5bfbedb62521c2658f5573553026abdaecd285de81fe",
+  "prior_raw_path": "raw/stripe-crypto-onramp-kyc-integration-2026.md",
+  "prior_raw_sha256": "3901affaa4d561c14d074866c546f69c68dc31221abc127e66453aad35724de3",
+  "source_target": "wiki/sources/source-stripe-crypto-onramp-kyc-integration.md",
+  "source_before_sha256": "06c921087e3600671d9ed24ec78757af816236ffb213cfd40b9b3f7ffd385994",
+  "read_ranges": {
+    "raw/stripe-crypto-onramp-kyc-integration-guide-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 48
+      },
+      {
+        "start": 49,
+        "end": 96
+      },
+      {
+        "start": 97,
+        "end": 144
+      }
+    ],
+    "raw/stripe-crypto-onramp-kyc-integration-2026.md": [
+      {
+        "start": 1,
+        "end": 48
+      },
+      {
+        "start": 49,
+        "end": 96
+      },
+      {
+        "start": 97,
+        "end": 142
+      }
+    ],
+    "wiki/sources/source-stripe-crypto-onramp-kyc-integration.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/45798c350f574a4e4de2d578/content.diff": [
+      {
+        "start": 1,
+        "end": 66
+      },
+      {
+        "start": 67,
+        "end": 132
+      },
+      {
+        "start": 133,
+        "end": 199
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "EU customers have additional identifier and attestation requirements beyond the standard KYC tiers.",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-guide-2026-11-07.md:11"
+    },
+    {
+      "text": "For iOS, Android, and React Native integrations, you can collect Apple Pay or Google Pay before Link authentication and use the returned name and address for L0 KYC.",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-guide-2026-11-07.md:38"
+    },
+    {
+      "text": "You can collect a Platform Pay payment method before registration, authentication, or KYC submission. Before creating a payment token, complete registration or authentication and submit the customer\u2019s minimum identity information (name, phone, email, and address).",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-guide-2026-11-07.md:50"
+    },
+    {
+      "text": "If a customer submits the minimum identity information but fails L0 verification, they can still use the onramp by completing L1 verification (date of birth and SSN). L1 verification supersedes L0.",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-guide-2026-11-07.md:52"
+    },
+    {
+      "text": "Risk rules require the customer to complete an [identity challenge](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md#handle-identity-challenges), even though the transaction amount is within the limit for their current tier.",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-guide-2026-11-07.md:141"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Users must submit their L0 KYC information before you can collect payment methods.",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-2026.md:45"
+    },
+    {
+      "text": "If a user hasn\u2019t completed L0 verification, `createCryptoPaymentToken` returns a `crypto_onramp_missing_minimum_identity_verification` error.",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-2026.md:45"
+    },
+    {
+      "text": "L0 verification failed.",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-2026.md:128"
+    },
+    {
+      "text": "L0 and L1 verification are asynchronous.",
+      "location": "raw/stripe-crypto-onramp-kyc-integration-2026.md:35"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Old line 45 required L0 KYC submission before collecting payment methods. New lines 38 and 50 explicitly permit Apple Pay or Google Pay collection before Link authentication/KYC for iOS, Android, and React Native, using wallet name/address to prefill L0. New line 50 retains a separate gate: registration or authentication plus minimum identity information before createCryptoPaymentToken. Collection is not verification, token creation, session creation, purchase, or payment success. Current source line 23 and concept line 105 need qualification.",
+    "The new guide separates Link registration contact data from KYC API input: wallet email/phone are for Link, while firstName, lastName and address go to attachKYCInfo/attachKycInfo (new line 38). Current source's L0 input table at line 19 is a tier-level requirement, not a single attachKYCInfo body schema; preserve that distinction.",
+    "Old line 128 interpreted crypto_onramp_missing_minimum_identity_verification as L0 verification failed. New lines 50 and 131 interpret it as missing minimum identity submission. A customer who submitted minimum data but failed L0 may pass L1, which supersedes L0 (new lines 52 and 131). Current source line 37 must change; do not treat an L0 rejection as automatic permanent ineligibility.",
+    "New line 11 adds EU identifier/attestation requirements beyond standard tiers, and new line 141 adds a risk-rule identity challenge as a possible cause of L2/document verification even below the current tier's transaction limit. Both are material qualifications missing from the old capture/source.",
+    "The tier table, asynchronous L0/L1 verification, 400 on pending verification before session creation, five status values, highest attempted tier definition, deprecated verifications fallback, and partial L1/L2 step-up paths remain substantively stable (old lines 18-41, 49-112, 114-142; new lines 21-46, 56-115, 117-144). Current tier includes pending/rejected and does not by itself mean verified."
+  ],
+  "substantive_changes": [
+    "New mobile Platform Pay pre-authentication collection and wallet contact-to-KYC sequence reverses the old blanket collect-payment-method gate, while retaining token/session KYC gates (new lines 38, 50 versus old line 45).",
+    "Minimum-identity error now means required information has not yet been submitted, rather than necessarily failed L0 verification; L1 can supersede rejected L0 (new lines 50-52, 131 versus old lines 45, 128-129).",
+    "EU-specific identifier and attestation qualification and a risk-rule L2 identity-challenge cause are newly stated (new lines 11 and 141)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the old guide's L0-before-payment-method statement as dated May 2026 guidance, not a current universal prerequisite in the November mobile Platform Pay flow (old line 45; new lines 38, 50).",
+    "All customers must pass sufficient KYC before buying crypto; Platform Pay collection does not confer verification or payment completion (new lines 9, 50).",
+    "An L0 or L1 verification submission is asynchronous; poll CryptoCustomer until pending clears before creating a session, which otherwise returns 400 (old line 35; new line 40).",
+    "Use kyc_tiers status to distinguish attempted from verified tier; L2 document/selfie verification remains hosted and asynchronous, with verifyIdentity for step-up (old lines 39-41, 49-112; new lines 44-46, 56-115)."
+  ],
+  "conflicts": [
+    "The new error table says prompt the customer to submit name, phone, email and address 'using attachKYCInfo' at line 131, while new line 38 explicitly says email and phone are used for Link registration and are not submitted through the KYC API. Preserve the split: Link contact registration plus KYC name/address submission; do not infer attachKYCInfo accepts phone/email.",
+    "The existing source line 23 and concept line 105 claim L0 before collectPaymentMethod, conflicting with new Platform Pay collection before registration/authentication/KYC at lines 38 and 50. Restrict the correction to the newly described mobile Platform Pay path; other payment methods are not authorized for pre-auth collection by this guide.",
+    "The existing concept wiki/concepts/stripe-crypto-onramp.md line 93 and related May 2026 source wiki/sources/source-stripe-crypto-onramp-embedded-components-integration.md line 17 state Embedded Components headless mode is US only, excluding New York. The November same-URL KYC guide at new line 11 addresses EU customers' additional identifier and attestation requirements. This creates a dated regional-scope tension requiring concept qualification and verification against the linked EU KYC guide; it does not establish EU merchant eligibility or remove the older restriction."
+  ],
+  "unresolved_questions": [
+    "The new guide links separate EU KYC and KYC integration best-practices pages at lines 9 and 11; this exact job did not capture their content, so detailed EU fields, attestation and platform flow handling remain outside the evidence. In particular, the unread EU guide must be checked before resolving the new line 11 EU-customer statement against the May 2026 headless US-only, excluding New York, assertion in concept line 93 and related integration source line 17. This capture proves neither EU merchant eligibility nor removal of the older restriction.",
+    "The new capture does not prove merchant preview eligibility, successful pre-auth wallet collection, token creation, verification or purchase in any account.",
+    "The new line 131 wording about sending phone/email through attachKYCInfo conflicts with line 38's explicit API split; resolve against the actual API reference before implementing request fields."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-crypto-onramp.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/crypto/onramp/kyc-integration-guide, [[source-stripe-crypto-onramp-kyc-integration]] needs a substantive update. The May capture says L0 information precedes payment-method collection (old line 45), while the November capture permits Apple Pay or Google Pay collection before Link authentication/KYC on iOS, Android and React Native (new lines 38 and 50). Registration and minimum identity submission still precede createCryptoPaymentToken (new line 50). The new guide also adds EU qualifications and risk-triggered L2 challenges (new lines 11 and 141).",
+    "Q2": "For https://docs.stripe.com/crypto/onramp/kyc-integration-guide, [[source-stripe-crypto-onramp-kyc-integration]] warrants source_required_update because its lines 23 and 37 still imply a universal L0-before-collection gate and equate minimum-identity error with L0 failure. Old lines 45 and 128 support that historical reading; new lines 50-52 and 131 distinguish unsubmitted minimum information from rejected L0 and permit L1 to supersede L0. Retain the pending-verification session gate (old line 35; new line 40) and the Link-versus-KYC field split (new line 38). Separately, [[stripe-crypto-onramp]] line 93 and its May integration source line 17 say headless is US only excluding New York, while new line 11 mentions EU customer requirements. Qualify this dated tension and verify the unread EU guide before claiming EU merchant access or changed regional scope."
+  }
+}

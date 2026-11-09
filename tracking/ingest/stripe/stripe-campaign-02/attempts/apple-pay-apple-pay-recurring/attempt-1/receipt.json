@@ -1,0 +1,109 @@
+{
+  "job_id": "apple-pay-apple-pay-recurring",
+  "attempt": 1,
+  "raw_path": "raw/stripe-apple-pay-apple-pay-recurring-2026-11-07.md",
+  "raw_sha256": "0091c01d7480eca3f2cf7f86ce84edac17be9756a06656a7d3e0a9a741508260",
+  "prior_raw_path": "raw/stripe-apple-pay-recurring-2025.md",
+  "prior_raw_sha256": "4da16c993519324ee8ee0b196c4d9ef1cfcff7fbced6c38cdbe0c13996f55ee5",
+  "source_target": "wiki/sources/source-stripe-apple-pay-recurring.md",
+  "source_before_sha256": "50b4fa1db63ed1f25a560175ccca820b97b54c1a03be0ffbacbfef4359619304",
+  "read_ranges": {
+    "raw/stripe-apple-pay-apple-pay-recurring-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 90
+      }
+    ],
+    "raw/stripe-apple-pay-recurring-2025.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 91
+      }
+    ],
+    "wiki/sources/source-stripe-apple-pay-recurring.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d624bd96675a2ea10dc62acf/content.diff": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/checkout.md) and [Elements](https://docs.stripe.com/payments/elements.md) automatically apply the best practices recommended in this guide.",
+      "location": "raw/stripe-apple-pay-apple-pay-recurring-2026-11-07.md:11"
+    },
+    {
+      "text": "DPANs are tied to the specific Apple device, and can be unintentionally deactivated if a user switches to a new device",
+      "location": "raw/stripe-apple-pay-apple-pay-recurring-2026-11-07.md:20"
+    },
+    {
+      "text": "When the first CIT using the cryptogram fails, subsequent MITs using the same [Card](https://docs.stripe.com/api/cards/object.md) will likely also fail because they\u2019re internally linked to the CIT.",
+      "location": "raw/stripe-apple-pay-apple-pay-recurring-2026-11-07.md:28"
+    },
+    {
+      "text": "We discourage using the legacy Tokens and Charges APIs for recurring Apple Pay payments.",
+      "location": "raw/stripe-apple-pay-apple-pay-recurring-2026-11-07.md:48"
+    },
+    {
+      "text": "Apple Pay terms forbid using a saved payment method for [usage=on_session](https://docs.stripe.com/api/setup_intents/object.md#setup_intent_object-usage) payments. If the customer is in the flow, you\u2019re required to have them authorize and generate a new cryptogram for that transaction.",
+      "location": "raw/stripe-apple-pay-apple-pay-recurring-2026-11-07.md:81"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "When the first CIT using the cryptogram fails, subsequent MITs using the same [Card](https://docs.stripe.com/api/cards/object.md) will likely also fail because they\u2019re internally linked to the CIT.",
+      "location": "raw/stripe-apple-pay-recurring-2025.md:27"
+    },
+    {
+      "text": "We discourage using the legacy Tokens and Charges APIs for recurring Apple Pay payments.",
+      "location": "raw/stripe-apple-pay-recurring-2025.md:47"
+    },
+    {
+      "text": "DPANs are tied to the specific Apple device, and can be unintentionally deactivated if a user switches to a new device",
+      "location": "raw/stripe-apple-pay-recurring-2025.md:19"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November same-URL page adds no substantive Apple Pay recurring contract: the collection diff changes list numbering, whitespace and blank lines only (diff lines 3-49). Both raw captures retain the CIT/cryptogram timing, DPAN/MPAN, free-trial SetupIntent, legacy Tokens/Charges migration advice, and saved on-session restriction. This is a corrective source disposition, not a newly announced capability.",
+    "The current source materially overstates three pre-existing claims: DPAN 'deactivates' on device change rather than 'can be unintentionally deactivated' (source line 20; new line 20); failed CIT makes 'all subsequent MITs' fail rather than 'will likely also fail' (source line 23; new line 28); and Tokens API is called 'strongly deprecated' rather than discouraged for recurring Apple Pay with migration recommended (source line 29; new lines 48-54). The linked stripe-wallets concept repeats the latter two absolutes at line 125.",
+    "The source's 'Checkout/Elements handle this automatically' point is retained by the new capture (new line 11). The free-trial Subscription-created SetupIntent and direct SetupIntent alternatives remain at new lines 40-44; saved off-session payments still lack network liability shift and may have lower authorization rates at new line 77.",
+    "The saved-payment usage=on_session ban remains an explicit Apple Pay terms restriction at new lines 79-81. It should be scoped to using a saved payment method while the customer is in the flow; the user must authorize and generate a fresh cryptogram for that transaction."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Checkout and Elements automatically apply the guide's best practices (old line 10; new line 11).",
+    "CIT must consume the expiring cryptogram promptly; a Subscription trial SetupIntent or directly confirmed SetupIntent can perform a 0 USD validation before later off-session MIT use (old lines 23-43; new lines 24-44).",
+    "Stripe discourages legacy Tokens and Charges for recurring Apple Pay, recommends PaymentIntents and SetupIntents, and documents a Tokens-to-PaymentMethod-to-SetupIntent bridge (old lines 45-72; new lines 46-71).",
+    "Saved off-session use is supported with liability-shift/authorization-risk caveats, while saved on-session use requires fresh customer authorization and a cryptogram (old lines 74-91; new lines 73-90)."
+  ],
+  "conflicts": [
+    "Existing source lines 20, 23 and 29 and stripe-wallets concept line 125 use absolute failure/deactivation or formal-deprecation wording that neither the old nor new raw supports. Correct those retained claims without implying a November policy change.",
+    "The source line 17 says the guide applies to direct API integrations only, but the page includes general recurring Apple Pay behavior and states Checkout/Elements automatically apply its practices (new lines 9-28); scope the manual implementation steps to API integrations."
+  ],
+  "unresolved_questions": [
+    "Neither capture supplies a fixed cryptogram lifetime, a measured authorization improvement, or a guarantee that every MPAN survives all card/device lifecycle changes.",
+    "The captured guide's discouraged Tokens/Charges wording does not establish a formal API deprecation date or removal schedule."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/apple-pay/apple-pay-recurring, the November capture changes numbering and spacing rather than the recurring-payment behavior in [[source-stripe-apple-pay-recurring]] (diff lines 3-49; old lines 23-47; new lines 24-48). Both captures explain prompt customer-initiated cryptogram use, later off-session merchant-initiated transactions, and SetupIntent validation. I recommend a corrective source update because the existing summary independently exaggerates several claims, not because Stripe announced a new capability.",
+    "Q2": "For https://docs.stripe.com/apple-pay/apple-pay-recurring, [[source-stripe-apple-pay-recurring]] should retain the Checkout/Elements automation and SetupIntent free-trial guidance (old lines 8-43; new lines 9-44), but narrow its wording: DPAN can deactivate on device change, a failed CIT makes later MITs likely to fail, and Stripe discourages legacy Tokens/Charges rather than formally deprecating them (old lines 19, 27, 47; new lines 20, 28, 48). The on-session saved-method restriction remains at old line 82 and new line 81."
+  }
+}

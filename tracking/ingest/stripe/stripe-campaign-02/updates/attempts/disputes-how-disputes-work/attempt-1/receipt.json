@@ -1,0 +1,152 @@
+{
+  "job_id": "disputes-how-disputes-work",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-how-disputes-work-2026-11-07.md",
+  "raw_sha256": "582db1cdf76eb0aa86d626029b67f86b5ae504f8e12be6162975c7b6bba934ea",
+  "source_before_sha256": "18288032d795373d2ba0032ee853a6b0ae08e59d822f1071d535532174efa799",
+  "source_page": "---\ntitle: \"Stripe \u2014 How Disputes Work\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/disputes/how-disputes-work\"\nraw_files:\n  - \"stripe-disputes-how-disputes-work-2026-11-07.md\"\n  - \"stripe-disputes-how-disputes-work-2026.md\"\ntags: [stripe, disputes, chargebacks, early-fraud-warnings, inquiries, dispute-fees, chargeback-lifecycle]\n---\n\n## Summary\n\nStripe's guide to the card dispute lifecycle: early fraud warnings (EFWs) and inquiries before a chargeback, formal dispute timing and fees, issuer decisions, and local payment method differences. The 2026-11-07 capture revises the EFW escalation estimate; the 2026-05-09 capture remains historical evidence.\n\n## Pre-Dispute Phase\n\n### Early Fraud Warnings (EFWs)\n\n- Issuer fraud reports from Visa, Mastercard, and JCB include Visa TC40 and Mastercard SAFE. An EFW is a fraud signal, not itself a formal dispute, and requires no response.\n- In the 2026-11-07 capture, Stripe says that **about 40% of Visa and Mastercard EFWs become fraud disputes when the charge is not refunded**; the rate varies by network and payment amount. This is an approximate observation, not an account-level prediction or a rate for all networks. The 2026-05-09 capture instead said 80% of EFWs converted if no action was taken without liability shift; retain that as the older dated statement, not the November estimate (new line 32; old line 31).\n- Liability shift does not rule out a dispute; in that case Stripe says it automatically provides some evidence, such as 3D Secure data. Automatic refunds of every EFW can refund payments that would never have been disputed.\n- Stripe's analysis suggests considering refunds for charges roughly no more than the dispute fee, with charges more than 35% above that fee likely not worth refunding, all else equal. More aggressive refunds can make sense when the dispute's account or business effect matters (new lines 34\u201346; old lines 33\u201345).\n- A proactive refund does not remove the warning. Only a refund processed as a reversal, usually within two hours of capture, can prevent the fraud *report* itself; this is not a guarantee against a later dispute (new line 38; old line 37).\n- EFWs can even arrive after a fraud dispute because reporting and dispute systems differ. The guide links [Early Fraud Warnings API](https://docs.stripe.com/api/radar/early_fraud_warnings) for webhook listening (new line 40; old line 39).\n\n### Inquiries\n\n- An inquiry is a preliminary issuer request, not yet a formal chargeback. American Express and Discover most often use it; the guide says Visa and Mastercard no longer do, while Mexico Domestic disputed charges across brands use inquiries (new lines 48\u201350; old lines 47\u201349).\n- The guide says satisfactory evidence or a full refund can resolve an inquiry without a dispute fee. A partially refunded charge can still escalate. Failure to answer can lead to a formal, likely unwinnable chargeback; escalation is possible, not automatic (new lines 52\u201361; old lines 51\u201360).\n- The Dashboard calls these inquiries; API terminology includes `warning`. `warning_needs_response` means evidence has not been provided, `warning_under_review` means evidence awaits issuer review, and `warning_closed` means the inquiry remained open for 120 days without chargeback escalation. At that point the network will not escalate it, but inquiry closure is not a card-network win message (new lines 63\u201380; old lines 62\u201379).\n\n## Formal Dispute (Chargeback)\n\nWhen a formal dispute is filed, Stripe notifies the merchant through the Dashboard, email, webhooks and API, and debits the disputed amount plus a dispute fee from the Stripe balance. Funds remain held while the dispute is open; a refund outside the dispute process is unavailable, and the card-network dispute rate increases. The disputed amount can differ from the original payment (new lines 9\u201319, 82\u201399; old lines 8\u201318, 81\u201398). The issuer decides the outcome; Stripe facilitates the case but does not control that decision.\n\n### Timing\n\n| Stage | Guide's qualified timeframe |\n| --- | --- |\n| Cardholder filing | Typically within 120 days of payment; rules allow longer in some cases, and future services can start the window on the event date |\n| Merchant response after chargeback | Usually 7\u201321 days, depending on card network |\n| Issuer evidence review | Usually 60\u201375 days, depending on card network |\n| Full lifecycle | Can take 2\u20133 months; accepting the dispute can shorten it |\n\nSee the 2026-11-07 guide lines 101\u2013109 and 2026-05-09 guide lines 100\u2013108. These are typical or possible windows, not guaranteed deadlines for a particular case.\n\n### Dispute Fees\n\n- The dispute-received fee is charged when the cardholder initiates a formal dispute. Outside Mexico it is nonrefundable unless the Stripe contract states otherwise. In Mexico it **might** be returned if the merchant wins or the cardholder withdraws. SEPA businesses incur no dispute-received fee for a card payment processed on the Cartes Bancaires network (new lines 124\u2013130; old lines 121\u2013127).\n- Countering a dispute incurs a separate dispute-countered fee in addition to any received fee. It is returned on a win. The guide says it does not apply to businesses in Mexico or Japan; the issuer can take up to three months to decide (new lines 132\u2013136; old lines 129\u2013133).\n- The guide directs readers to [Stripe's pricing details](https://support.stripe.com/questions/june-2025-pricing-updates-for-disputes#fee-details) for amounts by country; it does not establish a particular account's fee.\n\n### Response, Withdrawals, and Unchallengeable Cases\n\nFor an active challengeable dispute, submit evidence by the deadline to seek reversal. A customer saying they withdrew the dispute does not itself close the chargeback in the merchant's favor; Stripe says a response with evidence is still needed (new lines 138\u2013149; old lines 135\u2013146).\n\nSome disputes cannot be challenged under network rules or local regulation and are generally closed as lost immediately without an evidence opportunity. The guide names unanswered Discover inquiries, Cartes Bancaires card payments processed by SEPA businesses (not merely cards issued by Cartes Bancaires elsewhere), and Nigerian payment methods (new lines 151\u2013167; old lines 148\u2013164).\n\nRarely, one payment can have multiple disputes, each requiring separate acceptance or response. A disputed amount can differ due to currency conversion, bundled recurring charges, partial disputes, or full disputes after a partial refund. The guide's amounts are examples rather than a promise of the amount in a real case (new lines 169\u2013184; old lines 166\u2013181).\n\n### Decision and Late Wins\n\nThe issuer's decision changes the formal dispute to `won` or `lost`. On a win, the chargeback amount returns to Stripe and then the merchant; on a loss, no new merchant-side movement is needed because Stripe already credited the issuer. An ordinary lost dispute cannot be overturned by the merchant or customer, and Stripe does not support arbitration escalation. A customer can withdraw even after loss, but withdrawal is not itself a win. Rare issuer-driven credits or corrections can later change `lost` to `won` as a **late win**; Stripe says it cannot predict when or why (new lines 111\u2013122, 186\u2013196; old lines 110\u2013119, 183\u2013193).\n\n## Local Payment Method Disputes\n\nThe lifecycle above primarily describes cards. Local payment methods such as Klarna and PayPal have their own decision-makers, windows, fees, evidence deadlines and sometimes inquiries. The guide says LPMs typically allow up to 180 days to file versus the common 120-day card window, but the exact process depends on the method (new lines 198\u2013212; old lines 195\u2013209).\n\n## Related Pages\n\n- [[disputes]] \u2014 cross-provider dispute concept and Stripe lifecycle route\n- [[stripe-declines]] \u2014 decline types and Radar blocking\n- [[stripe-3d-secure]] \u2014 3D Secure and liability shift\n- [[source-stripe-declines-overview]] \u2014 declines overview\n\n## Raw Sources\n\n- [[raw/stripe-disputes-how-disputes-work-2026-11-07|Stripe card dispute lifecycle guide, fetched 2026-11-07]]\n- [[raw/stripe-disputes-how-disputes-work-2026|Stripe card dispute lifecycle guide, fetched 2026-05-09]]\n",
+  "quotes": [
+    {
+      "text": "If you don\u2019t refund the charge, about 40% of Visa and Mastercard EFWs become fraud disputes (the rate varies by card network and payment amount).",
+      "location": "raw/stripe-disputes-how-disputes-work-2026-11-07.md:32"
+    },
+    {
+      "text": "The only time a refund can prevent a fraud report is when it\u2019s processed as a reversal, which usually happens within 2 hours of the payment capture.",
+      "location": "raw/stripe-disputes-how-disputes-work-2026-11-07.md:38"
+    },
+    {
+      "text": "At this point, the card network won\u2019t escalate it. Card networks don\u2019t provide an explicit \u201cwin\u201d message for inquiries.",
+      "location": "raw/stripe-disputes-how-disputes-work-2026-11-07.md:80"
+    },
+    {
+      "text": "For businesses in Mexico, the fee for receiving a dispute might be returned if you win or the cardholder withdraws.",
+      "location": "raw/stripe-disputes-how-disputes-work-2026-11-07.md:129"
+    },
+    {
+      "text": "Although the outcome of a dispute is normally final, in rare cases the status can change from `lost` to `won`.",
+      "location": "raw/stripe-disputes-how-disputes-work-2026-11-07.md:196"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Unless the payment was covered by the [liability shift](https://docs.stripe.com/payments/3d-secure/authentication-flow.md#disputed-payments) rule, 80% of EFWs convert into a fraud dispute if you do nothing.",
+      "location": "raw/stripe-disputes-how-disputes-work-2026.md:31"
+    },
+    {
+      "text": "The only time a refund can prevent a fraud report is when it\u2019s processed as a reversal, which usually happens within 2 hours of the payment capture.",
+      "location": "raw/stripe-disputes-how-disputes-work-2026.md:37"
+    },
+    {
+      "text": "For businesses in Mexico, the fee for receiving a dispute might be returned if you win or the cardholder withdraws.",
+      "location": "raw/stripe-disputes-how-disputes-work-2026.md:126"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-how-disputes-work-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 165
+      },
+      {
+        "start": 166,
+        "end": 218
+      }
+    ],
+    "raw/stripe-disputes-how-disputes-work-2026.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 165
+      },
+      {
+        "start": 166,
+        "end": 209
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-how-disputes-work.md": [
+      {
+        "start": 1,
+        "end": 52
+      },
+      {
+        "start": 53,
+        "end": 104
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0197c01e865d75933877852e/content.diff": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 165
+      },
+      {
+        "start": 166,
+        "end": 218
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "disputes-efw-estimate-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Early Fraud Warnings (EFWs)**: Visa TC40 + Mastercard SAFE reports flag suspected fraud before a dispute is filed. 80% convert to fraud disputes if ignored. With 3DS liability shift, Stripe auto-provides evidence. Optimal refund threshold: charges \u2264 dispute fee; reversal window is 2 hours post-capture.",
+      "new_text": "**Early Fraud Warnings (EFWs)**: Visa TC40 + Mastercard SAFE reports flag suspected fraud before a dispute is filed. Stripe's 2026-11-07 guide estimates that about 40% of **unrefunded Visa and Mastercard** EFWs become fraud disputes, varying by network and payment amount; its 2026-05-09 guide gave an older 80% estimate for ignored EFWs without liability shift. With 3DS liability shift, a dispute can still occur and Stripe says it auto-provides some evidence. Stripe's refund heuristic is for charges roughly at or below the dispute fee; a reversal usually within two hours of capture can prevent the fraud report itself, not guarantee prevention of a later dispute. See [[source-stripe-disputes-how-disputes-work]].",
+      "reason": "Directly replace the active stale 80% conversion assertion with the qualified November estimate, while retaining the May claim as dated historical evidence and the refund-versus-report distinction.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "disputes-inquiry-status-closure",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**Inquiries**: Pre-dispute phase used by AmEx and Discover (not Mastercard/Visa). Resolve by submitting evidence or issuing full refund \u2014 no dispute fee. Unanswered inquiry \u2192 likely unwinnable chargeback. Inquiry statuses: `warning_needs_response` \u2192 `warning_under_review` \u2192 `warning_closed` (120 days).",
+      "new_text": "**Inquiries**: Preliminary issuer requests, most often for AmEx and Discover (the guide says Mastercard/Visa no longer use them); Mexico Domestic disputed charges across brands also use them. Satisfactory evidence or a full refund can resolve an inquiry without a dispute fee. An unanswered inquiry can escalate to a likely unwinnable chargeback. API statuses include `warning_needs_response` and `warning_under_review`; `warning_closed` applies after 120 days open without chargeback escalation and is not an issuer win message. See [[source-stripe-disputes-how-disputes-work]].",
+      "reason": "Avoid making inquiry statuses a mandatory sequence or conflating inquiry closure with winning a formal chargeback; retain the Mexico Domestic exception.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "disputes-mexico-received-fee",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "- **Dispute received fee**: non-refundable (Mexico: refundable if won; SEPA/Cartes Bancaires: no fee)",
+      "new_text": "- **Dispute received fee**: generally nonrefundable outside Mexico unless the Stripe contract says otherwise; in Mexico it might be returned if the merchant wins or the cardholder withdraws. No received fee applies to card payments processed on Cartes Bancaires for SEPA businesses. See [[source-stripe-disputes-how-disputes-work]].",
+      "reason": "Restore the guide's conditional Mexico withdrawal and contract exceptions, and scope Cartes Bancaires to SEPA businesses processing on that network.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/how-disputes-work, the material update is the EFW estimate: the 2026-05-09 guide said 80% converted if ignored without liability shift (old line 31), while the 2026-11-07 guide says about 40% of unrefunded Visa and Mastercard EFWs become fraud disputes, varying by network and payment amount (new line 32). [[source-stripe-disputes-how-disputes-work]] should state the November estimate as scoped and approximate while preserving the older dated statement. EFWs are pre-dispute fraud reports, not formal chargebacks (new lines 28\u201332; old lines 27\u201331); neither capture predicts an individual case's outcome.",
+    "Q2": "The same-URL card lifecycle at https://docs.stripe.com/disputes/how-disputes-work still distinguishes inquiries from formal chargebacks: inquiry statuses and 120-day `warning_closed` do not mean an issuer win (new lines 48\u201380; old lines 47\u201379), and a customer withdrawal alone does not remove the evidence requirement for an active challengeable chargeback (new lines 138\u2013142; old lines 135\u2013139). [[source-stripe-disputes-how-disputes-work]] retains the qualified received/countered fee exceptions (new lines 124\u2013136; old lines 121\u2013133), usual 7\u201321-day response and 60\u201375-day review windows (new lines 101\u2013109; old lines 100\u2013108), and normally final lost outcome with rare issuer-driven late win (new lines 186\u2013196; old lines 183\u2013193). The only material changed claim is the EFW estimate at new line 32 versus old line 31; remaining diff includes presentation and navigation, with no observed account-level outcome."
+  },
+  "status": "candidate_ready"
+}

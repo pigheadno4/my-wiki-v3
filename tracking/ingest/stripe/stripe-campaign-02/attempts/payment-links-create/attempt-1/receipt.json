@@ -1,0 +1,124 @@
+{
+  "job_id": "payment-links-create",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payment-links-create-2026-11-07.md",
+  "raw_sha256": "79a8e47fdf726438f640eaa518c61e00045f3621101074aab162acd482fa98a9",
+  "prior_raw_path": "raw/stripe-payment-links-create-2025.md",
+  "prior_raw_sha256": "e48f5b293e66c297857d31c98cc55d64be6d6546ad664d86bc3f3974ad000d05",
+  "source_target": "wiki/sources/source-stripe-payment-links.md",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "read_ranges": {
+    "raw/stripe-payment-links-create-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 153
+      }
+    ],
+    "raw/stripe-payment-links-create-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 187
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/eb6f734bd978d7b11960b10c/content.diff": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 222
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You can also create and manage payment links through [Checkout studio](https://docs.stripe.com/payments/checkout-studio.md), which provides a centralized Dashboard hub for configuring and monitoring your Checkout integrations, including Payment Links.",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:11"
+    },
+    {
+      "text": "By default, the maximum payment amount is 10,000.00 USD. Contact us using the form at [Stripe support](https://support.stripe.com) to increase this limit.",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:36"
+    },
+    {
+      "text": "You can\u2019t add any other line items and the quantity can only be `1`.",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:107"
+    },
+    {
+      "text": "Some payment methods, such as bank debits or vouchers, might take between 2 and 14 days to confirm the payment.",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:137"
+    },
+    {
+      "text": "Adaptive Pricing is always enabled for Payment Links.",
+      "location": "raw/stripe-payment-links-create-2026-11-07.md:145"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "By default, the maximum payment amount is 10,000.00 SGD. Contact us using the form at [Stripe support](https://support.stripe.com) to increase this limit.",
+      "location": "raw/stripe-payment-links-create-2025.md:33"
+    },
+    {
+      "text": "You can include one line item for customer-defined prices.",
+      "location": "raw/stripe-payment-links-create-2025.md:132"
+    },
+    {
+      "text": "You can add up to 20 line items for flat rate prices.",
+      "location": "raw/stripe-payment-links-create-2025.md:65"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November capture adds Checkout studio as a Dashboard hub for creating and managing Payment Links (new raw:11 and See also:153). This is a new same-URL discovery route; the old capture lacks it. The linked Checkout studio page itself was not read here, so do not infer additional studio capabilities.",
+    "For customer-chosen-price links, the November API guidance says the sole line item must have quantity 1 (new raw:107). The April capture stated one line item (old raw:132) but did not expressly state quantity 1 in prose; its nearby curl example used quantity 1. Existing shared source line 47 and concept line 57 mention the one-line-item rule but omit the explicit quantity constraint. Recommend a narrow addition to the create-specific section, with this URL's November provenance.",
+    "The April Dashboard customer-chosen-price example states a default maximum of 10,000.00 SGD (old raw:33), while November states 10,000.00 USD (new raw:36), both with a support route to request an increase. Source line 55 and concept line 136 unqualifiedly say 10,000 SGD; revise them to record the two capture-specific wordings and avoid claiming a verified universal currency conversion, limit change, or merchant-specific applicability.",
+    "The November API examples use curl rather than the old Node samples for the same Price/Payment Link construction (new raw:54-113 versus old raw:51-142); parameter links and list numbering also changed. Core 20 flat-rate line-item limit, subscription price and subscription_data trial example, variable pricing, mobile iOS restriction, dynamic payment methods, asynchronous fulfillment, and Adaptive Pricing remain in this same-URL capture (new raw:64,85,97-118,122-145).",
+    "The mapped source is a multi-raw Payment Links summary with eight April raw_files at source lines 7-14 and distinct raw-source descriptions at lines 65-72. Add the November create capture only for create-specific evidence, preserving all unrelated overview/share/track/buy-button/customize/shipping/promotions dated histories and their claims."
+  ],
+  "substantive_changes": [
+    "New Checkout studio Dashboard creation/management route at new raw:11.",
+    "New explicit quantity=1 constraint for the single customer-chosen-price line item at new raw:107; the old prose stated only the one-item limit at old raw:132.",
+    "Capture-specific Dashboard maximum wording differs: 10,000 SGD at old raw:33 versus 10,000 USD at new raw:36. This is an observed source-text difference, not proof of a universal product limit change."
+  ],
+  "historical_claims_to_preserve": [
+    "The April create capture's customer-chosen-price maximum example used 10,000 SGD and offered a Stripe Support increase route (old raw:33); retain it as dated evidence.",
+    "The shared source's seven other April raw references at source lines 7,9-14 and 65,67-72 belong to other exact URL identities and must remain intact.",
+    "Both captures describe up to 20 flat-rate line items, subscriptions with recurring prices and subscription_data, asynchronous payment method confirmation, and always-enabled Adaptive Pricing (old raw:65,94,172,180; new raw:64,85,137,145)."
+  ],
+  "conflicts": [
+    "Source line 55 and concept line 136 currently present 10,000 SGD as an unqualified default; the new same-URL November capture says 10,000 USD at new raw:36. Keep both dated wordings and do not normalize the two currencies into a global limit."
+  ],
+  "unresolved_questions": [
+    "The captures alone do not establish why the displayed currency changed or which amount and currency apply to any particular merchant, account, locale, or current Dashboard session.",
+    "The Checkout studio target page was not part of this job, so its detailed features and limitations remain unverified here."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-links.md"
+  ],
+  "answers": {
+    "Q1": "The November capture of https://docs.stripe.com/payment-links/create adds Checkout studio as a creation and management route at new raw:11 and states that a customer-chosen-price Payment Link has one line item with quantity exactly 1 at new raw:107. The older same-URL guide states one line item at old raw:132. [[source-stripe-payment-links]] needs a bounded create-section update while preserving its unrelated dated raw histories.",
+    "Q2": "For https://docs.stripe.com/payment-links/create, the Dashboard maximum appears as 10,000 SGD in old raw:33 and 10,000 USD in new raw:36; each says Stripe Support can raise it. [[source-stripe-payment-links]] line 55 and the concept's line 136 should identify the two dated capture wordings, not assert a verified universal currency or limit change. The shared source must retain its other URL histories while adding this November create evidence."
+  }
+}

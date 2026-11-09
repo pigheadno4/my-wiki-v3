@@ -1,0 +1,103 @@
+{
+  "job_id": "checkout-elements-with-checkout-sessions-api-changelog",
+  "attempt": 1,
+  "raw_path": "raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md",
+  "raw_sha256": "911c750583a474e2c4f22a85c0757f21985f0257e7e96f75a4491cdb51c09824",
+  "source_before_sha256": "3f82e1c3908bc2ea91dcb9adb89d74df268ac73e56a890229393201409fded45",
+  "source_page": "---\ntitle: \"Elements with Checkout Sessions API Beta Changelog\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/checkout/elements-with-checkout-sessions-api/changelog\"\nraw_files:\n  - \"stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md\"\n  - \"stripe-checkout-elements-beta-changelog-2025.md\"\ntags: [stripe, checkout-sessions, elements, migration, clover, basil, beta-changelog, breaking-changes]\n---\n\n## Overview\n\nDated migration history for the Elements with Checkout Sessions API beta, covering `custom_checkout_beta_*` through Basil and Clover. The November 7, 2026 capture explicitly says this changelog does not apply to integrations on Clover or later and directs those readers to the general Stripe changelog. The April 22 capture excluded Clover alone. This page remains useful for the beta-to-Basil-to-Clover path, not as a current integration guide for Clover or later. See [[stripe-checkout]] and [[stripe-elements]].\n\n> [!warning] Contradiction\n> The April source summary called Clover \u201clatest.\u201d That label was relative to its historical capture. The retained `@stripe/stripe-js@9.12.1` source targets `dahlia`, removes `initCheckout()`, and uses `initCheckoutElementsSdk()` for the Elements path. Keep this page as version-scoped Clover migration evidence; use [[source-github-stripe-js]] and [[changelog-github-stripe-js]] for package-qualified later behavior. The November changelog's illustrative pre-Basil API header changes from `2026-03-25.dahlia; custom_checkout_beta=v1` to `2026-10-28.endive; custom_checkout_beta=v1`; neither sample proves a supported Endive beta path or current runtime compatibility.\n\n## Clover migration history \u2014 key breaking changes\n\nFor the documented migration, first update to Basil, then use `@stripe/stripe-js >= 8.0.0`, `@stripe/react-stripe-js >= 5.0.0`, and backend API version at least `2025-09-30.clover`. Script-tag integrations are directed to the versioned `clover` Stripe.js URL. These are migration requirements in this beta history, not a universal package recommendation.\n\n- `stripe.initCheckout` becomes synchronous. Remove its `await`/`.then()`; pass a client-secret string or Promise instead of `fetchClientSecret`. Call asynchronous `checkout.loadActions()` once to get actions including `getSession()` or `confirm()`, and check its resolved `type` for errors.\n- React imports move to `@stripe/react-stripe-js/checkout`; `useCheckout()` returns a loading/success/error disjoint union rather than throwing; `CheckoutProvider` renders children before initialization succeeds and uses `clientSecret` in place of `fetchClientSecret`.\n- Saved payment methods configured on the Checkout Session become enabled in Payment Element without extra client configuration. Postal codes stop being automatically collected for card payments in Canada, the UK, and Puerto Rico.\n\nThe captured Clover HTML/JS example demonstrates `const checkout = stripe.initCheckout({ clientSecret })` followed by `await checkout.loadActions()`; it is version-scoped example code, not evidence that the same entrypoint exists in later package declarations.\n\n## Basil migration history\n\nThe guide says to update to `custom_checkout_beta_6` before Basil. It specifies `@stripe/stripe-js >= 7.0.0`, `@stripe/react-stripe-js >= 3.6.0`, and backend API version at least `2025-03-31.basil`, with beta headers removed. For script-tag integrations still on `v3` or `acacia`, it directs a versioned `basil` Stripe.js URL.\n\n- Async methods such as `confirm` and `applyPromotionCode` return successful updated session state under `session`, not the earlier beta `success` key.\n- `confirm({ returnUrl })` throws when the Checkout Session already has `return_url`; successful redirect URLs contain only the supplied return URL parameters.\n- In subscription-mode Sessions, `checkout_session.invoice` and `.subscription` stay null until Checkout Session completion because the subscription is created after the user completes payment. For code relying on deprecated `payment_intent.invoice`, the changelog recommends the `checkout_session.completed` webhook and `checkout_session.invoice` or Invoice Payment list to find the invoice.\n- `discountAmounts.percentOff` is added for display.\n\nThe April capture's illustrative \u201cBefore\u201d backend header is `2026-03-25.dahlia; custom_checkout_beta=v1`; the November capture uses `2026-10-28.endive; custom_checkout_beta=v1`. Both show `2025-03-31.basil` in \u201cAfter.\u201d This sample change is not a new required upgrade step or proof of Endive beta compatibility.\n\n## Beta version history\n\nThe changelog distinguishes a Stripe.js front-end beta header (for example, `custom_checkout_beta_6`) from an API-version back-end beta header (for example, `custom_checkout_beta=v1`).\n\n### `custom_checkout_beta_6`\n\nThe dated beta_6 section specifies `@stripe/stripe-js >= 6.1.0` and `@stripe/react-stripe-js >= 3.5.0`. It flips the sign convention of `total.appliedBalance`, replaces a static `clientSecret` with async `fetchClientSecret`, renames HTML/JS element create/get methods, revises `canConfirm` and removes `confirmationRequirements`, makes `updateEmail` throw if `customer_email` was set at Session creation, requires an absolute `returnUrl`, and nests pricing values under formatted `amount` and integer `minorUnitsAmount`. The price display rule and full method mapping are in the raw beta_6 section.\n\n| Earlier HTML/JS method | beta_6 name |\n| --- | --- |\n| `createElement('payment')` | `createPaymentElement()` |\n| `createElement('address', {mode: 'billing'})` | `createBillingAddressElement()` |\n| `createElement('address', {mode: 'shipping'})` | `createShippingAddressElement()` |\n| `createElement('expressCheckout')` | `createExpressCheckoutElement()` |\n| `getElement(...)` | `getPaymentElement()` / `getBillingAddressElement()` / corresponding address and Express Checkout getters |\n\n### `custom_checkout_beta_5` and earlier\n\nBeta_5 renames `initCustomCheckout` to `initCheckout`, `CustomCheckoutProvider` to `CheckoutProvider`, and `useCustomCheckout` to `useCheckout`; it changes Express Checkout confirmation to `confirm({ expressCheckoutConfirmEvent })`, standardizes error handling, and adds a success/error discriminator to async results. For beta_5, success is under `success`; Basil later moves it to `session`. Beta_4 through beta_1 changes and the unchanged back-end beta-version note remain in the raw locator.\n\n## Detail locators\n\n- [[raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07|November 7, 2026 changelog]]: scope lines 5\u201311; Clover lines 13\u2013121; Basil lines 123\u2013198; beta_6 lines 200\u2013239; beta_5 and earlier lines 241\u2013300.\n- [[raw/stripe-checkout-elements-beta-changelog-2025|April 22, 2026 changelog]]: former Clover exclusion lines 8\u201310; corresponding migration and beta history lines 12\u2013290; former \u201cBefore\u201d API header line 172.\n\n## Related\n\n- [[stripe]]; [[stripe-checkout]]; [[stripe-elements]]; [[source-stripe-checkout-elements-quickstart]]\n\n## Raw Sources\n\n- [[raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07|November 7, 2026 beta changelog capture]]\n- [[raw/stripe-checkout-elements-beta-changelog-2025|April 22, 2026 beta changelog capture]]\n",
+  "quotes": [
+    {
+      "text": "This changelog doesn\u2019t apply to you if you\u2019re on [Clover](https://docs.stripe.com/changelog/clover.md) or later. Refer to the [Stripe changelog](https://docs.stripe.com/changelog.md) instead.",
+      "location": "raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md:11"
+    },
+    {
+      "text": "Before migrating to Clover, first [update your integration](https://docs.stripe.com/checkout/elements-with-checkout-sessions-api/changelog.md#migrating-to-basil) to Basil.",
+      "location": "raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md:27"
+    },
+    {
+      "text": "The change creates the subscription after the user has completed the payment, so `checkout_session.invoice` and `checkout_session.subscription` are null until the Checkout Session completes.",
+      "location": "raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md:132"
+    },
+    {
+      "text": "apiVersion: '2026-10-28.endive; custom_checkout_beta=v1' as any,",
+      "location": "raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md:182"
+    },
+    {
+      "text": "apiVersion: '2025-03-31.basil' as any,",
+      "location": "raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md:196"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you\u2019re already on the [Clover release](https://docs.stripe.com/changelog/clover.md) of Elements with Checkout Sessions API, this changelog doesn\u2019t apply to you.",
+      "location": "raw/stripe-checkout-elements-beta-changelog-2025.md:10"
+    },
+    {
+      "text": "apiVersion: '2026-03-25.dahlia; custom_checkout_beta=v1' as any,",
+      "location": "raw/stripe-checkout-elements-beta-changelog-2025.md:172"
+    },
+    {
+      "text": "Before migrating to Clover, first [update your integration](https://docs.stripe.com/checkout/elements-with-checkout-sessions-api/changelog.md#migrating-to-basil) to Basil.",
+      "location": "raw/stripe-checkout-elements-beta-changelog-2025.md:26"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 300
+      }
+    ],
+    "raw/stripe-checkout-elements-beta-changelog-2025.md": [
+      {
+        "start": 1,
+        "end": 290
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-elements-beta-changelog.md": [
+      {
+        "start": 1,
+        "end": 98
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/49d773a16f4864fdfa0acd68/content.diff": [
+      {
+        "start": 1,
+        "end": 176
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-checkout-beta-scope",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "The older [[source-stripe-checkout-elements-beta-changelog]] remains useful as dated Clover migration evidence, but its \u201clatest\u201d label and `initCheckout()` example are not current for the retained v9 declarations.",
+      "new_text": "The [[source-stripe-checkout-elements-beta-changelog]] remains dated beta-to-Basil-to-Clover migration evidence; its November 7, 2026 capture explicitly excludes integrations on Clover or later. Its former \u201clatest\u201d label and Clover `initCheckout()` example are not current for the retained v9 declarations. The refreshed illustrative pre-Basil Endive beta header does not establish an Endive beta integration path.",
+      "reason": "The concept already distinguishes package-qualified v9 evidence; update its source route and the new changelog scope without treating the copied Endive sample as runtime proof.",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-elements-beta-source-route",
+      "target_path": "wiki/concepts/stripe-elements.md",
+      "old_text": "- [[source-stripe-checkout-elements-quickstart]] \u2014 Checkout Elements quickstart (Checkout Sessions + Elements)",
+      "new_text": "- [[source-stripe-checkout-elements-quickstart]] \u2014 Checkout Elements quickstart (Checkout Sessions + Elements)\n- [[source-stripe-checkout-elements-beta-changelog]] \u2014 dated beta-to-Basil-to-Clover migration history; the November 2026 capture excludes Clover or later integrations",
+      "reason": "Provide a reciprocal route from the Elements concept to the scoped changelog without replacing later package evidence.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/checkout/elements-with-checkout-sessions-api/changelog, [[source-stripe-checkout-elements-beta-changelog]] now records the November 7, 2026 scope statement excluding Clover or later integrations (new lines 9\u201311); the April 22 capture excluded Clover alone (old lines 8\u201310). The migration sequence and main Clover, Basil, and beta_6 requirements persist in old lines 24\u201338, 131\u2013160, 201\u2013229 and new lines 25\u201339, 137\u2013170, 211\u2013239. Thus the source retains dated migration history but no longer calls Clover current/latest.",
+    "Q2": "At https://docs.stripe.com/checkout/elements-with-checkout-sessions-api/changelog, [[source-stripe-checkout-elements-beta-changelog]] flags the illustrative pre-Basil header change from `2026-03-25.dahlia; custom_checkout_beta=v1` (old line 172) to `2026-10-28.endive; custom_checkout_beta=v1` (new line 182), with `2025-03-31.basil` still in the After sample (old line 186; new line 196). That example refresh adds no new migration action and does not prove an Endive beta runtime path, especially because the new scope notice excludes Clover or later (new line 11)."
+  },
+  "status": "candidate_ready"
+}

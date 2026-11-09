@@ -1,0 +1,109 @@
+{
+  "job_id": "disputes-prevention-advanced-fraud-detection",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md",
+  "raw_sha256": "cf568ff872d765b19cc3a49a4c6ec1ca3434ab91c35ffffacea780a024900454",
+  "source_before_sha256": "5970c55ac5e989499a4eeb6d8a999e275b588135fcd0cdf8685329ef1e3cdcca",
+  "source_page": "---\ntitle: \"Stripe \u2014 Advanced Fraud Detection\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/disputes/prevention/advanced-fraud-detection\nraw_files:\n  - \"stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md\"\n  - \"stripe-disputes-advanced-fraud-detection-2026.md\"\ntags: [stripe, radar, fraud, stripe-js, advanced-fraud-detection, device-fingerprint, hcaptcha, mobile-sdk]\n---\n\n## Summary\n\nStripe's November 7, 2026 guide describes device and activity signals collected through Stripe.js and the iOS and Android SDKs for fraud detection. It explains collection scope, stated privacy uses, and how a business can disable advanced signals on its own site or app. Disabling them increases fraud risk and does not stop all Stripe-managed or authentication-related data collection.\n\n## Risk Factors and Collection\n\n**Device characteristics** cover browser, screen, and device configurations that may indicate anomalous behavior. **Activity indicators** include mouse activity, time spent on pages, and patterns such as pasted card numbers that can help distinguish bots from legitimate shoppers. These signals feed Stripe fraud systems such as Radar and are sent periodically to `m.stripe.com`. Stripe describes Radar as built in without additional setup, but the guide does not guarantee a particular fraud outcome.\n\nStripe recommends loading Stripe.js throughout the shopping experience, not just at checkout, to provide a richer set of activity signals. On pages where Stripe.js loads, it **can** load hCaptcha; businesses seeking to opt out of that integration should contact Stripe Support. This is conditional, not a statement that hCaptcha appears on every page or session.\n\nStripe says page contents are collected only where they correspond to Stripe Elements input fields; for example, an email can be collected for Link signup and login if the Element has an email field. Stripe says this page-content information is not saved. Activity risk factors are scoped to one shopping session on one site or app and are not linked across separate sessions, sites, or apps. These claims should not be broadened to all data on the page or all Stripe data.\n\nFor mobile apps, the iOS and Android SDKs collect advanced risk factors when an SDK object is instantiated and transmit them to Stripe during a tokenization request. Stripe says the advanced risk-factor data is used for fraud detection and security rather than advertising, is not rented or sold to advertisers, and is retained while useful for those purposes, with restricted internal access. Its privacy and cookie policies provide the broader disclosures.\n\n## Disable Advanced Fraud Detection\n\nStripe says businesses can disable collection of **advanced fraud detection risk factors** on their own websites and apps, at increased fraud risk, particularly card testing. This setting does not stop collection on Stripe domains such as Stripe Checkout, events from customer interactions with Stripe-managed Elements fields, or basic device information sent to the issuer for 3D Secure 2 authentication. It is not a full data-collection opt-out or a PCI-compliance guarantee. The guide separately says omitting Stripe.js entirely adds fraud risk and shifts PCI responsibilities to the business.\n\n| Platform | Captured option and version condition |\n| --- | --- |\n| Stripe.js script tag | Set the `advancedFraudSignals` query parameter to `false`. |\n| Stripe.js pure ES module | With the latest Stripe.js module, use the `pure` export and call `loadStripe.setLoadParameters({ advancedFraudSignals: false })`. The November prose retains this option even though its displayed example changed. |\n| iOS SDK | Version 19.1.1 or later; configure `StripeAPI.setAdvancedFraudSignalsEnabled(false)`. |\n| Android SDK | Version 14.4.0 or later; set `Stripe.advancedFraudSignalsEnabled = false` **before instantiating or accessing any Stripe SDK object**. |\n\nThe May capture displayed this pure-module example:\n\n```javascript\nimport { loadStripe } from \"@stripe/stripe-js/pure\";\n\nloadStripe.setLoadParameters({ advancedFraudSignals: false });\nconst stripePromise = await loadStripe(\"<<YOUR_PUBLISHABLE_KEY>>\");\n```\n\nThe November capture instead displays this literal HTML example:\n\n```html\n<script src=\"https://js.stripe.com/endive/stripe.js?advancedFraudSignals=false\"></script>\n```\n\nThe capture alone does not establish whether the `/endive/stripe.js` URL is a general production integration path. The continued prose still lists **both** the script-tag query parameter and pure-module `setLoadParameters` options; changing the example does not demonstrate removal or deprecation of the module option.\n\n## Related Pages\n\n- [[stripe-radar]] \u2014 Radar concept, including advanced fraud detection scope\n- [[stripe]] \u2014 provider overview\n- [[source-stripe-radar-optimize-risk-factors]] \u2014 separate guide on risk-factor optimization\n\n## Raw Sources\n\n- [[raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07|Stripe advanced fraud detection, 2026-11-07 capture]] \u2014 current captured guide and HTML example\n- [[raw/stripe-disputes-advanced-fraud-detection-2026|Stripe advanced fraud detection, 2026-05 capture]] \u2014 earlier guide and pure-module example\n",
+  "quotes": [
+    {
+      "text": "Also, on each page where you load Stripe.js, it can load hCaptcha.",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:13"
+    },
+    {
+      "text": "Risk factors corresponding to user activity are scoped to a single shopping session on a single site or app and aren\u2019t linked across different shopping sessions, sites, or apps.",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:29"
+    },
+    {
+      "text": "To disable advanced fraud detection risk factors with [Stripe.js](https://docs.stripe.com/js/including), set `advancedFraudSignals` as a query parameter in the Stripe.js script tag, or update to the latest version of the [Stripe.js module](https://github.com/stripe/stripe-js), use the `pure` export, and call `setLoadParameters`:",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:53"
+    },
+    {
+      "text": "<script src=\"https://js.stripe.com/endive/stripe.js?advancedFraudSignals=false\"></script>",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:58"
+    },
+    {
+      "text": "Additionally, disabling advanced fraud detection doesn\u2019t affect the collection of events logged when a customer interacts with Stripe-managed fields in your checkout page",
+      "location": "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:49"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "loadStripe.setLoadParameters({ advancedFraudSignals: false });",
+      "location": "raw/stripe-disputes-advanced-fraud-detection-2026.md:59"
+    },
+    {
+      "text": "Also, on each page where you load Stripe.js, it can load hCaptcha.",
+      "location": "raw/stripe-disputes-advanced-fraud-detection-2026.md:12"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 91
+      }
+    ],
+    "raw/stripe-disputes-advanced-fraud-detection-2026.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 93
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-advanced-fraud-detection.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0f56c7e9da0f10e80667cb44/content.diff": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "advanced-fraud-detection-hcaptcha-scope",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "old_text": "Two risk factor types: **device characteristics** (browser/screen/device \u2014 identifies anomalous environments) and **activity indicators** (mouse movement, time-on-page, copy-paste detection \u2014 bot vs human). Scoped to single session; page contents only collected if matching Stripe Elements fields. Include Stripe.js on **every page** for richest signals; hCaptcha also loaded per page.",
+      "new_text": "Two risk factor types: **device characteristics** (browser/screen/device \u2014 identifies anomalous environments) and **activity indicators** (mouse movement, time-on-page, copy-paste detection \u2014 bot vs human). Activity signals are scoped to one shopping session on one site or app; page contents are collected only for matching Stripe Elements input fields. Stripe recommends Stripe.js throughout shopping for richer signals; on each page where it loads, it **can** load hCaptcha. Contact Stripe Support to opt out of hCaptcha integration.",
+      "reason": "Both dated captures say hCaptcha can load, not that it always does; preserve the support opt-out and session/Elements conditions.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "advanced-fraud-detection-disable-options",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "old_text": "**Disable** (increases fraud risk): `loadStripe.setLoadParameters({advancedFraudSignals: false})` (JS), `StripeAPI.setAdvancedFraudSignalsEnabled(false)` (iOS v19.1.1+), `Stripe.advancedFraudSignalsEnabled = false` (Android v14.4.0+). **Cannot disable**: Stripe Elements events or 3DS2 device info. See [[source-stripe-disputes-advanced-fraud-detection]].",
+      "new_text": "**Disable advanced signals on your own site/app** (increases fraud risk): for Stripe.js, set `advancedFraudSignals=false` in the script-tag query parameter **or** use the latest pure module with `loadStripe.setLoadParameters({ advancedFraudSignals: false })`; the November HTML example does not remove the older module option. iOS SDK v19.1.1+ uses `StripeAPI.setAdvancedFraudSignalsEnabled(false)`; Android SDK v14.4.0+ uses `Stripe.advancedFraudSignalsEnabled = false` before any SDK object is accessed or instantiated. This does not stop collection on Stripe domains, Stripe-managed Elements events, or basic 3DS2 device information sent to issuers. See [[source-stripe-disputes-advanced-fraud-detection]].",
+      "reason": "Preserve both client-side Stripe.js options, platform versions and Android ordering; clarify what disabling does not cover.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The captured /endive/stripe.js URL is an example, not a verified universal production recommendation."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/prevention/advanced-fraud-detection, [[source-stripe-disputes-advanced-fraud-detection]] preserves both Stripe.js disabling options. The May capture at raw/stripe-disputes-advanced-fraud-detection-2026.md:52-61 displays the pure-module `setLoadParameters` example, while the November capture at raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:53-59 still names that option in prose but displays an HTML script tag with a literal `/endive/stripe.js` URL. The changed example alone does not establish module deprecation or make that URL a general production recommendation.",
+    "Q2": "At https://docs.stripe.com/disputes/prevention/advanced-fraud-detection, [[source-stripe-disputes-advanced-fraud-detection]] now says hCaptcha **can** load on each page where Stripe.js loads, with an opt-out through Stripe Support. Both the May capture at raw/stripe-disputes-advanced-fraud-detection-2026.md:12 and November capture at raw/stripe-disputes-prevention-advanced-fraud-detection-2026-11-07.md:13 use conditional wording. Disabling advanced signals increases fraud risk and does not disable Stripe-domain collection, Stripe-managed Elements events, or 3DS2 device information; the platform version and Android ordering conditions remain in the source."
+  },
+  "status": "candidate_ready"
+}

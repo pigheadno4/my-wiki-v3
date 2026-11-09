@@ -1,0 +1,113 @@
+--- raw/stripe-disputes-visa-ce3-2026.md
++++ raw/stripe-disputes-api-visa-ce3-2026-11-07.md
+@@ -4,7 +4,7 @@
+ 
+ Visa Compelling Evidence 3.0 (CE 3.0) has new qualifying criteria allowing businesses to demonstrate a non-fraudulent history with cardholders to fight friendly fraud. Submitting qualifying evidence for Visa CE 3.0 eligible disputes can increase the chance of an issuer reversing friendly fraud disputes in favor of the business.
+ 
+-## Visa CE 3.0 qualifying disputes
++## Visa CE 3.0 qualifying disputes 
+ 
+ To respond to a dispute using Visa CE 3.0, the dispute must meet the following criteria:
+ 
+@@ -16,17 +16,17 @@
+ - You must categorize the disputed transaction as either `merchandise` or `services` in the [merchandise_or_services](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence-enhanced_evidence-visa_compelling_evidence_3-disputed_transaction-merchandise_or_services) field.
+ - The disputed transaction and both past undisputed transactions must match either:
+   - Two main evidence elements (for example, Customer Purchase IP and Customer Device Fingerprint).
+-  - One main evidence element _and_ one secondary evidence element (for example, Customer Device ID and Customer Account ID).
++  - One main evidence element *and* one secondary evidence element (for example, Customer Device ID and Customer Account ID).
+ 
+-| Main evidence elements                            | Secondary evidence elements |
+-| ------------------------------------------------- | --------------------------- |
+-| Customer purchase IP                              | Shipping address            |
+-| Customer device fingerprint or customer device ID | Customer email address      |
+-|                                                   | Customer Account ID         |
++| Main evidence elements | Secondary evidence elements |
++| --- | --- |
++| Customer purchase IP | Shipping address |
++| Customer device fingerprint or customer device ID | Customer email address |
++|  | Customer Account ID |
+ 
+-> Customer Device Fingerprint _and_ Customer Device ID isn’t a valid evidence combination.
++> Customer Device Fingerprint *and* Customer Device ID isn’t a valid evidence combination.
+ 
+-## The enhanced evidence object
++## The enhanced evidence object 
+ 
+ To submit evidence using Visa CE 3.0, use the [enhanced evidence](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence-enhanced_evidence) object. This exists within the [dispute evidence](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence) object. The [enhanced eligibility types](https://docs.stripe.com/api/disputes/object.md#dispute_object-enhanced_eligibility_types) array contains a list of eligibility types in [enhanced evidence](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence-enhanced_evidence).
+ 
+@@ -42,7 +42,7 @@
+           "customer_email_address": "test@example.com",
+           "customer_purchase_ip": "123.123.123.123",
+           "merchandise_or_services": "merchandise",
+-          "product_description": "Widget ABC, color: green",
++          "product_description": "Widget ABC, color: green"
+         },
+         "prior_undisputed_transactions": [
+           {
+@@ -59,13 +59,13 @@
+           }
+         ]
+       }
+-    },
++    }
+   }
+   ...
+ }
+ ```
+ 
+-## The enhanced eligibility object
++## The enhanced eligibility object 
+ 
+ The [enhanced eligibility](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence_details-enhanced_eligibility) object shows the status of your Visa CE 3.0 submission. This exists within the [evidence details](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence_details) object and provides detailed information on the steps required to ensure evidence is submitted to Visa as CE 3.0.
+ 
+@@ -100,13 +100,13 @@
+ }
+ ```
+ 
+-## Autofilled evidence
++## Autofilled evidence 
+ 
+ When Stripe identifies a disputed transaction as eligible for Visa CE 3.0, Stripe attempts to autofill the disputed transaction and evidence from previous undisputed transactions. You have the option to manually add Visa CE 3.0 evidence if you believe the disputed transaction qualifies.
+ 
+ > Stripe must have processed all past undisputed transactions.
+ 
+-## Submission lifecycle
++## Submission lifecycle 
+ 
+ The Visa CE 3.0 [status](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence_details-enhanced_eligibility-visa_compelling_evidence_3-status) becomes `qualified` or `requires_action` when a dispute has the [Visa Compelling Evidence 3](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence-enhanced_evidence-visa_compelling_evidence_3) object filled within the [enhanced evidence](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence-enhanced_evidence) object.
+ 
+@@ -121,19 +121,19 @@
+ 
+ > To increase your chances of winning a dispute, fill out the [dispute evidence](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence) object (not just the [enhanced evidence](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence-enhanced_evidence) object). This evidence is used in case your Visa CE 3.0 submission is disapproved, and your dispute is submitted through the standard evidence submission flow.
+ 
+-## Testing
++## Testing 
+ 
+ To test your Visa CE 3.0 integration, use the following test card, which creates a Visa CE 3.0 eligible dispute:
+ 
+-| Testing Method | Token                              |
+-| -------------- | ---------------------------------- |
+-| Card Number    | 4000000404000038                   |
+-| PaymentMethod  | `pm_card_createCe3EligibleDispute` |
+-| Token          | `tok_createCe3EligibleDispute`     |
++| Testing Method | Token |
++| --- | --- |
++| Card Number | 4000000404000038 |
++| PaymentMethod | `pm_card_createCe3EligibleDispute` |
++| Token | `tok_createCe3EligibleDispute` |
+ 
+-When providing evidence for this dispute, you can submit any two test environment transactions in the [prior_undisputed_transactions.charge](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence-enhanced_evidence-visa_compelling_evidence_3-prior_undisputed_transactions-charge) field.
++When providing evidence for this dispute, you can submit any two transactions from your [sandbox](https://docs.stripe.com/sandboxes.md) in the [prior_undisputed_transactions.charge](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence-enhanced_evidence-visa_compelling_evidence_3-prior_undisputed_transactions-charge) field.
+ 
+-> In test environments, you can use any two test transactions as `prior_undisputed_transactions`. Stripe doesn’t validate the prior transactions’ payment method or transaction date while testing.
++> In sandboxes, you can use any two test transactions as `prior_undisputed_transactions`. Stripe doesn’t validate the prior transactions’ payment method or transaction date while testing.
+ 
+ We’ll validate primary and secondary evidence elements according to Visa CE 3.0 rules.
+ 
+@@ -145,5 +145,5 @@
+ - `qualified`: The evidence qualifies for Visa CE 3.0.
+ 
+ > The [Visa CE 3.0 status](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence_details-enhanced_eligibility-visa_compelling_evidence_3-status) doesn’t impact the [dispute status](https://docs.stripe.com/api/disputes/object.md#dispute_object-status).
+->
++> 
+ > To simulate a `won` or `lost` state for the overall dispute, set [uncategorized_text](https://docs.stripe.com/api/disputes/update.md#update_dispute-evidence-uncategorized_text) to `winning_evidence` or `losing_evidence` as outlined in [Testing](https://docs.stripe.com/testing.md?testing-method=card-numbers#evidence).

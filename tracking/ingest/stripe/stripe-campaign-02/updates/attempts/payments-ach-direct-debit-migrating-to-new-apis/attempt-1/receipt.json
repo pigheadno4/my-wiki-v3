@@ -1,0 +1,110 @@
+{
+  "job_id": "payments-ach-direct-debit-migrating-to-new-apis",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md",
+  "raw_sha256": "5d5d52af7f76d22e5a912c96467b779810f9fd8af96c3583237960bcf31f25d3",
+  "source_before_sha256": "3c287e92731482aaffc5c3b8d17f5a2a83ebab796c9010cdec61d8c1e5ab08ac",
+  "source_page": "---\ntitle: \"Stripe: Migrating to New ACH Direct Debit APIs\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ach-direct-debit/migrating-to-new-apis\"\nraw_files:\n  - \"stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md\"\n  - \"stripe-ach-migration-2025.md\"\ntags: [stripe, ach, us-bank-account, migration, legacy, payment-intents, checkout-sessions, mandates, webhooks]\n---\n\n## Summary\n\nStripe's 2026-05-02 and 2026-11-07 captures say merchants creating legacy ACH Direct Debit payments must migrate to the Payment Intents API or Checkout Sessions API. The guide compares the legacy and newer paths, with a staged migration: enable ACH Direct Debit, integrate the newer path, reuse eligible saved BankAccount objects, test, gradually move payments, then remove the legacy integration (new raw lines 9\u201311, 39\u201353). The snapshots are migration guidance, not proof of a particular account's faster-settlement eligibility or live payment outcome.\n\n## Capability and timing comparison\n\nThe guide's table lists Checkout, Payment Element, and dynamic payment methods in the newer API path, along with Financial Connections instant bank-account verification and fraud tools. It compares legacy T+6 settlement with newer T+4, or T+2 **when faster settlement applies**; it lists legacy US versus newer US, EU, and UK support (new raw lines 13\u201327). These are captured product-scope statements, not account-specific entitlements. Checkout Sessions is recommended for common checkout workflows; Payment Intents is the lower-level custom-flow path (new raw lines 29\u201337).\n\nThe newer APIs enforce an **active mandate** before ACH initiation; a mandate can become inactive after disputes, failures, or invalid account status. The guide says a Tokens API BankAccount reused in the newer path needs a mandate first (new raw lines 59\u201363). [[source-stripe-ach-migrate-bank-accounts]] has the saved-bank-account prerequisites and dated acknowledgment options.\n\n## Balance transactions, payouts, and Connect transfers\n\nLegacy integrations create the Balance Transaction with the charge; the guide says it appears in the legacy `charge.pending` event and API response. In the newer path, the Balance Transaction is created **when the payment is submitted to the banking partner**, and appears in `charge.updated`, not the initial API response (new raw lines 64\u201366, 84\u201387). That milestone does not establish customer-bank receipt, final settlement, or payment success.\n\nLegacy funds settle in `source_type=bank_account`; newer API funds settle in `source_type=card`. **If** payout or Connect-transfer logic manually specifies a balance type, update it for the new source type. During migration, the guide says there can be a payout for each type. For separate charges and transfers using `source_transaction`, wait for `charge.updated` before creating the transfer (new raw lines 67\u201370). The November guide adds that payout statement descriptors **might** differ between bank-account and card source-type payouts; it does not say they differ for every account or payout (new raw line 71).\n\n## Verification and email changes\n\nLegacy verification used two small random microdeposits and no hosted verification UI. The newer flow usually uses one 1-cent microdeposit with a descriptor code and a hosted verification page, but **rarely uses two small random deposits instead**. Customers have 10 days to verify; after that, the PaymentIntent or SetupIntent returns to requiring new payment-method details (new raw lines 72\u201375). This verification step is separate from payment finality.\n\nThe guide contrasts no automatic emails in the legacy path with mandate-confirmation and microdeposit-verification emails in the newer path. The verification email applies when a customer attempts microdeposit verification. Stripe emails can be disabled in Dashboard if custom notices are sent instead (new raw lines 76\u201378). See [[source-stripe-ach-direct-debit]] for the billing-email condition and mandate-copy details; this migration table does not establish that every customer receives each email.\n\n## Webhook migration matrix\n\nThis table preserves the guide's **Checkout versus Payment Intents branch labels**; it is a migration event comparison, not a substitute for paid-status checks before fulfillment (new raw lines 80\u201391).\n\n| Legacy event | Checkout column | Payment Intents column | Guide qualification |\n| --- | --- | --- | --- |\n| `charge.pending` | `payment_intent.processing` | `payment_intent.processing` | New Balance Transaction is unavailable until `charge.updated`. |\n| `charge.updated` | `charge.updated` | `charge.updated` | Banking-partner submission; includes Balance Transaction. |\n| `charge.succeeded` | `checkout.session.completed` | `payment_intent.succeeded` | `charge.succeeded` is also sent. Checkout completion alone can be unpaid for delayed methods; inspect payment status before fulfillment. |\n| `charge.failed` | No direct row equivalent; customer can retry on the same Session until expiry, then `checkout.session.expired` | `payment_intent.payment_failed` | `charge.failed` is also sent. |\n| `charge.dispute.created` | `charge.dispute.created` | `charge.dispute.created` | Dispute event persists. |\n| No legacy equivalent | `mandate.updated` | `mandate.updated` | Sent when a mandate becomes inactive. |\n\nThe Checkout paid-status qualification follows [[source-stripe-checkout-dashboard-payment-methods]] and [[stripe-checkout]]; the migration table itself does not prove funds are paid on every completed Session.\n\n## Identify legacy ACH payments\n\nThe guide identifies legacy ACH on a Charge by `payment_method_details.type: ach_debit` versus `us_bank_account` for the newer integration. Its examples are direct Create Charge calls; an Invoice or Subscription charging a Customer's legacy BankAccount `default_source` **when no `default_payment_method` is set** on the Customer, invoice, or subscription; and a PaymentIntent using `payment_method_type: ach_debit` (new raw lines 93\u2013101). These are guide criteria, not evidence that a specific merchant's Charges were migrated.\n\n## Related pages\n\n- [[stripe-ach-direct-debit]] \u2014 ACH Direct Debit concept and migration route\n- [[stripe-payment-intents]] \u2014 PaymentIntent event lifecycle\n- [[stripe-checkout]] \u2014 Checkout Session and delayed-method fulfillment\n- [[source-stripe-ach-migrate-bank-accounts]] \u2014 saved BankAccount reuse and mandate acknowledgment\n\n## Raw Sources\n\n- [[raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07|2026-11-07 migration guide]]\n- [[raw/stripe-ach-migration-2025|2026-05-02 earlier migration guide]]\n",
+  "quotes": [
+    {
+      "text": "If you manually specify the balance type for payouts or Connect transfers, update your integration to use the new balance type.",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md:68"
+    },
+    {
+      "text": "[Payout statement descriptors](https://docs.stripe.com/payouts/statement-descriptors.md) might differ between `source_type=bank_account` and `source_type=card` payouts.",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md:71"
+    },
+    {
+      "text": "In rare cases, Stripe sends two microdeposits of random, small amounts instead.",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md:73"
+    },
+    {
+      "text": "Customers must verify their bank account within 10 days. If they don\u2019t verify in time, the PaymentIntent or SetupIntent reverts to requiring new payment method details.",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md:75"
+    },
+    {
+      "text": "The customer can re-attempt the payment on the same Checkout Session until it [expires](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-expires_at), at which point you receive a `checkout.session.expired` event.",
+      "location": "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md:89"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you manually specify the balance type for payouts or Connect transfers, update your integration to use the new balance type.",
+      "location": "raw/stripe-ach-migration-2025.md:69"
+    },
+    {
+      "text": "For separate charges and transfers with `source_transaction`, wait for the `charge.updated` webhook before creating a transfer.",
+      "location": "raw/stripe-ach-migration-2025.md:71"
+    },
+    {
+      "text": "The `charge.succeeded` webhook is also sent",
+      "location": "raw/stripe-ach-migration-2025.md:88"
+    },
+    {
+      "text": "The customer can re-attempt the payment on the same Checkout Session until it",
+      "location": "raw/stripe-ach-migration-2025.md:89"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-ach-direct-debit-migrating-to-new-apis-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 101
+      }
+    ],
+    "raw/stripe-ach-migration-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 101
+      }
+    ],
+    "wiki/sources/source-stripe-ach-migration.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e803949339befc8c55832c6a/content.diff": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 135
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "ach-new-api-migration-route",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- [[source-stripe-ach-migration]] \u2014 legacy migration: T+6\u2192T+4, balance type change, mandate enforcement, microdeposit change, webhook mapping",
+      "new_text": "- [[source-stripe-ach-migration]] \u2014 dated legacy-to-Payment Intents/Checkout migration: T+6 versus T+4 (conditional T+2), active mandates, conditional balance-type updates, rare two-microdeposit fallback, and branch-specific webhook matrix; payout descriptors might differ",
+      "reason": "Keep the reciprocal route aligned with the corrected conditional payout and webhook branches and the new descriptor caveat.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The table describes migration guidance, not actual payout or payment results."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/ach-direct-debit/migrating-to-new-apis, [[source-stripe-ach-migration]] now states the balance-type update only for merchants that manually specify balance type in payout or Connect-transfer logic. Both captures give that condition and require waiting for charge.updated before source_transaction transfers (old raw lines 68\u201371; new raw lines 67\u201370). The November capture adds that payout statement descriptors might differ across bank_account and card source types (new raw line 71); it gives no guaranteed descriptor values.",
+    "Q2": "For https://docs.stripe.com/payments/ach-direct-debit/migrating-to-new-apis, [[source-stripe-ach-migration]] restores separate Checkout and Payment Intents event columns. Both old and new tables map charge.succeeded to checkout.session.completed for Checkout and payment_intent.succeeded for Payment Intents, while Checkout permits same-session retry after a failed charge until expiration (old raw lines 84\u201391; new raw lines 84\u201391). The source retains charge.updated for banking-partner submission, not as proof of final payment or bank receipt."
+  },
+  "status": "candidate_ready"
+}

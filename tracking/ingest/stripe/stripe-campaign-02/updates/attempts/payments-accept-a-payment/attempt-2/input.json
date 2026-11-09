@@ -1,0 +1,86 @@
+{
+  "job_id": "payments-accept-a-payment",
+  "queue_id": 133,
+  "canonical_url": "https://docs.stripe.com/payments/accept-a-payment",
+  "raw_path": "raw/stripe-payments-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "5f3f61e605f0b935db7c554926a05d115e1c7064434bcceede8408117b172d77",
+  "prior_raw_path": "raw/stripe-accept-a-payment-2025.md",
+  "prior_raw_sha256": "d95f7887d1f09f78c741828484bebcf010043557e382c587026bcb533ffb9861",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/dcf346de41dfd185880cc51f/content.diff",
+  "diff_sha256": "a95247d4dc306287c828aad6dc9071dc990ccabd139e7c12d77c3852f6398105",
+  "source_target": "wiki/sources/source-stripe-accept-a-payment.md",
+  "source_before_sha256": "c6675cfcf77fc280de470d73f78924222ff1eecb72c0f9857b501de25fa41975",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-accept-a-payment/attempt-1/receipt.json",
+  "receipt_sha256": "3b1add4891e133fa93d5f80ecd425a592304ea1db04eaaf78ba5c3c214ca3298",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-accept-a-payment/attempt-1/review.json",
+  "review_sha256": "73d0cf632dbb1eac7b1fa5bf8507add1ed13598de04f7ab7605a993ecf6204b7",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The 2026-11-07 base-URL capture at https://docs.stripe.com/payments/accept-a-payment is a 20-line variant index (new:9-20), whereas the 2026-04-20 older capture contains the full hosted, embedded form, Checkout Sessions Elements, Payment Intents Elements, iOS, Android, and React Native guides (old:24,574,1201,2099,3198,4316,5225). The large deletion hunk in diff:3-6136 is a representation change at this captured URL; it does not establish API removal or deprecation.",
+    "Mapped source:14,16-23,84 presents '4 Web UI Modes' but its row for 'Embedded components' with ui_mode embedded_checkout is not a distinct variant in the matched old raw. The old web variants are Stripe-hosted page, Embedded form with ui_mode embedded_page, Checkout Sessions API with ui_mode elements, and Payment Intents API (old:24-28,574-578,611-613,1201-1207,1245-1261,2099-2105). Correct the source's taxonomy and keep the two Elements APIs distinct. The new index exposes hosted, full embedded page, and Checkout Sessions Elements links only (new:13-16); omission of the older Payment Intents link is not proof of deprecation.",
+    "Mapped source:32-40 labels three Checkout Session webhook events as generally key webhooks. Scope that table to Checkout Session flows; the older Payment Intents and mobile variants instead describe payment_intent.succeeded, payment_intent.processing and payment_intent.payment_failed (old:2822-2834,3794-3806,4813-4825,5769-5781). Checkout completion or a customer return is not a universal final paid-funds or fulfillment signal for delayed methods.",
+    "Mapped source:48 compresses Accounts v2 guidance into an unconditional recommendation for Connect. The old guide states Accounts v2 is generally available for Connect and public preview for other Stripe users, with a preview-version requirement for participating non-Connect users (old:1068-1078,2412-2418); keep those account/version conditions. The new index contains no account guidance.",
+    "Mapped source:60 names STPPaymentSheet and STPPaymentSheetConfiguration, while the older iOS integration instructs using PaymentSheet and PaymentSheet.Configuration (old:3203,3503-3505,3537-3543). Mapped source:65 says to hold a delayed-method order in pending state, whereas the old iOS/Android/React Native guide says the sheet result can precede final payment success and to inform the customer of order confirmation but fulfill only after payment succeeds (old:3723-3725,4811,5693-5695). Clarify UI acknowledgement, payment finality, and fulfillment separately."
+  ],
+  "approved_conflicts": [
+    "source:22's embedded_checkout mode conflicts with old:574-613 and old:1201-1261; the former is an embedded_page Checkout form and the latter is Elements with ui_mode elements.",
+    "source:65's pending-order wording is too broad relative to old:3723-3725, which distinguishes customer order confirmation, unknown final payment status, and later fulfillment."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-04-20 old raw reference and its dated hosted Checkout, embedded_page Checkout, Checkout Sessions Elements, Payment Intents Elements, and native PaymentSheet examples. Do not replace that factual raw_files entry with the navigation-only 2026-11-07 index.",
+    "Retain old guide distinctions between Checkout Session completion versus delayed asynchronous success/failure, and PaymentIntent succeeded/processing/failed event paths (old:213-232,2822-2834).",
+    "Retain the conditional saved-method rules for off-session setup_future_usage, optional payment_method_save consent and allow_redisplay, Customer v1 versus customer-configured Account v2, and card-only Checkout prefill (old:1030-1080).",
+    "Retain the mobile PaymentSheet qualification that a completed sheet can precede final status for delayed methods and fulfillment waits for payment success (old:3723-3725,4811,5693-5695)."
+  ],
+  "unresolved_questions": [
+    "The parameterized variant bodies linked in new:14-20 were not captured in this job. Their current API examples, version support, availability, and whether a Payment Intents variant remains linked elsewhere cannot be inferred from this index alone.",
+    "The new label 'Full embedded page' and query ui=embedded-page (new:15) differs from the older 'Embedded form' ui=embedded-form (old:574-576). This index alone does not prove a behavior rename or migration requirement."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-checkout.md",
+    "wiki/concepts/stripe-payment-intents.md",
+    "wiki/concepts/stripe-saved-payment-methods.md",
+    "wiki/concepts/stripe-react-native-sdk.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-accept-a-payment/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "76163708cdedb8013834ba2f354682089445fd234a916f97023b63bfd4fefeb6",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-accept-a-payment/attempt-1/review.json",
+  "approved_triage_review_sha256": "a6d98dc58f5b79e53f63ef47d2eef2741c8f0465d75b2a707b8ca6ef5509ab71",
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw4",
+  "reviewer_agent": "/root/s2ur4",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-accept-a-payment-2026-11-07.md",
+      "sha256": "5f3f61e605f0b935db7c554926a05d115e1c7064434bcceede8408117b172d77",
+      "lines": 20
+    },
+    {
+      "path": "raw/stripe-accept-a-payment-2025.md",
+      "sha256": "d95f7887d1f09f78c741828484bebcf010043557e382c587026bcb533ffb9861",
+      "lines": 6128
+    },
+    {
+      "path": "wiki/sources/source-stripe-accept-a-payment.md",
+      "sha256": "c6675cfcf77fc280de470d73f78924222ff1eecb72c0f9857b501de25fa41975",
+      "lines": 85
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/dcf346de41dfd185880cc51f/content.diff",
+      "sha256": "a95247d4dc306287c828aad6dc9071dc990ccabd139e7c12d77c3852f6398105",
+      "lines": 6136
+    }
+  ],
+  "invalid_key": "bdfabe0ec25507cc1b0f0d05f7efd659df98c047eacb63fe8ef286836333f4fc",
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/payments-accept-a-payment-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/payments-accept-a-payment-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-accept-a-payment/attempt-1"
+}

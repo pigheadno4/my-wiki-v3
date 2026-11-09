@@ -1,0 +1,287 @@
+{
+  "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-express-checkout-element/base.md",
+  "base_sha256": "d389398a677de7ce90e45fb690f6197d7f7eea1159e4a46549d3cd4683fc91a1",
+  "patches": [
+    {
+      "update_id": "elements-express-checkout-element::ece-concept-how-availability",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "Stripe automatically sorts buttons by relevance to the customer's location. When the element has determined which wallets are available, it fires a `ready` event with `availablePaymentMethods`.",
+      "new_text": "Stripe sorts eligible buttons by relevance to the customer's location. The November 2026 overview uses `availablepaymentmethodschange` with `paymentMethods` to check availability in the customer's current environment; its React prop is `onAvailablePaymentMethodsChange`. The April 2026 overview used `ready` with `availablePaymentMethods` for this check. The captures do not establish removal of `ready` for every purpose or actual payment completion.",
+      "reason": "Replace the unqualified older availability callback with dated April/November event scopes.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "ece-concept-how-availability",
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/candidate.md",
+      "source_candidate_sha256": "ca2e1155f314ed5e75ea68c94053a22e0400141889627066cc19e9cc1f4e069e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element::ece-concept-browser-webview",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "Firefox does not support Apple Pay, Link, or Klarna. All payment methods have limited or no support in in-app webviews \u2014 use the iOS or Android SDK for mobile apps instead.",
+      "new_text": "The November browser table lists Firefox desktop Apple Pay with the non-Safari desktop `paymentMethods.applePay: 'always'` condition, while Firefox still lacks Link and Klarna. The April table marked Firefox Apple Pay unsupported and its desktop Chromium footnote said macOS-only; November omits that OS restriction without proving support on every desktop OS. In eligible iOS webviews Apple Pay can work; Google Pay can work without a popup, and Android webviews additionally need host Payment Request API support. Link, PayPal, Klarna, and Amazon Pay are marked unsupported in webviews. All browser, currency, setup, and device gates still apply; consider native iOS/Android SDKs for mobile apps.",
+      "reason": "Correct Firefox Apple Pay and replace blanket webview warning with method-specific conditions.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "ece-concept-browser-webview",
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/candidate.md",
+      "source_candidate_sha256": "ca2e1155f314ed5e75ea68c94053a22e0400141889627066cc19e9cc1f4e069e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element::ece-concept-availability-pattern",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "## Ready Event Pattern\n\n```js\nexpressCheckoutElement.on(\"ready\", ({ availablePaymentMethods }) => {\n  if (!availablePaymentMethods) {\n    // No wallets available \u2014 show fallback payment UI\n    showPaymentElement();\n  }\n});\n```\n\nReact: use the `onReady` prop on `<ExpressCheckoutElement>`. Check `availablePaymentMethods` in the callback; if falsy, show a fallback (e.g., `<PaymentElement>`).",
+      "new_text": "## Availability Event Pattern\n\nThe November overview uses the event below to check the methods currently available for the Element to display and to choose a fallback UI when none are available:\n\n```js\nexpressCheckoutElement.on(\"availablepaymentmethodschange\", ({ paymentMethods }) => {\n  if (!paymentMethods) showPaymentElement();\n});\n```\n\nReact uses `onAvailablePaymentMethodsChange={({ paymentMethods }) => ...}` on `<ExpressCheckoutElement>`. The April overview used `ready`/`availablePaymentMethods` and React `onReady` for this availability example; that is dated historical guidance, not proof that `ready` itself was removed. An availability callback does not prove merchant eligibility or payment completion.",
+      "reason": "Update the executable availability example and React prop without declaring the older event removed.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "ece-concept-availability-pattern",
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/candidate.md",
+      "source_candidate_sha256": "ca2e1155f314ed5e75ea68c94053a22e0400141889627066cc19e9cc1f4e069e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element::ece-concept-wallet-event-row",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "| `ready` | Available methods determined | Show/hide fallback UI |",
+      "new_text": "| `availablepaymentmethodschange` (November overview) | `paymentMethods` reports methods available to display | Show/hide fallback UI; April overview used `ready`/`availablePaymentMethods` for this check |",
+      "reason": "Bring the wallet-events table into line with the newer dated availability pattern.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "ece-concept-wallet-event-row",
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/candidate.md",
+      "source_candidate_sha256": "ca2e1155f314ed5e75ea68c94053a22e0400141889627066cc19e9cc1f4e069e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element::ece-concept-custom-warning",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "> Earlier product documentation describes Express Checkout Element as unsupported for Custom Payment Methods. The v9.14 declarations prove a beta typed integration surface, not general runtime rollout or account eligibility. Confirm beta access and live behavior before offering this path to a merchant.",
+      "new_text": "> The April 2026 product overview said methods could not be specified, while the November 2026 overview describes `customPaymentMethods` buttons on `stripe.elements()` with valid Dashboard `cpmt_` IDs and a working `handleRender`. The separately captured v9.14 declarations prove a beta typed surface. These snapshots do not prove general runtime rollout, account eligibility, or successful rendering; confirm access and live behavior before offering this path.",
+      "reason": "Reconcile newer product-page custom button support with the earlier limitation and separate versioned beta type evidence.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "ece-concept-custom-warning",
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/candidate.md",
+      "source_candidate_sha256": "ca2e1155f314ed5e75ea68c94053a22e0400141889627066cc19e9cc1f4e069e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element::ece-concept-source-route",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "- [[source-stripe-express-checkout-element]] \u2014 overview reference: supported methods, browser matrix, customization options, ready event",
+      "new_text": "- [[source-stripe-express-checkout-element]] \u2014 April and November overview captures for built-in methods, qualified Firefox/webview matrix, custom buttons, styling, and dated availability events",
+      "reason": "Route the concept to the updated dual-capture overview and its new eligibility distinctions.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "ece-concept-source-route",
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/candidate.md",
+      "source_candidate_sha256": "ca2e1155f314ed5e75ea68c94053a22e0400141889627066cc19e9cc1f4e069e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element::ece-concept-apple-pay-button-type",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "- Apple Pay: `buy`, `checkout`, `subscribe`, `donate`, `order`, `plain`, and 8 more",
+      "new_text": "- Apple Pay: `buy`, `check-out`, `subscribe`, `donate`, `order`, `plain`, and 8 more",
+      "reason": "Correct the exact Apple Pay buttonType value; both the older raw line 110 and November raw line 128 specify `check-out`, while Google Pay separately uses `checkout`.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "ece-concept-apple-pay-button-type",
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/candidate.md",
+      "source_candidate_sha256": "ca2e1155f314ed5e75ea68c94053a22e0400141889627066cc19e9cc1f4e069e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element::ece-concept-always-display-scope",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "- **Force show**: `paymentMethods.applePay: 'always'` or `paymentMethods.googlePay: 'always'` \u2014 still blocked on unsupported platforms",
+      "new_text": "- **Allow when wallet is not set up**: `paymentMethods.applePay: 'always'` or `paymentMethods.googlePay: 'always'` can allow the button to appear, subject to merchant/account and current-device eligibility. It cannot force display on an unsupported platform or for an unsupported currency.",
+      "reason": "The November overview at raw lines 303 and 310\u2013311 says `always` allows appearance when a wallet is not set up, but does not override unsupported platform or currency conditions; the former Force show label overstated the behavior.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "ece-concept-always-display-scope",
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/candidate.md",
+      "source_candidate_sha256": "ca2e1155f314ed5e75ea68c94053a22e0400141889627066cc19e9cc1f4e069e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element-accept-a-payment::ece-path-ranking-scope",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "Two API paths \u2014 Checkout Sessions (recommended) and Payment Intents \u2014 share the same ECE component but differ in initialization and confirmation.",
+      "new_text": "The 2026-04-21 [[source-stripe-express-checkout-element-accept-payment]] guide documents Checkout Sessions and Payment Intents paths with different initialization and confirmation. Its Payment Intents path recommends collecting details before creating an Intent; neither that guide nor the 2026-11-07 base-URL index ranks Checkout Sessions over Payment Intents.",
+      "reason": "Remove unsupported path-wide ranking while preserving the two historical path distinctions; old guide line 478 and new index lines 13\u201314.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "The November index does not provide either current variant body."
+      ],
+      "original_update_id": "ece-path-ranking-scope",
+      "job_id": "elements-express-checkout-element-accept-a-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "a991610372f3b3b88b020431c6ce20427a6664aa6888fc36f374717d3906be14",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/candidate.md",
+      "source_candidate_sha256": "e5945bc5ed00c8b2376a1f6f881b852009da56d7c5bd77fa3d7be750c673f4e0",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element-accept-a-payment::ece-checkout-heading",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "### Checkout Sessions Path (Recommended)",
+      "new_text": "### Checkout Sessions Path (2026-04-21 guide)",
+      "reason": "The heading repeats an unsupported path ranking; old guide and new index list paths without declaring Checkout Sessions universally recommended.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "ece-checkout-heading",
+      "job_id": "elements-express-checkout-element-accept-a-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "a991610372f3b3b88b020431c6ce20427a6664aa6888fc36f374717d3906be14",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/candidate.md",
+      "source_candidate_sha256": "e5945bc5ed00c8b2376a1f6f881b852009da56d7c5bd77fa3d7be750c673f4e0",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element-accept-a-payment::ece-deferred-confirm-order",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "ece.on('confirm', async (event) => {\n  await stripe.confirmPayment({ elements, confirmParams: { return_url: '...' } });\n});",
+      "new_text": "ece.on('confirm', async (event) => {\n  const { error: submitError } = await elements.submit();\n  if (submitError) return handleError(submitError);\n  const response = await fetch('/create-intent', { method: 'POST' });\n  const { client_secret: clientSecret } = await response.json();\n  const { error } = await stripe.confirmPayment({\n    elements,\n    clientSecret,\n    confirmParams: { return_url: '...' },\n  });\n  if (error) handleError(error);\n});",
+      "reason": "The old concept's deferred-Intent snippet skips required submission and the server-created PaymentIntent client secret. Old guide lines 1221\u20131225 and 1345\u20131366 supply the ordering. The server must determine a matching amount, as stated in the source page.",
+      "quote_indexes": [],
+      "warnings": [
+        "This concise excerpt assumes a server endpoint that chooses a trusted amount matching Elements and returns a PaymentIntent client secret; it is not a standalone production implementation."
+      ],
+      "original_update_id": "ece-deferred-confirm-order",
+      "job_id": "elements-express-checkout-element-accept-a-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "a991610372f3b3b88b020431c6ce20427a6664aa6888fc36f374717d3906be14",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/candidate.md",
+      "source_candidate_sha256": "e5945bc5ed00c8b2376a1f6f881b852009da56d7c5bd77fa3d7be750c673f4e0",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element-accept-a-payment::ece-link-test-otp-exceptions",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "| Link | Any 6-digit OTP succeeds; 000001 = invalid, 000002 = expired, 000003 = max attempts |",
+      "new_text": "| Link | In the 2026-04-21 guide's sandbox, any other 6-digit OTP succeeds; 000001 = invalid, 000002 = expired, 000003 = max attempts |",
+      "reason": "The existing cell contradicts its own listed exceptions and omits sandbox/date scope; old guide lines 388\u2013395 and 1453\u20131460.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "ece-link-test-otp-exceptions",
+      "job_id": "elements-express-checkout-element-accept-a-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "a991610372f3b3b88b020431c6ce20427a6664aa6888fc36f374717d3906be14",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/candidate.md",
+      "source_candidate_sha256": "e5945bc5ed00c8b2376a1f6f881b852009da56d7c5bd77fa3d7be750c673f4e0",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/review.json"
+    },
+    {
+      "update_id": "elements-express-checkout-element-migration::ece_migration_dated_route",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "Full migration guide: [[source-stripe-express-checkout-element-migration]]",
+      "new_text": "Payment Request Button \u2192 ECE migration: [[source-stripe-express-checkout-element-migration]] preserves the Payment Intents steps captured on 2026-04-21 and identifies the Checkout Sessions and Payment Intents variant routes in Stripe's 2026-11-07 index. The index does not establish either variant's current implementation details.",
+      "reason": "The old full guide is historical Payment Intents evidence; the new canonical capture is only a two-variant index, so the unqualified 'Full migration guide' route misstates the current capture.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "ece_migration_dated_route",
+      "job_id": "elements-express-checkout-element-migration",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-migration/attempt-1/receipt.json",
+      "receipt_sha256": "4d2a49aa3a7e5452d047446b86c512bec3dbfa84f836a9ff34129ca32ed5964a",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-migration/attempt-1/candidate.md",
+      "source_candidate_sha256": "b0975ee3392b62a02a656c34634561e49f56caf992a87eb240c2e5e8fa37ab03",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-migration/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "elements-express-checkout-element::ece-concept-how-availability",
+    "elements-express-checkout-element::ece-concept-browser-webview",
+    "elements-express-checkout-element::ece-concept-availability-pattern",
+    "elements-express-checkout-element::ece-concept-wallet-event-row",
+    "elements-express-checkout-element::ece-concept-custom-warning",
+    "elements-express-checkout-element::ece-concept-source-route",
+    "elements-express-checkout-element::ece-concept-apple-pay-button-type",
+    "elements-express-checkout-element::ece-concept-always-display-scope",
+    "elements-express-checkout-element-accept-a-payment::ece-path-ranking-scope",
+    "elements-express-checkout-element-accept-a-payment::ece-checkout-heading",
+    "elements-express-checkout-element-accept-a-payment::ece-deferred-confirm-order",
+    "elements-express-checkout-element-accept-a-payment::ece-link-test-otp-exceptions",
+    "elements-express-checkout-element-migration::ece_migration_dated_route"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-express-checkout-element/auto-candidate.md",
+  "auto_candidate_sha256": "951d3470243f1eff179b0b9b65efdb413f8f8536bac5fb7206bcc6aed510141f",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s02-updates/stripe-express-checkout-element-concept.json",
+  "review_output": "/tmp/stripe-s02-updates/stripe-express-checkout-element-concept-review.json",
+  "context_only_units": [
+    {
+      "job_id": "elements-express-checkout-element",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/receipt.json",
+      "receipt_sha256": "a6ae35ccdaab0e5809a5f906473cad9192e8300ea1ed3702a527c84a09a291d7",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element/attempt-2/review.json"
+    },
+    {
+      "job_id": "elements-express-checkout-element-accept-a-payment",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "a991610372f3b3b88b020431c6ce20427a6664aa6888fc36f374717d3906be14",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-accept-a-payment/attempt-1/review.json"
+    },
+    {
+      "job_id": "elements-express-checkout-element-migration",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-migration/attempt-1/receipt.json",
+      "receipt_sha256": "4d2a49aa3a7e5452d047446b86c512bec3dbfa84f836a9ff34129ca32ed5964a",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/elements-express-checkout-element-migration/attempt-1/review.json"
+    }
+  ]
+}

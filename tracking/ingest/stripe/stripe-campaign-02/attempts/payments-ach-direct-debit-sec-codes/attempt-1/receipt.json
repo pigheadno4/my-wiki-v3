@@ -1,0 +1,121 @@
+{
+  "job_id": "payments-ach-direct-debit-sec-codes",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-ach-direct-debit-sec-codes-2026-11-07.md",
+  "raw_sha256": "a366680db59ea5841ad9a1aec75dc5a1a21742102b8d1eb380eca4a9c717872a",
+  "prior_raw_path": "raw/stripe-ach-sec-codes-2025.md",
+  "prior_raw_sha256": "94a6599d04c32016c4486b985def189b0ffcc816599c4dfa81aec0f20b7dfa6e",
+  "source_target": "wiki/sources/source-stripe-ach-sec-codes.md",
+  "source_before_sha256": "664579a7cbb07e9f5c495d5aeeac652f1fdaa77c9e291f0f595439a55832aa2d",
+  "read_ranges": {
+    "raw/stripe-payments-ach-direct-debit-sec-codes-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 82
+      }
+    ],
+    "raw/stripe-ach-sec-codes-2025.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 115
+      }
+    ],
+    "wiki/sources/source-stripe-ach-sec-codes.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3712b74e906514a33a1819f8/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 107
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "If you don\u2019t specify a mandate collection method, Stripe defaults to using WEB for consumer bank accounts and CCD for business bank accounts.",
+      "location": "new raw line 13"
+    },
+    {
+      "text": "-d \"payment_method_options[us_bank_account][mandate_options][collection_method]=paper\"",
+      "location": "new raw line 38"
+    },
+    {
+      "text": "TEL debits are currently in private preview.",
+      "location": "new raw line 53"
+    },
+    {
+      "text": "- You don\u2019t have an existing relationship with the customer, but the customer initiated the telephone call to you.",
+      "location": "new raw line 66"
+    },
+    {
+      "text": "In addition, you must capture authorization by either an audio recording of the customer\u2019s oral authorization",
+      "location": "new raw line 78"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "TEL debits are currently in private beta.",
+      "location": "old raw line 86"
+    },
+    {
+      "text": "- You don\u2019t have an existing relationship with the customer, but the customer initiated the telephone call to you.",
+      "location": "old raw line 99"
+    },
+    {
+      "text": "To initiate a PPD debit, you must create a mandate with offline customer acceptance.",
+      "location": "old raw line 28"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New versus old raw preserves four ACH SEC codes, business responsibility for the correct code, WEB/CCD defaults when no mandate collection method is specified, WEB consumer/refund PPD behavior, CCD application to account_holder_type=company, and PPD written/signed consumer authorization and copy requirement (old lines 8-28; new lines 9-29). No captured evidence changes those semantics.",
+    "New raw lines 31-49 replace old Node PaymentIntent/SetupIntent confirmation examples (old lines 30-82) with curl. Both specify offline customer acceptance, accepted_at, and us_bank_account mandate collection_method=paper. This is an example-language change, not a new API requirement or SDK deprecation.",
+    "New raw lines 51-53 relabel TEL from old Beta/private beta (old lines 84-86) to Private preview. This is a material dated availability-label change, but does not establish access for a particular account. Source line 24, concept lines 106 and 128, and Stripe index line 248 retain beta wording and should be updated to captured private-preview wording.",
+    "Existing source line 24 says TEL requires an existing relationship, and concept line 108 repeats it. Both old raw lines 94-101 and new raw lines 61-68 permit the alternative where there is no existing relationship but the customer initiated the call. The affiliate relationship alone does not qualify. Queue a source and concept correction for this pre-existing material overstatement, separately from the small new/old delta.",
+    "Existing source line 32 says a specific oral authorization script is required. Raw line 76 requires explicit oral authorization with online-mandate information and a telephone number for inquiries; lines 78-82 present recording or pre-first-debit written notice and a sample script. The sample wording should not be elevated to a verbatim script mandate. Source line 31 and concept line 108 also need to keep written notice timing before the first debit.",
+    "TEL remains single-entry only, not standing or recurring, with commercially reasonable identity and routing-number verification (old lines 90-111; new lines 55-78). PPD offline acceptance does not substitute for TEL preview access or its separate authorization rules."
+  ],
+  "substantive_changes": [
+    "TEL availability label changes from private beta in old line 86 to private preview in new line 53.",
+    "PPD PaymentIntent and SetupIntent examples change from Node to curl while preserving offline acceptance and paper collection method (old lines 30-82; new lines 31-49).",
+    "Link anchors for mandate requirements change from mandates-for-online-custom-payment-forms to online-offline-mandates (old lines 26,109; new lines 27,76)."
+  ],
+  "historical_claims_to_preserve": [
+    "WEB is the default consumer SEC code absent a specified collection method, CCD the default business code; CCD applies to account_holder_type=company regardless of authorization type (old lines 12-22; new lines 13-23).",
+    "WEB covers internet/mobile consumer debits, while WEB refunds use PPD (old line 18; new line 19).",
+    "PPD involves standing or single-entry written/signed or otherwise authenticated consumer authorization, a copy to the customer, and offline acceptance with collection_method=paper (old lines 24-28; new lines 25-29).",
+    "TEL permits single debit entries only; eligibility includes either qualifying existing merchant-customer relationship or a customer-initiated call, with no affiliate-only substitution (old lines 84-101; new lines 51-68).",
+    "TEL requires verification, explicit oral authorization, and recording or written notice before the first debit; preview status must remain dated (old lines 103-115; new lines 70-82)."
+  ],
+  "conflicts": [
+    "Source line 24 and concept line 108 wrongly make existing relationship universally required for TEL, contrary to both captures' customer-initiated-call alternative (old line 99; new line 66).",
+    "Source line 32 says the specific sample oral script is required, while the raw states required authorization content and gives sample wording (old lines 109-115; new lines 76-82).",
+    "Source line 24, concept lines 106/128 and Stripe index line 248 retain private-beta wording after new raw line 53 says private preview; neither phrase proves live access."
+  ],
+  "unresolved_questions": [
+    "Captured documentation does not establish whether a specific Stripe account has TEL private-preview access or satisfy applicable Nacha or recording-law obligations.",
+    "The page does not establish an effective date for the beta-to-private-preview label change beyond its two capture dates."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-ach-direct-debit.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/ach-direct-debit/sec-codes, old raw lines 12-28 and new raw lines 13-29 keep WEB and CCD defaults, PPD written authorization, and offline paper collection method aligned. New raw lines 31-49 replace old Node examples at lines 30-82 with curl equivalents. [[source-stripe-ach-sec-codes]] should preserve the underlying SEC-code and mandate rules and treat the example-language switch as presentational, without implying a new API requirement.",
+    "Q2": "At https://docs.stripe.com/payments/ach-direct-debit/sec-codes, old raw line 86 called TEL private beta and new raw line 53 calls it private preview; neither proves account access. Both old line 99 and new line 66 allow a customer-initiated call without an existing relationship. [[source-stripe-ach-sec-codes]] should correct its unconditional relationship claim and avoid calling the sample oral script mandatory; new lines 76-82 instead require specified authorization information plus recording or pre-debit written notice."
+  }
+}

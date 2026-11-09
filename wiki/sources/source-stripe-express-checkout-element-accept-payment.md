@@ -1,8 +1,9 @@
 ---
 title: "Accept a Payment with the Express Checkout Element"
 type: source
-date_ingested: 2026-04-21
+date_ingested: 2026-11-09
 original_format: webpage
+canonical_url: "https://docs.stripe.com/elements/express-checkout-element/accept-a-payment"
 raw_files:
   - "stripe-express-checkout-element-accept-payment-2025.md"
 tags: [stripe, elements, express-checkout, apple-pay, google-pay, paypal, link, klarna, amazon-pay, checkout-sessions, payment-intents, integration-guide, connect]
@@ -10,204 +11,67 @@ tags: [stripe, elements, express-checkout, apple-pay, google-pay, paypal, link, 
 
 ## Summary
 
-Full integration guide for the Express Checkout Element covering two API paths: **Checkout Sessions API** (recommended) and **Payment Intents API**. Both paths support the same six wallet methods and share the same ECE component, but differ significantly in how the payment is initialized and confirmed.
+The 2026-04-21 capture is a combined Express Checkout Element integration guide for Checkout Sessions API and Payment Intents API. The 2026-11-07 capture of this base URL is an index pointing to those two variants, without their detailed contents. The apparent deletion of detailed instructions in the diff is a navigation split, not evidence that wallet methods, options, test values, or API behavior were deprecated or remain currently available. All technical instructions below are historical claims from the April guide; current variant behavior needs separately captured variant bodies.
 
-## Payment Method Type Mappings
+## Method configuration and availability in the 2026-04-21 guide
 
-Both API paths require specific `payment_method_types` values:
+Both paths default to the Stripe Dashboard payment-method settings. Explicit method lists are **optional overrides**, not universally required. For Checkout Sessions, set `payment_method_types` on the Session if overriding. For Payment Intents, use `paymentMethodTypes` on deferred Elements options or `payment_method_types` on an Intent created before Elements. The historical guide's method tables differ:
 
-| Payment Method | Type(s) Required |
-| --- | --- |
-| Apple Pay | `card` |
-| Google Pay | `card` |
-| Link | `link` + `card` |
-| PayPal | `paypal` |
-| Amazon Pay | `amazon_pay` |
-| Klarna | `klarna` (Payment Intents only) |
+| Method | Checkout Sessions API | Payment Intents API | Types when explicitly configured |
+| --- | --- | --- | --- |
+| Apple Pay | Listed | Listed | `card` |
+| Google Pay | Listed | Listed | `card` |
+| Link | Listed | Listed | `link` and `card` |
+| PayPal | Listed | Listed | `paypal` |
+| Amazon Pay | Listed | Listed | `amazon_pay` |
+| Klarna | Not listed in that variant's table | Listed | `klarna` |
 
-`card` automatically enables both Apple Pay and Google Pay. Klarna is only listed in the Payment Intents supported methods table — not in the Checkout Sessions table.
+A method's appearance still depends on account and payment-method settings, country, domain registration, device, browser, and a suitable customer wallet. The guide says the `ready` event's `availablePaymentMethods` indicates which buttons actually display. This table is not a claim of current eligibility or that both paths support the same six methods.
 
-## Checkout Sessions API Integration
+## Checkout Sessions API path (historical)
 
-### Server
+The server creates a Checkout Session with line items, `mode: 'payment'`, `ui_mode: 'elements'`, and a return URL. Its **Session client secret** goes to the client for `stripe.initCheckoutElementsSdk({ clientSecret })`; the client creates and mounts the Express Checkout Element. In the HTML/JS flow, `checkout.loadActions()` must return success before its `actions.confirm({ expressCheckoutConfirmEvent: event })` is called from the Element's `confirm` event. The React variant uses `CheckoutElementsProvider`, `useCheckout()`, and `ExpressCheckoutElement` from `@stripe/react-stripe-js/checkout`. Optional Session settings in the older guide include phone collection, shipping collection and options, and automatic tax; these are options, not universal prerequisites.
 
-```js
-const session = await stripe.checkout.sessions.create({
-  line_items: [{ price: 'PRICE_ID', quantity: 1 }],
-  mode: 'payment',
-  ui_mode: 'elements',        // key: enables Elements mode
-  return_url: 'RETURN_URL',
-});
-// session.client_secret → send to client
-```
+## Payment Intents API path (historical)
 
-Optional session params: `phone_number_collection`, `shipping_address_collection`, `shipping_options`, `automatic_tax`.
+The older guide recommends **collecting payment details before creating an Intent within this path**. That is an ordering preference, not a ranking of Checkout Sessions over Payment Intents. Initialize deferred Elements with `mode`, `amount`, and `currency`, then mount the Express Checkout Element. The server must decide the actual charge amount, create the PaymentIntent with matching amount and currency, and return **that PaymentIntent's** client secret. A concise order for the guide's deferred flow is:
 
-### Client (HTML+JS)
+1. In the Element's `confirm` handler, call `elements.submit()` and stop on its error.
+2. Call the server's Intent-creation endpoint; the server determines the amount and returns `client_secret` for its PaymentIntent.
+3. Call `stripe.confirmPayment({ elements, clientSecret, confirmParams: { return_url } })` with that returned secret, then handle immediate errors and later payment status appropriately.
 
-```js
-const checkout = stripe.initCheckoutElementsSdk({ clientSecret });
-const expressCheckoutElement = checkout.createExpressCheckoutElement();
-expressCheckoutElement.mount('#express-checkout-element');
+The historical guide also shows a distinct ConfirmationToken route for server validation: submit Elements, create the token, create an Intent server-side, then use its client secret and the token to confirm. It is a separate option, not a missing step in the ordinary deferred-Intent route. The guide says the PaymentIntent amount must match the amount presented through Elements; for Amazon Pay, Klarna, and PayPal, confirmation must match the buyer's pre-authorized amount. A `confirmPayment` call or browser animation alone does not prove final settlement.
 
-// Confirm
-const { actions } = await checkout.loadActions();
-expressCheckoutElement.on('confirm', (event) => {
-  actions.confirm({ expressCheckoutConfirmEvent: event });
-});
-```
+### Elements options
 
-### Client (React)
+In the older Payment Intents variant, `mode` and `currency` are required Elements options; `amount` is required for payment and subscription modes. Optional settings include `setupFutureUsage` (not supported for Klarna here), `captureMethod`, `onBehalfOf` for Connect, `paymentMethodTypes`, `paymentMethodCreation`, and `paymentMethodOptions`. Equivalent Elements options and Intent parameters must match or errors can result. The guide's options table and schema details are at historical raw lines 604–629.
 
-```jsx
-import { CheckoutElementsProvider } from '@stripe/react-stripe-js/checkout';
-// Wrap app with CheckoutElementsProvider (clientSecret + stripe instance)
-// Use useCheckout() hook; call checkout.confirm({ expressCheckoutConfirmEvent: event })
-// <ExpressCheckoutElement onConfirm={handleConfirm} />
-```
+## Customer details, wallet events, and tests
 
-## Payment Intents API Integration
+The historical Payment Intents variant can request payer email and phone, shipping address and rates, and line items. `billingAddressRequired` defaults to true unless one of the guide's specified shipping, payer, Apple Pay, line-item, or business options is supplied. PayPal normally omits billing address beyond country and phone; if required details are unavailable, the PayPal button is hidden. A browser may anonymize the shipping address before confirmation. If handling `shippingaddresschange` or `shippingratechange`, the handler must resolve or reject; a rate change can update the Elements amount. The `cancel` example resets the amount. The `ready` event can support a fallback UI when no wallet button is available. Apple Pay merchant-token options are documented for recurring, deferred, or auto-reload use cases, not automatically enabled by mounting the Element.
 
-### Client Setup
+The April guide's sandbox tables include Link OTPs (any other six digits succeed; `000001`, `000002`, and `000003` are error cases), wallet testing and domain/browser prerequisites, Amazon Pay test-card outcomes, and Payment Intents-path Klarna country test data. These are **sandbox fixtures**, not live approvals or current country support. It says Google Pay and Apple Pay cannot be tested from an Indian IP address, even for a non-Indian Stripe account. The detailed fixtures remain in the historical raw, not in the November index.
 
-```js
-const elements = stripe.elements({ mode: 'payment', amount: 1099, currency: 'usd' });
-const expressCheckoutElement = elements.create('expressCheckout');
-expressCheckoutElement.mount('#express-checkout-element');
-```
+## Connect, environment, and disclosure
 
-### Confirm
+The Checkout Sessions Connect example creates the Session on the connected account with a `Stripe-Account` request header. The Payment Intents variant scopes the client Stripe instance with `stripeAccount` before creating the Element; its example specifies `apiVersion: '2026-03-25.dahlia'`. These are distinct path examples, not interchangeable secrets or a general version requirement. The guide also instructs registration of each domain where the Element appears. It describes HTTPS for development and production, wallet/browser conditions, and merchant responsibility to disclose Stripe's collection of interaction data and obtain needed rights and consents. Account-specific eligibility, final payment outcome, and current Connect behavior were not tested by this capture.
 
-```js
-expressCheckoutElement.on('confirm', async (event) => {
-  const { error } = await stripe.confirmPayment({
-    elements,
-    confirmParams: { return_url: 'https://example.com/order/123/complete' },
-  });
-});
-```
+## Detail locators
 
-### Elements Options (Payment Intents path)
-
-| Option | Type | Notes |
-| --- | --- | --- |
-| `mode` | `payment` \| `setup` \| `subscription` | Required |
-| `currency` | string | Required |
-| `amount` | number | Required for payment/subscription |
-| `setupFutureUsage` | `off_session` \| `on_session` | Not supported for Klarna |
-| `captureMethod` | `automatic` \| `automatic_async` \| `manual` | — |
-| `onBehalfOf` | string | Connect only |
-| `paymentMethodTypes` | string[] | Omit to use Dashboard settings |
-| `paymentMethodCreation` | `manual` | Creates PM from Elements instance |
-| `paymentMethodOptions` | object | US bank verification, card installments, per-PM `setup_future_usage` |
-
-Must match equivalent params on the PaymentIntent during confirmation — mismatches cause errors.
-
-## Customer Detail Collection (Payment Intents Path)
-
-### Payer Info
-
-```js
-elements.create('expressCheckout', {
-  emailRequired: true,
-  phoneNumberRequired: true,
-});
-```
-
-`billingAddressRequired` defaults to `true` unless `allowedShippingCountries`, `phoneNumberRequired`, `shippingAddressRequired`, `emailRequired`, `applePay`, `lineItems`, or `business` are passed — then defaults to `false`.
-
-**PayPal limitation**: normally doesn't provide billing address (except country) or phone. If required and unavailable, the PayPal button is hidden.
-
-### Shipping
-
-```js
-elements.create('expressCheckout', {
-  shippingAddressRequired: true,
-  allowedShippingCountries: ['US'],
-  shippingRates: [{ id: 'free-shipping', displayName: 'Free shipping', amount: 0, deliveryEstimate: {...} }],
-});
-```
-
-> Browsers may anonymize the shipping address (city/state/postal only) before confirmation. Full address appears in the `confirm` event after purchase is confirmed.
-
-### Events
-
-| Event | When | Response required |
-| --- | --- | --- |
-| `shippingaddresschange` | Customer selects a shipping address | `resolve({lineItems})` or `reject()` |
-| `shippingratechange` | Customer selects a shipping rate | `resolve({lineItems})` + `elements.update({amount})` or `reject()` |
-| `cancel` | Customer dismisses payment UI | Reset amount: `elements.update({amount: originalAmount})` |
-| `confirm` | Customer confirms payment | Call `stripe.confirmPayment(...)` |
-| `ready` | Element determines available methods | Show/hide fallback UI |
-| `click` | Customer clicks a button | Can request Apple Pay merchant tokens (MIT) |
-
-### Line Items Display
-
-```js
-elements.create('expressCheckout', {
-  lineItems: [
-    { name: 'Sample item', amount: 1000 },
-    { name: 'Tax', amount: 100 },
-    { name: 'Shipping cost', amount: 1000 },
-  ]
-});
-```
-
-## Apple Pay Merchant Tokens (MIT)
-
-For recurring, deferred, or auto-reload payments via Apple Pay, request the relevant merchant token type in the `click` event. Aligns with Apple Pay's latest guidelines.
-
-## Testing
-
-### Link
-
-OTP values accepted in sandbox:
-
-| Value | Outcome |
-| --- | --- |
-| Any 6 digits except below | Success |
-| 000001 | Error — code invalid |
-| 000002 | Error — code expired |
-| 000003 | Error — max attempts exceeded |
-
-### Apple Pay / Google Pay
-Use test API keys — Stripe intercepts and returns a successful test card token. Live card is not charged. Google Pay also supports its own [test card suite](https://developers.google.com/pay/api/web/guides/resources/test-card-suite).
-
-### PayPal
-Create a sandbox account at developer.paypal.com (must be in sandbox mode). Cannot use a personal PayPal account in sandbox.
-
-### Amazon Pay
-
-| Card | Outcome |
-| --- | --- |
-| Discover ending 9424 | Success |
-| Visa ending 1111 | Success |
-| Visa ending 0701 | 3D Secure |
-| Amex ending 0005 | Decline |
-| JCB ending 0000 | Decline |
-
-## Connect Integration
-
-**Checkout Sessions path**: pass `Stripe-Account: CONNECTED_ACCOUNT_ID` header when creating the session.
-
-**Payment Intents path**: pass `stripeAccount` option on the Stripe instance before creating Elements:
-```js
-const stripe = Stripe('PK', { stripeAccount: 'CONNECTED_ACCOUNT_ID' });
-```
-
-Both paths require registering all domains where the ECE will appear.
-
-## Privacy Disclosure Requirement
-
-Stripe collects interaction data (cookies, IP) to prevent fraud. Merchants must disclose this and obtain customer consent per Stripe's privacy center requirements.
+- [[raw/stripe-express-checkout-element-accept-payment-2025|2026-04-21 combined guide]], Checkout Sessions path lines 28–472; Dashboard default and optional override 51–65; server Session/client secret 67–87; client confirmation 221–237; tests 378–439; Connect 441–466.
+- Same guide, Payment Intents path lines 474–1892; path-specific ordering preference 478; Dashboard default and method table 499–519; Elements options 604–629; customer details and wallet events 673–995; ConfirmationToken option 1073–1219; server Intent and authoritative amount 1221–1323; deferred confirm order 1325–1439; sandbox/Klarna fixtures 1443–1864; Connect 1865–1886.
 
 ## Related Pages
 
-- [[stripe-express-checkout-element]] — concept page
-- [[source-stripe-express-checkout-element]] — overview/reference source
-- [[stripe-elements]] — parent Elements framework
-- [[stripe]] — company page
+- [[stripe-express-checkout-element]] — concept and integration context.
+- [[source-stripe-express-checkout-element]] — Element overview and button behavior.
+- [[source-stripe-express-checkout-element-migration]] — Payment Request Button migration.
+- [[stripe]] — provider.
+
+## Related raw API references
+
+- [[raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07|2026-11-07 base-URL variant index]] — links the Checkout Sessions API and Payment Intents API pages (lines 9–14); their bodies were not captured in this unit.
 
 ## Raw Sources
 
-- [[stripe-express-checkout-element-accept-payment-2025]] — verbatim integration guide (Checkout Sessions + Payment Intents paths)
+- [[raw/stripe-express-checkout-element-accept-payment-2025|Express Checkout Element combined guide, captured 2026-04-21]] — historical detailed evidence.

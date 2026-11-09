@@ -13,64 +13,53 @@ Customer payment methods, KYC data, and wallet information are saved with Stripe
 
 ## Integration Modes
 
-| Mode | Status | Use Case |
+| Mode | Dated availability evidence | Use case and guide coverage |
 | --- | --- | --- |
-| **Stripe-hosted** | Public preview | No code required; redirect to crypto.link.com; some customization (amount, currency, network) |
-| **Embedded** | Public preview | Embed in website/mobile webview via Onramp API; brand + full parameter customization |
-| **Embedded components** (mobile SDK) | Private preview | Native iOS/Android; full UI + parameter customization via Onramp SDK + API |
+| **Stripe-hosted** | May 11, 2026: public preview; application for access | No-code redirect to `crypto.link.com`; amount, currency and network customization |
+| **Embedded** (iframe widget) | May 11, 2026: public preview; application for access | Onramp API in a website or mobile webview; branding and parameter customization |
+| **Embedded components** (headless SDK) | May 11, 2026 overview and integration guide: private preview with separate signup; November status unverified | May full guide covers Web, React Native, Android and iOS with custom UI through SDK and API; May quickstart covers web/React Native and links native samples. November same-URL hub points to a distinct quickstart and platform guides, whose current bodies were not captured here. |
+
+> [!warning] Contradiction
+> The May overview assigns preview status separately to each mode. The November 7 overview collapses availability to a single `Public preview` cell and omits the separate mobile signup; the November Embedded Components hub gives navigation, not an access statement. That cell does not prove mobile public-preview access or any account's eligibility. See [[source-stripe-crypto-onramp]].
 
 ## Access
 
-Application required at `dashboard.stripe.com/crypto-onramp/get-started`. Reviewed within 48 hours. Required even for sandbox/test access.
+To access the onramp, the May and November 2026 overview and Stripe-hosted guides require a Stripe account, an application at `dashboard.stripe.com/crypto-onramp/get-started`, and approval before sandbox/test development. Stripe says it reviews **most** applications within 48 hours, then notifies applicants of approval or a request for more information; neither the timing nor access is established for a particular account. Constructing a frontend redirect URL without a Stripe account is a separate code-path statement and does not waive onramp approval or prove a transaction can complete.
 
-## Supported Currencies (US + EU)
+## Stripe-Hosted Currency Snapshot (US + EU, May/November 2026)
 
 ETH, ETH (Base), SOL, POL, MATIC, BTC, AVAX, XLM, USDC (Ethereum/Solana/Polygon/Avalanche/Base/Stellar)
 
-**Geo restrictions**:
+**Geo restrictions in the May and November 2026 Stripe-hosted guides, with available currencies expressly subject to change**:
 
 - XLM, USDC (Stellar/Avalanche/Polygon): not in New York
 - ETH (Base), MATIC, AVAX, USDC (Solana/Polygon/Avalanche/Base): not in EU
+
+These document snapshots do not establish current asset, country, or account eligibility.
 
 ## Stripe-Hosted: Two Customization Paths
 
 | Path | Requirements | Capability |
 | --- | --- | --- |
-| Generate redirect URL (frontend) | No Stripe account | Light customization; no branding |
+| Generate redirect URL (frontend) | May 11, 2026 hosted guide: no Stripe account needed to construct the URL; onramp use still requires an account, application and approval, including sandbox access | Light customization; no branding |
 | Mint session with redirect URL (backend) | Stripe account + API | Full customization incl. wallet address; branding |
 
 Frontend scripts must load from Stripe domains (`js.stripe.com`, `crypto-js.stripe.com`) — never bundle or self-host (PCI requirement).
 
 Session API: `POST /v1/crypto/onramp_sessions` → `redirect_url`, `client_secret`, `transaction_details`.
 
-## Embedded Integration (React + Node.js)
+## Embedded Integration (dated Node/React and November variants)
 
-**Packages**: `@stripe/crypto`, `@stripe/stripe-js`
+The May 11, 2026 quickstart shows Node/Express creating an `OnrampSession` with a custom `Stripe.StripeResource` extension and returning `clientSecret`. Its browser example uses `@stripe/crypto` and `@stripe/stripe-js`, calls `loadStripeOnramp` with the publishable key, then mounts an iframe using the client secret. The client sends sample `transaction_details` (`destination_currency`, `destination_exchange_amount`, `destination_network`); the server separately reads `customer_ip_address` from its request. These are passed sample fields, not a complete schema showing universal requiredness. The shown `usdc`, `13.37`, and `ethereum` values are sandbox examples.
 
-**Server** (custom extension — official library doesn't support onramp API yet):
+The November 7 capture adds alternative Ruby, Python, PHP, Go, .NET and Java server snippets and a direct browser-script variant. For that script variant, Stripe instructs loading its Stripe.js and crypto-js scripts from Stripe domains, without bundling or self-hosting them. The React package path remains separately documented. `onramp_ui_loaded` means the UI loaded and `onramp_session_updated` reports a session status change; neither alone proves payment finality or crypto delivery. See [[source-stripe-crypto-onramp-embedded-quickstart]].
 
-```js
-const OnrampSessionResource = Stripe.StripeResource.extend({
-  create: Stripe.StripeResource.method({ method: 'POST', path: 'crypto/onramp_sessions' }),
-});
-// POST /create-onramp-session → { clientSecret }
-// Required params: destination_currency, destination_exchange_amount, destination_network, customer_ip_address
-```
-
-**Client**:
-
-```js
-const stripeOnramp = await loadStripeOnramp(publishableKey);
-stripeOnramp.createSession({ clientSecret, appearance: { theme: 'dark' } }).mount(containerRef);
-```
-
-**Events**: `onramp_ui_loaded` (UI ready) and `onramp_session_updated` (status change)
-
-**Sandbox test values**: `destination_currency: 'usdc'`, `destination_exchange_amount: '13.37'`, `destination_network: 'ethereum'`
+> [!warning] Contradiction
+> Both dated quickstarts call the onramp API limited beta and say official libraries lack built-in endpoint support, while the November page also shows Java `client.v1().crypto().onrampSessions().create(params)` and a .NET `OnrampSessionService`. The May Node custom extension is a historical example; this page does not verify which SDK versions implement those other snippets or merchant access.
 
 ## Session Lifecycle States
 
-`initialized` → `rejected` | `requires_payment` → `fulfillment_processing` → `fulfillment_complete`
+The embedded-widget guide lists `initialized`, `rejected`, `requires_payment`, `fulfillment_processing` and `fulfillment_complete`. `fulfillment_processing` means payment completed **but crypto has not yet been delivered**; `fulfillment_complete` means delivery is confirmed. See [[source-stripe-crypto-onramp-embedded-setup]] for the dated state descriptions.
 
 ## Quotes API
 
@@ -90,7 +79,10 @@ Every session status change generates a webhook.
 
 ## Embedded Components (Headless) Mode
 
-**Private preview** — distinct from the embedded iframe widget. Full custom UI via SDK methods; requires Link OAuth authentication. **US only, excluding New York** (stricter than embedded onramp which excludes Hawaii).
+The May 11, 2026 [[source-stripe-crypto-onramp|overview]] and [[source-stripe-crypto-onramp-embedded-components-integration|integration guide]] described Embedded Components as **private preview**; the integration guide scoped it to US users excluding New York, distinct from the embedded iframe's May US/EU scope excluding Hawaii. It describes a custom headless UI, while the May [[source-stripe-crypto-onramp-embedded-components|quickstart]] documents Link OAuth for the authenticated flow. The November 7 same-URL hub instead routes to a distinct quickstart, platform guides and an EU KYC guide; it states no current preview or regional eligibility. The November [[source-stripe-crypto-onramp-kyc-integration|KYC guide]] addresses EU customers' additional identifier and attestation requirements and allows mobile Apple Pay or Google Pay collection before Link authentication, while token creation still requires authentication and minimum identity submission.
+
+> [!warning] Contradiction
+> The May integration guide's US-only, excluding-New-York scope and the November KYC guide's EU-customer note leave present regional scope unresolved. The hub's EU KYC link is navigation, and the linked guide body was not captured here. Neither source proves EU merchant eligibility, current preview access or a particular account's authorization; check the current variant and account access before applying either dated regional statement.
 
 | | Embedded (iframe) | Embedded Components (headless) |
 | --- | --- | --- |
@@ -98,17 +90,20 @@ Every session status change generates a webhook.
 | SDK | `loadStripeOnramp` | `loadCryptoOnrampAndInitialize` |
 | API version | Standard | `Stripe-Version: 2026-03-25.dahlia;crypto_onramp_beta=v2` |
 
-**Customer setup state machine**: auth → kyc → identity verify → wallet → payment method → checkout
+**Customer setup sequence**: The May 2026 guide depicted auth → KYC → identity verification → wallet → payment method → checkout. For the November 2026 iOS, Android, and React Native **Apple Pay or Google Pay** path, payment-method collection may occur before Link registration/authentication and KYC submission; it is not KYC approval or a purchase. Complete registration or authentication and submit minimum identity information before `createCryptoPaymentToken`. L0/L1 verification is asynchronous: check CryptoCustomer until no verification remains pending before creating an onramp session, which otherwise returns HTTP 400. This KYC guide does not generalize pre-auth collection to other payment methods.
 
-**Key SDK methods**: `registerLinkUser()`, `authenticate()`, `submitKycInfo()`, `verifyDocuments()`, `registerWalletAddress()`, `collectPaymentMethod()`, `performCheckout()`
+**May Web SDK method examples**: `registerLinkUser()`, `authenticate()`, `submitKycInfo()`, `verifyDocuments()`, `registerWalletAddress()`, `collectPaymentMethod()`, `performCheckout()`. React Native, Android, and iOS use their own platform methods; see the platform locators in [[source-stripe-crypto-onramp-embedded-components-integration]].
 
-**KYC tiers** (Embedded Components): L0 (name/phone/email/address) → L1 (+ DOB/SSN) → L2 (+ photo ID/selfie); L0 required before `collectPaymentMethod`; L0/L1 async — poll before creating session; L2 uses `verifyIdentity()`. Session creation returns 400 on pending verifications. Error codes: `crypto_onramp_missing_minimum_identity_verification`, `crypto_onramp_missing_identity_verification`, `crypto_onramp_missing_document_verification` — each has tier-specific next steps.
+**KYC tiers** (Embedded Components): L0 (name/phone/email/address as customer information) → L1 (+ DOB/SSN) → L2 (+ photo ID/selfie). The May 2026 guide required L0 submission before payment-method collection; the November guide permits Apple Pay or Google Pay collection before Link authentication/KYC on iOS, Android and React Native, while registration/authentication plus minimum identity submission are still required before `createCryptoPaymentToken`. Wallet phone/email go to Link registration, not `attachKYCInfo`; KYC name/address go to that API. L0/L1 verification is asynchronous — poll before session creation; L2 uses `verifyIdentity()`. A current tier can be pending/rejected and must not be read as verified; a failed L0 can be superseded by completed L1. Session creation returns 400 on pending verification. Minimum-identity, L1 and L2 error codes require their distinct step-up paths; L2 can also be required by risk rules below a tier's amount limit. See [[source-stripe-crypto-onramp-kyc-integration]].
 
-**Session**: `ui_mode: 'headless'` + `crypto_customer_id` + `payment_token`; checkout requires `mandate_data`; quote refresh needed before expiry.
+> [!warning] Contradiction
+> The May L0-before-payment-method rule conflicts with the November mobile Platform Pay sequencing. The November minimum-identity error means missing submission, not necessarily failed L0 verification. Payment-method collection is not token creation, KYC approval, session creation or purchase.
+
+**Session**: `ui_mode: 'headless'` + `crypto_customer_id` + `payment_token`. In the May Web ACH checkout path, pass `mandate_data` and collect the user's IP address and user agent. In the May React Native, Android, and iOS ACH paths, the API may report missing `mandate_data`; collect acceptance and send it on a later checkout call if required. Refresh an expired quote before retrying when indicated.
 
 **Access token TTL**: 1 hour; refresh token returned on each use — store the latest; use in `Stripe-OAuth-Token` header.
 
-**Supported networks (13)**: bitcoin, ethereum, solana, polygon, stellar, avalanche, base, aptos, optimism, worldchain, xrpl, sui, tempo
+**May Web `CryptoNetwork` type (13 enum values)**: bitcoin, ethereum, solana, polygon, stellar, avalanche, base, aptos, optimism, worldchain, xrpl, sui, tempo. This list alone does not establish current account, region, mode, or currency-network eligibility; the May iOS livemode table is separate.
 
 `@stripe/stripe-react-native@0.73.0` adds `tempo` to its `CryptoNetwork` enum, providing package-level evidence that the React Native wrapper exposes the network. This does not by itself prove account, country, currency, or production eligibility.
 
@@ -241,12 +236,16 @@ The retained native API signature adds CryptoNetwork.Tempo. Release notes also a
 - [[source-github-stripe-ios]] - native 26.13.0 alpha pre-auth Apple Pay, merchant-of-record hint/cache lifecycle and additional-KYC caller; explicit delegated implementation limits
 - [[source-github-stripe-android]] - native 23.14.0 Tempo declaration and explicit request-implementation limits
 
-- [[source-stripe-crypto-onramp]] — overview: merchant of record role, three integration modes, application process
-- [[source-stripe-crypto-onramp-stripe-hosted]] — Stripe-hosted implementation: currencies, geo restrictions, frontend/backend customization paths, session API
+- [[source-stripe-crypto-onramp]] — May and November 2026 overview of Stripe's merchant-of-record role, three onramp modes, dated preview labels, and application requirement
+- [[source-stripe-crypto-onramp-stripe-hosted]] — May/November 2026 hosted-onramp guides: application gate, changeable currency/geography list, frontend URL versus backend session path, and dated Dahlia/Endive script examples
 - [[source-stripe-crypto-onramp-embedded]] — Embedded overview: payment methods (credit/debit/ApplePay/ACH), instant delivery, Link, webhooks per status change
 - [[source-stripe-crypto-onramp-embedded-quickstart]] — Embedded quickstart: Node.js server, React client, OnrampSession API, events, dark mode, sandbox test values
-- [[source-stripe-crypto-onramp-embedded-setup]] — Extended setup: session states, customer info pre-population, Quotes API, 14 error codes, mobile integration, session persistence, use-case configs
-- [[source-stripe-crypto-onramp-embedded-components]] — Embedded Components (headless) quickstart: Link OAuth flow, state machine, SDK methods, headless session, quote refresh
-- [[source-stripe-crypto-onramp-embedded-components-integration]] — Integration guide (Web/RN/Android): geo restriction, 13 networks, last_error codes, SDK reference, LinkAuthIntent APIs
-- [[source-stripe-crypto-onramp-kyc-integration]] — KYC tier system: L0/L1/L2 requirements, verification status values, session error codes, tier detection
+- [[source-stripe-crypto-onramp-embedded-setup]] — May and November 2026 public-preview widget setup: states, pre-population, estimated quotes and fee total, mobile flow, webhook/errors and session persistence
+
+> [!warning] Contradiction
+> Both dated embedded-widget guides show `client_secret` in a mobile URL path but also forbid putting it in URLs because it exposes wallet-address information. The source does not reconcile the example with its own handling rule; treat the URL pattern as an unresolved conflict, not implementation guidance. See [[source-stripe-crypto-onramp-embedded-setup]].
+
+- [[source-stripe-crypto-onramp-embedded-components]] — May 11, 2026 headless quickstart with Link OAuth, setup and checkout flow; November 7 same-URL hub routes to a distinct quickstart and integration guides
+- [[source-stripe-crypto-onramp-embedded-components-integration]] — May 2026 full Embedded Components guide for Web, React Native, Android, and iOS, with platform-specific KYC, checkout errors, and LinkAuthIntent APIs; November 7 base URL is a variant index.
+- [[source-stripe-crypto-onramp-kyc-integration]] — May and November 2026 Embedded Components KYC guide: tier status/error interpretation and November's mobile Platform Pay pre-auth collection with later identity gates.
 - [[source-github-stripe-react-native]] — React Native Tempo typing in `0.73.0`, plus Samsung Pay Onramp collection and wallet-verification error types in `0.75.0`

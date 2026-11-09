@@ -1,0 +1,82 @@
+{
+  "job_id": "payments-ach-direct-debit-migrating-from-charges",
+  "queue_id": 138,
+  "canonical_url": "https://docs.stripe.com/payments/ach-direct-debit/migrating-from-charges",
+  "raw_path": "raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07.md",
+  "raw_sha256": "af65f8f540ac35713b814ff1a927c3527f268ac45942d56280519c28046e7f32",
+  "prior_raw_path": "raw/stripe-ach-migrate-bank-accounts-2025.md",
+  "prior_raw_sha256": "8205ed04d0361e3fc44aeb88a3aec5ddf08c24717a268248145f8ca0620392ce",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/d5118ad7727262cadc4d3a7b/content.diff",
+  "diff_sha256": "371a00a020ec7f76ac5175fd9dc0cd515ac4b33f0cb73ebc2820afc00fac94f8",
+  "source_target": "wiki/sources/source-stripe-ach-migrate-bank-accounts.md",
+  "source_before_sha256": "c09784c5a1ae65818ffb82921afc3e469525f93ef6e9fcf301181944d3a23372",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-2/receipt.json",
+  "receipt_sha256": "36626919a544f61c79940043c347d0c9be5a93cb4084c6eae363d331e46e4211",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-2/review.json",
+  "review_sha256": "e4facaac34b2483574ada07b25983f3cb9b83d4beb594edc2ef6f382c31a7dd7",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The November 7 capture at the same canonical URL is a 14-line variant index pointing separately to Checkout Sessions and Payment Intents content. The diff removes the previously bundled guide from this URL, but does not establish removal or changed behavior of either integration path. The linked variant pages are outside this pinned unit.",
+    "The May guide distinguishes prerequisites: Checkout requires a verified bank account; Payment Intents requires a verified account and an active mandate, while already verified BankAccounts need no repeat verification (old lines 22-28). Current source line 19 collapses this into 'must create mandate before first use' and omits account verification, which can mislead for both paths. Correct the existing source using the dated old guide and qualify that an existing active mandate can satisfy the PI prerequisite.",
+    "The 2026-05-02 captured guide warns that Stripe was removing support for legacy ACH Direct Debit integrations and that merchants creating legacy ACH payments must migrate to Payment Intents or Checkout Sessions (old lines 16-18). Current source line 13 describes migration but omits this consequential warning. Add it explicitly as a dated claim; the November navigation-only capture does not verify a current retirement schedule or status.",
+    "For continuing Invoicing and Subscriptions with a saved BankAccount, the May guide puts collection of mandate acknowledgment before updating customer invoice_settings.default_payment_method or setting default_payment_method on an invoice or subscription (old lines 265-268 and 296-299). Current source line 28 lists the default update alone. Qualify that row with this prerequisite so it cannot imply that updating a default alone authorizes debits.",
+    "The old guide also provides a practical legacy-identification criterion absent from the current source: Charge payment_method_details.type ach_debit versus us_bank_account, with legacy creation paths at old lines 332-340. Recommend preserving this as a dated migration detail; do not infer a new November API rule from the index.",
+    "The source's dated raw_files reference correctly points to the full May guide. Keep the November navigation-only capture out of factual raw_files; update source details and indexing only through coordinator-controlled promotion."
+  ],
+  "approved_conflicts": [
+    "Current source line 19 says a mandate must be created before first use without the old guide's explicit verification prerequisite or its allowance for an existing active mandate; this overgeneralizes the Payment Intents path and obscures the different Checkout prerequisite.",
+    "Current source line 13 omits the dated old guide's must-migrate warning (old lines 16-18), and source line 28 omits mandate acknowledgment before Invoicing or Subscriptions default updates (old lines 265-268, 296-299)."
+  ],
+  "historical_claims_to_preserve": [
+    "The May guide's prerequisite distinction: verified bank account for Checkout; verified bank account plus active mandate for Payment Intents; no repeat verification for already verified accounts (old lines 22-28).",
+    "The 2026-05-02 guide's dated warning that Stripe was removing support for legacy ACH Direct Debit integrations and creators of legacy ACH payments must migrate to Payment Intents or Checkout Sessions (old lines 16-18); current removal timing and status are not verified by the November index.",
+    "The May guide's Invoicing and Subscriptions ordering: collect mandate acknowledgment before setting customer, invoice, or subscription default_payment_method for continued use of the saved account (old lines 265-268 and 296-299).",
+    "May guide mandate authorization options and first-use qualification (old lines 105-116); a saved BankAccount is another view of the same underlying object rather than a newly created PaymentMethod (old line 209).",
+    "May guide Charge type comparison and default_source/Charge/PaymentIntent legacy creation paths (old lines 332-340), kept explicitly dated rather than projected as a new November change."
+  ],
+  "unresolved_questions": [
+    "The two November integration-path variant URLs were not captured as part of this pinned job, so their current detailed wording, account eligibility, and any intervening changes remain unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-ach-direct-debit.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "36626919a544f61c79940043c347d0c9be5a93cb4084c6eae363d331e46e4211",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-ach-direct-debit-migrating-from-charges/attempt-2/review.json",
+  "approved_triage_review_sha256": "e4facaac34b2483574ada07b25983f3cb9b83d4beb594edc2ef6f382c31a7dd7",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw6",
+  "reviewer_agent": "/root/s2ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-ach-direct-debit-migrating-from-charges-2026-11-07.md",
+      "sha256": "af65f8f540ac35713b814ff1a927c3527f268ac45942d56280519c28046e7f32",
+      "lines": 14
+    },
+    {
+      "path": "raw/stripe-ach-migrate-bank-accounts-2025.md",
+      "sha256": "8205ed04d0361e3fc44aeb88a3aec5ddf08c24717a268248145f8ca0620392ce",
+      "lines": 340
+    },
+    {
+      "path": "wiki/sources/source-stripe-ach-migrate-bank-accounts.md",
+      "sha256": "c09784c5a1ae65818ffb82921afc3e469525f93ef6e9fcf301181944d3a23372",
+      "lines": 32
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/d5118ad7727262cadc4d3a7b/content.diff",
+      "sha256": "371a00a020ec7f76ac5175fd9dc0cd515ac4b33f0cb73ebc2820afc00fac94f8",
+      "lines": 342
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/payments-ach-direct-debit-migrating-from-charges-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/payments-ach-direct-debit-migrating-from-charges-review.json"
+}

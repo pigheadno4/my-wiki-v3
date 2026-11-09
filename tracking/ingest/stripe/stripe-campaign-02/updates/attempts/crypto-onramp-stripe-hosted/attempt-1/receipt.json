@@ -1,0 +1,128 @@
+{
+  "job_id": "crypto-onramp-stripe-hosted",
+  "attempt": 1,
+  "raw_path": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md",
+  "raw_sha256": "32065533ae33db583ea8916210460849f3ff7be9f760551010fafe825de2cbed",
+  "source_before_sha256": "35000a4a2ffa55976b3eeafd1844221770a7f7448d9112f2e4e39eedf3ece7d3",
+  "source_page": "---\ntitle: \"Stripe \u2014 Crypto Onramp: Stripe-Hosted Integration\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/crypto/onramp/stripe-hosted\"\nraw_files:\n  - \"stripe-crypto-onramp-stripe-hosted-2026-11-07.md\"\n  - \"stripe-crypto-onramp-stripe-hosted-2026.md\"\ntags: [stripe, crypto, onramp, fiat-to-crypto, redirect, session-api, pci]\n---\n\n## Overview\n\nThe May 11 and November 7, 2026 captures describe the Stripe-hosted standalone crypto onramp at `crypto.link.com`: platforms redirect users there through either a frontend-generated URL or a backend-created onramp session with a redirect URL. The November example changes the Stripe.js script path from Dahlia to Endive. That example change does not establish a mandatory SDK upgrade, removal of the older script path, account access, or a completed crypto purchase. See [[stripe-crypto-onramp]].\n\n## Access before integration\n\nBoth dated guides say accessing the onramp, including a sandbox, requires creating or signing in to a Stripe account, setting it up, submitting an onramp application, and waiting for approval before development in a sandbox. Stripe says it reviews **most** applications within 48 hours; this is not a guaranteed review time. The frontend URL-generation option below is described as needing no Stripe account for that code path. It does not waive the separate onramp application and approval gate or demonstrate that an unapproved URL can complete a transaction. The captures do not establish any particular account's approval.\n\n## Two customization paths\n\n| Path | Where and scope | Use in the captured guide |\n| --- | --- | --- |\n| Generate redirect URL | Frontend; no Stripe account needed to generate the URL | Lightweight prefill of suggested source or destination amount, destination currency, and network; no branding |\n| Mint session with redirect URL | Backend with Stripe account | Full customization including destination wallet address and branding; create a new onramp session for every user visit |\n\n**Frontend script loading:** Both captures instruct direct script tags from `js.stripe.com` and `crypto-js.stripe.com` for compatibility and PCI compliance; do not bundle or self-host them because the integration might break without warning. The May HTML example uses `https://js.stripe.com/dahlia/stripe.js`; the November HTML example uses `https://js.stripe.com/endive/stripe.js`. Both examples retain `https://crypto-js.stripe.com/crypto-onramp-outer.js`. These are dated example paths, not a tested compatibility matrix.\n\n**Frontend API example:** `window.StripeOnramp.Standalone({...}).getUrl()` generates the redirect URL. The guide's prefill fields include `source_currency` (shown as `usd` or `eur`), one `amount.source_amount` **or** `amount.destination_amount`, destination currencies/networks restrictions, and default destination currency/network. Only one amount may be specified. A generated URL is not evidence of an approved onramp account or successful payment.\n\n**Backend API:** The guide instructs creating a new `POST /v1/crypto/onramp_sessions` request per user visit and redirecting to the returned `redirect_url`. Its sample response also shows `client_secret`, `transaction_details`, and `status: initialized`. That sample shows a newly initialized session, not checkout completion, crypto delivery, or settlement.\n\n## Captured currencies and geography\n\nBoth guides list ETH (Ethereum/Base), SOL, POL, MATIC, BTC, AVAX, XLM and USDC (Ethereum, Solana, Polygon, Avalanche, Base and Stellar) for the US/EU context, expressly saying available currencies are **subject to change**. They say XLM and USDC on Stellar, Avalanche or Polygon are unavailable in New York; ETH on Base, MATIC, AVAX, and USDC on Solana, Polygon, Avalanche or Base are unsupported in the EU. These are dated documentation snapshots and do not prove current regional, asset, or account eligibility.\n\n## Detail locators\n\n- [[raw/stripe-crypto-onramp-stripe-hosted-2026-11-07|November 7, 2026 capture]]: application and sandbox access lines 11\u201318; currencies and exclusions lines 26\u201345; path comparison lines 47\u201354; script loading/examples lines 56\u201380; prefill fields lines 82\u201389; backend session/sample response lines 93\u2013142.\n- [[raw/stripe-crypto-onramp-stripe-hosted-2026|May 11, 2026 capture]]: corresponding access lines 10\u201317, currency/geography lines 25\u201344, frontend/backend paths and Dahlia example lines 46\u201394, sample response lines 103\u2013135.\n\n## Related\n\n- [[stripe]]; [[stripe-crypto-onramp]]; [[source-stripe-crypto-onramp]]\n\n## Raw Sources\n\n- [[raw/stripe-crypto-onramp-stripe-hosted-2026-11-07|November 7, 2026 Stripe-hosted guide]]\n- [[raw/stripe-crypto-onramp-stripe-hosted-2026|May 11, 2026 Stripe-hosted guide]]\n",
+  "quotes": [
+    {
+      "text": "To access the Stripe onramp, including in [sandboxes](https://docs.stripe.com/sandboxes.md), you must follow these steps to submit your application:",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:13"
+    },
+    {
+      "text": "We review most onramp applications within 48 hours, and notify you when you\u2019ve been approved or if we need more information.",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:17"
+    },
+    {
+      "text": "The following currencies are available in the US and EU. Available currencies are subject to change.",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:28"
+    },
+    {
+      "text": "Generate a redirect URL in the frontend without a Stripe account.",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:53"
+    },
+    {
+      "text": "<script src=\"https://js.stripe.com/endive/stripe.js\"></script>",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:63"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<script src=\"https://js.stripe.com/dahlia/stripe.js\"></script>",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026.md:62"
+    },
+    {
+      "text": "To access the Stripe onramp, including testing environments, you must follow these steps to submit your application:",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026.md:12"
+    },
+    {
+      "text": "Available currencies are subject to change.",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026.md:27"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 142
+      }
+    ],
+    "raw/stripe-crypto-onramp-stripe-hosted-2026.md": [
+      {
+        "start": 1,
+        "end": 135
+      }
+    ],
+    "wiki/sources/source-stripe-crypto-onramp-stripe-hosted.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5959e8ea56a89415dfb6dbaa/content.diff": [
+      {
+        "start": 1,
+        "end": 99
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-hosted-onramp-access",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "Application required at `dashboard.stripe.com/crypto-onramp/get-started`. Reviewed within 48 hours. Required even for sandbox/test access.",
+      "new_text": "The May and November 2026 Stripe-hosted guides require an onramp application and approval before accessing the onramp, including sandboxes. Stripe says it reviews **most** applications within 48 hours; that is not a guarantee. The frontend can generate a redirect URL without a Stripe account, but that code-path condition does not waive the separate access and approval requirements or prove a transaction can complete.",
+      "reason": "Correct the unconditional 48-hour claim and put the approval gate beside the no-account frontend URL-generation distinction.",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-hosted-onramp-currencies",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "**Geo restrictions**:\n\n- XLM, USDC (Stellar/Avalanche/Polygon): not in New York\n- ETH (Base), MATIC, AVAX, USDC (Solana/Polygon/Avalanche/Base): not in EU",
+      "new_text": "**Geo restrictions in the May and November 2026 Stripe-hosted guides, with available currencies expressly subject to change**:\n\n- XLM, USDC (Stellar/Avalanche/Polygon): not in New York\n- ETH (Base), MATIC, AVAX, USDC (Solana/Polygon/Avalanche/Base): not in EU\n\nThese document snapshots do not establish current asset, country, or account eligibility.",
+      "reason": "Preserve the restrictions but qualify the list as a dated, changeable snapshot instead of current eligibility.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-hosted-onramp-frontend-path",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "| Generate redirect URL (frontend) | No Stripe account | Light customization; no branding |",
+      "new_text": "| Generate redirect URL (frontend) | No Stripe account needed to generate the URL; onramp access still requires application and approval | Light customization; no branding |",
+      "reason": "Keep the frontend code-path scope adjacent to its access gate so the table cannot imply unapproved operational access.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-hosted-onramp-source-route",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "- [[source-stripe-crypto-onramp-stripe-hosted]] \u2014 Stripe-hosted implementation: currencies, geo restrictions, frontend/backend customization paths, session API",
+      "new_text": "- [[source-stripe-crypto-onramp-stripe-hosted]] \u2014 May/November 2026 hosted-onramp guides: application gate, changeable currency/geography list, frontend URL versus backend session path, and dated Dahlia/Endive script examples",
+      "reason": "Update the reciprocal route to the corrected dated source identity and access distinction without duplicating implementation detail.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/crypto/onramp/stripe-hosted, [[source-stripe-crypto-onramp-stripe-hosted]] records the November HTML example's Endive Stripe.js URL (new line 63) beside the May Dahlia example (old line 62); the crypto-onramp-outer.js URL remains the same (new line 64; old line 63). Both guides require direct Stripe-domain script loading (new line 58; old line 57). The example change alone proves no mandatory upgrade, old-path removal, account eligibility, or live execution.",
+    "Q2": "At https://docs.stripe.com/crypto/onramp/stripe-hosted, [[source-stripe-crypto-onramp-stripe-hosted]] distinguishes frontend URL generation without a Stripe account (new line 53; old line 52) from the application and approval gate for onramp access, including sandbox use (new lines 13\u201318; old lines 12\u201317). Both captures retain a backend session-per-visit path (new lines 93\u201395; old lines 92\u201394) and subject-to-change US/EU currency restrictions (new lines 26\u201345; old lines 25\u201344). A sample `status: initialized` response (new line 114; old line 113) does not show checkout, crypto delivery, or settlement."
+  },
+  "status": "candidate_ready"
+}

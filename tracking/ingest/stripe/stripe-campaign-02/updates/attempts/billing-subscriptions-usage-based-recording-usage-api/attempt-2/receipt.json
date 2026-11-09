@@ -1,0 +1,125 @@
+{
+  "job_id": "billing-subscriptions-usage-based-recording-usage-api",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md",
+  "raw_sha256": "2c4e035b3d61104a418605b3cac07ec24d3a580e8fdd322ee552f72aa6d12f38",
+  "source_before_sha256": "58d6f972b496059532241fca699e4b946039dd94d685a5d32204d36a314dc158",
+  "source_page": "---\ntitle: \"Stripe: Record Usage for Billing with the API\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api\"\nraw_files:\n  - \"stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md\"\n  - \"stripe-usage-based-billing-recording-usage-api-2025.md\"\ntags: [stripe, billing, usage-based, meters, ingestion, api, rate-limits, webhooks]\n---\n\n## Overview\n\nStripe's May 5 and November 7, 2026 captures of this API guide explain recording usage for [[stripe]] Billing Meters. Configure a meter first, then send meter events with its configured event name, customer ID and numeric value; timestamp is optional. Events may be sent as they occur or in batches. Processing is asynchronous, so meter summaries and upcoming invoices may lag. See [[stripe-usage-based-billing]].\n\n## Key takeaways\n\n- Create a v1 Meter Event using the API. Both captures advise idempotency keys to avoid duplicate reporting. Separately, each meter event has an identifier that can be supplied or is generated if omitted; the captures do not equate that identifier with the idempotency key. The May capture illustrates Node.js; the November capture illustrates curl. These are dated examples, not SDK requirements.\n- Event timestamps must be within the past 35 calendar days and no more than 5 minutes in the future. The 35-day bound governs acceptance, **not invoice inclusion**. Report usage for a subscription service period before its invoice finalizes: Stripe might accept an event after finalization and include it in summaries without updating the finalized invoice or adding the usage to the next invoice. Threshold invoices include only usage Stripe receives before invoice creation; timely receipt alone does not establish inclusion. The linked grace-period guide contains applicable rules and exceptions.\n- The payload's numeric usage value accepts decimals, including on invoices. If overall cycle usage is negative, the invoice line item usage quantity is reported as 0.\n- The November capture states dimension cardinality limits for configured dimension payload key-value combinations: 10,000 per meter in each event-receipt hour and 100 per customer on a meter across events. Previously counted combinations continue to process; newly introduced combinations beyond either limit are invalid and surface in `v1.billing.meter.error_report_triggered` with `meter_event_dimension_count_too_high`. These are separate from request-rate limits.\n- For the v1 Meter Event endpoint in live mode, the November capture states 1,000 calls/second **per Stripe account**, separately from the account global rate limit, with one concurrent call per customer per meter. Sandbox Meter Events count toward the global rate limit; connected-account Meter Event calls count toward the basic limit. Connect platform requests using the `Stripe-Account` header have the regular 100 operations/second limit. The May capture additionally said sandbox meter event **stream** calls counted toward the basic limit; the November text does not restate that stream sentence, so this capture pair does not establish a changed stream rule. Stripe suggests pre-aggregation or v2 streams for higher volumes and monitoring `429` responses with exponential backoff.\n- API v2 Meter Event Streams are described for live mode only, up to 10,000 events/second, with a contact-sales path for up to 200,000/second. Create a Meter Event Session, use its 15-minute stateless authentication token to send stream events, and refresh the session on token expiry. Stream requests are excluded from the Workbench Logs tab. The May example is Node.js and the November example is Ruby. The captures do not establish account-specific access or successful ingestion.\n- Invalid asynchronously processed events can produce the thin events `v1.billing.meter.error_report_triggered` and `v1.billing.meter.no_meter_found`. Configure a Thin event destination, retrieve full event details, correct invalid events and resend. The May webhook example is Node.js; the November example is Python.\n\n## Detail locators\n\n- Idempotency and event creation: November raw, \"Create meter events\" and \"Idempotency\"; May raw, same sections. Neither same-URL capture establishes that omission of an optional timestamp defaults to now or that the event identifier itself is used for cancellation.\n- Invoice cutoffs and accepted-event distinction: November raw, \"Event timestamps\". For broader finalization exceptions, see [[source-stripe-usage-based-billing-configure-grace-period]].\n- Dimension limits and over-limit error: November raw, \"Dimension cardinality limits\".\n- Mode, account and concurrency limits: November raw, \"Rate limits\"; compare May raw, \"Rate limits\" for the dated sandbox stream sentence.\n- API v2 streams and example languages: both raws, \"High-throughput ingestion with higher rate limits (API v2)\".\n- Thin event types, sample payloads, possible `reason.error_types.code` values and handler steps: both raws, \"Handle meter event errors\". The nine listed codes include customer, dimension, archived meter, timestamp, value and missing-meter errors; `no_meter` is listed only for `v1.billing.meter.no_meter_found`.\n\n## Related\n\n- [[stripe]] \u2014 provider context\n- [[stripe-usage-based-billing]] \u2014 usage-based billing concept and reciprocal source route\n- [[source-stripe-usage-based-billing-configure-grace-period]] \u2014 invoice finalization rules and exceptions\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07|Stripe API recording-usage guide, fetched 2026-11-07]]\n- [[raw/stripe-usage-based-billing-recording-usage-api-2025|Stripe API recording-usage guide, fetched 2026-05-05]]\n",
+  "quotes": [
+    {
+      "text": "The 35-day window determines whether Stripe accepts a meter event. It doesn\u2019t guarantee that Stripe can include the usage on an invoice.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md:33"
+    },
+    {
+      "text": "For each meter, Stripe accepts up to 10,000 unique combinations for each hour that Stripe receives meter events.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md:45"
+    },
+    {
+      "text": "For each customer on a meter, Stripe accepts up to 100 unique combinations across all events.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md:46"
+    },
+    {
+      "text": "The Meter Event limit is 1000 calls per second per Stripe account. Meter Events are additionally limited to one *concurrent* call per customer per meter.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md:52"
+    },
+    {
+      "text": "Some invoice types have earlier cutoffs. For example, threshold invoices include only usage that Stripe receives before invoice creation.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md:35"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "In sandbox mode, calls to the `meter event` and `meter event stream` endpoint count toward the [basic limit](https://docs.stripe.com/rate-limits.md#rate-limiter).",
+      "location": "raw/stripe-usage-based-billing-recording-usage-api-2025.md:49"
+    },
+    {
+      "text": "Make sure the timestamp is within the past 35 calendar days and isn\u2019t more than 5 minutes in the future.",
+      "location": "raw/stripe-usage-based-billing-recording-usage-api-2025.md:36"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 312
+      }
+    ],
+    "raw/stripe-usage-based-billing-recording-usage-api-2025.md": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 289
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-recording-usage-api.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/eb79afdb841840b74aed06dc/content.diff": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 313
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "usage-api-meter-event-qualification",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- Optional: timestamp (defaults to now), `identifier` for idempotency (auto-generated if omitted), segmentation dimensions\n\nTimestamp constraints: within the past **35 calendar days** and no more than **5 minutes in the future** (clock drift allowance).\n\nRate limits (v1 endpoint, live mode): **1,000 calls/second** standard; **100 ops/second** for Connect platforms using `Stripe-Account` header. Mitigate by pre-aggregating before sending, or use API v2 high-throughput.",
+      "new_text": "- Optional: timestamp, meter-event `identifier` (auto-generated if omitted), segmentation dimensions. Use a separate idempotency key to prevent duplicate reporting; the captures do not identify the event identifier as that key.\n\nTimestamp constraints: within the past **35 calendar days** and no more than **5 minutes in the future** (clock drift allowance). This is an event-acceptance window, not an invoice-inclusion guarantee: Stripe might accept an event after finalization and include it in meter summaries without updating the finalized invoice or adding its usage to the next invoice. Threshold invoices include only usage Stripe receives before invoice creation; receipt before creation is not an inclusion guarantee. See [[source-stripe-usage-based-billing-recording-usage-api]] and [[source-stripe-usage-based-billing-configure-grace-period]] for dated rules and exceptions.\n\nRate limits (v1 Meter Event endpoint, live mode): **1,000 calls/second per Stripe account**, separate from its global request limit, plus **one concurrent call per customer per meter**; **100 ops/second** regular limit for Connect platform requests using `Stripe-Account` header. Mitigate higher volume by pre-aggregating or using API v2 streams. See [[source-stripe-usage-based-billing-recording-usage-api]] for sandbox and dimension limits.",
+      "reason": "Distinguish event identifiers from idempotency keys, remove the unsupported timestamp default, and preserve the November guide's conditional invoice outcome, necessary threshold cutoff and v1 limits.",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "usage-api-reciprocal-route",
+      "target_path": "wiki/concepts/stripe-usage-based-billing.md",
+      "old_text": "- [[source-stripe-usage-based-billing-recording-usage-api]] \u2014 API ingestion deep-dive: rate limits, API v2 high-throughput streams, timestamp constraints, idempotency, async error events + 9 error codes",
+      "new_text": "- [[source-stripe-usage-based-billing-recording-usage-api]] \u2014 May and November 2026 API ingestion guide: meter event acceptance versus invoice inclusion, dimension and request limits, v2 streams, idempotency and thin error events",
+      "reason": "Keep the reciprocal route aligned with the updated dated source's central billing and dimension qualifications.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api, the May and November captures both require configuring a meter before API event submission and both describe asynchronous processing (old 8-10; new 9-11). The complete source route [[source-stripe-usage-based-billing-recording-usage-api]] now distinguishes 35-day event acceptance from invoice inclusion; the November capture says Stripe might accept a post-finalization event into summaries without updating the finalized or next invoice, and threshold invoices include only usage received before creation (new 31-35 versus old 34-36). It also records 10,000 dimension combinations per meter per receipt hour and 100 per customer per meter across events (new 41-48), while leaving actual event and invoice outcomes unverified.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api, [[source-stripe-usage-based-billing-recording-usage-api]] preserves the May capture's sandbox stream sentence (old 49) as dated evidence while using the November per-account 1,000 calls/second v1 limit and one concurrent call per customer per meter (new 52-54; old 44-49). Both captures advise idempotency keys against duplicate reporting, separately from an optional meter-event identifier that Stripe generates if omitted (old 32; new 27). The November text changes code examples from May's Node.js to curl, Ruby and Python (old 16-28, 69-111, 233-272; new 17-23, 81-131, 253-291), without proving Node SDK removal. The captures do not verify account-specific v2 access, successful ingestion or invoice inclusion."
+  },
+  "status": "candidate_ready"
+}

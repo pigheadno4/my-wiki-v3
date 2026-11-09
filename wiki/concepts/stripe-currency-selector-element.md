@@ -13,6 +13,8 @@ The Currency Selector Element is a Stripe UI component that presents a currency 
 
 > Only works with Checkout Sessions API (`ui_mode: 'elements'` + `initCheckoutElementsSdk`).
 
+To display currency options on this Checkout Sessions Elements path, the November 2026 guide says to enable Adaptive Pricing, set `adaptivePricing.allowed` to `true` **in the Checkout Session**, and use an integration or price currency eligible for settlement by the merchant of record. The April capture already restricted the selector to Checkout Sessions; these new display prerequisites do not imply PaymentIntents support or account-specific eligibility. See [[source-stripe-currency-selector-element]] (https://docs.stripe.com/elements/currency-selector-element; April `raw/stripe-currency-selector-element-2025.md:8-10`; November `raw/stripe-elements-currency-selector-element-2026-11-07.md:11-21`).
+
 Initialized from the checkout instance, not from `elements.create(...)`:
 
 ```js
@@ -21,9 +23,9 @@ const currencySelectorElement = checkout.createCurrencySelectorElement();
 currencySelectorElement.mount('#currency-selector-element');
 ```
 
-## Legal Requirement
+## Stripe rendering instruction and price-localization law
 
-Merchants using Adaptive Pricing with Elements **must** render the Currency Selector Element. Merchants are also responsible for complying with price localization laws in their and their customers' regions.
+Stripe says merchants using Adaptive Pricing with Elements **must render** the Currency Selector Element. Separately, merchants are responsible for complying with applicable price-localization laws in their and their customers' regions; the captured page does not say a law itself mandates this particular Element. Stripe recommends legal advice specific to the business. See [[source-stripe-currency-selector-element]] (https://docs.stripe.com/elements/currency-selector-element; April `raw/stripe-currency-selector-element-2025.md:14`; November `raw/stripe-elements-currency-selector-element-2026-11-07.md:25`).
 
 ## Appearance
 
@@ -42,7 +44,7 @@ const appearance = {
 
 ## Placement Best Practices
 
-Currency selection affects which payment methods are available, so placement matters:
+Currency selection might affect which payment methods are available, so placement matters:
 
 | Scenario | Recommended placement |
 | --- | --- |
@@ -61,5 +63,5 @@ The Currency Selector Element is the UI surface for [[stripe-adaptive-pricing]].
 
 ## Sources
 
-- [[source-stripe-currency-selector-element]] — primary reference: API constraint, appearance, placement best practices, legal requirement
+- [[source-stripe-currency-selector-element]] — April and November 2026 guide for Checkout Sessions eligibility, November display prerequisites, Appearance API, placement advice, Stripe's must-render instruction, and separate price-localization-law responsibility
 - [[source-stripe-adaptive-pricing]] — Adaptive Pricing mechanics that power this element

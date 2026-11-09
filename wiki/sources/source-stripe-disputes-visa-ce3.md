@@ -1,8 +1,9 @@
 ---
 title: "Stripe — Visa Compelling Evidence 3.0 Disputes"
 type: source
-date_ingested: 2026-05-09
+date_ingested: 2026-11-09
 original_format: webpage
+canonical_url: "https://docs.stripe.com/disputes/api/visa-ce3"
 raw_files:
   - "stripe-disputes-visa-ce3-2026.md"
 tags: [stripe, disputes, visa, ce-3, compelling-evidence, friendly-fraud, api]
@@ -10,7 +11,7 @@ tags: [stripe, disputes, visa, ce-3, compelling-evidence, friendly-fraud, api]
 
 ## Summary
 
-API-level details for submitting Visa Compelling Evidence 3.0 (CE 3.0) to fight friendly fraud disputes. Covers qualifying criteria, the enhanced evidence object structure, status lifecycle, and test setup.
+API-level details for submitting Visa Compelling Evidence 3.0 (CE 3.0) to fight friendly fraud disputes. Covers qualifying criteria, the enhanced evidence object structure, status lifecycle, and test setup. Qualifying evidence can increase the chance of issuer reversal; CE eligibility and submission do not establish the overall dispute outcome. See [[stripe]] and [[disputes]].
 
 ## Qualifying Criteria
 
@@ -68,8 +69,8 @@ CE 3.0 status is separate from `dispute.status` (won/lost).
 ## Submission Notes
 
 - Use `submit: false` to save evidence without submitting
-- **Also fill standard `evidence` object** — fallback if CE 3.0 is rejected by Visa
-- Stripe autofills when eligible; all prior transactions must have been Stripe-processed
+- Stripe advises also filling the standard `evidence` object as fallback if Visa disapproves the CE 3.0 submission; this is advice for the standard path, not an additional CE eligibility criterion
+- When Stripe identifies a dispute as CE 3.0 eligible, it **attempts** to autofill the disputed transaction and prior-transaction evidence; manual CE 3.0 evidence can still be added. Complete automatic evidence is not guaranteed. Stripe must have processed all prior undisputed transactions
 - Check `enhanced_eligibility_types` array on dispute object for eligibility
 
 ## Testing
@@ -80,7 +81,7 @@ CE 3.0 status is separate from `dispute.status` (won/lost).
 | PaymentMethod | `pm_card_createCe3EligibleDispute` |
 | Token | `tok_createCe3EligibleDispute` |
 
-In test mode, any 2 test transactions work as `prior_undisputed_transactions` (no date/method validation). Simulate win/loss with `uncategorized_text: "winning_evidence"` or `"losing_evidence"`.
+In the captured test environment, any two test transactions can be used as `prior_undisputed_transactions` without validating their payment method or transaction date; primary and secondary evidence elements are still validated. This exception does not relax live CE 3.0 criteria. Simulate overall dispute win/loss with `uncategorized_text: "winning_evidence"` or `"losing_evidence"`; CE qualification status is separate.
 
 ## Related Pages
 
@@ -91,4 +92,8 @@ In test mode, any 2 test transactions work as `prior_undisputed_transactions` (n
 
 ## Raw Sources
 
-- [[stripe-disputes-visa-ce3-2026]] — verbatim Stripe Visa CE 3.0 API guide
+- [[raw/stripe-disputes-visa-ce3-2026|May 9, 2026 Visa CE 3.0 API guide]] — factual capture for eligibility, attempted autofill, submission, and test conditions.
+
+## Related raw API references
+
+- [[raw/stripe-disputes-api-visa-ce3-2026-11-07|November 7, 2026 same-URL CE 3.0 capture]] — presentation and sandbox-terminology variant; no new production eligibility or autofill guarantee.

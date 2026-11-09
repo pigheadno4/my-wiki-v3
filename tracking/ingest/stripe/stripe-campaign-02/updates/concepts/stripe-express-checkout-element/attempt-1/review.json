@@ -1,0 +1,25 @@
+{
+  "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+  "verdict": "changes_requested",
+  "reason": "Independent full review of the SHA-verified 232-line base, complete 13-patch packet, 240-line candidate, exact diff, three approved source receipts/reviews and relevant April/November raw context confirms that all 13 approved patches have unique anchors and reproduce the candidate byte for byte. The merge preserves the prior GitHub version boundaries, six built-in wallet methods, dated ready versus availablepaymentmethodschange guidance, platform-specific browser/webview gates, qualified custom-button access, historical API variants, and migration route. Two unqualified inherited statements remain materially inconsistent with the approved evidence and revised concept: the four-part display checklist makes customer wallet setup an unconditional prerequisite even though the revised always option explicitly permits appearance without setup, and the Checkout Sessions code invokes actions after loadActions without checking its success result as the dated guide requires. The candidate therefore should not be promoted until both are repaired.",
+  "required_changes": [
+    "At candidate lines 14-18, narrow the setup checklist so customer wallet setup is a default/conditional factor rather than an unconditional requirement. Candidate line 65 and November raw/stripe-elements-express-checkout-element-2026-11-07.md:310-311 explicitly permit Apple Pay or Google Pay to appear with paymentMethods.*: 'always' when the wallet is not set up, while retaining platform, currency, account, and device gates. Leaving line 18 unqualified directly contradicts the new display-control section.",
+    "At candidate lines 104-110, guard the Checkout Sessions loadActions result before accessing actions or registering the confirm handler. The dated April raw/stripe-express-checkout-element-accept-payment-2025.md:229-237 checks loadActionsResult.type === 'success' before calling loadActionsResult.actions.confirm. The current snippet destructures actions unconditionally, so a non-success result leaves the executable guidance unsafe or broken. Keep the 2026-04-21 historical path label and the Session client-secret boundary."
+  ],
+  "covered_update_ids": [
+    "elements-express-checkout-element::ece-concept-how-availability",
+    "elements-express-checkout-element::ece-concept-browser-webview",
+    "elements-express-checkout-element::ece-concept-availability-pattern",
+    "elements-express-checkout-element::ece-concept-wallet-event-row",
+    "elements-express-checkout-element::ece-concept-custom-warning",
+    "elements-express-checkout-element::ece-concept-source-route",
+    "elements-express-checkout-element::ece-concept-apple-pay-button-type",
+    "elements-express-checkout-element::ece-concept-always-display-scope",
+    "elements-express-checkout-element-accept-a-payment::ece-path-ranking-scope",
+    "elements-express-checkout-element-accept-a-payment::ece-checkout-heading",
+    "elements-express-checkout-element-accept-a-payment::ece-deferred-confirm-order",
+    "elements-express-checkout-element-accept-a-payment::ece-link-test-otp-exceptions",
+    "elements-express-checkout-element-migration::ece_migration_dated_route"
+  ],
+  "candidate_sha256": "951d3470243f1eff179b0b9b65efdb413f8f8536bac5fb7206bcc6aed510141f"
+}

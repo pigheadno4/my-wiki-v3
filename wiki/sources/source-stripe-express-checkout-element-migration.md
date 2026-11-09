@@ -1,8 +1,9 @@
 ---
 title: "Migrate to the Express Checkout Element"
 type: source
-date_ingested: 2026-04-21
+date_ingested: 2026-11-09
 original_format: webpage
+canonical_url: "https://docs.stripe.com/elements/express-checkout-element/migration"
 raw_files:
   - "stripe-express-checkout-element-migration-2025.md"
 tags: [stripe, elements, express-checkout, payment-request-button, migration, apple-pay, google-pay, paypal, payment-intents]
@@ -10,7 +11,7 @@ tags: [stripe, elements, express-checkout, payment-request-button, migration, ap
 
 ## Summary
 
-Step-by-step migration guide from the **Payment Request Button Element** (PRB) to the **Express Checkout Element** (ECE) using the Payment Intents API. The migration simplifies the integration significantly — the `paymentRequest` object and `canMakePayment()` availability check are eliminated; ECE handles availability internally.
+The guide captured on 2026-04-21 describes migration from the **Payment Request Button Element** (PRB) to the **Express Checkout Element** (ECE) using the Payment Intents API. The migration simplifies the integration significantly — the `paymentRequest` object and `canMakePayment()` availability check are eliminated; ECE handles availability internally.
 
 > **Prerequisite**: If your existing integration uses the Charges API with tokens, you must first migrate to the Payment Intents API before following this guide.
 
@@ -44,7 +45,7 @@ const elements = stripe.elements({ mode: 'payment', amount: 1099, currency: 'usd
 const paymentIntent = await stripe.paymentIntents.create({
   amount: 1099,
   currency: 'usd',
-  automatic_payment_methods: { enabled: true }, // now the API default
+  automatic_payment_methods: { enabled: true }, // The 2026-04-21 guide said this was optional on its latest API version.
 });
 ```
 
@@ -116,6 +117,14 @@ ECE supports merchant tokens (MPANs) — recommended over device tokens for MIT 
 
 Always listen server-side — don't rely on client callbacks (customer may close browser).
 
+## 2026-11-07 Variant Index
+
+The later capture at this canonical URL is a navigation index. It links a Checkout Sessions API variant (`payment-ui=embedded-components`) and a Payment Intents API variant (`payment-ui=elements`). Their bodies were not captured for this update, so this index does not verify the earlier Payment Intents steps, a current API default, or migration behavior for Checkout Sessions. The absence of the earlier full guide from the index is not evidence that its flow was deprecated.
+
+## Related raw API references
+
+- [[raw/stripe-elements-express-checkout-element-migration-2026-11-07|2026-11-07 variant index]] — navigation to the two API variants only.
+
 ## Related Pages
 
 - [[stripe-express-checkout-element]] — concept page
@@ -124,4 +133,4 @@ Always listen server-side — don't rely on client callbacks (customer may close
 
 ## Raw Sources
 
-- [[stripe-express-checkout-element-migration-2025]] — verbatim migration guide
+- [[raw/stripe-express-checkout-element-migration-2025|2026-04-21 Payment Intents migration guide]] — verbatim historical guide

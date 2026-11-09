@@ -1,0 +1,116 @@
+--- raw/stripe-disputes-api-2026.md
++++ raw/stripe-disputes-api-2026-11-07.md
+@@ -10,31 +10,28 @@
+ 
+ For details about a dispute, [retrieve](https://docs.stripe.com/api/disputes/retrieve.md) a `Dispute` object:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const dispute = await stripe.disputes.retrieve("{{DISPUTE_ID}}");
++```curl
++curl https://api.stripe.com/v1/disputes/{{DISPUTE_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:"
+ ```
+ 
+ The response contains information about the dispute and any response or evidence that’s already been provided.
+ 
+ ```json
+ {
+-  object: "dispute"
+-  id: "{{DISPUTE_ID}}",
+-  charge: "ch_5Q4BjL06oPWwho",
+-  evidence: {
+-    customer_name: "Jane Austen",
+-    customer_purchase_ip: "127.0.0.1",
+-    product_description: "Widget ABC, color: red",
+-    shipping_tracking_number: "Z01234567890",
+-    uncategorized_text: "Additional notes and comments",
++  "object": "dispute",
++  "id": "{{DISPUTE_ID}}",
++  "charge": "ch_5Q4BjL06oPWwho",
++  "evidence": {
++    "customer_name": "Jane Austen",
++    "customer_purchase_ip": "127.0.0.1",
++    "product_description": "Widget ABC, color: red",
++    "shipping_tracking_number": "Z01234567890",
++    "uncategorized_text": "Additional notes and comments"
+   },
+-  evidence_details: {
+-    due_by: 1403047735,
+-    submission_count: 1
++  "evidence_details": {
++    "due_by": 1403047735,
++    "submission_count": 1
+   }
+   ...
+ }
+@@ -44,18 +41,12 @@
+ 
+ You [update](https://docs.stripe.com/api/disputes/update.md) the `Dispute` object and pass structured evidence with the `evidence` parameter.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const dispute = await stripe.disputes.update("{{DISPUTE_ID}}", {
+-  evidence: {
+-    customer_email_address: "email@example.com",
+-    shipping_date: "2024-02-01",
+-    shipping_documentation: "{{FILE_ID}}",
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/disputes/{{DISPUTE_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  --data-urlencode "evidence[customer_email_address]=email@example.com" \
++  -d "evidence[shipping_date]=2024-02-01" \
++  -d "evidence[shipping_documentation]={{FILE_ID}}"
+ ```
+ 
+ To view all available fields for the `evidence` parameter, see [Dispute evidence](https://docs.stripe.com/api/disputes/update.md#update_dispute-evidence). There are two types of evidence you can provide, depending on the field being updated:
+@@ -77,29 +68,25 @@
+ 
+ #### By PaymentIntent
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const disputes = await stripe.disputes.list({
+-  payment_intent: "{{PAYMENT_INTENT_ID}}",
+-});
++```curl
++curl -G https://api.stripe.com/v1/disputes \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d payment_intent={{PAYMENT_INTENT_ID}}
+ ```
+ 
+ #### By Charge
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const disputes = await stripe.disputes.list({
+-  charge: "{{CHARGE_ID}}",
+-});
++```curl
++curl -G https://api.stripe.com/v1/disputes \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d charge={{CHARGE_ID}}
+ ```
+ 
+ When a payment has multiple disputes, use the `id` provided for each returned dispute in the list to make sure you’re responding to the correct dispute by specifying its `id` when you [retrieve](https://docs.stripe.com/disputes/api.md#retrieve-a-dispute) or [update the dispute](https://docs.stripe.com/disputes/api.md#update-a-dispute).
++
++## Handle dispute events 
++
++When a dispute is created, Stripe sends a `charge.dispute.created` event. The [Dispute](https://docs.stripe.com/api/disputes/object.md) object exposes [charge](https://docs.stripe.com/api/disputes/object.md#dispute_object-charge) and a nullable [payment_intent](https://docs.stripe.com/api/disputes/object.md#dispute_object-payment_intent), but doesn’t include a direct reference to an invoice or subscription. If you need to resolve the associated subscription—for example, to notify the affected customer or adjust access—see [Handle refund, dispute, and early fraud warning events](https://docs.stripe.com/billing/subscriptions/webhooks.md#refund-events).
+ 
+ ## See also
+ 

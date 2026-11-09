@@ -7,7 +7,7 @@ tags: [stripe, billing, usage-based, meters, subscriptions, pricing, invoicing]
 
 ## Definition
 
-Stripe's usage-based billing lets you charge customers based on actual product consumption — API calls, data processed, seats used, etc. This page details the **basic Billing Meters API** path (billing v2), distinct from the legacy `aggregate_usage` metered price approach. In the 2026-11-07 guide, Stripe recommends Metronome for new usage-based integrations unless maintaining an existing Billing Meters integration; that recommendation is not Meter API deprecation or forced migration.
+Stripe's usage-based billing lets you charge customers based on actual product consumption — API calls, data processed, seats used, etc. This page details the **basic Billing Meters API** path, distinct from the legacy `aggregate_usage` metered price approach. The pay-as-you-go guide demonstrates `/v1/billing/meters` and `/v1/billing/meter_events`; its separate Accounts v2 example creates a customer-configured Account. In the 2026-11-07 guide, Stripe recommends Metronome for new usage-based integrations unless maintaining an existing Billing Meters integration; that recommendation is not Meter API deprecation or forced migration.
 
 > [!warning] Contradiction
 > The earlier “current approach” wording reflected the Meter-based guide, while the November guide now recommends Metronome for new integrations. The capture does not establish account-specific Metronome eligibility or removal of Billing Meters.
@@ -18,7 +18,10 @@ Three ways to send meter events to Stripe:
 
 - **API** — `stripe.billing.meterEvents.create(...)` (real-time or batched)
 - **Dashboard** — manual input (one event at a time) or CSV file upload (max 5 MB). CSV fields: `timestamp` (`yyyy-MM-dd`, ISO with TZ, or Epoch), `event_name`, `payload_stripe_customer_id` (`cus_xxxx` or `acct_xxxx`), `payload_value` (column name mirrors `value_settings` key). Errors → downloadable error file with per-record reasons.
-- **Amazon S3** — bulk ingestion via S3 connector (CSV, JSON, JSON Lines; max 1 GB/file). Configure via Stripe Dashboard → Data management → Connectors with an IAM role + trust policy. Polls every 5 minutes; initial sync covers last 90 days. Rate limits: 1 file per 10 seconds or 1M records; max 50 files/10 GB per poll; 10,000 events/second processing. Two-tier error handling: format errors → `data_management.import_set.failed/succeeded` (snapshot); data errors → same thin events as API.
+- **Amazon S3** — bulk ingestion via S3 connector (CSV, JSON, JSON Lines; max 1 GB/file). Configure via Stripe Dashboard → Data management → Connectors with an IAM role + trust policy. The November 7, 2026 guide describes complete S3 object keys up to 1,024 UTF-8 bytes and says zero-byte objects and folder markers are skipped; poll limits can defer eligible files. Polls every 5 minutes; initial sync covers data modified in the last 90 days. The guide advises a new file every 10 seconds or at 1M records; it describes max 50 files/10 GB per poll and 10,000 events/second processing. Two-tier error handling: format errors → `data_management.import_set.failed/succeeded` (snapshot); data errors → the two thin meter-error events. See [[source-stripe-usage-based-billing-recording-usage-s3]].
+
+> [!warning] Contradiction
+> The May 5, 2026 S3 guide said filenames must be under 255 characters; the November 7 guide instead describes complete object keys up to 1,024 UTF-8 bytes. These dated captures do not establish which limit applies to a specific live connector.
 
 Must configure the meter before recording usage. Events process asynchronously — summaries and upcoming invoices may lag.
 
@@ -51,11 +54,11 @@ API: `stripe.billing.meters.create({ display_name, event_name, default_aggregati
 - Event name (must match meter config)
 - Customer identifier
 - Numerical usage value (sent as a **string** in the payload; decimals supported)
-- Optional: timestamp (defaults to now), `identifier` for idempotency (auto-generated if omitted), segmentation dimensions
+- Optional: timestamp, meter-event `identifier` (auto-generated if omitted), segmentation dimensions. Use a separate idempotency key to prevent duplicate reporting; the captures do not identify the event identifier as that key.
 
-Timestamp constraints: within the past **35 calendar days** and no more than **5 minutes in the future** (clock drift allowance).
+Timestamp constraints: within the past **35 calendar days** and no more than **5 minutes in the future** (clock drift allowance). This is an event-acceptance window, not an invoice-inclusion guarantee: Stripe might accept an event after finalization and include it in meter summaries without updating the finalized invoice or adding its usage to the next invoice. Threshold invoices include only usage Stripe receives before invoice creation; receipt before creation is not an inclusion guarantee. See [[source-stripe-usage-based-billing-recording-usage-api]] and [[source-stripe-usage-based-billing-configure-grace-period]] for dated rules and exceptions.
 
-Rate limits (v1 endpoint, live mode): **1,000 calls/second** standard; **100 ops/second** for Connect platforms using `Stripe-Account` header. Mitigate by pre-aggregating before sending, or use API v2 high-throughput.
+Rate limits (v1 Meter Event endpoint, live mode): **1,000 calls/second per Stripe account**, separate from its global request limit, plus **one concurrent call per customer per meter**; **100 ops/second** regular limit for Connect platform requests using `Stripe-Account` header. Mitigate higher volume by pre-aggregating or using API v2 streams. See [[source-stripe-usage-based-billing-recording-usage-api]] for sandbox and dimension limits.
 
 **API v2 — Meter Event Streams**: up to **10,000 events/second** (live only; contact sales for up to 200,000/s). Uses 15-minute stateless auth sessions: `client.v2.billing.meterEventSession.create()` → token → `client.v2.billing.meterEventStream.create({ events: [...] })`. Stream events are not logged in Workbench Logs.
 
@@ -75,16 +78,16 @@ API: `recurring: { usage_type: 'metered', interval: 'month', meter: METER_ID }`
 
 **Subscription** — links a customer to one or more prices; drives the billing cycle and invoice generation.
 
-- `billing_mode=flexible`: no first invoice for metered items (recommended)
-- `billing_mode=classic`: zero-value line item for metered items on first invoice
+- `billing_mode=flexible`: excludes metered line items from the first invoice when no prior usage exists; Stripe creates an invoice if the subscription is backdated with accrued usage or has pending invoice items.
+- `billing_mode=classic`: generates a zero monetary value line item for each metered subscription item on the first invoice.
 
 ## Pricing Models
 
 | Model | Description | API |
 | --- | --- | --- |
-| **Pay as you go** | Pure consumption billing | Meter API (v2) |
+| **Pay as you go** | Pure consumption billing | Basic Billing Meters via `/v1/billing/meters`, `/v1/prices`, `/v1/subscriptions`, and `/v1/billing/meter_events` in the captured guide; `/v2/core/accounts` is a separate customer-object example. See [[source-stripe-usage-based-billing-payg]]. |
 | **Flat fee + overages** | Flat base rate + arrears usage charges | This captured `usage-based-v1` guide uses `/v1/billing/meters`, `recurring.meter`, and `/v1/billing/meter_events`; the URL name alone does not establish a legacy `aggregate_usage` flow. See [[source-stripe-usage-based-billing-flat-fee-overages]]. |
-| **Credit-based** | Pre-purchase credits drawn down by usage | Meter API (v2) |
+| **Credit-based** | Pre-purchase credits drawn down by usage | Basic Billing Meters (`/v1/billing/meters` and `/v1/billing/meter_events`) plus Credit Grants in the captured guide; its `/v2/core/accounts` example creates a separate customer object. See [[source-stripe-usage-based-billing-credits]]. |
 
 > [!info] The captured flat fee and overages example uses two prices on one subscription: (1) a graduated metered price tied to a Billing Meter, with the first 1,000 units included, and (2) a $100 monthly licensed price. The May Node example uses `Decimal.from()`; the November curl example uses numeric form values, so `Decimal.from()` is not a general requirement. The guide's first-invoice caveat about metered lines should not erase the separate upfront licensed charge. See [[source-stripe-usage-based-billing-flat-fee-overages]].
 
@@ -191,14 +194,14 @@ Error codes (`reason.error_types.code`): `meter_event_customer_not_found`, `mete
 
 - [[source-stripe-usage-based-billing-how-it-works]] — dated basic Billing Meters lifecycle and six definitions, with Stripe's 2026-11-07 Metronome recommendation for new integrations and asynchronous summary qualification
 - [[source-stripe-usage-based-billing-use-cases]] — three pricing model index: pay-as-you-go, flat fee + overages (v1 only), credit-based
-- [[source-stripe-usage-based-billing-payg]] — pay-as-you-go end-to-end: meter + price + customer + subscription + meter events + preview invoice + event summaries
+- [[source-stripe-usage-based-billing-payg]] — May and November 2026 pay-as-you-go Billing Meters guide; November recommends Metronome for new integrations while existing Billing Meters integrations need not migrate.
 - [[source-stripe-usage-based-billing-flat-fee-overages]] — captured flat fee + overages example: Meter API, graduated metered and licensed prices, scoped Accounts v2/Customers v1 routes, contradictory rate wording, and qualified invoice timing
-- [[source-stripe-usage-based-billing-credits]] — credit-based pricing: credit grants, burn timing, balance summary/transactions, funding flow, meter dimensions
-- [[source-stripe-usage-based-billing-recording-usage]] — ingestion methods index: API, Dashboard CSV, Amazon S3; async processing note
+- [[source-stripe-usage-based-billing-credits]] — May and November 2026 basic Billing Meters credit-based pricing guide: invoice-time grants, scoped Accounts v2/Customers v1 routes, balance and funding examples, with Stripe's dated Metronome recommendation for new integrations
+- [[source-stripe-usage-based-billing-recording-usage]] — May 2026 API, Dashboard CSV, and Amazon S3 recording routes and asynchronous processing; November 2026 adds Stripe's Metronome recommendation for new integrations while retaining the basic Billing Meters route for existing users
 - [[source-stripe-usage-based-billing-meters-configure]] — meter config attributes table, Raw vs Pre-aggregated ingestion modes, immutability rule, Meter Event Adjustment API
-- [[source-stripe-usage-based-billing-recording-usage-api]] — API ingestion deep-dive: rate limits, API v2 high-throughput streams, timestamp constraints, idempotency, async error events + 9 error codes
+- [[source-stripe-usage-based-billing-recording-usage-api]] — May and November 2026 API ingestion guide: meter event acceptance versus invoice inclusion, dimension and request limits, v2 streams, idempotency and thin error events
 - [[source-stripe-usage-based-billing-recording-usage-dashboard]] — Dashboard ingestion: manual input + CSV upload (5 MB limit, field schema, error file workflow)
-- [[source-stripe-usage-based-billing-recording-usage-s3]] — Amazon S3 ingestion: connector setup, polling behavior, rate limits, two-tier error handling
+- [[source-stripe-usage-based-billing-recording-usage-s3]] — May and November 2026 Amazon S3 meter-event ingestion guide, including changed object-key guidance and dated limits
 - [[source-stripe-usage-based-billing-configure-grace-period]] — May and November 2026 invoice-finalization guide: 1h default, up to 72h rules, eligible cycle/phase invoices, timestamp and price-change limits
 - [[source-stripe-usage-based-billing-credits-overview]] — Billing Credits overview: May 2026 Public preview label; November 2026 capture adds a rendered relationship diagram and preserves eligibility, priority, ledger-balance cap, and void/Credit Note rules without proving GA
 - [[source-stripe-usage-based-billing-credits-setup]] — billing credits setup guide: create grant (+ billable_items price-level scoping), apply to invoices, retrieve balance, list transactions, funding flow

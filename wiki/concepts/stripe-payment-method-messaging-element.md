@@ -11,7 +11,7 @@ The Payment Method Messaging Element is a Stripe UI component that displays prom
 
 ## Key Distinction
 
-Unlike other Elements, the Payment Method Messaging Element **does not require a `clientSecret`** or a PaymentIntent. It can be placed anywhere on the page — product listings, cart pages, and checkout — not just at the payment step.
+The captured web example creates this Element with `stripe.elements()` and no `clientSecret`, and places it on product, cart, and payment pages. That example does not establish a universal PaymentIntent or API validation rule. See [[source-stripe-payment-method-messaging-element]] for the dated example and its scope.
 
 ```js
 const elements = stripe.elements(); // no clientSecret needed
@@ -23,17 +23,17 @@ elements.create('paymentMethodMessaging', { amount: 9900, currency: 'USD', count
 
 | Provider | Notes |
 | --- | --- |
-| Affirm | Full plan options |
-| Afterpay / Clearpay | Full plan options |
-| Klarna | One-time payments only |
+| Affirm | Listed as a supported plan provider; availability depends on customer eligibility. |
+| Afterpay / Clearpay | Listed as a supported plan provider; availability depends on customer eligibility. |
+| Klarna | Listed for one-time payments only; availability depends on customer eligibility. |
 
 Nothing renders if only "pay now" options are eligible for the given amount/currency/country.
 
 ## Dynamic vs Manual Payment Methods
 
-- **Default (dynamic)**: pulls BNPL preferences from Stripe Dashboard; automatically shows most relevant plans
-- **Manual override**: pass `paymentMethodTypes: ['klarna', 'afterpay_clearpay', 'affirm']` to specify explicitly
-- `paymentMethodOrder` option overrides the default dynamic ordering
+- **When using Dynamic payment methods**: the Element pulls payment method preferences from the Stripe Dashboard and shows eligible plans.
+- **Manual selection**: `paymentMethodTypes: ['klarna', 'afterpay_clearpay', 'affirm']` is an alternative; customer eligibility still filters displayed plans.
+- **Display order**: the Element uses dynamic ordering by default; `paymentMethodOrder` sets a preferred order. See [[source-stripe-payment-method-messaging-element]].
 
 ## Info Modal
 
@@ -46,13 +46,15 @@ Clicking the built-in ⓘ icon opens a modal showing:
 
 ## Options
 
-| Option | Required | Description |
-| --- | --- | --- |
-| `amount` | Yes | Amount in smallest currency unit (e.g. cents) |
-| `currency` | Yes | Currency code (e.g. `'USD'`) |
-| `countryCode` | No | Buyer's country — affects plan eligibility |
-| `paymentMethodTypes` | No | Manual list of BNPL providers to show |
-| `paymentMethodOrder` | No | Override dynamic plan ordering |
+| Option | Captured role |
+| --- | --- |
+| `amount` | Shown in both examples in the smallest currency unit; explicit requiredness is not established by these captures. |
+| `currency` | Shown in both examples as a currency code; explicit requiredness is not established by these captures. |
+| `countryCode` | Marked optional in examples; buyer country affects eligibility. |
+| `paymentMethodTypes` | Manual payment method selection; eligibility still applies. |
+| `paymentMethodOrder` | Sets a preferred display order in place of default dynamic ordering. |
+
+See [[source-stripe-payment-method-messaging-element]] for the captured examples; the linked option reference was not assessed here.
 
 ## Connect
 

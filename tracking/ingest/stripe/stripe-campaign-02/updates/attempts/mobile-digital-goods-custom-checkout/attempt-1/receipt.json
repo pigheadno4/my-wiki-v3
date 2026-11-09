@@ -1,0 +1,196 @@
+{
+  "job_id": "mobile-digital-goods-custom-checkout",
+  "attempt": 1,
+  "raw_path": "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md",
+  "raw_sha256": "2a1676198ff5d5cd3ef025fe73d2a3a5495edf550a601cbf309a45c28355b0dc",
+  "source_before_sha256": "c4320de387d83329017e27a1094394441398199ec6f6d776913f0117b2716238",
+  "source_page": "---\ntitle: \"Accept iOS Digital Goods Payments with Custom Checkout (Elements)\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/mobile/digital-goods/custom-checkout\"\nraw_files:\n  - \"stripe-mobile-digital-goods-custom-checkout-2026-11-07.md\"\n  - \"stripe-inapp-digital-goods-custom-checkout-2025.md\"\ntags: [stripe, mobile, ios, digital-goods, payment-element, elements, subscriptions, accounts-v2, customers-v1, universal-links, webhooks]\n---\n\n## Summary\n\nThe April and November 2026 captures describe an **iOS app-to-web subscription checkout**: the app opens the merchant's own Elements/Payment Element checkout page in Safari, then uses a universal link to return to the app. This is distinct from the Stripe-hosted Checkout and Payment Links paths; the guide does not describe a native in-app Elements payment form. The guide is for in-app digital goods, content, and subscriptions; it routes physical goods, goods/services consumed outside the app, and real-time person-to-person services to the native iOS payment guide. It documents a server-side subscription and webhook integration. See [[stripe-inapp-payments]] and [[stripe-subscriptions]]. [April capture](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L4-L16), [April scope](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L24-L38), [November capture](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L5-L17), [November scope](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L21-L45).\n\n## Path and dated Apple Pay scope\n\nThe April and November captures say an iOS app selling these digital goods in the **US or EEA** can accept Apple Pay using Elements, while saying the app cannot accept Apple Pay for these goods in other regions. This is the guide's dated, region-specific statement, not an independent current platform-policy or merchant-eligibility determination. The guide says Apple Pay appears in the Payment Element when the device is supported and a card is saved in Wallet. The April guide says to use `payment_method_types` for additional methods; the November guide's two model branches instead direct merchants to enable additional methods in the Dashboard. That documentation change alone does not prove every API-level option was removed. [April geography](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L8-L14), [April methods](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L153); [November geography](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L9-L15), [November methods](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L220), [second branch](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L272).\n\n| Dated guide path | Own server | Customer identity | Checkout surface |\n| --- | --- | --- | --- |\n| Payment Links | Not required by this guide's comparison | Path-dependent | Hosted link; for limited products/prices |\n| Stripe-hosted Checkout | Server path in linked guide | Path-dependent | Stripe-hosted page |\n| Elements (this guide) | Yes | Customer-configured Account **or** Customer | Merchant-owned web checkout opened in Safari |\n\nThe table distinguishes documented routes, not universal platform capabilities. The Payment Links and hosted Checkout rows are navigation to separate guides, not a claim that this capture fully specifies their server and identity details. [April path comparison](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L8-L16); [November path comparison](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L9-L17).\n\n## Customer identity and incomplete subscription\n\nThe April example used a `Customer` and only gave a general instruction to substitute Accounts v2 references. The November guide gives **separate** customer-configured Accounts v2 and Customers v1 branches. It says Accounts v2 is generally available for Connect users and in public preview for other Stripe users; preview participants must specify a preview version. Its preference for customer-configured Accounts is stated for **most use cases**, not a universal migration requirement or proof that an account is eligible. Store a mapping from the app user to the appropriate Stripe identity so purchases can be recovered. [April note and mapping](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L22-L28), [April Customer example](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L66-L100); [November Accounts scope](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L39-L45), [November Account example](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L93-L129), [November Customer example](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L131-L167).\n\nFor an initial Payment Element subscription payment, both November examples pass `payment_behavior: 'default_incomplete'` and expand `latest_invoice.payment_intent`; the server returns that PaymentIntent's client secret and stores the Subscription ID for later lifecycle changes. **The identity key differs:** Accounts v2 uses `customer_account: customerAccountId`; Customers v1 uses `customer: customerId`. The April Customer example used `customer` and the same incomplete-payment pattern. These are guide examples, not proof that the request succeeded or that access should be granted when the Subscription is first created. [April Subscription](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L102-L141); [November Account Subscription](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L169-L220), [November Customer Subscription](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L222-L272).\n\n```js\n// Accounts v2 branch in the November guide:\ncustomer_account: customerAccountId\n\n// Customers v1 branch:\ncustomer: customerId\n\n// Both illustrated branches:\npayment_behavior: 'default_incomplete'\nexpand: ['latest_invoice.payment_intent']\n```\n\n## Safari return, confirmation, and fulfillment\n\nConfigure the merchant domain's `/.well-known/apple-app-site-association` with `application/json`, an Associated Domains entitlement, and success/cancel fallback pages. The app opens its own checkout URL in Safari; the web Payment Element calls `stripe.confirmPayment` with a universal-link `return_url`. The Swift sample checks whether payments are disabled by parental controls and sets a local `paymentComplete` flag when a URL contains `success`. That sample flag and a returned URL are navigation/UI examples, not authoritative payment or entitlement state. [April links](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L155-L207), [April app and confirm](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L209-L268); [November links](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L274-L326), [November app and confirm](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L328-L385).\n\nThe server example verifies the Stripe webhook signature and handles `invoice.payment_succeeded`, `invoice.payment_failed`, and `customer.subscription.updated` to update its own subscription state. The November guide explicitly says `customer.subscription.updated` still applies with customer-configured Accounts; the April general suggestion to replace event references should not be followed for that named event. Tie grant/renewal of digital access to verified payment/subscription state for the relevant user, including recurring events; a browser return, UI flag, or mere Subscription creation does not establish a paid state. The snippets show event branches and comments, not a complete working entitlement system. [April event guidance](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L270-L326); [November events](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L388-L439).\n\n## Testing and related pages\n\nThe guide lists sandbox cards for immediate processing, 3DS2, and insufficient-funds decline, plus steps for debugging universal links using Associated Domains development mode and `SharedWebCredentials` logs. These are test instructions, not evidence of a live purchase or functioning integration. [April tests](../../raw/stripe-inapp-digital-goods-custom-checkout-2025.md#L328-L393); [November tests](../../raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md#L441-L508).\n\n- [[stripe-inapp-payments]] \u2014 iOS and Android payment paths\n- [[stripe-subscriptions]] \u2014 subscription state and access\n- [[source-stripe-inapp-digital-goods-checkout]] \u2014 separate Stripe-hosted Checkout path\n- [[source-stripe-inapp-digital-goods-payment-links]] \u2014 separate Payment Links path\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07|November 7, 2026 custom checkout guide]] \u2014 full webpage content (516 lines)\n- [[raw/stripe-inapp-digital-goods-custom-checkout-2025|April 22, 2026 custom checkout guide]] \u2014 historical webpage content (401 lines)\n",
+  "quotes": [
+    {
+      "text": "For digital products, content, and subscriptions sold in the United States or European Economic Area (EEA), your iOS app can accept Apple Pay using [Elements](https://docs.stripe.com/payments/elements.md).",
+      "location": "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md:9"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md:41"
+    },
+    {
+      "text": "customer_account: customerAccountId,",
+      "location": "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md:193"
+    },
+    {
+      "text": "customer: customerId,",
+      "location": "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md:245"
+    },
+    {
+      "text": "- `customer.subscription.updated` (even if you use customer-configured `Accounts`)",
+      "location": "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md:393"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If your integration uses [customer-configured Accounts](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer), replace `Customer` and event references in the code examples with the equivalent Accounts v2 API references.",
+      "location": "raw/stripe-inapp-digital-goods-custom-checkout-2025.md:22"
+    },
+    {
+      "text": "customer: customerId,",
+      "location": "raw/stripe-inapp-digital-goods-custom-checkout-2025.md:125"
+    },
+    {
+      "text": "Add a checkout button to your app. This button opens your custom checkout page in Safari.",
+      "location": "raw/stripe-inapp-digital-goods-custom-checkout-2025.md:211"
+    },
+    {
+      "text": "- `customer.subscription.updated`",
+      "location": "raw/stripe-inapp-digital-goods-custom-checkout-2025.md:275"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 255
+      },
+      {
+        "start": 256,
+        "end": 340
+      },
+      {
+        "start": 341,
+        "end": 425
+      },
+      {
+        "start": 426,
+        "end": 516
+      }
+    ],
+    "raw/stripe-inapp-digital-goods-custom-checkout-2025.md": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 255
+      },
+      {
+        "start": 256,
+        "end": 335
+      },
+      {
+        "start": 336,
+        "end": 401
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-digital-goods-custom-checkout.md": [
+      {
+        "start": 1,
+        "end": 98
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/154064d0cb62c28070c200d9/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 445
+      },
+      {
+        "start": 446,
+        "end": 530
+      },
+      {
+        "start": 531,
+        "end": 612
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-ios-custom-elements-path",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- Android US apps can process in-app payments for digital goods; iOS digital goods require app-to-web flow (Stripe Checkout)",
+      "new_text": "- The April and November 2026 digital-goods guides describe iOS app-to-web paths: Stripe-hosted Checkout, Payment Links, or the merchant's own Elements checkout page opened in Safari with universal-link return; the assigned custom-checkout guide does not describe native in-app iOS Elements. The separate overview capture describes US Android direct in-app payments. The US/EEA Apple Pay statement is dated guide scope, not a fresh platform-policy determination. See [[source-stripe-inapp-digital-goods-custom-checkout]] (https://docs.stripe.com/mobile/digital-goods/custom-checkout; old raw/stripe-inapp-digital-goods-custom-checkout-2025.md:4-16,209-268; new raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md:5-17,328-385).",
+      "reason": "Remove the active claim that the iOS app-to-web redirect must use Stripe-hosted Checkout exclusively.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The linked iOS/Android overview source also makes an exclusive Checkout claim; it is outside this worker's approved source target and needs coordinator handling."
+      ]
+    },
+    {
+      "update_id": "s02-ios-overview-route-qualify",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- [[source-stripe-inapp-ios-android-purchases]] \u2014 Platform rules: iOS digital goods must redirect to Stripe Checkout; Android can go fully in-app; 3 acceptance paths + customer portal",
+      "new_text": "- [[source-stripe-inapp-ios-android-purchases]] \u2014 April 2026 overview of US iOS app-to-web hosted Checkout and Android direct in-app path; its hosted-Checkout-only summary is narrower than the separate custom Elements guide",
+      "reason": "Prevent the existing concept route from repeating the exclusive Checkout error while keeping the overview's dated scope.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Coordinator should correct the underlying out-of-scope overview source, which still has the overgeneralization."
+      ]
+    },
+    {
+      "update_id": "s02-ios-elements-source-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- [[source-stripe-inapp-digital-goods-custom-checkout]] \u2014 iOS digital goods via Elements (own checkout page): subscription default_incomplete pattern, invoice.payment_succeeded webhook, expand latest_invoice.payment_intent",
+      "new_text": "- [[source-stripe-inapp-digital-goods-custom-checkout]] \u2014 April/November 2026 iOS digital-goods guide: merchant-owned Elements web checkout in Safari, universal-link return, Account/Customer subscription examples, and webhook-driven access",
+      "reason": "Keep a reciprocal route naming the merchant-owned web surface and the new identity branches.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-subscription-mobile-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-inapp-digital-goods-custom-checkout]] \u2014 iOS digital goods subscriptions (mobile context): default_incomplete + expand latest_invoice, invoice webhooks, Universal Links return, Apple Pay US+EEA",
+      "new_text": "- [[source-stripe-inapp-digital-goods-custom-checkout]] \u2014 April/November 2026 iOS digital-goods subscription guide: merchant-owned Elements web checkout, Accounts v2 or Customers v1 identity, default_incomplete initial payment, verified invoice/subscription webhooks, and universal-link return; Apple Pay US/EEA scope is a dated guide statement",
+      "reason": "Update the existing reciprocal subscription route for the two customer models and verified-event access boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/mobile/digital-goods/custom-checkout, [[source-stripe-inapp-digital-goods-custom-checkout]] now distinguishes the April Customer-only example and general Accounts v2 substitution note (old raw:22,66-104,124-129) from the November separate Accounts v2 and Customers v1 branches (new raw:39-45,93-167,192-197,244-249). The Account branch uses `customer_account: customerAccountId`; the Customer branch uses `customer: customerId`. Accounts v2 availability is Connect GA versus public preview for others, with preview version needed for participants; the recommendation is for most use cases, not proof of account eligibility.",
+    "Q2": "At https://docs.stripe.com/mobile/digital-goods/custom-checkout, [[source-stripe-inapp-digital-goods-custom-checkout]] corrects the old generic instruction to replace Accounts v2 event references (old raw:22) because the November guide retains `customer.subscription.updated` even with customer-configured Accounts (new raw:392-394). Both captures describe the app opening its merchant-owned Elements page in Safari and returning by universal link (old raw:4-16,209-268; new raw:5-17,328-385); this is an app-to-web path alongside Stripe-hosted Checkout, not native iOS Elements. Verified invoice/subscription events and the actual paid state, not a Swift URL flag or mere incomplete Subscription creation, should drive access (old raw:270-326; new raw:388-439). The out-of-scope overview source's exclusive hosted-Checkout assertion needs coordinator correction."
+  },
+  "status": "candidate_ready"
+}

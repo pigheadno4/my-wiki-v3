@@ -1,0 +1,141 @@
+{
+  "job_id": "currencies",
+  "attempt": 2,
+  "raw_path": "raw/stripe-currencies-2026-11-07.md",
+  "raw_sha256": "6ed2251863d5b475644e843e936042ef21aa0d58987d93f394e6ab3e1c3c4f9b",
+  "source_before_sha256": "82d2ced41f01b280e0e824113d7f8c4e052fd974f65f1f6e51aa6d6aacf6c342",
+  "source_page": "---\ntitle: \"Stripe Docs \u2014 Supported currencies\"\ntype: source\ndate_ingested: 2026-11-09\ncanonical_url: https://docs.stripe.com/currencies\noriginal_format: webpage\nraw_files:\n  - \"stripe-currencies-2026-11-07.md\"\n  - \"stripe-currencies-2025.md\"\ntags: [stripe, currencies, presentment, settlement, integration-currency, minor-units, zero-decimal, isk, huf, twd, ugx, eea, minimum-charge]\n---\n\n## Summary\n\nStripe's supported-currencies guide describes 135+ charge currencies, payment-method/presentment/settlement currencies, API amount formatting, special currency rules, charge minima and maxima, and its EEA card-pricing grouping. Currency and payment-method availability still depend on the Stripe account's country and applicable method. This is a documentation snapshot, not proof of account eligibility or payment authorization. [November 2026 capture](../../raw/stripe-currencies-2026-11-07.md#L5-L54)\n\n## Currency roles and API amounts\n\n- **Payment method currency** is the currency of the customer's card or bank account; **presentment currency** is the charge currency; **settlement currency** is the currency accepted by the destination bank account or debit card. An issuer might charge the customer an FX fee when payment-method and charge currencies differ, or when the payment method and business are in different countries. Stripe converts a charge when presentment and settlement currencies differ. Additional settlement currencies are supported in certain countries; conversion costs are covered by Stripe pricing. [November capture](../../raw/stripe-currencies-2026-11-07.md#L13-L25)\n- **Integration currency** is the currency set on a Price or PaymentIntent. It appears in the Dashboard and is the currency Stripe Tax uses to record tax liability in Stripe Tax reports. [November capture](../../raw/stripe-currencies-2026-11-07.md#L27-L29)\n- API `amount` uses integer minor units: `1000` means 10 USD and `10` means 10 JPY. Presentment currencies are two-decimal unless identified as zero-decimal; use lowercase three-letter ISO codes in payment requests. The zero-decimal list expresses general API support, not availability in every account country. [November capture](../../raw/stripe-currencies-2026-11-07.md#L35-L54)\n- **American Express:** an asterisk-marked currency is unsupported in every Stripe account country. An unmarked currency might still be unavailable for Amex in a particular account country. [November capture](../../raw/stripe-currencies-2026-11-07.md#L39-L41)\n\n## Special currency rules\n\n| Currency | Rule |\n| --- | --- |\n| ISK | Zero-decimal currency represented in the API as a two-decimal amount ending `00`; 5 ISK = `500`, with no fractional ISK charge. |\n| HUF | Charges can use two decimals; manual payout `amount` must be divisible by 100. |\n| TWD | Charges can use two decimals; manual payout `amount` must be divisible by 100. |\n| UGX | Zero-decimal currency represented in the API as a two-decimal amount ending `00`; 5 UGX = `500`, with no fractional UGX charge. Fractional invoice amounts resulting from prorations, coupons or taxes are rounded to the nearest multiple of 100, with the difference credited or debited to the customer balance. |\n\nThese conditions are present in both the May and November captures. [November capture](../../raw/stripe-currencies-2026-11-07.md#L56-L65); [May capture](../../raw/stripe-currencies-2025.md#L49-L58)\n\n## Minimum charge amounts (selected)\n\nThe minimum depends on the payout bank account's settlement currency. A charge converted into the account's default settlement currency must meet that currency's equivalent minimum. Subscription charges can be zero for coupons or free trials; a nonzero amount still faces the applicable minimum. Selected listed amounts: 0.50 USD / 0.30 GBP / 0.50 EUR / 0.50 AUD / 0.50 CAD / 50 JPY / 50 KRW / 175 HUF / 4.00 HKD. Some payment methods have exceptions: iDEAL permits `amount` as low as `1`. [November capture](../../raw/stripe-currencies-2026-11-07.md#L67-L113)\n\n## Maximum charge amounts\n\n> [!warning] Contradiction\n> The May 2026 capture grouped maximums chiefly by currency and described eight digits for most currencies plus LBP/COP/HUF/JPY card exceptions. The November 2026 capture instead separates card-network and non-card limits. Use the applicable network, method, currency and region rules for an operational limit; omission of an older example does not establish discontinued support. The May COP/HUF/JPY examples also have inconsistent stated digit counts and numeric values. [May capture](../../raw/stripe-currencies-2025.md#L108-L126); [November capture](../../raw/stripe-currencies-2026-11-07.md#L115-L140)\n\n- **Cards, November capture:** most card payments support up to 12 minor-unit digits (`999999999999`); Cartes Bancaires supports 10 (`9999999999`); American Express supports 9 (`999999999`) in most currencies. Networks may set tighter limits by currency or region. JCB, Diners Club and Discover processed from Japanese Stripe accounts have an 8-digit JPY maximum (`99999999`). [November capture](../../raw/stripe-currencies-2026-11-07.md#L119-L129)\n- **Other payment methods, November capture:** IDR supports 12 minor-unit digits (`999999999999`), COP 10 (`9999999999`), INR 9 (`999999999`), and all other currencies 8 (`99999999`), subject to tighter payment-method-specific limits. These are API amount ceilings in the captured guide, not guaranteed accepted charges. [November capture](../../raw/stripe-currencies-2026-11-07.md#L131-L140)\n\n## Card examples and EEA pricing grouping\n\nThe May capture gives a Singapore card example; the November capture gives a Japan card example. The change of example does not establish that Singapore card support ended. Additional payment methods depend on the account country. [May capture](../../raw/stripe-currencies-2025.md#L128-L132); [November capture](../../raw/stripe-currencies-2026-11-07.md#L142-L146)\n\nStripe's captured EEA card-pricing list contains 43 country or territory entries in both captures, including the UK, T\u00fcrkiye, Faroe Islands and Greenland. It is Stripe's fee-classification inventory in this guide, not an independent legal EEA definition or a fixed fee quote. EEA-issued card fees can vary with issuing region and transaction currency. [November capture](../../raw/stripe-currencies-2026-11-07.md#L148-L196); [May capture](../../raw/stripe-currencies-2025.md#L134-L182)\n\nFor countries with foreign-exchange controls, including Brazil, the guide says remittance uses authorized channels under applicable law. Connect platforms have additional currency-conversion considerations. [November capture](../../raw/stripe-currencies-2026-11-07.md#L31-L33); [November capture](../../raw/stripe-currencies-2026-11-07.md#L198-L200)\n\n## Related Pages\n\n- [[stripe-currencies]] \u2014 currency concept and reciprocal source route\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-currencies-2026-11-07|November 2026 webpage capture]] \u2014 verbatim content (205 lines)\n- [[raw/stripe-currencies-2025|May 2026 webpage capture]] \u2014 verbatim content (191 lines)\n",
+  "quotes": [
+    {
+      "text": "\u201cIntegration currency\u201d is the currency you set on a [Price](https://docs.stripe.com/api/prices/object.md#price_object-currency) or [PaymentIntent](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-currency). It appears in the Stripe Dashboard and the currency Stripe Tax uses when recording tax liability in the Stripe Tax reports.",
+      "location": "raw/stripe-currencies-2026-11-07.md:29"
+    },
+    {
+      "text": "American Express doesn\u2019t support currencies marked with an asterisk (*) in any Stripe account country. Currencies without an asterisk might still be unavailable for American Express payments in your Stripe account\u2019s country.",
+      "location": "raw/stripe-currencies-2026-11-07.md:41"
+    },
+    {
+      "text": "For card payments, the maximum charge amount is determined by the card network.",
+      "location": "raw/stripe-currencies-2026-11-07.md:121"
+    },
+    {
+      "text": "- 12 digits for most card payments, for a maximum of 999,999,999,999 in minor units",
+      "location": "raw/stripe-currencies-2026-11-07.md:123"
+    },
+    {
+      "text": "For non-card payment methods, the number of allowed digits limits the maximum amount you can charge.",
+      "location": "raw/stripe-currencies-2026-11-07.md:133"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "- 8 digits for all other currencies, for a maximum charge of 999,999.99 (`99999999`)",
+      "location": "raw/stripe-currencies-2025.md:115"
+    },
+    {
+      "text": "In Singapore, you can accept these cards: Visa, Mastercard, American Express, JCB, China UnionPay, debit cards.",
+      "location": "raw/stripe-currencies-2025.md:130"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-currencies-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 205
+      }
+    ],
+    "raw/stripe-currencies-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 191
+      }
+    ],
+    "wiki/sources/source-stripe-currencies.md": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/122e8c28273a966e0e3b64a2/content.diff": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 147
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "currencies-integration-currency",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "Three distinct currency concepts apply to every payment: payment method currency, presentment currency, and settlement currency.",
+      "new_text": "The guide describes payment method, presentment, and settlement currencies, and separately defines the integration currency set on a Price or PaymentIntent. That integration currency appears in the Dashboard and is used by Stripe Tax when recording tax liability in Stripe Tax reports. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; November capture `raw/stripe-currencies-2026-11-07.md:13-29`, May capture `raw/stripe-currencies-2025.md:12-24`).",
+      "reason": "The November source adds a distinct integration-currency definition absent from the concept.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "currencies-amex-availability",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "**American Express**: doesn't support currencies marked with `*` in Stripe's presentment currency list.",
+      "new_text": "**American Express**: asterisk-marked currencies are unsupported in every Stripe account country; an unmarked currency might still be unavailable for Amex in a particular account country. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; November capture `raw/stripe-currencies-2026-11-07.md:39-41`, May capture `raw/stripe-currencies-2025.md:32-34`).",
+      "reason": "The prior sentence omitted the new country-specific qualification for unmarked currencies.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "currencies-max-charge-scope",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "## Maximum Charge Amounts\n\n- **8 digits** for most currencies: max 999,999.99 (e.g., `99999999`)\n- **12 digits**: IDR, LBP\n- **10 digits**: COP, HUF, JPY (card only)\n- **9 digits**: INR, IDR+Amex\n\nJCB/Diners/Discover from Japan: 8 digit max (99,999,999 JPY) regardless.",
+      "new_text": "## Maximum Charge Amounts\n\n> [!warning] Contradiction\n> The May capture describes a general eight-digit ceiling with currency-specific card exceptions; the November capture separates card-network and non-card limits. The May COP/HUF/JPY card examples also have inconsistent stated digit counts and numeric values. Apply the relevant dated network, method, currency and region rule; an omitted May example is not evidence of withdrawn support. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; May `raw/stripe-currencies-2025.md:108-126`, November `raw/stripe-currencies-2026-11-07.md:115-140`).\n\n- **Cards, November capture:** most card payments support 12 minor-unit digits (`999999999999`); Cartes Bancaires 10 (`9999999999`); Amex 9 (`999999999`) in most currencies. Network limits can be tighter by currency or region. JCB, Diners Club and Discover processed from Japanese Stripe accounts have an eight-digit JPY maximum (`99999999`).\n- **Other payment methods, November capture:** IDR supports 12 minor-unit digits, COP 10, INR 9, and other currencies 8, subject to tighter method-specific limits. These documented ceilings do not guarantee an accepted charge.",
+      "reason": "The old unqualified currency-first classification conflicts with the November card-network versus non-card split.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Account, network, region and payment method rules can lower the applicable maximum; old COP/HUF/JPY examples are internally inconsistent."
+      ]
+    },
+    {
+      "update_id": "currencies-eea-pricing-group",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "Cards from 44 EEA countries (EU + UK, Iceland, Norway, Liechtenstein + others) may incur different cross-border fees. T\u00fcrkiye and UK are included in Stripe's EEA definition.",
+      "new_text": "Stripe's captured EEA card-pricing inventory contains 43 country or territory entries in both captures, including the UK and T\u00fcrkiye. It is a Stripe fee-classification list, not an independent legal EEA definition or a fixed fee quote; fees can vary with issuing region and transaction currency. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; May `raw/stripe-currencies-2025.md:134-182`, November `raw/stripe-currencies-2026-11-07.md:148-196`).",
+      "reason": "Both raw lists have 43 entries; the existing count of 44 and legal-sounding EEA phrasing are misleading.",
+      "quote_indexes": [],
+      "warnings": []
+    },
+    {
+      "update_id": "currencies-minimum-settlement-scope",
+      "target_path": "wiki/concepts/stripe-currencies.md",
+      "old_text": "Note: iDEAL allows `amount` as low as `1`.",
+      "new_text": "The applicable minimum depends on the payout bank account's settlement currency; a charge converted into the default settlement currency must meet that currency's equivalent minimum. Subscription charges may be zero for coupons or free trials, but nonzero amounts still face the applicable minimum. iDEAL is a payment-method exception allowing `amount` as low as `1`. See [[source-stripe-currencies]] (https://docs.stripe.com/currencies; May `raw/stripe-currencies-2025.md:60-106`, November `raw/stripe-currencies-2026-11-07.md:67-113`).",
+      "reason": "Preserves the minimum's settlement-currency and zero-amount conditions next to the numeric examples.",
+      "quote_indexes": [],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "Yes. The canonical https://docs.stripe.com/currencies remains the supported-currencies guide, but the November capture adds integration currency and a country qualification for Amex, and reorganizes maximum charges into card-network versus non-card rules. The proposed [[source-stripe-currencies]] at wiki/sources/source-stripe-currencies.md uses new `raw/stripe-currencies-2026-11-07.md:27-29,39-41,115-140` while preserving the May capture at `raw/stripe-currencies-2025.md:12-24,32-34,108-126`. The 135+ currencies statement is general, not account-specific availability.",
+    "Q2": "The concept at wiki/concepts/stripe-currencies.md requires scoped corrections: add integration currency (new `raw/stripe-currencies-2026-11-07.md:27-29`; old roles `raw/stripe-currencies-2025.md:12-24`), qualify Amex (new 39-41; old 32-34), replace the old blanket maximum (new 115-140; old 108-126), and correct the Stripe EEA pricing inventory to 43 entries (new 148-196; old 134-182). The source route is [[source-stripe-currencies]] for https://docs.stripe.com/currencies. Neither capture proves particular-account method support, settlement availability, an actual converted minimum, authorization or a current fee quote; the changed Singapore/Japan card examples do not prove withdrawal of Singapore support."
+  },
+  "status": "candidate_ready"
+}

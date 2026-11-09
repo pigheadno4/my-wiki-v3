@@ -1,0 +1,235 @@
+{
+  "job_id": "disputes-monitoring-programs",
+  "attempt": 2,
+  "raw_path": "raw/stripe-disputes-monitoring-programs-2026-11-07.md",
+  "raw_sha256": "088c6f3c03a15d50eb653d132858ad57eb2896e6ae0d42a4501225c50c39d296",
+  "source_before_sha256": "08bab86e0c4b91da616a74f894e3e40d76b472859ec9d03a1876ee8a70cc94f8",
+  "source_page": "---\ntitle: \"Stripe \u2014 Dispute and Fraud Card Monitoring Programs\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/disputes/monitoring-programs\"\nraw_files:\n  - \"stripe-disputes-monitoring-programs-2026-11-07.md\"\n  - \"stripe-disputes-monitoring-programs-2026.md\"\ntags: [stripe, disputes, monitoring, vamp, merp, vsefp, ecp, ecm, hecm, efm, auspaynet, mastercard, visa, fraud, chargebacks]\n---\n\n## Overview\n\nStripe's May 10 and November 7, 2026 captures explain card-network dispute and fraud monitoring. The November guide adds **Visa Merchant Elevated Risk Program (MERP)**, effective October 2026 for businesses accepting Visa in Asia Pacific, and revises the VAMP dashboard and pre-dispute refund guidance. This is Stripe's **general guide**, expressly not a comprehensive or authoritative current network-rule reference. Network documentation and account communications determine current program terms and actual status.\n\nMonitoring can lead to conditional network assessments, escalating fines in some programs, remediation, lost liability shift, or processing risk. None of these snapshots establishes this business's program identification, fine, eligibility, or processing outcome.\n\n## Counting and calendar rules\n\n- A monitored dispute or chargeback occurs when funds move out due to a disputed payment. Refunds and later dispute outcomes generally do not remove it from network monitoring counts. Some Stripe-handled, no-liability disputes do not show in Dashboard/API or Stripe rates, yet networks still count them; discrepancies can also arise from statement descriptors, multiple MIDs, or double-counted charges. Unescalated inquiries and non-disputed RDR movements do not count as disputes. EFWs are not disputes but count as fraud in Visa VAMP.\n- The **November** guide says that after a full refund before a dispute, one can respond to that dispute and links further guidance; it does not promise removal from network monitoring. The **May** guide said Stripe could ask for removal if a full refund was issued at least 10 days before the dispute. Keep that as dated historical wording; omission alone does not prove that request route ended.\n- Visa and Mastercard identify data by report month, not original transaction month. Visa's ratio uses captured payments in the same calendar month as dispute/fraud reports. Mastercard **ECP** uses current-month chargeback count divided by the **preceding month's captured-payment count**; Mastercard **EFM** instead uses current-month fraud chargeback count divided by the **preceding month's e-commerce transaction count** (old raw lines 170\u2013175 and 214\u2013221; new raw lines 199\u2013204 and 243\u2013250). AusPayNet measures by quarter. For manual Stripe estimates, the guide uses calendar months outside the US; for US accounts it suggests a dispute window from the 5th of a month through the 5th of the following month against calendar-month payments. These are estimate instructions, not network-final data.\n\n## Visa programs\n\n### VAMP: disputes and fraud\n\nVAMP has separate disputes/fraud and enumeration tracks. VAMP count combines TC15 disputes and TC40 EFWs; volume is the USD amount; ratio is count divided by all captured-payment count. Pre-dispute resolutions and CE 3.0 qualifying TC40 fraud are excluded. A transaction in both TC15 and TC40 can be counted twice.\n\n| Criterion | Non-compliant | Excessive outside CEMEA | Excessive CEMEA |\n| --- | --- | --- | --- |\n| VAMP count | 5 | 1,500 | 150 |\n| VAMP ratio | 0.5% | 1.5% | 2.2% |\n| VAMP volume | N/A | N/A | 75,000 USD |\n\nThese are the guide's regional criteria, not a universal single-number trigger. Visa assesses fees above Excessive and **may** assess fees above Non-Compliant; Stripe says it notifies the account if Visa assesses a fine. Exact threshold combinations and current network rules should be checked with Visa. November raw lines 84\u2013110.\n\n### VAMP: enumeration and dashboard\n\nEnumeration count is processor-reaching card-testing authorizations, approved or declined; enumeration ratio divides by **all authorization transactions**, rather than captured payments. The guide says an account enters Excessive enumeration monitoring when **both** count exceeds 300,000 and ratio exceeds 20%. Visa does not assess fines for this track. November raw lines 112\u2013126.\n\nThe November VAMP dashboard path is `dashboard.stripe.com/radar/cbmp/vamp`, with Program standing, VAMP trend chart, Visa data, Stripe data, and Resources. Visa's monthly data by statement descriptor determines compliance and arrives with a one-month delay. Stripe computes daily estimates that may differ. The May capture instead showed a test-mode dashboard URL and History/Historical-current/Projected panels; do not treat that older layout as November's page. November raw lines 128\u2013138; May raw lines 127\u2013135.\n\n### MERP: Visa Merchant Elevated Risk Program\n\nThe November guide says MERP is effective **October 2026** for businesses accepting Visa in **Asia Pacific**. It targets concentrated early-life risk before portfolio-level volume thresholds, considering transaction count/volume, fraud volume/rate, **non-fraud dispute** volume/rate, and authorization count/decline rate **together**. Visa does **not publish** individual numeric identification thresholds. Do not apply VAMP count or ratio limits to MERP.\n\nIf Visa identifies a business, it notifies Stripe; Stripe contacts an active account. Response windows are short, and a prompt information response may help Stripe contest an identification where evidence supports it. **If Visa confirms** identification, possible consequences include network assessments charged to Stripe that might be passed through, a specific window for backdated fraud disputes, a remediation plan, Stripe closure in some circumstances, and possible VMSS listing with effects at other acquirers. These are conditional possibilities, not observed outcomes. November raw lines 140\u2013164.\n\n### VSEFP: US domestic 3DS fraud\n\nVSEFP applies only to **US-based businesses with US-based custom accounts** and domestic Visa 3DS-authenticated transactions on US-issued cards. Both monthly thresholds must be met: **75,000 USD** TC40 EFW volume and **0.9%** EFW USD volume divided by captured 3DS Visa USD volume. The guide says no fine, but liability shift on domestic 3DS transactions is lost until full exit. The report month for EFWs can differ from the capture month of the original payment. November raw lines 166\u2013181.\n\n## Mastercard programs\n\nECP includes ECM and HECM and is described for supported countries. EFM is a separate program, excluding Germany, India, and Switzerland. The chargeback rate is current-month chargeback **count** divided by preceding-month captured-payment **count**. A chargeback belongs to the month raised. Mastercard counts chargebacks even if hidden after a refund, subject to liability shift, or later won. Three consecutive months below a program threshold are needed to exit; an HECM account that falls below HECM but remains at ECM moves to ECM. If EFM and ECP both apply, EFM identification takes precedence while both tracks continue to accrue months. November raw lines 183\u2013204.\n\n| Program | Both count and rate criteria | Fine timing and amounts in the guide |\n| --- | --- | --- |\n| ECM | 100\u2013299 chargebacks; 1.5\u20132.99% | Month 1: 0 USD; 2\u20133: 1,000; 4\u20136: 5,000; 7\u201311: 25,000; 12\u201318: 50,000; 19+: 100,000 USD |\n| HECM | 300+ chargebacks; 3% | Month 1: 0 USD; 2: 1,000; 3: 2,000; 4\u20136: 10,000; 7\u201311: 50,000; 12\u201318: 100,000; 19+: 200,000 USD |\n\nIssuer recovery assessment is marked **Yes** in ECM months 4+ and HECM months 4+. The guide describes an additional 5 USD per chargeback **over 300** when it applies. These are dated table schedules, not proof of an assessed fee. November raw lines 206\u2013239.\n\n**EFM** requires **all**: at least 1,000 e-commerce Mastercard payments; net fraud volume from reason codes 4837 or 4863 **greater than** 50,000 USD, or 15,000 USD in Australia; fraud chargeback rate **greater than** 0.50%, or 0.20% in Australia, using current-month fraud chargeback count over preceding-month e-commerce transaction count; and 3DS Mastercard payment count **at or below** 10% of total Mastercard payments in non-regulated countries or 50% in regulated countries. Fine schedule: month 1 0 USD; 2 500; 3 1,000; 4\u20136 5,000; 7\u201311 25,000; 12\u201318 50,000; 19+ 100,000. The guide describes a one-time request for suspension of an assessed fine during an open case, with resumed assessments if the business fails to stay below exit thresholds for three months. November raw lines 241\u2013271.\n\n## AusPayNet FMP\n\nFor **Australian users and cardholders** in card-not-present (CNP) activity, AusPayNet FMP uses quarterly fraud chargeback **amount greater than 50,000 AUD** and fraud-amount-to-sales-value ratio **at least 0.20%**, both required. The computations exclude card-present and 3DS-authenticated transactions. After two consecutive high-fraud quarters AusPayNet reserves the option to mandate SCA; Stripe notifies accounts that exceed the preceding quarter's program thresholds. The remediation table calls for fraud controls in quarter 1, one or more risk-based/full-CNP SCA or stronger controls in quarter 2, issuer SCA for all CNP in quarter 3 with off-boarding risk, and possible off-boarding in quarter 4+. One quarter below criteria releases the FMP/SCA obligations. The guide lists recurring-first-charge, previously authenticated trusted-customer, and authenticated-wallet exemptions. November raw lines 273\u2013312.\n\n## Prevention and detail locators\n\nThe guide recommends reversing suspicious authorizations **before capture**, easier subscription cancellation and clear billing terms, reminders and refund policies, shipping communication/tracking/signature, accurate product descriptions, and better evidence for friendly-fraud disputes. These are practices, not a guarantee of avoiding a program. November raw lines 314\u2013353.\n\n## Related\n\n- [[stripe-dispute-monitoring-programs]] \u2014 concept route for these program distinctions.\n- [[stripe-high-risk-merchant-lists]] \u2014 merchant screening and listing context.\n- [[source-stripe-disputes-measuring]] \u2014 Stripe dispute metrics.\n\n## Raw Sources\n\n- [[raw/stripe-disputes-monitoring-programs-2026-11-07|November 7, 2026 monitoring-program guide]]\n- [[raw/stripe-disputes-monitoring-programs-2026|May 10, 2026 monitoring-program guide]]\n",
+  "quotes": [
+    {
+      "text": "This page is a general guide for Stripe users, not a comprehensive reference for card network monitoring programs.",
+      "location": "raw/stripe-disputes-monitoring-programs-2026-11-07.md:17"
+    },
+    {
+      "text": "In some cases, if you issued a full refund before a dispute, you can respond to the dispute.",
+      "location": "raw/stripe-disputes-monitoring-programs-2026-11-07.md:23"
+    },
+    {
+      "text": "Visa\u2019s data is used to determine your compliance status each month and is reported with a one-month delay.",
+      "location": "raw/stripe-disputes-monitoring-programs-2026-11-07.md:136"
+    },
+    {
+      "text": "Effective October 2026, the Visa Merchant Elevated Risk Program (MERP) applies to businesses that accept Visa payments in the Asia Pacific region.",
+      "location": "raw/stripe-disputes-monitoring-programs-2026-11-07.md:142"
+    },
+    {
+      "text": "Visa evaluates these signals together rather than against individual thresholds, and doesn\u2019t publish the thresholds it uses.",
+      "location": "raw/stripe-disputes-monitoring-programs-2026-11-07.md:146"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "if you issued a full refund at least 10 days before a dispute, we can ask to have the dispute removed from the account.",
+      "location": "raw/stripe-disputes-monitoring-programs-2026.md:22"
+    },
+    {
+      "text": "Accounts can view Stripe\u2019s estimates of their VAMP metrics",
+      "location": "raw/stripe-disputes-monitoring-programs-2026.md:129"
+    },
+    {
+      "text": "Visa doesn\u2019t assess fines for VAMP enumeration monitoring.",
+      "location": "raw/stripe-disputes-monitoring-programs-2026.md:125"
+    },
+    {
+      "text": "The ratio of the chargeback count for the current month to the total number of captured payments from the preceding month",
+      "location": "raw/stripe-disputes-monitoring-programs-2026.md:173"
+    },
+    {
+      "text": "The ratio of the number of fraud-related chargebacks in the current month to the number of e-commerce transactions in the preceding month",
+      "location": "raw/stripe-disputes-monitoring-programs-2026.md:218"
+    },
+    {
+      "text": "The Visa Secure Excessive Fraud Program applies only to US-based businesses with US-based custom accounts",
+      "location": "raw/stripe-disputes-monitoring-programs-2026.md:139"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-monitoring-programs-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 353
+      }
+    ],
+    "raw/stripe-disputes-monitoring-programs-2026.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 325
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-monitoring-programs.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 121
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/bfc0dbac2a262586b68702c6/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 344
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "monitoring-concept-overview-conditional",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "Card networks operate monitoring programs that track businesses with excessive disputes or fraud. Being placed in a program triggers monthly fines that escalate until levels are sustained below thresholds. Failure to exit can result in the network refusing to process your payments.",
+      "new_text": "Card networks operate programs for elevated disputes, fraud, and card testing. Program consequences differ: some schedules escalate monthly fines, VAMP enumeration has no fine in Stripe's guide, VSEFP affects domestic 3DS liability shift without a fine, and MERP has conditional assessments and other possible outcomes. Failure to remediate can put card processing at risk. The May and November Stripe pages are dated general guidance, not a current network-rule or account-status determination.",
+      "reason": "Avoid asserting that every program automatically triggers fines and add the general-guide boundary.",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "monitoring-concept-refund-qualification",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "- Refunds and dispute outcomes are ignored \u2014 only whether a dispute occurred matters",
+      "new_text": "- Refunds and later dispute outcomes generally do not remove disputes from network monitoring counts; the November guide separately says one can respond after a full pre-dispute refund. The May guide's 10-day removal-request wording is historical and is not established as a current guarantee.",
+      "reason": "Preserve network counting while adding the November dispute response route and dating the older removal wording.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "monitoring-concept-vamp-dashboard-authority",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "View estimates: Dashboard \u2192 Radar \u2192 CBMP \u2192 VAMP.",
+      "new_text": "November VAMP dashboard: Dashboard \u2192 Radar \u2192 CBMP \u2192 VAMP. Visa's monthly data determines compliance and arrives with a one-month delay; Stripe's daily computations are estimates that can differ. The May test-mode URL and older panel layout are historical.",
+      "reason": "Distinguish network compliance authority from daily Stripe estimates and the dated dashboard layout change.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "monitoring-concept-merp-route",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "### VSEFP (US only)",
+      "new_text": "### MERP (Visa Merchant Elevated Risk Program)\n\nThe November guide says MERP became effective October 2026 for Visa-accepting businesses in Asia Pacific. Visa combines early-life transaction, fraud, non-fraud dispute, authorization, and decline signals; it publishes no individual numeric identification threshold. A confirmed identification can lead to assessments that might be passed through, backdated fraud disputes, remediation, account closure in some circumstances, or possible VMSS listing. These are conditional outcomes, not evidence of this account's identification. See [[source-stripe-disputes-monitoring-programs]].\n\n### VSEFP (US only)",
+      "reason": "Make the new, region-limited Visa program discoverable without misapplying VAMP numeric thresholds or asserting outcomes.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "No MERP account identification, assessment, closure, or listing is established."
+      ]
+    },
+    {
+      "update_id": "monitoring-concept-vamp-volume",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "| VAMP ratio | 0.5% | 1.5% (2.2% CEMEA) |",
+      "new_text": "| VAMP ratio | 0.5% | 1.5% (2.2% CEMEA) |\n| VAMP volume | N/A | N/A outside CEMEA; 75,000 USD in CEMEA |",
+      "reason": "Preserve the CEMEA-only VAMP volume criterion alongside the existing count and ratio rows.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "monitoring-concept-efm-regional",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "- Fraud chargebacks (codes 4837/4863) >$50k volume + >0.5% rate\n- 3DS rate \u226410% of Mastercard payments (non-regulated)",
+      "new_text": "- Fraud chargebacks (codes 4837/4863) >50,000 USD volume and >0.50% count rate, or >15,000 USD and >0.20% in Australia; the rate uses current-month fraud chargeback count over prior-month e-commerce transactions\n- 3DS Mastercard payment count \u226410% of total Mastercard payments in non-regulated countries, or \u226450% in regulated countries",
+      "reason": "Retain Australia's EFM exceptions and the regulated-country 3DS threshold with the correct prior-month denominator.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "monitoring-concept-source-route",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "- [[source-stripe-disputes-monitoring-programs]] \u2014 full program thresholds, fine schedules, prevention best practices",
+      "new_text": "- [[source-stripe-disputes-monitoring-programs]] \u2014 May and November 2026 general guide to VAMP, Asia Pacific MERP, US VSEFP, Mastercard and AusPayNet thresholds, conditional consequences, dashboard data authority, and prevention practices",
+      "reason": "Route MERP and the updated provenance from the concept to the source.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "monitoring-concept-mastercard-denominators",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "**Key difference from Visa**: Mastercard denominator = prior month's payments (not current month).",
+      "new_text": "**Calendar and denominator:** Visa VAMP uses same-month captured payments. Mastercard ECP divides current-month chargeback count by the preceding month's captured-payment count; EFM divides current-month fraud chargeback count by the preceding month's e-commerce transaction count. These denominators are not interchangeable.",
+      "reason": "Narrow the existing blanket Mastercard denominator sentence so it agrees with separate ECP and EFM formulas and the EFM regional patch.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "monitoring-concept-vsefp-custom-account",
+      "target_path": "wiki/concepts/stripe-dispute-monitoring-programs.md",
+      "old_text": "For excessive fraud on domestic Visa 3DS transactions: \u2265$75k fraud volume AND \u22650.9% fraud rate \u2192 liability shift lost (no cash fines).",
+      "new_text": "For US-based businesses with US-based custom accounts and excessive fraud on domestic Visa 3DS-authenticated transactions on US-issued cards: both \u226575,000 USD TC40 EFW volume and \u22650.9% EFW USD volume divided by captured Visa 3DS USD volume must be met. The guide says no fines, but domestic 3DS liability shift is lost until the program is fully exited.",
+      "reason": "Restore the US-based custom-account and US-issued-card applicability conditions while retaining both thresholds and no-fine/liability-shift result.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "The November capture at https://docs.stripe.com/disputes/monitoring-programs adds Visa MERP, effective October 2026 for Visa-accepting businesses in Asia Pacific, at new raw lines 140\u2013164. It evaluates early transaction, fraud, non-fraud dispute, authorization, and decline signals together without published numeric identification thresholds. The May full guide at old raw lines 60\u201376 had no MERP section. The updated [[source-stripe-disputes-monitoring-programs]] distinguishes possible confirmed-identification consequences from actual account enrollment, which neither capture proves.",
+    "Q2": "The updated [[source-stripe-disputes-monitoring-programs]] keeps network counts separate from refund response options: May old raw line 22 mentioned a possible removal request after a full refund at least ten days before dispute; November new raw line 23 instead says one may respond after a pre-dispute full refund. At https://docs.stripe.com/disputes/monitoring-programs, November new raw lines 134\u2013137 also distinguish delayed Visa data that determines VAMP compliance from Stripe daily estimates; old raw lines 129\u2013135 described a different test-mode dashboard layout. The May ECP and EFM denominator distinction is explicit at old raw lines 170\u2013175 and 214\u2013221 and persists at new raw lines 199\u2013204 and 243\u2013250; the concept now separates captured-payment count from e-commerce transaction count."
+  },
+  "status": "candidate_ready"
+}

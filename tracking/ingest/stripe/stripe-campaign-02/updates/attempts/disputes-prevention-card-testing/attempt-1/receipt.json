@@ -1,0 +1,77 @@
+{
+  "job_id": "disputes-prevention-card-testing",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-prevention-card-testing-2026-11-07.md",
+  "raw_sha256": "03cb9676bef4064458673ac3f7811e8a83ae9c1dde3746343b7277d35aaad992",
+  "source_before_sha256": "642018e2696f8b83cc9be9debf8baa77e751b1e1696cd5f241375837ff1df9b9",
+  "source_page": "---\ntitle: \"Stripe \u2014 Protect Yourself From Card Testing\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/disputes/prevention/card-testing\"\nraw_files:\n  - \"stripe-disputes-prevention-card-testing-2026-11-07.md\"\n  - \"stripe-disputes-card-testing-2026.md\"\ntags: [stripe, card-testing, fraud, carding, captcha, rate-limiting, radar, disputes]\n---\n\n## Overview\n\nStripe's card-testing prevention guide describes how stolen or enumerated card details can be tested through card setup or small payments, how to recognize possible attacks, and mitigations for integrations that save cards or make payments. The 2026-11-07 capture retains the older guide's core advice and changes the condition for Radar custom velocity rules to plan feature support. See [[stripe]] and [[disputes]]. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#How card testing works|Attack methods]]\n\nCard testing is also called carding, account testing, enumeration, or card checking. The November capture additionally notes the Japanese term \u201ccredit master (\u30af\u30ec\u30b8\u30c3\u30c8\u30de\u30b9\u30bf\u30fc)\u201d or \u30af\u30ec\u30de\u30b9. Card setup validations often do not appear on cardholder statements; small payment attempts may be less noticeable. The guide describes possible early fraud warnings/disputes, higher decline rates, fees that depend on pricing and disputes, infrastructure strain, monitoring-program exposure, and distorted business data\u2014not inevitable results for every attack. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Card testing consequences|Consequences]]\n\n## Recognition and response\n\nStripe lists spikes in failed or blocked payments, HTTP 402 errors or `generic_decline` outcomes, and suspicious low-value payments with odd names or emails as symptoms to investigate. These signals are diagnostic clues, not proof that any individual failure or decline is card testing. For an integration being exploited, the guide recommends identifying activity, refunding fraudulent payments to avoid disputes, using a recommended integration or adding controls, and monitoring whether the controls work. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Identify card testing|Identification]] [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Active card testing checklist|Checklist]]\n\n## Mitigations and conditions\n\n- **Recommended integrations:** The guide says the latest Payment Element or Checkout has automated and manual card-testing controls, including rate limiters, AI models and CAPTCHA triggers; payments blocked by Stripe can carry `Blocked by Stripe`. Their effectiveness depends on integration and supplied risk factors. Advanced fraud detection has the highest impact in its list, followed by IP address, customer email, customer name and billing address. Direct integrations might need to pass data explicitly. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Use a Stripe-recommended integration|Integration and factors]]\n- **Implementation controls:** For endpoints that save a card or make a payment, consider server-validated CAPTCHA, login or session checks, network and checkout-flow rate limits, and monitoring of cards per account, customers per IP, purchases or other anomalous patterns. The guide's one-IP-per-day limit and CAPTCHA-after-first-attempt flow are examples, not fixed universal thresholds. A single IP heuristic or firewall rule is generally insufficient. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Control implementation|Control sections]]\n- **Radar velocity rules:** The 2026-05-10 capture names Radar for Fraud Teams for custom rules. The 2026-11-07 capture says custom Radar rules can be used **if the merchant's plan supports the feature**, at both its anomaly-control and risk-appetite sections. It does not identify all qualifying plans or prove any plan changed eligibility. Check feature support before relying on custom rules; this is distinct from the guide's general card-testing controls. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Detect and prevent unusual behavior|Conditional custom rules]] [[raw/stripe-disputes-card-testing-2026#Detect and prevent unusual behavior|Older wording]]\n- **Keys, retries, and monitoring:** Keep secret keys private; leaked credentials can let card testers create payments or set up cards. Extreme spikes of low-success payment retries can resemble card testing; avoid retrying cards set up on fraudulent customers after an attack. The guide says Stripe Smart Retries takes this into consideration, not that it makes all retries safe. Combine controls while watching for impact on legitimate traffic. [[raw/stripe-disputes-prevention-card-testing-2026-11-07#Retry carefully|Retry guidance]]\n\nThese are mitigation recommendations from dated documentation. They do not establish a compliance requirement, current account entitlement, guaranteed attack prevention, or successful payment outcomes.\n\n## Related\n\n- [[disputes]] \u2014 card-testing context and dispute effects\n- [[stripe-radar]] \u2014 Radar context; consult its own sources for plan and rule details\n- [[source-stripe-disputes-fraud-types]] \u2014 fraud-type overview\n\n## Raw Sources\n\n- [[raw/stripe-disputes-prevention-card-testing-2026-11-07|Stripe card-testing prevention guide, captured 2026-11-07]]\n- [[raw/stripe-disputes-card-testing-2026|Stripe card-testing prevention guide, captured 2026-05-10]]\n",
+  "quotes": [
+    {
+      "text": "Card testers use both card setup and payments to determine whether the stolen or enumerated card information they have is valid or not.",
+      "location": "raw/stripe-disputes-prevention-card-testing-2026-11-07.md:17"
+    },
+    {
+      "text": "A spike in requests with 402 errors",
+      "location": "raw/stripe-disputes-prevention-card-testing-2026-11-07.md:47"
+    },
+    {
+      "text": "However, the success of the Stripe controls depends on your integration and what risk factors you send to us",
+      "location": "raw/stripe-disputes-prevention-card-testing-2026-11-07.md:67"
+    },
+    {
+      "text": "To do so, you can use [custom rules](https://docs.stripe.com/radar/rules/reference.md#velocity-rules) in Radar, if [your plan](https://docs.stripe.com/radar/how-radar-works.md#compare-plans) supports this feature.",
+      "location": "raw/stripe-disputes-prevention-card-testing-2026-11-07.md:123"
+    },
+    {
+      "text": "Excessive retries (dunning) of payments can look like card testing if they come in extreme spikes with low success rate.",
+      "location": "raw/stripe-disputes-prevention-card-testing-2026-11-07.md:131"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "in Radar for Fraud Teams. We cover that in the next section.",
+      "location": "raw/stripe-disputes-card-testing-2026.md:118"
+    },
+    {
+      "text": "in Radar for Fraud Teams.",
+      "location": "raw/stripe-disputes-card-testing-2026.md:132"
+    },
+    {
+      "text": "_However, the success of Stripe\u2019s controls depends on your integration and what risk factors you send to us_",
+      "location": "raw/stripe-disputes-card-testing-2026.md:64"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-prevention-card-testing-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 146
+      }
+    ],
+    "raw/stripe-disputes-card-testing-2026.md": [
+      {
+        "start": 1,
+        "end": 141
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-card-testing.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/29972b321e9a32305c7e7eeb/content.diff": [
+      {
+        "start": 1,
+        "end": 164
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/prevention/card-testing, [[source-stripe-disputes-card-testing]] now records the 2026-11-07 plan-support condition for custom Radar velocity rules at new raw:123 and 137. The 2026-05-10 capture specified Radar for Fraud Teams at old raw:118 and 132; the later wording does not identify newly qualifying plans or prove loss of Fraud Teams access. The core card-testing signals and layered mitigations persist in both captures (new raw:42-71, 92-137; old raw:39-68, 89-132).",
+    "Q2": "The existing [[disputes]] concept already routes to [[source-stripe-disputes-card-testing]] and presents Radar velocity rules without a tier-entitlement claim, so this unit proposes no concept patch. At https://docs.stripe.com/disputes/prevention/card-testing, the canonical source now distinguishes the older Fraud Teams wording (old raw:118,132) from the November conditional plan-support wording (new raw:123,137). It also preserves the guide's warning that control success depends on integration data (old raw:64; new raw:67) and that retry spikes can resemble card testing (old raw:126; new raw:131); exact current plan eligibility remains unestablished."
+  },
+  "status": "candidate_ready"
+}

@@ -125,7 +125,7 @@ Stripe-hosted page for self-service subscription management:
 - Payment method updates, cancellations, plan changes
 - Create: `stripe.billingPortal.sessions.create({ customer/customer_account, return_url })`
 - Configure in Dashboard (which actions to allow)
-- Monitor: `customer.subscription.updated`, `customer.subscription.deleted`
+- Monitor subscription status through appropriate webhooks, including relevant `customer.subscription.created`, `customer.subscription.updated`, and `customer.subscription.deleted` events; check actual subscription status or active entitlements before granting access. The [[source-stripe-inapp-digital-goods-customer-portal]] sample only branches on created/deleted and does not implement the full status handling its guide requires.
 
 ## Subscription Statuses
 
@@ -205,7 +205,7 @@ Use `stripe.invoices.createPreview({ customer, subscription, subscription_detail
 ## Customer Models
 
 - **Customers v1**: `stripe.customers.create(...)` — `customer` param on session
-- **Accounts v2** (recommended for Connect): `stripe.v2.core.accounts.create(...)` with `configuration.customer` — `customer_account` param on session; requires API version `2026-03-25.dahlia`
+- **Accounts v2**: The 2026-04-21 Elements subscriptions guide recommends customer-configured Accounts for most use cases and says Accounts v2 was generally available to Connect users but in public preview for other Stripe users; preview participants needed a preview API version. Its `2026-03-25.dahlia` is a dated example pin, not a universal requirement or current account-access proof. The guide uses `stripe.v2.core.accounts.create(...)` with `configuration.customer` and `customer_account` on a Checkout Session. See [[source-stripe-build-subscriptions-elements]].
 
 ## Checkout Sessions Subscription Flow
 
@@ -215,7 +215,7 @@ Session: `mode: 'subscription'` + `ui_mode: 'elements'` + `customer` or `custome
 
 - [[source-stripe-checkout-build-subscriptions]] — Full Checkout subscription integration: product/price setup, session creation, webhook provisioning, customer portal, flexible billing mode, test cards
 - [[source-stripe-build-subscriptions-elements]] — End-to-end Elements subscriptions guide: entitlements, plan change, proration preview, cancel pattern, Accounts v2
-- [[source-stripe-inapp-digital-goods-custom-checkout]] — iOS digital goods subscriptions (mobile context): default_incomplete + expand latest_invoice, invoice webhooks, Universal Links return, Apple Pay US+EEA
+- [[source-stripe-inapp-digital-goods-custom-checkout]] — April/November 2026 iOS digital-goods subscription guide: merchant-owned Elements web checkout, Accounts v2 or Customers v1 identity, default_incomplete initial payment, verified invoice/subscription webhooks, and universal-link return; Apple Pay US/EEA scope is a dated guide statement
 - [[source-stripe-inapp-digital-goods-customer-portal]] — iOS subscription management portal: billingPortal.sessions.create, customer.subscription.* webhooks, product catalog config, tax ID collection
 - [[source-stripe-recurring-payments-overview]] — Stripe recurring payments overview: subscription creation via Dashboard/Payment Links/Checkout/Elements, flexible billing_mode, Accounts v2 customer_account, confirmation_secret expand
 - [[source-stripe-billing-apis]] — Billing API objects overview (May and November 2026 captures): 11 objects, customer model variants, entitlements, and the qualified Invoice → PaymentIntent narrative/table conflict
@@ -242,7 +242,7 @@ Session: `mode: 'subscription'` + `ui_mode: 'elements'` + `customer` or `custome
 
 > [!warning] Contradiction
 > The 2026-05-12 API migration capture lists a one-year legacy-price interval limit; the 2026-11-07 capture lists three years. They are dated documentation claims, not a live API validation. Both prose examples denote June 1, 2022 at 00:00 UTC, but their unchanged `start_date=1654066801` denotes 07:00:01 UTC. The intended sample time is unresolved. See [[source-stripe-subscriptions-migration-api]] and its preserved raw captures.
-- [[source-stripe-subscriptions-webhooks]] — 22 subscription webhook events, invoice.created 72h risk, access expiration pattern, EventBridge/Event Grid routing
+- [[source-stripe-subscriptions-webhooks]] — May and November 2026 subscription webhook guide: 26 main-table events, four additional risk/customer-data rows, versioned risk-event lookup, active-status access gate, invoice.created finalization risk, and EventBridge/Event Grid routing
 - [[source-stripe-subscriptions-billing-cycle]] — Billing-cycle guide (2026-05-12 and 2026-11-07): new-subscription config or timestamp, versioned reset-to-now behavior, private-preview flexible-mode timestamp reset, trial-as-anchor, and automatic reset cases
 - [[source-stripe-subscriptions-trial-offers]] — Trial Offers API (preview): discounted/free/upgrade/item-level trials, flexible billing required, opt-in cancellation
 - [[source-stripe-subscriptions-free-trials]] — Legacy trial_end/trial_period_days (May and November 2026): no-PM end choices, paid-invoice resume gate, conditional 23-hour void, billing-anchor example

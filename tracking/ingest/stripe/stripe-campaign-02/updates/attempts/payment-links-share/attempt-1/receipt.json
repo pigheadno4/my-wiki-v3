@@ -1,0 +1,73 @@
+{
+  "job_id": "payment-links-share",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payment-links-share-2026-11-07.md",
+  "raw_sha256": "8e746b9aacef4481cddb4233ef44cbfb6d8400792a2f66f22b631b519c9d87ad",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "source_page": "---\ntitle: \"Stripe Payment Links Overview\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payment-links/share\nraw_files:\n  - \"stripe-payment-links-share-2026-11-07.md\"\n  - \"stripe-payment-links-overview-2025.md\"\n  - \"stripe-payment-links-create-2025.md\"\n  - \"stripe-payment-links-share-2025.md\"\n  - \"stripe-payment-links-track-2025.md\"\n  - \"stripe-payment-links-buy-button-2025.md\"\n  - \"stripe-payment-links-customize-2025.md\"\n  - \"stripe-payment-links-shipping-2025.md\"\n  - \"stripe-payment-links-promotions-2025.md\"\ntags: [stripe, payment-links, no-code, invoicing, adaptive-pricing, buy-button]\n---\n\n## Summary\n\nStripe Payment Links product overview \u2014 features, availability, no-code capabilities, and a detailed comparison against Stripe Invoicing.\n\n## Key Takeaways\n\n- **No code** \u2014 Stripe-hosted page; share link or embed buy button; no integration required\n- **40+ payment methods** managed in Dashboard; dynamic presentment\n- **Adaptive Pricing** \u2014 automatically displays local currency\n- **Browser language** auto-detection (30+ languages)\n- **Reusable** \u2014 share multiple times; optionally limit purchase count\n- **Subscription support** \u2014 create subscription payment links (Smart Retries + reminders apply)\n\n## Invoicing vs Payment Links\n\n| | Payment Links | Invoicing |\n| --- | --- | --- |\n| Customer | Anyone with link | Specific customer |\n| Partial payments | \u2717 | \u2713 |\n| Edit quantities | \u2713 | \u2717 |\n| Choose price | \u2713 | \u2717 |\n| Upsells | \u2713 | \u2717 |\n| Quote\u2192Invoice | \u2717 | \u2713 |\n| Smart Retries | Subscription links only | \u2713 all |\n| Reconciliation | URL parameters | Auto |\n\n## API Creation Details\n\n- **`stripe.paymentLinks.create({ line_items: [{ price, quantity }] })`**\n- Up to **20 line items** for flat rate; **1 line item** for customer-defined prices\n- Use `price_data` to create product + price inline\n- Subscriptions: `subscription_data.trial_period_days` supported\n- Customer-defined price: `custom_unit_amount: { enabled: true }` on Price object\n- Override dynamic payment methods: `payment_method_types: ['card', 'klarna']`\n- Async methods (bank debits, vouchers): 2\u201314 days to confirm; use webhooks for fulfillment\n- **Adaptive Pricing always enabled** for Payment Links; 150+ countries; ML-based currency selection\n- **Mobile**: Stripe iOS Dashboard app supports creating links (products/subscriptions only)\n- **Customer-chooses max**: 10,000 SGD default; contact Stripe support to increase\n\n## Related Pages\n\n- [[stripe-payment-links]] \u2014 Stripe Payment Links concept page\n- [[paypal-payment-links]] \u2014 PayPal's equivalent product\n- [[stripe]] \u2014 Stripe company page\n\n## Sharing and Link State (November 7 Share Capture)\n\nA Payment Link URL can be copied from the Dashboard or read from the API's `url` field and shared by email, text, social media, website, or app. The Dashboard can create a QR code for an existing or new link and offer a PNG download; it can also produce buy-button embed code. The QR code itself has no intrinsic expiration, but a scan redirects to an expiration page after its underlying link is deactivated, and customers cannot make new purchases through that link. A created Payment Link cannot be deleted; `active: false` deactivates it, and `active: true` reactivates it. These operations change link availability for future purchases, not the state of a completed payment. The November diff changes API documentation URL paths without establishing a runtime API change.\n\n## Raw Sources\n\n- [[raw/stripe-payment-links-share-2026-11-07|November 7 share capture]] \u2014 sharing channels, QR and buy-button routes, and link-state behavior\n\n- [[raw/stripe-payment-links-overview-2025|stripe-payment-links-overview-2025]] \u2014 Payment Links features table, no-code capabilities, Invoicing vs Payment Links comparison\n- [[raw/stripe-payment-links-create-2025|stripe-payment-links-create-2025]] \u2014 Create a payment link: 2 pricing models, API (line_items, price_data, subscription_data), custom_unit_amount, payment_method_types, Adaptive Pricing, mobile iOS app, async methods\n- [[raw/stripe-payment-links-share-2025|April 20 share capture]] \u2014 share channels, persistent QR image (deactivated underlying link redirects scans to an expiration page and blocks new purchases), buy button embed, deactivate/reactivate (`active: false`/`true`); created links cannot be deleted\n- [[raw/stripe-payment-links-track-2025|stripe-payment-links-track-2025]] \u2014 Track a payment link: 5 UTM params (150 char max), client_reference_id (200 char max, no secrets), after_completion redirect, checkout.session.completed webhook\n- [[raw/stripe-payment-links-buy-button-2025|stripe-payment-links-buy-button-2025]] \u2014 Buy button: stripe-buy-button web component, 2 layouts, 3 attributes (client-reference-id/customer-email/customer-session-client-secret), CustomerSession (30min expiry, never cache), CSP requirements\n- [[raw/stripe-payment-links-customize-2025|stripe-payment-links-customize-2025]] \u2014 Customize checkout: payment limits (restrictions.completed_sessions.limit), custom deactivation message, address/phone/name/tax ID collection, Stripe Tax, ToS consent, custom fields (3 types), URL params, free trials without PM, adjustable quantities, custom domain\n- [[raw/stripe-payment-links-shipping-2025|stripe-payment-links-shipping-2025]] \u2014 Shipping rates: shippingRates.create (fixed_amount + delivery_estimate), shipping_options on payment link; one-time prices only (not subscriptions)\n- [[raw/stripe-payment-links-promotions-2025|stripe-payment-links-promotions-2025]] \u2014 Promotions, upsells, optional items: allow_promotion_codes, guest customer caveat, subscription upsells (Dashboard only), optional_items (up to 10), cross-sells (product-level, overridden by optional_items)\n",
+  "quotes": [
+    {
+      "text": "Each payment link contains a [url](https://docs.stripe.com/api/payment-link/object.md#payment_link_object-url)",
+      "location": "raw/stripe-payment-links-share-2026-11-07.md:23"
+    },
+    {
+      "text": "The QR code doesn\u2019t expire. If you deactivate the underlying payment link, the QR code redirects to an expiration page.",
+      "location": "raw/stripe-payment-links-share-2026-11-07.md:29"
+    },
+    {
+      "text": "Turn your payment link into an embeddable buy button to sell a product or subscription from your website.",
+      "location": "raw/stripe-payment-links-share-2026-11-07.md:33"
+    },
+    {
+      "text": "After you create a payment link, you can\u2019t delete it.",
+      "location": "raw/stripe-payment-links-share-2026-11-07.md:43"
+    },
+    {
+      "text": "To reuse a deactivated payment link, set [active](https://docs.stripe.com/api/payment-link/update.md#update_payment_link-active) to `true`.",
+      "location": "raw/stripe-payment-links-share-2026-11-07.md:43"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The QR code doesn\u2019t expire. If you deactivate the underlying payment link, the QR code redirects to an expiration page.",
+      "location": "raw/stripe-payment-links-share-2025.md:28"
+    },
+    {
+      "text": "After you create a payment link, you can\u2019t delete it.",
+      "location": "raw/stripe-payment-links-share-2025.md:42"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payment-links-share-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "raw/stripe-payment-links-share-2025.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b1d934f9a71990f4f923d6c2/content.diff": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payment-links/share, the November share capture describes distributing a Payment Link through the Dashboard or its API `url` and through email, text, social, website, or app channels (new:15-23). The existing source route wiki/sources/source-stripe-payment-links.md keeps the earlier sharing evidence (old:14-22) alongside the November capture. The diff's changed API documentation paths (diff:16-17,40) do not show a new sharing feature or runtime API behavior.",
+    "Q2": "For https://docs.stripe.com/payment-links/share, wiki/sources/source-stripe-payment-links.md now qualifies the QR summary: the QR image itself does not expire, but deactivating its underlying link sends scans to an expiration page and stops new purchases (old:26-28,38-42; new:27-29,39-43). The source also keeps buy-button embedding and the ability to reactivate a link with `active: true`; deactivation is a link-state change, not reversal of a completed payment."
+  },
+  "status": "candidate_ready"
+}

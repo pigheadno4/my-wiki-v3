@@ -1,0 +1,326 @@
+{
+  "job_id": "payments-advanced-build-subscriptions",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md",
+  "raw_sha256": "caf9029315828af92dbe70631c4b8a2cf71aacf5084b321fd67931c9fadefcb0",
+  "source_before_sha256": "738c7c5de94d79f7bfa1a0a9c6254864fcd8414292ed87e1de665b53e5606fd2",
+  "source_page": "---\ntitle: \"Build a Subscriptions Integration with Elements\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/advanced/build-subscriptions\"\nraw_files:\n  - \"stripe-build-subscriptions-elements-2025.md\"\ntags: [stripe, subscriptions, checkout-sessions, payment-intents, elements, entitlements, billing, plan-change, proration, cancel, accounts-v2]\n---\n\n## Summary\n\nThe 2026-04-21 capture at this URL contains **two distinct web subscription integrations** using Elements: Checkout Sessions API with embedded components and a lower-level Payment Intents API route. Both use Products, recurring Prices, customer records, subscription/invoice events, and status-aware provisioning; their client secrets and confirmation calls differ. The 2026-11-07 capture is only an index linking these two variants. It does not verify either variant's current body or establish a deprecation or changed runtime behavior. The instructions below are dated to the April capture.\n\n## Choose the Variant\n\n| April 2026 captured path | Server and client boundary |\n| --- | --- |\n| [Checkout Sessions API variant](https://docs.stripe.com/payments/advanced/build-subscriptions.md?platform=web&ui=embedded-components) | Server creates a subscription-mode Session with `ui_mode: \"elements\"`, then sends **Session `client_secret`**. Client initializes Checkout Elements SDK and calls Checkout `actions.confirm()` (old lines 10\u201330, 349\u2013430, 435\u2013464, 583\u2013617). |\n| [Payment Intents API variant](https://docs.stripe.com/payments/advanced/build-subscriptions.md?platform=web&ui=elements) | Server creates a subscription with `payment_behavior: \"default_incomplete\"`, expands `latest_invoice.confirmation_secret` for the first PaymentIntent, then sends that **invoice PaymentIntent confirmation secret**. Client creates regular Elements and calls `stripe.confirmPayment()` (old lines 1115\u20131133, 1503\u20131558, 2429\u20132492). |\n\nThe April guide recommends Checkout Sessions with Payment Element for most integrations because it provides tax, discount, shipping, and currency support with less custom code. Payment Intents is presented as a lower-level path requiring more code and maintenance (old lines 28\u201334, 1131\u20131137). The November index names both paths but gives no recommendation (new lines 9\u201314).\n\n## Shared Objects and Customer Models\n\nThe guide covers Product, Price, Subscription, Invoice, PaymentIntent, PaymentMethod, Feature, ProductFeature, and active Entitlement, using either a Customers v1 `Customer` or a customer-configured Accounts v2 `Account` (old lines 46\u201373, 1150\u20131189). The sample sells monthly Basic at 5 USD and Premium at 15 USD; these are illustrative example prices (old lines 89\u2013107, 1205\u20131225). ProductFeatures associate features with products; active entitlements are the feature-access source to query or track via `entitlement.active_entitlement_summary.updated` (old lines 62\u201373).\n\nFor Accounts v2, the April capture says general availability for Connect users and public preview for other Stripe users; preview participants need a preview API version (old lines 265\u2013273, 1381\u20131389). Its Session code samples pin `apiVersion: \"2026-03-25.dahlia\"` (old lines 357\u2013430). That example version is not a universal Accounts v2 requirement or evidence of a particular account's access in November. Customers v1 uses `customer`; Accounts v2 uses `customer_account` in the examples (old lines 357\u2013430, 1511\u20131558).\n\n## Checkout Sessions Path \u2014 April 2026 Capture\n\nThe server sample creates a Checkout Session with `mode: \"subscription\"`, `ui_mode: \"elements\"`, a customer identifier, recurring Price line item, and return URL, then returns `session.client_secret` (old lines 349\u2013430). The client passes that secret to `stripe.initCheckoutElementsSdk`, mounts `checkout.createPaymentElement()`, and can display `getSession().lineItems` and `session.total.total.amount` (old lines 435\u2013581).\n\nThe original source's confirm fragment omitted the `checkout.loadActions()` call and left `actions` undefined. This **partial illustrative fragment** shows the missing boundary from old lines 449\u2013464 and 594\u2013617; it assumes an initialized `stripe` instance and a Session `clientSecret` received from the server:\n\n```js\nconst checkout = stripe.initCheckoutElementsSdk({ clientSecret });\ncheckout.on(\"change\", (session) => {\n  document.getElementById(\"pay-button\").disabled = !session.canConfirm;\n});\nconst loadActionsResult = await checkout.loadActions();\nif (loadActionsResult.type === \"success\") {\n  const { actions } = loadActionsResult;\n  document.getElementById(\"pay-button\").addEventListener(\"click\", async () => {\n    const result = await actions.confirm();\n    if (result.type === \"error\") {\n      document.getElementById(\"confirm-errors\").textContent = result.error.message;\n    }\n  });\n}\n```\n\nThe April React variant instead uses `CheckoutElementsProvider` and `useCheckout()` from `@stripe/react-stripe-js/checkout`, with `checkoutState.checkout.confirm()` (old lines 467\u2013518, 620\u2013660). These are Checkout calls, not the Payment Intents `stripe.confirmPayment()` call.\n\n## Payment Intents Path \u2014 April 2026 Capture\n\nAfter the customer chooses a Price, the server creates a subscription with `payment_behavior: \"default_incomplete\"`, `save_default_payment_method: \"on_subscription\"`, and an expanded `latest_invoice.confirmation_secret` (old lines 1465\u20131558). The guide's `billing_mode: { type: \"flexible\" }` sample says that feature needs API version `2025-06-30.basil` or later (old lines 1503\u20131509). Its response examples show `status: \"incomplete\"` before the first payment (old lines 1563\u20131972, 1975\u20132383); creating that subscription is **not** proof of paid access.\n\nThe client passes the invoice PaymentIntent secret to `stripe.elements({ clientSecret })`, mounts a Payment Element, and calls `stripe.confirmPayment({ elements, confirmParams: { return_url } })` (old lines 2385\u20132492). The return flow checks the PaymentIntent status: `succeeded`, `processing`, or `requires_payment_method` require different customer messages and follow-up (old lines 2494\u20132551). A redirect, created Subscription, or `processing` state alone does not establish settled payment or access.\n\n## Provisioning, Changes, and Cancellation\n\nVerify webhook signatures and reconcile `invoice.paid`, `invoice.payment_failed`, and `customer.subscription.created`, `.updated`, and `.deleted` state (old lines 663\u2013753, 2553\u20132643). A `customer.subscription.created` event means **record and check the subscription state**, not automatically grant paid access. The April instructions check `subscription.status`; for paid access, `active` status or active entitlements govern provisioning, while trial access needs its own `trialing` qualification. An initial Payment Intents subscription can still be `incomplete` (old lines 745\u2013753, 1503\u20131510, 1967, 2377, 2633\u20132641). `invoice.paid` is a paid event, but the application still checks the governing state and product before provisioning. Store product, subscription, status, and customer identifiers to handle later failures and cancellations.\n\n| April captured event | Appropriate action |\n| --- | --- |\n| `invoice.paid` | Recheck paid status or active entitlement; provision or renew eligible access after trial |\n| `invoice.payment_failed` | Notify and recover payment; later subscription can become `past_due` |\n| `customer.subscription.created` | Record and inspect status; do not treat creation as payment |\n| `customer.subscription.updated` | Sync status, plan, and access |\n| `customer.subscription.deleted` | Revoke access for the canceled subscription |\n\nThe optional plan-change example updates an existing subscription item with its ID and new Price and triggers `customer.subscription.updated`; `invoices.createPreview` shows a possible prorated amount, with `customer` or `customer_account` depending on model (old lines 828\u20131017, 2718\u20132907). The cancellation examples call `stripe.subscriptions.del(id)` immediately and then handle `customer.subscription.deleted`; they say a canceled subscription cannot be reactivated and a new one must be created. This example is **not** a `cancel_at_period_end` flow (old lines 755\u2013804, 2645\u20132694).\n\n## Tests and Other Locators\n\nThe April capture provides card, BECS, and SEPA sandbox test values, including authentication, decline, and asynchronous `processing` cases (old lines 806\u2013826, 2696\u20132716). It also shows optional PaymentMethod retrieval for display and disclosure duties for Elements interaction data (old lines 1019\u20131113, 2909\u20133003). These examples are dated documentation, not proof of successful payment, account eligibility, or current variant behavior.\n\n## Related Pages\n\n- [[stripe-subscriptions]] \u2014 subscription states, paid versus trial access, and this guide's route\n- [[source-stripe-checkout-build-subscriptions]] \u2014 earlier subscription guide\n- [[stripe-checkout]] \u2014 Checkout concept and Sessions flows\n\n## Related raw API references\n\n- [[raw/stripe-payments-advanced-build-subscriptions-2026-11-07|2026-11-07 variant index only]] \u2014 names the Checkout Sessions and Payment Intents URLs; contains no variant-body payment instructions\n\n## Raw Sources\n\n- [[raw/stripe-build-subscriptions-elements-2025|Full two-variant guide, fetched 2026-04-21]] \u2014 dated factual evidence for the flows above\n",
+  "quotes": [
+    {
+      "text": "Create and manage subscriptions to accept recurring payments with Elements.",
+      "location": "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md:7"
+    },
+    {
+      "text": "## Index",
+      "location": "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md:9"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout Sessions API](https://docs.stripe.com/payments/advanced/build-subscriptions.md?platform=web&ui=embedded-components)",
+      "location": "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md:13"
+    },
+    {
+      "text": "[Payment Intents API](https://docs.stripe.com/payments/advanced/build-subscriptions.md?platform=web&ui=elements)",
+      "location": "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "# Checkout Sessions API",
+      "location": "raw/stripe-build-subscriptions-elements-2025.md:10"
+    },
+    {
+      "text": "const loadActionsResult = await checkout.loadActions();",
+      "location": "raw/stripe-build-subscriptions-elements-2025.md:455"
+    },
+    {
+      "text": "const { actions } = loadActionsResult;",
+      "location": "raw/stripe-build-subscriptions-elements-2025.md:604"
+    },
+    {
+      "text": "# Payment Intents API",
+      "location": "raw/stripe-build-subscriptions-elements-2025.md:1115"
+    },
+    {
+      "text": "On the back end, create the subscription with an `incomplete` status using `payment_behavior=default_incomplete`.",
+      "location": "raw/stripe-build-subscriptions-elements-2025.md:1503"
+    },
+    {
+      "text": "1. Verify the subscription status. If it\u2019s `active`, your user has paid for your product.",
+      "location": "raw/stripe-build-subscriptions-elements-2025.md:2639"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-build-subscriptions-elements-2025.md:269"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-build-subscriptions-elements-2025.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 520
+      },
+      {
+        "start": 521,
+        "end": 620
+      },
+      {
+        "start": 621,
+        "end": 720
+      },
+      {
+        "start": 721,
+        "end": 820
+      },
+      {
+        "start": 821,
+        "end": 920
+      },
+      {
+        "start": 921,
+        "end": 1020
+      },
+      {
+        "start": 1021,
+        "end": 1120
+      },
+      {
+        "start": 1121,
+        "end": 1220
+      },
+      {
+        "start": 1221,
+        "end": 1320
+      },
+      {
+        "start": 1321,
+        "end": 1420
+      },
+      {
+        "start": 1421,
+        "end": 1520
+      },
+      {
+        "start": 1521,
+        "end": 1620
+      },
+      {
+        "start": 1621,
+        "end": 1720
+      },
+      {
+        "start": 1721,
+        "end": 1820
+      },
+      {
+        "start": 1821,
+        "end": 1920
+      },
+      {
+        "start": 1921,
+        "end": 2020
+      },
+      {
+        "start": 2021,
+        "end": 2120
+      },
+      {
+        "start": 2121,
+        "end": 2220
+      },
+      {
+        "start": 2221,
+        "end": 2320
+      },
+      {
+        "start": 2321,
+        "end": 2420
+      },
+      {
+        "start": 2421,
+        "end": 2520
+      },
+      {
+        "start": 2521,
+        "end": 2620
+      },
+      {
+        "start": 2621,
+        "end": 2720
+      },
+      {
+        "start": 2721,
+        "end": 2820
+      },
+      {
+        "start": 2821,
+        "end": 2920
+      },
+      {
+        "start": 2921,
+        "end": 3003
+      }
+    ],
+    "wiki/sources/source-stripe-build-subscriptions-elements.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 139
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/683eb573643e97ebc94edf80/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 720
+      },
+      {
+        "start": 721,
+        "end": 840
+      },
+      {
+        "start": 841,
+        "end": 960
+      },
+      {
+        "start": 961,
+        "end": 1080
+      },
+      {
+        "start": 1081,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1320
+      },
+      {
+        "start": 1321,
+        "end": 1440
+      },
+      {
+        "start": 1441,
+        "end": 1560
+      },
+      {
+        "start": 1561,
+        "end": 1680
+      },
+      {
+        "start": 1681,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 1920
+      },
+      {
+        "start": 1921,
+        "end": 2040
+      },
+      {
+        "start": 2041,
+        "end": 2160
+      },
+      {
+        "start": 2161,
+        "end": 2280
+      },
+      {
+        "start": 2281,
+        "end": 2400
+      },
+      {
+        "start": 2401,
+        "end": 2520
+      },
+      {
+        "start": 2521,
+        "end": 2640
+      },
+      {
+        "start": 2641,
+        "end": 2760
+      },
+      {
+        "start": 2761,
+        "end": 2880
+      },
+      {
+        "start": 2881,
+        "end": 3000
+      },
+      {
+        "start": 3001,
+        "end": 3005
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "stripe-subscriptions-accounts-v2-preview-version",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- **Accounts v2** (recommended for Connect): `stripe.v2.core.accounts.create(...)` with `configuration.customer` \u2014 `customer_account` param on session; requires API version `2026-03-25.dahlia`",
+      "new_text": "- **Accounts v2**: The 2026-04-21 Elements subscriptions guide recommends customer-configured Accounts for most use cases and says Accounts v2 was generally available to Connect users but in public preview for other Stripe users; preview participants needed a preview API version. Its `2026-03-25.dahlia` is a dated example pin, not a universal requirement or current account-access proof. The guide uses `stripe.v2.core.accounts.create(...)` with `configuration.customer` and `customer_account` on a Checkout Session. See [[source-stripe-build-subscriptions-elements]].",
+      "reason": "Directly correct the concept's universal API-version claim using the old guide's Connect versus public-preview distinction; retain the dated example version without claiming current eligibility from the November index.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/advanced/build-subscriptions, the 2026-11-07 capture is a 14-line index naming Checkout Sessions and Payment Intents variants (new lines 9\u201314). The 2026-04-21 capture contains both full paths: Checkout Sessions begins at old line 10, while Payment Intents begins at old line 1115. [[source-stripe-build-subscriptions-elements]] now routes each separately and dates detailed behavior to April. The index does not show either current variant body, so it cannot establish deprecation or unchanged live behavior.",
+    "Q2": "At https://docs.stripe.com/payments/advanced/build-subscriptions, the older Checkout Sessions example sends a Session client secret to Checkout Elements and uses `checkout.loadActions()` before `actions.confirm()` (old lines 349\u2013430, 449\u2013464, 594\u2013617). The distinct Payment Intents path creates an `incomplete` subscription, expands the invoice PaymentIntent confirmation secret, then uses regular Elements and `stripe.confirmPayment()` (old lines 1503\u20131558, 1967, 2429\u20132492). [[source-stripe-build-subscriptions-elements]] repairs its client fragment and conditions paid access on active status or entitlements rather than `customer.subscription.created` alone (old lines 745\u2013753, 2633\u20132641); the November index only names the two routes (new lines 11\u201314). The April Accounts v2 text differentiates Connect general availability from other users' public preview and preview version need (old lines 267\u2013273, 1383\u20131389); neither the old snapshot nor the new index proves present account access."
+  },
+  "status": "candidate_ready"
+}

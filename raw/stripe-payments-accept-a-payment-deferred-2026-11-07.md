@@ -1,0 +1,15 @@
+<!-- Source URL: https://docs.stripe.com/payments/accept-a-payment-deferred -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Collect payment details before creating an Intent
+
+Build an integration where you can render the Payment Element prior to creating a PaymentIntent or SetupIntent.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Accept a payment](https://docs.stripe.com/payments/accept-a-payment-deferred.md?platform=web&type=payment)
+- [Set up a payment method](https://docs.stripe.com/payments/accept-a-payment-deferred.md?platform=web&type=setup)
+- [Create a subscription](https://docs.stripe.com/payments/accept-a-payment-deferred.md?platform=web&type=subscription)

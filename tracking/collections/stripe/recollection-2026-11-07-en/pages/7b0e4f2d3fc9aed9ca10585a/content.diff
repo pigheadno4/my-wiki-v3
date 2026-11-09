@@ -1,0 +1,28 @@
+--- raw/stripe-usage-based-billing-recording-usage-2025.md
++++ raw/stripe-billing-subscriptions-usage-based-recording-usage-2026-11-07.md
+@@ -1,6 +1,16 @@
+ # Record usage for billing
+ 
+ Learn how to record customer usage data.
++
++## How Metronome handles event ingestion
++
++This page describes usage recording for basic usage-based billing, where you send meter events to the Stripe `/v1/billing/meter_events` endpoint and Stripe aggregates them at the end of the billing period. If you’re evaluating a new integration, [Metronome](https://docs.stripe.com/billing/usage-based.md) handles event ingestion differently and is recommended for most new use cases.
++
++In Metronome, you send usage events to Metronome’s ingest API rather than to Stripe directly. Metronome processes events in real time, applies your pricing configuration, and tracks running balances and usage totals continuously, so you and your customers can see current usage at any point during the billing period, not just at invoice time. Metronome is also built for high-volume ingest, making it more suitable for products where customers generate large numbers of events per second or per day.
++
++The Billing Meters approach on this page is appropriate only if you’re already using Billing Meters to bill customers today. For a new integration, including adding usage-based pricing to existing flat-rate subscriptions, use [Metronome](https://docs.stripe.com/billing/usage-based.md) instead of building custom event recording infrastructure.
++
++> This page covers usage recording for basic usage-based billing with Billing Meters. Stripe recommends [Metronome](https://docs.stripe.com/billing/usage-based.md) for new integrations. Metronome handles event ingestion, metering, and real-time usage visibility without custom recording infrastructure. [Compare your options](https://docs.stripe.com/billing/subscriptions/usage-based/compare-metronome.md) before building a new integration.
+ 
+ If you need guidance for the previous usage-based billing process, refer to our [legacy documentation](https://docs.stripe.com/billing/subscriptions/usage-based-legacy.md).
+ 
+@@ -14,4 +24,8 @@
+ 
+ [Use the Stripe Dashboard](https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-in-bulk-dashboard.md): Use the Dashboard to upload a CSV file with usage data.
+ 
+-[Use Amazon S3](https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-in-bulk.md): Use Amazon S3 to add customer usage data in bulk.+[Use Amazon S3](https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-in-bulk.md): Use Amazon S3 to add customer usage data in bulk.
++
++## See also
++
++- [Usage-based pricing models](https://docs.stripe.com/products-prices/pricing-models.md#usage-based-pricing)

@@ -1,0 +1,118 @@
+{
+  "job_id": "crypto-onramp-stripe-hosted",
+  "attempt": 1,
+  "raw_path": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md",
+  "raw_sha256": "32065533ae33db583ea8916210460849f3ff7be9f760551010fafe825de2cbed",
+  "prior_raw_path": "raw/stripe-crypto-onramp-stripe-hosted-2026.md",
+  "prior_raw_sha256": "cfe1a375300706acd87bba456db957d8072582980e02915b0ec6fb340d93c852",
+  "source_target": "wiki/sources/source-stripe-crypto-onramp-stripe-hosted.md",
+  "source_before_sha256": "35000a4a2ffa55976b3eeafd1844221770a7f7448d9112f2e4e39eedf3ece7d3",
+  "read_ranges": {
+    "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 142
+      }
+    ],
+    "raw/stripe-crypto-onramp-stripe-hosted-2026.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 135
+      }
+    ],
+    "wiki/sources/source-stripe-crypto-onramp-stripe-hosted.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5959e8ea56a89415dfb6dbaa/content.diff": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 99
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "To access the Stripe onramp, including in [sandboxes](https://docs.stripe.com/sandboxes.md), you must follow these steps to submit your application:",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:13"
+    },
+    {
+      "text": "Generate a redirect URL in the frontend without a Stripe account. Customize the suggested source or destination amount, destination currency, and network.",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:53"
+    },
+    {
+      "text": "These scripts must always load directly from Stripe domains (*https://js.stripe.com* and *https://crypto-js.stripe.com*) for compatibility and *PCI compliance*",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:58"
+    },
+    {
+      "text": "<script src=\"https://js.stripe.com/endive/stripe.js\"></script>",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:63"
+    },
+    {
+      "text": "Similar to other integrations, you need to implement a server endpoint to [create a new onramp session](https://docs.stripe.com/api/crypto/onramp_sessions/create.md) for every user visit. The onramp session creation request returns a `redirect_url`.",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026-11-07.md:95"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<script src=\"https://js.stripe.com/dahlia/stripe.js\"></script>",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026.md:62"
+    },
+    {
+      "text": "To access the Stripe onramp, including testing environments, you must follow these steps to submit your application:",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026.md:12"
+    },
+    {
+      "text": "Generate a redirect URL in the frontend without a Stripe account. Customize the suggested source or destination amount, destination currency, and network.",
+      "location": "raw/stripe-crypto-onramp-stripe-hosted-2026.md:52"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The only operationally relevant same-URL change is the first HTML example's Stripe.js script path from https://js.stripe.com/dahlia/stripe.js (old line 62) to https://js.stripe.com/endive/stripe.js (new line 63). The separate https://crypto-js.stripe.com/crypto-onramp-outer.js path is unchanged (old line 63; new line 64). Treat the new path as this capture's example, not proof that earlier paths ceased working, a mandatory SDK upgrade, or account access.",
+    "Both captures contain a scope distinction the current source obscures: the frontend can generate a redirect URL without a Stripe account (old line 52; new line 53), but accessing the onramp, including a sandbox, requires an onramp application and approval (old lines 12-17; new lines 13-18). The current source's 'no Stripe account needed' path at line 19 needs this adjacent eligibility caveat to avoid implying operational access without approval. The current concept has both claims but separates them at lines 24 and 39.",
+    "The two customization paths are otherwise unchanged: a lightweight frontend redirect URL with limited prefills versus a backend-created onramp session with Stripe account, branding, wallet address customization and a returned redirect_url (old lines 48-53, 92-100; new lines 49-54, 93-101). Neither sample response's initialized status nor redirect_url is evidence of a completed crypto purchase.",
+    "The US/EU asset list, New York exclusions, and EU exclusions remain textually the same (old lines 25-44; new lines 26-45), with explicit 'subject to change' wording. Source currency examples remain usd/eur; the amount object accepts source_amount or destination_amount, only one at a time (old lines 81-88; new lines 82-89).",
+    "Most other diff changes are front-end/back-end spelling, list numbering, table formatting, JS quote style, and a multiline JSON array (diff lines 3-99). Stripe still says scripts must load directly from Stripe domains and not be bundled or self-hosted (old line 57; new line 58)."
+  ],
+  "substantive_changes": [
+    "The captured frontend HTML example changes Stripe.js URL train from dahlia to endive (old line 62; new line 63). No runtime compatibility or required migration conclusion is established."
+  ],
+  "historical_claims_to_preserve": [
+    "The old dahlia script example is dated May evidence; the November example uses endive. Preserve the version distinction without treating either example as a live compatibility test (old line 62; new line 63).",
+    "Generating a frontend redirect URL without a Stripe account is distinct from the application-and-approval gate to access the onramp, including sandboxes (old lines 12-17, 52; new lines 13-18, 53).",
+    "The backend path creates a new onramp session for every user visit and returns redirect_url; custom wallet address and branding are part of that path (old lines 53, 92-94; new lines 54, 93-95).",
+    "The currency/geography lists remain snapshot guidance subject to change, not current account availability; direct Stripe-domain script loading remains a documented compatibility/PCI instruction (old lines 25-44, 57; new lines 26-45, 58)."
+  ],
+  "conflicts": [
+    "Current source line 19 says frontend redirect generation needs no Stripe account but omits the separate onramp access/application requirement at new lines 13-18; as an integration selection summary it can mislead about sandbox or live eligibility.",
+    "The current source and stripe-crypto-onramp concept present May currency/geo lists without a snapshot qualifier, while both raws say available currencies are subject to change (old line 27; new line 28).",
+    "The overview concept's 'Applications reviewed within 48 hours' at line 24 overstates this guide's 'most onramp applications within 48 hours' (old line 16; new line 17)."
+  ],
+  "unresolved_questions": [
+    "The capture does not establish that any specific account is approved for the onramp or that an unapproved frontend-generated URL can complete a transaction.",
+    "The new Endive example does not state whether the older Dahlia script path remains compatible, when a migration is required, or whether a separate API version header changes.",
+    "The listed currencies and geographic exclusions are document-snapshot statements explicitly subject to change and do not prove current transaction eligibility."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-crypto-onramp.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/crypto/onramp/stripe-hosted, the November capture changes the frontend HTML example from the Dahlia Stripe.js script at old line 62 to Endive at new line 63. [[source-stripe-crypto-onramp-stripe-hosted]] should record this dated example and the application gate omitted from its path summary. The redirect/session split and US/EU currency restrictions remain in old lines 25-57 and 92-100 and new lines 26-58 and 93-101.",
+    "Q2": "For https://docs.stripe.com/crypto/onramp/stripe-hosted, [[source-stripe-crypto-onramp-stripe-hosted]] must distinguish URL generation without a Stripe account (old line 52; new line 53) from actual onramp access, which requires an application even for sandboxes and approval before development (old lines 12-17; new lines 13-18). The Endive script at new line 63 is the captured example, not a proven mandatory upgrade or completed payment; the older Dahlia example at old line 62 remains historical evidence."
+  }
+}

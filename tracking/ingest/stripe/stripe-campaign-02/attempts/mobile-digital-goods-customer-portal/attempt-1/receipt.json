@@ -1,0 +1,143 @@
+{
+  "job_id": "mobile-digital-goods-customer-portal",
+  "attempt": 1,
+  "raw_path": "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md",
+  "raw_sha256": "7f0f2876b1b01541bb91fed5e0bf7f6cb64b5903f5c637ddbd9009c99e37b785",
+  "prior_raw_path": "raw/stripe-inapp-digital-goods-customer-portal-2025.md",
+  "prior_raw_sha256": "9a5e7fa69357a22edac04ae3bc7688f853e556aca6497c3682303c686fd2bba4",
+  "source_target": "wiki/sources/source-stripe-inapp-digital-goods-customer-portal.md",
+  "source_before_sha256": "db2c2546870619b2d2f711fbb2f77ea4969401fd228b31515a19c4bc9e011133",
+  "read_ranges": {
+    "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 348
+      }
+    ],
+    "raw/stripe-inapp-digital-goods-customer-portal-2025.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 347
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-digital-goods-customer-portal.md": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7b765e1e1b110a43bd31d4a0/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 393
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "This guide only describes subscription management. If you\u2019re setting up subscription purchases, see",
+      "location": "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md:18"
+    },
+    {
+      "text": "If you use the customer portal with Stripe Connect, configure it for your platform, not a connected account.",
+      "location": "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md:40"
+    },
+    {
+      "text": "If customers can upgrade, downgrade, or change subscription quantities, you must configure a product catalog.",
+      "location": "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md:52"
+    },
+    {
+      "text": "When a customer wants to make changes to their subscription, generate a URL for the portal page using their Stripe customer ID through the portal session API.",
+      "location": "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md:158"
+    },
+    {
+      "text": "Make sure you handle all events necessary to accurately monitor the statuses of the subscriptions you\u2019ve configured.",
+      "location": "raw/stripe-mobile-digital-goods-customer-portal-2026-11-07.md:278"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This guide only describes subscription management. If you\u2019re setting up subscription purchases, see",
+      "location": "raw/stripe-inapp-digital-goods-customer-portal-2025.md:17"
+    },
+    {
+      "text": "configure the customer portal for the platform, not a connected account.",
+      "location": "raw/stripe-inapp-digital-goods-customer-portal-2025.md:39"
+    },
+    {
+      "text": "If you allow customers to upgrade, downgrade, or change the quantities of their subscriptions, you must also set a product catalog.",
+      "location": "raw/stripe-inapp-digital-goods-customer-portal-2025.md:59"
+    },
+    {
+      "text": "Make sure you handle all events necessary to accurately monitor the statuses of the subscriptions you\u2019ve configured.",
+      "location": "raw/stripe-inapp-digital-goods-customer-portal-2025.md:277"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both same-URL captures describe iOS digital-goods subscription management through a Stripe-hosted customer portal opened in Safari. They explicitly exclude subscription purchase flow, user authentication, and StoreKit native purchases (new raw:5-32; old raw:4-31). The US/EEA Apple Pay external-page sentence is context for a separate purchase guide, not permission or implementation detail for every app.",
+    "Both captures require portal configuration separately in sandbox and live mode, specify platform rather than connected-account portal configuration for the stated Connect use, and require a product catalog if customers can upgrade, downgrade, or change quantities; invoicing-only use does not need that catalog (new raw:34-60; old raw:33-65). Tax-ID collection is an optional Stripe Tax-related portal setting; preview and testing require sandbox context and Dashboard edit permission (new raw:62-78; old raw:67-79).",
+    "The portal session URL is created server-side using the customer's Stripe customer ID and a return_url; the app calls its server, opens the returned URL in Safari, and uses universal links plus a fallback return page for navigation (new raw:156-179,185-245; old raw:158-180,184-244). The sample's placeholder customer lookup is not proof of an authentication or authorization implementation.",
+    "Both captures say production should have a webhook endpoint subscribed to appropriate event types and should handle all events needed to monitor configured subscription statuses; created, updated, and deleted are examples (new raw:276-280; old raw:275-279). The Node sample only branches on created and deleted and maps them directly to true/false without inspecting status (new raw:320-334; old raw:319-333). The current source:48-50 turns these simplified event branches into a general action table; created alone does not prove active access, and updated events need actual status handling.",
+    "The diff changes the guide's sample setup language and installation choices (Node install to Ruby gem, removes CocoaPods steps, expands CLI install/login), reformats code and lists, and changes image or reference links (diff:1-393). These are documentation/example changes; the portal session, customer identity, universal-link, configuration, and webhook lifecycle rules remain substantively the same. Removal of CocoaPods instructions here does not establish SDK deprecation."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the older capture as dated evidence of the management-only flow, portal session customer ID, Safari opening, universal-link return/fallback, and webhook-based subscription monitoring (old raw:17-30,158-244,275-279; new raw:18-31,156-245,276-280).",
+    "Retain the platform-versus-connected-account portal configuration condition and the separate API option for multiple configurations (old raw:39-55; new raw:40-48); avoid converting the example into a universal connected-account prohibition beyond its stated context.",
+    "Retain the sandbox/edit-permission preview limit, optional tax-ID setting, product-catalog condition, and webhook event completeness requirement (old raw:59-79,277-279; new raw:52-78,278-280)."
+  ],
+  "conflicts": [
+    "Current wiki/sources/source-stripe-inapp-digital-goods-customer-portal.md:48 instructs 'customer.subscription.created | Mark subscription active' as a general rule. Both captures make that direct mapping only inside a simplified Node example (old raw:319-333; new raw:320-334), while the guide says to handle all events necessary to accurately monitor subscription statuses (old raw:277; new raw:278). Correct the table to inspect the subscription's actual status before granting active access; created alone is not an active-status guarantee.",
+    "Current source:49 says updated events handle pause/upgrade/cancel changes, but the example has no updated branch; distinguish the documented event name and required comprehensive status monitoring from illustrative code that implements only created/deleted (old raw:277,319-333; new raw:278,320-334).",
+    "Current source:39 groups product name, description, and quantity restrictions as editable without retaining that quantity restrictions are Dashboard-editable while names and descriptions are editable in Dashboard and API (old raw:63-65; new raw:58-60). Keep that distinction if this detail remains in the source."
+  ],
+  "unresolved_questions": [
+    "The linked subscription webhook guide and lifecycle references were navigation only for this job; the assigned page alone does not enumerate every status transition or prove a given customer's entitlement state.",
+    "The changed SDK installation snippets do not establish whether CocoaPods or the old Node setup remains supported; no package or platform compatibility check was performed."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-inapp-payments.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/mobile/digital-goods/customer-portal, both captures describe subscription management from an iOS app: create a portal session on the server for the Stripe customer, open its URL in Safari, provide a universal-link return and fallback, and use webhooks for status monitoring (new raw:156-179,185-245,276-280; old raw:158-180,184-244,275-279). [[source-stripe-inapp-digital-goods-customer-portal]] correctly separates management from purchases and retains Connect platform configuration. Product catalog setup is conditional on allowing plan or quantity changes, while sandbox portal previews require edit permission (new raw:52-78; old raw:59-79).",
+    "Q2": "For https://docs.stripe.com/mobile/digital-goods/customer-portal, the same-URL diff is setup, code-formatting, and navigation change rather than a new portal lifecycle rule (old raw:17-30,158-180,275-279; new raw:18-31,156-179,276-280). Nonetheless, [[source-stripe-inapp-digital-goods-customer-portal]]:48-50 needs a bounded pre-existing correction: the raw's created/deleted true/false mapping is only a simplified sample (old raw:319-333; new raw:320-334), while both guides require handling every event needed for accurate subscription status. A created event alone is not proof that access is active, and the sample omits updated-event handling. Keep the sandbox, Connect, and product-catalog conditions intact."
+  }
+}

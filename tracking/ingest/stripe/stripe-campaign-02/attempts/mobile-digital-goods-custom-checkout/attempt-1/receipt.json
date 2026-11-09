@@ -1,0 +1,187 @@
+{
+  "job_id": "mobile-digital-goods-custom-checkout",
+  "attempt": 1,
+  "raw_path": "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md",
+  "raw_sha256": "2a1676198ff5d5cd3ef025fe73d2a3a5495edf550a601cbf309a45c28355b0dc",
+  "prior_raw_path": "raw/stripe-inapp-digital-goods-custom-checkout-2025.md",
+  "prior_raw_sha256": "3ee98cdb6a4b5e51e8ff4c5de74dd99bc120532f0014df99e940da568a10fbd6",
+  "source_target": "wiki/sources/source-stripe-inapp-digital-goods-custom-checkout.md",
+  "source_before_sha256": "c4320de387d83329017e27a1094394441398199ec6f6d776913f0117b2716238",
+  "read_ranges": {
+    "raw/stripe-mobile-digital-goods-custom-checkout-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 280
+      },
+      {
+        "start": 281,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 490
+      },
+      {
+        "start": 491,
+        "end": 516
+      }
+    ],
+    "raw/stripe-inapp-digital-goods-custom-checkout-2025.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 280
+      },
+      {
+        "start": 281,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 401
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-digital-goods-custom-checkout.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 98
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/154064d0cb62c28070c200d9/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 560
+      },
+      {
+        "start": 561,
+        "end": 612
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "new raw line 41"
+    },
+    {
+      "text": "For most use cases, we recommend [modeling your customers as customer-configured Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md) instead of using [Customer](https://docs.stripe.com/api/customers.md) objects.",
+      "location": "new raw line 45"
+    },
+    {
+      "text": "customer_account: customerAccountId,",
+      "location": "new raw line 193"
+    },
+    {
+      "text": "customer: customerId,",
+      "location": "new raw line 245"
+    },
+    {
+      "text": "- `customer.subscription.updated` (even if you use customer-configured `Accounts`)",
+      "location": "new raw line 393"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If your integration uses [customer-configured Accounts](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer), replace `Customer` and event references in the code examples with the equivalent Accounts v2 API references.",
+      "location": "old raw line 22"
+    },
+    {
+      "text": "customer: customerId,",
+      "location": "old raw line 125"
+    },
+    {
+      "text": "- `customer.subscription.updated`",
+      "location": "old raw line 275"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw lines 39-45 expand Accounts v2 from the old raw line 22 conditional note: the guide now gives separate Accounts v2 and Customers v1 branches. It says Accounts v2 is generally available for Connect users and in public preview for other Stripe users, with a preview version for preview participants; its recommendation for customer-configured Accounts is scoped to most use cases. The source's single Customer-only code path and comparison row need this alternative with its eligibility qualification, not a universal migration claim.",
+    "New raw lines 192-197 use `customer_account: customerAccountId` for the Accounts v2 subscription branch, while new lines 244-249 retain `customer: customerId` for Customers v1. Old raw lines 124-129 and current source lines 35-40 only show `customer`. Preserve the distinction between the customer-configured Account ID and Customer ID; both examples keep `payment_behavior: default_incomplete` and expand latest_invoice.payment_intent.",
+    "New raw line 393 explicitly says `customer.subscription.updated` applies even with customer-configured Accounts. Current source line 80, following old raw line 22, incorrectly instructs readers to replace event references with Accounts v2 equivalents. Correct this material conflict and keep the named invoice and subscription events at new lines 392-394.",
+    "New raw lines 220 and 272 replace the old raw line 153 instruction to add payment_method_types for additional payment methods with Dashboard enablement. Treat this as a captured documentation change in the two illustrated branches; do not infer the sample code alone proves every API-level option is removed.",
+    "Both captures preserve the dated US/EEA Apple Pay statement, Safari custom checkout, universal-link return, webhook-driven subscription state, and physical-goods exclusion. The new page includes additional CLI setup and presentation/formatting changes; the raw delta is substantive because of Accounts v2 and event identity, not navigation-only."
+  ],
+  "substantive_changes": [
+    "Explicit Accounts v2 eligibility/preview scope and recommendation added (new lines 39-45); separate Account and Customer creation and subscription examples now use distinct account/customer identifiers (new lines 93-167,169-272 versus old lines 22,66-153).",
+    "`customer.subscription.updated` is explicitly retained for customer-configured Accounts (new line 393), reversing the older generic suggestion to replace event references (old line 22).",
+    "Additional payment methods instruction shifts from old payment_method_types note (old line 153) to Dashboard enablement in both new branches (new lines 220,272)."
+  ],
+  "historical_claims_to_preserve": [
+    "The captured guide describes a US/EEA iOS digital-goods Apple Pay path and says other regions cannot use Apple Pay for these goods in the described flow (old lines 8-14; new lines 9-15); keep its dated geographic scope.",
+    "`default_incomplete` creates an incomplete Subscription and initial PaymentIntent in both customer identity branches (old line 104; new lines 173,224).",
+    "Universal links with an association file, entitlement, and fallback pages support return from Safari to the app (old lines 155-207; new lines 274-326).",
+    "Subscription fulfillment is driven by verified invoice/subscription webhook events, not the Swift success flag alone (old lines 270-326; new lines 388-439)."
+  ],
+  "conflicts": [
+    "Source line 80 says Accounts v2 users should replace Customer and event references; new raw line 393 explicitly preserves `customer.subscription.updated` for customer-configured Accounts.",
+    "Source lines 19-23 and 32-40 imply a Customer attachment and Customer ID path only, while new raw lines 27,39-45,93-129,171-220 also show a customer-configured Account path using `customer_account`.",
+    "Source line 27 states Apple Pay geography without a capture date; both captures support it only as dated Stripe documentation, not a fresh independent policy verification."
+  ],
+  "unresolved_questions": [
+    "Current eligibility and app-store policy outside the captured 2026-11-07 guide are not independently verified; no account or API operation is authorized in this review."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-inapp-payments.md",
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/mobile/digital-goods/custom-checkout, old raw line 22 gave a general Accounts v2 substitution note, while new raw lines 39-45 scope Accounts v2 availability and recommendation and new lines 193 and 245 show separate `customer_account` and `customer` subscription branches. [[source-stripe-inapp-digital-goods-custom-checkout]] needs a source update that distinguishes customer-configured Account IDs from Customer IDs and preserves the preview/Connect qualifications, instead of presenting the v1 sample as the only path.",
+    "Q2": "For https://docs.stripe.com/mobile/digital-goods/custom-checkout, old raw line 22 said to replace event references when using Accounts v2, but new raw line 393 explicitly retains `customer.subscription.updated` even for customer-configured Accounts. [[source-stripe-inapp-digital-goods-custom-checkout]] line 80 repeats the old instruction and should be corrected, while its invoice webhook guidance remains. The new capture is a full expanded guide, so this correction follows substantive new evidence rather than a navigation-only omission."
+  }
+}

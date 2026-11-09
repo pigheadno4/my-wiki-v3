@@ -28,7 +28,7 @@ Stripe's A/B testing feature lets merchants test new payment methods with a perc
 
 ## Experiment Setup
 
-- **Default traffic split**: 50/50 (recommended); 80,000 sessions gives 80% power to detect 100 BPS change at 5% significance
+- **Traffic split and sample**: 50/50 is a recommendation, not a required default. The 80,000-session example assumes an even split, a 100-basis-point conversion difference, and 5% significance; Stripe separately calculates required sessions dynamically for 80% power to detect a 1% difference at 5% significance.
 - **Optional PM rules**: add filters (e.g., minimum amount, presentment currency) to control eligibility
 - **BNPL experiments**: Stripe recommends installing the Payment Method Messaging Element alongside
 
@@ -37,7 +37,7 @@ Stripe's A/B testing feature lets merchants test new payment methods with a perc
 - **Primary metric**: average revenue per session (total revenue ÷ total sessions, including non-converting)
 - **Significance**: z-test at 5% level (95% confidence interval); results flagged when < 5% probability of being due to chance
 - **Power calculation**: 80% power to detect 1% difference at 5% significance
-- **Indicators**: green = significant increase, yellow = significant decrease, gray = insufficient sessions (< 80% of required)
+- **Indicators**: green = statistically significant increase; yellow = statistically significant decrease; gray = insufficient sessions to determine significance reliably. The page displays green/yellow differences after at least 80% of estimated required sessions, but the threshold alone does not guarantee significance.
 
 ## Result Metrics
 
@@ -60,10 +60,10 @@ Key fields: `experiment_session_id` (group by this to avoid double-counting), `i
 - Connected account's own PM preference (if they turn a PM on/off) **overrides** platform experiment for that account
 - Can opt out specific account IDs during experiment creation
 
-## Supported PMs (35 total)
+## Captured A/B-test method table (34 rows)
 
-All major PMs supported. Connect unsupported: ACH, ACSS, BECS, Bacs, Alipay, FPX, Konbini, SEPA Debit, WeChat Pay.
+Both the 2026-05-08 and 2026-11-07 Payment Element tables list 34 method rows. The older row says Crypto; the newer row says Stablecoins, each marked supported in the Payment Element and Connect Payment Element columns. This dated table change does not prove a merchant's stablecoin eligibility. Nine rows mark Connect A/B testing unsupported: ACH, ACSS, BECS, Bacs, Alipay, FPX, Konbini, SEPA Debit, and WeChat Pay; some require off-Stripe steps platforms cannot complete for connected accounts.
 
 ## Sources
 
-- [[source-stripe-a-b-testing-payment-methods]] — primary: setup flow, metrics, statistical methodology, raw data dimensions, Connect rules, 35 PM support table
+- [[source-stripe-a-b-testing-payment-methods]] — dated Dashboard A/B-test setup, metrics and methodology, Connect platform rules, and a 34-row method table with Crypto in May and Stablecoins in November 2026

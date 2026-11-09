@@ -1,0 +1,82 @@
+{
+  "job_id": "payments-3d-secure-authentication-flow",
+  "queue_id": 129,
+  "canonical_url": "https://docs.stripe.com/payments/3d-secure/authentication-flow",
+  "raw_path": "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md",
+  "raw_sha256": "1c5ac2ea29b6fb27be340f2fececa6871ad33f517ccdb129ce02591d6dc93c09",
+  "prior_raw_path": "raw/stripe-3d-secure-authentication-flow-2025.md",
+  "prior_raw_sha256": "37a7ed2a0ca5bf6a7ea018288727f6315d9f6f536124b61b7d4ce8df3db5c024",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e5278c435129a3141cdd8a5f/content.diff",
+  "diff_sha256": "f7fcd088a128def5ae51a0d6b20bb549a1cf6fb0e0174dfd83d6ac7745adba77",
+  "source_target": "wiki/sources/source-stripe-3d-secure-authentication-flow.md",
+  "source_before_sha256": "d61ede7abf96aba7254c3e8ea5cd2a8f0f7942e9e69fc6177cdebefd9e6e22ae",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+  "receipt_sha256": "53cb425fa9331c5d5cc4e8f0affc7546f5e04a87863e0dfc833ee900ba75b1bb",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json",
+  "review_sha256": "4ef60c2acae73a4fbb9a6b86c386f8e3315efc281d66e543cef0c74f76971d09",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The new page retains the four-platform flow, automatic and manual 3DS triggering, issuer-selected frictionless/challenge preference, web redirect/iframe handling, mobile guidance, and test cases (old 15\u2013535; new 15\u2013493). It adds an explicit protocol support ceiling of 2.3.1 (new 17), says the API cannot manually disable 3DS (new 94), and changes the named custom-rule tier from Radar for Fraud Teams (old 87, 561) to Radar Plus (new 86, 533). Manual any/challenge remains a preference, not a guarantee; mandatory authentication still runs independently (new 137\u2013145).",
+    "The new liability section expressly says successful 3DS authentication does not guarantee liability shift (new 497\u2013509). A Charge success event establishes payment success only, a three_d_secure.result of authenticated establishes authentication only, and ECI helps assess eligibility but guarantees neither shift nor an issuer outcome. Eligible fraud dispute and network/payment/dispute conditions govern shift. The old section already said shift typically applies and identified exceptions (old 539, 551\u2013557), so the addition strengthens an existing conditional boundary rather than reversing a guarantee.",
+    "wiki/concepts/stripe-3d-secure.md:107 says successful 3DS means fraudulent disputes shift to the card issuer. This unqualified arrow conflicts with both old caveats and new explicit guidance. The source at lines 27\u201328 mentions inquiry response and ECI but omits the no-guarantee distinction; update its key facts and the linked concept, and retain the no-reply inquiry risk (old 545\u2013547; new 517\u2013519).",
+    "Authentication is not payment authorization, capture, or settlement. The page sends an authenticated flow to PaymentIntent processing before final succeeded/requires_capture/requires_payment_method (old 74\u201379; new 73\u201378). A test card in both tables authenticates and then declines (old 485; new 443). After an iframe return, retrieve PaymentIntent and check its current status (old 284\u2013294; new 248\u2013258); a redirect or postMessage alone proves no payment outcome.",
+    "The old source retains 10 locally referenced screenshots (source 30\u201334; old image references 19\u201349, 339), while the new Markdown links to Stripe CDN images (new 20\u201348, 298). The diff also changes Node examples to curl, Markdown/table formatting, and See also links; these do not establish changed runtime behavior or pixel-identical images. Preserve the old local assets and dated test-card values rather than claim new media bytes were captured.",
+    "Both captures contain a tension: they say major brands no longer support 3DS1 and recommend Payment/Setup Intents (old 8\u201315; new 9\u201315), yet the next paragraph describes fallback to 3DS1 when a bank lacks 3DS2. Keep the statements as captured without promising a viable 3DS1 fallback for any current card or network. Pre-2019-02-11 API status aliases remain historical, not current status names (old 266; new 230)."
+  ],
+  "approved_conflicts": [
+    "wiki/concepts/stripe-3d-secure.md:107 implies automatic liability shift after successful 3DS, conflicting with new raw 497\u2013509 and the old raw's conditional language at 539 and 555\u2013557.",
+    "wiki/sources/source-stripe-3d-secure-authentication-flow.md:27\u201328 covers inquiries and ECI but lacks the explicit new distinction among successful authentication, charge success, ECI, and conditional shift; source raw_files line 7 and Raw Sources line 44 reference only the older capture.",
+    "The same captured article says 3DS1 is no longer supported by major brands while also describing 3DS1 fallback (old 8\u201315; new 9\u201315); neither source nor concept should promise that fallback is currently usable."
+  ],
+  "historical_claims_to_preserve": [
+    "The old capture says 3DS liability shift typically applies to successfully authenticated payments and lists exceptions; it never establishes guaranteed shift. Preserve its dated Radar for Fraud Teams name while new raw uses Radar Plus.",
+    "Preserve the separate outcomes of authentication, PaymentIntent status, capture and settlement; neither successful authentication nor return URL/iframe completion alone proves a completed payment or bank receipt.",
+    "The prior local screenshot paths and test card tables are historical raw evidence. New CDN URLs and curl examples do not prove image equivalence, API behavior change, or deprecation of old SDK code examples."
+  ],
+  "unresolved_questions": [
+    "The page does not identify which current networks/cards, if any, can actually use its stated 3DS1 fallback; the support notice and fallback sentence conflict at a general level.",
+    "The new CDN screenshot URLs were not downloaded or compared with old locally saved assets; textual image-reference changes do not prove visual equivalence."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-3d-secure.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "53cb425fa9331c5d5cc4e8f0affc7546f5e04a87863e0dfc833ee900ba75b1bb",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json",
+  "approved_triage_review_sha256": "4ef60c2acae73a4fbb9a6b86c386f8e3315efc281d66e543cef0c74f76971d09",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw1",
+  "reviewer_agent": "/root/s2ur4",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md",
+      "sha256": "1c5ac2ea29b6fb27be340f2fececa6871ad33f517ccdb129ce02591d6dc93c09",
+      "lines": 540
+    },
+    {
+      "path": "raw/stripe-3d-secure-authentication-flow-2025.md",
+      "sha256": "37a7ed2a0ca5bf6a7ea018288727f6315d9f6f536124b61b7d4ce8df3db5c024",
+      "lines": 566
+    },
+    {
+      "path": "wiki/sources/source-stripe-3d-secure-authentication-flow.md",
+      "sha256": "d61ede7abf96aba7254c3e8ea5cd2a8f0f7942e9e69fc6177cdebefd9e6e22ae",
+      "lines": 44
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e5278c435129a3141cdd8a5f/content.diff",
+      "sha256": "f7fcd088a128def5ae51a0d6b20bb549a1cf6fb0e0174dfd83d6ac7745adba77",
+      "lines": 641
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/payments-3d-secure-authentication-flow-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/payments-3d-secure-authentication-flow-review.json"
+}

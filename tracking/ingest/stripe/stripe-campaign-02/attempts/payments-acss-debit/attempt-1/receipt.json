@@ -1,0 +1,150 @@
+{
+  "job_id": "payments-acss-debit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-acss-debit-2026-11-07.md",
+  "raw_sha256": "891f9fd445ae8c47205e40b064eed8117391b6755c0821c641e54b96bc5184ba",
+  "prior_raw_path": "raw/stripe-acss-debit-2025.md",
+  "prior_raw_sha256": "36a4fc2a4c1d1efa89af1d1b3500f7f38e4ae3d0ba402a0298a0f89d9c91a1d6",
+  "source_target": "wiki/sources/source-stripe-acss-debit.md",
+  "source_before_sha256": "02b359bb4682e9735393ae639121a32b8df3fed167c231486c53cedaa9fcf190",
+  "read_ranges": {
+    "raw/stripe-payments-acss-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 346
+      }
+    ],
+    "raw/stripe-acss-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 271
+      }
+    ],
+    "wiki/sources/source-stripe-acss-debit.md": [
+      {
+        "start": 1,
+        "end": 56
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/91dc1b55c6116f76fba4858d/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 599
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The default maximum, without increased large-charge limits, is 999,999.99. If Stripe enables increased limits, the absolute hard cap is 9,999,999.99 for two-decimal currencies. Merchant or platform Risk limits can lower the effective maximum.",
+      "location": "raw/stripe-payments-acss-debit-2026-11-07.md:46"
+    },
+    {
+      "text": "When a customer files a dispute with their bank, Stripe sends you the [charge.dispute.created](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created)",
+      "location": "raw/stripe-payments-acss-debit-2026-11-07.md:119"
+    },
+    {
+      "text": "When the dispute closes, Stripe sends you the [charge.dispute.closed](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.closed) webhook event.",
+      "location": "raw/stripe-payments-acss-debit-2026-11-07.md:119"
+    },
+    {
+      "text": "Stripe can automatically retry each failed PAD payment once, no more than 30 days after the original payment attempt.",
+      "location": "raw/stripe-payments-acss-debit-2026-11-07.md:262"
+    },
+    {
+      "text": "The customer completed the Checkout Session. The payment outcome isn\u2019t final yet.",
+      "location": "raw/stripe-payments-acss-debit-2026-11-07.md:309"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "It can take up to 5 business days after initiating a payment to receive notification of success or failure. PADs aren\u2019t a guaranteed payment method.",
+      "location": "raw/stripe-acss-debit-2025.md:16"
+    },
+    {
+      "text": "When a dispute is created, Stripe sends both the [charge.dispute.created](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created) and [charge.dispute.closed](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.closed)",
+      "location": "raw/stripe-acss-debit-2025.md:194"
+    },
+    {
+      "text": "By default, Stripe automatically sends emails to the customer for these cases.",
+      "location": "raw/stripe-acss-debit-2025.md:177"
+    },
+    {
+      "text": "With Direct Debit retries, Stripe can automatically retry failed Direct Debit payments caused by insufficient funds.",
+      "location": "raw/stripe-acss-debit-2025.md:271"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November capture greatly expands the same ACSS/PAD URL: new account eligibility and provisional review (24\u201338), 0.50 minimum and conditional maximum tiers (44\u201346), explicit capture/refund/dispute capability matrix (54\u201378), refund lifecycle (79\u2013105), event-specific dispute flow (107\u2013129), Connect capability and mandate rules (248\u2013256), retry limits (258\u2013264), asynchronous completion events (278\u2013313), and mandate-ID lookup (315\u2013340). The older capture already establishes Canadian customers, CA/US businesses, mandate and verification, T+4/T+5 timing, and delayed/non-guaranteed payment (old 8\u201376, 111\u2013129). These are dated guide statements, not verified eligibility or live account configuration.",
+    "Current source line 42 and wiki/concepts/stripe-acss-debit.md:51 say charge.dispute.created and charge.dispute.closed are simultaneous. Old raw 194 said both were sent when a dispute was created, without independently proving simultaneous delivery; new raw 119 says created is sent when the customer files and closed when the dispute closes. Remove simultaneous timing, preserve the bank-final/no-counter-evidence rule (new 123\u2013127) and personal 90-calendar-day versus business 10-business-day windows (old 192; new 113).",
+    "Source line 37 and concept lines 40\u201345 call the required recurring notice a pre-debit notice before each charge. The captures instead say notify on each debit and use charge.pending as the custom debit-notification trigger (old 170\u2013188; new 181\u2013198). Keep the mandate confirmation deadline of five calendar days and all-or-nothing custom-notification obligation, including applicable microdeposit reminders; avoid an unsupported blanket before-each-charge deadline or confusing the pending event with final debit success.",
+    "The new guide distinguishes submitted/processing state from final outcome: Checkout's checkout.session.completed is session completion only (new 309), while checkout.session.async_payment_succeeded/failed and payment_intent.succeeded/payment_failed indicate delayed payment results (new 302\u2013311). A payment can fail after initiated or even rarely after PaymentIntent succeeded, at which point Stripe records a failure-reason dispute and fee (old 200\u2013216; new 131\u2013135). T+4 payment success and T+5 funds available are after submission, not creation, and neither establishes customer-bank receipt (old 111\u2013121; new 266\u2013276).",
+    "New line 46 specifies limits conditional on Stripe enabling increased large-charge limits and potentially lower merchant/platform Risk caps; do not treat 9,999,999.99 as the default. New 250\u2013256 requires PAD capability on both platform and connected account and a new mandate for each connected merchant of record when on_behalf_of is used; the old source only notes descriptor ownership and old raw 267 prohibits reuse of another connected account's mandate. New 338 gives the PAD mandate-ID path in the account owning the PaymentIntent; it does not expose an ACSS network transaction ID.",
+    "New 260\u2013264 narrows automatic Direct Debit retries to failed PAD payments caused by insufficient funds: at most one retry within 30 days, no debit failure fee for Stripe-initiated automatic retries. Old raw heading 269 labeled Billing Retries private preview; the new heading omits that label but does not establish general availability. Similarly, the new product table's off-session \u2717 at 224 must be read with its product/integration context, not used to erase old interval-mandate or subscription use. Checkout subscription mode remains unsupported (old 92; new 227, 240)."
+  ],
+  "substantive_changes": [
+    "Add the new dated raw reference and summarize conditional transaction limits, asynchronous status events, Connect capability/per-connected-account mandates, retry bounds, and refund/dispute lifecycle. Correct the source and concept's simultaneous-dispute-event assertion using new raw 119.",
+    "Qualify source/concept debit-notification timing against the old and new charge.pending trigger and each-debit language; retain mandate-confirmation and microdeposit email obligations without asserting a universal pre-charge deadline. Preserve the old private-preview label as historical, without inferring a release status from the new omission."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain old raw/stripe-acss-debit-2025.md as historical evidence for CA/US business versus CA customer scope, CAD/USD currency mismatch risks, mandatory mandate and verification, delayed confirmation, and separate T+4 success/T+5 Stripe-balance availability.",
+    "Retain the old capture's private-preview Billing Retries heading (old 269) as dated wording; the new guide supplies retry limits without a release-phase assertion.",
+    "Preserve mandate schedules (interval, sporadic with express at-payment consent, combined), personal/business transaction type, mandate cancellation's effect on future debits, and default_for invoice/subscription setup. Separate merchant of record and Stripe-account ownership for Connect mandates and descriptors."
+  ],
+  "conflicts": [
+    "wiki/sources/source-stripe-acss-debit.md:42 and wiki/concepts/stripe-acss-debit.md:51 assert simultaneous dispute.created/dispute.closed; new raw 119 explicitly places them at filing versus closure. Old raw 194's combined sentence did not prove simultaneous delivery.",
+    "wiki/sources/source-stripe-acss-debit.md:37 and wiki/concepts/stripe-acss-debit.md:41/45 assert a pre-debit notice before every charge; old raw 170\u2013188 and new raw 181\u2013198 say notification each time a debit is made and custom notification triggered by charge.pending, without a universal before-charge timing claim.",
+    "The current source's line 52 private-preview Billing Retries label is the old raw's dated label (old 269); the new guide's line 258 heading lacks a phase qualifier. Do not silently convert that omission into GA or assert the older phase is verified current."
+  ],
+  "unresolved_questions": [
+    "The new capture's instant provisional access, account review, large-charge limit enablement, connected-account capability and custom Radar preview do not establish any particular merchant's live eligibility or configured limit.",
+    "The new guide omits a Billing Retries release-phase label, so whether its old private-preview status changed is unresolved by these two captures."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-acss-debit.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/acss-debit, the November capture adds explicit conditional transaction limits (new 44\u201346), refund/dispute lifecycle (new 79\u2013129), Connect mandate prerequisites (new 248\u2013256), retry bounds (new 258\u2013264), and delayed-outcome events (new 302\u2013311). The older guide already established mandatory mandate/verification and up-to-five-business-day non-guaranteed confirmation (old 8\u201316), plus T+4 payment success versus T+5 Stripe-balance availability (old 111\u2013121). [[source-stripe-acss-debit]] should add these dated facts and avoid treating checkout.session.completed or a pending debit as final payment success.",
+    "Q2": "For https://docs.stripe.com/payments/acss-debit, [[source-stripe-acss-debit]] and its ACSS concept need a material correction: their simultaneous dispute-event claim overreads old line 194, while new line 119 sends charge.dispute.created on filing and charge.dispute.closed at closure. Their pre-debit-before-each-charge wording should follow the raw's each-debit notification and charge.pending trigger (old 170\u2013188; new 181\u2013198). Preserve the 180-day refund window, bank-final PAD dispute, and old private-preview retry label as historical; the new retry detail at 260\u2013264 does not establish general availability or a successful payment for a specific merchant."
+  }
+}

@@ -1,0 +1,220 @@
+--- raw/stripe-apple-pay-merchant-tokens-2025.md
++++ raw/stripe-apple-pay-merchant-tokens-2026-11-07.md
+@@ -1,50 +1,41 @@
+ # Apple Pay merchant tokens
+ 
+-Learn how to use Apple Pay merchant tokens for recurring, deferred, and automatic reload payments.
++Request Apple Pay merchant tokens for recurring, deferred, or automatic reload payments.
+ 
+-An [Apple Pay merchant token (MPAN)](https://developer.apple.com/apple-pay/merchant-tokens/) ties together a payment card, a business, and a customer, and enables the wallet holder to manage access to a card stored in their Apple wallet. Apple Pay’s latest guidelines recommend merchant tokens over device tokens (DPANs) because merchant tokens:
++If your Apple Pay integration supports future merchant-initiated payments, such as recurring payments, automatic reloads, or deferred payments, configure Apple Pay to request an [Apple Pay Merchant Token (MPAN)](https://developer.apple.com/apple-pay/merchant-tokens/). Merchant tokens can help maintain payment continuity when a customer changes devices.
+ 
+-- Allow for continuity across multiple devices
+-- Enable recurring payments independent of a device
+-- Keep payment information active in a new device even when its removed from a lost or stolen device
++When a customer adds a card to Apple Pay, Apple Pay creates a network token instead of storing the card’s primary account number (PAN). By default, Apple Pay creates a Device Primary Account Number (DPAN), which is tied to a specific device. If a customer replaces their device or removes the card from it, the DPAN might no longer work.
+ 
+-## Merchant token types
++This doesn’t affect one-time customer-initiated transactions (CIT), but it can cause failures for future merchant-initiated transactions (MIT).
+ 
+-You can use Apple Pay to request an MPAN in three ways. Each type of request has different parameters that affect how the user is presented with Apple Wallet. Almost all request types provide the option to supply a `managementURL`, which routes customers to a webpage to manage their payment methods. If you request an MPAN and the issuer supports MPAN generation, you receive an MPAN. Otherwise, you receive a DPAN.
++An [Apple Pay Merchant Token (MPAN)](https://developer.apple.com/apple-pay/merchant-tokens/) is associated with the customer, underlying card, and your business, instead of with a single device. Use an MPAN for payments you initiate later, including:
+ 
+-| MPAN request type                                                                                                                     | Use case                                                                                 | Support                                                                                  |
+-| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+-| Recurring [PKRecurringPaymentRequest](https://developer.apple.com/documentation/passkit/pkrecurringpaymentrequest)                    | Issues an MPAN for use in a recurring payment such as a subscription.                    | - [Apple Pay on the Web](https://developer.apple.com/documentation/apple_pay_on_the_web) |
+-| - iOS > v16.0                                                                                                                         |
+-| Automatic reload [PKAutomaticReloadPaymentRequest](https://developer.apple.com/documentation/passkit/pkautomaticreloadpaymentrequest) | Issues an MPAN for use in a store card top-up or prepaid account. Supported parameters:  |
+-| - `automaticReloadBilling` shows billing details when you present Apple Pay.                                                          | - [Apple Pay on the Web](https://developer.apple.com/documentation/apple_pay_on_the_web) |
+-| - iOS > v16.0                                                                                                                         |
+-| Deferred payment [PKDeferredPaymentRequest](https://developer.apple.com/documentation/passkit/pkdeferredpaymentrequest)               | Issues an MPAN for use in reservations such as hotels. Supported parameters:             |
++- **Subscriptions**: Charge a monthly membership after the initial Apple Pay checkout.
++- **Automatic reloads**: Replenish a stored balance when it falls below a threshold.
++- **Deferred payments**: Authorize payment at booking, then charge after you provide the service, such as after a hotel stay.
+ 
+-- `freeCancellationDate` shows the cancellation deadline when you present Apple Pay.
+-- `billingAgreement` shows the terms of service when you present Apple Pay. | - [Apple Pay on the Web](https://developer.apple.com/documentation/apple_pay_on_the_web)
+-- Xcode 14.3
+-- iOS > v16.4 |
++Apple Pay merchant tokens also include lifecycle management features that help you monitor token changes.
+ 
+-## Add Apple Pay merchant tokens
++## Configure your integration to request Apple Pay merchant tokens 
+ 
+-You can add a [merchant token](https://developer.apple.com/apple-pay/merchant-tokens/) when presenting Apple Pay in the Express Checkout Element, web Payment Element, and mobile Payment Element. Stripe automatically handles merchant token requests in Stripe Checkout integrations.
++Configure your integration to request [Apple Pay merchant tokens](https://developer.apple.com/apple-pay/merchant-tokens/) by providing additional information about the payment use case. If you use [Elements with the Payment Intents API](https://docs.stripe.com/payments/elements.md#compatible-apis), follow the instructions below to request Apple Pay merchant tokens.
++
++> If you use [Stripe Checkout](https://docs.stripe.com/payments/checkout.md) or [Elements with the Checkout Sessions API](https://docs.stripe.com/payments/checkout-sessions-and-payment-intents-comparison.md), you don’t need to configure Apple Pay merchant tokens. Checkout automatically requests them when needed.
+ 
+ #### Express Checkout Element
+ 
+-If you’re using the [Payment Request Button](https://docs.stripe.com/stripe-js/elements/payment-request-button.md) for recurring payments, we recommend [migrating to the Express Checkout Element](https://docs.stripe.com/elements/express-checkout-element/migration.md) for improved functionality and payment method support.
+-
+-1. Set up [Express Checkout Element integration](https://docs.stripe.com/elements/express-checkout-element/accept-a-payment.md).
+-1. Pass the `applePay` object relevant to your MPAN use case (choose from the drop-down to see use case code samples).
+-1. Include relevant parameters for your use case.
++1. Integrate the [Express Checkout Element](https://docs.stripe.com/elements/express-checkout-element/accept-a-payment.md?payment-ui=elements).
++2. Pass the `applePay` object relevant to your MPAN use case (choose from the drop-down to see use case code samples).
++3. Include [relevant parameters](https://docs.stripe.com/js/elements_object/create_express_checkout_element#express_checkout_element_create-options-applePay) for your use case.
+ 
+ #### MPAN use case - Recurring payments
+ 
+ ```javascript
+-elements.create("expressCheckout", {
++elements.create('expressCheckout', {
+   applePay: {
+     recurringPaymentRequest: {
+       paymentDescription: "Standard Subscription",
++      managementURL: "https://stripe.com",
+       regularBilling: {
+         amount: 1000,
+         label: "Standard Package",
+@@ -52,9 +43,7 @@
+         recurringPaymentEndDate: new Date("2024-03-31"),
+         recurringPaymentIntervalUnit: "year",
+         recurringPaymentIntervalCount: 1,
+-      },
+-      billingAgreement: "billing agreement",
+-      managementURL: "https://stripe.com",
++      }
+     },
+   },
+ });
+@@ -63,17 +52,17 @@
+ #### MPAN use case - Automatic reload
+ 
+ ```javascript
+-elements.create("expressCheckout", {
++elements.create('expressCheckout', {
+   applePay: {
+     automaticReloadPaymentRequest: {
+-      paymentDescription: "My automatic reload payment",
+-      managementURL: "https://example.com/billing",
++      paymentDescription: 'My automatic reload payment',
++      managementURL: 'https://example.com/billing',
+       automaticReloadBilling: {
+         amount: 2500,
+-        label: "Automatic Reload",
+-        automaticReloadPaymentThresholdAmount: 500,
++        label: 'Automatic Reload',
++        automaticReloadPaymentThresholdAmount: 500
+       },
+-    },
++    }
+   },
+   // Other options
+ });
+@@ -82,40 +71,40 @@
+ #### MPAN use case - Deferred payment
+ 
+ ```javascript
+-const stripe = Stripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
+-elements.create("expressCheckout", {
++const stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
++elements.create('expressCheckout', {
+   applePay: {
+     deferredPaymentRequest: {
+-      paymentDescription: "My deferred payment",
+-      managementURL: "https://example.com/billing",
++      paymentDescription: 'My deferred payment',
++      managementURL: 'https://example.com/billing',
+       deferredBilling: {
+         amount: 2500,
+-        label: "Deferred Fee",
+-        deferredPaymentDate: new Date("2024-01-05"),
+-      },
+-    },
+-  },
++        label: 'Deferred Fee',
++        deferredPaymentDate: new Date('2024-01-05')
++      }
++    }
++  }
+ });
+ ```
+ 
+ #### Web Payment Element
+ 
+ 1. Create an instance of the [Payment Element](https://docs.stripe.com/payments/payment-element.md).
+-1. Pass the `applePay` object relevant to your MPAN use case (choose from the drop-down to see use case code samples).
+-1. Include relevant parameters for your use case.
++2. Pass the `applePay` object relevant to your MPAN use case (choose from the drop-down to see use case code samples).
++3. Include [relevant parameters](https://docs.stripe.com/js/elements_object/create_payment_element#payment_element_create-options-applePay) for your use case.
+ 
+ #### MPAN use case - Recurring payments
+ 
+ ```javascript
+-const paymentElement = elements.create("payment", {
++const paymentElement = elements.create('payment', {
+   applePay: {
+     recurringPaymentRequest: {
+-      paymentDescription: "My subscription",
+-      managementURL: "https://example.com/billing",
++      paymentDescription: 'My subscription',
++      managementURL: 'https://example.com/billing',
+       regularBilling: {
+         amount: 2500,
+-        label: "Monthly subscription fee",
+-        recurringPaymentIntervalUnit: "month",
++        label: 'Monthly subscription fee',
++        recurringPaymentIntervalUnit: 'month',
+         recurringPaymentIntervalCount: 1,
+       },
+     },
+@@ -127,15 +116,15 @@
+ #### MPAN use case - Automatic reload
+ 
+ ```javascript
+-const paymentElement = elements.create("payment", {
++ const paymentElement = elements.create('payment', {
+   applePay: {
+     automaticReloadPaymentRequest: {
+-      paymentDescription: "My subscription",
+-      managementURL: "https://example.com/billing",
++      paymentDescription: 'My subscription',
++      managementURL: 'https://example.com/billing',
+       regularBilling: {
+         amount: 2500,
+-        label: "Automatic Reload",
+-        automaticReloadPaymentThresholdAmount: 500,
++        label: 'Automatic Reload',
++        automaticReloadPaymentThresholdAmount: 500
+       },
+     },
+   },
+@@ -146,21 +135,29 @@
+ #### MPAN use case - Deferred payment
+ 
+ ```javascript
+-const paymentElement = elements.create("payment", {
++const paymentElement = elements.create('payment', {
+   applePay: {
+     deferredPaymentRequest: {
+-      paymentDescription: "My deferred payment",
+-      managementURL: "https://example.com/billing",
++      paymentDescription: 'My deferred payment',
++      managementURL: 'https://example.com/billing',
+       deferredBilling: {
+         amount: 2500,
+-        label: "Deferred Fee",
+-        deferredPaymentDate: new Date("2024-01-05"),
++        label: 'Deferred Fee',
++        deferredPaymentDate: new Date('2024-01-05')
+       },
+-    },
++    }
+   },
+   // Other options
+ });
+ ```
++
++After you configure Apple Pay to request merchant tokens, you don’t need to complete additional MPAN-specific integration steps. When a customer pays with Apple Pay, Stripe requests a merchant token. If Apple Pay and the card issuer support merchant tokens, Apple Pay returns an MPAN. Otherwise, it returns a DPAN.
++
++Stripe securely stores the returned Apple Pay credential and associates it with the resulting `PaymentMethod`. Continue to save and reuse the `PaymentMethod` in your standard off-session payment flow.
++
++## Merchant token lifecycle management
++
++When the underlying card of an MPAN gets updated, Stripe sends a [payment_method.automatically_updated](https://docs.stripe.com/api/events/types.md#event_types-payment_method.automatically_updated) webhook notification. Check the event’s `data.object.card` properties: `exp_month`, `exp_year` and `last4`, and update the cached values in your system. Stripe only supports the properties defined in the Apple Pay [CardMetadata](https://developer.apple.com/documentation/merchanttokennotificationservices/cardmetadata) for merchant token notifications.
+ 
+ ## Merchant token auth rate monitoring
+ 

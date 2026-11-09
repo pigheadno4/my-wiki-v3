@@ -1,0 +1,83 @@
+{
+  "job_id": "disputes-measuring",
+  "queue_id": 90,
+  "canonical_url": "https://docs.stripe.com/disputes/measuring",
+  "raw_path": "raw/stripe-disputes-measuring-2026-11-07.md",
+  "raw_sha256": "889ecfdae653e8cb8be06aa992f3c3b29a3020238fac649394dc7435d8f3d84d",
+  "prior_raw_path": "raw/stripe-disputes-measuring-2026.md",
+  "prior_raw_sha256": "e96af924ae734496e5e1ba662819623c5ad9202873bebb68a37db433e622311f",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/9425691502f2b51820a6b548/content.diff",
+  "diff_sha256": "8f925d3b4ea5866e2712f37b6d3dff6751e459b51f7c841f782a14245feecf26",
+  "source_target": "wiki/sources/source-stripe-disputes-measuring.md",
+  "source_before_sha256": "570dd90edfdc2f15db80bc366a78be7a953686a53d93d624ab0e927e13c2bf11",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/disputes-measuring/attempt-2/receipt.json",
+  "receipt_sha256": "009972327aac18223ba3d5e93b5b4222b83aeb80307590eccd00c3b887af95a0",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/disputes-measuring/attempt-2/review.json",
+  "review_sha256": "9b404282ae789059c196073b67254b9152e1c0db5dec9f052807dcdf7b868820",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "Both captures define dispute activity by dispute date and dispute rate by original charge date, each over successful payments, with the same 1,000-payment/10-dispute/3-same-week example yielding 1% activity and 0.3% rate (old 8-18; new 9-19). The current source 15-24 and wiki/concepts/disputes.md 142-149 preserve this distinction.",
+    "Both captures say network monitoring programs use dispute activity, while charge-date dispute rate helps find problematic payments and fraud patterns (old 20-29; new 21-30). Activity above 0.75% is called excessive as an industry standard, but sudden spikes or trends can trigger monitoring earlier, and prolonged network-threshold excess may cause fines (old 22, 34-36; new 23, 35-37). No account-specific program threshold or actual fine is established.",
+    "Both warn that charge-date dispute rate can change for dates under 120 days old and that cardholders sometimes dispute even later (old line 29; new line 30). Current source line 35 and disputes concept line 149 compress this to '<120 days', which can mislead a query about whether rates become final after day 120. Correct both to state the ordinary window and explicit later-dispute exception; the capture gives no fixed finality date.",
+    "Both say only in some cases can Stripe's AI models predict future excessive activity, and only if that happens will Stripe alert the account; individual future disputes and the predicted rate remain uncertain (old lines 38-43; new lines 39-44). Current source line 39 unconditionally says the models predict and alert proactively. Correct that existing source claim now, rather than merely noting a caveat for future reuse. No account-specific alert is established.",
+    "Both identify EFWs as issuer-generated suspected-fraud messages on Visa, Mastercard and JCB; EFWs may enable refund before a fraud dispute and matter as network fraud metrics, with Visa using them for VAMP identification (old 45-49; new 46-50). No automatic conversion into a dispute or guaranteed avoidance from refund follows.",
+    "The 74-line diff changes italics, heading spaces, three chart image references, 'Radar for Fraud Teams' to 'Radar' at the same Dashboard route, and one See also link (diff 3-74). These are rendering/navigation or UI-label changes. Source 28's historical Dashboard label is dated, while the new capture calls it Radar; the change does not prove new product access or metric behavior."
+  ],
+  "approved_conflicts": [
+    "Current source 28 says 'Radar for Fraud Teams page' whereas the new raw 30 says 'Radar page' at the same dashboard.stripe.com/radar route. This is a UI-label delta; avoid treating it as access or calculation change.",
+    "Current source line 35 and concept wiki/concepts/disputes.md line 149 compress rate mutability to dates under 120 days, despite the explicit sometimes-later dispute qualification (old line 29; new line 30); correct both to avoid a false finality boundary.",
+    "Current source line 39 unconditionally promises AI prediction and proactive alerts, while both captures say only in some cases and only if the prediction occurs (old lines 40-43; new lines 41-44); correct this retained claim.",
+    "Concept wiki/concepts/disputes.md line 149 states >0.75% as an industry warning but reads like a universal placement threshold. Preserve the distinction between that heuristic, network-set prolonged thresholds, and possible earlier placement after a spike or trend (old lines 22, 34-36; new lines 23, 35-37)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the separate dispute-date activity and charge-date rate denominators and the illustrative 1%/0.3% example (old 8-18; new 9-19).",
+    "Preserve the captured >0.75% industry-standard activity warning with the earlier-spike/trend and network-specific/prolonged-threshold qualifications (old 22, 34-36; new 23, 35-37), not as a universal single card-network trigger.",
+    "Preserve charge-date rate mutability even beyond the ordinary 120-day window when disputes arrive later; preserve conditional AI prediction/alerting, uncertainty about individual payments and predicted rate, and EFW/Visa VAMP role (old lines 29, 38-49; new lines 30, 39-50)."
+  ],
+  "unresolved_questions": [
+    "The snapshots do not verify present network-monitoring program numeric thresholds, account placement, fee assessment, exact Radar access or a live dispute-rate calculation.",
+    "The captured prediction text does not establish a particular payment will be disputed or that an alert is always delivered."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/disputes.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/disputes-measuring/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "009972327aac18223ba3d5e93b5b4222b83aeb80307590eccd00c3b887af95a0",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/disputes-measuring/attempt-2/review.json",
+  "approved_triage_review_sha256": "9b404282ae789059c196073b67254b9152e1c0db5dec9f052807dcdf7b868820",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw3",
+  "reviewer_agent": "/root/s2ur5",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-disputes-measuring-2026-11-07.md",
+      "sha256": "889ecfdae653e8cb8be06aa992f3c3b29a3020238fac649394dc7435d8f3d84d",
+      "lines": 60
+    },
+    {
+      "path": "raw/stripe-disputes-measuring-2026.md",
+      "sha256": "e96af924ae734496e5e1ba662819623c5ad9202873bebb68a37db433e622311f",
+      "lines": 59
+    },
+    {
+      "path": "wiki/sources/source-stripe-disputes-measuring.md",
+      "sha256": "570dd90edfdc2f15db80bc366a78be7a953686a53d93d624ab0e927e13c2bf11",
+      "lines": 53
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/9425691502f2b51820a6b548/content.diff",
+      "sha256": "8f925d3b4ea5866e2712f37b6d3dff6751e459b51f7c841f782a14245feecf26",
+      "lines": 74
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/disputes-measuring-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/disputes-measuring-review.json"
+}

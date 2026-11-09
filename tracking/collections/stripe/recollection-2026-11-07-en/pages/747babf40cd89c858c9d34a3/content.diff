@@ -1,0 +1,500 @@
+--- raw/stripe-crypto-onramp-embedded-setup-2026.md
++++ raw/stripe-crypto-onramp-embedded-2026-11-07.md
+@@ -13,21 +13,21 @@
+ ## Before you begin
+ 
+ 1. The embedded onramp is only available in the EU and the US (excluding Hawaii).
+-1. The Onramp API is in public preview. You must [submit the onramp application](https://docs.stripe.com/crypto/onramp.md#submit-your-application) before you start development in a testing environment.
+-1. [After you get access to the Onramp API](https://dashboard.stripe.com/crypto-onramp/onboarding), use the [Dashboard](https://dashboard.stripe.com/apikeys) to grab your secret and publishable [API keys](https://docs.stripe.com/keys.md#obtain-api-keys).
++2. The Onramp API is in public preview. You must [submit the onramp application](https://docs.stripe.com/crypto/onramp.md#submit-your-application) before you start development in a [sandbox](https://docs.stripe.com/sandboxes.md).
++3. [After you get access to the Onramp API](https://dashboard.stripe.com/crypto-onramp/onboarding), use the [Dashboard](https://dashboard.stripe.com/apikeys) to grab your secret and publishable [API keys](https://docs.stripe.com/keys.md#obtain-api-keys).
+ 
+ ## Install the SDK and client library [client-side] [server-side]
+ 
+-### Client-side
+-
+-Include the following scripts using script tags within the `<head>` element of your HTML. These scripts must always load directly from Stripe’s domains (https://js.stripe.com and https://crypto-js.stripe.com) for compatibility and _PCI compliance_ (Any party involved in processing, transmitting, or storing credit card data must comply with the rules specified in the Payment Card Industry (PCI) Data Security Standards. PCI compliance is a shared responsibility and applies to both Stripe and your business).
++### Client-side 
++
++Include the following scripts using script tags within the `<head>` element of your HTML. These scripts must always load directly from Stripe’s domains (https://js.stripe.com and  https://crypto-js.stripe.com) for compatibility and *PCI compliance* (Any party involved in processing, transmitting, or storing credit card data must comply with the rules specified in the Payment Card Industry (PCI) Data Security Standards. PCI compliance is a shared responsibility and applies to both Stripe and your business).
+ 
+ Don’t include the scripts in a bundle or host a copy yourself because your integration might break without warning.
+ 
+ ```html
+ <head>
+   <title>Onramp</title>
+-  <script src="https://js.stripe.com/dahlia/stripe.js"></script>
++  <script src="https://js.stripe.com/endive/stripe.js"></script>
+   <script src="https://crypto-js.stripe.com/crypto-onramp-outer.js"></script>
+ </head>
+ ```
+@@ -44,37 +44,37 @@
+ 
+ Alternatively, you can install the [Stripe Crypto ES module](https://www.npmjs.com/@stripe/crypto) client-side SDK using a script tag or package manager. The SDK wraps the global `StripeOnramp` function provided by the Stripe crypto script as an ES module.
+ 
+-1. Manually load the script. Include the following scripts using script tags within the `<head>` element of your HTML. These scripts must always load directly from Stripe’s domains, *https://js.stripe.com* and *https://crypto-js.stripe.com*, for compatibility and _PCI compliance_ (Any party involved in processing, transmitting, or storing credit card data must comply with the rules specified in the Payment Card Industry (PCI) Data Security Standards. PCI compliance is a shared responsibility and applies to both Stripe and your business). Don’t include the scripts in a bundle or host a copy yourself. If you do, your integration might break without warning.
++1. Manually load the script. Include the following scripts using script tags within the `<head>` element of your HTML. These scripts must always load directly from Stripe’s domains, *https://js.stripe.com* and *https://crypto-js.stripe.com*, for compatibility and *PCI compliance* (Any party involved in processing, transmitting, or storing credit card data must comply with the rules specified in the Payment Card Industry (PCI) Data Security Standards. PCI compliance is a shared responsibility and applies to both Stripe and your business). Don’t include the scripts in a bundle or host a copy yourself. If you do, your integration might break without warning.
+ 
+    ```html
+    <head>
+      <title>Onramp</title>
+-     <script src="https://js.stripe.com/dahlia/stripe.js"></script>
++     <script src="https://js.stripe.com/endive/stripe.js"></script>
+      <script src="https://crypto-js.stripe.com/crypto-onramp-outer.js"></script>
+    </head>
+    ```
+ 
+-1. Set the [API publishable key](https://dashboard.stripe.com/test/apikeys) to allow Stripe to retrieve the `OnrampSession` object created by your back end. For example:
++2. Set the [API publishable key](https://dashboard.stripe.com/test/apikeys) to allow Stripe to retrieve the `OnrampSession` object created by your back end. For example:
+ 
+    ```javascript
+-   const stripeOnramp = StripeOnramp("<<YOUR_PUBLISHABLE_KEY>>");
++   const stripeOnramp = StripeOnramp('<<YOUR_PUBLISHABLE_KEY>>');
+    ```
+ 
+-1. To install the module through the package manager, first install the [Stripe.js ES module](https://github.com/stripe/stripe-js) and [Stripe crypto ES module](https://www.npmjs.com/package/@stripe/crypto) from the [npm public registry](https://www.npmjs.com/). The package includes Typescript type definitions.
++3. To install the module through the package manager, first install the [Stripe.js ES module](https://github.com/stripe/stripe-js) and [Stripe crypto ES module](https://www.npmjs.com/package/@stripe/crypto) from the [npm public registry](https://www.npmjs.com/). The package includes Typescript type definitions.
+ 
+    ```bash
+    npm install @stripe/stripe-js @stripe/crypto
+    ```
+ 
+-1. Import the module and set the [API publishable key](https://dashboard.stripe.com/test/apikeys) to allow Stripe to retrieve the `OnrampSession` object created by your back end. The function returns a `Promise` object that resolves with a newly created `StripeOnramp` object after the scripts load.
++4. Import the module and set the [API publishable key](https://dashboard.stripe.com/test/apikeys) to allow Stripe to retrieve the `OnrampSession` object created by your back end. The function returns a `Promise` object that resolves with a newly created `StripeOnramp` object after the scripts load.
+ 
+    ```javascript
+-   import { loadStripeOnramp } from "@stripe/crypto";
+-
+-   const stripeOnramp = await loadStripeOnramp("<<YOUR_PUBLISHABLE_KEY>>");
++   import {loadStripeOnramp} from '@stripe/crypto';
++   
++   const stripeOnramp = await loadStripeOnramp('<<YOUR_PUBLISHABLE_KEY>>');
+    ```
+ 
+-### Server-side
++### Server-side 
+ 
+ Our official libraries don’t contain built-in support for the API endpoints because the Onramp API is in public preview. As a result, our examples use curl for backend interactions.
+ 
+@@ -109,8 +109,17 @@
+     "lock_wallet_address": false,
+     "source_currency": null,
+     "source_amount": null,
+-    "destination_currencies": ["btc", "eth", "sol", "usdc"],
+-    "destination_networks": ["bitcoin", "ethereum", "solana"],
++    "destination_currencies": [
++      "btc",
++      "eth",
++      "sol",
++      "usdc"
++    ],
++    "destination_networks": [
++      "bitcoin",
++      "ethereum",
++      "solana"
++    ],
+     "transaction_id": null,
+     "wallet_address": null,
+     "wallet_addresses": {
+@@ -155,7 +164,7 @@
+ const onrampSession = stripeOnramp.createSession({
+   clientSecret: clientSecret,
+   appearance: {
+-    theme: "dark",
++    theme: 'dark'
+   },
+ });
+ ```
+@@ -164,15 +173,15 @@
+ 
+ ```js
+ onrampSession.setAppearance({
+-  theme: newTheme,
++  theme: newTheme
+ });
+ ```
+ 
+-## Optional: Pre-populate paramaters
++## Optional: Pre-populate parameters
+ 
+ You can pre-populate some of the parameters of the onramp session.
+ 
+-### Pre-populate transaction parameters
++### Pre-populate transaction parameters 
+ 
+ For example, a Dapp or wallet can already store a customer’s `wallet_addresses`. You can achieve this during session creation:
+ 
+@@ -204,8 +213,19 @@
+     "lock_wallet_address": false,
+     "source_currency": "usd",
+     "source_amount": null,
+-    "destination_currencies": ["btc", "eth", "sol", "usdc", "xlm"],
+-    "destination_networks": ["bitcoin", "ethereum", "solana", "stellar"],
++    "destination_currencies": [
++      "btc",
++      "eth",
++      "sol",
++      "usdc",
++      "xlm"
++    ],
++    "destination_networks": [
++      "bitcoin",
++      "ethereum",
++      "solana",
++      "stellar"
++    ],
+     "transaction_id": null,
+     "wallet_address": null,
+     "wallet_addresses": {
+@@ -234,7 +254,7 @@
+ 
+ For more details on the specific requirements and how they impact customers in the onramp UI, see [Onramp API reference](https://docs.stripe.com/api/crypto/onramp_sessions.md).
+ 
+-### Pre-populate customer information
++### Pre-populate customer information 
+ 
+ To help decrease customer friction and increase conversion, you might want to pre-populate some of the required KYC information for the customer if you’ve already collected it within your application.
+ 
+@@ -286,7 +306,13 @@
+     "lock_wallet_address": false,
+     "source_currency": null,
+     "source_amount": null,
+-    "destination_currencies": ["btc", "eth", "sol", "usdc", "xlm"],
++    "destination_currencies": [
++      "btc",
++      "eth",
++      "sol",
++      "usdc",
++      "xlm"
++    ],
+     "destination_networks": [
+       "bitcoin",
+       "ethereum",
+@@ -332,7 +358,7 @@
+     <title>Crypto Onramp</title>
+     <meta name="description" content="A demo of the hosted onramp" />
+     <meta name="viewport" content="width=device-width, initial-scale=1" />
+-    <script src="https://js.stripe.com/dahlia/stripe.js"></script>
++    <script src="https://js.stripe.com/endive/stripe.js"></script>
+     <script src="https://crypto-js.stripe.com/crypto-onramp-outer.js"></script>
+     <script src="onramp.js" defer></script>
+   </head>
+@@ -342,7 +368,7 @@
+ </html>
+ ```
+ 
+-Use the _client_secret_ (A client secret is used with your publishable key to authenticate a request for a single object. Each client secret is unique to the object it's associated with) from your server-side call in the previous step to initiate and mount the onramp session:
++Use the *client\_secret* (A client secret is used with your publishable key to authenticate a request for a single object. Each client secret is unique to the object it's associated with) from your server-side call in the previous step to initiate and mount the onramp session:
+ 
+ ```javascript
+ const stripeOnramp = StripeOnramp("<<YOUR_PUBLISHABLE_KEY>>");
+@@ -350,44 +376,46 @@
+ // Initialize the onramp element with a client secret
+ function initialize() {
+   // IMPORTANT: replace the following with your logic of how to mint/retrieve the client secret
+-  const clientSecret =
+-    "cos_1Lb6vsAY1pjOSNXVWF3nUtkV_secret_8fuPvTzBaxj3XRh14C6tqvdl600rpW7hG4G";
+-  const onrampSession = stripeOnramp.createSession({ clientSecret });
+-  onrampSession.mount("#onramp-element");
++  const clientSecret = "cos_1Lb6vsAY1pjOSNXVWF3nUtkV_secret_8fuPvTzBaxj3XRh14C6tqvdl600rpW7hG4G";
++  const onrampSession = stripeOnramp.createSession({clientSecret});
++  onrampSession
++    .mount("#onramp-element");
+ }
+ ```
+ 
+ #### React
+ 
+-To use the onramp in React, define two components: `CryptoElements` and `OnrampElement`. `CryptoElements` is a [React context](https://reactjs.org/docs/context.html) provider for an initialized `StripeOnramp` instance. The `OnrampElement` component renders the onramp UI using the _client_secret_ (A client secret is used with your publishable key to authenticate a request for a single object. Each client secret is unique to the object it's associated with) from the server-side call, shown in the previous step.
++To use the onramp in React, define two components: `CryptoElements` and `OnrampElement`. `CryptoElements` is a [React context](https://reactjs.org/docs/context.html) provider for an initialized `StripeOnramp` instance. The `OnrampElement` component renders the onramp UI using the *client\_secret* (A client secret is used with your publishable key to authenticate a request for a single object. Each client secret is unique to the object it's associated with) from the server-side call, shown in the previous step.
+ 
+ ```jsx
+-import { loadStripeOnramp } from "@stripe/crypto";
+-
+-import { CryptoElements, OnrampElement } from "./StripeCryptoElements";
++import {loadStripeOnramp} from '@stripe/crypto';
++
++import {CryptoElements, OnrampElement} from './StripeCryptoElements';
+ 
+ const stripeOnrampPromise = loadStripeOnramp("<<YOUR_PUBLISHABLE_KEY>>");
+ 
+ export default () => {
+   // IMPORTANT: replace with your logic of how to mint/retrieve client secret
+-  const clientSecret =
+-    "cos_1Lb6vsAY1pjOSNXVWF3nUtkV_secret_8fuPvTzBaxj3XRh14C6tqvdl600rpW7hG4G";
++  const clientSecret = "cos_1Lb6vsAY1pjOSNXVWF3nUtkV_secret_8fuPvTzBaxj3XRh14C6tqvdl600rpW7hG4G";
+ 
+   return (
+     <CryptoElements stripeOnramp={stripeOnrampPromise}>
+       <OnrampElement clientSecret={clientSecret} />
+     </CryptoElements>
+   );
+-};
++}
+ ```
+ 
+ ```jsx
+-import React, { ReactNode } from "react";
++import React, { ReactNode } from 'react';
+ 
+ // ReactContext to simplify access of StripeOnramp object
+ const CryptoElementsContext = React.createContext(null);
+ 
+-export const CryptoElements = ({ stripeOnramp, children }) => {
++export const CryptoElements = ({
++  stripeOnramp,
++  children,
++}) => {
+   const [ctx, setContext] = React.useState(() => ({ onramp: null }));
+ 
+   React.useEffect(() => {
+@@ -418,14 +446,18 @@
+ };
+ 
+ // React element to render Onramp UI
+-export const OnrampElement = ({ clientSecret, appearance, ...props }) => {
++export const OnrampElement = ({
++  clientSecret,
++  appearance,
++  ...props
++}) => {
+   const stripeOnramp = useStripeOnramp();
+   const onrampElementRef = React.useRef(null);
+ 
+   React.useEffect(() => {
+     const containerRef = onrampElementRef.current;
+     if (containerRef) {
+-      containerRef.innerHTML = "";
++      containerRef.innerHTML = '';
+ 
+       if (clientSecret && stripeOnramp) {
+         stripeOnramp
+@@ -443,15 +475,15 @@
+ ```
+ 
+ After running the script, the onramp renders the following dialog:
+-![Stripe's fiat-to-crypto onramp being embedded into a third-party application](assets/stripe-onramp-embedded-overview.png)
++![Stripe's fiat-to-crypto onramp being embedded into a third-party application](https://b.stripecdn.com/docs-statics-srv/assets/overview.c9ec889d4c12403f4b2dbc17600dc640.png)
+ 
+ Stripe’s fiat-to-crypto onramp embedded within a third-party application
+ 
+-### Sandbox values
++### Sandbox values 
+ 
+ > Sandbox transaction amounts are overridden by our pre-decided limits.
+ 
+-Use the following values to complete an onramp transaction in _sandbox_ (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes):
++Use the following values to complete an onramp transaction in *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes):
+ 
+ - On the OTP screen, use `000000` for the verification code.
+ - On the personal information screen, use `000000000` for the SSN and `address_full_match` for address line 1.
+@@ -465,13 +497,13 @@
+ 
+ Integrate Stripe’s crypto onramp UI into mobile web views and browsers by minting a session, hosting the onramp UI, completing the purchase, and redirecting customers back to the mobile app.
+ 
+-### Mint a session
++### Mint a session 
+ 
+ Similar to other integrations, you need to implement a server endpoint to [create a new onramp session](https://docs.stripe.com/crypto/onramp/embedded.md#create-onramp-session) for every customer visit. The endpoint returns a `client_secret` that can load the onramp UI or display an error if the onramp is unavailable.
+ 
+-### Host the onramp UI
+-
+-Create a frontend route (_for example, www.my-web3-wallet.com/onramp/<client_secret>_) to host the onramp UI. Your _/onramp/<client_secret>_ points to an onramp.html.
++### Host the onramp UI 
++
++Create a front-end route (*for example, www.my-web3-wallet.com/onramp/<client\_secret>*) to host the onramp UI. Your */onramp/<client\_secret>* points to an onramp.html.
+ 
+ ```html
+ <!DOCTYPE html>
+@@ -481,10 +513,7 @@
+     <title>Crypto Onramp</title>
+     <meta name="description" content="A demo of the hosted onramp" />
+     <meta name="viewport" content="width=device-width, initial-scale=1" />
+-    <script
+-      type="text/javascript"
+-      src="https://crypto-js.stripe.com/crypto-onramp-outer.js"
+-    ></script>
++    <script type="text/javascript" src="https://crypto-js.stripe.com/crypto-onramp-outer.js"></script>
+     <script src="onramp.js" defer></script>
+   </head>
+   <body>
+@@ -521,11 +550,11 @@
+ 
+ Configure universal links to deep link `/onramp_success` back to your mobile app. Consider providing a fallback or `onramp_success` page to prompt customers to manually switch back to your app.
+ 
+-### Complete the purchase
++### Complete the purchase 
+ 
+ As with a standard integration, the front-end client controls the entire onramp UI. The UI adapts to fit the screen size. As the session state changes and we gather more `transaction_details`, the `CryptoOnrampSession` object updates accordingly. We generate webhooks and front-end events for every status transition. By using front-end event listeners, you can redirect customers back to your application flow when the `OnrampSession` completes.
+ 
+-### Redirect to the mobile app
++### Redirect to the mobile app 
+ 
+ Using a deep link or manual switch, customers can resume their flow in your mobile application. Your mobile application can use your back end to continue querying the `CryptoOnrampSession` state.
+ 
+@@ -535,23 +564,25 @@
+ 
+ The [Onramp Quotes](https://docs.stripe.com/api/crypto/onramp_quotes.md) API lets you fetch estimated quotes for onramp conversions into various cryptocurrencies on different networks. You can specify a fixed source or destination amount and limit the quotes to a subset of destination currencies or networks. This API allows you to display quotes in your product UI before directing the customer to the onramp widget. If the quote expires before the customer visits the onramp widget, the customer might see a slightly different quote in the onramp widget.
+ 
+-### Get a conversion quote
+-
+-Use the [`GET /v1/crypto/onramp/quotes`](https://docs.stripe.com/api/crypto/onramp_quotes/retrieve.md) endpoint to get a conversion quote. The following table captures all of the available parameters for this endpoint:
+-
+-| Parameter                                                          | Type                                                                                                                                                                    | Default  | Details                                                                                                                                                                                                                                                                                                                           |
+-| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| `source_currency`                                                  | String (optional)                                                                                                                                                       | `usd`    | The [ISO-4217](https://www.iso.org/iso-4217-currency-codes.html) currency code. We currently only support `usd` and `eur`.                                                                                                                                                                                                        |
+-| `source_amount`                                                    | String (optional)                                                                                                                                                       | `100.00` | A string representation of the fiat amount that you need to onramp. If `source_amount` is set, `destination_amount` must be null (they’re mutually exclusive, because you can only set a fixed amount for one end of the trade).                                                                                                  |
+-| `destination_amount`                                               | String (optional)                                                                                                                                                       | `null`   | A string representation of the amount of `destination_currency` to be purchased. If `destination_amount` is set, `source_amount` must be null. When specifying this field, you must also set a single value for `destination_currencies` and a single value for `destination_networks` (so we know what cryptocurrency to quote). |
+-| `destination_currencies`                                           | Array<String> (optional)                                                                                                                                                | `null`   |
+-| - `['usdc', 'ethereum']`                                           | The list of cryptocurrencies you want to generate quotes for. If left `null`, we retrieve quotes for all `destination_currencies` that `destination_networks` supports. |
+-| - Currencies: `btc`, `eth`, `sol`, `matic`, `usdc`, `xlm`          |
+-| `destination_networks`                                             | Array<String> (optional)                                                                                                                                                | `null`   |
+-| - `['polygon', 'bitcoin', 'solana', 'ethereum']`                   | The list of cryptocurrency networks you want to generate quotes for. If left `null`, we retrieve quotes for `destination_currencies` in all networks.                   |
+-| - Networks: `bitcoin`, `ethereum`, `solana`, `polygon` , `stellar` |
+-
+-### Example quote requests
++By default, transaction and network fees are added on top of `source_amount`, so `source_total_amount` is the total fiat amount the customer pays, including fees.
++
++### Get a conversion quote 
++
++Use the [GET /v1/crypto/onramp/quotes](https://docs.stripe.com/api/crypto/onramp_quotes/retrieve.md) endpoint to get a conversion quote. The following table captures all of the available parameters for this endpoint:
++
++| Parameter | Type | Default | Details |
++| --- | --- | --- | --- |
++| `source_currency` | String (optional) | `usd` | The [ISO-4217](https://www.iso.org/iso-4217-currency-codes.html) currency code. We currently only support `usd` and `eur`. |
++| `source_amount` | String (optional) | `100.00` | A string representation of the fiat amount that you need to onramp. If `source_amount` is set, `destination_amount` must be null (they’re mutually exclusive, because you can only set a fixed amount for one end of the trade). |
++| `destination_amount` | String (optional) | `null` | A string representation of the amount of `destination_currency` to be purchased. If `destination_amount` is set, `source_amount` must be null. When specifying this field, you must also set a single value for `destination_currencies` and a single value for `destination_networks` (so we know what cryptocurrency to quote). |
++| `destination_currencies` | Array<String> (optional) | `null`
++- `['usdc', 'ethereum']` | The list of cryptocurrencies you want to generate quotes for. If left `null`, we retrieve quotes for all `destination_currencies` that `destination_networks` supports.
++- Currencies: `btc`, `eth`, `sol`, `matic`, `usdc`, `xlm` |
++| `destination_networks` | Array<String> (optional) | `null`
++- `['polygon', 'bitcoin', 'solana', 'ethereum']` | The list of cryptocurrency networks you want to generate quotes for. If left `null`, we retrieve quotes for `destination_currencies` in all networks.
++- Networks: `bitcoin`, `ethereum`, `solana`, `polygon`, `stellar` |
++
++### Example quote requests 
+ 
+ To fetch all destination currency-network pairs with a default source amount of 100 USD, run the following command:
+ 
+@@ -819,8 +850,12 @@
+         "lock_wallet_address": false,
+         "source_currency": "usd",
+         "source_amount": null,
+-        "destination_currencies": ["eth"],
+-        "destination_networks": ["ethereum"],
++        "destination_currencies": [
++          "eth"
++        ],
++        "destination_networks": [
++          "ethereum"
++        ],
+         "transaction_id": null,
+         "wallet_address": null,
+         "wallet_addresses": {
+@@ -870,7 +905,7 @@
+ 
+ Stripe enforces limitations on the Embedded onramp for customer supportability and in the event of fraud attacks.
+ 
+-### Check customer supportablity
++### Check customer supportablity 
+ 
+ Pass `customer_ip_address` during session creation so we can preemptively check the aforementioned limitation.
+ 
+@@ -891,12 +926,12 @@
+   "error": {
+     "type": "invalid_request_error",
+     "code": "crypto_onramp_unsupportable_customer",
+-    "message": "Based on the information provided about the customer, we’re currently unable to support them."
++    "message": "Based on the information provided about the customer, we're currently unable to support them."
+   }
+ }
+ ```
+ 
+-### Handle fraud attacks
++### Handle fraud attacks 
+ 
+ Stripe serves as the merchant of record and takes on the liability for disputes and fraud. We might decide to temporarily restrict creation of onramp sessions if we detect a high risk situation (for example, if we see active attacks and exploits).
+ 
+@@ -922,24 +957,24 @@
+ 
+ ### Additional validation and errors
+ 
+-| Condition                                                                                                                                                                                                       | HTTP status | Error code                                                                    |
+-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------- |
+-| We’re unable to mint new sessions because of an incident                                                                                                                                                        | 400         | `crypto_onramp_disabled`                                                      |
+-| Based on the `customer_ip_address` parameter, we’re unable to support the given consumer.                                                                                                                       | 400         | `crypto_onramp_unsupported_country` or `crypto_onramp_unsupportable_customer` |
+-| Malformed `customer_ip_address` is passed in to the `/v1/crypto/onramp_session` endpoint                                                                                                                        | 400         | `customer_ip_address`                                                         |
+-| `source_amount` and `destination_amount` are mutually exclusive, but the platform set both.                                                                                                                     | 400         | `crypto_onramp_invalid_source_destination_pair`                               |
+-| One of `destination_currency` and `destination_network` is set, but the other one isn’t                                                                                                                         | 400         | `crypto_onramp_incomplete_destination_currency_and_network_pair`              |
+-| The combination of `destination_currency` and `destination_network` isn’t valid                                                                                                                                 | 400         | `crypto_onramp_invalid_destination_currency_and_network_pair`                 |
+-| `source_amount` is set, but `source_currency` isn’t set                                                                                                                                                         | 400         | `crypto_onramp_missing_source_currency`                                       |
+-| `source_amount` isn’t a positive number                                                                                                                                                                         | 400         | `crypto_onramp_invalid_source_amount`                                         |
+-| `destination_amount` is set, but `destination_currency` isn’t set                                                                                                                                               | 400         | `crypto_onramp_missing_destination_currency`                                  |
+-| `destination_amount` isn’t a positive number                                                                                                                                                                    | 400         | `crypto_onramp_invalid_destination_amount`                                    |
+-| The combination of `destination_currencies` and `destination_networks` doesn’t have any supported currencies                                                                                                    | 400         | `crypto_onramp_invalid_destination_currencies_and_networks`                   |
+-| `destination_currency` isn’t included in `destination_currencies`                                                                                                                                               | 400         | `crypto_onramp_conflicting_destination_currency`                              |
+-| `destination_network` isn’t included in `destination_networks`                                                                                                                                                  | 400         | `crypto_onramp_conflicting_destination_network`                               |
+-| At least one wallet address in `wallet_addresses` is associated with a network that isn’t included in `destination_networks`                                                                                    | 400         | `crypto_onramp_wallet_addresses_not_all_networks_supported`                   |
+-| No wallet addresses were provided in `wallet_addresses` but `lock_wallet_address` was set to true                                                                                                               | 400         | `crypto_onramp_no_wallet_address_to_lock`                                     |
+-| The business hasn’t set the `business_name` or `business_url` fields. These are populated in the [Dashboard](https://dashboard.stripe.com/settings/public/) under `Public business name` and `Business website` | 400         | `crypto_onramp_merchant_not_properly_setup`                                   |
++| Condition | HTTP status | Error code |
++| --- | --- | --- |
++| We’re unable to mint new sessions because of an incident | 400 | `crypto_onramp_disabled` |
++| Based on the `customer_ip_address` parameter, we’re unable to support the given consumer. | 400 | `crypto_onramp_unsupported_country` or `crypto_onramp_unsupportable_customer` |
++| Malformed `customer_ip_address` is passed in to the `/v1/crypto/onramp_session` endpoint | 400 | `customer_ip_address` |
++| `source_amount` and `destination_amount` are mutually exclusive, but the platform set both. | 400 | `crypto_onramp_invalid_source_destination_pair` |
++| One of `destination_currency` and `destination_network` is set, but the other one isn’t | 400 | `crypto_onramp_incomplete_destination_currency_and_network_pair` |
++| The combination of `destination_currency` and `destination_network` isn’t valid | 400 | `crypto_onramp_invalid_destination_currency_and_network_pair` |
++| `source_amount` is set, but `source_currency` isn’t set | 400 | `crypto_onramp_missing_source_currency` |
++| `source_amount` isn’t a positive number | 400 | `crypto_onramp_invalid_source_amount` |
++| `destination_amount` is set, but `destination_currency` isn’t set | 400 | `crypto_onramp_missing_destination_currency` |
++| `destination_amount` isn’t a positive number | 400 | `crypto_onramp_invalid_destination_amount` |
++| The combination of `destination_currencies` and `destination_networks` doesn’t have any supported currencies | 400 | `crypto_onramp_invalid_destination_currencies_and_networks` |
++| `destination_currency` isn’t included in `destination_currencies` | 400 | `crypto_onramp_conflicting_destination_currency` |
++| `destination_network` isn’t included in `destination_networks` | 400 | `crypto_onramp_conflicting_destination_network` |
++| At least one wallet address in `wallet_addresses` is associated with a network that isn’t included in `destination_networks` | 400 | `crypto_onramp_wallet_addresses_not_all_networks_supported` |
++| No wallet addresses were provided in `wallet_addresses` but `lock_wallet_address` was set to true | 400 | `crypto_onramp_no_wallet_address_to_lock` |
++| The business hasn’t set the `business_name` or `business_url` fields. These are populated in the [Dashboard](https://dashboard.stripe.com/settings/public/) under `Public business name` and `Business website` | 400 | `crypto_onramp_merchant_not_properly_setup` |
+ 
+ ## Optional: Use session persistence
+ 
+@@ -967,11 +1002,11 @@
+ 
+ To make onramp appear to be part of your product UI, frame the onramp as a native component of your application.
+ 
+-## Wallet
++## Wallet 
+ 
+ Wallet customers have two main onramp entry points: wallet funding and transaction top-ups.
+ 
+-### Wallet funding
++### Wallet funding 
+ 
+ You can proactively prompt customers to fund their wallet after they create a new wallet or when their funds are critically low.
+ 
+@@ -995,7 +1030,7 @@
+   -d "destination_networks[]"="solana"
+ ```
+ 
+-### Transaction top-ups
++### Transaction top-ups 
+ 
+ When a Dapp or customer proposes a transaction, you might detect that the transaction fails because of insufficient funds. In this case, you can calculate the delta required for the transaction to complete. However, it’s often difficult to detect the requested amount or cryptocurrency for ERC or SPL tokens.
+ 
+@@ -1022,7 +1057,7 @@
+   -d "destination_amount"="10"
+ ```
+ 
+-## Dapp or NFT checkout
++## Dapp or NFT checkout 
+ 
+ You can use the onramp in checkout when you know the destination amount. For example, a Dapp might sell memberships for a fixed price, or a customer might want to buy a specific NFT from a marketplace.
+ 
+@@ -1049,7 +1084,7 @@
+   -d "destination_amount"="0.2343"
+ ```
+ 
+-## DEX
++## DEX 
+ 
+ A DEX offers a unique opportunity to let customers buy any cryptocurrency with fiat. While a DEX can prompt customers to top up crypto when exchanging arbitrary crypto pairs using an existing interface, it’s better to have a dedicated customer flow that focuses on fiat to crypto only.
+ 

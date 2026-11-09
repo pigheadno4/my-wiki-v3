@@ -1,0 +1,176 @@
+--- raw/stripe-checkout-elements-beta-changelog-2025.md
++++ raw/stripe-checkout-elements-with-checkout-sessions-api-changelog-2026-11-07.md
+@@ -3,8 +3,8 @@
+ Keep track of changes to the Elements with Checkout Sessions API beta integration.
+ 
+ > This doc contains changelogs related to beta versions of Elements with Checkout Sessions API.
+->
+-> If you’re already on the [Clover release](https://docs.stripe.com/changelog/clover.md) of Elements with Checkout Sessions API, this changelog doesn’t apply to you.
++> 
++> This changelog doesn’t apply to you if you’re on [Clover](https://docs.stripe.com/changelog/clover.md) or later. Refer to the [Stripe changelog](https://docs.stripe.com/changelog.md) instead.
+ 
+ ## Migrating to Clover
+ 
+@@ -39,9 +39,9 @@
+ Update your integration as follows:
+ 
+ 1. Remove any `await` or `.then()` calls associated with `initCheckout`.
+-1. Replace your `fetchClientSecret` function with a client secret string or Promise that resolves to a client secret string.
+-1. Call the new asynchronous function `checkout.loadActions()` to access actions such as `getSession()`, which replaces `session()`, or `confirm()`. You only need to call `loadActions()` once.
+-1. If you previously wrapped `initCheckout` in a `try...catch` block, examine the resolved `type` value of `loadActions()` instead to check for errors.
++2. Replace your `fetchClientSecret` function with a client secret string or Promise that resolves to a client secret string.
++3. Call the new asynchronous function `checkout.loadActions()` to access actions such as `getSession()`, which replaces `session()`, or `confirm()`. You only need to call `loadActions()` once.
++4. If you previously wrapped `initCheckout` in a `try...catch` block, examine the resolved `type` value of `loadActions()` instead to check for errors.
+ 
+ ```javascript
+ const clientSecret = fetch("/create-checkout-session", {
+@@ -50,13 +50,15 @@
+ })
+   .then((r) => r.json())
+   .then((r) => r.clientSecret);
++
+ const checkout = stripe.initCheckout({
+-  clientSecret,
++  clientSecret
+ });
+ const paymentElement = checkout.createPaymentElement();
+ paymentElement.mount("#payment-element");
++
+ const loadActionsResult = await checkout.loadActions();
+-if (loadActionsResult.type === "success") {
++if (loadActionsResult.type === 'success') {
+   const session = loadActionsResult.actions.getSession();
+ }
+ ```
+@@ -70,7 +72,8 @@
+ Update your imports to use the new checkout-specific entrypoint:
+ 
+ ```jsx
+-import { useCheckout, PaymentElement } from "@stripe/react-stripe-js/checkout";
++
++import {useCheckout, PaymentElement} from '@stripe/react-stripe-js/checkout';
+ ```
+ 
+ #### CheckoutProvider and useCheckout changes
+@@ -80,8 +83,8 @@
+ ```jsx
+ const App = () => {
+   const promise = useMemo(() => {
+-    return fetch("/create-checkout-session", {
+-      method: "POST",
++    return fetch('/create-checkout-session', {
++      method: 'POST',
+       headers: { "Content-Type": "application/json" },
+     })
+       .then((res) => res.json())
+@@ -91,22 +94,24 @@
+   return (
+     <CheckoutProvider
+       stripe={stripePromise}
+-      options={{ clientSecret: promise }}
++      options={{
++        clientSecret: promise
++      }}
+     >
+       <CheckoutPage />
+     </CheckoutProvider>
+   );
+-};
++}
+ 
+ const CheckoutPage = () => {
+-  const { type, ...rest } = useCheckout();
++  const {type, ...rest} = useCheckout();
+ 
+   return (
+     <div>
+       <PaymentElement />
+     </div>
+   );
+-};
++}
+ ```
+ 
+ For more details, see the [Updates initCheckout to be synchronous](https://docs.stripe.com/changelog/clover/2025-09-30/update-init-checkout-synchronous.md) changelog entry.
+@@ -144,14 +149,18 @@
+ #### HTML + JS
+ 
+ ```js
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>", {});
++const stripe = Stripe(
++  '<<YOUR_PUBLISHABLE_KEY>>', {
++  }
++);
+ ```
+ 
+ #### React
+ 
+ ```javascript
+-import { loadStripe } from "@stripe/stripe-js";
+-const stripe = loadStripe("<<YOUR_PUBLISHABLE_KEY>>", {});
++import {loadStripe} from '@stripe/stripe-js';
++const stripe = loadStripe("<<YOUR_PUBLISHABLE_KEY>>", {
++});
+ ```
+ 
+ - Remove the API version beta header and specify the API version to be at least `2025-03-31.basil` on your back-end integration.
+@@ -160,13 +169,13 @@
+ 
+ #### TypeScript
+ 
+-```javascript
++```typescript
+ // Set your secret key. Remember to switch to your live secret key in production.
+ // See your keys here: https://dashboard.stripe.com/apikeys
+ import Stripe from 'stripe';
+ // Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+ const stripe = new Stripe('<<YOUR_SECRET_KEY>>', {
+-  apiVersion: '2026-03-25.dahlia; custom_checkout_beta=v1' as any,
++  apiVersion: '2026-10-28.endive; custom_checkout_beta=v1' as any,
+ });
+ ```
+ 
+@@ -174,7 +183,7 @@
+ 
+ #### TypeScript
+ 
+-```javascript
++```typescript
+ // Set your secret key. Remember to switch to your live secret key in production.
+ // See your keys here: https://dashboard.stripe.com/apikeys
+ import Stripe from 'stripe';
+@@ -193,7 +202,7 @@
+ 
+ ### Front-end beta versions
+ 
+-Specify the front-end beta version when [initializing Stripe.js](https://docs.stripe.com/payments/quickstart-checkout-sessions.md).
++Specify the front-end beta version when [initializing Stripe.js](https://docs.stripe.com/payments/quickstart.md).
+ 
+ #### custom_checkout_beta_6
+ 
+@@ -220,9 +229,9 @@
+ - (Breaking) [returnUrl](https://docs.stripe.com/js/custom_checkout/confirm#custom_checkout_session_confirm-options-returnUrl) must be an absolute URL (for example, starts with `https://` rather than a relative URL, like `/success`).
+ - (Breaking) Updated pricing fields to a nested object for ease of rendering.
+   - Replaced numeric values with an object containing `amount` (a formatted currency string, such as `$10.00`) and `minorUnitsAmount`, an integer representing the value in the currency’s smallest unit. If you’re already reading the amount, read instead from `minorUnitsAmount`.
+-    - For example, replace `total.total` with [`total.total.minorUnitsAmount`](https://docs.stripe.com/js/custom_checkout/session_object#custom_checkout_session_object-total-total-minorUnitsAmount).
++    - For example, replace `total.total` with [total.total.minorUnitsAmount](https://docs.stripe.com/js/custom_checkout/session_object#custom_checkout_session_object-total-total-minorUnitsAmount).
+   - You must either read `total.total.amount` or each of `total.total.minorUnitsAmount` and `currency` and `minorUnitsAmountDivisor` from the `checkout` object and display in your UI, otherwise an error will be thrown. This helps keep your checkout page in sync as the CheckoutSession updates, including adding future Stripe features, with minimal UI code changes.
+-- Customer tax IDs can now be collected. Learn how to [collect tax IDs](https://docs.stripe.com/tax/checkout/tax-ids.md?payment-ui=embedded-components).
++- Customer tax IDs can now be collected. Learn how to [collect tax IDs](https://docs.stripe.com/tax/checkout/tax-ids.md).
+ - A test mode-only assistant is now available at the bottom of your checkout page, offering guidance for your integration and shortcuts for common test scenarios.
+ 
+ #### custom_checkout_beta_5
+@@ -278,10 +287,10 @@
+ 
+ #### custom_checkout_beta_1
+ 
+-_This is the initial front-end beta version._
++*This is the initial front-end beta version.*
+ 
+ ### Back-end versions
+ 
+-Specify the back-end beta version when [setting up your server library](https://docs.stripe.com/payments/quickstart-checkout-sessions.md#init-stripe).
+-
+-_There are no changes to the back-end beta version._+Specify the back-end beta version when [setting up your server library](https://docs.stripe.com/payments/quickstart.md#init-stripe).
++
++*There are no changes to the back-end beta version.*

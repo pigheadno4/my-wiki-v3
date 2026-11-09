@@ -1,0 +1,312 @@
+<!-- Source URL: https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Record usage for billing with the API
+
+Learn how to record usage using the Stripe API.
+
+You must record usage in Stripe to make sure you bill your customers the correct amounts each billing period. To record usage, first [configure your meter](https://docs.stripe.com/billing/subscriptions/usage-based/meters/configure.md), and then send meter events that include the event name configured on the meter, customer ID, numerical value, and a timestamp (optional).
+
+You can decide how often you record usage in Stripe, for example as it occurs or in batches. Stripe processes meter events asynchronously, so aggregated usage in meter event summaries and on upcoming invoices might not immediately reflect recently received meter events.
+
+## Create meter events 
+
+Create a [Meter Event](https://docs.stripe.com/api/billing/meter-event/create.md) using the API.
+
+```curl
+curl https://api.stripe.com/v1/billing/meter_events \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -d event_name=hypernian_tokens \
+  -d "payload[value]=25" \
+  -d "payload[stripe_customer_id]={{CUSTOMER_ID}}"
+```
+
+### Idempotency
+
+Use [idempotency keys](https://docs.stripe.com/api/idempotent_requests.md) to prevent reporting usage for each event more than one time because of latency or other issues. Every meter event corresponds to an [identifier](https://docs.stripe.com/api/billing/meter-event/create.md#create_billing_meter_event-identifier) that you can specify in your request. If you don’t specify an identifier, we auto-generate one for you.
+
+### Event timestamps
+
+Make sure the timestamp is within the past 35 calendar days and isn’t more than 5 minutes in the future. The 5-minute window is for clock drift between your server and Stripe systems.
+
+The 35-day window determines whether Stripe accepts a meter event. It doesn’t guarantee that Stripe can include the usage on an invoice. Report usage for a subscription service period before its invoice finalizes. Stripe might accept an event after finalization and include it in meter summaries without updating the finalized invoice or adding the usage to the next invoice.
+
+Some invoice types have earlier cutoffs. For example, threshold invoices include only usage that Stripe receives before invoice creation. For the applicable rules and exceptions, see [Configure an invoice finalization grace period](https://docs.stripe.com/billing/subscriptions/usage-based/configure-grace-period.md).
+
+### Usage values
+
+The numerical usage value in the payload accepts decimal values. Decimal values are also supported on invoices. If the overall cycle usage is negative, Stripe reports the invoice line item usage quantity as 0.
+
+### Dimension cardinality limits
+
+Stripe limits how many unique combinations of configured dimension payload key-value pairs it accepts:
+
+- For each meter, Stripe accepts up to 10,000 unique combinations for each hour that Stripe receives meter events.
+- For each customer on a meter, Stripe accepts up to 100 unique combinations across all events.
+
+Events for dimension combinations already counted toward the applicable limit continue to process. Events that introduce a new dimension combination after either limit is reached are invalid and appear in `v1.billing.meter.error_report_triggered` with the `meter_event_dimension_count_too_high` error code.
+
+### Rate limits
+
+Calls to the [Meter Event](https://docs.stripe.com/api/billing/meter-event/create.md) endpoint in *live mode* (Use this mode when you’re ready to launch your app. Card networks or payment providers process payments) are subject to a separate rate limit, and don’t count against your account’s global rate limit. The Meter Event limit is 1000 calls per second per Stripe account. Meter Events are additionally limited to one *concurrent* call per customer per meter.
+
+In a *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes), calls to the Meter Events endpoint count toward your global rate limit. For Connect platforms, calls on a connected account to the Meter Events endpoint also count toward the basic limit.
+
+Meter events also have [dimension cardinality limits](https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api.md#dimension-cardinality-limits), which limit the number of unique dimension payload combinations that Stripe accepts. These limits are separate from API request rate limits.
+
+If you anticipate exceeding these limits, you have two options:
+
+- Pre-aggregate your usage data before sending it to Stripe. For example, instead of sending a Event for each individual user action, you could accumulate usage across multiple actions and send a single aggregated event periodically. This reduces the number of API calls while still accurately reporting total usage.
+- Use the high-throughput ingestion method with meter event streams for significantly higher volumes.
+
+> If you’re a Connect platform making requests on behalf of a connected account using the `Stripe-Account` header, you’re subject to [regular Stripe rate limits](https://docs.stripe.com/rate-limits.md), which is 100 operations per second.
+
+You can monitor for `429` status codes and implement a retry mechanism with an exponential back-off schedule to manage request volume.
+
+### High-throughput ingestion with higher rate limits (API v2)
+
+With the [API v2](https://docs.stripe.com/api-v2-overview.md), you can send up to 10,000 events per second to Stripe using meter event streams. This works in live mode only.
+
+[Contact sales](https://stripe.com/contact/sales) if you need to send up to 200,000 events per second.
+
+This endpoint uses stateless authentication sessions. First, create a [Meter Event Session](https://docs.stripe.com/api/v2/billing/meter-event-sessions/create.md) to receive an authentication token. Authentication tokens are only valid for 15 minutes, so you must create a new meter event session when your token expires.
+
+Next, use the returned authentication token to create your high-throughput meter events with the [Meter Event Stream](https://docs.stripe.com/api/v2/billing/meter-event-stream/create.md).
+
+> Because of the large volume of API requests, we don’t include meter event stream requests in the [Workbench Logs tab](https://docs.stripe.com/workbench/overview.md#request-logs).
+
+You can monitor for `429` status codes and implement a retry mechanism with an exponential backoff schedule to manage request volume.
+
+#### Ruby
+
+```ruby
+require 'stripe'
+require 'date'
+
+class MeterEventManager
+  attr_accessor :api_key
+  attr_accessor :meter_event_session
+
+  def initialize(api_key)
+    @api_key = api_key
+    @meter_event_session = nil
+  end
+
+  def refresh_meter_event_session
+    if @meter_event_session.nil? || DateTime.parse(@meter_event_session.expires_at) <= DateTime.now
+      # Create a new meter event session in case the existing session expired
+      client = Stripe::StripeClient.new(api_key)
+      @meter_event_session = client.v2.billing.meter_event_session.create
+    end
+  end
+
+  def send_meter_event(meter_event)
+    # Refresh the meter event session if necessary
+    refresh_meter_event_session
+
+
+    # Create a meter event with the current session's authentication token
+    client = Stripe::StripeClient.new(meter_event_session.authentication_token)
+    client.v2.billing.meter_event_stream.create(
+      events: [meter_event]
+    )
+  end
+end
+
+# Send meter events
+api_key = "{{API_KEY}}"
+customer_id = "{{CUSTOMER_ID}}"
+
+manager = MeterEventManager.new(api_key)
+manager.send_meter_event(
+  {
+    event_name: 'hypernian_tokens',
+    payload: {
+      "stripe_customer_id" => customer_id,
+      "value" => '25'
+    }
+  }
+)
+```
+
+## Handle meter event errors 
+
+Stripe asynchronously processes meter events. If we find an error, we create one of the following [Events](https://docs.stripe.com/api/events.md):
+
+| Event | Description | Payload type |
+| --- | --- | --- |
+| `v1.billing.meter.error_report_triggered` | This event occurs when a meter has invalid usage events. | `thin` |
+| `v1.billing.meter.no_meter_found` | This event occurs when usage events have missing or invalid meter IDs. | `thin` |
+
+> To create an event destination that subscribes to thin events, enable Workbench in your [Developer settings](https://dashboard.stripe.com/settings/developers/preferences).
+
+### Example payloads
+
+#### Example error report event
+
+The following is an example payload for a `v1.billing.meter.error_report_triggered` event.
+
+```json
+{
+  "id": "evt_test_65R2GpwDsnmpzihMjdT16R2GDhI4SQdXJGRbvn7JA8mPEm",
+  "object": "v2.core.event",
+  "created": "2024-08-28T20:54:12.051Z",
+  "data": {
+    "developer_message_summary": "There is 1 invalid event",
+    "reason": {
+      "error_count": 1,
+      "error_types": [
+        {
+          "code": "meter_event_no_customer_defined",
+          "error_count": 1,
+          "sample_errors": [
+            {
+              "error_message": "Customer mapping key stripe_customer_id not found in payload.",
+              "request": {
+                "id": "",
+                "idempotency_key": "37c741d8-1f7e-4adc-af16-afdca1d73b37"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "validation_end": "2024-08-28T20:54:10.000Z",
+    "validation_start": "2024-08-28T20:54:00.000Z"
+  },
+  "reason": null,
+  "related_object": {
+    "id": "mtr_test_61R2GlpFXJ4R3L5DN41Fb82guyGVEUmO",
+    "type": "billing.meter",
+    "url": "/v1/billing/meters/mtr_test_61R2GlpFXJ4R3L5DN41Fb82guyGVEUmO"
+  },
+  "type": "v1.billing.meter.error_report_triggered"
+}
+```
+
+#### Example error event for an incorrect meter
+
+The following is an example payload for a `v1.billing.meter.no_meter_found` event.
+
+```json
+{
+  "created": "2024-10-01T20:42:52.203Z",
+  "id": "evt_test_61REarcdWIsXleUiz16REahOMTSQbAhSD0fdnF9JAUdk",
+  "object": "v2.core.event",
+  "context": null,
+  "type": "v1.billing.meter.no_meter_found",
+  "data": {
+    "developer_message_summary": "There is 1 invalid event",
+    "reason": {
+      "error_count": 1,
+      "error_types": [
+        {
+          "code": "no_meter",
+          "error_count": 1,
+          "sample_errors": [
+            {
+              "error_message": "No meter was found matching event_name d2aa8cb3-3f00-44a4-b98f-3fbd1d0e93b1.",
+              "request": {
+                "identifier": "df5d4002-515b-4090-8fe2-a1b1f6f5b945"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "validation_end": "2024-10-01T20:42:50.000Z",
+    "validation_start": "2024-10-01T20:42:40.000Z"
+  },
+  "livemode": false,
+  "reason": null,
+  "related_object": {}
+}
+```
+
+### Error codes
+
+The `reason.error_types.code` provides the error categorization that triggered the error. Possible error codes include:
+
+- `meter_event_customer_not_found`
+- `meter_event_no_customer_defined`
+- `meter_event_dimension_count_too_high`
+- `archived_meter`
+- `timestamp_too_far_in_past`
+- `timestamp_in_future`
+- `meter_event_value_not_found`
+- `meter_event_invalid_value`
+- `no_meter` (supported only for the `v1.billing.meter.no_meter_found` event type)
+
+### Listen to events
+
+You can listen to events by setting up an [event destination](https://docs.stripe.com/events/how-events-work.md).
+
+1. On the [Webhooks](https://dashboard.stripe.com/webhooks) tab in Workbench, click **Create new destination**. Alternatively, use this [template](https://dashboard.stripe.com/webhooks/create?payload_style=thin&events=v1.billing.meter.error_report_triggered%2Cv1.billing.meter.no_meter_found) to configure a new destination in Workbench with the two event types pre-selected.
+
+2. Click **Show advanced options**, then select the **Thin** payload style.
+
+3. Select `v1.billing.meter.error_report_triggered` and `v1.billing.meter.no_meter_found` from the list of events.
+
+4. Create a handler to process the event.
+
+   #### Python
+
+   ```python
+   import os
+   from stripe import StripeClient
+   from stripe.events import V1BillingMeterErrorReportTriggeredEvent
+   
+   from flask import Flask, request, jsonify
+   
+   app = Flask(__name__)
+   api_key = os.environ.get('STRIPE_API_KEY')
+   webhook_secret = os.environ.get('WEBHOOK_SECRET')
+   
+   client = StripeClient(api_key)
+   
+   @app.route('/webhook', methods=['POST'])
+   def webhook():
+     webhook_body = request.data
+     sig_header = request.headers.get('Stripe-Signature')
+   
+     try:
+       thin_event = client.parse_thin_event(webhook_body, sig_header, webhook_secret)
+   
+       # Fetch the event data to understand the failure
+       event = client.v2.core.events.retrieve(thin_event.id)
+       if isinstance(event, V1BillingMeterErrorReportTriggeredEvent):
+         meter = event.fetch_related_object()
+         meter_id = meter.id
+   
+         # Record the failures and alert your team
+         # Add your logic here
+   
+       return jsonify(success=True), 200
+     except Exception as e:
+       return jsonify(error=str(e)), 400
+   
+   if __name__ == '__main__':
+     app.run(port=4242)
+   ```
+
+5. Test your handler by configuring a [local listener](https://docs.stripe.com/cli/listen) with the [Stripe CLI](https://docs.stripe.com/cli.md) to send events to your local machine for testing before deploying the handler to production. Use the `--forward-thin-to` flag to specify which URL to forward the `thin` events to and the `--thin-events` flag to specify which thin events to forward. You can forward all thin events with an asterisk (`*`), or a subset of thin events to your application.
+
+   ```sh
+   $ stripe listen --forward-thin-to localhost:4242/webhooks --thin-events "*"
+   ```
+
+6. Trigger test events to your handler. Use the [trigger function](https://docs.stripe.com/cli/trigger) to run the following commands, which simulates the respective events in your account for testing.
+
+   ```sh
+   $ stripe trigger v1.billing.meter.error_report_triggered --api-key <your-secret-key>
+   $ stripe trigger v1.billing.meter.no_meter_found --api-key <your-secret-key>
+   ```
+
+7. If you process events with a webhook endpoint, [verify the webhook signatures](https://docs.stripe.com/webhooks.md#verify-signature) to secure your endpoint and validate all requests are from Stripe.
+
+8. Correct and resend invalid events for re-processing.
+
+## See also
+
+- [Usage-based pricing models](https://docs.stripe.com/products-prices/pricing-models.md#usage-based-pricing)

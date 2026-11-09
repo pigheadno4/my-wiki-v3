@@ -1,0 +1,111 @@
+{
+  "job_id": "billing-subscriptions-webhooks",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md",
+  "raw_sha256": "692a7ff4c062205f25e03dc6141b23a443e337922e5a573365babd40fa82d82c",
+  "source_before_sha256": "29b885a2b98af7572593c6ebdf1572b07b0e3defb3ad83f256cc054343d55535",
+  "source_page": "---\ntitle: \"Stripe — Using Webhooks with Subscriptions\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/subscriptions/webhooks\"\nraw_files:\n  - \"stripe-billing-subscriptions-webhooks-2026-11-07.md\"\n  - \"stripe-subscriptions-webhooks-2026.md\"\ntags: [stripe, subscriptions, webhooks, events, invoice, eventbridge, event-grid]\n---\n\n## Overview\n\nStripe's May 12 and November 7, 2026 captures explain subscription event handling, payment and status monitoring, access decisions, invoice finalization, and optional Amazon EventBridge or Azure Event Grid delivery. Most subscription activity is asynchronous, so the integration needs an event destination and must verify incoming Stripe events. See [[stripe]] and [[stripe-subscriptions]].\n\n## Key takeaways\n\n- The main subscription-event table names **26 distinct events in both captures**: 2 Customer/Account creation, 6 subscription lifecycle, 1 entitlement, 8 invoice, 2 PaymentIntent, and 7 subscription-schedule events. Use `customer.subscription.*` for subscription tracking whether customers are represented by Customer objects or Accounts v2. The November capture says Accounts v2 is GA for Connect users and public preview for other Stripe users; it does not establish account-specific eligibility.\n- The November capture adds a **separate four-row risk/customer-data table**: `charge.refunded`, `charge.dispute.created`, `radar.early_fraud_warning.created`, and `customer.updated`. It directs production integrations that accept payments to handle the three risk events, and integrations storing Customer data locally or depending on Customer fields to handle `customer.updated`. For Accounts v2 customer representation, it names `v2.core.account[configuration.customer].updated` and `v2.core.account[identity].updated` for the distinct configuration and identity changes. Subscribe to the events the integration requires.\n- For a risk event associated with a subscription, the November guide gives an **API-version-dependent lookup**, not an unconditional event-to-subscription mapping. On `2025-03-31.basil` or later, obtain a PaymentIntent ID from the event object or its Charge; list `paid` InvoicePayments filtered by `payment.type=payment_intent` and `payment.payment_intent`; paginate all results; retrieve each Invoice and require `parent.type=subscription_details` before reading `parent.subscription_details.subscription`. A null PaymentIntent, no matching paid InvoicePayments, or an Invoice with another parent type leaves that route unresolved. Earlier versions use the Charge's nullable `invoice`, then the Invoice's `subscription`. The captured guide supplies no universal fallback for an unresolved route.\n- For the access-expiration pattern, the May capture advanced the timestamp after `invoice.paid`. The November capture adds a required check: retrieve the associated subscription and confirm `status=active` **before** extending access. One paid invoice can leave the subscription non-active under all-invoices status resolution. `invoice.upcoming` can precede an automatically charged renewal, but Stripe says it is not sent with `collection_method=send_invoice`.\n- The November status table makes `past_due` and `unpaid` recovery depend on Dashboard status resolution. With most-recent-invoice resolution, settling the most recent non-voided invoice or marking it uncollectible can reactivate; with all-invoices resolution, settle all applicable outstanding invoices. `past_due` does not guarantee another retry. `active` does not prove every associated historical invoice is paid. Continue monitoring `customer.subscription.trial_will_end`, `past_due`, `canceled` and `unpaid` transitions; the guide suggests verifying a payment method before trial end, notifying on `past_due`, and revoking access on `canceled` or `unpaid`.\n\n> [!warning] Contradiction\n> The November capture repeats `invoice.payment_failed` with incompatible blanket PaymentIntent and subscription states: `requires_action` and first-invoice-only `incomplete` in its main table, `requires_payment_method` and unqualified `incomplete` in its payment-failure table, then `requires_action` and unqualified `incomplete` in its additional-action table. These rows do not establish one universal transition. Keep first-invoice and actual payment-state conditions when handling failures. Its invoice-finalization section also refers to an invoice `subscription` property without an API-version qualification, while its new post-Basil risk lookup specifies `parent.subscription_details.subscription`; use the version-qualified route above.\n\n## Invoice finalization and delivery\n\nAn unsuccessful response to `invoice.created` can delay automatic finalization of **all invoices with automatic collection for up to 72 hours**, except invoices with a custom scheduled finalization time. Stripe includes account endpoints and connected platforms' endpoints in this response condition, but excludes organization endpoints; a successful organization-level response does not affect automatic finalization. Subscription updates that synchronously attempt payment, including initial invoices and some updates, do not incur this delay. The guide says Stripe waits one hour after a successful `invoice.created` response before attempting payment and otherwise attempts finalization and sending after 72 hours. In live mode it describes retries for up to three days, versus three retries over a few hours in a sandbox. These are captured guide statements, not a test of a particular endpoint.\n\n`invoice.finalization_failed` prevents collection on an unfinalized invoice even while a subscription may remain active and the customer may retain access. Inspect `last_finalization_error`; for Stripe Tax, `automatic_tax.status=requires_location_inputs` calls for customer location details, while `failed` calls for retry later. Listen for the failure event and act on the failed invoice.\n\nStripe also documents AWS EventBridge and Azure Event Grid destinations. Test a webhook or destination with sandbox actions that trigger events, Stripe CLI, or Stripe for Visual Studio Code.\n\n## Detail locators\n\n- November 2026 main event table and Customer/Accounts v2 boundary: [[raw/stripe-billing-subscriptions-webhooks-2026-11-07|November guide]], lines 20–71; separate risk/customer-data table, lines 73–86.\n- November risk-event subscription lookup: same raw, lines 120–142; access gate, lines 144–158; status table, lines 160–185.\n- November automatic finalization, endpoint boundary, failure, and testing: same raw, lines 187–243.\n- May 2026 main table, access pattern, status table, and finalization: [[raw/stripe-subscriptions-webhooks-2026|May guide]], lines 19–71, 106–189.\n\n## Related\n\n- [[stripe-subscriptions]] — subscription lifecycle and access context.\n\n## Raw Sources\n\n- [[raw/stripe-billing-subscriptions-webhooks-2026-11-07|Stripe subscription webhooks guide, 2026-11-07]]\n- [[raw/stripe-subscriptions-webhooks-2026|Stripe subscription webhooks guide, 2026-05-12]]\n",
+  "quotes": [
+    {
+      "text": "If your production integration accepts payments, also handle events for refunds, disputes, and fraud warnings.",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:75"
+    },
+    {
+      "text": "listen for `v2.core.account[configuration.customer].updated` for customer configuration changes and `v2.core.account[identity].updated` for identity changes instead.",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:84"
+    },
+    {
+      "text": "A PaymentIntent can be associated with multiple invoices, so this endpoint might return more than one `InvoicePayment`. Paginate through all results while `has_more` is true",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:134"
+    },
+    {
+      "text": "After receiving `invoice.paid`, retrieve the associated subscription and confirm that its status is `active` before extending the customer’s access expiration date.",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:158"
+    },
+    {
+      "text": "Stripe might retry payment while the subscription is `past_due`, but this status doesn’t guarantee another payment attempt.",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:180"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Your application updates the customer’s access expiration date in your database to the appropriate date in the future (plus a day or two for leeway).",
+      "location": "raw/stripe-subscriptions-webhooks-2026.md:119"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 243
+      }
+    ],
+    "raw/stripe-subscriptions-webhooks-2026.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 201
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-webhooks.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/702bf62a9ae65f471edf51cf/content.diff": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 292
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "billing-subscriptions-webhooks-concept-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "old_text": "- [[source-stripe-subscriptions-webhooks]] — 22 subscription webhook events, invoice.created 72h risk, access expiration pattern, EventBridge/Event Grid routing",
+      "new_text": "- [[source-stripe-subscriptions-webhooks]] — May and November 2026 subscription webhook guide: 26 main-table events, four additional risk/customer-data rows, versioned risk-event lookup, active-status access gate, invoice.created finalization risk, and EventBridge/Event Grid routing",
+      "reason": "Correct the existing 22-event miscount and route readers to the November risk-event and access-gate additions without repeating the full guide.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "The canonical URL https://docs.stripe.com/billing/subscriptions/webhooks remains the same, and wiki/sources/source-stripe-subscriptions-webhooks.md is the existing source route. The May and November main tables each name 26 distinct events, not the source's 22; the November capture adds four risk/customer-data rows separately. The May raw is retained as dated evidence.",
+    "Q2": "The November capture changes access extension after invoice.paid to require retrieving the subscription and confirming active status; it adds API-version-dependent risk-event correlation and Dashboard-dependent past_due/unpaid recovery. The guide itself conflicts on invoice.payment_failed states and on a version-unqualified invoice.subscription mention, so the candidate records those limitations instead of asserting one universal transition. It does not prove account eligibility or successful event delivery."
+  },
+  "status": "candidate_ready"
+}

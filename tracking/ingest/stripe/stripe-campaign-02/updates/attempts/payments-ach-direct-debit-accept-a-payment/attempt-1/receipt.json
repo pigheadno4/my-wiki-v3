@@ -1,0 +1,245 @@
+{
+  "job_id": "payments-ach-direct-debit-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "44ec1da31bb870d105e458f465ff33f5eebcb39f6da9820aee500568176f9407",
+  "source_before_sha256": "0047343a8a1762a5782fd7f040af41a9fe2e3fa1782b2cda90f9604eac7e98d0",
+  "source_page": "---\ntitle: \"Stripe: Accept an ACH Direct Debit Payment\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ach-direct-debit/accept-a-payment\"\nraw_files:\n  - \"stripe-ach-accept-payment-2025.md\"\ntags: [stripe, ach, us-bank-account, checkout, payment-element, payment-intents, financial-connections, verification]\n---\n\n## Summary\n\nThe guide captured 2026-05-02 at this URL covers ACH Direct Debit through Checkout, Elements with the Checkout Sessions API, Elements with the Payment Intents API, Direct API, iOS, Android, React Native, and Webview. The 2026-11-07 capture at the same base URL is a short index linking to those variants. It does not contain their integration instructions. The missing guide text in the November base-URL capture is not evidence that the older mechanics were deprecated or still describe current variant behavior. The integration details below are attributed to the May guide; the linked November variant pages require separate capture before making current-behavior claims.\n\n## Key integration details from the 2026-05-02 guide\n\n**Checkout scope and setup.** The Checkout variant says US Stripe users can accept ACH Direct Debit in payment mode, and its compatibility table lists US business location and USD supported and presentment currency. All line-item Prices must be in USD. Stripe describes dynamic payment methods as an option; the manual example uses `payment_method_types: ['card', 'us_bank_account']`. The guide recommends `payment_intent_data.setup_future_usage: 'off_session'` when saving for later use. These are Checkout-variant statements, not an eligibility finding for every platform or account.\n\n**Account model.** The guide separately presents Accounts v2 and Customers v1 examples. It says Accounts v2 is generally available for Connect users and in public preview for other Stripe users, with a preview API version required for preview participants. An Account example uses `customer_account`; a Customer example uses `customer`. The examples do not establish this account's eligibility or make the preview generally available.\n\n**Verification.** Automatic verification offers Financial Connections instant verification with manual entry and microdeposit fallback. The guide also shows instant-only `verification_method: 'instant'`, which makes an inability to verify instantly a `requires_payment_method` outcome, and a microdeposit-only option. The Checkout variant lists ten failed verification attempts. The Direct API variant is more precise: ten **failed descriptor-code** attempts versus three **failed amount-based** attempts; microdeposit verification times out after ten days, after which the PaymentIntent requires new payment-method details. A failed send, exceeded attempts, and timeout are distinct failure paths. Do not apply a universal ten-attempt limit.\n\n**Financial Connections data.** When the bank account is successfully linked through Financial Connections, expanding the PaymentIntent's `payment_method` exposes `us_bank_account.financial_connections_account`. Accounts entered manually and verified through microdeposits do not have that Financial Connections account ID. Additional data such as balances requires requested permissions and customer authorization; `payment_method` permission alone is not a balance grant.\n\n**Mandate and payment state.** In the Direct API flow the customer must see and accept mandate terms before the PaymentIntent is confirmed. A `processing` PaymentIntent means the debit was submitted, not that payment succeeded; the guide recommends using later webhook status to determine success or failure. ACH has delayed notification, which the guide says can take up to four business days. The guide's sandbox payments settle instantly, unlike live payments that can take multiple days. A bank-generated payment reference is unavailable on pending or failed Charges; after `charge.succeeded`, find it at `charge.payment_method_details.us_bank_account.payment_reference`.\n\n**Target debit date.** The Checkout guide permits a target debit date at least three calendar days and no more than 15 days from the current date, and disallows `verification_method: 'microdeposits'` with it. The schedule is best effort: a weekend or bank holiday date, or fewer than three **business** days of lead time, can move the debit to the next available business day; the customer's bank may process on a different date.\n\n**Disputes and reuse.** The guide says a dispute revokes authorization on the disputed **PaymentMethod**. Future payments reusing that PaymentMethod require resolving the dispute with the customer and obtaining authorization again; the example shows online mandate acknowledgement or offline acceptance via `mandate_data[customer_acceptance][type]=offline`. It separately says Stripe blocks the **same bank account** if the customer disputes **more than one payment from it**. This is not a generic first-dispute mandate deletion or any-account second-dispute rule.\n\n**Sandbox email routing.** For test mandate and microdeposit emails, the guide gives `{username}+test_email@{domain}`, and says a Stripe account must be set up to trigger these emails while testing.\n\n## Historical variant locators\n\n- Checkout: [[raw/stripe-ach-accept-payment-2025|2026-05-02 guide]], lines 8\u2013548; compatibility 18\u201341, verification 270\u2013280, disputes 409\u2013450, payment reference 452\u2013462, target debit date 530\u2013544.\n- Elements with Checkout Sessions API: same guide, lines 549\u20131504.\n- Elements with Payment Intents API: same guide, lines 1505\u20132512.\n- Direct API: same guide, lines 2513\u20133330; mandate 2836\u20132842, verification limits 2904, payment status 2968\u20132984.\n- iOS: same guide, lines 3331\u20134110; Android: 4111\u20134859; React Native: 4860\u20135694.\n- Webview: same guide, lines 5695\u20136569; its beta-access notice and mobile OAuth handling are historical statements at lines 5722 and 5977\u20136127, not current access or implementation guarantees.\n\n## Related raw API references\n\n- [[raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07|2026-11-07 base-URL variant index]] \u2014 navigation to Checkout, both Elements variants, Direct API, iOS, Android, React Native, and Webview (lines 9\u201322). The linked variant contents were not captured in this unit.\n\n## Raw Sources\n\n- [[raw/stripe-ach-accept-payment-2025|Stripe ACH acceptance integration guide, captured 2026-05-02]] \u2014 historical multi-variant guide (6569 lines).\n",
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/ach-direct-debit/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "  - [Payment Intents API](https://docs.stripe.com/payments/ach-direct-debit/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+      "location": "raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md:16"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/ach-direct-debit/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md:17"
+    },
+    {
+      "text": "  - [Webview](https://docs.stripe.com/payments/ach-direct-debit/accept-a-payment.md?payment-ui=mobile&platform=webview)",
+      "location": "raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md:22"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<!-- Fetched: 2026-05-02 -->",
+      "location": "raw/stripe-ach-accept-payment-2025.md:2"
+    },
+    {
+      "text": "Verification attempts have a limit of ten failures for descriptor-based microdeposits and three for amount-based ones.",
+      "location": "raw/stripe-ach-accept-payment-2025.md:2904"
+    },
+    {
+      "text": "When a customer disputes a payment, Stripe sends a [charge.dispute.closed](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.closed) webhook event, and the PaymentMethod authorization is revoked.",
+      "location": "raw/stripe-ach-accept-payment-2025.md:413"
+    },
+    {
+      "text": "If a customer disputes more than one payment from the same bank account, Stripe blocks their bank account.",
+      "location": "raw/stripe-ach-accept-payment-2025.md:444"
+    },
+    {
+      "text": "This parameter operates on a best-effort basis.",
+      "location": "raw/stripe-ach-accept-payment-2025.md:541"
+    },
+    {
+      "text": "Test transactions settle instantly and are added to your available test balance.",
+      "location": "raw/stripe-ach-accept-payment-2025.md:268"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "raw/stripe-ach-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 2200
+      },
+      {
+        "start": 2201,
+        "end": 2600
+      },
+      {
+        "start": 2601,
+        "end": 3000
+      },
+      {
+        "start": 3001,
+        "end": 3400
+      },
+      {
+        "start": 3401,
+        "end": 3800
+      },
+      {
+        "start": 3801,
+        "end": 4200
+      },
+      {
+        "start": 4201,
+        "end": 4600
+      },
+      {
+        "start": 4601,
+        "end": 5000
+      },
+      {
+        "start": 5001,
+        "end": 5400
+      },
+      {
+        "start": 5401,
+        "end": 5800
+      },
+      {
+        "start": 5801,
+        "end": 6200
+      },
+      {
+        "start": 6201,
+        "end": 6569
+      }
+    ],
+    "wiki/sources/source-stripe-ach-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5703e084a55234bf56c4a127/content.diff": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1160
+      },
+      {
+        "start": 1161,
+        "end": 1280
+      },
+      {
+        "start": 1281,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 2000
+      },
+      {
+        "start": 2001,
+        "end": 2400
+      },
+      {
+        "start": 2401,
+        "end": 2800
+      },
+      {
+        "start": 2801,
+        "end": 3200
+      },
+      {
+        "start": 3201,
+        "end": 3600
+      },
+      {
+        "start": 3601,
+        "end": 4000
+      },
+      {
+        "start": 4001,
+        "end": 4400
+      },
+      {
+        "start": 4401,
+        "end": 4800
+      },
+      {
+        "start": 4801,
+        "end": 5200
+      },
+      {
+        "start": 5201,
+        "end": 5400
+      },
+      {
+        "start": 5401,
+        "end": 5600
+      },
+      {
+        "start": 5601,
+        "end": 5800
+      },
+      {
+        "start": 5801,
+        "end": 6000
+      },
+      {
+        "start": 6001,
+        "end": 6200
+      },
+      {
+        "start": 6201,
+        "end": 6400
+      },
+      {
+        "start": 6401,
+        "end": 6579
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "ach-dispute-authorization-and-bank-account-scope",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "old_text": "- First dispute: mandate invalidated (must collect new mandate)\n- Second dispute: bank account blocked entirely",
+      "new_text": "- A disputed payment revokes authorization on that PaymentMethod. Reusing it requires resolving the dispute with the customer and obtaining authorization again; see the 2026-05-02 [[source-stripe-ach-accept-payment]] guide.\n- Stripe says it blocks the same bank account after more than one disputed payment from that bank account. This is a same-bank-account threshold, not a universal second-dispute rule.",
+      "reason": "The current concept overstates both the first-dispute object and the second-dispute threshold. Old guide lines 413 and 424\u2013444 qualify them. The November base-URL index contains no dispute mechanics.",
+      "quote_indexes": [],
+      "warnings": [
+        "Historical 2026-05-02 guide only; the November index does not establish current dispute behavior."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/ach-direct-debit/accept-a-payment, the 2026-11-07 base page at raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md:9\u201322 is an index to eight variants, while the 2026-05-02 guide at raw/stripe-ach-accept-payment-2025.md:8\u20136569 contained their full instructions. [[source-stripe-ach-accept-payment]] preserves those instructions as dated evidence. The comparison establishes a navigation and rendering change, not deprecation or present behavior of the linked variants.",
+    "Q2": "At https://docs.stripe.com/payments/ach-direct-debit/accept-a-payment, [[source-stripe-ach-accept-payment]] now qualifies the older ACH guidance: descriptor-code microdeposits allow ten failed attempts but amount-based ones three (raw/stripe-ach-accept-payment-2025.md:2904); disputes revoke PaymentMethod authorization, with bank blocking only after more than one dispute from the same bank account (old lines 413 and 444); target debit dates are best effort (old lines 532\u2013543). The 2026-11-07 index at raw/stripe-payments-ach-direct-debit-accept-a-payment-2026-11-07.md:11\u201322 supplies navigation only, so current variant behavior remains unverified."
+  },
+  "status": "candidate_ready"
+}

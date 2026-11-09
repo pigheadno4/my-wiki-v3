@@ -1,0 +1,123 @@
+{
+  "job_id": "billing-taxes-collect-taxes",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-taxes-collect-taxes-2026-11-07.md",
+  "raw_sha256": "0db88ffb32afc4a63c5d24fae009d72b18a20944efaea38c425627a2d835f218",
+  "source_before_sha256": "1cac4c09b83443b9e46466eacaffe243fccd11c11ace6372ae0f8c94115a24e1",
+  "source_page": "---\ntitle: \"Stripe Billing \u2014 Collect Taxes for Recurring Payments\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/billing/taxes/collect-taxes\"\nraw_files:\n  - \"stripe-billing-taxes-collect-2026.md\"\ntags: [stripe, billing, subscriptions, tax, stripe-tax, tax-rates, invoices, automatic-tax]\n---\n\n## Overview\n\nThe 2026-05-13 capture of this Stripe Billing guide contains two complete variants for recurring-payment tax collection: Stripe Tax, an automated paid product, and manually defined Tax Rates, a free feature. It also names native third-party tax integrations including Avalara, Anrok, and Sphere. All mechanics below are **dated May 2026 guidance**, not behavior reverified by the 2026-11-07 same-URL capture. The November capture is a short index linking to the Stripe Tax and Tax Rates variants; those variant URLs were not read for this update.\n\n## Stripe Tax \u2014 Customer v1 subscription flow in the May capture\n\n1. **Estimate on the server.** Before an address is available, preview an invoice with `automatic_tax.enabled=true` and `customer_details.tax.ip_address`. Stripe cautions that IP geolocation is only an initial estimate. After address collection, preview using the customer's address or shipping details, check `automatic_tax.status`, and request correction when it is `requires_location_inputs`. A zero tax amount also calls for checking registration and possible zero-tax rules. See May lines 28\u2013102.\n2. **Collect on the client without an Intent.** The captured flow creates Elements with `mode: 'subscription'`, currency and the estimated invoice total, then mounts Address Element and Payment Element. Address changes trigger a server re-estimate and `elements.update({ amount: total })`; throttle changes to avoid excessive requests. On submission, await `elements.submit()`, save customer details on the server, create the subscription on the server, then confirm the first-invoice PaymentIntent on the client with `stripe.confirmPayment()` when that payment path applies. See May lines 104\u2013185.\n3. **Validate the Customer location on the server.** The Customer v1 example sets an address and `tax.validate_location='immediately'`; invalid location can return `customer_tax_location_invalid`. Updating an existing Customer's address can change tax and totals on other automatic-tax subscriptions' future invoices. See May lines 188\u2013245.\n4. **Create the subscription on the server.** The May Node example sets `automatic_tax.enabled=true`, `customer`, `items`, `payment_settings.save_default_payment_method='on_subscription'`, and expands `latest_invoice.confirmation_secret`. It **does not** set `payment_behavior`. The following prose says an existing default payment method can pay the first invoice automatically; if the checkout should instead use newly collected payment details, pass `payment_behavior='default_incomplete'` so the first invoice is not paid automatically, then confirm its PaymentIntent. Check `latest_invoice.status`; no payment success is established by the sample. Pass the confirmation client secret only to that customer over TLS; do not store, log or expose it to others. See May lines 246\u2013278.\n5. **Handle tax and invoice exceptions.** The May guide says product tax code and tax behavior inform calculation, with a Tax Settings default if omitted (lines 280\u2013284). On `invoice.finalization_failed` with `automatic_tax.status=requires_location_inputs`, Stripe cannot calculate tax, finalize the invoice or collect payment until the customer supplies a valid location (lines 405\u2013411). Its refund path uses Credit Notes to record tax-liability changes; `refund_amount` creates an accompanying refund, while an existing manual refund is passed through `refunds` without `refund_amount`. Preview a line-item Credit Note before issuing a line-item refund (lines 286\u2013403).\n\n## Tax Rates \u2014 manual route in the May capture\n\n- A subscription may have `default_tax_rates`; item-level `tax_rates` override the subscription default for that item. The May guide allows up to five rates per subscription item (lines 413\u2013460).\n- For changing rates on renewal, the May guide describes handling `invoice.created` and editing the draft renewal invoice during an approximately one-hour window before finalization or attempted payment/email (lines 463\u2013469).\n- Checkout examples use fixed `subscription_data.default_tax_rates` or `line_items.tax_rates`, or location-matched `line_items.dynamic_tax_rates`. The dynamic path prioritizes shipping address over billing address, then country where applicable; if no supplied rate matches, no rate is applied. The guide says fixed default/item rates cannot be combined with dynamic item rates (lines 471\u2013559).\n\n## Related\n\n- [[stripe-tax]] \u2014 Stripe Tax and manual tax concepts.\n- [[stripe-subscriptions]] \u2014 subscription payment and invoice context.\n- [[stripe]] \u2014 Stripe provider.\n- [[source-metronome-integrations-tax-integrations-stripe-tax]] \u2014 separately sourced Metronome-created Stripe invoice tax mapping.\n\n## Raw Sources\n\n- [[raw/stripe-billing-taxes-collect-2026|Stripe recurring-payment tax guide, 2026-05-13]] \u2014 fully captured Stripe Tax and Tax Rates variants; factual evidence for this entry.\n\n## Related raw API references\n\n- [[raw/stripe-billing-taxes-collect-taxes-2026-11-07|Stripe recurring-payment tax variant index, 2026-11-07]] \u2014 navigation only; links to `?tax-calculation=stripe-tax` and `?tax-calculation=tax-rates` variants without their instructions.\n",
+  "quotes": [
+    {
+      "text": "Collect taxes for recurring payments",
+      "location": "raw/stripe-billing-taxes-collect-taxes-2026-11-07.md:5"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-billing-taxes-collect-taxes-2026-11-07.md:11"
+    },
+    {
+      "text": "[Stripe Tax](https://docs.stripe.com/billing/taxes/collect-taxes.md?tax-calculation=stripe-tax)",
+      "location": "raw/stripe-billing-taxes-collect-taxes-2026-11-07.md:13"
+    },
+    {
+      "text": "[Tax Rates](https://docs.stripe.com/billing/taxes/collect-taxes.md?tax-calculation=tax-rates)",
+      "location": "raw/stripe-billing-taxes-collect-taxes-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If your customer has a default payment method, the first invoice of the subscription is paid automatically.",
+      "location": "raw/stripe-billing-taxes-collect-2026.md:278"
+    },
+    {
+      "text": "Pass `default_incomplete` for the [payment_behavior](https://docs.stripe.com/api/subscriptions/create.md#create_subscription-payment_behavior) when you\u2019re creating your subscription and confirm the payment intent using [stripe.confirmPayment()](https://docs.stripe.com/js/payment_intents/confirm_payment) as shown.",
+      "location": "raw/stripe-billing-taxes-collect-2026.md:278"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-taxes-collect-taxes-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-billing-taxes-collect-2026.md": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 190
+      },
+      {
+        "start": 191,
+        "end": 285
+      },
+      {
+        "start": 286,
+        "end": 380
+      },
+      {
+        "start": 381,
+        "end": 475
+      },
+      {
+        "start": 476,
+        "end": 569
+      }
+    ],
+    "wiki/sources/source-stripe-billing-taxes-collect.md": [
+      {
+        "start": 1,
+        "end": 107
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9c42c0e49cd076a62f6b48b1/content.diff": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 190
+      },
+      {
+        "start": 191,
+        "end": 285
+      },
+      {
+        "start": 286,
+        "end": 380
+      },
+      {
+        "start": 381,
+        "end": 475
+      },
+      {
+        "start": 476,
+        "end": 571
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "billing-taxes-concept-dated-route",
+      "target_path": "wiki/concepts/stripe-tax.md",
+      "old_text": "- [[source-stripe-billing-taxes-collect]] \u2014 Billing tax guide: Stripe Tax + Tax Rates for subscriptions, Elements without Intent flow, address validation, invoice.finalization_failed webhook, Credit Note refunds",
+      "new_text": "- [[source-stripe-billing-taxes-collect]] \u2014 May 2026 Billing tax guide with Stripe Tax and Tax Rates subscription variants; November 2026 same-URL capture is a navigation index only, and its variant bodies were not read here.",
+      "reason": "Qualifies the reciprocal source route by capture date and separates the historical factual guide from the later navigation-only index.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/taxes/collect-taxes, the 2026-11-07 capture is a 14-line index that names Stripe Tax and Tax Rates variants (new lines 9\u201314), whereas the 2026-05-13 capture contains both full variant bodies, including Stripe Tax at old lines 14\u2013411 and Tax Rates at old lines 413\u2013569. The updated [[source-stripe-billing-taxes-collect]] keeps the May guide as dated factual evidence and lists the new index only as raw navigation. The unread variant URLs do not establish current mechanics, deprecation, or account-specific tax outcomes.",
+    "Q2": "At https://docs.stripe.com/billing/taxes/collect-taxes, [[source-stripe-billing-taxes-collect]] corrects its former unconditional `payment_behavior='default_incomplete'` code line: the May subscription example omits the field (old lines 257\u2013271), then instructs its use when newly collected checkout payment details should be confirmed instead of allowing an existing default payment method to pay the first invoice automatically (old line 278). The November index has no replacement payment guidance (new lines 9\u201314). The candidate preserves the Customer v1, client/server and client-secret boundaries and does not infer payment success or account-specific Stripe Tax availability."
+  },
+  "status": "candidate_ready"
+}

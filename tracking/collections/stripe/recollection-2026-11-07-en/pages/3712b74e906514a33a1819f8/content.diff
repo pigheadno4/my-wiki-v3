@@ -1,0 +1,107 @@
+--- raw/stripe-ach-sec-codes-2025.md
++++ raw/stripe-payments-ach-direct-debit-sec-codes-2026-11-07.md
+@@ -10,77 +10,43 @@
+ 
+ The mandate requirements under ACH Direct Debit rules and applicable law vary based on the type of mandate collected. The information on this page relating to your compliance with ACH mandate requirements is for your general guidance, and isn’t legal advice. If you’re unsure of the applicable mandate requirements, consult with a professional about your obligations.
+ 
+-## WEB (Internet Initiated or Mobile Entry)
++## WEB (Internet Initiated or Mobile Entry) 
+ 
+ This code is used to initiate entries to a consumer’s account when the internet or a mobile device is used to initiate the transaction. WEB is the default unless you indicate otherwise. Refunds processed for WEB transactions use the PPD SEC code.
+ 
+-## CCD (Corporate Credit or Debit Entry)
++## CCD (Corporate Credit or Debit Entry) 
+ 
+ This code is used to facilitate business-to-business payments and is applied to charges to all PaymentMethods that have `account_holder_type=company`, regardless of the authorization type.
+ 
+-## PPD (Prearranged Payment and Deposit)
++## PPD (Prearranged Payment and Deposit) 
+ 
+-This code is used to initiate entries to a consumer’s account, based on standing or single-entry authorization from that customer in writing. Your customer’s authorization must be in writing and signed or otherwise authenticated (that is, confirm the customer’s identity and agreement such as using a phone for a previously provided written authorization). Authorizations need to include information required for [online mandates](https://docs.stripe.com/payments/ach-direct-debit.md#mandates-for-online-custom-payment-forms) and you must provide a copy of the authorization to your customer.
++This code is used to initiate entries to a consumer’s account, based on standing or single-entry authorization from that customer in writing. Your customer’s authorization must be in writing and signed or otherwise authenticated (that is, confirm the customer’s identity and agreement such as using a phone for a previously provided written authorization). Authorizations need to include information required for [online mandates](https://docs.stripe.com/payments/ach-direct-debit.md#online-offline-mandates) and you must provide a copy of the authorization to your customer.
+ 
+ To initiate a PPD debit, you must create a mandate with offline customer acceptance. You can do so by confirming a PaymentIntent or a SetupIntent with offline customer acceptance and providing a `collection_method=paper` mandate option as shown below:
+ 
+ #### PaymentIntent
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const paymentIntent = await stripe.paymentIntents.confirm(
+-  '{{PAYMENTINTENT_ID}}',
+-  {
+-    mandate_data: {
+-      customer_acceptance: {
+-        type: 'offline',
+-        accepted_at: 1647448692,
+-      },
+-    },
+-    payment_method_options: {
+-      us_bank_account: {
+-        mandate_options: {
+-          collection_method: 'paper',
+-        },
+-      },
+-    },
+-  }
+-);
++```curl
++curl https://api.stripe.com/v1/payment_intents/{{PAYMENTINTENT_ID}}/confirm \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "mandate_data[customer_acceptance][type]=offline" \
++  -d "mandate_data[customer_acceptance][accepted_at]=1647448692" \
++  -d "payment_method_options[us_bank_account][mandate_options][collection_method]=paper"
+ ```
+ 
+ #### SetupIntent
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const setupIntent = await stripe.setupIntents.confirm(
+-  '{{SETUPINTENT_ID}}',
+-  {
+-    mandate_data: {
+-      customer_acceptance: {
+-        type: 'offline',
+-        accepted_at: 1647448692,
+-      },
+-    },
+-    payment_method_options: {
+-      us_bank_account: {
+-        mandate_options: {
+-          collection_method: 'paper',
+-        },
+-      },
+-    },
+-  }
+-);
++```curl
++curl https://api.stripe.com/v1/setup_intents/{{SETUPINTENT_ID}}/confirm \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "mandate_data[customer_acceptance][type]=offline" \
++  -d "mandate_data[customer_acceptance][accepted_at]=1647448692" \
++  -d "payment_method_options[us_bank_account][mandate_options][collection_method]=paper"
+ ```
+ 
+-## TEL (Telephone-Initiated Entry) (Beta)
++## TEL (Telephone-Initiated Entry) (Private preview) 
+ 
+-This code is used to initiate debit transactions to a consumer’s account when authorization is given over the telephone. TEL debits are currently in private beta. Contact Stripe Support if you initiate bank debits to consumer accounts over the telephone.
++This code is used to initiate debit transactions to a consumer’s account when authorization is given over the telephone. TEL debits are currently in private preview. Contact Stripe Support if you initiate bank debits to consumer accounts over the telephone.
+ 
+ ### Requirements for Telephone-initiated payments
+ 
+@@ -103,7 +69,7 @@
+ 
+ #### Authorization requirements
+ 
+-Your customer’s explicit oral authorization is needed prior to you initiating a debit entry to their account. Authorizations need to include information required for [online mandates](https://docs.stripe.com/payments/ach-direct-debit.md#mandates-for-online-custom-payment-forms), along with a telephone number available to your customer for inquiries.
++Your customer’s explicit oral authorization is needed prior to you initiating a debit entry to their account. Authorizations need to include information required for [online mandates](https://docs.stripe.com/payments/ach-direct-debit.md#online-offline-mandates), along with a telephone number available to your customer for inquiries.
+ 
+ In addition, you must capture authorization by either an audio recording of the customer’s oral authorization (in accordance with applicable state law regarding the recording of calls) or providing written notice to the customer of their authorization *before* the first debit of their bank account.
+ 

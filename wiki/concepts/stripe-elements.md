@@ -20,7 +20,7 @@ This table preserves the documentation overview, not an exhaustive package expor
 | **Link Authentication Element** | Single email field for email collection + Link auth; autofills saved payment/shipping for returning users — see [[stripe-link-authentication-element]] | Both APIs |
 | **Address Element** | Collect billing/shipping + display Link saved addresses; 236 regional formats, autocomplete (26 countries) — see [[stripe-address-element]] | Both APIs |
 | **Payment Method Messaging Element** | Show BNPL options (Affirm/Afterpay/Klarna); no clientSecret needed; works on product/cart/payment pages — see [[stripe-payment-method-messaging-element]] | Both APIs |
-| **Currency Selector Element** | Local currency choice with Adaptive Pricing; legally required when using Adaptive Pricing — see [[stripe-currency-selector-element]] | Checkout Sessions only |
+| **Currency Selector Element** | Local currency choice with Adaptive Pricing; Stripe says to render it when using Adaptive Pricing with Elements, while merchants separately handle applicable price-localization laws — see [[stripe-currency-selector-element]] | Checkout Sessions only |
 | **Tax ID Element** | Collect business tax IDs for invoices/VAT refunds; 100+ countries, auto/always visibility, beta — see [[stripe-tax-id-element]] | Both APIs |
 
 ## Compatible APIs
@@ -197,6 +197,7 @@ The v6.8.0 release note adds `TermsElement`. Both the root and `/checkout` imple
 
 - [[source-stripe-web-elements-overview]] — Elements overview: 7 elements, API comparison table + diagram, features
 - [[source-stripe-checkout-elements-quickstart]] — Checkout Elements quickstart (Checkout Sessions + Elements)
+- [[source-stripe-checkout-elements-beta-changelog]] — dated beta-to-Basil-to-Clover migration history; the November 2026 capture excludes Clover or later integrations
 - [[source-stripe-payment-intents-quickstart]] — Payment Intents quickstart (Payment Intents + Elements)
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider, useCheckoutElements, Elements provider, useStripe/useElements, ElementsConsumer
 - [[source-github-react-stripe-js]] — cumulative React Stripe.js repository history: legacy v6.3.0 context plus package-qualified `@stripe/react-stripe-js@6.8.0`

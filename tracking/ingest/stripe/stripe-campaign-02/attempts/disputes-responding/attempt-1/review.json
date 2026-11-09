@@ -1,0 +1,75 @@
+{
+  "job_id": "disputes-responding",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "All four SHA-256 pins match; I independently read the complete 171-line new raw, 159-line old raw, 88-line source, and 146-line diff through EOF. All five new quotes and three old excerpts are exact at their locators. The receipt correctly identifies the new Mastercard compliance section and the unsupported exact `under_review` enum. The source_required_update disposition and original Q1/Q2 are supported. The receipt misses material existing-source and concept conflicts that matter to the same reconciliation: the disputes concept's special-case list has Visa compliance but no Mastercard, and the source's Visa fee sentence collapses separate network, received, and countered fees into an incorrect universal no-refund claim. CE 3.0 prepopulation and win-likelihood wording also drops explicit conditions. A merchant asking which compliance disputes carry the extra fee or whether a countered fee returns on a win could get a wrong answer.",
+  "required_changes": [
+    "Add wiki/concepts/disputes.md lines 315-326 to findings/conflicts: its Stripe response special-case list includes Visa compliance only, so the new Mastercard 500 USD-or-local-equivalent contested-case fee and possible pre-compliance escalation need a distinct dated concept route or note (new raw lines 53-59). Keep Visa and Mastercard separate; no inference that the Visa API procedure applies to Mastercard.",
+    "Flag current source lines 38-41 as materially overbroad fee guidance. Both captures say the 500 USD/local-equivalent Visa network amount is collected if a Visa compliance dispute is contested and returned if won (old raw lines 49-53; new raw lines 47-51). They separately say the dispute countered fee is returned on a win, while the dispute received fee is generally not returned unless the Stripe contract says otherwise, with Mexico and Japan qualifications (old raw lines 93-97; new raw lines 99-103). Recommend splitting those fee identities and conditions; do not state that every 'standard dispute fee' is non-refundable.",
+    "Add source lines 45-50 to the qualifications pass: Visa CE 3.0 applies to eligible Visa 10.4 fraud disputes, required fields are prepopulated in most cases, and higher win likelihood is described as typical rather than guaranteed (old raw lines 59-65, 114-118; new raw lines 65-71, 121-126). Liability shift and ECI/3DS evidence are conditional on a dispute that might be covered; avoid unqualified coverage language. The receipt already flags the exact `under_review` token separately."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-disputes-responding-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 135
+      },
+      {
+        "start": 136,
+        "end": 171
+      }
+    ],
+    "raw/stripe-disputes-responding-2026.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 159
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-responding.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 88
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ced65903c6d7d542b4074c8e/content.diff": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 146
+      }
+    ]
+  }
+}

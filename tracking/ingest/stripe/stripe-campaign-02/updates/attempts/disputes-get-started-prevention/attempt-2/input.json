@@ -1,0 +1,87 @@
+{
+  "job_id": "disputes-get-started-prevention",
+  "queue_id": 88,
+  "canonical_url": "https://docs.stripe.com/disputes/get-started/prevention",
+  "raw_path": "raw/stripe-disputes-get-started-prevention-2026-11-07.md",
+  "raw_sha256": "6d1fc3a418541bb7017fe2fd3a59c4de4703cdfa950ecff0411c0bf857a95d5e",
+  "prior_raw_path": "raw/stripe-disputes-prevention-how-it-works-2026.md",
+  "prior_raw_sha256": "da675adc8a4fcbc61ebe41fcb148cf6939e754216fc46266ef9c889e9f403e2e",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ba7228cd69b8a2c8a45da1ce/content.diff",
+  "diff_sha256": "ee92367f0432d5c69e7ab9eda8fda581338ba1e73a1ad6f750fdc46ed92b3b9f",
+  "source_target": "wiki/sources/source-stripe-disputes-prevention-how-it-works.md",
+  "source_before_sha256": "4c2bb15461ae36d804ca4036bf412c15419d62a1634588a95413397e1e7d347c",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-1/receipt.json",
+  "receipt_sha256": "ebd8e85b5c3909946acd499077e27e089fb7ea55671caa18afe35565fce9b811",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-1/review.json",
+  "review_sha256": "fccb98908185017ff1db82ae95287be2566783bedbb9b64c0a2b82529733af4f",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The November guide adds Consumer Clarity (CC) to Ethoca alongside Ethoca Alerts (new line 13 versus old line 12). CC is the Mastercard charge-recognition lookup path, while OI remains Visa/Verifi (new line 38). Neither CC nor Ethoca Alerts is CE 3.0, which remains OI/Visa-specific (new lines 40, 92-98).",
+    "The lookup-data sharing/operations terms broaden from OI alone in old line 39 to OI and CC in new line 42, including data sent to issuers and cardholders and potential future requirements from Verifi and Ethoca. The existing source at lines 13-52 covers only OI's data fields; it should not describe those fields as a verified exhaustive CC schema.",
+    "The onboarding requirements now cover OI and CC lookups, with business name, URL, phone, and email (new line 102 versus old line 99). The November guide adds separate OI transaction-field guidance for CE 3.0 at line 104 and CC guidance for recognizable merchant/purchase details, itemized receipts and applicable subscription information at line 106. The source lacks CC and should present these as quality inputs, not a guarantee that a lookup deflects a dispute.",
+    "RDR and Ethoca Alerts resolution mechanics and limitations remain: Visa RDR only full-original-amount disputes on non-refunded transactions (old line 23; new line 24); Ethoca Alerts applies to Mastercard and post-enrollment initiated chargebacks (old lines 27-29; new lines 28-30); Radar resolution rules are still an onboarding requirement despite no separate integration (old line 33; new line 34).",
+    "The existing source line 29 puts 'Rules apply only to chargebacks initiated after enrollment' under RDR Details, but the warning is in the Ethoca Alerts section in both raws (old line 29; new line 30). Move or scope this historical source assertion under Ethoca Alerts rather than applying it to Visa RDR.",
+    "The current source's CE 3.0 pre-dispute criteria at lines 54-63 remain supported by old lines 91-99 and new lines 94-104; the issuer-must-block result is conditional on complete matching prior-transaction data, not an automatic outcome of OI enrollment.",
+    "The central concept wiki/concepts/disputes.md line 156 lists deflection only as Order Insights/Verifi, omitting the new Mastercard/Ethoca Consumer Clarity lookup route at new raw lines 13 and 38. Qualify the concept row with Visa OI and Mastercard CC as separate charge-recognition deflection paths; leave CE 3.0 specific to Visa/OI and do not promise that either lookup prevents every dispute.",
+    "The concept's line 159 says 'No integration required' while describing only Verifi. Both raw captures say RDR and Ethoca Alerts require no separate product integration but do require onboarding resolution rules through Radar to define refunds (old line 33; new line 34); new line 102 also describes Dashboard onboarding data for OI and CC. Qualify the concept sentence accordingly rather than suggesting no configuration or enrollment is needed."
+  ],
+  "approved_conflicts": [
+    "The source line 29 assigns the post-enrollment chargeback initiation warning to RDR, while the warning belongs to Ethoca Alerts in both raws (old line 29; new line 30).",
+    "The source summary line 13 says 'No integration required' without the adjacent Radar resolution-rule onboarding condition in old line 33 and new line 34. Qualify it as no separate product integration, with Radar rules and transaction data still needed for the described workflows.",
+    "The concept deflection row at wiki/concepts/disputes.md line 156 names only Order Insights/Verifi, while the November raw line 38 also identifies Mastercard/Ethoca Consumer Clarity. Its line 159 unqualified 'No integration required' obscures Dashboard onboarding and the Radar rules required for RDR/Ethoca Alerts (old line 33; new lines 34 and 102)."
+  ],
+  "historical_claims_to_preserve": [
+    "RDR resolves qualifying Visa disputes by rules for a fee and excludes partial/full-refunded transactions; resolved disputes do not count toward the cited rates and avoid a separate dispute-received fee (old lines 18-23; new lines 19-24).",
+    "Ethoca Alerts resolves qualifying Mastercard chargebacks; its configured rules apply only to chargebacks initiated after enrollment, with older initiated chargebacks still possibly noticed later (old lines 27-29; new lines 28-30).",
+    "OI/CE 3.0 remains the Visa path. At least two eligible prior non-fraud transactions with complete product descriptions and matching IP plus email or delivery address are required for the stated issuer block (old lines 91-95; new lines 94-98).",
+    "The OI lookup-field table is preserved in both captures, including last-four PAN restriction and recognizable customer account identifier; do not infer that every field is mandatory or that the same table is an exhaustive CC payload schema (old lines 45-87; new lines 48-90)."
+  ],
+  "unresolved_questions": [
+    "The captured guide describes CC but does not provide a separate CC API payload schema, account enrollment confirmation, measured deflection rate, or proof a merchant is eligible for the feature.",
+    "The guide's CE 3.0 issuer-block statement is conditional on prior matching transaction data and network handling; no live dispute outcome or fee result was observed.",
+    "Verifi/Ethoca may update data fields or operating requirements (new line 42), so the November capture is a dated snapshot rather than a durable eligibility or future policy guarantee."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/disputes.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/disputes-get-started-prevention/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "72df2beeb367b33df3e65e11f31a725cdc01cd3c33d577eb43305b8b9c2d54e1",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/disputes-get-started-prevention/attempt-2/review.json",
+  "approved_triage_review_sha256": "b805f52c636b3f89338793729a87415f8c9effccf4e08fd87b63cef9fdfc6a67",
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw4",
+  "reviewer_agent": "/root/s2ur3",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-disputes-get-started-prevention-2026-11-07.md",
+      "sha256": "6d1fc3a418541bb7017fe2fd3a59c4de4703cdfa950ecff0411c0bf857a95d5e",
+      "lines": 112
+    },
+    {
+      "path": "raw/stripe-disputes-prevention-how-it-works-2026.md",
+      "sha256": "da675adc8a4fcbc61ebe41fcb148cf6939e754216fc46266ef9c889e9f403e2e",
+      "lines": 105
+    },
+    {
+      "path": "wiki/sources/source-stripe-disputes-prevention-how-it-works.md",
+      "sha256": "4c2bb15461ae36d804ca4036bf412c15419d62a1634588a95413397e1e7d347c",
+      "lines": 73
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ba7228cd69b8a2c8a45da1ce/content.diff",
+      "sha256": "ee92367f0432d5c69e7ab9eda8fda581338ba1e73a1ad6f750fdc46ed92b3b9f",
+      "lines": 151
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/disputes-get-started-prevention-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/disputes-get-started-prevention-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/disputes-get-started-prevention/attempt-1"
+}

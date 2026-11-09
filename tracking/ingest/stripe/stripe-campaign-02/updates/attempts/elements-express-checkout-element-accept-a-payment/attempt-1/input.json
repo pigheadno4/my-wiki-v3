@@ -1,0 +1,83 @@
+{
+  "job_id": "elements-express-checkout-element-accept-a-payment",
+  "queue_id": 109,
+  "canonical_url": "https://docs.stripe.com/elements/express-checkout-element/accept-a-payment",
+  "raw_path": "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "6ed2fa9090c7403adb6561cfefec38d2347a2989949ab4c61a7e48219e1a2127",
+  "prior_raw_path": "raw/stripe-express-checkout-element-accept-payment-2025.md",
+  "prior_raw_sha256": "7232af13c43fc851110e0e1e9ebf88a6b7b473c7afd5d158c9373b24e9ca13bb",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/9ea397f1278ef854fb1a2803/content.diff",
+  "diff_sha256": "ce42ed4155d62ab9c906ce2761fa9e90612f08bc9c85c7fb53e0a13360fb5abd",
+  "source_target": "wiki/sources/source-stripe-express-checkout-element-accept-payment.md",
+  "source_before_sha256": "88c1e86bde874c258fc990c682d7e29d9752cf88a18e6f28133a5581312c28cd",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/elements-express-checkout-element-accept-a-payment/attempt-2/receipt.json",
+  "receipt_sha256": "bc0cb7f944fed98a09f135a0f3fc28acc738f21bcb31f38d62b8070f0207f4eb",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/elements-express-checkout-element-accept-a-payment/attempt-2/review.json",
+  "review_sha256": "ad3c90a81742a4b3232399f40fb4da409888d5dea71eb35090b01ee5bf0e0e4d",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The November same-base-URL capture is a 14-line variant index (new 9\u201314) linking Checkout Sessions API and Payment Intents API pages. The April prior raw is a combined 1,892-line guide with separate Checkout Sessions (old 28\u2013472) and Payment Intents (old 474\u20131892) sections. The apparent deletion in the diff is due to the new base page's variant routing; it is not evidence that wallets, options, tests or API behavior were deprecated.",
+    "The source at line 17 says both paths require specific payment_method_types values, but the older guide says each defaults to Dashboard payment method settings and explicit values are optional overrides (old 53, 501\u2013506). The source's method-type table remains useful when a merchant explicitly configures methods, but requiredness must be corrected.",
+    "Source line 13 says both API paths support the same six wallet methods, while old Checkout Sessions supported-method table lists five (old 59\u201365) and the Payment Intents table lists six including Klarna (old 512\u2013519); source line 26 itself limits Klarna to Payment Intents. Remove the same-six claim and do not infer current path eligibility from the new index.",
+    "Source line 13 and wiki/concepts/stripe-express-checkout-element.md lines 84 and 99 call Checkout Sessions recommended. The old Payment Intents section instead recommends collecting payment details before creating an Intent (old 478), which is an integration timing preference rather than a Checkout Sessions-versus-Payment Intents ranking. The new index lists both paths without a recommendation (new 13\u201314). Qualify or remove the unsupported path-wide ranking.",
+    "Keep the historical distinctions between server-created Checkout Session and its client secret, client-side Elements/confirm and server-created PaymentIntent, and separate Connect account scoping (old 67\u201387, 221\u2013237, 1221\u20131323, 1865\u20131882). Do not add this navigation-only capture to factual raw_files; variant page bodies require separately approved capture before current integration claims change.",
+    "The source's Payment Intents confirmation example at lines 71\u201387 is incomplete for the deferred-Intent flow it depicts: it creates Elements with mode, amount, and currency, then calls stripe.confirmPayment without elements.submit() or a clientSecret. The retained guide explicitly requires a server-created PaymentIntent with server-authoritative amount matching Elements (old 1221\u20131225); its confirm handler calls elements.submit(), obtains client_secret from /create-intent, and passes clientSecret to stripe.confirmPayment (old 1325\u20131366). Correct the excerpt so it is not presented as a complete working confirmation flow."
+  ],
+  "approved_conflicts": [
+    "Current source line 17's 'require specific payment_method_types' conflicts with old raw lines 53 and 501\u2013506, which describe Dashboard defaults and optional overrides.",
+    "Current source line 13's 'same six wallet methods' conflicts with old raw Checkout Sessions five-method table at 59\u201365 and Payment Intents six-method table at 512\u2013519, and with the source's own Klarna qualifier at line 26.",
+    "The source line 13 and concept lines 84/99 assert a Checkout Sessions recommendation that neither new index lines 13\u201314 nor old Payment Intents line 478 establishes as an API-path ranking.",
+    "Current source lines 71\u201387 omit elements.submit() and the server-returned PaymentIntent clientSecret from a deferred-Intent stripe.confirmPayment sample; old raw lines 1221\u20131225 and 1325\u20131366 explicitly require these steps and server-authoritative amount matching."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the old combined guide as dated technical evidence with its two API paths and separate server/client operations; the index does not establish their current validity or deprecation.",
+    "The prior Checkout Sessions supported-method table lists Amazon Pay, Apple Pay, Google Pay, Link and PayPal; the Payment Intents table additionally lists Klarna (old 59\u201365, 512\u2013519). Availability remains subject to method settings, browser, country, domain and wallet conditions.",
+    "Preserve the older distinction between Dashboard defaults and optional manual payment_method_types/paymentMethodTypes overrides (old 53, 501\u2013506), and distinguish Checkout Session client secrets from PaymentIntent lifecycle and confirmation.",
+    "Preserve the older deferred PaymentIntent ordering: server decides amount and creates the Intent (old 1221\u20131225), then the client confirm callback submits Elements, receives the server-returned client secret, and supplies it to confirmPayment (old 1345\u20131366). Do not substitute a client-chosen amount or a Checkout Session secret."
+  ],
+  "unresolved_questions": [
+    "The contents of the two November variant URLs are not present in this exact capture. Current API options, method eligibility, testing values and Connect requirements cannot be confirmed from the index alone."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-express-checkout-element.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/elements-express-checkout-element-accept-a-payment/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "bc0cb7f944fed98a09f135a0f3fc28acc738f21bcb31f38d62b8070f0207f4eb",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/elements-express-checkout-element-accept-a-payment/attempt-2/review.json",
+  "approved_triage_review_sha256": "ad3c90a81742a4b3232399f40fb4da409888d5dea71eb35090b01ee5bf0e0e4d",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw2",
+  "reviewer_agent": "/root/s2ur6",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md",
+      "sha256": "6ed2fa9090c7403adb6561cfefec38d2347a2989949ab4c61a7e48219e1a2127",
+      "lines": 14
+    },
+    {
+      "path": "raw/stripe-express-checkout-element-accept-payment-2025.md",
+      "sha256": "7232af13c43fc851110e0e1e9ebf88a6b7b473c7afd5d158c9373b24e9ca13bb",
+      "lines": 1892
+    },
+    {
+      "path": "wiki/sources/source-stripe-express-checkout-element-accept-payment.md",
+      "sha256": "88c1e86bde874c258fc990c682d7e29d9752cf88a18e6f28133a5581312c28cd",
+      "lines": 213
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/9ea397f1278ef854fb1a2803/content.diff",
+      "sha256": "ce42ed4155d62ab9c906ce2761fa9e90612f08bc9c85c7fb53e0a13360fb5abd",
+      "lines": 1895
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/elements-express-checkout-element-accept-a-payment-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/elements-express-checkout-element-accept-a-payment-review.json"
+}

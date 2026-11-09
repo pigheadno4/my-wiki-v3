@@ -1,0 +1,321 @@
+{
+  "job_id": "crypto-onramp-embedded-components-integration-guide",
+  "attempt": 2,
+  "raw_path": "raw/stripe-crypto-onramp-embedded-components-integration-guide-2026-11-07.md",
+  "raw_sha256": "5f080a64caf992699a864c35ea18e41bdfbc1cfd6f22f248abadc20c9a5c09f9",
+  "source_before_sha256": "2ccb379ebd89cc75323d6c7297a70f93c323fb7f965b973f10b47a4880b3f87d",
+  "source_page": "---\ntitle: \"Stripe \u2014 Crypto Onramp: Embedded Components Integration Guide\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide\"\nraw_files:\n  - \"stripe-crypto-onramp-embedded-components-integration-2026.md\"\ntags: [stripe, crypto, onramp, embedded-components, headless, link-auth, oauth, web, react-native, android, ios, private-preview]\n---\n\n## Overview\n\nThe May 2026 capture is the full Embedded Components (headless) onramp integration guide for Web, React Native, Android, and iOS. The November 7 capture of the same base URL is a 16-line **platform variant index** linking to those four platform-specific URLs. It does not contain their current guide bodies. The base-page rendering change alone does not establish deprecation, current feature availability, API changes, or continued eligibility. The implementation details below are dated to the May capture.\n\n## Key takeaways from the May guide\n\n- **Access and geography:** The May guide describes a private preview for US users excluding New York. Onboarding and the required Embedded Components and Link OAuth feature gates, Link payment method, and provisioned OAuth credentials are prerequisites; even sandbox API calls depend on onboarding. These are May qualifications, not a November eligibility check.\n- **Platform identity:** Web uses `@stripe/crypto` and `loadCryptoOnrampAndInitialize`; React Native uses `useOnramp`; Android uses `OnrampCoordinator` and a Presenter; iOS uses `CryptoOnrampCoordinator` with the alpha import. Methods in one platform section should not be transferred to another.\n- **Authentication and tokens:** A back end creates a `LinkAuthIntent` and exchanges it after customer consent. Subsequent onramp requests use `Stripe-OAuth-Token`. The May token response gives the access token a one-hour life; refresh can return a replacement refresh token, which must be stored securely. The May iOS section separately documents returning-customer seamless sign-in: retain the consented LinkAuthIntent token, exchange it for a `linkAuthTokenClientSecret` through the back end, then call `authenticateUserWithToken(_:) `; invalid tokens fall back to `authorize`. This is not established as a React Native flow by the assigned guide.\n- **Conditional identity checks:** Check the CryptoCustomer verification state before collecting KYC and identity documents. Web uses `submitKycInfo` and `verifyDocuments` when needed. React Native uses `attachKycInfo`, `presentKycInfoVerification` to review existing KYC or update only an address, and `verifyIdentity` when required. Android uses `verifyKycInfo`; iOS uses `verifyKYCInfo(updatedAddress:from:)`. The prior summary's `verifyKycAndUpdateAddress()` name is not the React Native method in the May guide.\n- **Checkout sequence:** Register a valid customer wallet, collect a payment method, create a payment token, have the back end create a headless `CryptoOnrampSession`, then perform checkout. Supply `source_amount` or `destination_amount`, not both; the May examples require the destination network array to match the singular pinned network when a wallet address is set. For ACH in the May **Web** section, checkout also requires `mandate_data` plus collection of the user's IP address and user agent (old raw line 430). The **React Native, Android, and iOS** sections instead say the API may report `mandate_data` missing; collect acceptance and send it on a later checkout call if required (old raw lines 1423, 2093, 2878).\n- **A response can still need action:** The May guide says a checkout HTTP `200` or `202` can include `transaction_details.last_error` while the purchase is incomplete. `action_required` calls for authentication and another checkout call; missing KYC, document verification, or consumer wallet requires the relevant platform step; an expired charged quote needs a back-end refresh. `transaction_limit_reached`, `location_not_supported`, and `transaction_failed` call for the stated limit, regional, or failure handling. These are checkout remedies, not evidence of a completed purchase or onchain delivery.\n- **Networks and tests:** The May Web `CryptoNetwork` type lists 13 enum values: bitcoin, ethereum, solana, polygon, stellar, avalanche, base, aptos, optimism, worldchain, xrpl, sui, tempo. This is a type list, not a guarantee that every currency, network, region, account, or mode is enabled. The iOS section has a separate livemode currency-network table. Sandbox uses test keys and no real charges or KYC; mobile SDK calls require trusted-app registration, including in sandbox. Live testing uses live keys, real charges and KYC, and a physical iOS or Android device.\n\n## Detail locators in the May capture\n\n- Web setup, Link authorization, KYC, wallet/payment/session/checkout, errors, and `CryptoNetwork`: old raw lines 8\u2013758.\n- React Native `useOnramp`, KYC review/address flow, checkout errors, and device/test conditions: old raw lines 759\u20131577, especially 1153\u20131210, 1423\u20131475, and 1560\u20131576.\n- Android coordinator, KYC, checkout, and troubleshooting: old raw lines 1578\u20132195, especially 1897\u20131926 and 2093\u20132149.\n- iOS coordinator, retained-token sign-in, KYC, checkout, currency-network tables, and testing: old raw lines 2196\u20133038, especially 2425\u20132444, 2652\u20132674, 2878\u20132922, and 2975\u20133037.\n- LinkAuthIntent create, token exchange, and refresh APIs, scopes and response fields: old raw lines 3039\u20133189.\n\n## Related\n\n- [[stripe-crypto-onramp]] \u2014 concept and related onramp source routes.\n- [[source-stripe-crypto-onramp-embedded-components]] \u2014 Embedded Components quickstart.\n- The May capture and November index do not establish account-specific gates, current platform API signatures, a successful live checkout, final onchain delivery, or current regional/currency eligibility.\n\n## Raw Sources\n\n- [[raw/stripe-crypto-onramp-embedded-components-integration-2026|May 2026 full Web, React Native, Android, and iOS guide]]\n\n## Related raw API references\n\n- [[raw/stripe-crypto-onramp-embedded-components-integration-guide-2026-11-07|November 7 platform variant index]] \u2014 navigation only; the linked variant bodies were not captured in this job.\n- [Web](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md?platform=web)\n- [React Native](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md?platform=react-native)\n- [Android](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md?platform=android)\n- [iOS](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md?platform=ios)\n",
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-guide-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Web](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md?platform=web)",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-guide-2026-11-07.md:13"
+    },
+    {
+      "text": "- [React Native](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md?platform=react-native)",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-guide-2026-11-07.md:14"
+    },
+    {
+      "text": "- [Android](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md?platform=android)",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-guide-2026-11-07.md:15"
+    },
+    {
+      "text": "- [iOS](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md?platform=ios)",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-guide-2026-11-07.md:16"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "When a user already has KYC information, use `presentKycInfoVerification` to let them review and update it.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-2026.md:1155"
+    },
+    {
+      "text": "To reduce friction for a returning customer, you can skip the OTP dialog by storing the `LinkAuthIntent` token",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-2026.md:2427"
+    },
+    {
+      "text": "For ACH, the API may indicate that `mandate_data` is missing. Collect acceptance and send it on a later checkout call if required.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-2026.md:1423"
+    },
+    {
+      "text": "When the API returns `200` or `202` but the purchase isn\u2019t complete",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-2026.md:2910"
+    },
+    {
+      "text": "The Embedded Components onramp is only available to users in the US (excluding New York).",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-2026.md:16"
+    },
+    {
+      "text": "For users paying with ACH, you also need to pass `mandate_data` and collect the user\u2019s ip address and user agent.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-integration-2026.md:430"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-crypto-onramp-embedded-components-integration-guide-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-crypto-onramp-embedded-components-integration-2026.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 750
+      },
+      {
+        "start": 751,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1050
+      },
+      {
+        "start": 1051,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1350
+      },
+      {
+        "start": 1351,
+        "end": 1500
+      },
+      {
+        "start": 1501,
+        "end": 1650
+      },
+      {
+        "start": 1651,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 1950
+      },
+      {
+        "start": 1951,
+        "end": 2100
+      },
+      {
+        "start": 2101,
+        "end": 2250
+      },
+      {
+        "start": 2251,
+        "end": 2400
+      },
+      {
+        "start": 2401,
+        "end": 2550
+      },
+      {
+        "start": 2551,
+        "end": 2700
+      },
+      {
+        "start": 2701,
+        "end": 2825
+      },
+      {
+        "start": 2826,
+        "end": 2950
+      },
+      {
+        "start": 2951,
+        "end": 3075
+      },
+      {
+        "start": 3076,
+        "end": 3189
+      },
+      {
+        "start": 1851,
+        "end": 1900
+      },
+      {
+        "start": 1901,
+        "end": 1950
+      }
+    ],
+    "wiki/sources/source-stripe-crypto-onramp-embedded-components-integration.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/23e7a0c0c12ec1728e7bbc29/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 2000
+      },
+      {
+        "start": 2001,
+        "end": 2200
+      },
+      {
+        "start": 2201,
+        "end": 2400
+      },
+      {
+        "start": 2401,
+        "end": 2600
+      },
+      {
+        "start": 2601,
+        "end": 2800
+      },
+      {
+        "start": 2801,
+        "end": 3000
+      },
+      {
+        "start": 3001,
+        "end": 3193
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "crypto-onramp-mode-table-scope",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "| **Embedded components** (mobile SDK) | Private preview | Native iOS/Android; full UI + parameter customization via Onramp SDK + API |",
+      "new_text": "| **Embedded components** (headless SDK) | May 2026 guide: private preview | Web, React Native, Android, and iOS platform sections; custom UI with SDK + API. November base URL provides only variant navigation. |",
+      "reason": "The concept mode table presents the preview status as current and incorrectly excludes the Web and React Native guide sections.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Current platform bodies and access terms are not established by the November index."
+      ]
+    },
+    {
+      "update_id": "crypto-onramp-may-preview-geo",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "**Private preview** \u2014 distinct from the embedded iframe widget. Full custom UI via SDK methods; requires Link OAuth authentication. **US only, excluding New York** (stricter than embedded onramp which excludes Hawaii).",
+      "new_text": "The May 2026 Embedded Components guide described a **private preview** for US users excluding New York, distinct from the embedded iframe widget. Its headless SDK flow uses Link OAuth and a custom UI. The November 7 base URL is a platform index without current eligibility terms; check the linked variant and account onboarding before relying on those May access and geography limits.",
+      "reason": "Date the access and geography claims to the full May guide; the November index contains no eligibility update.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "November variant bodies were not captured; no current eligibility claim is established."
+      ]
+    },
+    {
+      "update_id": "crypto-onramp-ach-mandate",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "**Session**: `ui_mode: 'headless'` + `crypto_customer_id` + `payment_token`; checkout requires `mandate_data`; quote refresh needed before expiry.",
+      "new_text": "**Session**: `ui_mode: 'headless'` + `crypto_customer_id` + `payment_token`. In the May Web ACH checkout path, pass `mandate_data` and collect the user's IP address and user agent. In the May React Native, Android, and iOS ACH paths, the API may report missing `mandate_data`; collect acceptance and send it on a later checkout call if required. Refresh an expired quote before retrying when indicated.",
+      "reason": "Distinguish the May Web ACH upfront mandate data, IP address, and user-agent requirement from the mobile missing-mandate later-call flow; keep the condition specific to ACH.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "crypto-onramp-web-method-scope",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "**Key SDK methods**: `registerLinkUser()`, `authenticate()`, `submitKycInfo()`, `verifyDocuments()`, `registerWalletAddress()`, `collectPaymentMethod()`, `performCheckout()`",
+      "new_text": "**May Web SDK method examples**: `registerLinkUser()`, `authenticate()`, `submitKycInfo()`, `verifyDocuments()`, `registerWalletAddress()`, `collectPaymentMethod()`, `performCheckout()`. React Native, Android, and iOS use their own platform methods; see the platform locators in [[source-stripe-crypto-onramp-embedded-components-integration]].",
+      "reason": "Scope Web method names so the concept does not present them as a cross-platform SDK surface.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "crypto-onramp-network-type-scope",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "**Supported networks (13)**: bitcoin, ethereum, solana, polygon, stellar, avalanche, base, aptos, optimism, worldchain, xrpl, sui, tempo",
+      "new_text": "**May Web `CryptoNetwork` type (13 enum values)**: bitcoin, ethereum, solana, polygon, stellar, avalanche, base, aptos, optimism, worldchain, xrpl, sui, tempo. This list alone does not establish current account, region, mode, or currency-network eligibility; the May iOS livemode table is separate.",
+      "reason": "Narrow the 13-value statement to its documented Web type scope rather than asserting broad support.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "crypto-onramp-source-route-ios",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "- [[source-stripe-crypto-onramp-embedded-components-integration]] \u2014 Integration guide (Web/RN/Android): geo restriction, 13 networks, last_error codes, SDK reference, LinkAuthIntent APIs",
+      "new_text": "- [[source-stripe-crypto-onramp-embedded-components-integration]] \u2014 May 2026 full Embedded Components guide for Web, React Native, Android, and iOS, with platform-specific KYC, checkout errors, and LinkAuthIntent APIs; November 7 base URL is a variant index.",
+      "reason": "Include the already captured May iOS body and identify the November navigation change.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 capture at https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide is a 16-line variant index, with platform links at new raw lines 13\u201316, while the May full guide covers Web, React Native, Android, and iOS at old raw lines 8\u20133189. The updated [[source-stripe-crypto-onramp-embedded-components-integration]] keeps the May guide as factual provenance and routes the new index as navigation. The index alone does not demonstrate deprecation or current platform behavior.",
+    "Q2": "The updated [[source-stripe-crypto-onramp-embedded-components-integration]] separates the May Web ACH checkout requirement at old raw line 430\u2014mandate data plus collected IP address and user agent\u2014from the React Native, Android, and iOS later-call path if mandate data is reported missing at old raw lines 1423, 2093, and 2878. The November index at new raw lines 11\u201316 contains no current checkout instructions. At https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide, the four current platform bodies remain uncaptured, so these are dated May instructions."
+  },
+  "status": "candidate_ready"
+}

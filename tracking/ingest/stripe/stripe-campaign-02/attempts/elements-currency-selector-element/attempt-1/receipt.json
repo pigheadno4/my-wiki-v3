@@ -1,0 +1,99 @@
+{
+  "job_id": "elements-currency-selector-element",
+  "attempt": 1,
+  "raw_path": "raw/stripe-elements-currency-selector-element-2026-11-07.md",
+  "raw_sha256": "9923344ecd262a37af18ceb3a91d5480ec0a66d515d114e534df8d14dfc03e04",
+  "prior_raw_path": "raw/stripe-currency-selector-element-2025.md",
+  "prior_raw_sha256": "5d64128d5b11a49200c9b454e9795ef8058a1c99d1e8969ffceeac83376fe64d",
+  "source_target": "wiki/sources/source-stripe-currency-selector-element.md",
+  "source_before_sha256": "46f67f565b99cfa43c9d643d8cf8222d2075aa86c08dcf5338ce738d3ac578ef",
+  "read_ranges": {
+    "raw/stripe-elements-currency-selector-element-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "raw/stripe-currency-selector-element-2025.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "wiki/sources/source-stripe-currency-selector-element.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a7eafe69103c45f36ce9c3ec/content.diff": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You can only configure [Adaptive Pricing](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md) and the Currency Selector Element when using Elements with the [Checkout Sessions API](https://docs.stripe.com/payments/quickstart.md).",
+      "location": "new raw line 13"
+    },
+    {
+      "text": "To display currency options, you must complete the following steps:",
+      "location": "new raw line 17"
+    },
+    {
+      "text": "Set [adaptivePricing.allowed](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md?payment-ui=embedded-components#mark-integration-ready) to `true` in the Checkout Session.",
+      "location": "new raw line 20"
+    },
+    {
+      "text": "Use an integration or price currency that\u2019s [eligible for settlement](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md?payment-ui=embedded-components#restrictions) by the merchant of record.",
+      "location": "new raw line 21"
+    },
+    {
+      "text": "You must render the Currency Selector Element in your use of Adaptive Pricing with Elements.",
+      "location": "new raw line 25"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "[Adaptive Pricing](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md) and the Currency Selector Element are only available when using Elements with the [Checkout Sessions API](https://docs.stripe.com/payments/quickstart-checkout-sessions.md).",
+      "location": "old raw line 10"
+    },
+    {
+      "text": "You must render the Currency Selector Element in your use of Adaptive Pricing with Elements.",
+      "location": "old raw line 14"
+    },
+    {
+      "text": "Add the Currency Selector near where payment details are entered, ideally directly above the Payment Element, since the selected currency might affect available payment methods.",
+      "location": "old raw line 48"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw lines 17-21 add explicit display prerequisites absent from old raw: enable Adaptive Pricing, set `adaptivePricing.allowed` true in the Checkout Session, and use an integration or price currency eligible for settlement by the merchant of record. Current source covers Checkout Sessions restriction and initialization but omits these prerequisites; add them with the Session scope and merchant-of-record qualification.",
+    "New raw line 13 restates the old Checkout Sessions API restriction at old raw line 10. Do not construe this as newly available under Payment Intents or as an account-wide setting for `adaptivePricing.allowed`.",
+    "New raw line 25 preserves two distinct statements: merchants are responsible for compliance with applicable price-localization laws, and Stripe requires rendering the selector when using Adaptive Pricing with Elements. Current source line 13 calls the rendering obligation a legal requirement; qualify this as Stripe's documented integration requirement, with legal compliance separately described.",
+    "The placement recommendations and `initCheckoutElementsSdk`/`createCurrencySelectorElement` example remain substantively the same; image URL, quote style, quickstart URL, and 'ensure' to 'make sure' changes are presentational or link changes."
+  ],
+  "substantive_changes": [
+    "New before-you-begin section enumerates three currency-option display conditions at lines 17-21, including Checkout Session `adaptivePricing.allowed` and merchant-of-record settlement eligibility."
+  ],
+  "historical_claims_to_preserve": [
+    "Currency Selector Element and Adaptive Pricing on this page are restricted to Elements with the Checkout Sessions API (old line 10; new line 13).",
+    "Stripe says the selector must be rendered for Adaptive Pricing with Elements, and separately says merchants are responsible for applicable price-localization law compliance (old line 14; new line 25).",
+    "Place the selector near payment details or price total, with Express Checkout placement above that element (old lines 48-51; new lines 59-62)."
+  ],
+  "conflicts": [
+    "Current source line 13 describes selector rendering as legally required, while old raw line 14 and new raw line 25 distinguish legal compliance responsibility from Stripe's 'must render' integration instruction.",
+    "Current source omits new raw lines 17-21 currency-option display prerequisites."
+  ],
+  "unresolved_questions": [],
+  "affected_concepts": [
+    "wiki/concepts/stripe-currency-selector-element.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/elements/currency-selector-element, the new capture adds explicit prerequisites at raw lines 17-21: enable Adaptive Pricing, set `adaptivePricing.allowed` to true on the Checkout Session, and use an integration or price currency eligible for settlement by the merchant of record. Old raw line 10 already limited the element to Checkout Sessions; new line 13 preserves that limit. [[source-stripe-currency-selector-element]] should record the new Session and settlement conditions.",
+    "Q2": "For https://docs.stripe.com/elements/currency-selector-element, old raw line 14 and new raw line 25 both say merchants must render the selector when using Adaptive Pricing with Elements and are responsible for applicable price-localization laws. [[source-stripe-currency-selector-element]] line 13 merges these into a 'legally required' rendering claim. The source should state Stripe's integration requirement separately from legal compliance, while retaining the existing placement advice in old raw lines 48-51 and new raw lines 59-62."
+  }
+}

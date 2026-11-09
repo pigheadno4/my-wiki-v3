@@ -1,0 +1,99 @@
+{
+  "job_id": "payments-3d-secure-standalone-3d-secure",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md",
+  "raw_sha256": "4e639d71480432596cf57e501d9db000a08d695c2c3e2a02c853b6932e032bb6",
+  "prior_raw_path": "raw/stripe-standalone-3ds-2025.md",
+  "prior_raw_sha256": "0980a2498904f265a73b686a6aa82e2a6382743d195d69ed475586d79fae51f5",
+  "source_target": "wiki/sources/source-stripe-standalone-3ds.md",
+  "source_before_sha256": "8aeca5b93428a924db9c09a752d50c87e9e9dfa9fb515102046f6d21ad310a58",
+  "read_ranges": {
+    "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "raw/stripe-standalone-3ds-2025.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "wiki/sources/source-stripe-standalone-3ds.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/84aa3e201d54437e1d695628/content.diff": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Use the standalone 3DS API to run EMV 3D Secure authentication independently from payment authorization.",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:9"
+    },
+    {
+      "text": "Access the full 3DS protocol output, including the authentication result, Electronic Commerce Indicator (ECI), Directory Server (DS) Transaction ID, and the cryptogram.",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:15"
+    },
+    {
+      "text": "Use 3DS Requestor Initiated (3RI) authentication for transactions where the cardholder isn\u2019t present",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:17"
+    },
+    {
+      "text": "When authenticated, submit the cryptogram as part of a payment authorization request.",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:33"
+    },
+    {
+      "text": "Stripe supports the 3DS protocol up to and including version 2.3.1.",
+      "location": "raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md:39"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The successful completion of a standalone 3DS authentication results in a 3DS cryptogram, which you might submit as part of a payment authorization request",
+      "location": "raw/stripe-standalone-3ds-2025.md:18"
+    },
+    {
+      "text": "It\u2019s available to businesses on Interchange Plus pricing and in all countries where Stripe supports card payments, with the exception of Malaysia and Thailand.",
+      "location": "raw/stripe-standalone-3ds-2025.md:24"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November same-URL guide expands the former thin overview into feature and workflow detail. It documents frictionless, challenge, and data-share-only request modes and issuer result/ECI/DS Transaction ID/cryptogram output (new raw:13-15); recurring/installment/card-on-file and 3RI with previous-authentication reference (new raw:17); non-payment authentication (new raw:19); and platform use for connected accounts (new raw:21). Add the new capture to the source and give these new topics bounded locators.",
+    "The November sequence creates a 3DS Authentication object, optionally fingerprints if the issuer supports it, submits via DS/ACS, challenges if required with completion webhook, then retrieves the outcome (new raw:25-31). Its success path passes the cryptogram to a separate payment authorization request, either with Stripe import or another PSP (new raw:33). Neither successful 3DS authentication nor a cryptogram proves authorization, capture, settlement, issuer payment approval, or a liability-shift result. The old guide already made authentication and authorization separate (old raw:8,18-22).",
+    "The November page names Visa, Mastercard, American Express, Discover, and Cartes Bancaires; says availability covers Stripe card-payment countries except Malaysia and Thailand; and states Stripe supports the 3DS protocol through version 2.3.1 (new raw:35-39). Geographic product availability does not establish any account's entitlement or successful integration.",
+    "The old guide expressly said available to businesses on Interchange Plus pricing (old raw:24), while the November guide omits pricing eligibility (new raw:35-43). Do not infer removal of the prior condition or universal account eligibility. Current source line 19, Stripe index line 463, and stripe-3d-secure concept lines 131 and 159 say 'IC+ only'; the old raw supports an Interchange Plus availability statement but not the stronger exclusivity word 'only'. Rephrase as a dated May-capture qualification with current pricing eligibility unresolved.",
+    "Current source lines 13-21 and concept lines 125-131 cover the old thin overview. Expand the source for new November details; keep concept edits limited to the important authentication/authorization boundary, dated eligibility qualification, and a source route for details. Do not transfer the separate 3DS result-import availability matrix in concept lines 113-123 to standalone 3DS."
+  ],
+  "substantive_changes": [
+    "Expanded same-URL guide now specifies request modes, 3DS protocol output, 3RI and other scenarios, non-payment authentication, and Connect platform use (new raw:13-21 versus old raw:10-16).",
+    "New five-step authentication workflow, with issuer-conditional optional fingerprinting, conditional challenge, completion webhook, and separate subsequent payment authorization (new raw:25-33).",
+    "New protocol-version ceiling of 2.3.1 (new raw:39). The Interchange Plus pricing sentence present at old raw:24 is omitted; its absence is not an established entitlement change."
+  ],
+  "historical_claims_to_preserve": [
+    "The May capture stated availability to businesses on Interchange Plus pricing and excluded Malaysia and Thailand from the Stripe card-payment-country footprint (old raw:24). Preserve that as dated history; do not claim it was rescinded or that IC+ was the exclusive tier.",
+    "The old capture described an authentication cryptogram that might be submitted for payment authorization through Stripe import or another PSP (old raw:18-22). Keep the authentication/payment distinction."
+  ],
+  "conflicts": [
+    "Source line 19, Stripe index line 463, and stripe-3d-secure concept lines 131 and 159 say 'IC+ only', whereas old raw:24 says available to Interchange Plus businesses without the word 'only' and new raw:35-43 omits pricing entirely. Their unqualified exclusivity/current-eligibility wording exceeds the pinned evidence."
+  ],
+  "unresolved_questions": [
+    "Current pricing-tier and account eligibility for standalone 3DS cannot be resolved from the new capture's omission of the old Interchange Plus sentence; contact/account-specific criteria remain unverified.",
+    "The guide states protocol support through 2.3.1 but does not establish that every issuer, network, account, or transaction supports every request mode or protocol version."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-3d-secure.md"
+  ],
+  "answers": {
+    "Q1": "The November capture at https://docs.stripe.com/payments/3d-secure/standalone-3d-secure materially expands the prior overview: new raw:13-21 describes request modes, protocol signals, 3RI, non-payment use, and Connect, while new raw:25-33 gives the issuer authentication sequence and separate later authorization. The old capture at old raw:8,18-22 already distinguished authentication from payment authorization. [[source-stripe-standalone-3ds]] needs new raw provenance and bounded detail, including the version-2.3.1 statement at new raw:39.",
+    "Q2": "For https://docs.stripe.com/payments/3d-secure/standalone-3d-secure, preserve the May guide's Interchange Plus availability wording as dated evidence at old raw:24, and avoid the current [[source-stripe-standalone-3ds]] line 19 claim of 'IC+ only'. The November guide omits pricing eligibility at new raw:35-43 but retains geographic exclusions and adds protocol support through 2.3.1 at new raw:37-39. A successful authentication yields a cryptogram for a separate authorization request at new raw:31-33; it is not payment completion."
+  }
+}

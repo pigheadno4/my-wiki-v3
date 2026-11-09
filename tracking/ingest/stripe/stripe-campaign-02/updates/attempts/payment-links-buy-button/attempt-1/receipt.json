@@ -1,0 +1,117 @@
+{
+  "job_id": "payment-links-buy-button",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payment-links-buy-button-2026-11-07.md",
+  "raw_sha256": "961afafb6cc4003d182f50da4be16907d4ec5446c9b0d9e646cc8eb643aa82e6",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "source_page": "---\ntitle: \"Stripe Payment Links Overview\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payment-links/buy-button\"\nraw_files:\n  - \"stripe-payment-links-buy-button-2026-11-07.md\"\n  - \"stripe-payment-links-overview-2025.md\"\n  - \"stripe-payment-links-create-2025.md\"\n  - \"stripe-payment-links-share-2025.md\"\n  - \"stripe-payment-links-track-2025.md\"\n  - \"stripe-payment-links-buy-button-2025.md\"\n  - \"stripe-payment-links-customize-2025.md\"\n  - \"stripe-payment-links-shipping-2025.md\"\n  - \"stripe-payment-links-promotions-2025.md\"\ntags: [stripe, payment-links, no-code, invoicing, adaptive-pricing, buy-button]\n---\n\n## Summary\n\nStripe Payment Links product overview \u2014 features, availability, no-code hosted-link capabilities, and a detailed comparison against Stripe Invoicing. This update adds the same-URL 2026-11-07 buy-button capture; the other listed Payment Links URLs retain their 2026-04-20 descriptions pending their separately scoped comparisons.\n\n## Key Takeaways\n\n- **Hosted link** \u2014 Stripe-hosted payment page can be shared without website integration. Embedding a buy button requires pasting a script and `<stripe-buy-button>` web component into the website; reusing an existing customer requires server authentication and CustomerSession creation.\n- **40+ payment methods** managed in Dashboard; dynamic presentment\n- **Adaptive Pricing** \u2014 automatically displays local currency\n- **Browser language** auto-detection (30+ languages)\n- **Reusable** \u2014 share multiple times; optionally limit purchase count\n- **Subscription support** \u2014 create subscription payment links (Smart Retries + reminders apply)\n\n## Invoicing vs Payment Links\n\n||Payment Links|Invoicing|\n|---|---|---|\n|Customer|Anyone with link|Specific customer|\n|Partial payments|\u2717|\u2713|\n|Edit quantities|\u2713|\u2717|\n|Choose price|\u2713|\u2717|\n|Upsells|\u2713|\u2717|\n|Quote\u2192Invoice|\u2717|\u2713|\n|Smart Retries|Subscription links only|\u2713 all|\n|Reconciliation|URL parameters|Auto|\n\n## API Creation Details\n\n- **`stripe.paymentLinks.create({ line_items: [{ price, quantity }] })`**\n- Up to **20 line items** for flat rate; **1 line item** for customer-defined prices\n- Use `price_data` to create product + price inline\n- Subscriptions: `subscription_data.trial_period_days` supported\n- Customer-defined price: `custom_unit_amount: { enabled: true }` on Price object\n- Override dynamic payment methods: `payment_method_types: ['card', 'klarna']`\n- Async methods (bank debits, vouchers): 2\u201314 days to confirm; use webhooks for fulfillment\n- **Adaptive Pricing always enabled** for Payment Links; 150+ countries; ML-based currency selection\n- **Mobile**: Stripe iOS Dashboard app supports creating links (products/subscriptions only)\n- **Customer-chooses max**: 10,000 SGD default; contact Stripe support to increase\n\n## Buy Button (2026-11-07 Capture)\n\nChoose an existing Payment Link or create a new one, select **Buy button**, customize its simple-button or card-widget design, then copy embed code into the website. Branding and call to action initially follow the Payment Link; colors, shape, font, language, and call to action can be changed. The embed consists of a `<script>` tag loading `https://js.stripe.com/v3/buy-button.js` and a `<stripe-buy-button>` web component with buy-button ID and publishable key. If that publishable key is revoked, update the embed code. The 2026-11-07 capture uses an HTML example; its prose still says React can mount the component with the script in `index.html`. The 2026-04-20 capture retains a React example, whose omission from the newer example is not a deprecation statement.\n\n| Component attribute | Documented behavior and limit |\n| --- | --- |\n| `client-reference-id` | Reconciliation string attached to the Checkout Session and sent in `checkout.session.completed` on payment completion. Alphanumeric characters, dashes, underscores; at most 200 characters. Invalid values are silently discarded while the payment page continues. Do not infer the identifier was retained merely because checkout opened. |\n| `customer-email` | Prefills `customer_email` and prevents customer editing on the payment page. Invalid email values are silently discarded while the payment page continues. |\n| `customer-session-client-secret` | Client secret from a server-created CustomerSession for an authenticated existing customer; it is not a client-supplied trusted customer identifier. |\n\nFor an existing customer, authenticate on the server and create a CustomerSession for the correct identity: `customer_account` for a customer-configured Account through Accounts v2, or `customer` for Customer v1. Enable the `buy_button` component and send that session's `client_secret` to the client for `customer-session-client-secret`. Supply the secret within 30 minutes; after supply, the CustomerSession expires after another 30 minutes, and the button then cannot create Checkout Sessions. Generate a fresh secret for each render rather than caching one. This timing does not guarantee checkout completion.\n\nThe 2026-11-07 page says Accounts v2 is generally available to Connect users and in public preview for other Stripe users; preview participants specify a preview version. It describes Dashboard **Account previews and features \u2192 Reusable payment methods for Global Payouts** as the preview enrollment path. This snapshot does not establish a specific account's eligibility or current live availability. The older 2026-04-20 capture contains Node CustomerSession examples; the newer capture switches to curl examples, without evidence that Node support ended.\n\nIf a Content Security Policy is deployed, allow `https://js.stripe.com` in both `frame-src` and `script-src`. Rendering requires a website domain; local testing requires an HTTP server on localhost. Without a specified existing customer, a subscription or saved-payment-method Checkout Session creates a Customer, while a one-time payment uses a guest customer. Payment tracking in the Dashboard follows a completed payment; the embedded button alone does not establish one.\n\n## Related Pages\n\n- [[stripe-payment-links]] \u2014 Stripe Payment Links concept page\n- [[paypal-payment-links]] \u2014 PayPal's equivalent product\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payment-links-buy-button-2026-11-07|2026-11-07 buy-button capture]] \u2014 embed, attributes, CustomerSession identity and timing, CSP and domain limits\n- [[raw/stripe-payment-links-overview-2025|2026-04-20 Payment Links overview]] \u2014 features table, hosted sharing, Invoicing comparison\n- [[raw/stripe-payment-links-create-2025|2026-04-20 create guide]] \u2014 pricing models, API creation, Adaptive Pricing, mobile and asynchronous methods\n- [[raw/stripe-payment-links-share-2025|2026-04-20 share guide]] \u2014 share channels, QR code, buy button and link lifecycle\n- [[raw/stripe-payment-links-track-2025|2026-04-20 track guide]] \u2014 UTM and client reference parameters, redirect and webhook\n- [[raw/stripe-payment-links-buy-button-2025|2026-04-20 buy-button capture]] \u2014 React and Node examples, attributes, CustomerSession timing, CSP\n- [[raw/stripe-payment-links-customize-2025|2026-04-20 customize guide]] \u2014 checkout fields, limits, trials, URL parameters and domain\n- [[raw/stripe-payment-links-shipping-2025|2026-04-20 shipping guide]] \u2014 shipping rates and one-time price constraint\n- [[raw/stripe-payment-links-promotions-2025|2026-04-20 promotions guide]] \u2014 promotions, upsells, optional items and cross-sells\n",
+  "quotes": [
+    {
+      "text": "Stripe provides an embed code composed of a `<script>` tag and a `<stripe-buy-button>` web component.",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:25"
+    },
+    {
+      "text": "Invalid values are silently dropped, but your payment page continues to work as expected.",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:53"
+    },
+    {
+      "text": "Authenticate the customer on the server, then create a `CustomerSession` for them and return the [client_secret]",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:69"
+    },
+    {
+      "text": "You must provide the [client_secret]",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:91"
+    },
+    {
+      "text": "To join the Accounts v2 preview, go to [Account previews and features]",
+      "location": "raw/stripe-payment-links-buy-button-2026-11-07.md:63"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you\u2019re using React, include the `script` tag in your `index.html` page to mount the `<stripe-buy-button>` component.",
+      "location": "raw/stripe-payment-links-buy-button-2025.md:26"
+    },
+    {
+      "text": "Invalid values are silently dropped, but your payment page continues to work as expected.",
+      "location": "raw/stripe-payment-links-buy-button-2025.md:59"
+    },
+    {
+      "text": "Don\u2019t cache the client secret. Instead, generate a new one every time you render a buy button.",
+      "location": "raw/stripe-payment-links-buy-button-2025.md:115"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payment-links-buy-button-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 131
+      }
+    ],
+    "raw/stripe-payment-links-buy-button-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 154
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9ca539d1a5412b01822aa9a2/content.diff": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 179
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "payment-links-buy-button-concept-no-code-scope",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "| Integration effort | No code |",
+      "new_text": "| Integration effort | Hosted shareable link: no website code. Embedded buy button: paste a script and web component; existing-customer reuse also requires server authentication and CustomerSession creation. See [[source-stripe-payment-links]]. |",
+      "reason": "The buy-button URL explicitly requires embed code and server work for existing-customer reuse, so the broad no-code row is misleading.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payment-links-buy-button-concept-identity-and-silent-drop",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "  - `client-reference-id` \u2014 reconciliation string, max 200 chars, sent in `checkout.session.completed`\n  - `customer-email` \u2014 prefills email; customer can't edit\n  - `customer-session-client-secret` \u2014 pass existing customer (Accounts v2 or Customer v1)",
+      "new_text": "  - `client-reference-id` \u2014 reconciliation string, max 200 permitted characters; invalid values are silently discarded while checkout remains usable; sent in `checkout.session.completed` on payment completion\n  - `customer-email` \u2014 prefills an uneditable email; invalid values are silently discarded while checkout remains usable\n  - `customer-session-client-secret` \u2014 pass the secret from a server-created CustomerSession after authenticating the existing customer; use `customer_account` for a customer-configured Account or `customer` for Customer v1. See [[source-stripe-payment-links]].",
+      "reason": "Preserves the silent-drop failure mode and authenticated customer identity split that the existing concept omitted.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "A functioning payment page does not prove the supplied reference ID or email was retained."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payment-links/buy-button, the revised [[source-stripe-payment-links]] makes the hosted shareable-link path the no-code case and describes the embedded button as a website script plus web component. The old raw lines 24-28 and new raw lines 25-29 support that distinction. React remains described in both captures, while the new HTML example does not establish React deprecation.",
+    "Q2": "For https://docs.stripe.com/payment-links/buy-button, [[source-stripe-payment-links]] now records silent dropping of malformed client-reference-id or customer-email values, server-authenticated CustomerSession reuse for the correct Accounts v2 or Customer v1 identity, and the two 30-minute timing limits. old raw lines 59-61 and 75-115 and new raw lines 53-55 and 69-93 support these claims. The newer preview enrollment path is a dated documented route, not proof of account eligibility."
+  },
+  "status": "candidate_ready"
+}

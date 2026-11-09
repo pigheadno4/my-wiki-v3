@@ -1,0 +1,223 @@
+{
+  "job_id": "payments-accept-stablecoin-payments",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md",
+  "raw_sha256": "84fa19828cec682f5c1e1ccfa1ff0ea56e7c8faef7084abc86a2425c8201ec84",
+  "source_before_sha256": "02cf4022687bf17b7f7d093ef5944a151d4ddbd87b76093b6914572557b9defc",
+  "source_page": "---\ntitle: \"Stripe: Accept Stablecoin Payments\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/accept-stablecoin-payments\nraw_files:\n  - \"stripe-accept-stablecoin-payments-2025.md\"\ntags: [stripe, stablecoin, crypto, usdc, checkout, elements, payment-intents, direct-api, ios, android, metamask, testnet]\n---\n\n## Summary\n\nThe May 1, 2026 capture is a detailed, bundled guide for enabling Pay with Crypto and integrating through **six variant routes**: Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, Direct API, iOS, and Android. It also describes Payment Links, testnet setup, redirect handling, and payment events. The November 7, 2026 base capture is a **20-line index** pointing to those six variants; its lack of detailed instructions does not establish that an option ended. This job did not capture the November variant contents, so the detailed integration facts below remain **dated May evidence**, not verified current variant behavior or proof of successful execution.\n\n## Access, Eligibility, and Payment Flow (May 2026 Capture)\n\nThe older guide says customers can pay with stablecoins globally while **only US businesses** can accept them, subject to payment-method access. A business first requests **Stablecoins and Crypto** in Dashboard Payment Methods; Stripe reviews the request, shows it as **Pending** during review, and marks it active **after approval**. This dated page does not verify approval or geographic eligibility for any live account.\n\nFor an approved, active method, the guide recommends Stripe's **default dynamic payment methods** with Payment Links, Hosted Checkout, Embedded Checkout Forms, or Elements. Under those named conditions, Stripe says no further integration update is needed and it displays stablecoin payment options to **eligible customers**. That is separate from merchant approval and is not an unconditional promise that every customer sees Crypto. A custom integration can list `crypto` manually.\n\nFor the stablecoin payment flow described there, the customer is redirected to `crypto.stripe.com` to connect a wallet and complete payment; funds settle in the merchant's **Stripe balance in USD**. The payer's stablecoin, a Checkout line-item currency, a PaymentIntent or Direct API payment currency, and USD balance settlement are distinct concepts.\n\n## Route Inventory and Dated Integration Details\n\n| Route | May 2026 bundled guide | November 2026 base index |\n| --- | --- | --- |\n| Checkout | Create a Checkout Session with `payment_method_types` including `crypto`; this path says **all line items use USD** and shows a USD curl example. | Lists Checkout variant. |\n| Elements + Checkout Sessions API | Server creates a Session with `ui_mode: 'elements'` and returns its client secret. The front end initializes Checkout Elements, mounts Payment Element, collects a valid email, and calls `confirm()`; dynamic or manual method listing is shown. | Lists Elements / Checkout Sessions API variant. |\n| Elements + Payment Intents API | Payment Element and server-created PaymentIntent; examples use USD and can select `payment_method_types: ['crypto']`. Accounts v2 `customer_account` and Customers v1 `customer` examples are separate. The client calls `elements.submit()` then `stripe.confirmPayment` with `return_url`; after a server-side intent update, `elements.fetchUpdates()` refreshes the UI. | Lists Elements / Payment Intents API variant. |\n| Direct API | Create a PaymentIntent server-side with a **supported currency**, amount, and `crypto` method; pass its client secret to the client, then use `stripe.confirmPayment` and a return URL or handle a `requires_action` / `redirect_to_url` next action. The old guide says crypto payment currencies map to merchant country, with USD the default local currency. | Lists Direct API variant. |\n| iOS | Server-created PaymentIntent plus iOS SDK flow; the dated example uses `STPPaymentHandler.confirmPayment`, crypto payment method params, and a return URL handled by an app URL scheme or universal link. | Lists Mobile / iOS variant. |\n| Android | Server-created PaymentIntent plus Android SDK flow; the dated example uses `PaymentLauncher.confirm` and crypto payment method creation, redirecting to `crypto.stripe.com/pay`. | Lists Mobile / Android variant. |\n\nThe Checkout requirement that `line_items` use `usd` belongs to **that Checkout path** in the May guide. The USD PaymentIntent values in other route examples are examples, not a universal payment-currency rule. The Direct API section explicitly allows supported currencies mapping to the merchant country, with USD as default. USD **Stripe-balance settlement** is a separate May guide statement. No supported-currency list, current route contract, or current account eligibility can be inferred from the November base index alone.\n\nThe old bundled examples include HTML + JavaScript and React variants, client-secret handling, manual and dynamic method selection, and mobile setup. They include placeholder keys and incomplete or dated sample code; their presence does not prove a current SDK version, successful payment, or PCI compliance for an application.\n\n## Payment Completion and Testing (May 2026 Capture)\n\nFor Payment Intents routes, the guide describes confirming the payment and using the redirect return URL to inspect the PaymentIntent status. For fulfillment actions, it advises listening for `payment_intent.succeeded` through Dashboard, webhook, or partner integration **instead of relying on a client callback**, because the client may close or manipulate its response. A redirect or client callback alone is not proof of a completed charge, blockchain finality, or USD settlement.\n\nThe historical sandbox instructions use test API keys, a wallet, and testnet assets. Stripe recommends MetaMask, Polygon **Amoy** (chain ID `80002`, `POL` gas), a Polygon Amoy USDC token at `0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582`, the Circle USDC faucet, and a POL faucet. Some faucets may require mainnet tokens. The guide also lists Paxos USDP, Devnet SOL, Sepolia ETH, and Amoy POL faucets. These are **test examples**; faucet availability, token contracts, and mainnet support are not independently verified by the November index. The May guide notes that a test refund can arrive as a token contract different from the payment token, and suggests checking the refund transaction hash.\n\n## Provenance Boundary\n\nThe May capture provides detailed route, access, currency, and testnet statements. The November capture supplies **navigation links only** to variant pages that were not fetched in this job. Keep the May raw as the factual source; use the new raw index only to locate routes. The index does not refresh the older guide's merchant access, supported payment currencies, API parameters, SDK examples, or payment outcomes. See [[source-stripe-stablecoin-payments]] for the separate payment-method overview and its own capture date.\n\n## Related Pages\n\n- [[stripe-stablecoin-payments]] — stablecoin concept and product overview\n- [[source-stripe-stablecoin-payments]] — separate stablecoin method overview\n- [[stripe]] — provider overview\n\n## Related Raw API References (Navigation Only)\n\n- [[raw/stripe-payments-accept-stablecoin-payments-2026-11-07|2026-11-07 stablecoin variant index]] — links to Checkout, both Elements API variants, Direct API, iOS, and Android; detailed variant content was not captured\n\n## Raw Sources\n\n- [[raw/stripe-accept-stablecoin-payments-2025|2026-05-01 bundled Stripe stablecoin integration guide]] — dated detailed guide, including six variant routes, examples, and testnet instructions\n",
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/accept-stablecoin-payments.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/accept-stablecoin-payments.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md:17"
+    },
+    {
+      "text": "  - [iOS](https://docs.stripe.com/payments/accept-stablecoin-payments.md?payment-ui=mobile&platform=ios)",
+      "location": "raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md:19"
+    },
+    {
+      "text": "  - [Android](https://docs.stripe.com/payments/accept-stablecoin-payments.md?payment-ui=mobile&platform=android)",
+      "location": "raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md:20"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "After we approve your request, **Stablecoins and Crypto** becomes active in the Dashboard.",
+      "location": "raw/stripe-accept-stablecoin-payments-2025.md:19"
+    },
+    {
+      "text": "If you use Stripe’s default [dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md) with Payment Links, Hosted Checkout, Embedded Checkout Forms, or Elements, then you don’t need to make any further updates. Stripe automatically displays stablecoin payment options to eligible customers.",
+      "location": "raw/stripe-accept-stablecoin-payments-2025.md:23"
+    },
+    {
+      "text": "You can create crypto payments in the currencies that map to your country. The default local currency for crypto is USD, with customers also seeing their purchase amount in this currency.",
+      "location": "raw/stripe-accept-stablecoin-payments-2025.md:1522"
+    },
+    {
+      "text": "Funds settle in your Stripe balance in USD.",
+      "location": "raw/stripe-accept-stablecoin-payments-2025.md:8"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-accept-stablecoin-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 750
+      },
+      {
+        "start": 751,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1050
+      },
+      {
+        "start": 1051,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1350
+      },
+      {
+        "start": 1351,
+        "end": 1500
+      },
+      {
+        "start": 1501,
+        "end": 1650
+      },
+      {
+        "start": 1651,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 1950
+      },
+      {
+        "start": 1951,
+        "end": 2100
+      },
+      {
+        "start": 2101,
+        "end": 2200
+      },
+      {
+        "start": 2201,
+        "end": 2259
+      }
+    ],
+    "wiki/sources/source-stripe-accept-stablecoin-payments.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0081c26bbce4dc045b8c4edb/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 750
+      },
+      {
+        "start": 751,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1050
+      },
+      {
+        "start": 1051,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1350
+      },
+      {
+        "start": 1351,
+        "end": 1500
+      },
+      {
+        "start": 1501,
+        "end": 1650
+      },
+      {
+        "start": 1651,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 1950
+      },
+      {
+        "start": 1951,
+        "end": 2100
+      },
+      {
+        "start": 2101,
+        "end": 2250
+      },
+      {
+        "start": 2251,
+        "end": 2267
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "stablecoin-accept-path-inventory",
+      "target_path": "wiki/concepts/stripe-stablecoin-payments.md",
+      "old_text": "- [[source-stripe-accept-stablecoin-payments]] — integration guide: Dashboard enablement, Checkout/Elements/PaymentIntents APIs, testnet setup (MetaMask + Polygon Amoy)",
+      "new_text": "- [[source-stripe-accept-stablecoin-payments]] — dated May 2026 bundled integration guide: Dashboard request/review/approval, default dynamic methods for eligible customers, Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, Direct API, iOS, Android, and MetaMask + Polygon Amoy test examples. The November 2026 base page indexes those six variants but their current detailed content was not captured; its index alone does not refresh route behavior or account access.",
+      "reason": "Correct incomplete path inventory using both the old detailed capture and new navigation index, without treating the index as updated API documentation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The concept's US-merchant and USD-settlement claims come from a separate primary source and are not refreshed by this navigation index."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/accept-stablecoin-payments, [[source-stripe-accept-stablecoin-payments]] now identifies all six route variants. The November index at raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md:11-20 lists Checkout, two Elements API choices, Direct API, iOS, and Android. The May bundled guide at raw/stripe-accept-stablecoin-payments-2025.md:29-37, :126-128, :669-671, :1344-1348, :1635-1641, and :1939-1945 contains their detailed historical sections. Because the November variant destinations were not captured, the index does not verify current details or show that any route was removed.",
+    "Q2": "At https://docs.stripe.com/payments/accept-stablecoin-payments, [[source-stripe-accept-stablecoin-payments]] scopes automatic display and currency statements to the dated May guide. The May capture at raw/stripe-accept-stablecoin-payments-2025.md:17-23 requires merchant request, review, and approval before default dynamic payment methods can show Crypto to eligible customers; its Checkout section at :33-37 requires USD line items, while Direct API at :1520-1522 permits supported country-mapped payment currencies and :8 describes USD Stripe-balance settlement. The November index at raw/stripe-payments-accept-stablecoin-payments-2026-11-07.md:9-20 supplies navigation, not current eligibility, currency support, or payment success."
+  },
+  "status": "candidate_ready"
+}

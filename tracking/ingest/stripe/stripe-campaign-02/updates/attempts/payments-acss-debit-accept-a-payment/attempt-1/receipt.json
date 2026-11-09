@@ -1,0 +1,159 @@
+{
+  "job_id": "payments-acss-debit-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "91087ce62c9504156d66cc98efb05c3be1271b1d52101887369532e84458318f",
+  "source_before_sha256": "5e8e1a546fb9183f2e6eec12aa1c4be3992aef63e0a28a80077df0cda10f813b",
+  "source_page": "---\ntitle: \"Stripe: Accept a Canadian Pre-Authorized Debit Payment (ACSS)\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/acss-debit/accept-a-payment\"\nraw_files:\n  - \"stripe-acss-accept-payment-2025.md\"\ntags: [stripe, acss, acss-debit, canada, cad, usd, checkout, payment-intents, mandates, microdeposits, verification]\n---\n\n## Summary\n\nThe 2026-05-02 guide covers Canadian pre-authorized debit (PAD/ACSS Debit) through Checkout and a Direct API PaymentIntent flow, including mandate options, bank verification, delayed payment status, testing, and target debit dates. The 2026-11-07 capture at the same base URL is a 14-line index to separate Checkout and Direct API variants; it contains no detailed flow text. This navigation change is not evidence that the older instructions were deprecated or still describe current variant behavior. The details below are attributed to the May guide; current variant contents require separate capture.\n\n## Checkout path in the 2026-05-02 guide\n\nThe Checkout compatibility section lists Canadian customer geography, CAD and USD supported/presentment currencies, and payment and setup modes. It says a Session's one-time line-item Prices must all use the **same** currency, either `cad` or `usd`; the guide marks Checkout subscription mode as not yet supported at this date. Its presentment discussion warns a CAD account may fail a USD debit or vice versa, often after a delay, so CAD is safest unless the customer's account can accept USD debits. The later setup step says all line items use `cad`, in tension with the broader compatibility and presentment text. Treat that step as CAD-oriented setup guidance, not proof that USD is universally unsupported.\n\nThe guide's explicit `payment_method_types: ['acss_debit']` is a manual configuration example. When payment methods are managed in the Dashboard, default dynamic payment methods allow omitting `payment_method_types` from the Checkout Session; **`payment_method_options` remains necessary**. For the PAD mandate, `payment_method_options.acss_debit.mandate_options.payment_schedule` and `transaction_type` are required; `interval_description` is required when schedule is `interval` or `combined`. The schedule values are `interval`, `sporadic`, and `combined`; transaction type is `personal` or `business`. The historical examples show both a Stripe-hosted page and an embedded page. During Checkout, the modal collects bank details, verification and mandate acknowledgement; a microdeposit fallback can defer processing.\n\n## Direct API path in the 2026-05-02 guide\n\nThe server creates or retrieves a customer object and creates a PaymentIntent with amount, currency and PAD mandate options. The examples use `currency: 'cad'`, while the prose says currency is **usually** CAD; the example is not a universal CAD-only requirement. `setup_future_usage: 'off_session'` is optional when reuse is intended. The guide separates customer-configured Accounts v2 from Customers v1 examples: it describes Accounts v2 as generally available for Connect users and public preview for others, with a preview API version for preview participants. That is a dated availability statement, not current eligibility. The PaymentIntent's client secret is passed to the client, not the whole Intent or the server API key.\n\nOn the client, `stripe.confirmAcssDebitPayment(clientSecret, { payment_method: { billing_details: { name, email } } })` opens a modal for bank collection, verification and PAD mandate authorization. Account holder name and customer email are required billing details for this method. The `processing` status means the bank account was instantly verified **or verification was unnecessary**, and the payment has been submitted for processing. `requires_action` means further bank verification is needed. Neither status itself confirms a successful debit.\n\n## Verification, payment outcome, and target date\n\nThe default historical flow offers instant verification or microdeposits, with instant-only and microdeposit-only options. When microdeposits are used, two deposits with `ACCTVERIFY` in the statement descriptor can take one to two business days to appear. The customer can use the Stripe-hosted verification URL in `next_action.verify_with_microdeposits.hosted_verification_url`, or a custom form with `stripe.verifyMicrodepositsForPayment`. Three failed attempts or a ten-day timeout can prevent verification; the Intent then requires new payment-method details. The direct flow's error table distinguishes a mismatched amount with unchanged status from failed send, exceeded attempts or timeout that lead to `requires_payment_method` and `last_payment_error`.\n\nPAD is delayed notification: the May guide says success or failure notice can take up to five business days after initiating the debit, and a payment typically takes five business days to arrive. A `payment_intent.processing` webhook says the payment was submitted, so wait. `payment_intent.succeeded` reports success and is the guide's fulfillment point; `payment_intent.payment_failed` covers declined payments or failed microdeposit verification. Webhooks should confirm the final outcome before fulfillment.\n\nBoth variants describe optional `target_date` as three to 15 days from the current date, incompatible with `verification_method: 'microdeposits'`. It is best effort: a weekend, bank holiday, other non-business day, or fewer than three business days' lead time can move the debit to the next available business day, and the customer's bank may process on another date. The Direct API variant also says a PaymentIntent with a target date can be canceled up to three business days before that date; this is historical guide text, not a tested outcome.\n\n## Sandbox fixtures and related conditions\n\nThe historical guide has six test payment-method tokens, seven test account numbers with institution `000` and transit `11000`, and microdeposit amounts: `32` plus `45` verifies; `10` plus `11` simulates too many attempts; other combinations fail verification. The `pm_acssDebit_success` token is described as succeeding immediately **in the test scenario** and is not a live settlement promise. The sandbox microdeposit-email address pattern is `{any_prefix}+test_email@{any_domain}`. Full scenarios and status distinctions remain in the raw.\n\nThe May Checkout section also describes a refund period up to 180 days and a bank-dispute window up to 90 calendar days without an appeals process. Those are historical guide statements; consult the primary [[source-stripe-acss-debit]] route for the broader PAD context rather than inferring current dispute rules from the November index.\n\n## Detail locators\n\n- [[raw/stripe-acss-accept-payment-2025|2026-05-02 detailed guide]], Checkout lines 8\u2013394: currency and internal CAD wording tension 20\u201358; mandate options 61\u201367; hosted and embedded examples 69\u2013142; sandbox fixtures 148\u2013195; verification and target date 207\u2013386.\n- Same guide, Direct API lines 395\u2013940: Accounts v2/Customers v1 boundaries 416\u2013459; PaymentIntent mandate fields 462\u2013528; client collection 601\u2013670; microdeposit actions and error states 688\u2013752; payment outcome and webhooks 754\u2013768; sandbox fixtures 770\u2013809; instant/microdeposit-only examples and target date 811\u2013936.\n\n## Related Pages\n\n- [[stripe-acss-debit]] \u2014 PAD concept and payment-state context.\n- [[source-stripe-acss-debit]] \u2014 primary PAD source.\n- [[stripe]] \u2014 provider.\n\n## Related raw API references\n\n- [[raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07|2026-11-07 base-URL variant index]] \u2014 Checkout and Direct API links at lines 9\u201314; their bodies were not captured in this unit.\n\n## Raw Sources\n\n- [[raw/stripe-acss-accept-payment-2025|ACSS acceptance guide, captured 2026-05-02]] \u2014 historical Checkout and Direct API detail.\n",
+  "quotes": [
+    {
+      "text": "Build a custom payment form or use Stripe Checkout to accept payments with pre-authorized debit in Canada.",
+      "location": "raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/acss-debit/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/acss-debit/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<!-- Fetched: 2026-05-02 -->",
+      "location": "raw/stripe-acss-accept-payment-2025.md:2"
+    },
+    {
+      "text": "**Supported currencies**: `cad, usd`",
+      "location": "raw/stripe-acss-accept-payment-2025.md:22"
+    },
+    {
+      "text": "Prices for all line items must be in the same currency.",
+      "location": "raw/stripe-acss-accept-payment-2025.md:36"
+    },
+    {
+      "text": "If you manage payment methods in the Dashboard, you don\u2019t need to include `payment_method_types` in the Checkout Session",
+      "location": "raw/stripe-acss-accept-payment-2025.md:57"
+    },
+    {
+      "text": "Make sure all your `line_items` use the `cad` currency.",
+      "location": "raw/stripe-acss-accept-payment-2025.md:58"
+    },
+    {
+      "text": "The bank account has been instantly verified or verification wasn\u2019t necessary.",
+      "location": "raw/stripe-acss-accept-payment-2025.md:669"
+    },
+    {
+      "text": "The customer\u2019s payment succeeded.",
+      "location": "raw/stripe-acss-accept-payment-2025.md:765"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-acss-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 940
+      }
+    ],
+    "wiki/sources/source-stripe-acss-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 76
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa6b66a498cb6778d334149f/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 942
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "acss-checkout-dynamic-methods",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "**Checkout**: `payment_method_types: ['acss_debit']`, mandate options required (`payment_schedule`, `transaction_type`; `interval_description` required for `interval`/`combined`). Optional `verification_method: 'instant'` or `'microdeposits'`. Optional `target_date` (3\u201315 days; incompatible with `microdeposits`).",
+      "new_text": "**Checkout (2026-05-02 guide)**: Explicit `payment_method_types: ['acss_debit']` is used for manual method configuration; Dashboard-managed dynamic methods can omit that field, but `payment_method_options` and mandate options remain required (`payment_schedule`, `transaction_type`; `interval_description` for `interval`/`combined`). Optional `verification_method: 'instant'` or `'microdeposits'`; optional best-effort `target_date` (3\u201315 days, incompatible with `microdeposits`). See [[source-stripe-acss-accept-payment]].",
+      "reason": "Old guide line 57 supplies the Dashboard-managed exception while lines 61\u201367 retain mandatory mandate fields. Date the method guidance and preserve the original target-date conditions.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "The 2026-11-07 index does not establish current Checkout variant behavior."
+      ]
+    },
+    {
+      "update_id": "acss-processing-state",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "Returns `processing` (verified) or `requires_action` (microdeposit pending).",
+      "new_text": "Returns `processing` when the bank account was instantly verified **or verification was unnecessary**; this is submitted/processing, not final payment success. `requires_action` calls for additional verification, such as microdeposits. Fulfill only after the later success outcome; see [[source-stripe-acss-accept-payment]] (2026-05-02 guide).",
+      "reason": "Old guide line 669 includes the verification-unnecessary alternative; lines 754\u2013768 separate processing from succeeded and fulfillment.",
+      "quote_indexes": [],
+      "warnings": [
+        "Historical payment-state description; the new base-URL index provides no current status semantics."
+      ]
+    },
+    {
+      "update_id": "acss-checkout-subscription-dated",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "- Connect, Checkout (not subscription mode), Subscriptions, Invoicing",
+      "new_text": "- Connect, Checkout, Subscriptions, Invoicing. The 2026-05-02 [[source-stripe-acss-accept-payment]] guide described Checkout subscription mode as unsupported at that date; the 2026-11-07 base-URL index does not establish its current status.",
+      "reason": "Old guide lines 26\u201335 describe Checkout subscription mode as unavailable in that capture; avoid presenting it as a timeless product-wide limit.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "A separate subscription guide may discuss additional flows; this patch only dates the old Checkout-acceptance statement."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/acss-debit/accept-a-payment, the 2026-11-07 capture is an index to Checkout and Direct API variants at raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md:9\u201314. The older detailed guide at raw/stripe-acss-accept-payment-2025.md:8\u2013940 supplies the historical integration facts retained in [[source-stripe-acss-accept-payment]]. The index cannot establish deprecation, present Checkout subscription support, account eligibility, or a live debit outcome.",
+    "Q2": "For https://docs.stripe.com/payments/acss-debit/accept-a-payment, [[source-stripe-acss-accept-payment]] preserves CAD or USD same-currency Checkout scope from old raw/stripe-acss-accept-payment-2025.md:22\u201344 while flagging the narrower CAD setup sentence at old line 58. It corrects explicit method types as optional under Dashboard-managed dynamic methods at old line 57, and distinguishes `processing` from `succeeded` using old lines 669 and 754\u2013768. The new raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md:11\u201314 is navigation only, so linked variant details remain unverified."
+  },
+  "status": "candidate_ready"
+}

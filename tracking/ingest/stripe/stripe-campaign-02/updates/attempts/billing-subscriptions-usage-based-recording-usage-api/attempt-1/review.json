@@ -1,0 +1,86 @@
+{
+  "job_id": "billing-subscriptions-usage-based-recording-usage-api",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "All four pinned SHA-256 values match. I independently read the complete new raw, old raw, current source and diff through EOF, plus the complete candidate, receipt, quote locations, prior triage, root-to-provider-to-concept route and relevant concept context. The source candidate and reciprocal route are supported. The meter-event concept patch retains an inaccurate idempotency implication and makes the possible invoice non-allocation outcome definite.",
+  "required_changes": [
+    "In concept patch usage-api-meter-event-qualification, replace '`identifier` for idempotency' with wording that distinguishes the optional event identifier from idempotency keys. New raw line 27 and old raw line 32 advise idempotency keys to prevent duplicate reporting and separately say an identifier can be supplied or auto-generated; they do not say the identifier itself serves as an idempotency key. A reader asking how to avoid duplicate billing could otherwise rely on the wrong mechanism.",
+    "In the same concept patch, preserve the modal invoice outcome from new raw line 33: Stripe might accept an event after finalization and include it in meter summaries without updating the finalized invoice or adding it to the next invoice. The proposed 'may appear in meter summaries but neither that finalized invoice nor the next' makes non-allocation to both invoices categorical. Also keep the threshold cutoff as a necessary condition ('only usage Stripe receives before invoice creation'; new raw line 35), rather than implying all timely received usage is included."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "usage-api-meter-event-qualification",
+      "verdict": "rejected",
+      "reason": "Narrow the identifier/idempotency wording and preserve the might/only invoice qualifications; see required_changes."
+    },
+    {
+      "update_id": "usage-api-reciprocal-route",
+      "verdict": "approved",
+      "reason": "The dated reciprocal source route is accurate and resolves through the existing concept."
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 312
+      }
+    ],
+    "raw/stripe-usage-based-billing-recording-usage-api-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 289
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-recording-usage-api.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/eb79afdb841840b74aed06dc/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 313
+      }
+    ]
+  }
+}

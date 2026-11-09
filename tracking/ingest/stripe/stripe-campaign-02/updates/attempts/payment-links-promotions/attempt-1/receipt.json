@@ -1,0 +1,113 @@
+{
+  "job_id": "payment-links-promotions",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payment-links-promotions-2026-11-07.md",
+  "raw_sha256": "4c56772a74fbcb64c8f1df92b514ffc8e6cd9da0862970946ba6f22106048f5e",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "source_page": "---\ntitle: \"Stripe Payment Links Overview\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payment-links/promotions\"\nraw_files:\n  - \"stripe-payment-links-promotions-2026-11-07.md\"\n  - \"stripe-payment-links-overview-2025.md\"\n  - \"stripe-payment-links-create-2025.md\"\n  - \"stripe-payment-links-share-2025.md\"\n  - \"stripe-payment-links-track-2025.md\"\n  - \"stripe-payment-links-buy-button-2025.md\"\n  - \"stripe-payment-links-customize-2025.md\"\n  - \"stripe-payment-links-shipping-2025.md\"\n  - \"stripe-payment-links-promotions-2025.md\"\ntags: [stripe, payment-links, no-code, invoicing, adaptive-pricing, buy-button]\n---\n\n## Summary\n\nStripe Payment Links product overview \u2014 features, availability, no-code capabilities, and a detailed comparison against Stripe Invoicing.\n\n## Key Takeaways\n\n- **No code** \u2014 Stripe-hosted page; share link or embed buy button; no integration required\n- **40+ payment methods** managed in Dashboard; dynamic presentment\n- **Adaptive Pricing** \u2014 automatically displays local currency\n- **Browser language** auto-detection (30+ languages)\n- **Reusable** \u2014 share multiple times; optionally limit purchase count\n- **Subscription support** \u2014 create subscription payment links (Smart Retries + reminders apply)\n\n## Invoicing vs Payment Links\n\n| | Payment Links | Invoicing |\n| --- | --- | --- |\n| Customer | Anyone with link | Specific customer |\n| Partial payments | \u2717 | \u2713 |\n| Edit quantities | \u2713 | \u2717 |\n| Choose price | \u2713 | \u2717 |\n| Upsells | \u2713 | \u2717 |\n| Quote\u2192Invoice | \u2717 | \u2713 |\n| Smart Retries | Subscription links only | \u2713 all |\n| Reconciliation | URL parameters | Auto |\n\n## API Creation Details\n\n- **`stripe.paymentLinks.create({ line_items: [{ price, quantity }] })`**\n- Up to **20 line items** for flat rate; **1 line item** for customer-defined prices\n- Use `price_data` to create product + price inline\n- Subscriptions: `subscription_data.trial_period_days` supported\n- Customer-defined price: `custom_unit_amount: { enabled: true }` on Price object\n- Override dynamic payment methods: `payment_method_types: ['card', 'klarna']`\n- Async methods (bank debits, vouchers): 2\u201314 days to confirm; use webhooks for fulfillment\n- **Adaptive Pricing always enabled** for Payment Links; 150+ countries; ML-based currency selection\n- **Mobile**: Stripe iOS Dashboard app supports creating links (products/subscriptions only)\n- **Customer-chooses max**: 10,000 SGD default; contact Stripe support to increase\n\n## Promotions, Upsells, and Optional Items (2026-11-07)\n\nThe same-URL November capture retains the April guide's core behavior. Enable customer-entered promotion codes with `allow_promotion_codes: true`, and use the `prefilled_promo_code` URL parameter to prefill a code on a shared link. For one-time Payment Links, guest customers are created by default, so promotion codes limited to first-time orders **won\u2019t work as expected**; the guide does not say every such code categorically fails.\n\nThe guide documents subscription upsell setup on the Dashboard **Price detail** page, where selecting an eligible upsell price immediately applies it to eligible Payment Links using that price. It does not establish that the Dashboard is the exclusive configuration channel. A link can offer up to 10 optional items with initial or adjustable quantities through Dashboard or API. Product-associated cross-sells appear across eligible links containing the product, but do not appear when the link specifies additional optional items directly.\n\nThe November diff changes the promotion-code sample from Node to curl, list numbering, quote style, asset URLs, and See also navigation. No substantive promotion or optional-item behavior change is established by those edits.\n\n## Related Pages\n\n- [[stripe-payment-links]] \u2014 Stripe Payment Links concept page\n- [[paypal-payment-links]] \u2014 PayPal's equivalent product\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payment-links-promotions-2026-11-07|2026-11-07 promotions guide]] \u2014 promotion-code setup and guest-customer caveat, Dashboard Price-detail upsells, optional items and cross-sells\n\n- [[raw/stripe-payment-links-overview-2025|2026-04-20 capture]] \u2014 Payment Links features table, no-code capabilities, Invoicing vs Payment Links comparison\n- [[raw/stripe-payment-links-create-2025|2026-04-20 capture]] \u2014 Create a payment link: 2 pricing models, API (line_items, price_data, subscription_data), custom_unit_amount, payment_method_types, Adaptive Pricing, mobile iOS app, async methods\n- [[raw/stripe-payment-links-share-2025|2026-04-20 capture]] \u2014 Share a payment link: share channels, QR code (never expires), buy button embed, deactivate/reactivate (active: false); can't delete\n- [[raw/stripe-payment-links-track-2025|2026-04-20 capture]] \u2014 Track a payment link: 5 UTM params (150 char max), client_reference_id (200 char max, no secrets), after_completion redirect, checkout.session.completed webhook\n- [[raw/stripe-payment-links-buy-button-2025|2026-04-20 capture]] \u2014 Buy button: stripe-buy-button web component, 2 layouts, 3 attributes (client-reference-id/customer-email/customer-session-client-secret), CustomerSession (30min expiry, never cache), CSP requirements\n- [[raw/stripe-payment-links-customize-2025|2026-04-20 capture]] \u2014 Customize checkout: payment limits (restrictions.completed_sessions.limit), custom deactivation message, address/phone/name/tax ID collection, Stripe Tax, ToS consent, custom fields (3 types), URL params, free trials without PM, adjustable quantities, custom domain\n- [[raw/stripe-payment-links-shipping-2025|2026-04-20 capture]] \u2014 Shipping rates: shippingRates.create (fixed_amount + delivery_estimate), shipping_options on payment link; one-time prices only (not subscriptions)\n- [[raw/stripe-payment-links-promotions-2025|2026-04-20 capture]] \u2014 Promotions, upsells, optional items: allow_promotion_codes, guest customer caveat, subscription upsells (Dashboard Price detail setup documented), optional_items (up to 10), cross-sells (product-level, overridden by optional_items)\n",
+  "quotes": [
+    {
+      "text": "Pass `allow_promotion_codes: true` when you create a payment link:",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:21"
+    },
+    {
+      "text": "promotion codes that are only eligible for first-time orders won\u2019t work as expected.",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:33"
+    },
+    {
+      "text": "You can configure a subscription upsell in the Dashboard on the **Price detail** page.",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:39"
+    },
+    {
+      "text": "You can offer up to 10 optional items on your payment link.",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:50"
+    },
+    {
+      "text": "Cross-sells won\u2019t appear if you specify additional optional items on a payment link.",
+      "location": "raw/stripe-payment-links-promotions-2026-11-07.md:91"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "promotion codes that are only eligible for first-time orders won\u2019t work as expected.",
+      "location": "raw/stripe-payment-links-promotions-2025.md:40"
+    },
+    {
+      "text": "You can configure a subscription upsell in the Dashboard on the **Price detail** page.",
+      "location": "raw/stripe-payment-links-promotions-2025.md:46"
+    },
+    {
+      "text": "You can offer up to 10 optional items on your payment link.",
+      "location": "raw/stripe-payment-links-promotions-2025.md:57"
+    },
+    {
+      "text": "Cross-sells won\u2019t appear if you specify additional optional items on a payment link.",
+      "location": "raw/stripe-payment-links-promotions-2025.md:99"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payment-links-promotions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 102
+      }
+    ],
+    "raw/stripe-payment-links-promotions-2025.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 107
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b5c49c8dd55606d7b532fbb9/content.diff": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "payment_links_promotions_guest_caveat",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "- **Promotion codes**: `allow_promotion_codes: true`; create coupon \u2192 promo code in Dashboard; use `prefilled_promo_code` URL param to prefill; **caveat**: one-time payments use guest customers \u2014 \"first-time order\" codes won't work",
+      "new_text": "- **Promotion codes**: `allow_promotion_codes: true`; create coupon \u2192 promo code in Dashboard; use `prefilled_promo_code` URL param to prefill; **caveat**: one-time Payment Links create guest customers by default, so promotion codes restricted to first-time orders won\u2019t work as expected. See [[source-stripe-payment-links]].",
+      "reason": "Both same-URL captures qualify the guest-customer effect as 'won\u2019t work as expected'; the existing categorical 'won't work' overstates it.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payment_links_promotions_upsell_channel",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "- **Subscription upsells**: Dashboard-only (Price detail page); applies to all eligible payment links immediately; e.g. monthly \u2192 yearly upgrade during checkout",
+      "new_text": "- **Subscription upsells**: the guide documents setup on the Dashboard Price detail page; selecting an upsell immediately applies it to eligible Payment Links using that price, such as a monthly-to-yearly option during checkout. The guide does not establish that Dashboard setup is the only channel. See [[source-stripe-payment-links]].",
+      "reason": "Both captures document Dashboard Price-detail setup, but neither supports exclusivity.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payment-links/promotions, [[source-stripe-payment-links]] now states that promotion codes can be allowed on a link and prefilled in its URL (OLD raw lines 16\u201320 and 38; NEW raw lines 17\u201321 and 31). For one-time links, default guest-customer creation means first-time-order-only codes may not work as expected (OLD raw line 40; NEW raw line 33), not that every code fails. Dashboard Price-detail subscription upsells apply to eligible links using that price (OLD raw line 46; NEW raw line 39). Optional items are capped at ten and product cross-sells disappear when link-specific optional items are set (OLD raw lines 57 and 99; NEW raw lines 50 and 91).",
+    "Q2": "At https://docs.stripe.com/payment-links/promotions, [[source-stripe-payment-links]] treats the November capture as retaining the April behavior: `allow_promotion_codes`, the guest-customer qualification, Dashboard Price-detail upsell setup, up to ten optional items, and cross-sell suppression all appear in both versions (OLD raw lines 20, 40, 46, 57 and 99; NEW raw lines 21, 33, 39, 50 and 91). The diff changes Node to curl for one example, numbering, quote style, media URLs, and navigation (diff lines 1\u201382); these do not prove a new configuration channel or a changed payment outcome."
+  },
+  "status": "candidate_ready"
+}

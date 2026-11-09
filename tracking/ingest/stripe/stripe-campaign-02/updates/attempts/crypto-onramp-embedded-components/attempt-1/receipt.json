@@ -1,0 +1,118 @@
+{
+  "job_id": "crypto-onramp-embedded-components",
+  "attempt": 1,
+  "raw_path": "raw/stripe-crypto-onramp-embedded-components-2026-11-07.md",
+  "raw_sha256": "5cd02afe28237c31dd097766516dbb9f96f7a140b0310486047dcef3a3ae1c7a",
+  "source_before_sha256": "f67e76fba914141b1196afde0da415ae615cb541372949df1dfe79e79d8fe4ae",
+  "source_page": "---\ntitle: \"Stripe \u2014 Crypto Onramp: Embedded Components Hub and Historical Headless Quickstart\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/crypto/onramp/embedded-components\"\nraw_files:\n  - \"stripe-crypto-onramp-embedded-components-2026.md\"\ntags: [stripe, crypto, onramp, embedded-components, headless, link-auth, oauth, mobile, react-native, private-preview]\n---\n\n## Overview\n\nThis exact URL was a full Embedded Components headless onramp quickstart in the May 11, 2026 capture. The November 7, 2026 capture is instead a navigation hub for an onramp flow native to an app or website, with a distinct [quickstart](https://docs.stripe.com/crypto/onramp/embedded-components-quickstart.md) URL and separate overview, platform integration, KYC, EU KYC, and error-handling routes. A reader seeking the current quickstart should follow that separate route and verify its current contents. The November hub does not restate the May walkthrough or establish that its API calls were removed, that preview status changed, or that any country or account is eligible.\n\n## May 2026 headless quickstart\n\nThe retained May guide describes a Link OAuth and custom UI flow, with web `@stripe/crypto`, React Native `@stripe/stripe-react-native`, and linked iOS/Android sample apps. Its code is an illustrative Node server and React client, not an executed onramp transaction or a current SDK contract. The separate May [[source-stripe-crypto-onramp-embedded-components-integration|integration guide]] described Embedded Components as private preview, US only excluding New York, and requiring completed onboarding even in sandbox; those are historical qualifications, not November-verified access rules.\n\n### Server flow in the May guide\n\n1. The May guide requires backend Stripe API requests to carry `Stripe-Version: 2026-03-25.dahlia;crypto_onramp_beta=v2`. Its server creates a `LinkAuthIntent` and, after client consent, exchanges it for an OAuth access token. Store that token on the backend and send it in `Stripe-OAuth-Token` on subsequent crypto API calls; do not expose it to the client. Refresh expired access tokens with the Link token endpoint and client credentials.\n2. Retrieve the CryptoCustomer to inspect KYC and verification status; list ConsumerWallets and PaymentTokens to decide whether wallet registration or payment-method collection is needed. These checks and setup steps are gates in the dated guide, not proof that a particular customer passes them.\n3. Create a `CryptoOnrampSession` with `ui_mode: headless`, the authorized `crypto_customer_id`, a `payment_token`, amount, currencies, network, and wallet address. Refresh an executable quote before expiry: the guide warns checkout with an expired quote returns HTTP 400.\n4. The backend calls the checkout API and returns `client_secret` for the client SDK to handle any required step such as 3DS. A created session, returned secret, or UI completion step does not by itself prove authorization, crypto delivery, or settlement.\n\n### Client flow in the May guide\n\nThe narrated client sequence is Link authentication, conditional KYC and identity verification, wallet registration, payment-method collection, then checkout. It calls `authenticate()` with a server-created auth intent and keeps the resulting `crypto_customer_id` on the backend. It rechecks customer status after `submitKycInfo()` or `verifyDocuments()`, registers a wallet with `registerWalletAddress()`, and uses `collectPaymentMethod()` if no stored payment token is available. The example calls `performCheckout(sessionId, fetchClientSecret)` and refreshes an expired quote. The React sample's final \u201cTransaction complete\u201d UI text is sample state, not independently verified payment or delivery.\n\n## Detail locators\n\n- [[raw/stripe-crypto-onramp-embedded-components-2026|May 11, 2026 full quickstart]]: overview and version header lines 6\u201328; server OAuth, setup, session, quote and checkout narration lines 30\u201364; client sequence lines 76\u201396; Node/React examples lines 103\u2013526.\n- The May [[source-stripe-crypto-onramp-embedded-components-integration|integration source]] and its May raw lines 14\u201324 provide the dated private-preview and US-excluding-New-York context. The November hub does not update those claims.\n\n## Related\n\n- [[stripe]]; [[stripe-crypto-onramp]]; [[source-stripe-crypto-onramp-embedded-setup]]\n\n## Related raw API references\n\nThe [[raw/stripe-crypto-onramp-embedded-components-2026-11-07|November 7, 2026 same-URL hub]] is navigation only. The linked pages below were not reviewed as factual evidence in this update:\n\n- [Embedded Components overview](https://docs.stripe.com/crypto/onramp/embedded-components-overview.md)\n- [Embedded Components quickstart](https://docs.stripe.com/crypto/onramp/embedded-components-quickstart.md)\n- [Platform integration guide: Web, React Native, Android, iOS](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md)\n- [KYC integration guide](https://docs.stripe.com/crypto/onramp/kyc-integration-guide.md)\n- [EU KYC integration guide](https://docs.stripe.com/crypto/onramp/eu-kyc-integration-guide.md) \u2014 a content route, not evidence of EU eligibility\n- [Error handling guide](https://docs.stripe.com/crypto/onramp/embedded-components-error-handling-guide.md)\n\n## Raw Sources\n\n- [[raw/stripe-crypto-onramp-embedded-components-2026|May 11, 2026 headless quickstart]]\n",
+  "quotes": [
+    {
+      "text": "Build an onramp flow native to your app or website with components that provide authentication and secure data collection, tailored to your design.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026-11-07.md:9"
+    },
+    {
+      "text": "[Quickstart](https://docs.stripe.com/crypto/onramp/embedded-components-quickstart.md): Run minimal code to see the full onramp flow and learn about the integration.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026-11-07.md:17"
+    },
+    {
+      "text": "[Integration guide](https://docs.stripe.com/crypto/onramp/embedded-components-integration-guide.md): Follow step-by-step instructions to integrate for Web, React Native, Android, and iOS.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026-11-07.md:19"
+    },
+    {
+      "text": "[EU KYC integration guide](https://docs.stripe.com/crypto/onramp/eu-kyc-integration-guide.md): Integrate KYC for customers in EU countries.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026-11-07.md:23"
+    },
+    {
+      "text": "[Error handling](https://docs.stripe.com/crypto/onramp/embedded-components-error-handling-guide.md): Handle errors that occur during onramp sessions.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026-11-07.md:25"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This quickstart runs minimal code for the full flow.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026.md:8"
+    },
+    {
+      "text": "All backend requests to the Stripe API must include the `Stripe-Version` header with the `crypto_onramp_beta=v2` flag:",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026.md:24"
+    },
+    {
+      "text": "Store the access token and use it in the `Stripe-OAuth-Token` header for all subsequent crypto API calls from your backend. Don't expose the access token to the client.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026.md:36"
+    },
+    {
+      "text": "Checkout will return an HTTP 400 response if you checkout with an expired quote.",
+      "location": "raw/stripe-crypto-onramp-embedded-components-2026.md:60"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-crypto-onramp-embedded-components-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "raw/stripe-crypto-onramp-embedded-components-2026.md": [
+      {
+        "start": 1,
+        "end": 526
+      }
+    ],
+    "wiki/sources/source-stripe-crypto-onramp-embedded-components.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a7582fa081ed590da17f1c44/content.diff": [
+      {
+        "start": 1,
+        "end": 537
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "s02-onramp-components-mode-status",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "| **Embedded components** (mobile SDK) | Private preview | Native iOS/Android; full UI + parameter customization via Onramp SDK + API |",
+      "new_text": "| **Embedded components** | Private preview in the May 11, 2026 integration guide; November 7 hub does not state current status | May quickstart covered web/React Native and linked iOS/Android samples; November hub routes to separate quickstart and Web/React Native/Android/iOS integration guides |",
+      "reason": "The current-tense preview table and mobile-only label hide the November same-URL hub and the dated May basis. The linked guide bodies have not been reviewed here.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-onramp-components-eligibility",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "**Private preview** \u2014 distinct from the embedded iframe widget. Full custom UI via SDK methods; requires Link OAuth authentication. **US only, excluding New York** (stricter than embedded onramp which excludes Hawaii).",
+      "new_text": "In the May 11, 2026 [[source-stripe-crypto-onramp-embedded-components-integration|integration guide]], Embedded Components was a **private preview**, distinct from the embedded iframe widget, and required Link OAuth authentication for its custom SDK flow. That guide said **US only, excluding New York**. The November 7 same-URL hub adds an EU KYC guide link but no availability statement; current preview status, region and account eligibility remain unverified here. The EU KYC label is navigation, not evidence that an EU customer can use this product.",
+      "reason": "Date the May private-preview and regional restrictions using the reviewed related May integration source; do not infer eligibility from the November EU KYC navigation label.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-onramp-components-source-route",
+      "target_path": "wiki/concepts/stripe-crypto-onramp.md",
+      "old_text": "- [[source-stripe-crypto-onramp-embedded-components]] \u2014 Embedded Components (headless) quickstart: Link OAuth flow, state machine, SDK methods, headless session, quote refresh",
+      "new_text": "- [[source-stripe-crypto-onramp-embedded-components]] \u2014 May 11, 2026 headless quickstart with Link OAuth, setup and checkout flow; November 7 same-URL hub routes to a distinct quickstart and integration guides",
+      "reason": "Correct the reciprocal route so current-quickstart queries do not select the historical full guide as the current page.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/crypto/onramp/embedded-components, [[source-stripe-crypto-onramp-embedded-components]] now identifies the November 7, 2026 capture as a hub (new lines 5\u201325) pointing to a distinct quickstart at new line 17 and platform guide at new line 19. The May 11 full quickstart remains dated historical implementation evidence (old lines 6\u201396 and examples 103\u2013526), with no inference that omitted APIs were removed. The current linked quickstart was not read for this job.",
+    "Q2": "At https://docs.stripe.com/crypto/onramp/embedded-components, [[source-stripe-crypto-onramp-embedded-components]] retains the May beta header, backend-only OAuth token, setup gates, quote-expiry HTTP 400 and 3DS handoff as dated guidance (old lines 22\u201364 and 76\u201396). The November hub supplies only routes, including EU KYC (new lines 13\u201325), and no current preview, region, account or payment outcome evidence. The concept dates private-preview and US-excluding-New-York claims to the separate May 11 integration source (its raw lines 16\u201317), leaving November eligibility unresolved."
+  },
+  "status": "candidate_ready"
+}

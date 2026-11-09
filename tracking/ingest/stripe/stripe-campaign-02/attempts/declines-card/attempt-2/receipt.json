@@ -1,0 +1,118 @@
+{
+  "job_id": "declines-card",
+  "attempt": 2,
+  "raw_path": "raw/stripe-declines-card-2026-11-07.md",
+  "raw_sha256": "020865d1427738cc3ab922475e1431ef5e197e7367e9186ddb668db79a020480",
+  "prior_raw_path": "raw/stripe-card-declines-2026.md",
+  "prior_raw_sha256": "f326c4d98f10c8a543a612628887b36eeb3dda1b59e622740448b191198a4f8b",
+  "source_target": "wiki/sources/source-stripe-card-declines.md",
+  "source_before_sha256": "2ccf8bec250e195f34504c6bb98181952502e2f2c45cc6a33ce12c8008abc028",
+  "read_ranges": {
+    "raw/stripe-declines-card-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 47
+      },
+      {
+        "start": 48,
+        "end": 93
+      }
+    ],
+    "raw/stripe-card-declines-2026.md": [
+      {
+        "start": 1,
+        "end": 47
+      },
+      {
+        "start": 48,
+        "end": 94
+      }
+    ],
+    "wiki/sources/source-stripe-card-declines.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/78f3e4a88aca6c834a4c6680/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 121
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The card network provides this 2-4 digit code.",
+      "location": "raw/stripe-declines-card-2026-11-07.md:31"
+    },
+    {
+      "text": "The card network provides this 2-4 digit code. The code offers guidance on managing a decline.",
+      "location": "raw/stripe-declines-card-2026-11-07.md:33"
+    },
+    {
+      "text": "Stripe recommends a maximum of eight retries for charges that permit retries.",
+      "location": "raw/stripe-declines-card-2026-11-07.md:60"
+    },
+    {
+      "text": "The card was declined and you shouldn\u2019t use it again for the same transaction.",
+      "location": "raw/stripe-declines-card-2026-11-07.md:66"
+    },
+    {
+      "text": "payment attempts might also require authentication and fail with an `authentication_required` decline code.",
+      "location": "raw/stripe-declines-card-2026-11-07.md:88"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The card\u2019s issuing bank provides this 2-4 digit code.",
+      "location": "raw/stripe-card-declines-2026.md:32"
+    },
+    {
+      "text": "The card\u2019s issuing bank provides this 2-4 digit code. The code offers guidance on managing a decline.",
+      "location": "raw/stripe-card-declines-2026.md:34"
+    },
+    {
+      "text": "We recommend a maximum of eight retries for charges that permit retries.",
+      "location": "raw/stripe-card-declines-2026.md:61"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same card-declines guide keeps the common decline causes, generic-decline opacity, brand-sensitive interpretation, reduction guidance, three advice-code actions, programmatic PaymentIntent/webhook handling, and on/off-session response (old lines 8-89; new lines 9-88). Most other edits are wording, links, emphasis, and the old local image becoming a remote URL.",
+    "New lines 31 and 33 attribute both network_decline_code and network_advice_code to the card network; old lines 32 and 34 said the card's issuing bank provides them. The current source lines 29-30 and concept lines 49-50 still label them bank codes. Update attribution to the November captured wording while preserving that the meaning varies by network/card brand and fields can be null when Stripe receives no network response.",
+    "The eight-retry ceiling remains a Stripe recommendation only for charges that permit retries (old line 61; new line 60); the current source line 40 and concept line 60 omit that condition. The do_not_try_again advice says the card shouldn't be reused for the same transaction (old line 67; new line 66). Describe it as advice for that transaction, not an absolute enforcement rule, and keep it distinct from card-network attempt limits.",
+    "The current source line 37 and concept line 58 describe try_again_later as a 'Temporary decline'. Both old line 68 and new line 67 say only that the issuer declined the transaction and the card can be retried. They do not establish that the underlying cause is temporary. Preserve the permission to retry and ask the customer to try again; remove the unsupported temporary-cause paraphrase as a pre-existing source/concept correction, separate from the old/new code-origin change.",
+    "New raw line 64 has a two-column advice table header but rows 66-68 contain three cells, an apparent capture/rendering defect. The third-cell actions match the old three-column table at old lines 65-69; preserve the advice meanings and next steps, not the malformed header.",
+    "The source line 47 says a cross-country card/IP mismatch is a 'likely legitimate geographic decline', but both raws say it might reflect possible unauthorized use and note travel exceptions (old line 44; new line 43). Narrow this pre-existing paraphrase in a source refresh."
+  ],
+  "substantive_changes": [
+    "Network code origin wording changed from the card's issuing bank to the card network for both decline and advice codes (old lines 32, 34; new lines 31, 33)."
+  ],
+  "historical_claims_to_preserve": [
+    "The old guide's issuer-bank attribution remains dated May 2026 wording, while November states card-network attribution; neither capture proves a particular issuer's actual response or network-code mapping (old lines 32-34; new lines 31-33).",
+    "Network codes may be null if Stripe receives no card-network response and must be interpreted by card brand/network (old lines 32-34; new lines 31-33).",
+    "Keep the retry ceiling qualified as Stripe's maximum recommendation for retryable charges, subject to network limits and issuer fraud sensitivity (old line 61; new line 60).",
+    "Off-session SCA may require authentication and yield authentication_required; do not present a failed attempt or a retry suggestion as payment success (old line 89; new line 88)."
+  ],
+  "conflicts": [
+    "Source lines 29-30 and concept lines 49-50 call network codes bank codes, while new raw lines 31 and 33 attribute them to the card network. This is a source wording conflict requiring correction.",
+    "The new advice table header has two columns at line 64 but each data row has three cells at lines 66-68. This is a rendering inconsistency; use the text and old table structure rather than inferring a removed description field.",
+    "The existing source line 37 and concept line 58 label try_again_later a 'Temporary decline', but old raw line 68 and new raw line 67 only permit retry and do not characterize the cause as temporary. A reader asking whether the reason is guaranteed temporary would receive an unsupported answer."
+  ],
+  "unresolved_questions": [
+    "The capture does not establish a merchant's actual network response, whether a given decline is retryable, or the permitted attempt count for a particular card/network.",
+    "The new remote image URL at line 56 was not downloaded or visually checked; it does not affect the textual decline behavior comparison."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-declines.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/declines/card, [[source-stripe-card-declines]] describes the same main decline and retry flow in both captures, but the November guide changes network-code attribution: old lines 32 and 34 say the card's issuing bank provides the codes, while new lines 31 and 33 say the card network provides them. Null-on-no-response and brand-dependent meaning stay in those lines. The retry maximum remains a recommendation only for charges that permit retries (old line 61; new line 60), not permission to retry every decline.",
+    "Q2": "For https://docs.stripe.com/declines/card, [[source-stripe-card-declines]] warrants source_required_update because its lines 29-30 still call network decline/advice codes bank codes, contrary to new lines 31 and 33. The source's line 40 drops the retryable-charge condition stated in old line 61 and new line 60. Its line 37 also calls try_again_later a 'Temporary decline', whereas old line 68 and new line 67 support retry permission without a guaranteed temporary cause. Treat do_not_try_again as advice not to reuse the card for the same transaction (old line 67; new line 66), distinct from card-network retry limits, and narrow the source's geographic overclaim at line 47 against old line 44 and new line 43."
+  }
+}

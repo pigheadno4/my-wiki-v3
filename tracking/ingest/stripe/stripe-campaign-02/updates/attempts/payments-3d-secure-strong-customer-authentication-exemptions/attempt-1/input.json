@@ -1,0 +1,81 @@
+{
+  "job_id": "payments-3d-secure-strong-customer-authentication-exemptions",
+  "queue_id": 131,
+  "canonical_url": "https://docs.stripe.com/payments/3d-secure/strong-customer-authentication-exemptions",
+  "raw_path": "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md",
+  "raw_sha256": "97c72fc6e29d44d91f3809091dd3dc073a2baaee7543b6cca13ed8b3128901d4",
+  "prior_raw_path": "raw/stripe-sca-exemptions-2025.md",
+  "prior_raw_sha256": "0366a174e23f7f87da1c3f52235925bba83e238db658a3d24a35f200f66ba280",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a8aba5161680c18951b743ca/content.diff",
+  "diff_sha256": "f56f3f127e68da82cb430688fb4871ec5e0dbbc4dd72f430e0c27a571b771ee4",
+  "source_target": "wiki/sources/source-stripe-sca-exemptions.md",
+  "source_before_sha256": "f4fc16b1fe56b0d90f6d8dc4b938c4ed98eea561a0e1195ffbbce4415407d546",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-2/receipt.json",
+  "receipt_sha256": "30cfeba7d3f9f3d278b54cd0a81059fb5bbc0aab921d2ed6f1d75ed6eec8591b",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-2/review.json",
+  "review_sha256": "5721c72f6234a65a0d064de543dda02b2240f2cc8cb60c30e870745bcf1ae55d",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The exact-URL 46-line new capture and 44-line old capture preserve the EEA/Switzerland/UK applicability, Low Value, TRA, MIT, liability shift, and Data Only substance (old:8-44; new:9-44). The matched diff:3-45 mostly reformats the exemption table and replaces 'leverages' with 'uses'; new:46 adds a navigation link to a Data Only guide, including Data Share Only and DCAP. This link does not import that guide's detailed behavior or prove new account eligibility.",
+    "Source wiki/sources/source-stripe-sca-exemptions.md:13 says Stripe 'applies automatically' exemptions. Both captures say Stripe requests applicable exemptions on the merchant's behalf and the customer bank may approve; even low-value transactions can require issuer SCA after cumulative 100 EUR/85 GBP or five payments (old:10-21; new:11-21). Correct the source to request-versus-bank-approval language and avoid a guaranteed exemption or frictionless outcome.",
+    "The source:36 describes Adaptive Acceptance as 'required for full TRA and Data Only access'. Both captures say TRA limit depends on Stripe-wide fraud rates and access to authentication offerings including Adaptive Acceptance, and Mastercard Identity Check Insights is currently offered to Adaptive Acceptance and Authorisation Boost users in EEA/UK (old:33-36,44; new:33-36,44). Do not make Adaptive Acceptance an across-the-board prerequisite or infer every account in those programs is eligible. Source:24's EEA/UK/Swiss amounts are capture-dated, qualifying low-risk transaction limits, not universal or permanently current thresholds.",
+    "Source:29 and concept wiki/concepts/stripe-3d-secure.md:143 call Data Only 'frictionless' without the raw's successful-request and non-SCA-payment qualifications (old:40-42; new:40-42). Both also say or imply the issuer is not contacted, but the raw says the authentication request goes to the card network, which forwards an authorization message containing network risk data to the issuer (old:40; new:40). No issuer authentication request is not the same as no issuer contact. The raw says no liability shift for Data Only (old:42; new:42). Its 3DS 2.2-or-later requirement applies expressly to the standard Data Only flow; Mastercard Identity Check Insights is separately named and this capture does not establish that prerequisite for every Data Only product (old:44; new:44).",
+    "MIT is described as technically outside SCA scope, analogous in practice to an exemption but not itself proof a challenge cannot occur for every future charge; authenticate the card at save time and secure later-charge agreement/mandate (old:29; new:29). Do not transfer bank-approved exemption liability-shift wording to MIT or Data Only without their separate stated conditions."
+  ],
+  "approved_conflicts": [
+    "Source:13 'applies automatically' overstates old:10-12/new:11-13, which say Stripe requests applicable exemptions and the bank decides approval. Revise the summary so an issuer challenge remains possible even under a nominal exemption threshold.",
+    "Source:36 incorrectly labels Adaptive Acceptance required for all full TRA/Data Only access; old/new:33,44 say access depends on Stripe fraud rates and offerings and explicitly list Authorisation Boost as another Mastercard Insights route. Qualify the dated access statement and avoid a universal account entitlement.",
+    "Source:29 and concept wiki/concepts/stripe-3d-secure.md:143 omit 'successful' and 'payments that aren't subject to SCA' from Data Only frictionless claim (old/new:40). Both also use the false shorthand 'issuer not contacted': the issuer receives the authorization message carrying network risk data even though the authentication request goes to the network, not the issuer (old/new:40-42). Their blanket 3DS2.2+ labels exceed the standard Data Only flow qualifier at old/new:44 and should not be transferred to separately named Mastercard Identity Check Insights."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep Low Value under 30 EUR/25 GBP with issuer SCA possible after cumulative 100 EUR/85 GBP or five cardholder-initiated transactions since last SCA (old:18-21; new:19-21).",
+    "Keep TRA provider fraud-rate thresholds 0.13/0.06/0.01 percent and capture-dated qualifying transaction limits: EEA up to 250 EUR, UK/Swiss up to 220 GBP, conditioned on Stripe overall fraud rates and offering access (old:22-28,33-36; new:22-28,33-36).",
+    "Keep separate liability boundaries: bank-approved exemption has no fraudulent-transaction liability shift; MIT is outside SCA with save-time authentication/mandate and no shift; Data Only sends authentication to the network and authorization risk data onward to the issuer, without an issuer authentication request or liability shift (old:12,29,40-44; new:13,29,40-44). The 3DS2.2+ condition is stated for the standard Data Only flow only (old/new:44)."
+  ],
+  "unresolved_questions": [
+    "The linked Data Only/Data Share Only/DCAP page at new:46 was not one of the four pinned files, so its separate product definitions and eligibility are not established here.",
+    "The capture's 'currently' TRA and Mastercard product access statements are dated snapshots; no live Stripe-account eligibility, issuer decision, legal compliance, or payment outcome was verified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-3d-secure.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "30cfeba7d3f9f3d278b54cd0a81059fb5bbc0aab921d2ed6f1d75ed6eec8591b",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-2/review.json",
+  "approved_triage_review_sha256": "5721c72f6234a65a0d064de543dda02b2240f2cc8cb60c30e870745bcf1ae55d",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw6",
+  "reviewer_agent": "/root/s2ur2",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md",
+      "sha256": "97c72fc6e29d44d91f3809091dd3dc073a2baaee7543b6cca13ed8b3128901d4",
+      "lines": 46
+    },
+    {
+      "path": "raw/stripe-sca-exemptions-2025.md",
+      "sha256": "0366a174e23f7f87da1c3f52235925bba83e238db658a3d24a35f200f66ba280",
+      "lines": 44
+    },
+    {
+      "path": "wiki/sources/source-stripe-sca-exemptions.md",
+      "sha256": "f4fc16b1fe56b0d90f6d8dc4b938c4ed98eea561a0e1195ffbbce4415407d546",
+      "lines": 41
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a8aba5161680c18951b743ca/content.diff",
+      "sha256": "f56f3f127e68da82cb430688fb4871ec5e0dbbc4dd72f430e0c27a571b771ee4",
+      "lines": 45
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/payments-3d-secure-strong-customer-authentication-exemptions-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/payments-3d-secure-strong-customer-authentication-exemptions-review.json"
+}

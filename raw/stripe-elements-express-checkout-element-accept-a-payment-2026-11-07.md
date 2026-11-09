@@ -1,0 +1,14 @@
+<!-- Source URL: https://docs.stripe.com/elements/express-checkout-element/accept-a-payment -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Accept a payment with the Express Checkout Element
+
+Use a single integration to accept payments through one-click payment buttons.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Checkout Sessions API](https://docs.stripe.com/elements/express-checkout-element/accept-a-payment.md?payment-ui=embedded-components)
+- [Payment Intents API](https://docs.stripe.com/elements/express-checkout-element/accept-a-payment.md?payment-ui=elements)

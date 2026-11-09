@@ -1,0 +1,168 @@
+{
+  "job_id": "mobile-digital-goods-payment-links",
+  "attempt": 2,
+  "raw_path": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md",
+  "raw_sha256": "cc13bd9e7fa4a1ccb213069e080b4f1b2793355fcd8469158122efef6f31e763",
+  "source_before_sha256": "8efc296421bbbde157560df884512a0cf646b248d2564ed720c85989a0171c89",
+  "source_page": "---\ntitle: \"Accept iOS Digital Goods Payments with Payment Links\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/mobile/digital-goods/payment-links\"\nraw_files:\n  - \"stripe-mobile-digital-goods-payment-links-2026-11-07.md\"\n  - \"stripe-inapp-digital-goods-payment-links-2025.md\"\ntags: [stripe, mobile, ios, digital-goods, payment-links, universal-links, apple-pay, webhooks, client-reference-id]\n---\n\n## Summary\n\nThe April and November 2026 captures describe an iOS digital-goods and subscription path that opens a **Stripe-hosted Payment Link page in Safari** and returns to the app through a universal link. A merchant with a limited product/price catalog can create the static link in the Dashboard without a server endpoint for link creation; the guide separately calls for a **production webhook endpoint** to handle fulfillment. Stripe-hosted Checkout and a merchant-owned Elements web checkout are named as alternatives for a dynamic cart or attaching a Customer to the Checkout Session. This guide does not describe a native in-app iOS payment form, user authentication, or a complete entitlement algorithm. The November capture changes Markdown and formatting, not demonstrated product behavior or platform policy. See [[stripe-inapp-payments]] and [[stripe-payment-links]]. [April capture](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L4-L36), [April fulfillment](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L142-L146); [November capture](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L5-L37), [November fulfillment](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L141-L145).\n\n## Dated iOS and Apple Pay scope\n\nBoth captures say an iOS app selling digital products, content, or subscriptions in the **US or EEA can accept Apple Pay** using Payment Links and say the app cannot accept Apple Pay for these goods in other regions. This is a dated Stripe guide statement, not a live wallet-display, merchant-eligibility, or current App Store-policy guarantee. The page routes physical items, goods/services consumed outside the app, and real-time person-to-person services to the native iOS payment guide. It says Payment Links support cards and Apple Pay by default and additional methods can be enabled in Dashboard settings. [April scope](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L8-L20), [April methods](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L113); [November scope](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L9-L21), [November methods](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L112).\n\n## Link creation and app return\n\nCreate a one-time-product or subscription Payment Link in the Dashboard, select **Don't show confirmation page**, and set a universal link as the success URL. The one-time example optionally lets customers choose what to pay. The app button opens the link's Stripe-hosted page in Safari. To return to the app, configure `/.well-known/apple-app-site-association` served as `application/json`, the Associated Domains entitlement, and a fallback page for redirect URLs. A return URL is navigation, not an independently verified payment or entitlement state. [April universal links](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L38-L90), [April Dashboard/app](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L92-L113), [April app button](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L135-L140); [November universal links](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L39-L89), [November Dashboard/app](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L91-L112), [November app button](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L134-L139).\n\n| Guide path | Link/payment-page creation | Fulfillment |\n| --- | --- | --- |\n| Payment Links | Static Dashboard link; no application endpoint needed to create it | Production webhook endpoint or equivalent trusted receiver for fulfillment |\n| Stripe-hosted Checkout | Separate dynamic-cart path named by this guide | Follow the linked guide |\n| Elements | Separate custom web-checkout path named by this guide | Follow the linked guide |\n\nThe comparison is route guidance from this capture, not a full specification of the other two integrations. [April alternatives](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L14), [April webhook](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L142-L146); [November alternatives](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L15), [November webhook](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L141-L145).\n\n## URL parameters and reconciliation\n\n`prefilled_email` fills an **editable** field, so the final checkout email may differ. `locked_prefilled_email` fills an uneditable field and takes precedence if both are supplied. Valid email values should be URL encoded. `client_reference_id` is an alphanumeric/dash/underscore string of up to 200 characters that the guide says appears on the Checkout Session in `checkout.session.completed` for reconciliation. **Invalid values of all three parameters are disregarded while the payment page continues to work.** These URL-supplied values are context for reconciliation, not user authentication, proof of ownership, or a guarantee that a reference will be present. [April parameter table](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L115-L133); [November parameter table](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L114-L132).\n\n```text\nhttps://buy.stripe.com/test_eVa3do41l4Ye6KkcMN?prefilled_email=jenny%40example.com&client_reference_id=id_123\n```\n\nThis is the guide's test URL shape; it does not authenticate the app user. [April example](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L131-L133); [November example](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L130-L132).\n\n## Webhook fulfillment boundary\n\nThe guide says Stripe sends `checkout.session.completed` after a successful purchase and describes reading `client_reference_id` from the Session payload to reconcile an order or user. It instructs a production webhook endpoint subscribed to appropriate event types. The existing source's shorthand \u201cidentify user/order \u2192 grant entitlement\u201d is only a flow sketch: the capture does not show a completed trusted identity check, payment-state validation, duplicate-event handling, or an actual successful access grant. A success-page redirect or an untrusted URL parameter alone cannot establish an entitlement. [April fulfillment](../../raw/stripe-inapp-digital-goods-payment-links-2025.md#L142-L155); [November fulfillment](../../raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md#L141-L154).\n\n## Related Pages\n\n- [[stripe-inapp-payments]] \u2014 main mobile payment paths concept\n- [[stripe-payment-links]] \u2014 Payment Links concept\n- [[source-stripe-inapp-digital-goods-checkout]] \u2014 separate Stripe-hosted Checkout path\n- [[source-stripe-inapp-digital-goods-custom-checkout]] \u2014 separate merchant-owned Elements web checkout path\n- [[source-stripe-inapp-ios-android-purchases]] \u2014 dated platform overview\n- [[stripe]] \u2014 company page\n\n## Raw Sources\n\n- [[raw/stripe-mobile-digital-goods-payment-links-2026-11-07|November 7, 2026 iOS Payment Links guide]] \u2014 full webpage content (163 lines)\n- [[raw/stripe-inapp-digital-goods-payment-links-2025|April 22, 2026 iOS Payment Links guide]] \u2014 historical webpage content (165 lines)\n",
+  "quotes": [
+    {
+      "text": "For digital products, content, and subscriptions sold in the United States or European Economic Area (EEA), your iOS app can accept Apple Pay using [Payment Links](https://docs.stripe.com/payment-links.md).",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:9"
+    },
+    {
+      "text": "Use Payment Links when you have a limited number of products and prices and don\u2019t want to run a server.",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:15"
+    },
+    {
+      "text": "If both `prefilled_email` and `locked_prefilled_email` are passed, `locked_prefilled_email` takes precedence.",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:125"
+    },
+    {
+      "text": "Invalid values are disregarded and your payment page continues to work as expected.",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:128"
+    },
+    {
+      "text": "For production, set up a webhook endpoint and subscribe to appropriate event types.",
+      "location": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:145"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "For digital products, content, and subscriptions sold in the United States or European Economic Area (EEA), your iOS app can accept Apple Pay using [Payment Links](https://docs.stripe.com/payment-links.md).",
+      "location": "raw/stripe-inapp-digital-goods-payment-links-2025.md:8"
+    },
+    {
+      "text": "Use Payment Links when you have a limited number of products and prices and don\u2019t want to run a server.",
+      "location": "raw/stripe-inapp-digital-goods-payment-links-2025.md:14"
+    },
+    {
+      "text": "Invalid values are disregarded and your payment page continues to work as expected.",
+      "location": "raw/stripe-inapp-digital-goods-payment-links-2025.md:129"
+    },
+    {
+      "text": "For production, set up a webhook endpoint and subscribe to appropriate event types.",
+      "location": "raw/stripe-inapp-digital-goods-payment-links-2025.md:146"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 163
+      }
+    ],
+    "raw/stripe-inapp-digital-goods-payment-links-2025.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 165
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-digital-goods-payment-links.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b0fbd8cfafae0e74cfb443b8/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 181
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-ios-payment-links-path",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- Android US apps can process in-app payments for digital goods; iOS digital goods require app-to-web flow (Stripe Checkout)",
+      "new_text": "- The April and November 2026 iOS digital-goods guides describe app-to-web payment routes, including Stripe-hosted Payment Links and Checkout and a merchant-owned Elements web page; this Payment Links guide is for a limited catalog and does not establish a native in-app iOS payment form or current platform-law eligibility. The separate overview capture describes US Android direct in-app payments. See [[source-stripe-inapp-digital-goods-payment-links]] (https://docs.stripe.com/mobile/digital-goods/payment-links; old raw/stripe-inapp-digital-goods-payment-links-2025.md:8-16; new raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:9-17).",
+      "reason": "Correct the active Checkout-only iOS digital-goods claim, preserving the dated app-to-web and Android scope.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "The shared index and linked overview source retain Checkout-only wording; coordinator owns those out-of-scope corrections."
+      ]
+    },
+    {
+      "update_id": "s02-ios-payment-links-overview-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- [[source-stripe-inapp-ios-android-purchases]] \u2014 Platform rules: iOS digital goods must redirect to Stripe Checkout; Android can go fully in-app; 3 acceptance paths + customer portal",
+      "new_text": "- [[source-stripe-inapp-ios-android-purchases]] \u2014 April 2026 US iOS/Android overview with a hosted Checkout example; its Checkout-only summary is narrower than the separate Payment Links and custom Elements guides",
+      "reason": "Avoid repeating an exclusive hosted-Checkout requirement in the concept route.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Underlying overview source correction is outside this worker's approved source target."
+      ]
+    },
+    {
+      "update_id": "s02-ios-payment-links-source-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- [[source-stripe-inapp-digital-goods-payment-links]] \u2014 iOS digital goods via Payment Links (no server): Apple Pay US+EEA only, prefilled_email/client_reference_id URL params, success URL set in Dashboard",
+      "new_text": "- [[source-stripe-inapp-digital-goods-payment-links]] \u2014 April/November 2026 iOS guide: Dashboard-created hosted link needs no app endpoint for creation; production fulfillment calls for a trusted webhook receiver, universal-link return, and qualified US/EEA Apple Pay and URL-parameter reconciliation",
+      "reason": "Fix the concept route's blanket no-server wording while preserving the direct source route and dated scope.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "URL-supplied reference IDs and email prefill do not authenticate a user or prove entitlement."
+      ]
+    },
+    {
+      "update_id": "s02-payment-links-ios-source-route-server-scope",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "- [[source-stripe-inapp-digital-goods-payment-links]] \u2014 iOS digital goods mobile use case: no-server path, Apple Pay US+EEA only, client_reference_id for reconciliation, Universal Links",
+      "new_text": "- [[source-stripe-inapp-digital-goods-payment-links]] \u2014 April/November 2026 iOS digital-goods guide: a static Dashboard Payment Link needs no application endpoint for link creation, while production fulfillment calls for a trusted webhook endpoint or receiver; US/EEA Apple Pay is a dated can-accept statement, and `client_reference_id` is reconciliation context rather than authenticated identity (https://docs.stripe.com/mobile/digital-goods/payment-links; old raw/stripe-inapp-digital-goods-payment-links-2025.md:8-14,123-129,142-146; new raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:9-15,122-128,141-145).",
+      "reason": "Correct the directly linked Payment Links concept's unqualified no-server route while preserving dated Apple Pay and URL-parameter scope.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "A URL parameter or return redirect does not by itself prove user identity, paid state, or entitlement fulfillment."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/mobile/digital-goods/payment-links, [[source-stripe-inapp-digital-goods-payment-links]] records the same dated iOS Payment Links path in both captures: US/EEA apps can accept Apple Pay for these digital goods (old raw:8-10; new raw:9-11), limited-catalog Dashboard link and universal-link return (old:14,38-44,96-110; new:15,39-45,95-109), URL-parameter reconciliation (old:115-133; new:114-132), and production webhook fulfillment (old:142-146; new:141-145). The diff changes formatting and stray fences rather than demonstrating a new product or policy behavior; account eligibility and runtime wallet display remain unverified.",
+    "Q2": "At https://docs.stripe.com/mobile/digital-goods/payment-links, [[source-stripe-inapp-digital-goods-payment-links]] corrects the older source's blanket no-server label: Dashboard link creation needs no app endpoint, but both captures call for a production webhook endpoint to fulfill purchases (old raw:96-113,142-146; new raw:95-112,141-145). The guide documents a Payment Links app-to-web route and names Checkout and Elements alternatives (old:8-16; new:9-17), so the concept's Checkout-only wording is narrowed. Invalid email/reference parameters are disregarded and an editable prefill may differ from checkout email (old:123-129; new:122-128); `client_reference_id` is reconciliation context, not authenticated user identity or proof of a successful entitlement grant."
+  },
+  "status": "candidate_ready"
+}

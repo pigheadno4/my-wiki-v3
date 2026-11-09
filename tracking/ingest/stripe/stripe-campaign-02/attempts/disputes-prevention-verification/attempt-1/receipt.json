@@ -1,0 +1,103 @@
+{
+  "job_id": "disputes-prevention-verification",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-prevention-verification-2026-11-07.md",
+  "raw_sha256": "172a6ade66a6f61d07a437d5e0ab0c198b585954af88df2a2b8bf3b07f90c1bf",
+  "prior_raw_path": "raw/stripe-disputes-verification-2026.md",
+  "prior_raw_sha256": "20a7aec8147cf0ba1e063b73b2e9164ee67c31b3253de4a3dce66b1fdded9b32",
+  "source_target": "wiki/sources/source-stripe-disputes-verification.md",
+  "source_before_sha256": "ee4fe57455835265d415bdebc713a23d565312c6126928e0bf70a6ba86775910",
+  "read_ranges": {
+    "raw/stripe-disputes-prevention-verification-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "raw/stripe-disputes-verification-2026.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-verification.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e0c864b23b71029fff829502/content.diff": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Stripe provides the CVC, postal code, and billing street address for them to verify (if you collected these from the customer in your checkout flow).",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:9"
+    },
+    {
+      "text": "If no information is collected, the card issuer can\u2019t perform a verification check. Collect the CVC, postal code, and billing address for every payment to avoid this issue.",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:13"
+    },
+    {
+      "text": "This doesn\u2019t affect payments where the CVC check couldn\u2019t be performed or is unavailable. For example, *wallets*",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:19"
+    },
+    {
+      "text": "payments don\u2019t require it.",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:19"
+    },
+    {
+      "text": "Support for AVS checks varies by country and card issuer.",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:29"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This doesn\u2019t affect payments where the CVC check couldn\u2019t be performed or is unavailable.",
+      "location": "raw/stripe-disputes-verification-2026.md:18"
+    },
+    {
+      "text": "payments don\u2019t require it.",
+      "location": "raw/stripe-disputes-verification-2026.md:18"
+    },
+    {
+      "text": "Support for AVS checks varies by country and card issuer.",
+      "location": "raw/stripe-disputes-verification-2026.md:28"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same-URL captures do not change verification behavior. The diff only changes underscore italics to asterisks and adds trailing heading spaces (diff lines 3-33); the CVC, AVS, Radar rule, exception and geography statements match substantively (old lines 8-28; new lines 9-29). There is no newly announced verification capability or changed API contract.",
+    "The existing source (line 20) and disputes concept (line 64) say CVC 'does not apply' to wallets and off-session payments, but both raw captures more narrowly say such payments do not require CVC and that a failed-CVC Radar blocking rule does not affect payments when the check cannot run or is unavailable (old line 18; new line 19). Correct the retained wording so it does not imply that every wallet/off-session payment universally lacks any CVC verification result or bypasses all fraud checks.",
+    "The current source line 32 and concept line 64 say always collect CVC, postal code and billing address, mirroring the raw's general recommendation (old line 12; new line 13). This should be read with the wallet/off-session qualification, and as recommended collection to enable checks where applicable, not a universal requirement that every payment flow must collect CVC.",
+    "CVC failures can indicate fraud but are not a verdict: the new page says review carefully before fulfillment (new line 9). CVC checks do not protect against physical theft or compromised computers/websites (new line 21). AVS can fail for legitimate moves or entry mistakes and varies by issuer/country; most US, Canada and UK cards support street address checks (new lines 25-29).",
+    "The source line 17 changes 'should have access' from the raw into 'only physically present cardholders have access', an absolute that can misstate the security rationale. Correct it to the raw's 'should' wording if refreshing this summary. The source's wording that CVC is effective against computer breaches should retain the raw's unlikely-to-obtain and poor-security limitation (old line 20; new line 21)."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "CVC, postal code and billing street address are passed for issuer verification if collected; missing data prevents that check (old lines 8-12; new lines 9-13).",
+    "A Radar failed-CVC rule can block in configured situations but does not affect unavailable/unperformed CVC checks; wallet and off-session payments do not require CVC in the examples (old line 18; new line 19).",
+    "AVS checks postal code and street address when required and supported; false failures and geography/issuer variation remain important (old lines 24-28; new lines 25-29).",
+    "Do not claim CVC checking protects against physical card theft or poor website/computer security (old line 20; new line 21)."
+  ],
+  "conflicts": [
+    "Existing source line 20 and disputes concept line 64 broaden 'do not require CVC' into 'CVC does not apply' for wallets/off-session; correct that object-and-condition scope.",
+    "Existing source line 32's blanket collection rule needs the same wallet/off-session qualification from new line 19 to avoid prescribing a CVC requirement where the raw explicitly says one is not required.",
+    "Existing source line 17 says only physically present cardholders have CVC access, whereas raw line 17 says they should have access; the stronger retained assertion is not supported."
+  ],
+  "unresolved_questions": [
+    "Neither capture establishes the exact CVC/AVS response shape for every wallet, off-session payment or API version, or any account's active Radar rule configuration.",
+    "An unavailable verification check is not evidence that the payment was safe or fraudulent; the guide does not quantify false-positive/false-negative rates or guarantee a dispute outcome."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/disputes.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/prevention/verification, the November capture changes Markdown styling only; it repeats the May guidance on conditional issuer CVC and AVS checks, Radar failed-check rules, and issuer/geographic limitations (old lines 8-28; new lines 9-29). [[source-stripe-disputes-verification]] nevertheless needs a corrective summary update because its 'does not apply' wording for wallet and off-session CVC overstates the raw's 'do not require' qualification, not because Stripe introduced a new check.",
+    "Q2": "For https://docs.stripe.com/disputes/prevention/verification, [[source-stripe-disputes-verification]] should say a failed-CVC Radar rule does not affect payments where the CVC check is unavailable or unperformed, and wallet/off-session examples do not require CVC (old line 18; new line 19). Keep the general collection advice (old line 12; new line 13) scoped to applicable checks. Preserve AVS false-failure and issuer/country variation (old lines 24-28; new lines 25-29); neither a failed nor missing check alone proves fraud."
+  }
+}

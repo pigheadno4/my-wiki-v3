@@ -1,0 +1,135 @@
+{
+  "job_id": "payments-ach-direct-debit",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full independent review of all four SHA-verified pinned files through EOF, the complete candidate, all five concept patches, current concept context, exact quotes, provenance, and Q1/Q2 found the source's main refund, timing, eligibility, and final-dispute distinctions well grounded. Four material qualifications remain in the proposed source/concept result: same-bank-account dispute sequence, USD presentment versus local-currency settlement, active-mandate reuse after a block is removed, and microdeposit notification only when that verification is needed. These are bounded corrections on unchanged evidence pins.",
+  "required_changes": [
+    "Correct the dispute sequence in the source and concept. Candidate source paragraph under Disputes and proof-of-authorization inquiries and proposed payments-ach-direct-debit-subsequent-dispute patch should say the bank-account block follows disputed subsequent payments from the same bank account, not an unrelated second dispute. Replace the concept's still-active 'First dispute: mandate invalidated' wording with a PaymentMethod-scoped statement that a dispute revokes that disputed method's authorization/mandate and reauthorization is required before reuse. This matches new raw 168 and the accepted ACH accept-a-payment candidate's PaymentMethod/same-bank-account distinction; preserve the separate final-dispute versus predecision-inquiry explanation.",
+    "Extend payments-ach-direct-debit-definition or add a separate exact-anchor concept patch for current concept line 12, which still says 'Currency: USD only'. State USD is the presentment currency, while the 2026-11-07 page lists local-currency settlement for eligible merchant Stripe accounts (new raw 84-98). Leaving 'USD only' unqualified next to the new definition contradicts that scope.",
+    "Add an exact-anchor concept patch for current Blocked Accounts line 53. A block-removal event does not by itself make the payment method reusable: new raw 101-105 requires an active mandate or a newly collected one. The source candidate already preserves this condition; the concept must not continue to say the event alone signals account is usable again.",
+    "Qualify the default microdeposit notification in candidate source paragraph under Mandates and blocked accounts and proposed payments-ach-direct-debit-mandate-email patch. A billing email enables Stripe's default emails, but the microdeposit notification is sent if Stripe needs microdeposit verification (new raw 267-272); the current wording can imply both emails follow every supplied billing email. Preserve Nacha's electronic-or-hard-copy mandate requirement and the distinct custom-notification reminder obligation."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "payments-ach-direct-debit-definition",
+      "verdict": "changes_requested",
+      "reason": "The patch fixes the US-only merchant claim but leaves adjacent concept line 12's unqualified USD-only currency statement, which obscures USD presentment versus eligible local-currency settlement."
+    },
+    {
+      "update_id": "payments-ach-direct-debit-mandate-email",
+      "verdict": "changes_requested",
+      "reason": "The patch correctly makes billing email conditional but should state that microdeposit notification is conditional on microdeposit verification being needed."
+    },
+    {
+      "update_id": "payments-ach-direct-debit-inquiry",
+      "verdict": "approved",
+      "reason": "It separates requested predecision proof-of-authorization inquiries from uncontestable final ACH disputes and retains one evidence submission only on request."
+    },
+    {
+      "update_id": "payments-ach-direct-debit-refunds",
+      "verdict": "approved",
+      "reason": "It replaces the unqualified minimum-time claim and exposes both dated contradictions on partial-refund support and processing-time direction without inferring live account behavior."
+    },
+    {
+      "update_id": "payments-ach-direct-debit-subsequent-dispute",
+      "verdict": "changes_requested",
+      "reason": "The proposed wording improves second dispute but must explicitly scope the subsequent disputed payment to the same bank account and replace the neighboring generic first-dispute mandate sentence with PaymentMethod-scoped authorization language."
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-ach-direct-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 450
+      }
+    ],
+    "raw/stripe-ach-direct-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 525
+      }
+    ],
+    "wiki/sources/source-stripe-ach-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/27dab879c213b9b866e56bb2/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 895
+      }
+    ]
+  }
+}

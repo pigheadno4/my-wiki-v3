@@ -1,41 +1,46 @@
 ---
 title: "Stripe Docs — Strong Customer Authentication (SCA) exemptions"
 type: source
-date_ingested: 2026-05-08
+date_ingested: 2026-11-09
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/3d-secure/strong-customer-authentication-exemptions"
 raw_files:
+  - "stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07.md"
   - "stripe-sca-exemptions-2025.md"
 tags: [stripe, sca, 3d-secure, exemptions, tra, low-value, mit, data-only, eea, uk, liability-shift]
 ---
 
 ## Summary
 
-Reference for SCA exemptions that Stripe applies automatically (EEA, Switzerland, UK). Covers three exemption types, TRA fraud rate thresholds, and the Data Only authentication flow.
+The 2026-05-08 and 2026-11-07 captures describe SCA exemptions and Data Only for EEA, Switzerland, and UK card payments. Stripe **requests applicable exemptions** on the merchant's behalf; the customer bank decides whether to approve. A nominal low-value amount or risk classification does not guarantee a frictionless payment or remove the issuer's ability to require SCA (new raw lines 9–21). The captures give dated thresholds and access descriptions, not a live account-eligibility or legal-compliance determination.
 
-## Key Rule: Exemption → No Liability Shift
+## Bank-approved exemptions and liability
 
-When the bank approves an exemption request, liability for fraudulent transactions does NOT shift to the issuer.
+When the customer's bank approves an exemption request, fraudulent-transaction liability does **not** shift to the issuer (new raw line 13). That statement is about a bank-approved exemption. Merchant-initiated transactions and Data Only have their own scope and liability statements below; neither is evidence that the bank approved a different exemption.
 
-## Three Exemption Types
-
-| Exemption | Thresholds |
+| Route | Captured conditions |
 | --- | --- |
-| **Low Value** | < 30 EUR / 25 GBP. Cumulative cap: 100 EUR or 5 transactions since last SCA |
-| **TRA / Low Risk** | Fraud rate < 0.13% → 100 EUR; < 0.06% → 250 EUR; < 0.01% → 500 EUR. Current Stripe: EEA ≤ 250 EUR, UK/Swiss ≤ 220 GBP |
-| **MIT (off-session)** | Outside SCA scope; no challenge, no liability shift; requires mandate + auth at card save time |
+| **Low Value** | Transaction amount below 30 EUR or 25 GBP. Even then, the issuer might require SCA when cardholder-initiated transactions since the last SCA cumulatively exceed 100 EUR or 85 GBP, or after five such transactions (new raw lines 19–21). |
+| **TRA / Low Risk** | The provider's overall relevant card-fraud rate must stay below 0.13% for up to 100 EUR/85 GBP, below 0.06% for up to 250 EUR/220 GBP, or below 0.01% for up to 500 EUR/440 GBP; local equivalents can apply (new raw lines 22–28). These are qualifying ceilings, not guarantees of an issuer-approved exemption. |
+| **Merchant-initiated transaction (MIT)** | A saved-card, off-session later charge may qualify as MIT and is technically outside SCA scope. Authenticate the card when saved and secure the customer's agreement or mandate for later charges. The guide analogizes its treatment to an exemption, saying the MIT path has no customer challenge or liability shift; this description does not establish that every future charge is correctly classified or cannot require action (new raw line 29). |
 
-## Data Only Flow
+## Dated TRA access limits
 
-- 3DS2.2+ required; frictionless; **no liability shift** (issuer not contacted)
-- Mastercard Identity Check Insights: Adaptive Acceptance / Authorization Boost users only, EEA and UK
-- Stripe AI decides when to use Data Only automatically — no action required from business
+The capture says the TRA ceiling available to a Stripe user depends on Stripe's overall fraud rates and access to authentication offerings **including** Adaptive Acceptance. It reports qualifying low-risk amounts up to 250 EUR for EEA merchants and 220 GBP for UK and Swiss merchants (new raw lines 31–36). “Including” does not make Adaptive Acceptance a universal prerequisite, and the captured “currently” wording does not prove any particular account's access today.
 
-## Related Pages
+## Data Only
 
-- [[stripe-3d-secure]] — 3D Secure concept page (SCA exemptions section)
-- [[stripe-authorization-boost]] — Adaptive Acceptance (required for full TRA and Data Only access)
-- [[stripe]] — Stripe company page
+Data Only is supported by some card schemes and uses 3DS data. The **authentication request goes to the card network**, which includes risk data in an authorization message sent onward to the issuer. Thus the issuer does receive an authorization message, though it does **not** receive an issuer authentication request in this flow. The guide says **successful** Data Only requests can offer a frictionless experience and improve approval rates for payments **not subject to SCA**; this is a qualified product claim, not an observed outcome for an account (new raw lines 38–40). Data Only does **not** shift fraudulent-transaction liability to the issuer (new raw line 42).
+
+The **standard Data Only flow** requires 3DS 2.2 or later. Mastercard Identity Check Insights is separately named; the capture says Stripe offered it to Adaptive Acceptance **and Authorisation Boost** users in the EEA and UK at capture time. It does not state the standard-flow 3DS-version prerequisite for every Mastercard product or establish eligibility for every user of either program (new raw line 44). The November capture adds a link to a separate Data Only guide that mentions Data Share Only and DCAP (new raw line 46); that guide's detailed behavior was not captured in this unit.
+
+## Related pages
+
+- [[stripe-3d-secure]] — 3DS concept and SCA exemption route
+- [[stripe-authorization-boost]] — authentication and authorization optimization context
+- [[stripe]] — provider
 
 ## Raw Sources
 
-- [[stripe-sca-exemptions-2025]] — verbatim webpage content (44 lines; SCA exemption table reformatted by linter)
+- [[raw/stripe-payments-3d-secure-strong-customer-authentication-exemptions-2026-11-07|2026-11-07 SCA exemptions capture]]
+- [[raw/stripe-sca-exemptions-2025|2026-05-08 earlier SCA exemptions capture]]

@@ -1,0 +1,85 @@
+{
+  "job_id": "billing-subscriptions-usage-based-implementation-guide",
+  "queue_id": 57,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/usage-based/implementation-guide",
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md",
+  "raw_sha256": "5078b2fbc21b8e6a63a29f2782692dcc3c0cac1a2fa01bd9ed3d693e807a7248",
+  "prior_raw_path": "raw/stripe-usage-based-billing-payg-2025.md",
+  "prior_raw_sha256": "f8ebbcae0f65c5caa0d4721906facb3001945a5183cda37a2ab70aa0a08e0fa8",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/60862e398b65da1c347611c3/content.diff",
+  "diff_sha256": "a8063bea43a501df00eb8489d33e438a87a98c8b767cbcb24e173ce48ac3a777",
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-payg.md",
+  "source_before_sha256": "a3e3a3ff4ee8ff88b025480d7ca129816cebe4a8b133ca97f40c53e3c638622f",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/billing-subscriptions-usage-based-implementation-guide/attempt-2/receipt.json",
+  "receipt_sha256": "c3cc86b9928a5d814dbfa3d8c3c20d606b8df31ed164cd82fa43bac5e75aa4c0",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/billing-subscriptions-usage-based-implementation-guide/attempt-2/review.json",
+  "review_sha256": "38c65ff301293b47aad411c756f1106d04bc1f4a19e8be1193e38f47ee56cc92",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The same canonical URL now prominently says the basic Billing Meters guide is not recommended for new usage-based integrations and directs them, including existing flat-rate subscription users adding metering, to Metronome; existing Billing Meters integrations need not migrate (new 11-37; old 1-20 had no such direction). The current source summary at 11-13 presents an unqualified end-to-end implementation guide, so a dated scope warning and new raw provenance are required.",
+    "The new capture expands the previous one-sentence Accounts v2 alternative (old 117-121) into an account-availability and preview-version qualification plus separate customer-configured Account and Customer creation and subscription examples (new 140-178, 206-221). The new Accounts v2 subscription example uses customer_account, whereas Customers v1 uses customer; account-specific access is not established by the capture.",
+    "The source summary's 'Meter API (v2)' label is misleading for this guide's demonstrated /v1/billing/meters, /v1/prices, /v1/subscriptions and /v1/billing/meter_events endpoints (new 70-80, 108-124, 206-222, 241-249). New Accounts v2 customer creation is a separate /v2/core/accounts example (new 152-170).",
+    "The source summary at 34-36 adds 'recommended' to flexible billing mode, which neither captured guide says; both state the first-invoice behavior and exceptions (old 151-153; new 189-191). The summary should retain the backdated-usage and pending-item exceptions and avoid implying a first invoice never exists.",
+    "The existing root-index \u2192 Stripe-index route reaches wiki/concepts/stripe-usage-based-billing.md:78. Its `billing_mode=flexible`: 'no first invoice for metered items (recommended)' bullet repeats the same misleading recommendation and absolute first-invoice claim as the source summary. Both old raw line 153 and new raw line 191 say flexible mode excludes metered line items from the first invoice because no prior usage exists, but Stripe creates an invoice if the subscription is backdated with accrued usage or has pending invoice items; neither capture recommends flexible mode. In later authorized concept editing, remove 'recommended' and state the exception-qualified metered-line and invoice behavior. The repository remains untouched in this review-only phase.",
+    "The old captured Node meter event passed value as the string '25' (old 202-214), while the new curl form passes payload[value]=25 (new 241-249). This is a code-rendering difference, not proof that the API now forbids or requires string values. The existing source's 'value is a string' should be attributed to its Node example rather than generalized.",
+    "The main meter, price, subscription, event, invoice-preview and custom-window summary sequence persists (old 20-269; new 49-294). Most large diff sections replace Node SDK snippets with curl and renumber Markdown steps; they do not by themselves prove a feature removal or runtime change. New next-step links to Metronome and comparison are navigation (new 296-302)."
+  ],
+  "approved_conflicts": [
+    "Current source line 13 calls the integration 'Meter API (v2)' despite the captured guide's Billing Meters examples using /v1 endpoints. Distinguish Billing Meters from the separately shown Accounts v2 customer object.",
+    "Current source line 35 labels flexible billing mode 'recommended' and omits the invoice exceptions present in both captures.",
+    "Existing wiki/concepts/stripe-usage-based-billing.md:78 independently repeats 'no first invoice for metered items (recommended)'; old raw line 153 and new raw line 191 neither recommend flexible mode nor state an unconditional absence of a first invoice. Correct this root-index \u2192 Stripe-index concept route together with the source summary after authorization, preserving the backdated-accrued-usage and pending-invoice-item exceptions.",
+    "New guide line 29 says 'Billing Meters only updates at invoice time' within a Metronome comparison, while new lines 280-286 describe meter event summaries for a custom time period that update asynchronously. Avoid extending that marketing shorthand to a claim that Billing Meters cannot provide interim summaries."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the former Node SDK examples as dated May 2026 evidence, while identifying the November capture's curl presentation; absence of Node snippets does not establish SDK removal (old 43-61, 93-114, 168-180, 202-213, 238-268; new 70-80, 112-123, 208-221, 243-248, 274-293).",
+    "Preserve existing Billing Meters customers' no-migration caveat and the exact flexible-versus-classic first-invoice distinctions (new 15, 189-191; old 151-153).",
+    "Preserve asynchronous meter event processing and the resulting possible lag in upcoming invoices and event summaries (old 234, 254; new 270, 286).",
+    "Preserve the Hypernian rate as a fictional example, not a validated invoice outcome (old 10-18; new 39-47)."
+  ],
+  "unresolved_questions": [
+    "The capture does not verify this merchant's Metronome access, Accounts v2 preview participation, or executed invoice/payment outcomes.",
+    "The new API meter-event example still uses CUSTOMER_ID at lines 243-249 even though it separately teaches customer-configured Accounts and Account IDs for event summaries at lines 280-293; the exact meter-event identifier mapping for an Accounts v2 implementation needs separate authority before prescriptive instructions."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/billing-subscriptions-usage-based-implementation-guide/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "c3cc86b9928a5d814dbfa3d8c3c20d606b8df31ed164cd82fa43bac5e75aa4c0",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/billing-subscriptions-usage-based-implementation-guide/attempt-2/review.json",
+  "approved_triage_review_sha256": "38c65ff301293b47aad411c756f1106d04bc1f4a19e8be1193e38f47ee56cc92",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw1",
+  "reviewer_agent": "/root/s2ur1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md",
+      "sha256": "5078b2fbc21b8e6a63a29f2782692dcc3c0cac1a2fa01bd9ed3d693e807a7248",
+      "lines": 302
+    },
+    {
+      "path": "raw/stripe-usage-based-billing-payg-2025.md",
+      "sha256": "f8ebbcae0f65c5caa0d4721906facb3001945a5183cda37a2ab70aa0a08e0fa8",
+      "lines": 275
+    },
+    {
+      "path": "wiki/sources/source-stripe-usage-based-billing-payg.md",
+      "sha256": "a3e3a3ff4ee8ff88b025480d7ca129816cebe4a8b133ca97f40c53e3c638622f",
+      "lines": 54
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/60862e398b65da1c347611c3/content.diff",
+      "sha256": "a8063bea43a501df00eb8489d33e438a87a98c8b767cbcb24e173ce48ac3a777",
+      "lines": 407
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/billing-subscriptions-usage-based-implementation-guide-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/billing-subscriptions-usage-based-implementation-guide-review.json"
+}

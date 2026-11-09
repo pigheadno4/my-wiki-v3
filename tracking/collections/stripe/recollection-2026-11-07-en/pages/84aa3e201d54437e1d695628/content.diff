@@ -1,0 +1,49 @@
+--- raw/stripe-standalone-3ds-2025.md
++++ raw/stripe-payments-3d-secure-standalone-3d-secure-2026-11-07.md
+@@ -2,20 +2,38 @@
+ 
+ Use the standalone 3DS API to run EMV 3D Secure (3DS) authentication and authorize the payment with any payment service provider (PSP).
+ 
+-By decoupling authentication and authorization, standalone 3DS allows you to use multiple payment processors or those that require specialized payment workflows.
++Use the standalone 3DS API to run EMV 3D Secure authentication independently from payment authorization. By decoupling authentication and authorization, standalone 3DS allows you to authenticate on Stripe while processing payments with any payment service provider (PSP).
+ 
+-In addition, enterprise businesses use standalone 3DS to improve payments performance through:
++## Features
+ 
+-- API-level control over 3DS requests and the checkout flow
++- **API-level control over 3DS requests**: Choose how each authentication behaves: request frictionless flows for low-risk transactions, request challenges when stronger verification is needed, or use data share only flows to exchange risk signals without cardholder friction. You can also specify a reason for 3DS, such as liability shift, processing costs, or regulatory compliance, and let Stripe select the optimal flow automatically.
+ 
+-- Observability into 3DS responses from issuers
++- **Observability into issuer responses**: Access the full 3DS protocol output, including the authentication result, Electronic Commerce Indicator (ECI), Directory Server (DS) Transaction ID, and the cryptogram. Use these signals to build your own authorization logic and analyze authentication performance across issuers and networks.
+ 
+-- Customized flows for each transaction based on business goals (fraud prevention, conversion, or cost)
++- **Support for complex payment scenarios**: Authenticate recurring payments, installments, and card-on-file setups with dedicated parameters. Use 3DS Requestor Initiated (3RI) authentication for transactions where the cardholder isn’t present, such as authenticating at booking time for travel or fulfilling split shipments, by referencing a previous authentication to obtain new cryptograms for subsequent authorizations.
+ 
+-The successful completion of a standalone 3DS authentication results in a 3DS cryptogram, which you might submit as part of a payment authorization request using any of the following methods:
++- **Non-payment authentication**: Run 3DS authentication for account verification, card enrollment, or identity confirmation without an associated payment amount.
+ 
+-- [Import 3D Secure results with Stripe](https://docs.stripe.com/payments/payment-intents/three-d-secure-import.md)
++- **Stripe Connect compatibility**: Run standalone 3DS as a platform on behalf of your connected accounts.
+ 
+-- Any payment services provider (PSP) of your choice
++## How it works
+ 
+-Standalone 3DS supports Visa, Mastercard, American Express, Discover, and Cartes Bancaires card payments. It’s available to businesses on Interchange Plus pricing and in all countries where Stripe supports card payments, with the exception of Malaysia and Thailand.+A standalone 3DS authentication follows these steps:
++
++1. **Create** a 3DS Authentication object with the transaction amount, currency, card details, and browser information from the cardholder’s device.
++2. **Fingerprint** (optional). If the issuer supports it, collect device fingerprint data through a client-side iframe or Stripe.js to improve risk assessment.
++3. **Submit** the authentication to the issuer. Stripe communicates with the card network’s DS and the issuer’s Access Control Server (ACS).
++4. **Challenge** (if required). Present the issuer’s challenge to the cardholder through an iframe or Stripe.js. Stripe sends a webhook when the challenge completes.
++5. **Retrieve** the authentication outcome. On success, extract the cryptogram, ECI, and DS Transaction ID.
++
++When authenticated, submit the cryptogram as part of a payment authorization request. You can import 3DS results with Stripe or pass them to any PSP of your choice.
++
++## Supported networks and availability
++
++Standalone 3DS supports Visa, Mastercard, American Express, Discover, and Cartes Bancaires. It’s available in all countries where Stripe supports card payments, except Malaysia and Thailand.
++
++> Stripe supports the 3DS protocol up to and including version 2.3.1.
++
++## Get started
++
++To integrate standalone 3DS, start with the guide below. If you have questions about your integration, contact your Account Executive.

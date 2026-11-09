@@ -1,0 +1,71 @@
+---
+title: "Co-badged Cards Compliance (EU Regulation 2015/751)"
+type: concept
+category: regulation
+tags: [co-badged, cartes-bancaires, girocard, eftpos, eu-regulation, psd2, card-brand-choice]
+---
+
+## Definition
+
+Regulation (EU) 2015/751 requires EEA businesses to let cardholders choose which network processes their co-badged card payment (e.g. a Cartes Bancaires card co-badged with Visa).
+
+## Applicability
+
+**Online**: EEA businesses that can process Cartes Bancaires; EUR transactions only.
+
+**In-person**: France (Cartes Bancaires) and Germany (Girocard).
+
+Adyen's POS application-selection guide captured 2026-09-15 says a cardholder using an EEA-issued co-badged card must be able to choose the brand when the merchant supports both brands, and it names terminal software 1.109 or later for that path. This provider-specific wording is broader than the France/Germany in-person summary above; keep both source-qualified and reconcile the legal scope with authoritative regulation before treating either as a current universal jurisdiction map. [[source-adyen-docs-point-of-sale-aid-selection-rules]]
+
+
+**Countries**: AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IS, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK.
+
+## Three Requirements
+
+1. **Display all network logos** clearly and consistently at checkout
+2. **Honor the cardholder's choice** — use selected network for confirmation and saving credentials
+3. **Allow network updates** — when cardholder updates saved payment method, offer option to change preferred network
+
+## Stripe Integration
+
+In Stripe's 2026-05-01 guide, hosted UIs (Checkout, Payment Links, Elements, Terminal) display a network selector when applicable and configured for the variant. For Connect platforms using `on_behalf_of` with separate charges and transfers or destination charges, the guide places `onBehalfOf` in the relevant UI configuration so Stripe can determine whether to display the selector; merchant-of-record applicability can attach to the platform or connected account. The 2026-11-07 default page is navigation only and does not revalidate those variant instructions.
+
+**Web Elements** (`preferredNetwork` / `defaultValues.card.network`): set default network if customer doesn't choose.
+
+**Mobile SDKs, May 2026 guide** (`preferredNetworks`): iOS 23.22.1+ / Android 20.37.4+ is the selection baseline shown for Payment Sheet, Embedded Payment Element, Customer Sheet and Card Element. For the specified Connect `on_behalf_of` flows, Payment Sheet and Embedded Payment Element put `onBehalfOf` in `IntentConfiguration`; Mobile Card Element puts it on the Card Element variant and requires iOS 23.27.1+ / Android 20.42.0+ for that path.
+
+**Terminal**: WisePad 3, S700/S710 auto-support; Tap to Pay on iPhone requires manual `requested_priority` integration.
+
+## Adyen Web implementation evidence
+
+The retained `@adyen/adyen-web@6.41.0` source includes an accessible dual-brand selector whose options are keyboard-operable buttons with `aria-pressed`. Its Card and Drop-in stories also exercise `splitCardFundingSources`, with separate credit, debit, and prepaid presentation. Credit permits Click to Pay and installments, debit permits Click to Pay without installments, and prepaid permits neither in the retained scenario.
+
+In `@adyen/adyen-web@6.44.0`, the dual-brand selector replaces its bespoke Enter-key selection handler with `onKeyDown={stopPropagationForActionKeys}`, retaining the existing click handler for brand selection. This isolates action keys from the root payment-submission handler and relies on native button activation for selection. This is a source-level keyboard-handling delta, not a change to network eligibility or regulation. See [[source-github-adyen-web]].
+
+This is version-qualified SDK implementation evidence. It does not independently establish regulatory scope, merchant enablement, or the current Adyen integration procedure.
+
+## Adyen Android implementation evidence
+
+The retained `adyen-android@5.20.0` Card Component performs BIN lookup, exposes detected brand information, and uses `DualBrandData.selectedBrand` when constructing the submitted card payment method. Its retained card delegate also suppresses installment options when the selected funding source is debit.
+
+This proves a version-qualified Android selection and submission path, not current regulatory scope or merchant enablement. The backend response, supported brands, configuration, and shopper card still determine whether the dual-brand path is available.
+
+## Test Cards
+
+| Number | Brand |
+| --- | --- |
+| 4000 0025 0000 1001 | Cartes Bancaires / Visa |
+| 5555 5525 0000 1001 | Cartes Bancaires / Mastercard |
+
+Tokens: `tok_visa_cartesBancaires`, `tok_mastercard_cartesBancaires`
+
+## Sources
+
+- [[source-adyen-docs-point-of-sale-aid-selection-rules]] — Adyen POS terminal/standalone application-selection guide captured 2026-09-15; it states an EEA-issued co-badged shopper-choice condition when both brands are supported and a terminal software 1.109 qualification.
+
+
+- [[source-adyen-docs-online-payments-co-badged-cards-compliance]] — Adyen Docs snapshot of region-specific EEA and Australia choice, routing, disclosure, and version-qualified integration requirements
+
+- [[source-stripe-co-badged-cards-compliance]] — May 2026 full Stripe guide for regional choice, variant setup and tests; November 2026 default page is a ten-variant navigation index, not updated behavioral evidence.
+- [[source-github-adyen-web]] — Adyen Web `6.41.0` dual-brand selector and split-funding-source implementation evidence, plus the `6.44.0` keyboard-handling delta
+- [[source-github-adyen-android]] — Adyen Android `5.20.0` dual-brand selection and submitted-brand evidence

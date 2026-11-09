@@ -1,0 +1,84 @@
+{
+  "job_id": "industry-metadata",
+  "queue_id": 115,
+  "canonical_url": "https://docs.stripe.com/industry-metadata",
+  "raw_path": "raw/stripe-industry-metadata-2026-11-07.md",
+  "raw_sha256": "3d75640f0bfc64fd4ab79a6cc610a2fe958e7726b2e6d760dc850c31c2e8bac6",
+  "prior_raw_path": "raw/stripe-industry-metadata-2026.md",
+  "prior_raw_sha256": "3ba245510b209f7cd44c77338e14beeb43b230d3d0d8cccfe72877124a7c9cc7",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa626b6e749f6b0964bfb943/content.diff",
+  "diff_sha256": "8dd002ec65257358d205ff036fd185e8d1db6b61a2bacb256a906442c1c92905",
+  "source_target": "wiki/sources/source-stripe-industry-metadata.md",
+  "source_before_sha256": "dce07e14b37a9879d1d619cc02b46dec078af1847e526018618e65a01bb6d535",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-1/receipt.json",
+  "receipt_sha256": "1b60340a56817c4a137ca7456a8a1262f4d7290a4102a8c804265bf06d528eb0",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-1/review.json",
+  "review_sha256": "514a8a78062eb70e7f5a79c09f3ec953786525fcccb3af00816deae8f13c75b5",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The same URL retains PaymentIntents industry metadata for supported travel and entertainment MCCs, with card network compliance requirements and only a possible Klarna authorization or risk benefit (new raw:13-28; old raw:12-27). The capture now states a 2026-07-29.preview or later preview header, replacing the old 2025-11-17.preview wording (new raw:11; old raw:10). This is a documented preview-version change, not proof an older header fails at runtime.",
+    "Card transactions remain private preview, Klarna public preview; card cruise data is unsupported, and flight-card metadata specifically requires feature enablement (new raw:43-45,205-207; old raw:42-44,205-207). The public-preview header alone must not be read as open card access.",
+    "The new field tables and repeated create, confirm, capture, and multi-vertical examples use total.tax.tax_items[] where the old tables and examples use total.tax.taxes[] for car rental, lodging, and flight (new raw:301-304,345-348,396-399,569-572,610-613,662-664; old raw:303-306,348-351,400-403,575-578,617-619,668-670). Preserve the old spelling as dated evidence, but do not silently present it as the new documented request path.",
+    "The new card car-rental and lodging customer-service phone rules and lodging property-phone rule specify valid E.164 numbers in live mode, including country code for non-US numbers and US country code 1 if prefixed with plus; all zeros remain a sandbox allowance (new raw:270-272,329-331,355-356; old raw:272-274,332-334,358-359). Current source:82's 'numbers only' phrasing conflicts with the new live format.",
+    "The samples switch from explicit payment_method_types[0]=card to automatic_payment_methods[enabled]=true, add return_url to confirm examples, and revise sample car daily rate and lodging total/tax numbers (new raw:534-673,679-814; old raw:540-679,687-817; diff:644-790). These are example changes; they do not establish automatic methods as required for industry metadata or a new monetary rule.",
+    "Unchanged boundaries remain consequential: cards send only each array's first entry to networks, Klarna processes all; payment-method-specific unsupported properties are ignored; payment_details updates replace the full hash; and metadata cannot be modified after capture (new raw:57-73,524-530,816-818; old raw:56-71,528-536,819-821). Sandbox success does not establish network interchange qualification or Klarna authorization outcomes (new raw:1042-1052; old raw:1045-1055)."
+  ],
+  "approved_conflicts": [
+    "Current wiki/sources/source-stripe-industry-metadata.md:13 and wiki/concepts/stripe-industry-metadata.md:10 present `2025-11-17.preview` as the feature's unqualified current header; new raw:11 documents `2026-07-29.preview` or later. Revise the current guidance while retaining the earlier version as historical evidence and card private-preview qualification.",
+    "Current source:82 says phone numbers are 'numbers only' while the new live card fields require valid E.164 with leading plus for non-US numbers and a specified US-plus form (new raw:270-272,329-331,355-356). Revise that note, keeping the all-zero sandbox exception.",
+    "Current source:13 and concept:10 state Klarna authorization/risk improvement as an outcome, while both captures say industry data 'might improve' those outcomes (old raw:14; new raw:15). Qualify the retained benefit as possible, not guaranteed.",
+    "Current source:15 and concept:12 assert mutual exclusivity with payment line items, but this assigned page does not mention line items in either capture. Preserve as a separately sourced claim only if its linked source supports it; do not infer it from this comparison."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain old 2025-11-17.preview, taxes[] path, and older phone wording as dated 2026-05-11 capture, without treating the new wording as proof of actual API rejection or a migration deadline.",
+    "Retain the private-preview card versus public-preview Klarna distinction, eligible MCC and brand scope, flight-card enablement, and unsupported cruise-data limit (old raw:18-44,205-207; new raw:19-45,205-207).",
+    "Retain cards-first-entry versus Klarna-all-entries behavior, full-hash replacement, capture finality, and the sandbox-outcome limitation (old raw:56-71,530-536,819-821,1055; new raw:57-73,524-530,816-818,1052)."
+  ],
+  "unresolved_questions": [
+    "The page does not establish whether existing 2025-11-17.preview integrations fail after the documentation header change, whether taxes[] is rejected or aliased, or current account-specific feature enablement; no live API or provider test was authorized.",
+    "Payment-line-item mutual exclusivity requires its separate source for verification; this same-URL comparison supplies no direct evidence for that retained cross-feature claim."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-industry-metadata.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/industry-metadata/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "2188437426c9b36592f8d01ea4d6e332f5ae1d7bb62198c6e8b80b272c403433",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/industry-metadata/attempt-1/review.json",
+  "approved_triage_review_sha256": "903a58bdb1fa5da10b62e1a013188b46e3ff4fe9ce2f080ed197329983ed8a38",
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw4",
+  "reviewer_agent": "/root/s2ur1",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-industry-metadata-2026-11-07.md",
+      "sha256": "3d75640f0bfc64fd4ab79a6cc610a2fe958e7726b2e6d760dc850c31c2e8bac6",
+      "lines": 1052
+    },
+    {
+      "path": "raw/stripe-industry-metadata-2026.md",
+      "sha256": "3ba245510b209f7cd44c77338e14beeb43b230d3d0d8cccfe72877124a7c9cc7",
+      "lines": 1055
+    },
+    {
+      "path": "wiki/sources/source-stripe-industry-metadata.md",
+      "sha256": "dce07e14b37a9879d1d619cc02b46dec078af1847e526018618e65a01bb6d535",
+      "lines": 95
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa626b6e749f6b0964bfb943/content.diff",
+      "sha256": "8dd002ec65257358d205ff036fd185e8d1db6b61a2bacb256a906442c1c92905",
+      "lines": 882
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/industry-metadata-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/industry-metadata-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-1"
+}

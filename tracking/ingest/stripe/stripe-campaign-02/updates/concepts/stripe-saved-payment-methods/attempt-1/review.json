@@ -1,0 +1,11 @@
+{
+  "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+  "verdict": "changes_requested",
+  "reason": "Full concept review confirmed the zero-patch packet and byte-identical SHA-verified base/candidate, then checked the accepted context-only payment guide and its supporting raw passages. No approved update ID is missing. Two active Checkout statements need narrow qualifications before unchanged approval: one makes redisplay automatic solely from customer identity, and one presents the Accounts v2 identity key without its dated availability/version boundary. Other SetupIntent versus PaymentIntent, consent, future-use, off-session, and historical source sections are preserved.",
+  "required_changes": [
+    "At candidate line 81, replace the unqualified claim that Checkout Sessions Payment Element auto-redisplays when `customer` or `customer_account` is on the Session. The accepted 2026-04-20 guide says `setup_future_usage` and subscription saves can have `allow_redisplay: limited` and will not prefill returning purchases; optional save consent can yield `always`, and Checkout prefills saved cards only (raw lines 1030, 1066, 1078-1080). A returning-checkout query would otherwise wrongly promise display. State the consent/allow_redisplay and card-only conditions, with `unspecified` excluded by default unless appropriately overridden.",
+    "At candidate line 34 or adjacent Checkout prose, qualify `customer_account` as the customer-configured Accounts v2 branch, distinct from Customers v1 `customer`. The accepted guide dates Accounts v2 as generally available for Connect users and public preview for other Stripe users, with a preview API version required for participants (raw lines 1068-1076). The current bare `// or customer/customer_account` comment could lead a non-eligible reader to select the preview branch as universally available."
+  ],
+  "covered_update_ids": [],
+  "candidate_sha256": "f2114a20f18dd2fc728027d83ad65ebc314aaff17ed974ca6a264162ab531d2f"
+}

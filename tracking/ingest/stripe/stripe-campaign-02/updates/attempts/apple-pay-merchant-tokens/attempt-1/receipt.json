@@ -1,0 +1,120 @@
+{
+  "job_id": "apple-pay-merchant-tokens",
+  "attempt": 1,
+  "raw_path": "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md",
+  "raw_sha256": "43a0678b6704b272cf8495fb71aa0378d0b9d8e44f424004f4501cd7fdf11e8e",
+  "source_before_sha256": "218df0544f3b00f9d138a86bdc639de920703e210be3b12b75c81581d8f3116f",
+  "source_page": "---\ntitle: \"Stripe: Apple Pay Merchant Tokens\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/apple-pay/merchant-tokens\"\nraw_files:\n  - \"stripe-apple-pay-merchant-tokens-2026-11-07.md\"\n  - \"stripe-apple-pay-merchant-tokens-2025.md\"\ntags: [stripe, wallets, apple-pay, mpan, merchant-tokens, recurring, deferred, automatic-reload, express-checkout-element, sigma]\n---\n\n## Overview\n\nThe May 7 and November 7, 2026 [[stripe]] guide captures describe requesting Apple Pay merchant tokens (MPANs) for future merchant-initiated recurring, automatic-reload or deferred payments. A device token (DPAN) is bound to a device and might stop working after a device change or card removal; an MPAN is associated with the customer, underlying card and business. The November guide distinguishes this future MIT continuity concern from one-time customer-initiated transactions. See [[stripe-wallets]]. A request does not guarantee an MPAN for a particular payment.\n\n## Request types and dated support\n\n| Request object | Example use |\n| --- | --- |\n| `recurringPaymentRequest` | Subscriptions or recurring membership |\n| `automaticReloadPaymentRequest` | Stored-balance reload when a threshold is reached |\n| `deferredPaymentRequest` | Booking now, charge after a service, such as a hotel stay |\n\nThe **May 7 capture's** Apple Pay on the Web/iOS support table lists recurring and automatic-reload requests at iOS **>16.0**, and deferred requests at iOS **>16.4** (plus Xcode 14.3). The November guide does not repeat the version table. These dated support labels do not establish current platform coverage. The May guide also describes mobile Payment Element availability and recommends moving recurring Payment Request Button integrations to Express Checkout Element; omission in November does not establish deprecation.\n\nThe May recurring Express Checkout example includes `billingAgreement` and `managementURL`; the November sample retains `managementURL` but omits `billingAgreement`. This sample difference does not establish that `billingAgreement` is required, optional or unsupported in the current Stripe.js API. The May guide says almost all request types can supply `managementURL` to route customers to payment-method management. See the dated raw examples for use-case parameters.\n\n## Integration path and returned credential\n\nFor **Elements with the Payment Intents API**, the November guide instructs passing the use-case-specific `applePay` object to Express Checkout Element or web Payment Element and supplying relevant parameters. **Stripe Checkout** and **Elements with the Checkout Sessions API** automatically request merchant tokens when needed, so this guide does not require that manual `applePay` configuration for those paths. The May capture also names mobile Payment Element as a surface; the November guide presents only web Element examples.\n\nAfter a configured Apple Pay checkout, Stripe requests a merchant token. **If both Apple Pay and the card issuer support merchant tokens**, Apple Pay returns an MPAN; otherwise it returns a DPAN. Stripe stores the returned Apple Pay credential with the resulting `PaymentMethod`. The guide directs integrators to save and reuse that `PaymentMethod` in their standard off-session payment flow, without extra MPAN-specific integration steps after the request configuration. This documented path does not prove a particular off-session charge succeeds.\n\n## Merchant token lifecycle\n\nThe November guide adds a `payment_method.automatically_updated` webhook for updates to the underlying card of an **MPAN**. Inspect `data.object.card.exp_month`, `exp_year` and `last4`, and update locally cached values. The guide limits merchant-token notifications to Apple Pay `CardMetadata` properties; it does not promise broader card metadata or that every underlying change arrives in a notification.\n\n## Monitoring and detail locators\n\nFor Sigma users, both captures show `charges.card_token_type` distinguishing `mpan` from `dpan`, and an MPAN authorization-rate query filtering `c.card_token_type = 'mpan'`. The query is an example, not an observed rate or a guarantee of MPAN issuance.\n\n- MPAN versus DPAN, MIT use cases and one-time CIT distinction: November raw introduction; compare May raw introduction and \"Merchant token types\".\n- Dated Apple Pay on the Web/iOS version table, mobile Payment Element and Payment Request Button guidance: May raw, \"Merchant token types\" and \"Add Apple Pay merchant tokens\".\n- Payment Intents Elements configuration and automatic Checkout/Checkout Sessions path: November raw, \"Configure your integration to request Apple Pay merchant tokens\".\n- Use-case object examples and changed `billingAgreement` sample: both raws, recurring/automatic-reload/deferred sections.\n- MPAN/DPAN response, PaymentMethod association and off-session reuse: November raw, paragraphs after web Payment Element examples.\n- Update webhook and card fields: November raw, \"Merchant token lifecycle management\".\n- Sigma query and field: both raws, \"Merchant token auth rate monitoring\".\n\n## Related\n\n- [[stripe]] \u2014 provider context\n- [[stripe-wallets]] \u2014 Apple Pay wallet concept and reciprocal source route\n- [[source-stripe-apple-pay-recurring]] \u2014 separate recurring Apple Pay flow\n\n## Raw Sources\n\n- [[raw/stripe-apple-pay-merchant-tokens-2026-11-07|Stripe merchant-token guide, fetched 2026-11-07]]\n- [[raw/stripe-apple-pay-merchant-tokens-2025|Stripe merchant-token guide, fetched 2026-05-07]]\n",
+  "quotes": [
+    {
+      "text": "If you use [Elements with the Payment Intents API](https://docs.stripe.com/payments/elements.md#compatible-apis), follow the instructions below to request Apple Pay merchant tokens.",
+      "location": "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md:25"
+    },
+    {
+      "text": "If you use [Stripe Checkout](https://docs.stripe.com/payments/checkout.md) or [Elements with the Checkout Sessions API](https://docs.stripe.com/payments/checkout-sessions-and-payment-intents-comparison.md), you don\u2019t need to configure Apple Pay merchant tokens. Checkout automatically requests them when needed.",
+      "location": "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md:27"
+    },
+    {
+      "text": "If Apple Pay and the card issuer support merchant tokens, Apple Pay returns an MPAN. Otherwise, it returns a DPAN.",
+      "location": "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md:158"
+    },
+    {
+      "text": "Stripe securely stores the returned Apple Pay credential and associates it with the resulting `PaymentMethod`.",
+      "location": "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md:160"
+    },
+    {
+      "text": "When the underlying card of an MPAN gets updated, Stripe sends a [payment_method.automatically_updated](https://docs.stripe.com/api/events/types.md#event_types-payment_method.automatically_updated) webhook notification.",
+      "location": "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md:164"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You can add a [merchant token](https://developer.apple.com/apple-pay/merchant-tokens/) when presenting Apple Pay in the Express Checkout Element, web Payment Element, and mobile Payment Element.",
+      "location": "raw/stripe-apple-pay-merchant-tokens-2025.md:34"
+    },
+    {
+      "text": "- iOS > v16.4 |",
+      "location": "raw/stripe-apple-pay-merchant-tokens-2025.md:30"
+    },
+    {
+      "text": "billingAgreement: \"billing agreement\"",
+      "location": "raw/stripe-apple-pay-merchant-tokens-2025.md:59"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 189
+      }
+    ],
+    "raw/stripe-apple-pay-merchant-tokens-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 191
+      }
+    ],
+    "wiki/sources/source-stripe-apple-pay-merchant-tokens.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7091c0550a1bfdd399aeda1f/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 220
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "apple-pay-mpan-concept-correction",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "**MPAN request types** (iOS 16+): `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations, iOS 16.4+). Pass as `applePay` param to Express Checkout Element or Payment Element. Checkout auto-handles. Fallback to DPAN if issuer doesn't support MPAN. Sigma `charges.card_token_type = 'mpan'` for auth rate monitoring.",
+      "new_text": "**MPAN request types**: `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations). The May 7, 2026 guide lists iOS >16.0 for recurring and reload, but >16.4 for deferred; its table is not repeated in November. For Elements with Payment Intents, pass the use-case `applePay` object to Express Checkout Element or web Payment Element. Stripe Checkout and Elements with Checkout Sessions request MPANs automatically when needed. If Apple Pay or the issuer lacks MPAN support, a DPAN is returned. Stripe stores the returned credential with the resulting `PaymentMethod` for standard saved off-session reuse. For an MPAN card update, `payment_method.automatically_updated` carries supported `data.object.card` fields (`exp_month`, `exp_year`, `last4`) for cached-value updates. Sigma `charges.card_token_type = 'mpan'` supports authorization-rate monitoring. See [[source-stripe-apple-pay-merchant-tokens]] for dated support and lifecycle details.",
+      "reason": "Correct the concept's collapsed iOS support and issuer-only fallback, scope Element configuration to Payment Intents, name Checkout Sessions automatic handling and surface the new stored PaymentMethod/lifecycle path.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "apple-pay-mpan-reciprocal-route",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "- [[source-stripe-apple-pay-merchant-tokens]] \u2014 Apple Pay MPAN types: recurring/auto-reload/deferred, Express Checkout Element config, Sigma card_token_type monitoring",
+      "new_text": "- [[source-stripe-apple-pay-merchant-tokens]] \u2014 May and November 2026 merchant-token guide: request types, dated platform support, Payment Intents versus Checkout Sessions configuration, MPAN/DPAN fallback, PaymentMethod reuse and update notifications",
+      "reason": "Keep the concept's source route aligned with the dated guide's new path and lifecycle coverage.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/apple-pay/merchant-tokens, [[source-stripe-apple-pay-merchant-tokens]] retains the recurring, automatic-reload and deferred MPAN requests in both captures (old 14-30; new 7-21). The November guide scopes manual `applePay` configuration to Elements with Payment Intents and says Stripe Checkout plus Elements with Checkout Sessions request merchant tokens when needed (new 25-27; old 32-34 named Checkout more generally). MPAN issuance still depends on Apple Pay and issuer support, with DPAN otherwise (new 158; old 16 named issuer support only); neither capture proves an MPAN for a particular transaction.",
+    "Q2": "For https://docs.stripe.com/apple-pay/merchant-tokens, [[source-stripe-apple-pay-merchant-tokens]] preserves May's web/iOS support table, including deferred iOS >16.4 versus recurring/reload >16.0, plus mobile Payment Element and Payment Request Button guidance (old 18-38), while the November guide omits those details without establishing deprecation (new 23-33). November adds the returned credential's PaymentMethod association and standard off-session reuse (new 158-160), then an MPAN card-update `payment_method.automatically_updated` event limited to Apple CardMetadata properties (new 162-164; old proceeds from example to monitoring at 168). The changed recurring sample's omitted `billingAgreement` does not settle its current parameter status."
+  },
+  "status": "candidate_ready"
+}

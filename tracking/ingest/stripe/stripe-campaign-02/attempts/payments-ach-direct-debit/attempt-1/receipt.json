@@ -1,0 +1,229 @@
+{
+  "job_id": "payments-ach-direct-debit",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-ach-direct-debit-2026-11-07.md",
+  "raw_sha256": "41e348c296155a1cabc3ea4c369ad45296e0f64d1ab80103313c6bef939f1fa0",
+  "prior_raw_path": "raw/stripe-ach-direct-debit-2025.md",
+  "prior_raw_sha256": "81d3e77314abc7adad6b83108d72b28dfa6975c887bb43207021f03e87dea3c8",
+  "source_target": "wiki/sources/source-stripe-ach-direct-debit.md",
+  "source_before_sha256": "18b0eb3234176352258e5d94ac6ca6fe4473dc4033c2a44e34c044113d35a531",
+  "read_ranges": {
+    "raw/stripe-payments-ach-direct-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 325
+      },
+      {
+        "start": 326,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 450
+      }
+    ],
+    "raw/stripe-ach-direct-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 215
+      },
+      {
+        "start": 216,
+        "end": 265
+      },
+      {
+        "start": 266,
+        "end": 315
+      },
+      {
+        "start": 316,
+        "end": 365
+      },
+      {
+        "start": 366,
+        "end": 415
+      },
+      {
+        "start": 416,
+        "end": 465
+      },
+      {
+        "start": 466,
+        "end": 525
+      }
+    ],
+    "wiki/sources/source-stripe-ach-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/27dab879c213b9b866e56bb2/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 255
+      },
+      {
+        "start": 256,
+        "end": 315
+      },
+      {
+        "start": 316,
+        "end": 375
+      },
+      {
+        "start": 376,
+        "end": 435
+      },
+      {
+        "start": 436,
+        "end": 495
+      },
+      {
+        "start": 496,
+        "end": 555
+      },
+      {
+        "start": 556,
+        "end": 615
+      },
+      {
+        "start": 616,
+        "end": 675
+      },
+      {
+        "start": 676,
+        "end": 735
+      },
+      {
+        "start": 736,
+        "end": 795
+      },
+      {
+        "start": 796,
+        "end": 855
+      },
+      {
+        "start": 856,
+        "end": 895
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "`billing_details` must include the account holder\u2019s name",
+      "location": "new raw line 15"
+    },
+    {
+      "text": "Private preview business location: CA",
+      "location": "new raw line 62"
+    },
+    {
+      "text": "\u2717 Partial refunds",
+      "location": "new raw line 126"
+    },
+    {
+      "text": "Refunds for ACH Direct Debit payments are asynchronous and take up to 3 business days to complete. ACH Direct Debit refunds can\u2019t be canceled.",
+      "location": "new raw line 138"
+    },
+    {
+      "text": "You can\u2019t submit evidence to contest or appeal a final ACH Direct Debit dispute.",
+      "location": "new raw line 176"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "[Yes / Yes](https://docs.stripe.com/payments/ach-direct-debit.md#refunds)",
+      "location": "old raw line 59"
+    },
+    {
+      "text": "Refunds require at least 3 business days to process.",
+      "location": "old raw line 385"
+    },
+    {
+      "text": "If you use custom mandates through the [Payment Intents API](https://docs.stripe.com/api/payment_intents.md), Stripe creates a dispute inquiry for your business to provide evidence for the payment in question.",
+      "location": "old raw line 306"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw line 15 requires account holder name in billing_details and a complete address if the merchant of record is outside the US. Current source lines 13-19 omit this operational condition. Record the merchant-of-record qualifier; do not convert it into an unconditional address requirement.",
+    "New raw lines 61-98 separate supported business locations (including CA private preview), US customers, USD presentment, crossborder coverage, and local-currency settlement for eligible Stripe accounts. Current source line 13 is compressed but its US-bank-account/USD description is not a US-only merchant rule. Concept line 10 incorrectly says ACH Direct Debit lets US businesses pull funds; update to allow the documented non-US business locations, with dated and restricted eligibility.",
+    "New raw lines 125-138 mark partial refunds unsupported and full refunds supported; old raw lines 57-59 explicitly marked refunds and partial refunds Yes/Yes. This is a material captured-page contradiction, not proof of particular-account runtime availability. The new refund prose says asynchronous refunds take up to 3 business days, versus old raw line 385 and source line 25/concept line 58 saying at least/minimum 3. Queue source and concept correction with the source-date distinction and no unsupported promise of exact receipt time.",
+    "New raw lines 154-210 distinguish final ACH disputes, which cannot be contested, from requested proof-of-authorization inquiries with warning_needs_response, one evidence submission, and bank decision. Source line 21 places final disputes and Submit evidence in one clause; qualify that evidence route as an inquiry only. Preserve personal 60-calendar-day/business 2-business-day general windows, rare late returns, mandate invalidation, and subsequent-payment block.",
+    "New raw lines 9, 18-20, 31-40 and 330-338 distinguish instant provisional access and bank-account verification from delayed success/failure acknowledgement and funds settlement. Standard T+4 and eligible US-user T+2 have separate Eastern cutoffs; bank payout follows account payout schedule. Avoid interpreting verification or provisional access as guaranteed settlement. Source lines 13 and 17 should retain cutoff and eligibility scope.",
+    "Mandates remain required before debit. Hosted Checkout, Payment Element and invoice flows display and record the mandate; custom Payment Intents forms must show terms before confirmation. A Nacha copy of mandate is required; Stripe default email is conditional on a billing email, and custom notifications plus microdeposit reminders have separate obligations (new raw lines 211-306). Source line 19 overstates that Nacha requires an email specifically. Preserve active mandate checks for blocked accounts and Connect cloning/on_behalf_of boundaries.",
+    "New raw lines 340-362 add structured UI/product/API support, including Express Checkout Element, in-app payments, Customer Portal and Managed Payments exclusions. These are captured-page product support assertions, not account-specific entitlement. New lines 389-401 add no debit-failure fee for Stripe-initiated automatic Billing retries while preserving max two within 40 days for insufficient funds."
+  ],
+  "substantive_changes": [
+    "Added merchant-of-record-dependent billing_details name/address condition (new line 15).",
+    "Expanded eligibility matrix, CA private preview, restrictions, US customer and USD presentment with distinct business settlement-country wording (new lines 60-98).",
+    "Refund capability reversed for partial refunds between old line 59 and new line 126; new asynchronous up-to-three-business-day, noncancellable refund and status handling (new lines 125-150).",
+    "Clarified final disputes versus pre-decision proof-of-authorization inquiries and evidence response route (new lines 154-210).",
+    "Structured product support, Connect and Billing retry qualifications added or reorganized (new lines 340-401)."
+  ],
+  "historical_claims_to_preserve": [
+    "ACH is a reusable delayed-notification, nonguaranteed US-bank-account debit; success/failure acknowledgement can take up to four business days (old lines 8-10; new line 9).",
+    "Standard settlement T+4 at 21:00 US/Eastern and faster T+2 at 14:00 only for eligible US users; payout schedule follows settlement (old lines 151-162; new lines 29-40).",
+    "Customer authorization mandate and verification precede debits; manual entry can use microdeposits with ten-day verification window (old lines 188-200; new lines 211-223 and 330-338).",
+    "Personal/business dispute windows, final ACH-network outcome, rare late returns, first dispute invalidating mandate, and later-payment dispute blocking bank-account reuse (old lines 286-302; new lines 154-176).",
+    "Connect capability and merchant-of-record boundaries, mandate cloning notice, and on_behalf_of restriction (old lines 412-453; new lines 365-387)."
+  ],
+  "conflicts": [
+    "Old raw line 59 lists partial refunds Yes; new raw line 126 explicitly lists partial refunds unsupported. Capture-date disagreement must remain visible rather than silently harmonized.",
+    "Old raw line 385 and source line 25/concept line 58 say at least/minimum three business days for refunds; new raw line 138 says up to three business days.",
+    "Source line 21 implies evidence can be submitted for final disputes; new raw lines 176-178 reserve evidence for Stripe-requested authorization inquiry before bank decision.",
+    "Concept line 10 says US businesses, but old raw lines 61-102 and new raw lines 60-98 list multiple non-US business locations. Source line 19's mandate-email wording is broader than the conditional default email in old raw lines 242-247 and new raw lines 267-272."
+  ],
+  "unresolved_questions": [
+    "The captured documentation does not establish a particular merchant's eligibility for faster settlement, CA preview, crossborder settlement, restricted-industry approval, or live product access.",
+    "The capture conflict on partial refunds does not identify the change's effective date or behavior of existing historical transactions; preserve both dated claims."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-ach-direct-debit.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/ach-direct-debit, the old raw line 59 says refunds and partial refunds were both supported, while new raw lines 125-138 explicitly exclude partial refunds, allow full refunds, and describe asynchronous completion taking up to three business days. [[source-stripe-ach-direct-debit]] should queue this dated correction, update its outdated minimum-three-day wording, and keep the old claim as historical evidence. New line 15 also adds the billing-details rule scoped to merchant of record outside the US.",
+    "Q2": "For https://docs.stripe.com/payments/ach-direct-debit, old raw lines 288-306 already separated final ACH disputes from proof-of-authorization inquiries, and new raw lines 160-178 state that final disputes cannot be appealed while a requested late-return inquiry can receive evidence. [[source-stripe-ach-direct-debit]] should qualify its evidence sentence accordingly. New raw lines 61-98 distinguish non-US eligible business locations, CA private preview, US customers and USD presentment; old raw lines 61-102 likewise listed non-US merchants, so the linked concept's US-business wording needs correction without promising account eligibility."
+  }
+}

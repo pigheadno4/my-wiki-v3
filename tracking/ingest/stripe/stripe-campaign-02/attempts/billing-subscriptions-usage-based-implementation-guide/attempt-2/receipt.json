@@ -1,0 +1,150 @@
+{
+  "job_id": "billing-subscriptions-usage-based-implementation-guide",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md",
+  "raw_sha256": "5078b2fbc21b8e6a63a29f2782692dcc3c0cac1a2fa01bd9ed3d693e807a7248",
+  "prior_raw_path": "raw/stripe-usage-based-billing-payg-2025.md",
+  "prior_raw_sha256": "f8ebbcae0f65c5caa0d4721906facb3001945a5183cda37a2ab70aa0a08e0fa8",
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-payg.md",
+  "source_before_sha256": "a3e3a3ff4ee8ff88b025480d7ca129816cebe4a8b133ca97f40c53e3c638622f",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 302
+      }
+    ],
+    "raw/stripe-usage-based-billing-payg-2025.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 275
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-payg.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/60862e398b65da1c347611c3/content.diff": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 255
+      },
+      {
+        "start": 256,
+        "end": 340
+      },
+      {
+        "start": 341,
+        "end": 407
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Unless you maintain an existing Billing Meters integration, use [Metronome](https://docs.stripe.com/billing/usage-based.md), Stripe\u2019s primary usage-based billing platform, instead.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md:13"
+    },
+    {
+      "text": "If you already use Billing Meters, you don\u2019t need to migrate. Continue using this guide for your existing integration.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md:15"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you\u2019re part of the Accounts v2 preview, you need to specify a [preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md:142"
+    },
+    {
+      "text": "When you create a `billing_mode=flexible` subscription, Stripe excludes metered line items from the first invoice since no prior usage exists to bill. Stripe creates an invoice only if the subscription is backdated with previously accrued usage or if pending invoice items exist.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md:191"
+    },
+    {
+      "text": "If you represent your customers as customer-configured [Accounts](https://docs.stripe.com/api/v2/core/accounts/object.md), pass the `Account` ID to the `customer` parameter.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-implementation-guide-2026-11-07.md:282"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If your integration uses [customer-configured Accounts](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer), replace `Customer` and event references in the code examples with the equivalent Accounts v2 API references.",
+      "location": "raw/stripe-usage-based-billing-payg-2025.md:119"
+    },
+    {
+      "text": "When you create a `billing_mode=flexible` subscription, Stripe excludes metered line items from the first invoice since no prior usage exists to bill. Stripe creates an invoice only if the subscription is backdated with previously accrued usage or if pending invoice items exist.",
+      "location": "raw/stripe-usage-based-billing-payg-2025.md:153"
+    },
+    {
+      "text": "value: \"25\"",
+      "location": "raw/stripe-usage-based-billing-payg-2025.md:211"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The same canonical URL now prominently says the basic Billing Meters guide is not recommended for new usage-based integrations and directs them, including existing flat-rate subscription users adding metering, to Metronome; existing Billing Meters integrations need not migrate (new 11-37; old 1-20 had no such direction). The current source summary at 11-13 presents an unqualified end-to-end implementation guide, so a dated scope warning and new raw provenance are required.",
+    "The new capture expands the previous one-sentence Accounts v2 alternative (old 117-121) into an account-availability and preview-version qualification plus separate customer-configured Account and Customer creation and subscription examples (new 140-178, 206-221). The new Accounts v2 subscription example uses customer_account, whereas Customers v1 uses customer; account-specific access is not established by the capture.",
+    "The source summary's 'Meter API (v2)' label is misleading for this guide's demonstrated /v1/billing/meters, /v1/prices, /v1/subscriptions and /v1/billing/meter_events endpoints (new 70-80, 108-124, 206-222, 241-249). New Accounts v2 customer creation is a separate /v2/core/accounts example (new 152-170).",
+    "The source summary at 34-36 adds 'recommended' to flexible billing mode, which neither captured guide says; both state the first-invoice behavior and exceptions (old 151-153; new 189-191). The summary should retain the backdated-usage and pending-item exceptions and avoid implying a first invoice never exists.",
+    "The existing root-index \u2192 Stripe-index route reaches wiki/concepts/stripe-usage-based-billing.md:78. Its `billing_mode=flexible`: 'no first invoice for metered items (recommended)' bullet repeats the same misleading recommendation and absolute first-invoice claim as the source summary. Both old raw line 153 and new raw line 191 say flexible mode excludes metered line items from the first invoice because no prior usage exists, but Stripe creates an invoice if the subscription is backdated with accrued usage or has pending invoice items; neither capture recommends flexible mode. In later authorized concept editing, remove 'recommended' and state the exception-qualified metered-line and invoice behavior. The repository remains untouched in this review-only phase.",
+    "The old captured Node meter event passed value as the string '25' (old 202-214), while the new curl form passes payload[value]=25 (new 241-249). This is a code-rendering difference, not proof that the API now forbids or requires string values. The existing source's 'value is a string' should be attributed to its Node example rather than generalized.",
+    "The main meter, price, subscription, event, invoice-preview and custom-window summary sequence persists (old 20-269; new 49-294). Most large diff sections replace Node SDK snippets with curl and renumber Markdown steps; they do not by themselves prove a feature removal or runtime change. New next-step links to Metronome and comparison are navigation (new 296-302)."
+  ],
+  "substantive_changes": [
+    "New explicit Metronome recommendation limits the guide to maintaining straightforward existing Billing Meters integrations without asserting deprecation or forced migration (new 11-37).",
+    "New Accounts v2 availability and preview-version caveat, recommended customer-configured Account modeling for most use cases, and distinct customer_account subscription field (new 140-170, 206-222).",
+    "For customer-configured Accounts, event-summary customer parameter takes the Account ID (new 280-293); old 248-269 omitted this explicit qualification."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the former Node SDK examples as dated May 2026 evidence, while identifying the November capture's curl presentation; absence of Node snippets does not establish SDK removal (old 43-61, 93-114, 168-180, 202-213, 238-268; new 70-80, 112-123, 208-221, 243-248, 274-293).",
+    "Preserve existing Billing Meters customers' no-migration caveat and the exact flexible-versus-classic first-invoice distinctions (new 15, 189-191; old 151-153).",
+    "Preserve asynchronous meter event processing and the resulting possible lag in upcoming invoices and event summaries (old 234, 254; new 270, 286).",
+    "Preserve the Hypernian rate as a fictional example, not a validated invoice outcome (old 10-18; new 39-47)."
+  ],
+  "conflicts": [
+    "Current source line 13 calls the integration 'Meter API (v2)' despite the captured guide's Billing Meters examples using /v1 endpoints. Distinguish Billing Meters from the separately shown Accounts v2 customer object.",
+    "Current source line 35 labels flexible billing mode 'recommended' and omits the invoice exceptions present in both captures.",
+    "Existing wiki/concepts/stripe-usage-based-billing.md:78 independently repeats 'no first invoice for metered items (recommended)'; old raw line 153 and new raw line 191 neither recommend flexible mode nor state an unconditional absence of a first invoice. Correct this root-index \u2192 Stripe-index concept route together with the source summary after authorization, preserving the backdated-accrued-usage and pending-invoice-item exceptions.",
+    "New guide line 29 says 'Billing Meters only updates at invoice time' within a Metronome comparison, while new lines 280-286 describe meter event summaries for a custom time period that update asynchronously. Avoid extending that marketing shorthand to a claim that Billing Meters cannot provide interim summaries."
+  ],
+  "unresolved_questions": [
+    "The capture does not verify this merchant's Metronome access, Accounts v2 preview participation, or executed invoice/payment outcomes.",
+    "The new API meter-event example still uses CUSTOMER_ID at lines 243-249 even though it separately teaches customer-configured Accounts and Account IDs for event summaries at lines 280-293; the exact meter-event identifier mapping for an Accounts v2 implementation needs separate authority before prescriptive instructions."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/implementation-guide, the November capture adds a prominent recommendation to use Metronome for new usage-based integrations, while explicitly allowing existing Billing Meters integrations to continue without migration (new lines 11-37). The old capture had no corresponding recommendation (old lines 4-20). The existing [[source-stripe-usage-based-billing-payg]] therefore needs a dated scope update; its core Hypernian workflow persists, and Node-to-curl examples alone do not establish API removal.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/usage-based/implementation-guide, [[source-stripe-usage-based-billing-payg]] should distinguish the new Accounts v2 customer path and its Connect versus public-preview qualification (new lines 140-170), including customer_account on the subscription versus customer for Customers v1 (new lines 206-222). Both that source and the routed concept wiki/concepts/stripe-usage-based-billing.md:78 need the flexible-mode correction: neither capture recommends it, and an invoice can exist for backdated accrued usage or pending invoice items (old line 153; new line 191). Do not infer account eligibility, successful billing, or universal string-only payloads from examples (old lines 207-213; new lines 243-249)."
+  }
+}

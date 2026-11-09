@@ -1,0 +1,85 @@
+{
+  "job_id": "apple-pay-merchant-tokens",
+  "queue_id": 6,
+  "canonical_url": "https://docs.stripe.com/apple-pay/merchant-tokens",
+  "raw_path": "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md",
+  "raw_sha256": "43a0678b6704b272cf8495fb71aa0378d0b9d8e44f424004f4501cd7fdf11e8e",
+  "prior_raw_path": "raw/stripe-apple-pay-merchant-tokens-2025.md",
+  "prior_raw_sha256": "203a4f158819244d46e6112b6b9840ce45e5bada135df628019ceadc65b605d0",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/7091c0550a1bfdd399aeda1f/content.diff",
+  "diff_sha256": "b59650472b3254a1bf903c9a0295041afbfe56a599c9d3f62f937dc1753af4e8",
+  "source_target": "wiki/sources/source-stripe-apple-pay-merchant-tokens.md",
+  "source_before_sha256": "218df0544f3b00f9d138a86bdc639de920703e210be3b12b75c81581d8f3116f",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/apple-pay-merchant-tokens/attempt-1/receipt.json",
+  "receipt_sha256": "648cb95d2b522a1f62c4a9d09fc5dba10fd4fefa3ac596db5f9975498927b513",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/apple-pay-merchant-tokens/attempt-1/review.json",
+  "review_sha256": "4461c29c92899ee557ce81ee875998d80b082a312b95b1c335d750e3bddfba96",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The same canonical URL still covers recurring, automatic-reload, and deferred MPAN requests. The November text frames these as future merchant-initiated payments, distinguishing device-bound DPANs from customer/card/business-associated MPANs and one-time customer-initiated transactions (new lines 7-21; old lines 6-16).",
+    "November scopes explicit `applePay` configuration instructions to Elements with the Payment Intents API (new line 25). It explicitly says both Stripe Checkout and Elements with the Checkout Sessions API automatically request merchant tokens when needed (new line 27). Existing source lines 13 and 27 say only 'Checkout handles automatically' and should name both paths.",
+    "November adds the post-request flow: Stripe asks for an MPAN at Apple Pay checkout, can receive a DPAN if Apple Pay or issuer support is absent, stores the returned credential with the resulting PaymentMethod, and instructs standard saved off-session PaymentMethod reuse (new lines 158-160). The source's bare issuer-only fallback at line 25 is narrower than November's Apple Pay-and-issuer condition.",
+    "November adds lifecycle management: on underlying MPAN card updates, Stripe sends payment_method.automatically_updated; the guide tells integrators to inspect data.object.card exp_month, exp_year, and last4 and update cached values, limited to Apple CardMetadata-supported properties (new lines 162-164). This is a central addition absent from old capture and source.",
+    "The old guide included mobile Payment Element, a Payment Request Button migration recommendation, and a version/support table including deferred requests on iOS >16.4 (old lines 18-38). November omits those details while showing only Express Checkout and web Payment Element examples (new lines 23-156). Do not infer mobile or Payment Request Button deprecation. Current source lines 17-23 incorrectly collapse all three request types under 'all iOS 16+' even though its old raw specified deferred >16.4; correct or date the support detail without treating the omission as a new support change.",
+    "November's Express Checkout recurring example drops billingAgreement while retaining managementURL (old lines 46-64; new lines 35-54). It is a sample change, not evidence that billingAgreement is prohibited or newly optional. Sigma card_token_type monitoring remains in both captures (old lines 168-191; new lines 166-189)."
+  ],
+  "approved_conflicts": [
+    "Current source lines 17-23 say all three MPAN request types are iOS 16+, but old raw line 30 specifically says deferred payment support requires iOS >16.4. November omits a version table rather than superseding that qualification.",
+    "Current source line 25 describes only issuer support for MPAN fallback; November new line 158 conditions MPAN on Apple Pay and card-issuer support.",
+    "Current source line 13 leaves Checkout Sessions Elements' automatic MPAN request ambiguous; November new line 27 explicitly includes that path."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain old mobile Payment Element availability and Payment Request Button migration recommendation as May-capture claims only; November silence is not removal (old lines 32-40; new lines 23-33).",
+    "Retain the May support table's deferred-request iOS >16.4 qualification, and avoid source's unqualified all-iOS-16+ summary (old lines 18-30; source lines 17-23).",
+    "Retain three MPAN use cases and the MPAN-to-DPAN fallback with its conditional nature (old lines 14-16, 34-165; new lines 15-19, 158).",
+    "Retain the Sigma charges.card_token_type mpan/dpan auth-rate monitoring route (old lines 168-191; new lines 166-189)."
+  ],
+  "unresolved_questions": [
+    "This captured web guide does not establish account eligibility, platform version coverage, or whether a particular transaction receives an MPAN rather than DPAN.",
+    "November omission of the old iOS/mobile support table and Payment Request Button recommendation does not establish deprecation or current availability of those surfaces.",
+    "The sample removal of billingAgreement from a recurring request does not determine whether the parameter is required, optional, or unsupported in the current Stripe.js API."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/apple-pay-merchant-tokens/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "e46c1fac986329cc8d422e1398866c7f0d7c664391b1455a512acf23e41ef9ba",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/apple-pay-merchant-tokens/attempt-1/review.json",
+  "approved_triage_review_sha256": "77f0aca25094162a324c439cea68c4d292ddae184f07f6420b7efdd2d4c211a6",
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw4",
+  "reviewer_agent": "/root/s2ur5",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-apple-pay-merchant-tokens-2026-11-07.md",
+      "sha256": "43a0678b6704b272cf8495fb71aa0378d0b9d8e44f424004f4501cd7fdf11e8e",
+      "lines": 189
+    },
+    {
+      "path": "raw/stripe-apple-pay-merchant-tokens-2025.md",
+      "sha256": "203a4f158819244d46e6112b6b9840ce45e5bada135df628019ceadc65b605d0",
+      "lines": 191
+    },
+    {
+      "path": "wiki/sources/source-stripe-apple-pay-merchant-tokens.md",
+      "sha256": "218df0544f3b00f9d138a86bdc639de920703e210be3b12b75c81581d8f3116f",
+      "lines": 35
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/7091c0550a1bfdd399aeda1f/content.diff",
+      "sha256": "b59650472b3254a1bf903c9a0295041afbfe56a599c9d3f62f937dc1753af4e8",
+      "lines": 220
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/apple-pay-merchant-tokens-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/apple-pay-merchant-tokens-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-1"
+}

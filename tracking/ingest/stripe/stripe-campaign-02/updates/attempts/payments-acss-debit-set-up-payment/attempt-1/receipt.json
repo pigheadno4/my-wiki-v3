@@ -1,0 +1,175 @@
+{
+  "job_id": "payments-acss-debit-set-up-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md",
+  "raw_sha256": "a96774fc26da027fc9cf2e628ae108ba7ea5e8b71e4ebfc9052a34227d64af3e",
+  "source_before_sha256": "8fadaa290abea204382030c8694153d803e3a11deade208d89819a5e052bbde2",
+  "source_page": "---\ntitle: \"Stripe: Save ACSS/PAD Payment Details for Future Payments\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/acss-debit/set-up-payment\"\nraw_files:\n  - \"stripe-acss-set-up-payment-2025.md\"\ntags: [stripe, acss, acss-debit, canada, cad, setup-intents, mandates, microdeposits, save-payment-method]\n---\n\n## Summary\n\nThe retained 2026-05-02 guide explains saving Canadian pre-authorized debit (PAD/ACSS Debit) bank details for later payments through Checkout setup mode or the Direct API SetupIntent flow. The 2026-11-07 exact-URL capture is only a variant index linking Checkout, Elements, and Direct API. Its newly listed Elements route is navigation, not evidence of that variant's implementation, supported objects, account eligibility, or a change to the older Checkout/Direct API instructions. None of the linked variant bodies was captured in this job.\n\nThe older guide describes Canadian PAD as a delayed-notification method: funds are not immediately available after payment, and a payment typically takes five business days to arrive. It permits CAD or USD, but the debit currency must match the customer's bank-account currency; a mismatch can produce a delayed failure up to five business days later (old raw lines 18\u201324, 337\u2013341).\n\n## Mandate options in the 2026-05-02 guide\n\nThe customer must authorize the PAD agreement; a Mandate records that authorization. Both Checkout and Direct API parameter tables distinguish requiredness (old raw lines 70\u201376 and 380\u2013386):\n\n| Parameter under `payment_method_options[acss_debit]` | Requiredness and meaning |\n| --- | --- |\n| `currency` | Required; `cad` or `usd`, matching the bank-account currency |\n| `mandate_options.payment_schedule` | Required; `interval`, `sporadic`, or `combined` |\n| `mandate_options.transaction_type` | Required; `personal` or `business` |\n| `mandate_options.interval_description` | Required only for `interval` or `combined` schedule |\n| `mandate_options.default_for` | Optional array of mandate purposes |\n\n## Checkout setup mode (2026-05-02 guide)\n\nThe Checkout example creates a Customer, then a Checkout Session with `mode: 'setup'`, `payment_method_types: ['acss_debit']`, and the applicable mandate options. It gives Stripe-hosted and full embedded page examples, each with a different return URL shape (old raw lines 39\u2013128). The hosted modal collects account details, mandate authorization, and either instant verification or a microdeposit fallback. Microdeposits normally appear in one to two business days and the customer receives a verification link (old raw line 131). The guide optionally selects `verification_method: 'instant'` or `'microdeposits'` on the Checkout Session (old raw lines 215\u2013325). Its token, account-number, and `32`/`45` amount tables are **test/sandbox cases**, not evidence of a live bank debit (old raw lines 133\u2013168).\n\n## Direct API SetupIntent (2026-05-02 guide)\n\nCreate or retrieve a Customer, then create a SetupIntent with `payment_method_types: ['acss_debit']`, customer identity, and matching currency and mandate options; pass the **SetupIntent** client secret to the customer-facing flow (old raw lines 356\u2013447). The historical examples show a Customers v1 `customer` field and later separate Accounts v2 `customer_account` examples for verification-method options; those illustrative snippets do not establish universal account eligibility.\n\nOn the client, `stripe.confirmAcssDebitSetup` requires the account-holder name and customer email in `payment_method.billing_details`. Its hosted on-page modal collects bank account details, verification, mandate presentation, and authorization (old raw lines 505\u2013540). `succeeded` means the account was instantly verified **or verification was unnecessary**; `requires_action` means further bank verification is needed (old raw lines 544\u2013549). SetupIntent success saves the method and mandate for possible future use; it is not a successful future debit or funds receipt. The guide requires mandate and bank-detail confirmation email after setup; Stripe sends it by default unless custom notifications are configured (old raw lines 551\u2013553).\n\nFor a customer taking the microdeposit route, the old guide gives a hosted verification page or `stripe.verifyMicrodepositsForSetup` with a test amount pair `[32, 45]`. Deposits appear in one to two business days; there are three failed attempts and a ten-day timeout. Successful verification returns SetupIntent `succeeded` and a `setup_intent.succeeded` event; the error table uses `last_setup_error` for failure details (old raw lines 567\u2013631). The prose also calls the timeout object a PaymentIntent and names `setup_intent.payment_failed`; those inconsistent words in a SetupIntent section are not proof that setup completion is payment completion or that the exact failure event name is correct. Verify event behavior against a current version-specific reference before implementation.\n\n## Later off-session charging (2026-05-02 guide)\n\nWith an **existing authorized mandate**, charge only within that mandate's terms; debiting outside them can lead to a dispute. A later off-session PaymentIntent is a separate action using `customer`, `payment_method`, and `mandate` IDs, amount/currency, `payment_method_types: ['acss_debit']`, and `confirm: true` (old raw lines 170\u2013210, 670\u2013711). A debit notification email must be sent when reusing the mandate; Stripe handles it by default unless the integration sends custom notifications (old raw lines 213 and 713). A confirmed PaymentIntent or a successful SetupIntent is not proof that a delayed debit finally settled.\n\nIf the terms change, the guide instead says to reuse the PaymentMethod with **new customer authorization and a new mandate**: include the existing `payment_method` ID when creating a new Intent, omit the bank details in confirmation, send a new mandate confirmation email, and expect a three-day charge delay (old raw lines 715\u2013722). This is distinct from a debit under an existing mandate.\n\n## Related Pages\n\n- [[stripe-acss-debit]] \u2014 Canadian PAD scope, mandate and payment lifecycle\n- [[source-stripe-acss-accept-payment]] \u2014 accepting a payment rather than only setting up future use\n- [[source-stripe-subscriptions-acss-debit]] \u2014 subscription-specific flow\n\n## Related raw API references\n\n- [[raw/stripe-payments-acss-debit-set-up-payment-2026-11-07|2026-11-07 ACSS setup variant index]] \u2014 navigation to Checkout, Elements, and Direct API; no captured variant implementation\n\n## Raw Sources\n\n- [[raw/stripe-acss-set-up-payment-2025|2026-05-02 ACSS setup guide]] \u2014 retained Checkout and Direct API bodies (830 lines)\n",
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/acss-debit/set-up-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Elements](https://docs.stripe.com/payments/acss-debit/set-up-payment.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/acss-debit/set-up-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Required if `payment_schedule` value is `interval` or `combined`",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:74"
+    },
+    {
+      "text": "The bank account has been instantly verified or verification wasn\u2019t necessary.",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:548"
+    },
+    {
+      "text": "Including the customer\u2019s email address and the account holder\u2019s name in the `billing_details` property of the `payment_method` parameter is required",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:505"
+    },
+    {
+      "text": "Future pre-authorized debit payments must be charged according to the terms of the existing mandate.",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:174"
+    },
+    {
+      "text": "When reusing an existing mandate with the new PaymentIntent, a debit notification email must be sent at that time.",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:713"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-acss-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 830
+      }
+    ],
+    "wiki/sources/source-stripe-acss-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dc1b24e0b7e7b8056c7d795c/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 833
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "acss-setup-concept-source-route",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "- [[source-stripe-acss-set-up-payment]] \u2014 save for future: SetupIntent (Checkout setup mode + Direct API), off-session charging with mandate, reuse PM with new mandate",
+      "new_text": "- [[source-stripe-acss-set-up-payment]] \u2014 retained 2026-05-02 Checkout setup and Direct API SetupIntent guide, including off-session mandate reuse; the 2026-11-07 canonical capture only indexes Checkout, Elements, and Direct API variants, without establishing the Elements implementation.",
+      "reason": "The November capture adds an Elements navigation route but contains no implementation body; the concept source route should expose it without treating it as current API support proof.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The indexed Elements destination was not fetched in this job."
+      ]
+    },
+    {
+      "update_id": "acss-setup-concept-elements-boundary",
+      "target_path": "wiki/concepts/stripe-acss-debit.md",
+      "old_text": "- Elements: PaymentIntent path only \u2014 not Checkout Sessions API, not Express Checkout Element, not Mobile Payment Element",
+      "new_text": "- Elements: the retained payment-integration evidence describes a PaymentIntent path and excludes Checkout Sessions API, Express Checkout Element, and Mobile Payment Element. The 2026-11-07 ACSS setup index also links an Elements variant, but that variant body was not captured here; the link alone neither verifies a SetupIntent implementation nor overturns the earlier path-specific limits.",
+      "reason": "Keep the existing support restriction scoped to its prior evidence while recording the unresolved setup-variant navigation, rather than inferring implementation from the index.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Current ACSS setup Elements details and account eligibility require the separately pinned variant body."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/acss-debit/set-up-payment, the November capture is a three-link index at new raw lines 9\u201315. The updated [[source-stripe-acss-set-up-payment]] retains the older Checkout and Direct API setup guide from old raw lines 8\u201310 and 327\u2013331, while noting the newly listed Elements route only as navigation. The index does not verify an Elements SetupIntent flow, API compatibility, or removal of earlier behavior.",
+    "Q2": "The updated [[source-stripe-acss-set-up-payment]] for https://docs.stripe.com/payments/acss-debit/set-up-payment separates required currency, schedule, and transaction type from conditional interval_description and optional default_for at old raw lines 70\u201376 and 380\u2013386. It also explains that SetupIntent succeeded can mean verification was unnecessary, while a later off-session debit needs mandate terms, IDs, and notification at old raw lines 548 and 670\u2013713. new raw lines 13\u201315 only navigate variants and prove no live debit outcome."
+  },
+  "status": "candidate_ready"
+}

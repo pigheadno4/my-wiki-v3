@@ -1,0 +1,118 @@
+{
+  "job_id": "industry-metadata",
+  "attempt": 2,
+  "raw_path": "raw/stripe-industry-metadata-2026-11-07.md",
+  "raw_sha256": "3d75640f0bfc64fd4ab79a6cc610a2fe958e7726b2e6d760dc850c31c2e8bac6",
+  "source_before_sha256": "dce07e14b37a9879d1d619cc02b46dec078af1847e526018618e65a01bb6d535",
+  "source_page": "---\ntitle: \"Stripe \u2014 Industry Metadata\"\ntype: source\ndate_ingested: 2026-11-09\ncanonical_url: https://docs.stripe.com/industry-metadata\noriginal_format: webpage\nraw_files:\n  - \"stripe-industry-metadata-2026-11-07.md\"\n  - \"stripe-industry-metadata-2026.md\"\ntags: [stripe, industry-metadata, car-rental, lodging, flight, travel, klarna, payment-intents, mcc, preview]\n---\n\n## Summary\n\nIndustry metadata is structured travel and entertainment transaction data passed through the Payment Intents API. For supported merchant category codes, supplying relevant data is required for card-network compliance. On Klarna transactions it **might** improve authorization rates and risk assessment; neither benefit nor card-network qualification follows automatically from supplying data.\n\nThe 2026-11-07 guide documents API preview header `2026-07-29.preview` or a later preview version. The retained 2026-05-11 guide documented `2025-11-17.preview` or later. This is a documentation change, with no captured runtime test showing whether the older header is rejected. Cards remain **private preview** and Klarna **public preview**; the public-preview header does not open card access. Flight data for cards needs feature enablement from an account team or Stripe support, and cruise data is unsupported for cards.\n\n> [!warning] Contradiction\n> The 2026-05-11 capture specifies `2025-11-17.preview` and `total.tax.taxes[]`; the 2026-11-07 capture specifies `2026-07-29.preview` and `total.tax.tax_items[]`. Use the new documented fields for this capture, retain the older spelling for historical integrations, and verify actual account/API behavior before a migration decision.\n\n## Eligible MCCs and payment methods\n\n| Vertical | MCCs |\n| --- | --- |\n| Car rental | 3351\u20133441, 7512, 7513, 7519 |\n| Lodging | 3501\u20133999, 7011 |\n| Travel agency | 4722 |\n| Flight | 4511 |\n\nThe guide names Visa, Mastercard, Amex, Discover, and Klarna. Klarna also supports events, standalone insurance, train/bus/ferry transport, organized trips and tours, vouchers, and marketplace sellers; those additional verticals are not card-payment support.\n\n## PaymentIntent structure and timing\n\n`payment_details` contains arrays of car rental, lodging, and flight records: `car_rental_data[]`, `lodging_data[]`, and `flight_data[]`. The guide documents it on PaymentIntent create, update, confirm, and capture. Each update **replaces the entire `payment_details` hash** and must remain valid for the payment method. Metadata cannot be changed after capture. The manual confirmation/capture examples illustrate possible points of update; the guide also allows automatic confirmation or capture use cases.\n\nFor cards, only the **first entry of each vertical's array** reaches the card networks; use separate PaymentIntents for multiple card bookings when each needs network data. Klarna processes **all entries** in each array for its risk and authorization decisions. Card-only fields are not sent to Klarna, Klarna-only fields are not seen by card networks, and unsupported payment-method-specific properties are ignored. Some property lengths may be truncated to fit a payment method.\n\n## Required fields by vertical\n\n| Vertical | Minimum for all supported payment methods | Additional card fields |\n| --- | --- | --- |\n| Car rental | Pickup and drop-off address line1, city, postal code, country and time; `total.amount` | State where applicable for each address; booking number, days rented, customer-service phone, renter name, vehicle type/make/model |\n| Lodging | `checkin_at`, `checkout_at`, `total.amount` excluding taxes and fees | Booking number, fire-safety indicator, customer-service phone, accommodation nights and daily rate |\n| Flight | At least one segment with service class, carrier code, departure airport/time, arrival airport; `total.amount` excluding taxes and fees | Each segment's carrier name, flight number, ticket number, and arrival time |\n\nState codes must be valid for their country where required. Flight card data requires separate feature enablement. Optional arrays can create conditional requirements: each supplied passenger needs a name; supplied car-rental distance needs amount and unit; each supplied Klarna driver or guest needs a name; supplied driver date of birth, lodging host address, or insurance entry requires its specified component fields. Consult the full field tables for validation limits and per-method fields.\n\n## Tax path and phone format in the 2026-11-07 capture\n\nFor car rental, lodging, and flight, the new field tables and create/confirm/capture examples use `payment_details[<vertical>][0][total][tax][tax_items][0]` (`total.tax.tax_items[]`) for rate, amount, and type. The 2026-05-11 tables and examples used `total.tax.taxes[]`. The captures do not establish whether `taxes[]` is rejected, aliased, or still accepted by an older preview version.\n\nCard car-rental and lodging `customer_service_phone_number` fields are required. Lodging `host.property_phone_number` is an additional field. The new guide says live-mode values for these fields must be valid E.164 phone numbers: non-US numbers begin with `+` and country code; if a US number begins with `+`, it uses country code `1` followed by ten digits. All zeros (`0000000000`) remain a sandbox allowance. The old guide's 'numbers only' wording is dated, not a rule to apply to the new live format.\n\n## Examples and evidence limits\n\nThe November create examples use `automatic_payment_methods[enabled]=true` instead of the older explicit `payment_method_types[0]=card`; confirm examples add `return_url`. Sample car daily rate and lodging total/tax amounts also change. These examples do not make automatic payment methods or those amounts required for industry metadata.\n\nSandbox tests can check API acceptance, method-specific required fields, and PaymentIntent processing. They do **not** simulate card-network interchange qualification or Klarna authorization/risk outcomes. Neither capture tests account-specific enablement, older-header rejection, or tax-field aliasing.\n\nThe two industry-metadata captures do not discuss payment line items. A separate 2026-05-11 [[source-stripe-payment-line-items]] guide explicitly says card line items cannot be sent alongside car-rental, lodging, or airline industry metadata, and gives PayPal the same restriction ([[raw/stripe-payment-line-items-2026|dated payment-line-items raw]], line 26). Its Klarna column separately refers to Extra Merchant Data in private preview; that does not establish a universal rule for Klarna or current availability. Treat this as a dated, payment-method-scoped restriction and verify current account/version behavior before implementation.\n\n## Related Pages\n\n- [[stripe-industry-metadata]] \u2014 industry metadata concept\n- [[stripe-payment-intents]] \u2014 PaymentIntent lifecycle\n- [[stripe-payment-line-items]] \u2014 separate line-item feature; the dated card/PayPal incompatibility is documented in [[source-stripe-payment-line-items]]\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-industry-metadata-2026-11-07|2026-11-07 industry metadata guide]] \u2014 current captured preview wording, tax item path, field tables, examples, and testing limits\n- [[raw/stripe-industry-metadata-2026|2026-05-11 industry metadata guide]] \u2014 earlier preview wording, `taxes[]` path, and dated examples\n",
+  "quotes": [
+    {
+      "text": "You can use this public preview feature by including the version header `2026-07-29.preview` or a later preview version header in your API request.",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:11"
+    },
+    {
+      "text": "Providing industry-specific data is required for certain merchant category codes to comply with card network requirements, and might improve authorization rates and risk assessment on Klarna transactions.",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:15"
+    },
+    {
+      "text": "`total.tax.tax_items[].rate`",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:301"
+    },
+    {
+      "text": "In live mode, you must use a valid phone number per E.164 standards. Begin non-US numbers with `+` and include the country code. If a US number begins with `+`, use country code `1` followed by the 10-digit number.",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:271"
+    },
+    {
+      "text": "Industry Metadata is in private preview for card transactions and public preview only for Klarna. Additionally, card transactions don\u2019t support passing cruise data.",
+      "location": "raw/stripe-industry-metadata-2026-11-07.md:45"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "`2025-11-17.preview` or a later preview version header",
+      "location": "raw/stripe-industry-metadata-2026.md:10"
+    },
+    {
+      "text": "`total.tax.taxes[].rate`",
+      "location": "raw/stripe-industry-metadata-2026.md:303"
+    },
+    {
+      "text": "Must be a valid phone number (numbers only), can also be all zeros (`0000000000`) in a sandbox",
+      "location": "raw/stripe-industry-metadata-2026.md:273"
+    },
+    {
+      "text": "and might improve authorization rates and risk assessment on Klarna transactions.",
+      "location": "raw/stripe-industry-metadata-2026.md:14"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-industry-metadata-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 1052
+      }
+    ],
+    "raw/stripe-industry-metadata-2026.md": [
+      {
+        "start": 1,
+        "end": 1055
+      }
+    ],
+    "wiki/sources/source-stripe-industry-metadata.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa626b6e749f6b0964bfb943/content.diff": [
+      {
+        "start": 1,
+        "end": 882
+      }
+    ],
+    "raw/stripe-payment-line-items-2026.md": [
+      {
+        "start": 1,
+        "end": 826
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "industry-metadata-concept-preview-benefit",
+      "target_path": "wiki/concepts/stripe-industry-metadata.md",
+      "old_text": "Industry metadata is a PaymentIntents API feature (public preview, API version `2025-11-17.preview`) for passing structured travel and entertainment transaction data. It serves two purposes: compliance with card network requirements for specific MCCs, and improved authorization rates/risk assessment for Klarna.\n\n**Mutually exclusive with [[stripe-payment-line-items]]** \u2014 cannot send both on the same PaymentIntent.",
+      "new_text": "Industry metadata is a PaymentIntents API feature for structured travel and entertainment transaction data. The 2026-11-07 guide documents `2026-07-29.preview` or a later preview header; the 2026-05-11 capture documented `2025-11-17.preview`. Relevant data is required for card-network compliance at supported MCCs and **might** improve Klarna authorization rates or risk assessment. Cards remain private preview; Klarna is public preview.\n\n> [!warning] Contradiction\n> The two dated captures give different preview headers and tax item paths (`total.tax.taxes[]` in May, `total.tax.tax_items[]` in November). Neither capture tests whether the older version or field spelling is rejected or aliased.\n\n[[stripe-payment-line-items]] is a separate PaymentIntent feature. Its 2026-05-11 [[source-stripe-payment-line-items]] restriction table states that card line items cannot be sent alongside car-rental, lodging, or airline industry metadata, and gives PayPal the same restriction ([[raw/stripe-payment-line-items-2026|dated line-item raw]], line 26). Its Klarna column refers to Extra Merchant Data in private preview; do not generalize the card/PayPal rule to Klarna or infer current preview access.",
+      "reason": "Corrects dated preview header and possible rather than guaranteed Klarna benefit; replaces the unsupported universal mutual-exclusion claim with the separately documented 2026-05-11 card/PayPal restriction and qualified Klarna boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not infer account enablement or older-version runtime rejection from the new preview header.",
+        "The dated payment-line-items restriction must not be generalized to Klarna or treated as a tested current account outcome."
+      ]
+    },
+    {
+      "update_id": "industry-metadata-concept-tax-phone",
+      "target_path": "wiki/concepts/stripe-industry-metadata.md",
+      "old_text": "Can be passed at create, update, confirm, or capture. **Immutable after capture.** Each update is a full hash replacement.",
+      "new_text": "Can be passed at create, update, confirm, or capture. **Immutable after capture.** Each update is a full hash replacement. In the 2026-11-07 field tables and examples, each vertical's tax entries use `total.tax.tax_items[]` (the 2026-05-11 capture used `total.tax.taxes[]`). Live card car-rental and lodging customer-service phones, and the optional lodging property phone, follow the new guide's E.164 wording; non-US numbers include `+` and country code, while all-zero values are a sandbox allowance only.",
+      "reason": "Adds the corrected documented request path and scoped live-mode phone conditions without weakening capture finality.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "The two captures do not establish a migration deadline or whether the old tax field is accepted."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/industry-metadata, [[source-stripe-industry-metadata]] now records the November guide's `2026-07-29.preview` header (new:9-11), compared with `2025-11-17.preview` in the May capture (old:8-10). It keeps the card private-preview and Klarna public-preview split (old:42-44; new:43-45), the supported travel MCCs (old:18-27; new:19-28), and the possible, not assured, Klarna authorization or risk benefit (old:14; new:15). The change does not prove the old header fails for an existing integration.",
+    "Q2": "At https://docs.stripe.com/industry-metadata, [[source-stripe-industry-metadata]] documents `total.tax.tax_items[]` in November's car, lodging, and flight tables and examples (new:301-304,345-348,396-399,569-572) while retaining `total.tax.taxes[]` as May evidence (old:303-306,348-351,400-403,575-578). It corrects live card phone guidance to E.164 with the stated country-code rules and a sandbox-only all-zero allowance (old:272-274; new:270-272). It preserves first-entry card versus all-entry Klarna propagation (old:56-63; new:57-65), full-hash replacement and capture finality (old:530-536,819-821; new:524-530,816-818), and the sandbox outcome boundary (old:1045-1055; new:1042-1052). The sample switch is visible at old:545 versus new:539, and the confirm return URL appears at new:684 after the older opening at old:687-690; these sample fields and amounts do not become universal requirements."
+  },
+  "status": "candidate_ready"
+}

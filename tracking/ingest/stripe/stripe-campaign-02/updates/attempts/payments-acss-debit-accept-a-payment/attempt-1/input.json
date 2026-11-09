@@ -1,0 +1,86 @@
+{
+  "job_id": "payments-acss-debit-accept-a-payment",
+  "queue_id": 143,
+  "canonical_url": "https://docs.stripe.com/payments/acss-debit/accept-a-payment",
+  "raw_path": "raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "91087ce62c9504156d66cc98efb05c3be1271b1d52101887369532e84458318f",
+  "prior_raw_path": "raw/stripe-acss-accept-payment-2025.md",
+  "prior_raw_sha256": "e2062c2bc7e9fc27c001daacbcd320080a7da58a9325654e8cb61f89d04fcbc7",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa6b66a498cb6778d334149f/content.diff",
+  "diff_sha256": "789558487e0fdc65dbb0542a5801679ccf0ecab7bc0cff0d7c0ce01a5bb4b043",
+  "source_target": "wiki/sources/source-stripe-acss-accept-payment.md",
+  "source_before_sha256": "5e8e1a546fb9183f2e6eec12aa1c4be3992aef63e0a28a80077df0cda10f813b",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-acss-debit-accept-a-payment/attempt-2/receipt.json",
+  "receipt_sha256": "9acdc6bc20e69b2b5f827c1f06902c7a18a60bd75c7215f946636ad7d4bc559c",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-acss-debit-accept-a-payment/attempt-2/review.json",
+  "review_sha256": "363afc0472ea5c8c4634aa90e3d217348d941f18c2e937ceffb3b81fa35bff25",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "New raw lines 5-14 are a navigation index for this same canonical URL, pointing to Checkout and Direct API variants. Its omission of the 2025 detailed instructions is not evidence that PAD support, schemas, examples, webhook states, or test behavior were removed or deprecated. Do not add this 14-line navigation capture as a factual raw_files replacement; retain the prior full capture and scope any current verification to separately captured variants.",
+    "Current source line 21 already correctly says a Checkout Session's line items share one currency, cad or usd, matching old raw lines 22-44. The older guide itself has a narrower step at old line 58 saying all line_items use cad, in tension with its compatibility/presentment section. Preserve this dated internal tension and safer-CAD advice without turning that setup step into universal CAD-only eligibility. Source line 29's cad PaymentIntent is an example rather than a universal Direct API currency requirement; old line 468 says usually cad.",
+    "Source line 32 describes processing as instant verified; old full guide line 669 says the bank account was instantly verified or verification was not necessary. The source line 45's processing webhook means submitted/processing, not final payment or guaranteed bank receipt. Fulfillment belongs after payment_intent.succeeded per old lines 754-768. Concept line 85 also compresses processing to verified and should preserve the alternative.",
+    "Source line 20 and concept line 83 present explicit payment_method_types: ['acss_debit'] as unconditional Checkout setup. Old raw line 57 expressly permits omitting payment_method_types when payment methods are managed in the Dashboard through default dynamic payment methods, while still requiring payment_method_options. Queue a scoped source and concept correction. Preserve mandatory mandate options from old lines 61-67 and 472-478: payment_schedule and transaction_type required, interval_description conditional for interval or combined. Checkout subscription mode is described as unsupported in this dated capture, not a current global conclusion (old lines 26-35).",
+    "Preserve old verification and debit timing separation: instant or microdeposit verification, two microdeposits appearing in 1-2 business days, three failed attempts or 10-day timeout reverting to requires_payment_method, and up to five business days for success/failure notification after initiating debit (old lines 661-768). Target_date is 3-15 days, best effort, with weekend/holiday adjustments and incompatibility with microdeposits (old lines 373-386 and 923-936).",
+    "Retain sandbox test tokens/accounts as tests, not live settlement promises, and keep Accounts v2 preview versus Customer v1 example distinction from old lines 416-528. The new index provides routes but no fresh authority to revise those historical details."
+  ],
+  "approved_conflicts": [
+    "Old raw line 58 says all Checkout line_items use cad, narrower than old lines 22-44 allowing cad or usd; current source line 21 accurately preserves the broader same-currency condition. The new index does not resolve the guide's internal tension.",
+    "Source line 20 and concept line 83 omit the Dashboard-managed dynamic-method exception to explicit payment_method_types at old raw line 57; payment_method_options is still required in that path.",
+    "Source line 32 and concept line 85 imply processing means verified, omitting old raw line 669's verification-was-not-necessary alternative; processing is not succeeded.",
+    "New raw index lines 11-14 contains no detailed capability or state text; promoting it as a substantive replacement would sever the source's factual provenance."
+  ],
+  "historical_claims_to_preserve": [
+    "Older full capture documents separate Checkout and Direct API variants at old lines 8-10 and 395-401; new raw lines 11-14 point to corresponding variant URLs.",
+    "Checkout supports cad or usd presentment for this dated guide, but all line items in one Session must share currency; CAD is safer if the customer's account cannot accept USD debit (old lines 20-44). Old line 58 separately says all line_items use cad in a setup step, an unresolved internal wording tension rather than a universal currency limit.",
+    "When Dashboard-managed dynamic payment methods are used, explicit payment_method_types can be omitted, but payment_method_options remains necessary (old lines 54-59).",
+    "PAD is delayed notification; typically five business days to arrive, and PaymentIntent success/failure notice can take up to five business days (old lines 16 and 754-768).",
+    "PAD mandate authorization and conditional schedule fields, instant or microdeposit verification, 10-day verification timeout, and webhook-confirmed fulfillment remain old-capture facts (old lines 61-67, 661-768).",
+    "Old source's test tokens, account numbers and microdeposit values are sandbox examples only (old lines 148-195 and 770-810)."
+  ],
+  "unresolved_questions": [
+    "The new captured root index does not state the current contents of either variant. This comparison cannot assert present support for Checkout subscription mode, account eligibility, SDK behavior, or any changed detailed workflow without separately reviewed variant captures.",
+    "Older capture's Accounts v2 public-preview language and date-specific integration examples may have evolved; the new navigation index does not resolve their current applicability."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-acss-debit.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-acss-debit-accept-a-payment/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "9acdc6bc20e69b2b5f827c1f06902c7a18a60bd75c7215f946636ad7d4bc559c",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/payments-acss-debit-accept-a-payment/attempt-2/review.json",
+  "approved_triage_review_sha256": "363afc0472ea5c8c4634aa90e3d217348d941f18c2e937ceffb3b81fa35bff25",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw2",
+  "reviewer_agent": "/root/s2ua1",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-acss-debit-accept-a-payment-2026-11-07.md",
+      "sha256": "91087ce62c9504156d66cc98efb05c3be1271b1d52101887369532e84458318f",
+      "lines": 14
+    },
+    {
+      "path": "raw/stripe-acss-accept-payment-2025.md",
+      "sha256": "e2062c2bc7e9fc27c001daacbcd320080a7da58a9325654e8cb61f89d04fcbc7",
+      "lines": 940
+    },
+    {
+      "path": "wiki/sources/source-stripe-acss-accept-payment.md",
+      "sha256": "5e8e1a546fb9183f2e6eec12aa1c4be3992aef63e0a28a80077df0cda10f813b",
+      "lines": 76
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/fa6b66a498cb6778d334149f/content.diff",
+      "sha256": "789558487e0fdc65dbb0542a5801679ccf0ecab7bc0cff0d7c0ce01a5bb4b043",
+      "lines": 942
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/payments-acss-debit-accept-a-payment-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/payments-acss-debit-accept-a-payment-review.json"
+}

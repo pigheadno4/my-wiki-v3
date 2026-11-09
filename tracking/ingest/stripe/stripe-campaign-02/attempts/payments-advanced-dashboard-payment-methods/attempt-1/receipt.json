@@ -1,0 +1,148 @@
+{
+  "job_id": "payments-advanced-dashboard-payment-methods",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md",
+  "raw_sha256": "53a22924460a0d4256f0317156f12a9dccb7d4ee0d4d4a0fe96efe90310d769b",
+  "prior_raw_path": "raw/stripe-migrate-payment-methods-dashboard-2025.md",
+  "prior_raw_sha256": "f41e0ee5cb8ebdc8345cb613786f4d665e8946667ddb5043e7e36b9af9c95c9f",
+  "source_target": "wiki/sources/source-stripe-migrate-payment-methods-dashboard.md",
+  "source_before_sha256": "804b6d12e585aa700dc5b55541ff45998d2ae1a7f497383d3c6c63b01f4daab7",
+  "read_ranges": {
+    "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-migrate-payment-methods-dashboard-2025.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 216
+      },
+      {
+        "start": 217,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 327
+      }
+    ],
+    "wiki/sources/source-stripe-migrate-payment-methods-dashboard.md": [
+      {
+        "start": 1,
+        "end": 75
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d5a4d9c760553896c3a94f3f/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 329
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Migrate payment methods to the Dashboard",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:5"
+    },
+    {
+      "text": "Learn how to turn on payment methods for your Checkout Session in the Dashboard.",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout Sessions API](https://docs.stripe.com/payments/advanced/dashboard-payment-methods.md?payment-ui=embedded-components)",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Payment Intents API](https://docs.stripe.com/payments/advanced/dashboard-payment-methods.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-advanced-dashboard-payment-methods-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "For existing Stripe Checkout integrations, you must remove the `payment_method_types` parameter to migrate payment methods preferences to the Dashboard.",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:18"
+    },
+    {
+      "text": "For existing Payment Intents integrations, you must remove the `payment_method_types` parameter to migrate payment methods preferences to the Dashboard.",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:227"
+    },
+    {
+      "text": "This step is only required if you plan to use any of the following payment methods:",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:64"
+    },
+    {
+      "text": "The customer\u2019s payment succeeded.",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:73"
+    },
+    {
+      "text": "When receiving payments with a delayed notification payment method, funds aren\u2019t immediately available.",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:66"
+    },
+    {
+      "text": "For payment methods with delayed notifications, also listen for `payment_intent.payment_failed` to handle failed payments that might occur after the initial confirmation.",
+      "location": "raw/stripe-migrate-payment-methods-dashboard-2025.md:263"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November 7 capture of https://docs.stripe.com/payments/advanced/dashboard-payment-methods is a 14-line variant index (new lines 5-14) linking Checkout Sessions embedded-components and Payment Intents elements pages. The April 21 capture bundled full versions of both paths (old lines 8-327). The apparent removal in the diff is a rendering or capture-structure change; it does not establish changed payment-method behavior or deprecation. Neither linked variant body is pinned in this unit.",
+    "The dated old guide says removing payment_method_types migrates preferences to Dashboard management for existing Checkout Sessions and Payment Intents integrations (old lines 18-20 and 227-229). Non-default methods such as bank redirects are initially disabled on upgrade and must be re-enabled in Dashboard. Current source lines 13 and 17-19 retain this main split and warning; keep them tied to the April capture rather than treating the November index as renewed behavioral proof.",
+    "Current source lines 29-30 frame nine delayed-notification methods as requiring additional webhook handling. The old Checkout section says the step is only required if the integration plans to use listed methods (old line 64), and its preceding paragraph conditions a webhook update on automatic fulfillment and adding a first delayed method (old lines 60-62). Correct the source to preserve those conditions rather than implying every migration requires those webhooks.",
+    "Current source line 37 labels checkout.session.async_payment_succeeded as 'Funds cleared'. The old event table says the customer payment succeeded and recommends fulfilling the purchase (old line 73); it does not assert balance availability or settlement. Correct the event description to 'Payment succeeded' while preserving the source's paid-status check on checkout.session.completed (old lines 72-74, 125-156).",
+    "The old Payment Intents variant recommends payment_intent.succeeded and, for delayed methods, payment_intent.payment_failed (old lines 259-263). Current source lines 40-45 correctly distinguish that event family from Checkout Session events. The source's April raw_files pointer should remain the factual evidence; the November index is navigation-only."
+  ],
+  "substantive_changes": [
+    "No substantive payment-method migration, wallet-default, or delayed-payment behavior change is established by the November index. Independently, the existing source summary needs a material accuracy correction to the conditional webhook step and the success-event description, based on its already-retained April guide."
+  ],
+  "historical_claims_to_preserve": [
+    "April 21 guide: the migration instruction to remove payment_method_types applies to existing Checkout Sessions and Payment Intents paths separately, and previously configured non-default methods may need Dashboard re-enablement (old lines 18-20, 227-229).",
+    "April 21 guide: Apple Pay enabled and Google Pay disabled by default in the described setup; automatic tax without shipping address can hide Google Pay even when enabled (old lines 48-50, 247-249).",
+    "April 21 guide: delayed-payment handling is conditional on the merchant using listed methods and on the fulfillment integration; Checkout completed can indicate authorization while payment_status is unpaid, with async success or failure later, whereas Payment Intents uses its own succeeded/payment_failed events (old lines 60-74, 125-156, 259-263).",
+    "April 21 test cards and bank details in source lines 47-65 are test-mode examples, not production payment guarantees (old lines 174-215 and 286-327)."
+  ],
+  "conflicts": [
+    "Source lines 29-30 overstate a conditional delayed-notification integration step as a blanket requirement, compared with old lines 60-64.",
+    "Source line 37's 'Funds cleared' is stronger than old line 73's 'payment succeeded' and can misstate settlement or balance availability; old line 66 explicitly warns that delayed-method funds are not immediately available."
+  ],
+  "unresolved_questions": [
+    "The November variant links at new lines 13-14 were not captured as detailed pages in this pinned job, so their current settings, eligibility, event guidance, and any changes after April are unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-checkout.md",
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/advanced/dashboard-payment-methods, the November capture is a variant index (new lines 9-14), separating Checkout Sessions embedded-components and Payment Intents elements links. The April capture contained both full paths (old lines 8-327). This is a navigation and capture-structure difference, with no proven change to Dashboard migration, payment-method defaults, or delayed-payment handling. [[source-stripe-migrate-payment-methods-dashboard]] remains a dated summary of the April guide; the new index does not replace its factual raw source.",
+    "Q2": "The existing [[source-stripe-migrate-payment-methods-dashboard]] needs a targeted accuracy correction for https://docs.stripe.com/payments/advanced/dashboard-payment-methods. Its source lines 29-30 describe nine delayed methods as unconditionally requiring extra webhook handling, while the April guide makes that step conditional on using those methods and the relevant fulfillment flow (old lines 60-64). Source line 37 should say checkout.session.async_payment_succeeded reports payment success, not 'Funds cleared': old lines 66 and 73 do not guarantee immediate balance availability. Keep the separate Checkout and Payment Intents event families, and treat the November index (new lines 11-14) as navigation only."
+  }
+}

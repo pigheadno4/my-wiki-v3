@@ -1,0 +1,93 @@
+{
+  "job_id": "disputes-api-visa-ce3",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-api-visa-ce3-2026-11-07.md",
+  "raw_sha256": "87afed1e899ae721465726aba41732a576b27e9eb1f8f5f2e9754daf880cc484",
+  "source_before_sha256": "5b0aa0c1c42928c30d33fbf28a6754d527702f44bbb0ffe0958d757a0cd09359",
+  "source_page": "---\ntitle: \"Stripe \u2014 Visa Compelling Evidence 3.0 Disputes\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/disputes/api/visa-ce3\"\nraw_files:\n  - \"stripe-disputes-visa-ce3-2026.md\"\ntags: [stripe, disputes, visa, ce-3, compelling-evidence, friendly-fraud, api]\n---\n\n## Summary\n\nAPI-level details for submitting Visa Compelling Evidence 3.0 (CE 3.0) to fight friendly fraud disputes. Covers qualifying criteria, the enhanced evidence object structure, status lifecycle, and test setup. Qualifying evidence can increase the chance of issuer reversal; CE eligibility and submission do not establish the overall dispute outcome. See [[stripe]] and [[disputes]].\n\n## Qualifying Criteria\n\nAll of the following must be true:\n\n1. Visa transaction with **network reason code 10.4**\n2. **2 prior undisputed transactions** using the same payment method, **120\u2013364 days** before the disputed transaction; must be paid, not validation charges\n3. **Product descriptions** provided for all 3 transactions (disputed + 2 prior)\n4. `merchandise_or_services` set to `merchandise` or `services`\n5. All 3 transactions share **2 main** OR **1 main + 1 secondary** evidence elements:\n\n| Main elements | Secondary elements |\n| --- | --- |\n| Customer purchase IP | Shipping address |\n| Customer device fingerprint OR customer device ID | Customer email address |\n| | Customer Account ID |\n\n> Device fingerprint + device ID together is NOT a valid combination.\n\n## API Object Structure\n\nEvidence goes in `evidence.enhanced_evidence.visa_compelling_evidence_3`:\n\n```json\n{\n  \"enhanced_evidence\": {\n    \"visa_compelling_evidence_3\": {\n      \"disputed_transaction\": {\n        \"customer_email_address\": \"...\",\n        \"customer_purchase_ip\": \"...\",\n        \"merchandise_or_services\": \"merchandise\",\n        \"product_description\": \"...\"\n      },\n      \"prior_undisputed_transactions\": [\n        { \"charge\": \"ch_...\", \"customer_email_address\": \"...\", \"customer_purchase_ip\": \"...\", \"product_description\": \"...\" },\n        { \"charge\": \"ch_...\", \"customer_email_address\": \"...\", \"customer_purchase_ip\": \"...\", \"product_description\": \"...\" }\n      ]\n    }\n  }\n}\n```\n\nEligibility tracked in `evidence_details.enhanced_eligibility.visa_compelling_evidence_3`.\n\n## CE 3.0 Status Values\n\n| Status | Meaning |\n| --- | --- |\n| `requires_action` | Check `required_actions[]` array for what's missing |\n| `qualified` | Ready to submit CE 3.0 evidence |\n| `not_qualified` | Evidence ineligible; standard submission used instead |\n\nCE 3.0 status is separate from `dispute.status` (won/lost).\n\n## Submission Notes\n\n- Use `submit: false` to save evidence without submitting\n- Stripe advises also filling the standard `evidence` object as fallback if Visa disapproves the CE 3.0 submission; this is advice for the standard path, not an additional CE eligibility criterion\n- When Stripe identifies a dispute as CE 3.0 eligible, it **attempts** to autofill the disputed transaction and prior-transaction evidence; manual CE 3.0 evidence can still be added. Complete automatic evidence is not guaranteed. Stripe must have processed all prior undisputed transactions\n- Check `enhanced_eligibility_types` array on dispute object for eligibility\n\n## Testing\n\n| Method | Value |\n| --- | --- |\n| Card number | `4000000404000038` |\n| PaymentMethod | `pm_card_createCe3EligibleDispute` |\n| Token | `tok_createCe3EligibleDispute` |\n\nIn the captured test environment, any two test transactions can be used as `prior_undisputed_transactions` without validating their payment method or transaction date; primary and secondary evidence elements are still validated. This exception does not relax live CE 3.0 criteria. Simulate overall dispute win/loss with `uncategorized_text: \"winning_evidence\"` or `\"losing_evidence\"`; CE qualification status is separate.\n\n## Related Pages\n\n- [[disputes]] \u2014 concept page (updated with CE 3.0 API details)\n- [[source-stripe-disputes-api]] \u2014 general disputes API (retrieve/update/list)\n- [[source-stripe-disputes-best-practices]] \u2014 CE 3.0 Dashboard workflow\n- [[stripe-3d-secure]] \u2014 liability shift for fraudulent disputes\n\n## Raw Sources\n\n- [[raw/stripe-disputes-visa-ce3-2026|May 9, 2026 Visa CE 3.0 API guide]] \u2014 factual capture for eligibility, attempted autofill, submission, and test conditions.\n\n## Related raw API references\n\n- [[raw/stripe-disputes-api-visa-ce3-2026-11-07|November 7, 2026 same-URL CE 3.0 capture]] \u2014 presentation and sandbox-terminology variant; no new production eligibility or autofill guarantee.\n",
+  "quotes": [
+    {
+      "text": "When Stripe identifies a disputed transaction as eligible for Visa CE 3.0, Stripe attempts to autofill the disputed transaction and evidence from previous undisputed transactions. You have the option to manually add Visa CE 3.0 evidence if you believe the disputed transaction qualifies.",
+      "location": "raw/stripe-disputes-api-visa-ce3-2026-11-07.md:109"
+    },
+    {
+      "text": "Stripe must have processed all past undisputed transactions.",
+      "location": "raw/stripe-disputes-api-visa-ce3-2026-11-07.md:111"
+    },
+    {
+      "text": "To update evidence without submitting it, make sure the [submit](https://docs.stripe.com/api/disputes/update.md#update_dispute-submit) parameter is set to `false`.",
+      "location": "raw/stripe-disputes-api-visa-ce3-2026-11-07.md:120"
+    },
+    {
+      "text": "In sandboxes, you can use any two test transactions as `prior_undisputed_transactions`. Stripe doesn\u2019t validate the prior transactions\u2019 payment method or transaction date while testing.",
+      "location": "raw/stripe-disputes-api-visa-ce3-2026-11-07.md:140"
+    },
+    {
+      "text": "The [Visa CE 3.0 status](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence_details-enhanced_eligibility-visa_compelling_evidence_3-status) doesn\u2019t impact the [dispute status](https://docs.stripe.com/api/disputes/object.md#dispute_object-status).",
+      "location": "raw/stripe-disputes-api-visa-ce3-2026-11-07.md:151"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "When Stripe identifies a disputed transaction as eligible for Visa CE 3.0, Stripe attempts to autofill the disputed transaction and evidence from previous undisputed transactions. You have the option to manually add Visa CE 3.0 evidence if you believe the disputed transaction qualifies.",
+      "location": "raw/stripe-disputes-visa-ce3-2026.md:108"
+    },
+    {
+      "text": "Stripe must have processed all past undisputed transactions.",
+      "location": "raw/stripe-disputes-visa-ce3-2026.md:110"
+    },
+    {
+      "text": "In test environments, you can use any two test transactions as `prior_undisputed_transactions`. Stripe doesn\u2019t validate the prior transactions\u2019 payment method or transaction date while testing.",
+      "location": "raw/stripe-disputes-visa-ce3-2026.md:139"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-api-visa-ce3-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 153
+      }
+    ],
+    "raw/stripe-disputes-visa-ce3-2026.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 152
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-visa-ce3.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 94
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a232a52acb935cb4a7c52433/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 113
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/api/visa-ce3, [[source-stripe-disputes-visa-ce3]] retains the same Visa 10.4, two prior paid undisputed same-payment-method transactions 120\u2013364 days earlier, descriptions, category and matching evidence conditions in old lines 12\u201330 and new lines 13\u201331. The November capture changes testing terminology from test environment at old lines 137\u2013139 to sandbox at new lines 138\u2013140 without relaxing production eligibility or proving a dispute win.",
+    "Q2": "The corrected [[source-stripe-disputes-visa-ce3]] candidate for https://docs.stripe.com/disputes/api/visa-ce3 says Stripe attempts to autofill evidence after identifying CE 3.0 eligibility and permits manual addition, as both old line 108 and new line 109 state; prior transactions must be Stripe-processed (old 110; new 111). It preserves `submit=false` as save-without-submission (old 119; new 120), treats standard evidence as recommended fallback, and separates CE qualification from overall won/lost dispute status (old 150; new 151)."
+  },
+  "status": "candidate_ready"
+}

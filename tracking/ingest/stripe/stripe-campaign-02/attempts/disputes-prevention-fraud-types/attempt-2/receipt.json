@@ -1,0 +1,120 @@
+{
+  "job_id": "disputes-prevention-fraud-types",
+  "attempt": 2,
+  "raw_path": "raw/stripe-disputes-prevention-fraud-types-2026-11-07.md",
+  "raw_sha256": "7c7827db3b1e04a3f9d833c95d09e4072fca88fac117832afe3701794e715004",
+  "prior_raw_path": "raw/stripe-disputes-fraud-types-2026.md",
+  "prior_raw_sha256": "49404f45253be6dc6b1fbc56207be923d7c20e582d370ddfb9023dd3f40a9174",
+  "source_target": "wiki/sources/source-stripe-disputes-fraud-types.md",
+  "source_before_sha256": "a544d08df180b1bbd60ddc719d44116307b2347323989cd670bd59d5c06d2138",
+  "read_ranges": {
+    "raw/stripe-disputes-prevention-fraud-types-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      },
+      {
+        "start": 37,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 72
+      }
+    ],
+    "raw/stripe-disputes-fraud-types-2026.md": [
+      {
+        "start": 1,
+        "end": 36
+      },
+      {
+        "start": 37,
+        "end": 71
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-fraud-types.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d58915749ed790234c0b1ab1/content.diff": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 36,
+        "end": 69
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "this prediction isn\u2019t a guarantee that a payment is fraudulent\u2014only that we have reason to believe it is.",
+      "location": "raw/stripe-disputes-prevention-fraud-types-2026-11-07.md:19"
+    },
+    {
+      "text": "While a customer can\u2019t dispute fully refunded payments, they can dispute partially refunded payments. Card network rules even allow for a payment that was partially refunded to be disputed for the full payment amount.",
+      "location": "raw/stripe-disputes-prevention-fraud-types-2026-11-07.md:23"
+    },
+    {
+      "text": "If the dispute is resolved in favor of the cardholder, the business suffers a loss equal to the amount of the payment, and the cost of any goods or services already provided. The business is also subject to a dispute fee.",
+      "location": "raw/stripe-disputes-prevention-fraud-types-2026-11-07.md:31"
+    },
+    {
+      "text": "if the funds can\u2019t be recovered from the seller, [responsibility](https://docs.stripe.com/connect/account-balances.md#accounting-for-negative-balances) for the disputed amount and fee is ultimately on the platform.",
+      "location": "raw/stripe-disputes-prevention-fraud-types-2026-11-07.md:57"
+    },
+    {
+      "text": "You can also self select previous non-fraud transactions and submit them to Visa as CE 3.0 using the [Stripe API](https://docs.stripe.com/disputes/api/visa-ce3.md).",
+      "location": "raw/stripe-disputes-prevention-fraud-types-2026-11-07.md:65"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "this prediction isn\u2019t a guarantee that a payment is fraudulent\u2014only that we have reason to believe it is.",
+      "location": "raw/stripe-disputes-fraud-types-2026.md:18"
+    },
+    {
+      "text": "While a customer can\u2019t dispute fully refunded payments, they can dispute partially refunded payments.",
+      "location": "raw/stripe-disputes-fraud-types-2026.md:22"
+    },
+    {
+      "text": "If the dispute is resolved in favor of the cardholder, the business suffers a loss equal to the amount of the payment, and the cost of any goods or services already provided. The business is also subject to a dispute fee.",
+      "location": "raw/stripe-disputes-fraud-types-2026.md:30"
+    },
+    {
+      "text": "if the funds can\u2019t be recovered from the seller, [responsibility](https://docs.stripe.com/connect/account-balances.md#accounting-for-negative-balances) for the disputed amount and fee is ultimately on the platform.",
+      "location": "raw/stripe-disputes-fraud-types-2026.md:56"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures cover suspected fraud, stolen cards and its overpayment variant, card testing, alternative refunds, marketplace fraud, and friendly fraud. The November capture adds no substantive rule change, but current source line 20 and disputes concept line 41 need a bounded correction to their pre-existing stolen-card loss claim.",
+    "The new capture retains critical state and identity boundaries: Stripe's post-authorization suspicion is a prediction, not proof (new 17-21; old 16-20); a partially refunded payment can still be disputed for the full amount (new 23; old 22); a successful stolen-card payment need not have been authorized (new 29; old 28).",
+    "Correct wiki/sources/source-stripe-disputes-fraud-types.md:20 and wiki/concepts/disputes.md:41 to state that the stolen-card business loss equal to the payment and supplied goods or services, plus the dispute fee, follows if the dispute is resolved for the cardholder (new raw:31; old raw:30). The present unconditional rows are misleading. Retain the separate marketplace rule: the Connect platform ultimately bears the disputed amount and fee if seller funds cannot be recovered (new raw:57; old raw:56).",
+    "Visa CE 3.0 support describes identifying qualifying prior transactions for evidence submission, pre-populating most required response evidence, and API self-selection; this is a likelihood statement, not a guaranteed win (new 65; old 64).",
+    "Diff 1-69 changes italic markup, heading whitespace, CAPTCHA hyperlink target, and marketplace example 'buyers' to 'customers'; none changes the fraud taxonomy, prevention advice, actor roles, liability conditions, or CE 3.0 behavior."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-05-10 source as dated evidence for the seven fraud patterns, but correct its stolen-card row at line 20 and the linked disputes concept at line 41. Both the old raw:30 and new raw:31 already condition the business loss on a cardholder-favorable dispute outcome; the November capture adds no new rule.",
+    "Retain partial-refund dispute exposure and same-method refund advice with their original card-payment context (old 22, 50; new 23, 51).",
+    "Retain the distinction between Stripe's suspected-fraud notice and a card issuer's early fraud warning (old 14-18; new 15-19), and conditional loss/platform responsibility rather than treating authorization or suspicion as a dispute outcome."
+  ],
+  "conflicts": [
+    "Current source table at line 20 and disputes concept at line 41 state stolen-card business loss and dispute fee unconditionally. Both captures condition the loss on the dispute being resolved in favor of the cardholder (old raw:30; new raw:31). This pre-existing source/concept error requires a bounded correction even though the same-URL delta is nonsubstantive.",
+    "Current source at line 24 says the platform bears liability if unrecoverable, matching the raw's seller-recovery condition (old 56; new 57). No new reciprocal warning is required."
+  ],
+  "unresolved_questions": [
+    "The linked CE 3.0 API, card testing guide, and Connect negative-balance page were navigation only for this assigned comparison; this page alone does not establish account eligibility, exact evidence acceptance, or a particular dispute outcome."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/disputes.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/disputes/prevention/fraud-types, the new capture describes the same seven fraud patterns, but [[source-stripe-disputes-fraud-types]] line 20 omits a material condition. Stolen-card business loss and dispute fee follow a dispute resolved for the cardholder (new raw:31; old raw:30); success of the original payment is not proof of authorization (new raw:29; old raw:28). Stripe's suspected-fraud prediction is not guaranteed (new raw:19; old raw:18), and marketplace platform liability separately depends on seller funds being unrecoverable (new raw:57; old raw:56).",
+    "Q2": "For https://docs.stripe.com/disputes/prevention/fraud-types, diff 1-69 shows no substantive rule change: italics and heading whitespace are presentational, the CAPTCHA link target is navigation, and buyer-to-customer wording is editorial. Nevertheless, [[source-stripe-disputes-fraud-types]] line 20 and wiki/concepts/disputes.md line 41 require a bounded correction because both old raw:30 and new raw:31 condition stolen-card business loss on a cardholder-favorable dispute resolution. Preserve the separate seller-funds-unrecoverable condition for marketplace liability (old raw:56; new raw:57), the partial-refund dispute warning (old raw:22; new raw:23), and CE 3.0 as likelihood rather than guaranteed success (old raw:64; new raw:65)."
+  }
+}

@@ -56,7 +56,7 @@ Many wallets have limited recurring support. Before committing to wallet-based s
 
 Wallets with full subscription support: Amazon Pay, Apple Pay, Cash App Pay, Google Pay, Link, PayPal, Revolut Pay.
 
-## Google Pay Details
+## Google Pay Details (2026-05-07 combined guide)
 
 **Worldwide except India**. All supported presentment currencies. Same pricing as card.
 
@@ -66,11 +66,13 @@ Wallets with full subscription support: Amazon Pay, Apple Pay, Cash App Pay, Goo
 
 **Web domain registration**: same as Apple Pay — all domains including `www`. Direct charges Connect: per-connected-account.
 
-**Liability shift — three token types**:
+**Liability shift — three token types (2026-05-07 Google Pay capture)**:
 
-1. **DPAN** (Android device card): liability shift by default
-2. **FPAN** (Chrome/Google property card): 3D Secure required for global Visa liability shift; customize via Radar rules
-3. **E-commerce tokens**: **no liability shift, no 3D Secure**
+1. **DPAN** (Android device card): described as supporting liability shift by default
+2. **FPAN** (Chrome/Google property card): described as supporting global liability shift, including Visa, when 3D Secure is used; Radar rules can request 3D Secure
+3. **E-commerce tokens**: described as having neither liability shift nor 3D Secure support **at that time**
+
+The 2026-11-07 base-URL capture is a platform index only; current token-specific liability and 3D Secure support were not verified there. These dated descriptions do not guarantee a charge's liability outcome.
 
 **Visa liability shift for non-Stripe-hosted**: enable "Fraud Liability Protection for Visa Device Tokens" in Google Pay & Wallet Console.
 
@@ -104,7 +106,7 @@ Wallets with full subscription support: Amazon Pay, Apple Pay, Cash App Pay, Goo
 
 **Web domain registration**: all domains showing Apple Pay button must be registered (including `www` subdomains). Direct charges via Connect require per-connected-account registration.
 
-**iOS 16+**: merchant tokens (`PKPaymentRequest.recurringPaymentRequest`) enable MIT/recurring. Order tracking via `applePayContext(willCompleteWithResult:)`.
+**Apple Pay merchant tokens**: `PKPaymentRequest.recurringPaymentRequest` supports the recurring path under the dated version conditions summarized below from [[source-stripe-apple-pay-merchant-tokens]]. Order tracking via `applePayContext(willCompleteWithResult:)`.
 
 **App Clips**: `StripeApplePay` module is lightweight and App Clip-optimized.
 
@@ -116,17 +118,17 @@ Wallets with full subscription support: Amazon Pay, Apple Pay, Cash App Pay, Goo
 
 **Certificate renewal**: valid 25 months. Notifications at 30/15/7 days before expiry. Always use new Stripe CSR (never reuse). Upload to Stripe before activating on Apple Developer account. Keep both old and new certificates in Stripe Dashboard during transition (~5 min switch). No app update needed.
 
-**Conversion best practices**: add button to product pages/search results (Indiegogo +250%); default to Apple Pay for capable devices (Wish 2×); skip mandatory sign-up; collect account info post-payment.
+**Conversion best practices**: add button to product pages/search results (Indiegogo reported a 250% conversion-rate increase after express checkout); default to Apple Pay for capable devices (Wish reported a “2X higher conversion rate increase” in its A/B test of new Apple Pay-ready users, not a doubled overall conversion rate); skip mandatory sign-up; collect account info post-payment.
 
 **Cartes Bancaires via Apple Pay**: EUR only. iOS: `StripeAPI.additionalEnabledApplePayNetworks = [.cartesBancaires]` (one line). Web: automatic via Payment Element, Express Checkout Element, Checkout, Payment Request Button. Connect: verify `on_behalf_of` account supports Cartes Bancaires.
 
 **React Native network restriction**: `@stripe/stripe-react-native@0.74.0` adds `applePay.supportedNetworks` on iOS. Unlike `additionalEnabledNetworks`, it restricts the Apple Pay sheet to the supplied `PKPaymentNetwork` raw values and overrides the default and additionally enabled network set for that payment request.
 
-**Apple Pay recurring — DPAN vs MPAN**: DPAN is device-tied (deactivates on device switch); MPAN (merchant token) persists across devices. Each generates a one-time expiring cryptogram — **must consume via CIT (SetupIntent 0 USD validation) immediately**; if CIT fails, all subsequent MITs also fail. Apple Pay terms **forbid** using saved payment method for on_session payments. Tokens API deprecated for recurring — use PaymentIntents/SetupIntents.
+**Apple Pay recurring — DPAN vs MPAN**: The May 7, 2026 recurring guide says a device-tied DPAN can be unintentionally deactivated when a customer switches devices and adds the same card; the November merchant-token guide says a DPAN might stop working after device replacement or card removal. An MPAN is tied to the customer, underlying card and business and is described as more reliable across device switches, without guaranteeing every saved payment succeeds. Each returned credential has an expiring one-time cryptogram; conduct the first customer-initiated transaction (CIT) promptly, before expiration, using a SetupIntent 0 USD validation or a charge. If that CIT fails, later merchant-initiated transactions (MITs) using the same Card will likely also fail. For `usage=on_session` while the customer is in the flow, Apple Pay terms forbid reusing the saved payment method: the customer must authorize the transaction and generate a new cryptogram. Stripe discourages legacy Tokens and Charges for recurring Apple Pay and recommends PaymentIntents and SetupIntents; these captures do not announce a formal deprecation. See [[source-stripe-apple-pay-recurring]] and [[source-stripe-apple-pay-merchant-tokens]].
 
-**MPAN request types** (iOS 16+): `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations, iOS 16.4+). Pass as `applePay` param to Express Checkout Element or Payment Element. Checkout auto-handles. Fallback to DPAN if issuer doesn't support MPAN. Sigma `charges.card_token_type = 'mpan'` for auth rate monitoring.
+**MPAN request types**: `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations). The May 7, 2026 guide lists iOS >16.0 for recurring and reload, but >16.4 for deferred; its table is not repeated in November. For Elements with Payment Intents, pass the use-case `applePay` object to Express Checkout Element or web Payment Element. Stripe Checkout and Elements with Checkout Sessions request MPANs automatically when needed. If Apple Pay or the issuer lacks MPAN support, a DPAN is returned. Stripe stores the returned credential with the resulting `PaymentMethod` for standard saved off-session reuse. For an MPAN card update, `payment_method.automatically_updated` carries supported `data.object.card` fields (`exp_month`, `exp_year`, `last4`) for cached-value updates. Sigma `charges.card_token_type = 'mpan'` supports authorization-rate monitoring. See [[source-stripe-apple-pay-merchant-tokens]] for dated support and lifecycle details.
 
-**Liability shift**: globally supported for all major networks. **Visa exception**: iOS 16.2+ required globally; below 16.2 only gets liability shift if card issued in Europe. Disputes/refunds same process as card payments.
+**Liability shift**: The dated Apple Pay disputes guide describes global support for major networks, with a **Visa exception**: iOS 16.2+ is required globally; below 16.2, Visa liability shift applies only if the card was issued in Europe. **Saved off-session exception**: The May 7, 2026 recurring guide says saved DPAN/MPAN `usage=off_session` payments outside checkout do not get network liability shift and might have lower than average authorization rates. Disputes and refunds follow the card-payment process. See [[source-stripe-apple-pay-disputes-refunds]] and [[source-stripe-apple-pay-recurring]].
 
 ## Cash App Pay Details
 
@@ -391,18 +393,18 @@ See [[stripe-link]] for full coverage (two integration paths, eligibility criter
 
 - [[source-github-stripe-js]] - WeChat Pay `mobile_web` confirmation typing in 10.1.0, with explicit outcome/availability limits
 - [[source-stripe-wallets]] — hub page: 17 wallets, product/API matrices, subscription caveats, MoMo/GCash waitlist
-- [[source-stripe-apple-pay]] — Apple Pay: iOS/RN/Web, Stripe CSR required, domain registration, merchant tokens (iOS 16+), real card test
+- [[source-stripe-apple-pay]] — Apple Pay: iOS/RN/Web, Stripe CSR required, domain registration, request-type-dependent merchant-token support, real card test
 - [[source-stripe-pmd-registration]] — Domain registration guide: 6 PMs requiring it (Apple Pay required, + Amazon Pay/Google Pay/Klarna/Link/PayPal), PaymentMethodDomain API, iframe origin rules, Connect charge-type routing
 - [[source-stripe-apple-pay-best-practices]] — Apple Pay best practices: certificate renewal (25 mo, new CSR, dual certs in transition), express checkout, default to Apple Pay
 - [[source-stripe-apple-pay-cartes-bancaires]] — Cartes Bancaires + Apple Pay: EUR only, iOS one-line config, web automatic, Connect on_behalf_of caveat
 - [[source-github-stripe-react-native]] — React Native `0.74.0` evidence for per-request Apple Pay `supportedNetworks` restriction semantics
-- [[source-stripe-apple-pay-recurring]] — Apple Pay recurring: DPAN/MPAN cryptogram expiry, consume via SetupIntent CIT immediately, on_session forbidden, Tokens deprecated
-- [[source-stripe-apple-pay-merchant-tokens]] — Apple Pay MPAN types: recurring/auto-reload/deferred, Express Checkout Element config, Sigma card_token_type monitoring
-- [[source-stripe-apple-pay-disputes-refunds]] — Apple Pay disputes/refunds: liability shift (Visa iOS 16.2+ global, Europe below 16.2), same as card disputes
+- [[source-stripe-apple-pay-recurring]] — May 2026 recurring guide, with November presentation-only capture: conditional DPAN continuity, expiring cryptogram and prompt first CIT via SetupIntent validation or charge, likely MIT failure after a failed CIT, saved `usage=on_session` restriction, and Tokens/Charges migration advice without formal deprecation
+- [[source-stripe-apple-pay-merchant-tokens]] — May and November 2026 merchant-token guide: request types, dated platform support, Payment Intents versus Checkout Sessions configuration, MPAN/DPAN fallback, PaymentMethod reuse and update notifications
+- [[source-stripe-apple-pay-disputes-refunds]] — dated Apple Pay disputes/refunds guide: Visa iOS 16.2+/Europe liability condition and card dispute process; saved off-session liability exception is documented separately above
 - [[source-stripe-cash-app-pay]] — Cash App Pay: US-only, off-session merchant bears liability, no PM cloning across Connect, 90-day refunds
 - [[source-stripe-cash-app-pay-accept-payment]] — Cash App Pay integration: 4 paths + mobile, 60-min auth, 20× QR refresh, manual capture, live auto-approves
 - [[source-stripe-cash-app-pay-set-up-payment]] — Cash App Pay save/recurring: confirmCashappSetup(), mobile_auth_url 30-sec expiry, authorization text, revocation
-- [[source-stripe-google-pay]] — Google Pay: Android/RN/Web, DPAN/FPAN/e-commerce token liability shift, domain registration, Sigma card_token_type
+- [[source-stripe-google-pay]] — May 2026 combined Google Pay Android/RN/Web guide: dated DPAN/FPAN/e-commerce token liability scope, domain registration and Sigma card_token_type; November base URL is a navigation index
 - [[source-stripe-grabpay]] — GrabPay: SG/MY only, OTP redirect, no disputes/recurring/manual capture, mandatory branding guidelines
 - [[source-stripe-grabpay-accept-payment]] — GrabPay integration: 4 paths + mobile, no minimum charge, confirmGrabPayPayment(), Android needs billing name
 - [[source-stripe-link]] — Link: two PM type paths (link vs card+wallet), Instant Bank Payments exclusive, Thailand/Brazil Payment Element caveat

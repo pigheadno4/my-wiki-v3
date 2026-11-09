@@ -1,0 +1,91 @@
+{
+  "job_id": "disputes-prevention-verification",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-prevention-verification-2026-11-07.md",
+  "raw_sha256": "172a6ade66a6f61d07a437d5e0ab0c198b585954af88df2a2b8bf3b07f90c1bf",
+  "source_before_sha256": "ee4fe57455835265d415bdebc713a23d565312c6126928e0bf70a6ba86775910",
+  "source_page": "---\ntitle: \"Stripe \u2014 Card Verification Checks (CVC and AVS)\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/disputes/prevention/verification\nraw_files:\n  - \"stripe-disputes-prevention-verification-2026-11-07.md\"\n  - \"stripe-disputes-verification-2026.md\"\ntags: [stripe, cvc, avs, verification, fraud, disputes, card-checks, radar]\n---\n\n## Summary\n\nThe May and November 2026 captures give substantively the same guidance on CVC and address verification. Collected CVC, postal code, and billing street address can be passed for issuer checks on card payments. Failed checks can indicate fraud and merit review before fulfillment; a pass or unavailable check is not a guarantee of authorization, safety, compliance, or dispute outcome.\n\n## CVC Check\n\nA CVC or CVV is the three- or four-digit number printed on the card. Stripe says a cardholder physically possessing the card **should** have access to it; that is a security rationale, not proof that only the legitimate holder can know it. If a business requires the CVC with a card payment method during payment or when attaching that method to a customer profile, the issuer verifies it during transaction authorization.\n\nA business can enable a Dashboard Radar rule to block payments that **fail** issuer CVC verification in specified situations. That failed-check rule does not affect payments where the CVC check cannot be performed or is unavailable. Stripe gives wallets such as Apple Pay and off-session payments as examples that **do not require CVC**; this does not mean all such payments universally lack a verification result or bypass every fraud check. Rule behavior depends on configuration and whether the check ran.\n\nBusinesses cannot store the CVC. Stripe says fraudsters are therefore unlikely to obtain it through a computer breach, making it useful against that route of fraud. CVC verification does **not** protect against physical card theft or computers and websites with poor security. A failed CVC result is a risk signal, not a verdict on whether the transaction is fraudulent.\n\n## Address Verification (AVS)\n\nWhen postal code and billing street address are required with a card payment method during payment or attachment, the issuer checks them against the cardholder's address on file. A configured Radar rule can block payments that fail postal code (AVS) verification in specified situations.\n\nAVS can fail for a legitimate customer because of entry errors or a move not yet reported to the issuer. Support varies by country and issuer: some countries do not use postal codes and some issuers do not support street address verification. Stripe says most cards issued in the United States, Canada, and the United Kingdom support street address verification. A match alone does not establish that the cardholder authorized the payment.\n\n## Collection and Results\n\nStripe recommends collecting CVC, postal code, and billing address so the issuer can run applicable checks; if the required information is absent, the associated check cannot run. Read that general recommendation with the wallet and off-session qualification: those example flows do not require CVC. This guide does not impose a universal CVC collection requirement for every payment flow.\n\nThe capture says verification responses appear in the `Charge` object's `source` attribute and on the payment in the Dashboard. It does not establish the exact response shape for every wallet, off-session payment, integration, or API version. Review failed CVC or postal code checks before fulfillment rather than interpreting them as automatic proof of fraud.\n\n## Related Pages\n\n- [[disputes]] \u2014 dispute prevention context\n- [[stripe-radar]] \u2014 Radar rule context\n- [[stripe-declines]] \u2014 decline and outcome context\n- [[stripe]] \u2014 provider overview\n\n## Raw Sources\n\n- [[raw/stripe-disputes-prevention-verification-2026-11-07|Stripe card verification checks, 2026-11-07 capture]] \u2014 current captured guidance\n- [[raw/stripe-disputes-verification-2026|Stripe card verification checks, 2026-05 capture]] \u2014 substantively matching earlier guidance\n",
+  "quotes": [
+    {
+      "text": "A failed CVC or postal code check can indicate the payment is fraudulent, so review it carefully before fulfilling the order.",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:9"
+    },
+    {
+      "text": "This doesn\u2019t affect payments where the CVC check couldn\u2019t be performed or is unavailable.",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:19"
+    },
+    {
+      "text": "payments don\u2019t require it.",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:19"
+    },
+    {
+      "text": "However, CVC verification doesn\u2019t protect against the physical theft of a card, nor computers or websites with poor security.",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:21"
+    },
+    {
+      "text": "Support for AVS checks varies by country and card issuer.",
+      "location": "raw/stripe-disputes-prevention-verification-2026-11-07.md:29"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This doesn\u2019t affect payments where the CVC check couldn\u2019t be performed or is unavailable.",
+      "location": "raw/stripe-disputes-verification-2026.md:18"
+    },
+    {
+      "text": "only cardholders in physical possession of the card should have access to",
+      "location": "raw/stripe-disputes-verification-2026.md:16"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-prevention-verification-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "raw/stripe-disputes-verification-2026.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-verification.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e0c864b23b71029fff829502/content.diff": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "disputes-verification-cvc-scope",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "**CVC and AVS verification**: always collect CVC + postal + billing address at checkout. CVC protects against computer breaches (not physical theft); doesn't apply to wallets or off-session payments. AVS checks postal + street address \u2014 can fail for legitimate payments; mainly US/CA/UK. Enable Radar built-in rules to block failures. See [[source-stripe-disputes-verification]].",
+      "new_text": "**CVC and AVS verification**: Stripe recommends collecting CVC, postal code, and billing street address to enable applicable issuer checks; wallets such as Apple Pay and off-session payments do not require CVC. A configured Radar rule can block a **failed** CVC or postal code check in specified situations, but the failed-CVC rule does not affect a payment when that check cannot run or is unavailable. CVC is less likely to be obtained through a computer breach because businesses cannot store it, but it does not protect against physical card theft or insecure computers/websites. AVS support varies by country and issuer, and legitimate address errors or moves can cause failures; most US, Canadian, and UK cards support street address checks. A check result alone does not guarantee authorization or a dispute outcome. See [[source-stripe-disputes-verification]].",
+      "reason": "Qualify the overbroad CVC collection and wallet/off-session statements while preserving issuer, Radar, security, and AVS limitations in both captures.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "No account-specific Radar rule configuration, payment response, or authorization guarantee is established by this page."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/prevention/verification, [[source-stripe-disputes-verification]] now distinguishes CVC not being required from a claim that CVC never applies. The May capture at raw/stripe-disputes-verification-2026.md:18 and November capture at raw/stripe-disputes-prevention-verification-2026-11-07.md:19 say wallets and off-session payments do not require CVC and that a configured failed-CVC Radar rule does not affect payments when that check cannot run or is unavailable. Neither capture proves a universal verification response or exemption from all fraud checks.",
+    "Q2": "At https://docs.stripe.com/disputes/prevention/verification, [[source-stripe-disputes-verification]] preserves the conditional issuer-check and Radar-rule guidance. The May capture at raw/stripe-disputes-verification-2026.md:8-28 and November capture at raw/stripe-disputes-prevention-verification-2026-11-07.md:9-29 are substantively consistent. Stripe recommends collecting relevant CVC and address inputs to enable checks where applicable, says a failed result merits review, and notes AVS false failures and issuer or country variation. A pass does not guarantee authorization, compliance, or a dispute win."
+  },
+  "status": "candidate_ready"
+}

@@ -1,0 +1,120 @@
+{
+  "job_id": "payments-accept-a-payment",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "5f3f61e605f0b935db7c554926a05d115e1c7064434bcceede8408117b172d77",
+  "source_before_sha256": "c6675cfcf77fc280de470d73f78924222ff1eecb72c0f9857b501de25fa41975",
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment\"\ntype: source\ndate_ingested: 2026-11-09\ncanonical_url: https://docs.stripe.com/payments/accept-a-payment\noriginal_format: webpage\nraw_files:\n  - \"stripe-accept-a-payment-2025.md\"\n  - \"stripe-design-payments-integration-2025.md\"\ntags: [stripe, checkout, payment-element, payment-intents, mobile, ios, android, react-native, webhooks, saved-payment-methods]\n---\n\n## Summary\n\nThe 2026-11-07 capture of the base URL is a 20-line index linking to Checkout, Elements, and mobile variants. It contains no implementation body. The retained 2026-04-20 capture contains the detailed hosted Checkout, embedded Checkout, Checkout Sessions Elements, Payment Intents Elements, iOS, Android, and React Native guides. The index's omission of the older Payment Intents Elements link does not establish removal or deprecation. The parameterized November variant bodies were not captured here, so their current examples, availability, and version requirements remain unverified.\n\n## Web integration paths in the 2026-04-20 guide\n\n| Path | Checkout `ui_mode` | Dated integration distinction |\n| --- | --- | --- |\n| Stripe-hosted Checkout | Hosted redirect | Create a Checkout Session server-side and redirect the customer to its URL. |\n| Embedded Checkout form | `embedded_page` | Create a Checkout Session and render its embedded page; the older variant URL uses `ui=embedded-form`. |\n| Payment Element with Checkout Sessions API | `elements` | Initialize Checkout from the Session `client_secret` with `stripe.initCheckoutElementsSdk` or React `CheckoutElementsProvider`; confirm through Checkout actions. |\n| Payment Element with Payment Intents API | Not a Checkout `ui_mode` | Create a PaymentIntent, initialize Elements with its `client_secret`, and use `stripe.confirmPayment`; this is a distinct API flow. |\n\nThe November index links hosted Checkout, a variant labeled **Full embedded page** (`ui=embedded-page`), and Elements with `api-integration=checkout`. It also links iOS, Android, and React Native. The changed embedded-page label and query alone do not establish a behavior migration from the older embedded-form variant.\n\n## Checkout Sessions: dated behavior\n\n- The older hosted guide says a Checkout Session expires after 24 hours by default. It describes branding choices including preset fonts, corner radii, colors, and logo.\n- For the Checkout Sessions Elements variant, the Session `client_secret` initializes Checkout; `checkout.confirm` or loaded Checkout actions confirm the payment. The older document recommends this path for most integrations, while Payment Intents offers a separate lower-level flow. The raw page's agent-directed text is historical page content, not an instruction to this wiki.\n- The older guide shows `payment_intent_data.capture_method: 'manual'` on Session creation. The resulting PaymentIntent can later be captured via Dashboard or `stripe.paymentIntents.capture(id)`; obtain its ID from `session.payment_intent`.\n\n## Server-side payment events\n\n| Dated flow | Event | Meaning and response |\n| --- | --- | --- |\n| Checkout Sessions | `checkout.session.completed` | Customer completed the Session. For immediately paid orders, confirm paid status before fulfillment; for delayed methods, completion alone is not final payment success. |\n| Checkout Sessions | `checkout.session.async_payment_succeeded` | Delayed payment succeeded; fulfill according to the order's rules. |\n| Checkout Sessions | `checkout.session.async_payment_failed` | Delayed payment failed; notify the customer and offer a way to retry. |\n| Payment Intents and the older mobile variants | `payment_intent.succeeded` | Payment succeeded; use this server event for fulfillment or other post-payment work. |\n| Payment Intents and the older mobile variants | `payment_intent.processing` | Payment initiated but has not completed; communicate the pending status. |\n| Payment Intents and the older mobile variants | `payment_intent.payment_failed` | Payment failed; handle the failure and possible retry. |\n\nThe 2026-04-20 guide recommends server-side event handling because a client can leave before its callback runs. A redirect, return page, or completed sheet is not a universal paid-funds signal. Fulfillment timing remains conditional on the payment method and the order's risk tolerance.\n\n## Saved payment methods in the older Checkout guide\n\n- `payment_intent_data.setup_future_usage: 'off_session'` saves an eligible method for later off-session use; subscription mode can save for subsequent payments. Cards saved this way have `allow_redisplay: limited` and do not automatically prefill returning Checkout purchases.\n- `saved_payment_method_options.payment_method_save: 'enabled'` presents an optional consent checkbox in payment or subscription mode. If selected, Checkout saves with `allow_redisplay: always`, allowing eligible saved cards to prefill. `payment_method_remove: 'enabled'` can expose removal.\n- The save-checkbox path needs a customer-configured Account or Customer. For a new customer, the dated guide uses `customer_creation: 'always'`; without a customer object the customer and method are not saved through this path. Checkout can save cards and other methods for off-session charging but only prefills saved cards.\n- The older guide describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users. Participants in that preview need a preview API version. Its recommendation to model customers as customer-configured Accounts is conditional on that context; Customer v1 remains a documented alternative.\n\n## Mobile PaymentSheet in the older guide\n\n| Platform | Dated API shape |\n| --- | --- |\n| iOS (Swift) | `PaymentSheet`, `PaymentSheet.Configuration`, and `present(from:completion:)`; a `PaymentSheet.FlowController` supports a separate selection and confirmation flow. |\n| Android (Kotlin) | `PaymentSheet`, `PaymentSheet.Configuration`, and `presentWithPaymentIntent`; FlowController supports a separate flow. |\n| React Native | `useStripe()` exposes `initPaymentSheet` and `presentPaymentSheet`; `customFlow: true` can use `confirmPaymentSheetPayment` after selection. |\n\nWhen `allowsDelayedPaymentMethods` is enabled, a completed PaymentSheet result can precede final payment success or failure. The dated guide says to confirm the customer's order in the UI after a completed sheet, while waiting for successful payment before fulfilling goods. Keep the order acknowledgement, payment state, and fulfillment decision separate.\n\n## Test examples in the older guide\n\n| Number | Example outcome |\n| --- | --- |\n| `4242424242424242` | Card succeeds without authentication. |\n| `4000002500003155` | Card requires authentication. |\n| `4000000000009995` | Card declines with an insufficient-funds-like code. |\n| `6205500000000000004` | UnionPay card with variable-length number. |\n\nThese are test-mode examples from the dated guide, not live authorization guarantees.\n\n## Related Pages\n\n- [[source-stripe-checkout-sessions]] \u2014 Checkout Sessions API features and UI modes\n- [[source-stripe-payment-intents]] \u2014 PaymentIntent lifecycle and status\n- [[stripe-checkout]] \u2014 Checkout concept and fulfillment conditions\n- [[stripe-payment-intents]] \u2014 separate Payment Intents path\n- [[stripe]] \u2014 Stripe company page\n\n## Related raw API references\n\n- [[stripe-payments-accept-a-payment-2026-11-07]] \u2014 navigation-only variant index fetched 2026-11-07; links are discovery pointers, not captured implementation bodies\n\n## Raw Sources\n\n- [[stripe-accept-a-payment-2025]] \u2014 full integration guide fetched 2026-04-20: hosted and embedded Checkout, Checkout Sessions Elements, Payment Intents Elements, mobile PaymentSheet, webhooks, saved methods, auth and capture, and test examples\n- [[stripe-design-payments-integration-2025]] \u2014 historical integration overview: Payment Links, Checkout, Elements, and Mobile Elements\n",
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "[Stripe-hosted page](https://docs.stripe.com/payments/accept-a-payment.md?payment-ui=checkout&ui=stripe-hosted)",
+      "location": "raw/stripe-payments-accept-a-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "[Full embedded page](https://docs.stripe.com/payments/accept-a-payment.md?payment-ui=checkout&ui=embedded-page)",
+      "location": "raw/stripe-payments-accept-a-payment-2026-11-07.md:15"
+    },
+    {
+      "text": "[Elements](https://docs.stripe.com/payments/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+      "location": "raw/stripe-payments-accept-a-payment-2026-11-07.md:16"
+    },
+    {
+      "text": "[React Native](https://docs.stripe.com/payments/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+      "location": "raw/stripe-payments-accept-a-payment-2026-11-07.md:20"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This is a Stripe-hosted page for when payment-ui is checkout and ui is stripe-hosted.",
+      "location": "raw/stripe-accept-a-payment-2025.md:26"
+    },
+    {
+      "text": "set the [ui_mode](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-ui_mode) to `embedded_page`",
+      "location": "raw/stripe-accept-a-payment-2025.md:612"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-accept-a-payment-2025.md:1070"
+    },
+    {
+      "text": "For these payment methods, the final payment status isn\u2019t known when the `PaymentSheet` completes, and instead succeeds or fails later.",
+      "location": "raw/stripe-accept-a-payment-2025.md:3725"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payments-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-accept-a-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 6128
+      }
+    ],
+    "wiki/sources/source-stripe-accept-a-payment.md": [
+      {
+        "start": 1,
+        "end": 85
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dcf346de41dfd185880cc51f/content.diff": [
+      {
+        "start": 1,
+        "end": 6136
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "payments-accept-a-payment-checkout-completed",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "| `checkout.session.completed` | Payment succeeded | Fulfill order |",
+      "new_text": "| `checkout.session.completed` | Checkout Session completed; payment can still be pending for delayed methods | Check the Session's paid status before fulfillment; handle later asynchronous success or failure separately |",
+      "reason": "The dated Checkout variant describes completed separately from delayed async success/failure; the existing concept's unconditional success row contradicts its own delayed-method qualification.",
+      "quote_indexes": [],
+      "warnings": [
+        "2026-11-07 index is navigation-only; this correction is grounded in the 2026-04-20 guide."
+      ]
+    },
+    {
+      "update_id": "payments-accept-a-payment-checkout-route",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "- [[source-stripe-accept-a-payment]] \u2014 full integration guide (4 UI modes, mobile, test cards)",
+      "new_text": "- [[source-stripe-accept-a-payment]] \u2014 2026-11-07 variant index plus retained 2026-04-20 guide: hosted and embedded Checkout, Checkout Sessions Elements, separate Payment Intents Elements, mobile PaymentSheet, and test examples",
+      "reason": "The existing route's four UI modes wording hides the distinct Payment Intents API path and the November index-only capture.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Keep dated guide behavior distinct from the navigation-only new index."
+      ]
+    },
+    {
+      "update_id": "payments-accept-a-payment-checkout-saved-prefill",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "- **Save payment methods**: `payment_intent_data.setup_future_usage` (payment mode) or automatic (subscription mode); saved PMs don't appear for return purchases in Checkout",
+      "new_text": "- **Save payment methods**: `payment_intent_data.setup_future_usage` (payment mode) or automatic saving in subscription mode can save cards for later charges, but those cards have `allow_redisplay: 'limited'` and don't prefill returning Checkout purchases. With `saved_payment_method_options.payment_method_save: 'enabled'`, an optional customer consent checkbox can save an eligible card with `allow_redisplay: 'always'` for Checkout prefill; Checkout only prefills saved cards.",
+      "reason": "The existing unqualified non-prefill statement contradicts the dated guide's consent-based saved-card path and the concept's own save-during-payment section; the replacement keeps the setup_future_usage and subscription limitation while recognizing optional redisplay consent.",
+      "quote_indexes": [],
+      "warnings": [
+        "Grounded in the 2026-04-20 detailed guide at old:1030,1034-1036,1066,1078-1080; the 2026-11-07 capture is navigation-only."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/accept-a-payment, [[source-stripe-accept-a-payment]] now identifies the 2026-11-07 capture as a variant index (new:9-20) and retains the detailed 2026-04-20 guide as dated evidence. Its old hosted, embedded Checkout, Checkout Sessions Elements, Payment Intents Elements, iOS, Android, and React Native sections begin at old:24,574,1201,2099,3198,4316,5225. The deletion-heavy diff (diff:3-6136) reflects a capture representation change; the linked November variant bodies and any present-day Payment Intents availability remain unverified.",
+    "Q2": "At https://docs.stripe.com/payments/accept-a-payment, [[source-stripe-accept-a-payment]] corrects the old taxonomy: `embedded_page` belongs to embedded Checkout (old:611-613), `elements` to Checkout Sessions Elements (old:1245-1261), and Payment Intents Elements is a separate API variant (old:2099-2105). The new index links only hosted, full embedded page, and Checkout Sessions Elements web variants (new:13-16), without proving deprecation. The candidate scopes Checkout Session versus PaymentIntent webhook events (old:213-232,2822-2834), qualifies Accounts v2 availability (old:1068-1078), names iOS `PaymentSheet` correctly (old:3503-3543), and separates mobile sheet completion from delayed payment success and fulfillment (old:3723-3726,4811,5693-5696); new:17-20 only links mobile variant pages."
+  },
+  "status": "candidate_ready"
+}

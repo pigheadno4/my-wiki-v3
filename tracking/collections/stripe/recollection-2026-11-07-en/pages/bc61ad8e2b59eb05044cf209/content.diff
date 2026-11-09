@@ -1,0 +1,274 @@
+--- raw/stripe-usage-based-billing-recording-usage-s3-2025.md
++++ raw/stripe-billing-subscriptions-usage-based-recording-usage-in-bulk-2026-11-07.md
+@@ -18,7 +18,7 @@
+ You can upload your meter usage events as a CSV, JSON, or JSON Lines file.
+ 
+ > #### Need support for a different file format?
+->
++> 
+ > If you want to upload files with a different structure or in a custom format, [contact us](mailto:user-data-acquisition-platform@stripe.com).
+ 
+ ### File format and fields
+@@ -26,8 +26,7 @@
+ Make sure your file follows the sample file format:
+ 
+ #### CSV
+-
+-![Example of the CSV file format](assets/stripe-ubb-csv-format.png)
++![Example of the CSV file format](https://b.stripecdn.com/docs-statics-srv/assets/udap_ubb_csv_format.e5c12ef6a48b407ae9c0cf6c3b873aeb.png)
+ 
+ CSV file format
+ 
+@@ -64,12 +63,12 @@
+ 
+ Follow the [Meter Event](https://docs.stripe.com/api/billing/meter-event/object.md) schema when including the following fields in your file:
+ 
+-| Field             | Description                                                                                                                                              |
+-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| `identifier`      | A unique identifier for the event. If you don’t provide one, Stripe can generate the unique identifier. We recommend using a globally unique identifier. |
+-| `timestamp`       | The time that the event occurred, measured in seconds since the Unix epoch.                                                                              |
+-| `event_name`      | The name of the meter event.                                                                                                                             |
+-| `payload_columns` | The set of columns that contain key names for customer and numerical usage values:                                                                       |
++| Field | Description |
++| --- | --- |
++| `identifier` | A unique identifier for the event. If you don’t provide one, Stripe can generate the unique identifier. We recommend using a globally unique identifier. |
++| `timestamp` | The time that the event occurred, measured in seconds since the Unix epoch. |
++| `event_name` | The name of the meter event. |
++| `payload_columns` | The set of columns that contain key names for customer and numerical usage values:
+ 
+ - `payload_stripe_customer_id`: The ID of the customer that the event gets created against, either a customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-id) or a [Customer](https://docs.stripe.com/api/customers/object.md#customer_object-id). Find the `Account` ID (`acct_xxxx`) or `Customer` ID (`cus_xxxx`) on the [Customers](https://dashboard.stripe.com/customers) page.
+ - `payload_value`: The numerical usage value of the meter event. By default, the column name is `payload_value`. If you specified a different field name when creating the meter event, you must update the column name to match the key value. For example, if you specify tokens in the `value_settings`, update the column name to `payload_tokens`. |
+@@ -80,34 +79,34 @@
+ 
+ 1. Go to your [Amazon S3 console](https://s3.console.aws.amazon.com/).
+ 
+-1. Make sure to store your files in a designated S3 bucket that’s organized according to your import preferences. If needed, follow the [AWS guidelines](https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-bucket.html) to create an S3 bucket.
++2. Make sure to store your files in a designated S3 bucket that’s organized according to your import preferences. If needed, follow the [AWS guidelines](https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-bucket.html) to create an S3 bucket.
+ 
+    For successful retrieval, Stripe requires that file names adhere to [S3 object naming conventions](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html) and files are 1 GB maximum.
+ 
+-1. Remember the bucket name and region because you need them for future steps.
+-
+-1. Keep your [AWS Management Console](https://console.aws.amazon.com) open to configure an IAM role later.
++3. Remember the bucket name and region because you need them for future steps.
++
++4. Keep your [AWS Management Console](https://console.aws.amazon.com) open to configure an IAM role later.
+ 
+ ## Configure the Amazon S3 Connector to import files
+ 
+ First, use the Stripe Dashboard to add the Amazon S3 Connector.
+ 
+ 1. In the Stripe Dashboard, on the **Data management** > [Connectors](https://dashboard.stripe.com/data-management/connectors) tab, click **Add connector**.
+-1. In the **Choose connector** dialog, select **Amazon S3**.
+-1. In the **Requirements** dialog, enter a unique name for **Connector name**, then click **Next**.
+-1. Complete the steps in the **Permissions** dialog.
++2. In the **Choose connector** dialog, select **Amazon S3**.
++3. In the **Requirements** dialog, enter a unique name for **Connector name**, then click **Next**.
++4. Complete the steps in the **Permissions** dialog.
+ 
+ Next, configure the appropriate permissions for the Amazon S3 Connector.
+ 
+ 1. In the AWS Management Console, go to the [IAM console](https://console.aws.amazon.com/iam/).
+-1. Create a custom trust policy:
++2. Create a custom trust policy:
+    - In the navigation pane, click **Policies** > **Create policy**.
+    - Select **JSON**, and replace the existing policy text by copying and pasting the code block provided in the Stripe Dashboard.
+    - In the `Resource` section of the **Policy editor** code block, replace `USER_TARGET_BUCKET` with your intended bucket name.
+    - Click **Next**.
+    - Under **Policy details**, add a policy name. Optionally add any tags.
+    - Click **Create policy**.
+-1. Create a role:
++3. Create a role:
+    - In the navigation pane, click **Roles** > **Create role**.
+    - Select **Custom trust policy**, and copy and paste the code block provided in the Stripe Dashboard.
+    - Click **Next**.
+@@ -120,14 +119,15 @@
+    - Provide your [AWS account ID](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-identifiers.html#FindAccountId).
+    - Provide the Bucket Name and Region.
+    - If you use folders to organize your files in your Amazon S3 bucket, specify a folder within the above bucket. We only fetch data from the specified folder, not the entire bucket.
+-1. After you set up a new connector, the file preview validates that your credentials connect Stripe with the expected Amazon S3 bucket and folder. Stripe fetches all data modified in the last 90 days. This occurs every 5 minutes for objects with a `LastModified` date later than the last sync.
+-1. Preview the files available in the connected Amazon S3 bucket:
+-   - File names must be under 255 characters and include the appropriate extension, such as `.csv`, `.json`, or `.jsonl`.
++2. After you set up a new connector, the file preview validates that your credentials connect Stripe with the expected Amazon S3 bucket and folder. Stripe fetches all data modified in the last 90 days. This occurs every 5 minutes for objects with a `LastModified` date later than the last sync.
++3. Preview the files available in the connected Amazon S3 bucket:
++   - Object keys follow [Amazon S3 naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html) and can contain up to 1,024 UTF-8 bytes across the complete key. Include the appropriate extension, such as `.csv`, `.json`, or `.jsonl`.
++   - Objects must be non-empty files no larger than 1 GB. Stripe skips zero-byte objects and folder markers. Poll-size and file-count limits can defer eligible files to a later sync.
+    - Initial and recurring imports have an expected file format:
+      - JSON files have **Billing Meter Event Transaction Template - JSON**.
+      - JSON Lines files have **Billing Meter Event Transaction Template - JSONLINE**.
+      - CSV files have **Billing Meter Event Transaction Template - CSV**.
+-1. To create an active data connection and initiate the data import, click **Done**.
++4. To create an active data connection and initiate the data import, click **Done**.
+ 
+ After you upload a file to the Amazon S3 Connector, the usage events update within 5 minutes. This might take longer if your bucket contains a lot of unprocessed files.
+ 
+@@ -140,8 +140,8 @@
+ Avoid creating empty files, such as:
+ 
+ - CSV files that contain only the header row
+-- JSON files that contain only [] (empty square brackets)
+-- JSON Lines files that contain only {} (empty curly brackets)
++- JSON files that contain only [] (empty brackets)
++- JSON Lines files that contain only {} (empty braces)
+ 
+ Although Amazon S3 accepts non-zero byte files, they increase the object and file count, which might cause delays in the polling of files.
+ 
+@@ -151,7 +151,7 @@
+ 
+ For example, if you upload 100 files that each contain 100,000 records daily, it can take approximately 17 minutes to process the entire dataset (10 million events).
+ 
+-## Report and handle errors
++## Report and handle errors 
+ 
+ Stripe polls the files that you upload to the Amazon S3 bucket and then processes these files asynchronously. If we detect errors during processing, Stripe notifies you using [events](https://dashboard.stripe.com/events).
+ 
+@@ -161,10 +161,10 @@
+ 
+ You can subscribe to these events using a [webhook endpoint](https://dashboard.stripe.com/webhooks). Based on the event type, you can implement your own logic to handle these errors.
+ 
+-| Event                                  | Description                                                                                                                                                                                                                                                                                                                                                                           | Payload type |
+-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+-| `data_management.import_set.failed`    | Stripe creates a [data_management.import_set.failed](https://docs.stripe.com/api/events/types.md#event_types-data_management.import_set.failed) event when processing fails for an entire file. For example, if you omit a mandatory column, such as `event_name`. You can find the reason for failure in the `failed_reason` parameter of the event, and fix it before re-uploading. | `Snapshot`   |
+-| `data_management.import_set.succeeded` | Stripe creates a [data_management.import_set.succeeded](https://docs.stripe.com/api/events/types.md#event_types-data_management.import_set.succeeded) event when individual records fail in a partially processed file. For example, if you omit a value for a mandatory field, such as `stripe_customer_id` or `event_name`.                                                         |
++| Event | Description | Payload type |
++| --- | --- | --- |
++| `data_management.import_set.failed` | Stripe creates a [data_management.import_set.failed](https://docs.stripe.com/api/events/types.md#event_types-data_management.import_set.failed) event when processing fails for an entire file. For example, if you omit a mandatory column, such as `event_name`. You can find the reason for failure in the `failed_reason` parameter of the event, and fix it before re-uploading. | `Snapshot` |
++| `data_management.import_set.succeeded` | Stripe creates a [data_management.import_set.succeeded](https://docs.stripe.com/api/events/types.md#event_types-data_management.import_set.succeeded) event when individual records fail in a partially processed file. For example, if you omit a value for a mandatory field, such as `stripe_customer_id` or `event_name`.
+ 
+ You can find details of the failed records in the `status` parameter of the event. A `succeeded_with_errors` status indicates that at least one record failed because of invalid formatting. The `result.errors` gives the number of records that failed and the `file_id` of the file containing the failed records.
+ 
+@@ -176,10 +176,10 @@
+ 
+ For detailed information about these failures, you can subscribe to the following events using a [webhook endpoint](https://dashboard.stripe.com/webhooks).
+ 
+-| Event                                     | Description                                                            | Payload type |
+-| ----------------------------------------- | ---------------------------------------------------------------------- | ------------ |
+-| `v1.billing.meter.error_report_triggered` | This event occurs when a meter has invalid usage events.               | `thin`       |
+-| `v1.billing.meter.no_meter_found`         | This event occurs when usage events have missing or invalid meter IDs. | `thin`       |
++| Event | Description | Payload type |
++| --- | --- | --- |
++| `v1.billing.meter.error_report_triggered` | This event occurs when a meter has invalid usage events. | `thin` |
++| `v1.billing.meter.no_meter_found` | This event occurs when usage events have missing or invalid meter IDs. | `thin` |
+ 
+ ### Example payloads
+ 
+@@ -280,70 +280,69 @@
+ 
+ ### Listen to events
+ 
+-You can listen to events by setting up an [event destination](https://docs.stripe.com/event-destinations.md).
++You can listen to events by setting up an [event destination](https://docs.stripe.com/events/set-up-events.md).
+ 
+ 1. On the [Event destinations](https://dashboard.stripe.com/webhooks) tab in Workbench, click **Create new destination**. Alternatively, use this [template](https://dashboard.stripe.com/webhooks/create?payload_style=thin&events=v1.billing.meter.error_report_triggered%2Cv1.billing.meter.no_meter_found) to configure a new destination in Workbench with the two event types pre-selected.
+ 
+-1. Click **Show advanced options**, then select the **Thin** payload style.
+-
+-1. Select `v1.billing.meter.error_report_triggered` and `v1.billing.meter.no_meter_found` from the list of events.
+-
+-1. Create a handler to process the event.
+-
+-   #### Node.js
+-
+-   ```javascript
+-   const express = require("express");
+-   const { Stripe } = require("stripe");
+-
+-   const app = express();
+-
+-   const apiKey = process.env.STRIPE_API_KEY;
+-   const webhookSecret = process.env.WEBHOOK_SECRET;
+-
+-   const client = new Stripe(apiKey);
+-
+-   app.post(
+-     "/webhook",
+-     express.raw({ type: "application/json" }),
+-     async (req, res) => {
+-       const sig = req.headers["stripe-signature"];
+-
+-       try {
+-         const thinEvent = client.parseThinEvent(req.body, sig, webhookSecret);
+-
+-         // Fetch the event data to understand the failure
+-         const event = await client.v2.core.events.retrieve(thinEvent.id);
+-         if (event.type == "v1.billing.meter.error_report_triggered") {
+-           const meter = await event.fetchRelatedObject();
+-           const meterId = meter.id;
+-           // Record the failures and alert your team
+-           // Add your logic here
+-         }
+-         res.sendStatus(200);
+-       } catch (err) {
+-         console.log(`Webhook Error: ${err.message}`);
+-         res.status(400).send(`Webhook Error: ${err.message}`);
+-       }
+-     },
+-   );
+-
+-   app.listen(4242, () => console.log("Running on port 4242"));
++2. Click **Show advanced options**, then select the **Thin** payload style.
++
++3. Select `v1.billing.meter.error_report_triggered` and `v1.billing.meter.no_meter_found` from the list of events.
++
++4. Create a handler to process the event.
++
++   #### Python
++
++   ```python
++   import os
++   from stripe import StripeClient
++   from stripe.events import V1BillingMeterErrorReportTriggeredEvent
++   
++   from flask import Flask, request, jsonify
++   
++   app = Flask(__name__)
++   api_key = os.environ.get('STRIPE_API_KEY')
++   webhook_secret = os.environ.get('WEBHOOK_SECRET')
++   
++   client = StripeClient(api_key)
++   
++   @app.route('/webhook', methods=['POST'])
++   def webhook():
++     webhook_body = request.data
++     sig_header = request.headers.get('Stripe-Signature')
++   
++     try:
++       thin_event = client.parse_thin_event(webhook_body, sig_header, webhook_secret)
++   
++       # Fetch the event data to understand the failure
++       event = client.v2.core.events.retrieve(thin_event.id)
++       if isinstance(event, V1BillingMeterErrorReportTriggeredEvent):
++         meter = event.fetch_related_object()
++         meter_id = meter.id
++   
++         # Record the failures and alert your team
++         # Add your logic here
++   
++       return jsonify(success=True), 200
++     except Exception as e:
++       return jsonify(error=str(e)), 400
++   
++   if __name__ == '__main__':
++     app.run(port=4242)
+    ```
+ 
+-1. Test your handler by configuring a [local listener](https://docs.stripe.com/cli/listen) with the [Stripe CLI](https://docs.stripe.com/stripe-cli.md) to send events to your local machine for testing before deploying the handler to production. Use the `--forward-thin-to` flag to specify which URL to forward the `thin` events to and the `--thin-events` flag to specify which thin events to forward to your application. You can forward all thin events with an asterisk (`*`), or a subset of thin events.
++5. Test your handler by configuring a [local listener](https://docs.stripe.com/cli/listen) with the [Stripe CLI](https://docs.stripe.com/cli.md) to send events to your local machine for testing before deploying the handler to production. Use the `--forward-thin-to` flag to specify which URL to forward the `thin` events to and the `--thin-events` flag to specify which thin events to forward to your application. You can forward all thin events with an asterisk (`*`), or a subset of thin events.
+ 
+    ```sh
+    $ stripe listen --forward-thin-to localhost:4242/webhooks --thin-events "*"
+    ```
+ 
+-1. Trigger test events to your handler. Use the [trigger function](https://docs.stripe.com/cli/trigger) to run the following commands, which simulates the respective events in your account for testing.
++6. Trigger test events to your handler. Use the [trigger function](https://docs.stripe.com/cli/trigger) to run the following commands, which simulates the respective events in your account for testing.
+ 
+    ```sh
+    $ stripe trigger v1.billing.meter.error_report_triggered --api-key <your-secret-key>
+    $ stripe trigger v1.billing.meter.no_meter_found --api-key <your-secret-key>
+    ```
+ 
+-1. If you process events with a webhook endpoint, [verify the webhook signatures](https://docs.stripe.com/webhooks.md#verify-official-libraries) to secure your endpoint and validate all requests are from Stripe.
+-
+-1. Correct the invalid events and save them to a new file. Then, upload the file to your Amazon S3 bucket for processing.+7. If you process events with a webhook endpoint, [verify the webhook signatures](https://docs.stripe.com/webhooks.md#verify-signature) to secure your endpoint and validate all requests are from Stripe.
++
++8. Correct the invalid events and save them to a new file. Then, upload the file to your Amazon S3 bucket for processing.

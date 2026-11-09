@@ -1,0 +1,135 @@
+{
+  "job_id": "disputes-reason-codes-defense-requirements",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-reason-codes-defense-requirements-2026-11-07.md",
+  "raw_sha256": "3e6789ef03c3e55fd71d5b8fe60fa5f77d9f008c1fee95b44d2b6f27532df4e7",
+  "prior_raw_path": "raw/stripe-disputes-reason-codes-2026.md",
+  "prior_raw_sha256": "57f5af7fa15558d21794a2ef2d050327cd91f22af45b398b51b397a5942d9960",
+  "source_target": "wiki/sources/source-stripe-disputes-reason-codes.md",
+  "source_before_sha256": "1c40aedd1aaaa44d3d27ea3c08f9c58632b26b8ae236680378ba77db9a3a573b",
+  "read_ranges": {
+    "raw/stripe-disputes-reason-codes-defense-requirements-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 450
+      }
+    ],
+    "raw/stripe-disputes-reason-codes-2026.md": [
+      {
+        "start": 1,
+        "end": 461
+      },
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 100
+      },
+      {
+        "start": 301,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 400
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-reason-codes.md": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3b988196de533991ef773cf4/content.diff": [
+      {
+        "start": 1,
+        "end": 633
+      },
+      {
+        "start": 301,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 500
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The cardholder\u2019s bank, not Stripe, decides the outcome of each dispute.",
+      "location": "raw/stripe-disputes-reason-codes-defense-requirements-2026-11-07.md:13"
+    },
+    {
+      "text": "An issuer might use this reason code for a centrally acquired domestic transaction, or a domestic transaction processed through the Mastercard network, where a chargeback is available according to the applicable domestic rule but can\u2019t be processed under a different message reason code. This reason code is applicable to Europe region transactions only.",
+      "location": "raw/stripe-disputes-reason-codes-defense-requirements-2026-11-07.md:198"
+    },
+    {
+      "text": "**Documentation supporting the validity of the charge:** Any evidence demonstrating the charge was legitimate and compliant with applicable domestic rules.",
+      "location": "raw/stripe-disputes-reason-codes-defense-requirements-2026-11-07.md:201"
+    },
+    {
+      "text": "Local payment methods (LPMs) don\u2019t use card network reason codes. Instead, each LPM provider defines its own reason codes based on the types of disputes on its platform.",
+      "location": "raw/stripe-disputes-reason-codes-defense-requirements-2026-11-07.md:437"
+    },
+    {
+      "text": "[Instant Bank Payments disputed payments](https://docs.stripe.com/payments/link/instant-bank-payments/disputed-payments.md)",
+      "location": "raw/stripe-disputes-reason-codes-defense-requirements-2026-11-07.md:445"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The cardholder\u2019s bank, not Stripe, decides the outcome of each dispute.",
+      "location": "raw/stripe-disputes-reason-codes-2026.md:12"
+    },
+    {
+      "text": "Stripe maps LPM reason codes to the same [seven dispute categories](https://docs.stripe.com/disputes/categories.md) used for card disputes",
+      "location": "raw/stripe-disputes-reason-codes-2026.md:456"
+    },
+    {
+      "text": "[PayPal disputed payments](https://docs.stripe.com/payments/paypal/disputed-payments.md)",
+      "location": "raw/stripe-disputes-reason-codes-2026.md:461"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw:198-201 adds a full Mastercard 4999 Domestic Chargeback Dispute entry under General, Europe Region Only, with a domestic-rule/no-other-message-code condition and four possible evidence kinds. The old General table ends its codes with 4846 at old raw:205-208 before Product not received at 210, so this is a genuine new reason-code entry, not table reflow.",
+    "Current source wiki/sources/source-stripe-disputes-reason-codes.md:40 lists Mastercard General as 4808, 4831, 4859 and omits both the already-old 4846 and newly added 4999. At minimum its key-code table should include qualified 4999, and any replacement should check the existing 4846 row rather than imply an exhaustive list.",
+    "New raw:435-445 preserves the old LPM section's card-network versus provider-code boundary and adds a navigation link for Instant Bank Payments. The link does not import its linked page's evidence guidance into this raw or establish live eligibility.",
+    "Both old:456 and new:439 broadly assert LPM codes map to the same seven card dispute categories, while the separate new categories capture at raw/stripe-disputes-categories-2026-11-07.md:278-292 explicitly says Instant Bank Payments do not map to the eight-category framework and use debit_not_authorized plus ACH return network code. The source update should flag that documented exception rather than generalize the page's LPM sentence to Instant Bank Payments.",
+    "The current source summary/related-page rows at source:13,79 say the categories page covers all seven payment methods. Its dated seven-method description was accurate for the old listed coverage but must not be treated as exhaustive for the new categories capture's Instant Bank Payments exception. The bank remains the outcome decision maker, and reason-code table evidence examples are possible submissions, not success guarantees (new raw:13-15; old raw:12-14)."
+  ],
+  "substantive_changes": [
+    "Mastercard General gains reason code 4999 for Europe-region domestic chargebacks that fit domestic rules but cannot use another message reason code; the new row supplies authorization, processing, customer communication, and domestic-rule-validity evidence examples (new raw:198-201)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-05-09 seven-category, Visa/Mastercard/Amex scope as a dated description of this page's most-common card-network reason codes (old raw:10-14; new raw:11-15). Do not expand this page's reason-code table to all LPMs from navigation links.",
+    "Retain the old/new distinction between possible evidence and the bank's decision; the guide does not promise a successful challenge (old raw:12-14; new raw:13-15).",
+    "Retain the card-present versus card-not-present evidence boundary for fraud, including the Mastercard 4837 card-present/CNP subdivisions (old raw:179-190; new raw:171-180)."
+  ],
+  "conflicts": [
+    "Current source Mastercard General key-code table at source:40 omits newly documented 4999 and the already present 4846; scope the table as highlights or update it with accurate qualified entries.",
+    "Current source's all-seven-payment-method characterization at source:13,79 and this page's LPM generalization (new raw:439; old raw:456) need a reciprocal caveat against the new categories page's Instant Bank Payments exception (raw/stripe-disputes-categories-2026-11-07.md:278-292). This page itself lists an Instant Bank Payments link at new raw:445, but that link is navigation, not support for a seven-category mapping."
+  ],
+  "unresolved_questions": [
+    "The linked Instant Bank Payments disputed-payments page was not within this pinned job's four files; its return-specific evidence requirements and live availability remain outside this review.",
+    "This guide tells readers to consult official network documentation for comprehensive requirements (new raw:13); its examples and dated snapshot should not be promoted as exhaustive current network rules."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/disputes.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/disputes/reason-codes-defense-requirements, the new capture remains a Visa, Mastercard, and American Express guide to common card-network reason codes and possible defense evidence; the cardholder\u2019s bank decides outcomes (new raw:11-15; old raw:10-14). Unlike the matched old capture, its Mastercard General table now includes Europe-region-only domestic chargeback code 4999 with domestic-rule conditions and sample evidence (new raw:198-201; old raw:205-210). The mapped [[source-stripe-disputes-reason-codes]] summary covers the networks but omits that newly listed code. Its LPM section is a separate provider-code/navigation boundary, not an eligibility or win guarantee.",
+    "Q2": "For https://docs.stripe.com/disputes/reason-codes-defense-requirements, Mastercard 4999 at new raw:198-201 versus old raw:205-210 is substantive and warrants a qualified addition to [[source-stripe-disputes-reason-codes]]. The new Instant Bank Payments link at new raw:445, absent after old raw:461, is navigation. Most other diff is Markdown table/italic reformatting and editorial wording. Preserve the dated Visa/Mastercard/Amex evidence scope, bank-decision boundary (old raw:12-14; new raw:13-15), and conditional examples. A reciprocal warning should prevent the broad LPM seven-category statement from swallowing the separate Instant Bank Payments ACH-return exception documented in the new categories capture."
+  }
+}

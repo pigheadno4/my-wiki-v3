@@ -1,0 +1,105 @@
+{
+  "job_id": "payments-advanced-credits",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-advanced-credits-2026-11-07.md",
+  "raw_sha256": "30504504164e8b9f54c2e32b426f5c0b7aa9e06df513ee28b8117e5b381b3f4c",
+  "prior_raw_path": "raw/stripe-checkout-redeem-credits-2025.md",
+  "prior_raw_sha256": "c88d8195bac481b3ab15c0bcf96136dd7fd1fb8f163d389b416b3df05cf50250",
+  "source_target": "wiki/sources/source-stripe-checkout-redeem-credits.md",
+  "source_before_sha256": "123998f980b09e8ad5d6ec12743a050379c823d1f975ad50dd571ea60dc36260",
+  "read_ranges": {
+    "raw/stripe-payments-advanced-credits-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "raw/stripe-checkout-redeem-credits-2025.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-redeem-credits.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8e2a847096dc926c91e78b4c/content.diff": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Credits reduce the total amount due on a [Checkout Session](https://docs.stripe.com/api/checkout/sessions/object.md) after tax or shipping has been applied.",
+      "location": "new raw line 9"
+    },
+    {
+      "text": "Stripe doesn\u2019t manage or keep track of credits.",
+      "location": "new raw line 11"
+    },
+    {
+      "text": "After completion, you must retrieve session details to determine the credit amount used for reconciliation.",
+      "location": "new raw line 13"
+    },
+    {
+      "text": "Enter your email to request access.",
+      "location": "new raw line 17"
+    },
+    {
+      "text": "\"preview\": \"checkout_credits_preview\"",
+      "location": "new raw line 24"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Allow your customers to claim credits during checkout when you integrate with [Elements and the Checkout Sessions API](https://docs.stripe.com/payments/quickstart-checkout-sessions.md).",
+      "location": "old raw line 14"
+    },
+    {
+      "text": "Stripe doesn\u2019t manage or keep track of credits.",
+      "location": "old raw line 10"
+    },
+    {
+      "text": "After completion, you must retrieve session details to determine the credit amount used for reconciliation.",
+      "location": "old raw line 12"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe a Checkout Session credit amount applied after tax or shipping, merchant-owned credit accounting, and post-completion session retrieval for actual credit reconciliation (old lines 8-12; new lines 9-13). These are documented overview claims, not a full API schema or proof of a successful credit application.",
+    "The old capture line 14 specifically described claiming credits during checkout with Elements and Checkout Sessions API. The new capture omits that path and instead displays a Checkout session credits access request at lines 15-25. This omission does not deprecate Elements or prove additional UI modes; the preview-registration curl block is an access request example, not a payment/credit operation or an eligibility grant.",
+    "Current source line 21 states credits are Only available with Elements + Checkout Sessions API and not Payment Intents. Old line 14 establishes one integration route but does not prove exclusive Elements UI or a global negative assertion about all PaymentIntent use. New lines 9-13 describe a Checkout Session feature without mentioning Elements. Queue a source correction that narrows line 21 to the documented Session scope and labels the older Elements claim as a dated route, rather than asserting exclusivity.",
+    "Current source lines 13 and 22 correctly keep access gated, and the new page lines 17-24 still asks for email to request access. The page does not expose detailed integration parameters, balance ledger semantics, redemption rules, or current account access. Do not infer any of those from the registration command.",
+    "Concept wiki/concepts/stripe-checkout.md line 144 keeps the Session-level credits, after-tax/shipping, merchant-balance and reconciliation summary without the source's Elements-only error. It can retain the documented Checkout Sessions route and source link; no concept change is required from this capture."
+  ],
+  "substantive_changes": [
+    "Core credit behavior is unchanged between old lines 8-12 and new lines 9-13.",
+    "The old Elements plus Checkout Sessions callout (old line 14) is replaced by a Checkout session credits access heading, email request and preview-registration curl example (new lines 15-25); this is access-presentation change, not demonstrated feature-scope expansion or removal."
+  ],
+  "historical_claims_to_preserve": [
+    "Credits reduce Checkout Session amount due after tax or shipping (old line 8; new line 9).",
+    "Stripe does not manage or track credit balances; merchant passes available amount to Checkout Session (old line 10; new line 11).",
+    "After completion, retrieve Session details for credit amount actually used in reconciliation (old line 12; new line 13).",
+    "Older page specifically named Elements plus Checkout Sessions API as a claim-credit route (old line 14); preserve it as dated guidance without upgrading it to exclusive support."
+  ],
+  "conflicts": [
+    "Source line 21's Only Elements assertion is stronger than old raw line 14 and unsupported by new lines 9-25. Its not Payment Intents parenthetical should be scoped to this documented Checkout Session credits flow rather than a universal API capability claim.",
+    "No old/new contradiction exists for credit ordering, balance ownership or post-completion reconciliation; new access UI cannot settle an account's actual preview eligibility."
+  ],
+  "unresolved_questions": [
+    "The captured page does not establish available credit balance representation, how credits are reserved or returned on failed/abandoned Sessions, supported UI modes beyond the dated Elements callout, or a particular merchant's preview access.",
+    "The registration example does not expose the gated integration guide or a response proving acceptance."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/advanced/credits, old raw lines 8-12 and new raw lines 9-13 agree that credits reduce Checkout Session amount due after tax or shipping, Stripe does not track the balance, and the merchant retrieves completed Session details to reconcile actual credit use. [[source-stripe-checkout-redeem-credits]] should preserve those dated overview facts; neither capture exposes a full credit API workflow or proves live access.",
+    "Q2": "At https://docs.stripe.com/payments/advanced/credits, old raw line 14 named Elements with Checkout Sessions API as one way customers could claim credits, while new raw lines 15-25 show a gated email access request. [[source-stripe-checkout-redeem-credits]] line 21 overstates that Elements is the only supported UI and makes an unbounded PaymentIntents exclusion. The source should narrow that assertion to the documented Checkout Session flow, retain the old Elements route as dated, and avoid treating omission as deprecation."
+  }
+}

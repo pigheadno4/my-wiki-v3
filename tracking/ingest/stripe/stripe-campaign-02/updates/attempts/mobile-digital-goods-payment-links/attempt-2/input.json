@@ -1,0 +1,83 @@
+{
+  "job_id": "mobile-digital-goods-payment-links",
+  "queue_id": 120,
+  "canonical_url": "https://docs.stripe.com/mobile/digital-goods/payment-links",
+  "raw_path": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md",
+  "raw_sha256": "cc13bd9e7fa4a1ccb213069e080b4f1b2793355fcd8469158122efef6f31e763",
+  "prior_raw_path": "raw/stripe-inapp-digital-goods-payment-links-2025.md",
+  "prior_raw_sha256": "23d436ed54dcc37b4c33f04168ab481f083247c57e1728a807d6f1b3fc00bb80",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/b0fbd8cfafae0e74cfb443b8/content.diff",
+  "diff_sha256": "57c6090053269612f4a69feeae6ea6d7171a1c6c09796e00655679636cad166d",
+  "source_target": "wiki/sources/source-stripe-inapp-digital-goods-payment-links.md",
+  "source_before_sha256": "8efc296421bbbde157560df884512a0cf646b248d2564ed720c85989a0171c89",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-payment-links/attempt-1/receipt.json",
+  "receipt_sha256": "27e8fa14c3c9bb481d0a453db374174319ccb82b10f0d7a141a801788b04d1f5",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-payment-links/attempt-1/review.json",
+  "review_sha256": "703b1e128f54caa115ea2d1982070032d680f8c7fb9d97eea5d1031448800b3d",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The exact-URL new and old captures retain the same iOS digital-goods Payment Links guide: US/EEA Apple Pay wording, regional caveat, limited-products Payment Links path, Universal Links, Dashboard success URL, URL parameters, and checkout.session.completed webhook (old:8-14,38-44,96-110,115-146; new:9-15,39-45,95-109,114-145). The diff is Markdown emphasis, list numbering, JSON/table padding, and removal of stray code fences at old:78 and 165; there is no demonstrated substantive product or policy change.",
+    "The current source:13 calls this a 'No-server guide,' source:19-23 marks Payment Links server needed 'No,' and concept wiki/concepts/stripe-inapp-payments.md:107 plus wiki/stripe-index.md:122 repeat '(no server)'. Both captures say the link itself is created in the Dashboard (old:96-113; new:95-112), but also instruct monitoring webhooks and configuring a production webhook endpoint for fulfillment (old:29,142-146; new:30,141-145). Qualify the claim as no server endpoint needed to create a static Payment Link; fulfillment still needs a server-side webhook endpoint or equivalent trusted receiver. Source:54 already states this distinction and should be reflected in summary/table/navigation.",
+    "Concept wiki/concepts/stripe-inapp-payments.md:83,105 and wiki/stripe-index.md:120 describe iOS digital goods as requiring Stripe Checkout specifically, while this exact guide explicitly documents an iOS Payment Links redirect and names Checkout or Elements as alternatives for dynamic carts or attaching a Customer (old:8-16; new:9-17). Revise the broad concept/index claim to a scoped app-to-web/hosted-payment route and preserve the three documented paths; do not infer a universal platform-law rule from a dated Stripe example.",
+    "Current source:27 says Apple Pay 'works' in US+EEA. Both captures say the app 'can accept' Apple Pay there and cannot accept it for digital goods in other regions (old:8-10; new:9-11). Use conditional captured wording rather than guaranteeing wallet display, account eligibility, or current approval in every US/EEA checkout.",
+    "The source's URL parameter table:34-36 omits the failure boundary: invalid prefilled or locked email and invalid client_reference_id are disregarded while the payment page still works (old:123-129; new:122-128). The editable prefilled_email may differ from the checkout email, locked_prefilled_email takes precedence, and client_reference_id is a reconciliation string in checkout.session.completed, not authentication or proof of user ownership. Preserve these conditions so fulfillment cannot be keyed solely on an assumed URL parameter.",
+    "Current source:52 says the webhook identifies user/order then grants entitlement. Raw old:144-146 and new:143-145 support server business logic and a production webhook endpoint, but do not demonstrate signature verification, one-time idempotent grant, or successful entitlement state. Keep this as a flow description, not a tested fulfillment guarantee."
+  ],
+  "approved_conflicts": [
+    "Source:13,19-23 and concept:107/index:122 label Payment Links 'no server' without the fulfillment qualification, despite old:142-146/new:141-145 requiring a production webhook endpoint. Propagate the narrower no-link-creation-server statement across source, concept route, and index.",
+    "Concept wiki/concepts/stripe-inapp-payments.md:83,105 and wiki/stripe-index.md:120 claim iOS digital goods must use Stripe Checkout, but this guide documents a Payment Links route (old:8-16; new:9-17) and points to Elements too. Narrow the broad Checkout-only assertion instead of obscuring this source route.",
+    "Source:27 changes 'can accept Apple Pay' into 'works' and source:34-36 omits invalid URL-parameter disregard (new:9-11,122-128; old:8-10,123-129). Qualify availability and reconciliation."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the captured US/EEA versus other-region Apple Pay scope for iOS digital goods, with 'can accept' wording rather than live eligibility guarantee (old:8-10; new:9-11).",
+    "Retain Dashboard-created static links and Dashboard-configured success Universal Link for limited catalogs, with Checkout/Elements as more dynamic alternatives and production webhook fulfillment separately required (old:14,96-110,142-146; new:15,95-109,141-145).",
+    "Retain URL parameter distinctions: editable prefilled_email, locked precedence, invalid-value disregard, and client_reference_id webhook reconciliation, without treating a supplied URL value as an authenticated user identity (old:115-133; new:114-132)."
+  ],
+  "unresolved_questions": [
+    "The four pinned files do not verify current Apple Pay eligibility, regional/App Store rules, or runtime wallet display; dated guide wording remains the evidence boundary.",
+    "The guide describes but does not implement production webhook authentication, deduplication, or user matching. Those operational details need separate evidence before prescribing an entitlement algorithm."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-inapp-payments.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/mobile-digital-goods-payment-links/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "454d69d1fe6e101c15f4360f4e73320e716977d31f55daae3a25168d037060d5",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/mobile-digital-goods-payment-links/attempt-1/review.json",
+  "approved_triage_review_sha256": "787ede83b70ddeca5fca0ee60ef0499dfe39b3c6fc6ef80db3dfa9c2198a6e68",
+  "attempt": 2,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw1",
+  "reviewer_agent": "/root/s2ur2",
+  "expected_review_scope": "targeted",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md",
+      "sha256": "cc13bd9e7fa4a1ccb213069e080b4f1b2793355fcd8469158122efef6f31e763",
+      "lines": 163
+    },
+    {
+      "path": "raw/stripe-inapp-digital-goods-payment-links-2025.md",
+      "sha256": "23d436ed54dcc37b4c33f04168ab481f083247c57e1728a807d6f1b3fc00bb80",
+      "lines": 165
+    },
+    {
+      "path": "wiki/sources/source-stripe-inapp-digital-goods-payment-links.md",
+      "sha256": "8efc296421bbbde157560df884512a0cf646b248d2564ed720c85989a0171c89",
+      "lines": 65
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/b0fbd8cfafae0e74cfb443b8/content.diff",
+      "sha256": "57c6090053269612f4a69feeae6ea6d7171a1c6c09796e00655679636cad166d",
+      "lines": 181
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/mobile-digital-goods-payment-links-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/mobile-digital-goods-payment-links-review.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/mobile-digital-goods-payment-links/attempt-1"
+}

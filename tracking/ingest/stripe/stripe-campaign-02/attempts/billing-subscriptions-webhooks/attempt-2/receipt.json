@@ -1,0 +1,137 @@
+{
+  "job_id": "billing-subscriptions-webhooks",
+  "attempt": 2,
+  "raw_path": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md",
+  "raw_sha256": "692a7ff4c062205f25e03dc6141b23a443e337922e5a573365babd40fa82d82c",
+  "prior_raw_path": "raw/stripe-subscriptions-webhooks-2026.md",
+  "prior_raw_sha256": "a9979893be10e9dcbccf137bb558308cc6f48b0ee9722a3bf0290059dde7f5d0",
+  "source_target": "wiki/sources/source-stripe-subscriptions-webhooks.md",
+  "source_before_sha256": "29b885a2b98af7572593c6ebdf1572b07b0e3defb3ad83f256cc054343d55535",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 243
+      }
+    ],
+    "raw/stripe-subscriptions-webhooks-2026.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 201
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-webhooks.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/702bf62a9ae65f471edf51cf/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 230
+      },
+      {
+        "start": 231,
+        "end": 292
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "If your production integration accepts payments, also handle events for refunds, disputes, and fraud warnings. Otherwise, your integration won\u2019t receive notifications when someone disputes a charge or flags it for potential fraud.",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:75"
+    },
+    {
+      "text": "If you use [Accounts v2](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md) to represent customers, listen for `v2.core.account[configuration.customer].updated` for customer configuration changes and `v2.core.account[identity].updated` for identity changes instead.",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:84"
+    },
+    {
+      "text": "A PaymentIntent can be associated with multiple invoices, so this endpoint might return more than one `InvoicePayment`. Paginate through all results while `has_more` is true",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:134"
+    },
+    {
+      "text": "After receiving `invoice.paid`, retrieve the associated subscription and confirm that its status is `active` before extending the customer\u2019s access expiration date. A paid invoice doesn\u2019t necessarily transition the subscription to `active` when status resolution uses all invoices.",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:158"
+    },
+    {
+      "text": "When status resolution uses all invoices, `past_due` can also indicate that an earlier applicable invoice remains outstanding. The subscription continues to create invoices. Stripe might retry payment while the subscription is `past_due`, but this status doesn\u2019t guarantee another payment attempt.",
+      "location": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md:180"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Your application updates the customer\u2019s access expiration date in your database to the appropriate date in the future (plus a day or two for leeway).",
+      "location": "raw/stripe-subscriptions-webhooks-2026.md:119"
+    },
+    {
+      "text": "For `past_due` subscriptions, paying the latest associated invoice or marking it uncollectible transitions the subscription to `active`.",
+      "location": "raw/stripe-subscriptions-webhooks-2026.md:136"
+    },
+    {
+      "text": "If Stripe fails to receive a successful response to `invoice.created`, we delay finalizing all invoices with [automatic collection](https://docs.stripe.com/invoicing/integration/automatic-advancement-collection.md) for up to 72 hours, excluding those where you have [set a custom scheduled finalization time](https://docs.stripe.com/invoicing/scheduled-finalization.md).",
+      "location": "raw/stripe-subscriptions-webhooks-2026.md:150"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November capture adds a dedicated risk/customer-data event section with four rows at new lines 81-84. It directs payment-accepting production integrations to consider charge.refunded, charge.dispute.created and radar.early_fraud_warning.created, and locally stored Customer data to customer.updated; Accounts v2 customer configuration and identity changes use two distinct v2.core.account updated event names. The original main subscription-event table has 26 distinct named events in both captures (old lines 33-71; new lines 34-71), so the current source's 22-event claims at lines 13 and 15 already miscount that table and also omit the new risk/customer-data section.",
+    "A new version-dependent risk-event correlation procedure appears at lines 120-142. For 2025-03-31.basil or later, derive or retrieve a PaymentIntent, list paid InvoicePayments filtered by that ID, paginate potentially multiple invoices, verify each Invoice parent.type is subscription_details, then obtain parent.subscription_details.subscription. A null PaymentIntent, no matching paid InvoicePayments, or an unrelated Invoice prevents that route from resolving the subscription. Earlier API versions use Charge.invoice and Invoice.subscription, with null Charge.invoice likewise unresolved.",
+    "The access extension sequence changes materially: old line 119 advanced the expiration timestamp after invoice.paid; new line 158 requires retrieving the associated subscription and confirming active status first, because all-invoices status resolution can leave a subscription non-active after one invoice is paid. The existing source line 37 still says 'On invoice.paid \u2192 extend timestamp' without that gate and should be corrected.",
+    "The status table now conditions past_due and unpaid recovery on the Dashboard's most-recent-non-voided versus all-applicable-invoices status resolution, and says past_due does not guarantee another retry (new lines 175-184). A paid invoice and even an active status do not establish that every historical invoice is paid (new lines 175-177).",
+    "The invoice.created up-to-72-hour automatic-finalization delay, connected platform endpoint boundary, organization exclusion, synchronous-payment-update exception, finalization-failure warning, and EventBridge/Event Grid route remain supported (old lines 8-17, 144-189; new lines 9-18, 187-231). Many diff hunks are table formatting, link repair, and wording updates, not a replacement of those contracts."
+  ],
+  "substantive_changes": [
+    "New risk/refund/dispute/fraud/customer-change event guidance, with separate Accounts v2 customer configuration and identity event names (new lines 73-86).",
+    "New API-versioned correlation from a risk event to a subscription, including nullable IDs, InvoicePayment status and pagination, and invoice parent verification (new lines 120-142).",
+    "New active-subscription check after invoice.paid before access extension; one paid invoice can be insufficient under all-invoices status resolution (old lines 114-119; new lines 152-158).",
+    "Expanded active, past_due and unpaid status-resolution rules and explicit absence of a guaranteed retry while past_due (old lines 135-142; new lines 174-185)."
+  ],
+  "historical_claims_to_preserve": [
+    "The original main subscription-event table has 26 distinct named events in both captures: 2 Customer/Account, 6 subscription lifecycle, 1 entitlement, 8 invoice, 2 PaymentIntent, and 7 subscription-schedule rows (old lines 33-71; new lines 34-71). It retains customer.subscription.* events irrespective of Accounts v2 versus Customer objects (old lines 27-29; new lines 28-30). Keep this count distinct from the four additional risk/customer-data rows at new lines 81-84.",
+    "Retain webhook verification, asynchronous subscription activity, EventBridge/Event Grid destinations, and status-change monitoring (old lines 8-29, 121-131; new lines 9-30, 160-170).",
+    "Retain invoice.created failure delaying automatic invoice finalization up to 72 hours, subject to custom scheduling and synchronous payment-attempt exceptions, plus connected-platform and organization endpoint distinctions (old lines 144-153; new lines 187-196).",
+    "Retain the warning that invoice.finalization_failed can leave a subscription active while payment cannot be collected (old lines 183-189; new lines 225-231)."
+  ],
+  "conflicts": [
+    "Current source line 37's unconditional access extension after invoice.paid conflicts with new line 158's active-status check and is unsafe as a retained summary. Its 22-event claims at lines 13 and 15 are also numerically wrong for the unchanged 26-event main table (old lines 33-71; new lines 34-71); correct the count and separately describe the four new risk/customer-data rows (new lines 81-84).",
+    "The captured page itself repeats invoice.payment_failed with inconsistent blanket PaymentIntent/subscription statuses: requires_action and first-invoice-only incomplete at new line 55, requires_payment_method and unqualified incomplete at lines 94-99, then requires_action and unqualified incomplete at lines 112-117. Do not generalize one table cell into a universal transition; preserve first-invoice and payment-state qualifications.",
+    "New line 219 still suggests checking an invoice subscription property, while the new post-Basil risk-event procedure uses Invoice.parent.subscription_details.subscription at line 135. Avoid treating either as version-independent without separate evidence."
+  ],
+  "unresolved_questions": [
+    "The capture does not prove that every account can use Accounts v2 or that all suggested risk-event subscriptions are configured for this application; the page labels Accounts v2 GA for Connect and public preview otherwise (new lines 28-30).",
+    "The captured guide does not resolve its own repeated invoice.payment_failed status contradiction (new lines 55, 94, 112); a source update should report that limitation rather than choose a universal PaymentIntent or subscription state.",
+    "Where a risk event has no usable PaymentIntent or paid InvoicePayment, the documented new procedure cannot resolve a subscription; this capture supplies no universal fallback (new lines 128-135)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/webhooks, the November guide adds four risk and Customer-data event rows, API-versioned refund/dispute/fraud correlation, and conditional subscription access renewal to [[source-stripe-subscriptions-webhooks]] (new lines 81-84, 120-142, 158). The May capture's access recipe extended a timestamp after invoice.paid without the later active-status gate (old lines 114-119). These are substantive changes requiring the existing source summary to be updated. The original main event table remains 26 named events in both captures (old lines 33-71; new lines 34-71), contrary to the source's 22-event label.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/webhooks, [[source-stripe-subscriptions-webhooks]] should say that invoice.paid triggers a subscription retrieval and active-status check before extending access; a paid invoice alone can leave all-invoices status resolution unsatisfied (new line 158 versus old line 119). Preserve the up-to-72-hour invoice.created finalization warning and its endpoint and synchronous-attempt qualifications from old lines 144-153 and new lines 187-196. Do not present the page's conflicting invoice.payment_failed status cells at new lines 55, 94 and 112 as one universal lifecycle rule."
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "job_id": "billing-subscriptions-usage-based-recording-usage-api",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md",
+  "raw_sha256": "2c4e035b3d61104a418605b3cac07ec24d3a580e8fdd322ee552f72aa6d12f38",
+  "prior_raw_path": "raw/stripe-usage-based-billing-recording-usage-api-2025.md",
+  "prior_raw_sha256": "76f07e14ebadcbcdf68c8312b550bdb50df79b2906569cbf3bbbe8e2a7e2e217",
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-recording-usage-api.md",
+  "source_before_sha256": "58d6f972b496059532241fca699e4b946039dd94d685a5d32204d36a314dc158",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-recording-usage-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 312
+      }
+    ],
+    "raw/stripe-usage-based-billing-recording-usage-api-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 289
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-recording-usage-api.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/eb79afdb841840b74aed06dc/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 313
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The 35-day window determines whether Stripe accepts a meter event. It doesn\u2019t guarantee that Stripe can include the usage on an invoice.",
+      "location": "new raw lines 33-33"
+    },
+    {
+      "text": "For each meter, Stripe accepts up to 10,000 unique combinations for each hour that Stripe receives meter events.",
+      "location": "new raw lines 45-45"
+    },
+    {
+      "text": "For each customer on a meter, Stripe accepts up to 100 unique combinations across all events.",
+      "location": "new raw lines 46-46"
+    },
+    {
+      "text": "Meter Events are additionally limited to one *concurrent* call per customer per meter.",
+      "location": "new raw lines 52-52"
+    },
+    {
+      "text": "In a *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes), calls to the Meter Events endpoint count toward your global rate limit.",
+      "location": "new raw lines 54-54"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Make sure the timestamp is within the past 35 calendar days and isn\u2019t more than 5 minutes in the future.",
+      "location": "old raw lines 36-36"
+    },
+    {
+      "text": "In sandbox mode, calls to the `meter event` and `meter event stream` endpoint count toward the [basic limit](https://docs.stripe.com/rate-limits.md#rate-limiter).",
+      "location": "old raw lines 49-49"
+    },
+    {
+      "text": "The [Meter Event](https://docs.stripe.com/api/billing/meter-event/create.md) endpoint allows 1,000 calls per second in live mode.",
+      "location": "old raw lines 44-44"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Same canonical URL and core API-meter-event subject in both captures (new 1, 5-15; old 1, 4-14). Meter setup precedes events; event name, customer ID, numeric value and optional timestamp remain central; processing and summaries/invoices remain asynchronous (new 9-11; old 8-10).",
+    "The current 64-line source summarizes the 35-day acceptance bound without invoice inclusion timing (source 23-27); new 33-35 clarifies that post-finalization acceptance can affect summaries without updating either finalized or next invoice, and threshold invoices use usage received before creation. This is a material billing-outcome qualifier.",
+    "New dimension-cardinality rules are explicit: 10,000 combinations per meter per receipt hour and 100 per customer on a meter across events; existing combinations continue, newly introduced over-limit combinations are invalid and surface through error_report_triggered / meter_event_dimension_count_too_high (new 41-48). Current source 59-60 only names that error code.",
+    "The 1,000-calls-per-second v1 live ceiling is now stated per Stripe account and separate from the global limit, plus one concurrent call per customer per meter (new 52). Sandbox Meter Events and connected-account calls count toward respective global/basic limits; Stripe-Account-header Connect platform requests retain the 100-ops-per-second regular limit (new 54, 63). Current source 28-33 omits the per-account, concurrency and separate-limit distinctions.",
+    "The new raw replaces Node examples with curl (v1), Ruby (v2) and Python (thin-event handler), updates links and list numbering, and adds a See also link (diff 12-30, 77-168, 190-313). These are example/presentation/navigation changes. The source's Node snippets (17, 41-48, 57) are still backed by the dated old raw, but should be marked historical or replaced by language-neutral API details if the source is revised.",
+    "Both captures retain API v2 live-only 10,000 events/second streams, contact-sales 200,000/s, 15-minute stateless tokens, Workbench log exclusion, and thin event/error taxonomy (new 67-77, 133-142, 227-239; old 55-65, 113-122, 207-219)."
+  ],
+  "substantive_changes": [
+    "Add new invoice-inclusion qualification and threshold-invoice earlier cutoff alongside the 35-day event-acceptance bound (new 31-35 versus old 34-37).",
+    "Add dimension combination cardinality limits, continuation/invalid-new-combination behavior, and associated thin error (new 41-48; old has only error-code listing at 213).",
+    "Qualify v1 live requests as 1,000 calls/second per Stripe account, separate from global rate limit, and one concurrent call per customer per meter; distinguish sandbox Meter Events and connected-account basic/global limits (new 50-56 versus old 42-53)."
+  ],
+  "historical_claims_to_preserve": [
+    "Old Node.js v1, v2 and webhook examples are captured examples, not evidence that the 2026-11-07 page still presents Node.js; new examples use curl, Ruby and Python (old 16-28, 69-111, 233-272; new 17-23, 81-131, 253-291).",
+    "The old sandbox sentence included both meter event and meter event stream endpoints counting toward the basic limit (old 49). The new sandbox sentence names Meter Events only (new 54); absence of stream wording does not prove changed stream behavior.",
+    "Keep 35-day past/5-minute future timestamp acceptance, v2 live-only throughput, 15-minute token, stream log exclusion, and thin-event handling as still corroborated (old 30-36, 55-65, 113-122; new 25-33, 67-77, 133-142)."
+  ],
+  "conflicts": [
+    "Current source says timestamp optionally defaults to now and identifier is used for cancellation (source 20-21); neither assertion is established by this same-URL old/new capture beyond optional timestamp and autogenerated identifier. Retain only with separate authority, rather than treating this comparison as proof.",
+    "Current source and concept give the 35-day bound without invoice-inclusion qualification (source 23-27; wiki/concepts/stripe-usage-based-billing.md, Meter event paragraph). New 33-35 requires a reciprocal warning or narrow correction wherever those statements imply accepted events will be invoiced. The concept's Invoice Finalization Grace Period section already has related exceptions."
+  ],
+  "unresolved_questions": [
+    "The new capture does not restate the old sandbox meter event stream basic-limit sentence; endpoint behavior cannot be inferred from this omission (old 49; new 54).",
+    "These dated documents do not verify current account-specific high-throughput access, sales approval, actual event acceptance, or an invoice result."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api, the November capture requires a configured meter before sending named customer usage events; timestamp is optional and processing is asynchronous (new 9-11), as in the May capture (old 8-10). The 35-day acceptance bound now expressly does not ensure invoice inclusion after finalization, and threshold invoices cut off at creation (new 31-35; old 34-37). New dimension limits and v1 concurrency/account limits add material boundaries absent from [[source-stripe-usage-based-billing-recording-usage-api]] at source 23-33. API v2 live-only streams and thin error events continue (new 67-77, 133-142; old 55-65, 113-122).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api, substantive additions are invoice finality versus acceptance (new 33-35; old 36), dimension cardinality and rejection behavior (new 41-48; old 213 only listed the error code), and per-account/concurrent v1 limits (new 52-56; old 44-51). Curl, Ruby and Python replacing Node samples, updated links and numbering are presentation changes (new 17-23, 81-131, 253-291; old 16-28, 69-111, 233-272). [[source-stripe-usage-based-billing-recording-usage-api]] should retain dated old Node and sandbox-stream evidence without inferring deprecation from omission; new wording does not prove current account eligibility, event success or paid invoice inclusion."
+  }
+}

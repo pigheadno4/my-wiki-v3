@@ -1,0 +1,109 @@
+{
+  "job_id": "payments-advanced-build-subscriptions",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md",
+  "raw_sha256": "caf9029315828af92dbe70631c4b8a2cf71aacf5084b321fd67931c9fadefcb0",
+  "prior_raw_path": "raw/stripe-build-subscriptions-elements-2025.md",
+  "prior_raw_sha256": "1383b2eb1d506c60d0bfe8fd6b2281eff387702d009d5f757758006805d53665",
+  "source_target": "wiki/sources/source-stripe-build-subscriptions-elements.md",
+  "source_before_sha256": "738c7c5de94d79f7bfa1a0a9c6254864fcd8414292ed87e1de665b53e5606fd2",
+  "read_ranges": {
+    "raw/stripe-payments-advanced-build-subscriptions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-build-subscriptions-elements-2025.md": [
+      {
+        "start": 1,
+        "end": 3003
+      }
+    ],
+    "wiki/sources/source-stripe-build-subscriptions-elements.md": [
+      {
+        "start": 1,
+        "end": 139
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/683eb573643e97ebc94edf80/content.diff": [
+      {
+        "start": 1,
+        "end": 3005
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Build a subscriptions integration with Elements",
+      "location": "new raw line 5"
+    },
+    {
+      "text": "Create and manage subscriptions to accept recurring payments with Elements.",
+      "location": "new raw line 7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "new raw line 11"
+    },
+    {
+      "text": "[Checkout Sessions API](https://docs.stripe.com/payments/advanced/build-subscriptions.md?platform=web&ui=embedded-components)",
+      "location": "new raw line 13"
+    },
+    {
+      "text": "[Payment Intents API](https://docs.stripe.com/payments/advanced/build-subscriptions.md?platform=web&ui=elements)",
+      "location": "new raw line 14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "# Checkout Sessions API",
+      "location": "old raw line 10"
+    },
+    {
+      "text": "# Payment Intents API",
+      "location": "old raw line 1115"
+    },
+    {
+      "text": "On the back end, create the subscription with an `incomplete` status using `payment_behavior=default_incomplete`.",
+      "location": "old raw line 1503"
+    },
+    {
+      "text": "1. Verify the subscription status. If it\u2019s `active`, your user has paid for your product.",
+      "location": "old raw line 2639"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you\u2019re part of the Accounts v2 preview, you need to specify a [specify a preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.",
+      "location": "old raw line 269"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 capture is a 14-line variant index, not a replacement behavioral guide. Its two links at new raw lines 13-14 correspond to both paths already present in the old 3003-line capture. The wholesale diff therefore reflects changed rendering/capture shape and cannot support a deprecation, removal, or new payment behavior claim. Keep the new index out of factual raw_files.",
+    "The mapped source summary at line 13 frames this same old raw as a Checkout Sessions guide only, while old raw lines 1115-1133 also contain a distinct Payment Intents integration. Update its scope or split path descriptions within the existing source, with each path's client secret and confirmation flow kept separate.",
+    "The source webhook table at line 82 says customer.subscription.created means grant access. The old Payment Intents path creates an incomplete subscription before payment (old lines 1503-1510, 1967, 2377), and the old provisioning instructions require status verification (old lines 2633-2641). Change the row to record/check state; condition paid access on the appropriate active status or active entitlement, with trial access separately qualified.",
+    "The source client sample at lines 45-59 uses loadActionsResult.actions and actions.confirm without showing checkout.loadActions or defining actions. Old Checkout guide lines 449-464 and 594-617 supplies that step; repair or clearly label the fragment as partial so readers do not treat it as runnable.",
+    "The source Accounts v2 line 129 and linked concept line 208 state API version 2026-03-25.dahlia as a universal requirement. Old raw lines 267-273 distinguish Connect general availability from public preview for other users and specify a preview version when participating in preview. Keep the dated example version and availability condition distinct."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "The old guide contains both Checkout Sessions with ui_mode elements (old lines 10-30, 349-430, 449-464, 594-617) and a lower-level Payment Intents route (old lines 1115-1133, 1503-1510, 2429-2449, 2461-2492); do not conflate the Checkout Session client secret/actions.confirm with the invoice PaymentIntent confirmation secret/stripe.confirmPayment.",
+    "The Payment Intents route intentionally creates an incomplete subscription before first payment and then follows payment status; subscription creation alone is not a paid-access signal (old lines 1503-1510, 1967, 2461-2492, 2633-2641).",
+    "The old Accounts v2 availability and preview-version distinction is dated evidence, not current eligibility proof (old lines 267-273 and 1384-1390).",
+    "The cancellation example deletes the subscription immediately and says a canceled subscription cannot be reactivated (old lines 791-804 and 2680-2694); this does not describe cancel_at_period_end."
+  ],
+  "conflicts": [
+    "Existing source line 82 unconditionally grants access on customer.subscription.created, conflicting with the old raw's incomplete-before-payment example and status check; wiki/concepts/stripe-subscriptions.md lines 63-64 and 85-87 already carry the proper paid-versus-trial qualification.",
+    "Existing source line 129 and wiki/concepts/stripe-subscriptions.md line 208 make the specific Accounts v2 API version unconditional, while the old raw line 269 says preview participants need a preview version and Connect users have general availability."
+  ],
+  "unresolved_questions": [
+    "The new index does not include either linked variant's current body, so this exact capture cannot establish whether either path's detailed instructions changed since the old raw; separately authorized variant collection would be needed for a current-content comparison."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/advanced/build-subscriptions, the 2026-11-07 capture is a variant index (new raw lines 5-14), linking Checkout Sessions and Payment Intents variants at lines 13-14. The old capture already contained both routes (old raw lines 10 and 1115), so the large diff is navigation/capture restructuring, not evidence of a substantive change or deprecation. [[source-stripe-build-subscriptions-elements]] should preserve the old path-specific facts as dated evidence and should not add this navigation-only capture to factual raw_files.",
+    "Q2": "[[source-stripe-build-subscriptions-elements]] needs an existing-source correction for https://docs.stripe.com/payments/advanced/build-subscriptions: source line 13 hides the old Payment Intents route (old raw lines 1115-1133), and source line 82 grants access on subscription creation despite the incomplete prepayment example (old raw lines 1503 and 1967) and explicit status check (old raw lines 2633-2641). The new raw's lines 11-14 only point to variants; they cannot establish current flow changes. Repair the partial Checkout actions sample and qualify Accounts v2 version/availability as dated old-raw conditions."
+  }
+}

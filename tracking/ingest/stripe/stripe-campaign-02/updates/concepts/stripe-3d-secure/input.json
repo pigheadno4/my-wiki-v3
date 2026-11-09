@@ -1,0 +1,298 @@
+{
+  "target_path": "wiki/concepts/stripe-3d-secure.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-3d-secure/base.md",
+  "base_sha256": "a6f7de36d1b167fa1210a740599ab72be86fb2e567536d872a3c9c6db3027bbf",
+  "patches": [
+    {
+      "update_id": "payments-3d-secure-authentication-flow::s02-3ds1-support-tension",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "3D Secure (3DS) is a card authentication protocol that verifies the cardholder's identity before payment authorization. Stripe supports 3DS2 (runs when bank supports it, falls back to 3DS1). 3DS1 is deprecated \u2014 use Payment Intents/Setup Intents API for 3DS2.",
+      "new_text": "3D Secure (3DS) is cardholder authentication before payment authorization. The May and November 2026 captures recommend Payment Intents or Setup Intents for 3DS2 and say major card brands no longer support 3DS1, yet both also describe fallback to 3DS1 when a bank lacks 3DS2. This tension does not establish that any current card or network can use that fallback. The November guide states protocol support through version 2.3.1. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:8-15; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:9-17).",
+      "reason": "Remove an unqualified active fallback promise while preserving both captured statements and the new protocol ceiling.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Captured no-3DS1-support notice and fallback sentence conflict; no present network/card path verified."
+      ],
+      "original_update_id": "s02-3ds1-support-tension",
+      "job_id": "payments-3d-secure-authentication-flow",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+      "receipt_sha256": "0961aeef89db2a7ce9cb7f5ed479bbbc5875e2d03337e7ebb1c6eb25da0baaa2",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/candidate.md",
+      "source_candidate_sha256": "37b2de3e27991b9c57ed4a83ef806a6157e61fe131d134f0c50325434d8747a4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-authentication-flow::s02-3ds-off-session-scope",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "3DS does NOT apply to: wallets, off-session payments.",
+      "new_text": "Not every transaction supports 3DS; this guide gives wallets and off-session payments as examples. Its test table also describes a card requiring 3DS2 for off-session payment unless set up for future use, so do not infer a blanket off-session exclusion. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:57,484; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:56,442).",
+      "reason": "Fix categorical exclusion that conflicts with a conditional off-session test case in both captures.",
+      "quote_indexes": [],
+      "warnings": [
+        "Test card describes sandbox behavior, not a live account or card outcome."
+      ],
+      "original_update_id": "s02-3ds-off-session-scope",
+      "job_id": "payments-3d-secure-authentication-flow",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+      "receipt_sha256": "0961aeef89db2a7ce9cb7f5ed479bbbc5875e2d03337e7ebb1c6eb25da0baaa2",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/candidate.md",
+      "source_candidate_sha256": "37b2de3e27991b9c57ed4a83ef806a6157e61fe131d134f0c50325434d8747a4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-authentication-flow::s02-3ds-payment-outcome",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "3. After authentication: `processing` \u2192 `succeeded` / `requires_capture`\n4. If failed: `requires_payment_method`",
+      "new_text": "3. Successful authentication leads Stripe to attempt a charge and the PaymentIntent to `processing`; the later payment outcome can be `succeeded`, `requires_capture`, or `requires_payment_method`.\n4. Failed authentication can lead to `requires_payment_method`. Authentication, authorization, capture, and settlement are distinct outcomes; a sandbox test card authenticates and then declines. After an iframe return, retrieve the PaymentIntent and inspect its status. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:74-81,284-294,485; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:73-80,248-258,443).",
+      "reason": "Correct the active flow so successful authentication is not equated with payment success or capture.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The PaymentIntent status and sandbox decline show possible outcomes, not proof of a particular payment."
+      ],
+      "original_update_id": "s02-3ds-payment-outcome",
+      "job_id": "payments-3d-secure-authentication-flow",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+      "receipt_sha256": "0961aeef89db2a7ce9cb7f5ed479bbbc5875e2d03337e7ebb1c6eb25da0baaa2",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/candidate.md",
+      "source_candidate_sha256": "37b2de3e27991b9c57ed4a83ef806a6157e61fe131d134f0c50325434d8747a4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-authentication-flow::s02-3ds-manual-mandatory",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- Overrides Radar rules on that PaymentIntent/SetupIntent/Checkout Session\n- Works at create or confirm time; issuer determines final flow",
+      "new_text": "- Overrides dynamic Radar 3DS rules on that PaymentIntent/SetupIntent/Checkout Session, but Stripe's mandatory authentication rules still run; the November guide says Stripe APIs cannot manually turn off 3DS.\n- For PaymentIntents/SetupIntents, request at create or confirm time; for Checkout Sessions, at creation. The issuer determines the final authentication flow, so `any` and `challenge` are preferences. The May capture calls the custom-rule tier Radar for Fraud Teams; November calls it Radar Plus. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:87-93,164-172; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:86-94,137-145).",
+      "reason": "Scope override to dynamic rules and preserve mandatory authentication, issuer choice, timing, and dated tier names.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "s02-3ds-manual-mandatory",
+      "job_id": "payments-3d-secure-authentication-flow",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+      "receipt_sha256": "0961aeef89db2a7ce9cb7f5ed479bbbc5875e2d03337e7ebb1c6eb25da0baaa2",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/candidate.md",
+      "source_candidate_sha256": "37b2de3e27991b9c57ed4a83ef806a6157e61fe131d134f0c50325434d8747a4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-authentication-flow::s02-3ds-liability-conditional",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- Successful 3DS \u2192 fraudulent disputes shift to card issuer\n- Dispute inquiries on 3DS payments **must be responded to** (risk \"no-reply\" chargeback invalidating shift)\n- Liability may also shift if 3DS required by network but unavailable (issuer outage)\n- Exceptions: excessive fraud monitoring programs; some industries (e.g., Visa excludes wire transfer/money orders)\n- ECI returned in `three_d_secure.electronic_commerce_indicator` on Charge",
+      "new_text": "- Successful 3DS authentication alone does **not** guarantee liability shift for any payment or dispute. Shift can be expected for successfully authenticated payments later receiving eligible fraud disputes, subject to network and payment/dispute conditions; the older guide already said it *typically* applies and listed exceptions.\n- A `charge.succeeded` event confirms payment success only; `three_d_secure.result=authenticated` confirms 3DS authentication only. ECI in `three_d_secure.electronic_commerce_indicator` on the Charge can help assess eligibility but guarantees no shift.\n- Respond to inquiries on 3DS-authenticated charges: failure can cause a no-reply financial chargeback that could invalidate shift. An inquiry is a request for information, distinct from a financial chargeback.\n- Shift can sometimes apply if the network requires 3DS but the card or issuer lacks it; monitoring programs, network/industry exclusions, or post-authorization downgrade can instead prevent shift after authentication. The wire-transfer/money-order examples are specifically Visa exclusions; other dispute reasons follow the standard process. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:539-557; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:497-529).",
+      "reason": "Directly replace the unconditional liability arrow while preserving inquiry, ECI, network, and exception boundaries.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Neither authentication, payment success, nor ECI proves liability shift or a dispute result."
+      ],
+      "original_update_id": "s02-3ds-liability-conditional",
+      "job_id": "payments-3d-secure-authentication-flow",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+      "receipt_sha256": "0961aeef89db2a7ce9cb7f5ed479bbbc5875e2d03337e7ebb1c6eb25da0baaa2",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/candidate.md",
+      "source_candidate_sha256": "37b2de3e27991b9c57ed4a83ef806a6157e61fe131d134f0c50325434d8747a4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-authentication-flow::s02-3ds-source-route",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- [[source-stripe-3d-secure-authentication-flow]] \u2014 primary: full flow, manual triggering, web/iOS/Android/RN display, liability shift, test cards",
+      "new_text": "- [[source-stripe-3d-secure-authentication-flow]] \u2014 May and November 2026 Web/mobile authentication-flow guide, manual triggering, sandbox tests, and conditional fraud-dispute liability guidance",
+      "reason": "Retain the reciprocal route with dated scope and conditional liability framing.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "s02-3ds-source-route",
+      "job_id": "payments-3d-secure-authentication-flow",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+      "receipt_sha256": "0961aeef89db2a7ce9cb7f5ed479bbbc5875e2d03337e7ebb1c6eb25da0baaa2",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/candidate.md",
+      "source_candidate_sha256": "37b2de3e27991b9c57ed4a83ef806a6157e61fe131d134f0c50325434d8747a4",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-standalone-3d-secure::standalone-3ds-concept-scope-and-eligibility",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "Decouples 3DS authentication from payment authorization \u2014 run auth on Stripe, authorize with any PSP. Enterprise use: API-level control, issuer observability, per-transaction customized flows.\n\n**Output**: 3DS cryptogram \u2192 import into Stripe OR send to any other PSP.\n\n**Availability**: IC+ pricing only; Visa/MC/Amex/Discover/Cartes Bancaires; all Stripe card-payment countries except Malaysia and Thailand.",
+      "new_text": "Decouples 3DS authentication from payment authorization: run authentication on Stripe, then submit the cryptogram in a separate payment authorization request through Stripe's import route or another PSP. Authentication success alone does not establish authorization, capture, settlement, issuer payment approval, or liability shift. The 2026-11-07 guide details request modes, issuer output, 3RI and non-payment cases, and the authentication sequence; see [[source-stripe-standalone-3ds]].\n\n**Availability**: The 2026-05-08 capture said available to businesses on Interchange Plus pricing, without claiming exclusivity. The 2026-11-07 capture omits pricing eligibility, so current account/tier requirements remain unresolved. Both captures list Visa, Mastercard, American Express, Discover, and Cartes Bancaires and exclude Malaysia and Thailand from the stated Stripe card-payment-country footprint. This standalone scope is separate from the result-import availability matrix above.",
+      "reason": "Corrects unsupported IC+ exclusivity and preserves the authentication-versus-payment boundary while routing new details to the source.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Current pricing tier and account-specific eligibility are unresolved by the two captures."
+      ],
+      "original_update_id": "standalone-3ds-concept-scope-and-eligibility",
+      "job_id": "payments-3d-secure-standalone-3d-secure",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-standalone-3d-secure/attempt-1/receipt.json",
+      "receipt_sha256": "09e3aad6c9061264c62beb2d9495fe41813a26c4494b5b077885d2e948ea0dcf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-standalone-3d-secure/attempt-1/candidate.md",
+      "source_candidate_sha256": "94c95895b2dcf304534412308e59e460ed876df2dff3ddcde6b7c8d2daa33c6c",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-standalone-3d-secure/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-standalone-3d-secure::standalone-3ds-concept-source-label",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- [[source-stripe-standalone-3ds]] \u2014 Standalone 3DS: decouple auth from authorization, IC+ only, cryptogram output to any PSP, no Malaysia/Thailand",
+      "new_text": "- [[source-stripe-standalone-3ds]] \u2014 Standalone 3DS: separate authentication and authorization, 2026-11-07 feature/workflow detail, dated 2026-05-08 Interchange Plus statement with current tier eligibility unresolved",
+      "reason": "Removes unproven exclusivity from the source label and points to the expanded guide.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "standalone-3ds-concept-source-label",
+      "job_id": "payments-3d-secure-standalone-3d-secure",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-standalone-3d-secure/attempt-1/receipt.json",
+      "receipt_sha256": "09e3aad6c9061264c62beb2d9495fe41813a26c4494b5b077885d2e948ea0dcf",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-standalone-3d-secure/attempt-1/candidate.md",
+      "source_candidate_sha256": "94c95895b2dcf304534412308e59e460ed876df2dff3ddcde6b7c8d2daa33c6c",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-standalone-3d-secure/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-data-only",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "**Data Only** (3DS2.2+): frictionless; no liability shift (issuer not contacted); Mastercard Identity Check Insights via Adaptive Acceptance / Authorization Boost only (EEA/UK). Stripe AI handles automatically.",
+      "new_text": "**Data Only**: A successful request can offer a frictionless experience for a payment not subject to SCA, without liability shift. Authentication goes to the card network; the issuer still receives an authorization message carrying network risk data, though no issuer authentication request is sent. The standard Data Only flow requires 3DS 2.2+; separately named Mastercard Identity Check Insights was described in the 2026-11-07 capture as offered to Adaptive Acceptance and Authorisation Boost users in EEA/UK. This does not establish every account's eligibility or transfer the standard-flow version rule to all Data Only products.",
+      "reason": "Correct issuer-contact, frictionless, version, and product-access overstatements directly in the active concept claim.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Captured access is dated and account eligibility remains unverified."
+      ],
+      "original_update_id": "sca-exemptions-concept-data-only",
+      "job_id": "payments-3d-secure-strong-customer-authentication-exemptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/receipt.json",
+      "receipt_sha256": "719bbab25b391697ac79177eefb0264b5e9e893a94ba149862c3d8bd57e219e0",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/candidate.md",
+      "source_candidate_sha256": "96ff78e9feb38faa9b8f9a56388378b23242370cf19b9306381846da43ffea78",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-tra-limits",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "| **TRA / Low Risk** | Stripe fraud rate: 0.13% \u2192 100 EUR; 0.06% \u2192 250 EUR; 0.01% \u2192 500 EUR. Current Stripe limits: EEA \u2264 250 EUR, UK/Swiss \u2264 220 GBP |",
+      "new_text": "| **TRA / Low Risk** | Provider fraud-rate ceilings: 0.13% \u2192 up to 100 EUR/85 GBP; 0.06% \u2192 up to 250 EUR/220 GBP; 0.01% \u2192 up to 500 EUR/440 GBP. The 2026-11-07 capture reports qualifying EEA transactions up to 250 EUR and UK/Swiss up to 220 GBP; availability depends on Stripe-wide fraud rates and offering access, not a guaranteed account entitlement. |",
+      "reason": "Date the 'current' threshold claim and retain fraud-rate/access qualifications.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [],
+      "original_update_id": "sca-exemptions-concept-tra-limits",
+      "job_id": "payments-3d-secure-strong-customer-authentication-exemptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/receipt.json",
+      "receipt_sha256": "719bbab25b391697ac79177eefb0264b5e9e893a94ba149862c3d8bd57e219e0",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/candidate.md",
+      "source_candidate_sha256": "96ff78e9feb38faa9b8f9a56388378b23242370cf19b9306381846da43ffea78",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-low-value",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "| **Low Value** | < 30 EUR / 25 GBP; cumulative cap: 100 EUR or 5 txns since last SCA |",
+      "new_text": "| **Low Value** | < 30 EUR / 25 GBP; issuer SCA can still be required after cardholder-initiated cumulative spend exceeds 100 EUR/85 GBP or five transactions since the last SCA. |",
+      "reason": "Restore issuer discretion and GBP cumulative threshold.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "sca-exemptions-concept-low-value",
+      "job_id": "payments-3d-secure-strong-customer-authentication-exemptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/receipt.json",
+      "receipt_sha256": "719bbab25b391697ac79177eefb0264b5e9e893a94ba149862c3d8bd57e219e0",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/candidate.md",
+      "source_candidate_sha256": "96ff78e9feb38faa9b8f9a56388378b23242370cf19b9306381846da43ffea78",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-mit",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "| **MIT (off-session)** | Outside SCA scope; no challenge, no liability shift; requires mandate + auth at save time |",
+      "new_text": "| **MIT (off-session)** | Qualifying saved-card later charges are technically outside SCA; authenticate the card when saved and obtain agreement for later charges. The guide describes no challenge or liability shift for the MIT path, without proving every future charge qualifies or cannot need action. |",
+      "reason": "Keep the source's MIT scope and mandate while avoiding a universal future-charge guarantee.",
+      "quote_indexes": [],
+      "warnings": [],
+      "original_update_id": "sca-exemptions-concept-mit",
+      "job_id": "payments-3d-secure-strong-customer-authentication-exemptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/receipt.json",
+      "receipt_sha256": "719bbab25b391697ac79177eefb0264b5e9e893a94ba149862c3d8bd57e219e0",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/candidate.md",
+      "source_candidate_sha256": "96ff78e9feb38faa9b8f9a56388378b23242370cf19b9306381846da43ffea78",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/review.json"
+    },
+    {
+      "update_id": "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-route",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "old_text": "- [[source-stripe-sca-exemptions]] \u2014 SCA exemptions (EEA/CH/UK): Low Value, TRA limits, MIT, Data Only (no liability shift on exemption/Data Only)",
+      "new_text": "- [[source-stripe-sca-exemptions]] \u2014 captured EEA/Swiss/UK SCA request and issuer-approval scope, dated low-value/TRA limits, qualifying MIT, and Data Only network-versus-issuer routing without liability shift",
+      "reason": "Align the reciprocal route with the corrected source and concept qualifications.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "sca-exemptions-concept-route",
+      "job_id": "payments-3d-secure-strong-customer-authentication-exemptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/receipt.json",
+      "receipt_sha256": "719bbab25b391697ac79177eefb0264b5e9e893a94ba149862c3d8bd57e219e0",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/candidate.md",
+      "source_candidate_sha256": "96ff78e9feb38faa9b8f9a56388378b23242370cf19b9306381846da43ffea78",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "payments-3d-secure-authentication-flow::s02-3ds1-support-tension",
+    "payments-3d-secure-authentication-flow::s02-3ds-off-session-scope",
+    "payments-3d-secure-authentication-flow::s02-3ds-payment-outcome",
+    "payments-3d-secure-authentication-flow::s02-3ds-manual-mandatory",
+    "payments-3d-secure-authentication-flow::s02-3ds-liability-conditional",
+    "payments-3d-secure-authentication-flow::s02-3ds-source-route",
+    "payments-3d-secure-standalone-3d-secure::standalone-3ds-concept-scope-and-eligibility",
+    "payments-3d-secure-standalone-3d-secure::standalone-3ds-concept-source-label",
+    "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-data-only",
+    "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-tra-limits",
+    "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-low-value",
+    "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-mit",
+    "payments-3d-secure-strong-customer-authentication-exemptions::sca-exemptions-concept-route"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-3d-secure/auto-candidate.md",
+  "auto_candidate_sha256": "2754f60352a36655a91b3bff509495b3b38de19177bd9bf066a4ada5ec03a079",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s02-updates/stripe-3d-secure-concept.json",
+  "review_output": "/tmp/stripe-s02-updates/stripe-3d-secure-concept-review.json",
+  "context_only_units": [
+    {
+      "job_id": "payments-3d-secure-authentication-flow",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/receipt.json",
+      "receipt_sha256": "0961aeef89db2a7ce9cb7f5ed479bbbc5875e2d03337e7ebb1c6eb25da0baaa2",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-authentication-flow/attempt-1/review.json"
+    },
+    {
+      "job_id": "payments-3d-secure-standalone-3d-secure",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-standalone-3d-secure/attempt-1/receipt.json",
+      "receipt_sha256": "09e3aad6c9061264c62beb2d9495fe41813a26c4494b5b077885d2e948ea0dcf",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-standalone-3d-secure/attempt-1/review.json"
+    },
+    {
+      "job_id": "payments-3d-secure-strong-customer-authentication-exemptions",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/receipt.json",
+      "receipt_sha256": "719bbab25b391697ac79177eefb0264b5e9e893a94ba149862c3d8bd57e219e0",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payments-3d-secure-strong-customer-authentication-exemptions/attempt-1/review.json"
+    }
+  ]
+}

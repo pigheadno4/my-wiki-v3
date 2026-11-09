@@ -1,0 +1,15 @@
+<!-- Source URL: https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Shared payment tokens
+
+Grant and receive scoped payment credentials for agent-initiated purchases.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Sellers](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller)
+- [Agents](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=agent)
+- [Connect platforms](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=connect)

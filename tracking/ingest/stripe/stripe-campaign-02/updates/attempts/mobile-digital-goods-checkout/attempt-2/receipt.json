@@ -1,0 +1,228 @@
+{
+  "job_id": "mobile-digital-goods-checkout",
+  "attempt": 2,
+  "raw_path": "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md",
+  "raw_sha256": "41a900b23567684cd6a83bdfd65a64b2a630bb3936bca1f2c750359e7f8f1d1b",
+  "source_before_sha256": "ed6a5ba8c9cf2fe7c1ca42b1635533794653379a7b5c4ac7b892a0d458a302fd",
+  "source_page": "---\ntitle: \"Accept iOS Digital Goods Payments with Stripe Checkout\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/mobile/digital-goods/checkout\"\nraw_files:\n  - \"stripe-mobile-digital-goods-checkout-2026-11-07.md\"\n  - \"stripe-inapp-digital-goods-checkout-2025.md\"\ntags: [stripe, mobile, ios, digital-goods, checkout, universal-links, storekit, webhooks, app-to-web]\n---\n\n## Summary\n\nStripe's 2026-11-07 capture describes a US iOS digital-goods and subscription app-to-web Checkout path: model credits with Products and Prices, use a customer-configured Account (Accounts v2) or Customer (Customers v1), open Checkout in Safari, return through a Universal Link, and update server-owned entitlements from payment events. The 2026-04-22 capture documented the Customers v1 route. The guide's US storefront statement is dated documentation, not a current App Store approval or account-eligibility determination.\n\n> See also [[source-stripe-inapp-ios-android-purchases]] for the platform overview. Android US direct in-app processing is a separate route; physical goods, outside-app consumption, and person-to-person services use the native app payment guide. Managed Payments is an optional merchant-of-record integration, not part of this baseline flow.\n\n## Customer identity and availability\n\n- **Accounts v2 branch (2026-11-07):** The guide recommends customer-configured Account objects for most use cases. It says Accounts v2 is generally available for Connect users and in public preview for other Stripe users. Preview participants must specify a preview API version and enable **Reusable payment methods for Global Payouts** in Dashboard Account previews and features. This is captured availability wording, not proof of eligibility for a particular account. The example creates an Account with `stripe.v2.core.accounts.create` and stores its ID against the app user (raw lines 194\u2013219).\n- **Customers v1 branch (retained):** Create or reuse a Customer, store that ID against the app user, and pass `customer` in the Checkout Session. The full branch remains in the 2026-11-07 guide (raw lines 227\u2013256, 419\u2013524); the new recommendation does not establish deprecation.\n- The guide's one-time and subscription Sessions use `customer_account` for Accounts v2 (raw lines 345\u2013358, 391\u2013404) and `customer` for Customers v1 (raw lines 451\u2013464, 498\u2013511). Both example branches include `integration_identifier` as an integration label for independent conversion measurement; this example does not prove the field is required or that measurement occurred.\n\n## Flow overview\n\n1. For the documented US iOS case, detect the app's StoreKit storefront and check `SKPaymentQueue.canMakePayments()` before offering the buy button. The StoreKit check respects device purchase restrictions; it is not a policy approval.\n2. Configure Products and Prices, then create or reuse the app user's customer-configured Account or Customer according to the selected branch. Create a Checkout Session on the server with the branch's identity, a Price in `line_items`, `mode: 'payment'` or `'subscription'`, `origin_context: 'mobile_app'`, and a Universal Link `success_url`. Return the Session URL to the app.\n3. Open the Session URL in Safari with `UIApplication.shared.open`. Configure the domain's `/.well-known/apple-app-site-association` as `application/json`, the `applinks:` Associated Domains entitlement, a browser fallback page, and the app's incoming-URL handler.\n4. The Universal Link can bring the customer back to the app; the app should fetch current entitlements from its server. The return URL is a UI signal, not authority to grant credits.\n5. Independently process verified server webhooks and grant a coin transaction idempotently only after paid status. With optional dynamic payment methods, `checkout.session.completed` can precede payment clearance: check `session.payment_status === 'paid'`; otherwise wait for `checkout.session.async_payment_succeeded` and handle `checkout.session.async_payment_failed`. This paid-status qualification comes from [[source-stripe-checkout-dashboard-payment-methods]], not from an executable example in this guide.\n6. The captured guide says Checkout redirects after webhook acknowledgement, or after about 10 seconds when the event is not acknowledged properly. Redirect and fulfillment have separate timing; do not infer payment finality from their order.\n\n## Universal Links setup\n\n1. Serve `/.well-known/apple-app-site-association` with the `application/json` MIME type.\n2. Add `applinks:example.com` to Associated Domains.\n3. Provide a fallback page at the HTTPS success URL if the app link does not open.\n4. Handle the incoming URL in the app, then fetch server-owned entitlements.\n\n```json\n{\n  \"applinks\": {\n    \"details\": [{\n      \"appIDs\": [\"TEAMID.com.example.MyApp\"],\n      \"components\": [{ \"/\": \"/checkout_redirect*\" }]\n    }]\n  }\n}\n```\n\nThe guide includes the association-file setup and Universal Link debugging steps, including `?mode=developer`, Associated Domains Development, and `swcutil_show.txt` (new raw lines 258\u2013310, 706\u2013749; old raw lines 174\u2013226).\n\n## Checkout Session fields\n\nThe following are branch-specific fields from the captured one-time-payment examples, not complete runnable endpoints. Use `mode: 'subscription'` and a recurring Price for the subscription examples.\n\n```javascript\nconst common = {\n  line_items: [{ price: priceId, quantity: 1 }],\n  mode: 'payment',\n  origin_context: 'mobile_app',\n  success_url: 'https://example.com/checkout_redirect/success',\n};\n// Accounts v2 example: { ...common, customer_account: customerAccountId }\n// Customers v1 example: { ...common, customer: customerId }\n```\n\nThe examples also show optional `integration_identifier` as an integration label. The captured guide says Apple Pay appears by default on a supported device and describes dynamic payment methods as an additional option (new raw lines 417, 524). Checkout studio provides configure/preview navigation (new raw line 11); Checkout and Payment Links settings can optionally show yearly subscription prices in monthly terms and control tax display (new raw lines 755\u2013757).\n\n## Swift client and fulfillment boundary\n\nThe guide opens the server-returned Session URL in Safari. Its `.onOpenURL` success handler displays a success view and says to fetch the latest customer entitlements from the server (new raw lines 526\u2013570). A substring match on a return URL is illustrative presentation handling, not a payment check.\n\n> [!warning] Contradiction\n> Both captured Node.js webhook examples declare `let event` inside `if (webhookSecret)` and later read `event.data.object` outside that block (old raw lines 447\u2013474; new raw lines 641\u2013668). The sample therefore has a block-scope error before customer lookup. The shared new sample also indexes `session.customer` although the Accounts v2 Sessions use `customer_account` (new raw lines 354, 400, 668\u2013673). Neither branch is verified runnable fulfillment code; these captures do not resolve Accounts v2 event-to-app-user mapping. Implement and verify event extraction, identity mapping, paid-status checks, asynchronous outcomes, and idempotency before using a handler to grant credits.\n\n## Test cards\n\n| Number | Captured test outcome |\n| --- | --- |\n| 4242 4242 4242 4242 | Immediate successful processing |\n| 4000 0000 0000 3220 | 3D Secure 2 authentication then success |\n| 4000 0000 0000 9995 | `insufficient_funds` decline |\n\nThese documented test numbers do not prove a particular app integration is approved or working.\n\n## Out of scope and related pages\n\n- User authentication is assumed; the examples rely on an app user database and do not build login.\n- Native StoreKit in-app purchases are outside this app-to-web Checkout guide.\n- [[stripe-inapp-payments]] \u2014 mobile payment context\n- [[stripe-checkout]] \u2014 Checkout Sessions and paid-status fulfillment\n- [[source-stripe-inapp-ios-android-purchases]] \u2014 platform overview\n- [[source-stripe-checkout-dashboard-payment-methods]] \u2014 delayed-method payment-status and asynchronous-event rule\n\n## Raw Sources\n\n- [[raw/stripe-mobile-digital-goods-checkout-2026-11-07|2026-11-07 iOS digital-goods Checkout guide]]\n- [[raw/stripe-inapp-digital-goods-checkout-2025|2026-04-22 earlier Customers v1 guide]]\n",
+  "quotes": [
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you\u2019re part of the Accounts v2 preview, you need to specify a [preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.",
+      "location": "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md:32"
+    },
+    {
+      "text": "customer_account: customerAccountId,",
+      "location": "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md:354"
+    },
+    {
+      "text": "customer: customerId,",
+      "location": "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md:460"
+    },
+    {
+      "text": "Checkout redirects your customer to the `success_url` when you [acknowledge you received the event](https://docs.stripe.com/webhooks.md#acknowledge-events-immediately). In scenarios where your endpoint is down or the event isn\u2019t acknowledged properly, Checkout redirects the customer to the `success_url` 10 seconds after a successful payment.",
+      "location": "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md:624"
+    },
+    {
+      "text": "const session = event.data.object;",
+      "location": "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md:668"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Each time you create a Checkout session, create a _Customer_",
+      "location": "raw/stripe-inapp-digital-goods-checkout-2025.md:145"
+    },
+    {
+      "text": "let event;",
+      "location": "raw/stripe-inapp-digital-goods-checkout-2025.md:449"
+    },
+    {
+      "text": "const session = event.data.object;",
+      "location": "raw/stripe-inapp-digital-goods-checkout-2025.md:474"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-mobile-digital-goods-checkout-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 765
+      }
+    ],
+    "raw/stripe-inapp-digital-goods-checkout-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 565
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-digital-goods-checkout.md": [
+      {
+        "start": 1,
+        "end": 115
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b8e4d2d51ff975970bd39ffe/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 728
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "mobile-digital-goods-checkout-inapp-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- [[source-stripe-inapp-digital-goods-checkout]] \u2014 iOS digital goods app-to-web: origin_context=mobile_app, Universal Links setup, SKPaymentQueue.canMakePayments() gate, open in Safari, checkout.session.completed fulfillment",
+      "new_text": "- [[source-stripe-inapp-digital-goods-checkout]] \u2014 captured US iOS digital-goods app-to-web Checkout route: Accounts v2 (qualified availability) or Customers v1, Universal Links and Safari; server grants credits only after paid status or asynchronous success, not return URL alone",
+      "reason": "Correct the Customer-only and completed-event shorthand while retaining the source route and platform scope.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Availability and App Store policy are dated capture claims."
+      ]
+    },
+    {
+      "update_id": "mobile-digital-goods-checkout-checkout-route",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "- [[source-stripe-inapp-digital-goods-checkout]] \u2014 iOS digital goods app-to-web flow: origin_context=mobile_app, Universal Links, SKPaymentQueue gate, checkout.session.completed fulfillment",
+      "new_text": "- [[source-stripe-inapp-digital-goods-checkout]] \u2014 captured US iOS digital-goods app-to-web flow: qualified Accounts v2 or retained Customers v1, Universal Links and StoreKit gate; paid-status or asynchronous-success server fulfillment",
+      "reason": "Update the reciprocal Checkout route to reflect both identity branches and the existing delayed-payment rule.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Read with the paid-status qualification in this concept's fulfillment section."
+      ]
+    },
+    {
+      "update_id": "mobile-digital-goods-checkout-inapp-platform-scope",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- Android US apps can process in-app payments for digital goods; iOS digital goods require app-to-web flow (Stripe Checkout)",
+      "new_text": "- The captured US iOS digital-goods guide describes an app-to-web Stripe Checkout route, gated by the app's StoreKit storefront; US Android direct in-app processing is a separate documented route. This dated capture does not establish a universal iOS policy or App Store approval.",
+      "reason": "Directly scope the existing universal iOS policy assertion to the captured US storefront route.",
+      "quote_indexes": [],
+      "warnings": [
+        "Policy and eligibility require current verification."
+      ]
+    },
+    {
+      "update_id": "mobile-digital-goods-checkout-inapp-overview-route-scope",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "old_text": "- [[source-stripe-inapp-ios-android-purchases]] \u2014 Platform rules: iOS digital goods must redirect to Stripe Checkout; Android can go fully in-app; 3 acceptance paths + customer portal",
+      "new_text": "- [[source-stripe-inapp-ios-android-purchases]] \u2014 captured platform overview of US iOS digital-goods external-payment paths and US Android direct in-app processing; three acceptance paths and a customer-portal route, subject to current storefront and policy eligibility",
+      "reason": "Qualify the adjacent platform overview route that otherwise repeats the universal iOS requirement.",
+      "quote_indexes": [],
+      "warnings": [
+        "This route summarizes a separate source; no broader platform-policy claim is inferred from the assigned Checkout guide."
+      ]
+    },
+    {
+      "update_id": "mobile-digital-goods-checkout-paid-fulfillment-gate",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "- **`fulfill_checkout` function**: idempotent; expand `line_items`; check `payment_status !== 'unpaid'`; record fulfillment status",
+      "new_text": "- **`fulfill_checkout` function**: idempotent; expand `line_items`; record fulfillment status. The retained `payment_status !== 'unpaid'` pattern includes orders that require no immediate payment; for paid digital credits, require `payment_status === 'paid'` before granting, or wait for `checkout.session.async_payment_succeeded` when payment is delayed.",
+      "reason": "Scope the generic non-unpaid shorthand so it cannot authorize paid credits from an unpaid completed session, while preserving no-payment-required orders.",
+      "quote_indexes": [],
+      "warnings": [
+        "The generic fulfillment source retains a non-unpaid condition; paid-credit handling is narrower."
+      ]
+    },
+    {
+      "update_id": "mobile-digital-goods-checkout-completed-webhook-row",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "| `checkout.session.completed` | Payment succeeded | Fulfill order |",
+      "new_text": "| `checkout.session.completed` | Checkout submitted; payment can remain unpaid for delayed methods | Fulfill a paid order only when `session.payment_status === 'paid'`; otherwise await `checkout.session.async_payment_succeeded` and handle `checkout.session.async_payment_failed` |",
+      "reason": "Directly correct the row's false payment-success and unconditional fulfillment claim, consistent with the concept's delayed-payment rule.",
+      "quote_indexes": [],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/mobile/digital-goods/checkout, [[source-stripe-inapp-digital-goods-checkout]] now records both customer-configured Accounts v2 and retained Customers v1. The older capture used Customer objects (old raw lines 143\u2013172), while the new capture adds the qualified Accounts v2 preview/availability gate and customer_account Session field (new raw lines 30\u201336, 345\u2013358) alongside the v1 customer field (new raw lines 451\u2013464). This does not establish universal account eligibility.",
+    "Q2": "For https://docs.stripe.com/mobile/digital-goods/checkout, [[source-stripe-inapp-digital-goods-checkout]] separates browser return from server fulfillment. Both captures describe acknowledgement-dependent redirect timing (old raw lines 427\u2013431; new raw lines 620\u2013624). The new webhook sample still reads a block-scoped event outside its declaration (new raw lines 641\u2013668; old raw lines 447\u2013474), so it is not verified runnable. Related Checkout guidance requires paid status or asynchronous success before granting credits; the captured guide does not resolve Accounts v2 event identity mapping."
+  },
+  "status": "candidate_ready"
+}

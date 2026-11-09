@@ -1,0 +1,159 @@
+{
+  "job_id": "declines-network-codes",
+  "attempt": 1,
+  "raw_path": "raw/stripe-declines-network-codes-2026-11-07.md",
+  "raw_sha256": "62760907f85f2a76df94f0b9712edd9c40a77d758e02ddf29f4d441f13cda17f",
+  "source_before_sha256": "588d95696c545a1e8820d985b4ef1ba8cb33eb927f2206681bcacc4dfdf37215",
+  "source_page": "---\ntitle: \"Stripe Network Decline Codes\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/declines/network-codes\"\nraw_files:\n  - \"stripe-declines-network-codes-2026-11-07.md\"\n  - \"stripe-network-decline-codes-2026.md\"\ntags: [stripe, declines, network-codes, cards, ach, becs, bacs, sepa, cash-app-pay, bank-debit, direct-debit]\n---\n\n## Overview\n\nThe May 9, 2026 [[stripe]] reference lists raw response codes for seven payment-method groupings: ACH Direct Debit, Australia BECS, Bacs, Cash App Pay, New Zealand BECS, Canadian pre-authorized debit, and SEPA Direct Debit. The November 7 same-URL capture retains those tables and adds **13 card-network or processor tables**. See [[stripe-declines]] for how a raw network code differs from a Stripe decline or advice code.\n\n## Key takeaways\n\n- The seven earlier method groupings remain in the November capture. The debit tables map a method-specific raw code to a Stripe **decline code** (ACH) or **failure code** (BECS, Bacs, PAD, SEPA), plus explanations and often next steps. Cash App Pay has a two-column raw-code-to-decline-code table without those explanations. For ACH `R05` and related mandate codes, the table says to collect a new mandate before retrying; other bank-debit rows call for updated account details or customer contact according to the exact method and code. These are conditional row-level instructions, not card-network retry rules.\n- The new **Card Payments** section lists Visa, Cartes Bancaires, Eftpos AU, UnionPay, CAFIS JCB, Cybersource, Girocard, JCB International, Mastercard, American Express, Discover, NYCE, and Everlink (Interac). Each has **Raw network code** and **Explanation** columns. Unlike the debit and Cash App Pay tables, these card tables do not map each raw code to a Stripe `decline_code`, `advice_code`, or `network_advice_code`. Look up a code in the named network or processor table; the same string can mean something else elsewhere. For example, Visa `05` means \u201cDon\u2019t honor\u201d while UnionPay `05` means \u201cID certification fails.\u201d\n- The Card Payments heading does not make every row a decline. JCB International `85` is explicitly \u201cNot declined\u201d for balance inquiry or zero-amount address verification. American Express `001` is \u201cApprove with ID\u201d and `003` is \u201cApprove VIP (Visa only).\u201d These are static row explanations, not evidence that any particular payment was authorized, captured, or settled.\n- Mastercard rows include a raw code **with MAC value**. For example, `79 (MAC 02)` says invalid credentials and permits retry later, while `79 (MAC 03)` says account credentials not found and says not to retry. Other rows also vary by MAC. Preserve the exact combined row and do not collapse its advice into a universal retry rule or infer a Stripe `advice_code` from this reference.\n- The older source's common-failure summary applies to the bank-debit examples, with method-specific next steps. `generic_could_not_process` is not a universal \u201ccontact Stripe Support\u201d instruction: AU BECS `8`, Bacs ADDACS `R` and ARUDD `4/7/8`, and Canadian PAD `900` only say \u201cThe payment failed\u201d; the SEPA `AG02/AM05/CNOR/DNOR/DN05/FF01/AC13` row specifically says to contact Support. Use the matching row's wording and any observed payment outcome rather than assuming a retry or escalation path.\n\n## Detail locators\n\n- ACH, Australia BECS, and Bacs raw-to-decline/failure mapping: [[raw/stripe-declines-network-codes-2026-11-07|November 7 reference]], lines 11\u201360; [[raw/stripe-network-decline-codes-2026|May 9 reference]], lines 10\u201359.\n- Thirteen card-network and processor raw-response tables: November lines 62\u2013815. Visa 66\u2013137; Cartes Bancaires 139\u2013221; Eftpos AU 223\u2013272; UnionPay 274\u2013344; CAFIS JCB 346\u2013385; Cybersource 387\u2013456; Girocard 458\u2013482; JCB International 484\u2013536; Mastercard 538\u2013586; Amex 588\u2013618; Discover 620\u2013673; NYCE 675\u2013753; Everlink 755\u2013815.\n- Cash App Pay, New Zealand BECS, Canadian PAD, and SEPA: November lines 817\u2013875; May lines 61\u2013119. Check the exact method, failure/decline column, and next-step cell before acting.\n\n## Related\n\n- [[stripe-declines]] \u2014 issuer declines, raw network codes, Stripe decline and advice fields.\n- [[source-stripe-decline-codes]] \u2014 Stripe decline-code reference.\n- [[source-stripe-declines-overview]] \u2014 decline overview.\n\n## Raw Sources\n\n- [[raw/stripe-declines-network-codes-2026-11-07|Stripe network codes, 2026-11-07]]\n- [[raw/stripe-network-decline-codes-2026|Stripe network codes, 2026-05-09]]\n",
+  "quotes": [
+    {
+      "text": "Raw network response codes for card payments vary by card network. The following tables describe each network\u2019s codes.",
+      "location": "raw/stripe-declines-network-codes-2026-11-07.md:64"
+    },
+    {
+      "text": "ID certification fails.",
+      "location": "raw/stripe-declines-network-codes-2026-11-07.md:281"
+    },
+    {
+      "text": "Not declined (only used for balance inquiry and address verification with zero amount).",
+      "location": "raw/stripe-declines-network-codes-2026-11-07.md:528"
+    },
+    {
+      "text": "Invalid credentials (lifecycle decline; can retry later).",
+      "location": "raw/stripe-declines-network-codes-2026-11-07.md:576"
+    },
+    {
+      "text": "Approve with ID.",
+      "location": "raw/stripe-declines-network-codes-2026-11-07.md:592"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "`R`",
+      "location": "raw/stripe-network-decline-codes-2026.md:43"
+    },
+    {
+      "text": "Contact Support for more information.",
+      "location": "raw/stripe-network-decline-codes-2026.md:111"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-declines-network-codes-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 875
+      }
+    ],
+    "raw/stripe-network-decline-codes-2026.md": [
+      {
+        "start": 1,
+        "end": 119
+      }
+    ],
+    "wiki/sources/source-stripe-network-decline-codes.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9adbb3e4f765c00e69e68b1a/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 955
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "s02-declines-network-codes-concept-route",
+      "target_path": "wiki/concepts/stripe-declines.md",
+      "old_text": "## Network Decline Codes\n\nRaw bank/network codes (e.g. ACH `R01`, SEPA `MD01`) map to Stripe decline codes. Full tables in [[source-stripe-network-decline-codes]].\n\n**Payment methods with network code tables**: ACH Direct Debit, Australia BECS, Bacs (ADDACS/ARUDD/AUDDIS), Cash App Pay, NZ BECS, Canadian PAD, SEPA Direct Debit.\n\nCommon patterns across all bank debit methods: `debit_not_authorized` (missing mandate), `recipient_deceased`, `insufficient_funds`, `account_closed`, `refer_to_customer`.\n\n",
+      "new_text": "## Network Decline Codes\n\nThe May 9, 2026 [[source-stripe-network-decline-codes]] capture maps raw codes to Stripe decline/failure codes for seven payment-method groupings: ACH Direct Debit, Australia BECS, Bacs (ADDACS/ARUDD/AUDDIS), Cash App Pay, New Zealand BECS, Canadian PAD, and SEPA Direct Debit. Bank-debit next steps such as collecting a mandate, obtaining new account details, or contacting a customer belong to the matching method/code row. The `generic_could_not_process` rows do not share one universal next step; the SEPA row says contact Support, while AU BECS, Bacs, and Canadian PAD examples only say payment failed.\n\nThe November 7 capture adds 13 card-network or processor tables, including Visa, Cartes Bancaires, UnionPay, Mastercard and American Express. Those tables give **raw code and explanation**, not a Stripe `decline_code` or `advice_code` mapping. Meanings and retry language are network-specific: Visa `05` and UnionPay `05` differ, and Mastercard MAC combinations can say retry later or do not retry. JCB International `85` is explicitly not declined; Amex also has approval-labelled rows. Use the named network table and the actual transaction fields before deciding an outcome or next action. The detailed tables remain in [[source-stripe-network-decline-codes]].\n\n",
+      "reason": "Keep the May seven-method mapping as dated evidence and route the November 13 card response tables without treating them as Stripe decline/advice mappings or universal retry instructions.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The card tables contain approval and not-declined rows; a static row does not prove a particular transaction outcome."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/declines/network-codes, [[source-stripe-network-decline-codes]] now describes both dated captures. The old May raw has seven method groupings at lines 10\u2013119; the new November raw retains them at lines 11\u201360 and 817\u2013875 while adding 13 card-network or processor tables at lines 62\u2013815. The card tables have raw-code and explanation columns only, so the new source does not infer a Stripe decline_code, advice_code, or network_advice_code mapping from those rows.",
+    "Q2": "At https://docs.stripe.com/declines/network-codes, [[source-stripe-network-decline-codes]] keeps method-specific bank-debit next steps from old lines 10\u201359 and 78\u2013119 and new lines 11\u201360 and 834\u2013875. It corrects the old source's broad Support advice: old Bacs lines 43 and 50 and new lines 44 and 51 only say payment failed, whereas old SEPA line 111 and new line 867 explicitly say contact Support. New card lines 74 and 281 give different meanings for code 05, and lines 528 and 592 contain non-decline or approval-labelled rows. No specific transaction outcome is established."
+  },
+  "status": "candidate_ready"
+}

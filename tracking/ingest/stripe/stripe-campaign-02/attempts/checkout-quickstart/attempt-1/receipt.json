@@ -1,0 +1,218 @@
+{
+  "job_id": "checkout-quickstart",
+  "attempt": 1,
+  "raw_path": "raw/stripe-checkout-quickstart-2026-11-07.md",
+  "raw_sha256": "99b74604320f9f624ae9a41b80219da46b294df6ebb9a85442714e920e896a48",
+  "prior_raw_path": "raw/stripe-checkout-quickstart-2025.md",
+  "prior_raw_sha256": "3f62a491945b8c7d465ccfeb50c19fbbf8dc6472712fad09ea8e1b52a1b3f75c",
+  "source_target": "wiki/sources/source-stripe-checkout-quickstart.md",
+  "source_before_sha256": "162a4083c2eef41848ef068a4276bc2cff96939752a478ae72082fb1fef57442",
+  "read_ranges": {
+    "raw/stripe-checkout-quickstart-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 560
+      },
+      {
+        "start": 561,
+        "end": 640
+      },
+      {
+        "start": 641,
+        "end": 720
+      },
+      {
+        "start": 721,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 960
+      },
+      {
+        "start": 961,
+        "end": 1040
+      },
+      {
+        "start": 1041,
+        "end": 1120
+      },
+      {
+        "start": 1121,
+        "end": 1143
+      }
+    ],
+    "raw/stripe-checkout-quickstart-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 156
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-quickstart.md": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/91578620f229c56b38ec8a8a/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1100
+      },
+      {
+        "start": 1101,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1232
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "To track and compare the performance of this integration against other Checkout implementations, pass an `integration_identifier` when you create the session.",
+      "location": "new raw line 163"
+    },
+    {
+      "text": "Always keep sensitive information about your product inventory, such as price and availability, on your server to prevent customer manipulation from the client.",
+      "location": "new raw line 173"
+    },
+    {
+      "text": "Wait to fulfill orders (for example, shipping or sending email receipts) until the payment succeeds.",
+      "location": "new raw line 217"
+    },
+    {
+      "text": "If you represent customers as customer-configured Account objects, you can also pass an Account ID to the [customer_account](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-customer_account) field to prefill the associated email address.",
+      "location": "new raw line 298"
+    },
+    {
+      "text": "Set up an event destination to fulfill orders after a payment succeeds and to handle other critical events.",
+      "location": "new raw line 1123"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Add an endpoint on your server that creates a Checkout Session.",
+      "location": "old raw line 21"
+    },
+    {
+      "text": "Once redirected to Checkout, the order is final and can't be modified without creating a new Checkout Session.",
+      "location": "old raw line 76"
+    },
+    {
+      "text": "Accounts v2: pass `customer_account` field instead",
+      "location": "old raw line 148"
+    },
+    {
+      "text": "**Fulfill orders**: set up event destination for `checkout.session.completed`",
+      "location": "old raw line 152"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe the same Stripe-hosted redirect flow under the exact URL (old 1, 4-6; new 1, 5-9): create a Checkout Session on the server, redirect to its URL, and collect payment on a prebuilt Stripe page. The new capture expands the scope to multiple backend and frontend code samples; it does not replace this URL with the separate embedded guide represented in source 8, 24-41, 84.",
+    "New prose explicitly recommends passing integration_identifier to compare conversion for implementations/segments (new 161-169), keeping sensitive price and availability on the server (new 171-173), and waiting for payment success before fulfilling after the return redirect (new 215-217, 1121-1123). The old guide mentioned a server endpoint and fulfillment event destination (old 21, 152), but did not give these two new security/finality qualifications. Current source 21 labels query-param display but should not let it imply payment proof.",
+    "Core older behavior remains: payment/subscription/setup modes (old 25-27; new 175-177), public success URL and session.url redirect (old 27, 60, 66; new 179-189), preview before redirect because the order is then final (old 76; new 191-209), test card scenarios (old 135-141; new 239-247), and Customer versus guest handling (old 143-148; new 288-298).",
+    "New customer_account language narrows the old blanket Accounts v2 shorthand: it applies when customers are represented as customer-configured Account objects, and an Account ID prefills the associated email (new 298; old 148; source 20, 57). It is a conditional identity route, not a universal replacement for customer IDs.",
+    "The new raw is a flattened aggregate of language/frontend variants: duplicate headings/prose and alternative local ports (new 159-169, 191-237), repeated YOUR_DOMAIN and success_url assignments and {{CHECKOUT_MODE}} placeholders in sample fragments (new 300-332), varied package versions (new 333-388, 641-681, 749-824). These do not constitute one runnable program or prove a changed Checkout API requirement; use prose for durable claims and treat examples as variant-specific.",
+    "New Checkout studio is described as a build/preview and Dashboard configuration/monitoring route without writing code first (new 11, 1141-1143). It is an optional route; no account eligibility, deployment, conversion, or payment result is established."
+  ],
+  "substantive_changes": [
+    "New guidance to keep price and inventory availability server-side to prevent client manipulation (new 173; old 19-21 did not state this).",
+    "New explicit payment-success boundary before fulfillment after redirect, plus event destination for post-success fulfillment (new 215-217, 1121-1123; old 152 only names checkout.session.completed).",
+    "New integration_identifier for comparing conversion between Checkout implementations/segments (new 163, 169), optional Checkout studio route (new 11, 1141-1143), and precise customer-configured Account qualification for customer_account (new 298 versus old 148)."
+  ],
+  "historical_claims_to_preserve": [
+    "The old 2026-04-20 hosted Node/React example, its local proxy and URL-query display pattern remain dated sample choices (old 36-70, 78-127, 129-133); new 215-217 makes clear display/redirect is not order-fulfillment proof.",
+    "The existing summary also covers a separate embedded raw (source 8, 24-41, 84), which was not within this exact job. Preserve its evidence and avoid importing the new hosted raw as authority for embedded behavior.",
+    "Three Checkout modes, order-preview finality after redirect, test-card scenarios, and guest versus Customer choice remain supported in both captures (old 25-27, 76, 135-148; new 175-177, 193-209, 239-247, 288-298)."
+  ],
+  "conflicts": [
+    "The current source's hosted client pattern is expressed as success/canceled URL-query checks (source 21), while new 217 expressly delays fulfillment until payment succeeds. Clarify that query parameters are UI messaging, not payment status or shipping authorization. Source 69 mentions checkout.session.completed but must not imply every completion is paid; payment-status and delayed-method details require the separate fulfillment authority.",
+    "The current source says Accounts v2 uses customer_account through the old raw 148, whereas new 298 makes that field conditional on customer-configured Account objects. Preserve v1 customer ID and v2 Account identity distinctly."
+  ],
+  "unresolved_questions": [
+    "The flattened, interleaved code samples in new 300-893 do not establish a single runnable multi-language application; no SDK/API execution or checkout/payment success was tested.",
+    "The separately mapped embedded quickstart raw was not a required pin for this job, so no new claim about embedded mode is drawn from this hosted capture."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/checkout/quickstart, the November guide still documents a server-created Stripe-hosted Checkout Session and redirect to the returned page (new 5-9, 159-185), matching the April hosted flow (old 4-6, 19-21, 66). It adds explicit server authority for sensitive inventory (new 173), an integration_identifier for comparison (new 163), and a payment-success gate before fulfillment after redirect (new 217, 1123). Its customer_account route is for customer-configured Account objects (new 298), qualifying old 148 and [[source-stripe-checkout-quickstart]] at source 20-21, 43-57. The separate embedded raw in that summary is outside this exact comparison.",
+    "Q2": "For https://docs.stripe.com/checkout/quickstart, substantive guidance changes are server-side price/availability authority, payment-success-before-fulfillment, optional conversion labeling and a more precise Account identity condition (new 163, 173, 217, 298). Multiple SDK/frontend installations and interleaved sample fragments are presentation variants, not a runnable combined integration (new 13-157, 300-893; old 11-70). [[source-stripe-checkout-quickstart]] should keep dated hosted Node/React, proxy, and return-query examples (old 36-76, 78-133) but label the return message as UI only, not payment proof. New Checkout studio is optional (new 11, 1141-1143); neither capture proves account access, conversion improvement or successful funds."
+  }
+}

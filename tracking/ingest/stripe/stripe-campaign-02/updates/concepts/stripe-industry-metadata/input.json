@@ -1,0 +1,69 @@
+{
+  "target_path": "wiki/concepts/stripe-industry-metadata.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-industry-metadata/base.md",
+  "base_sha256": "6c764ec01e73f1b6ab1f57c0014a5b70c38a48c3d470399a3a29e7f3c0adc15f",
+  "patches": [
+    {
+      "update_id": "industry-metadata::industry-metadata-concept-preview-benefit",
+      "target_path": "wiki/concepts/stripe-industry-metadata.md",
+      "old_text": "Industry metadata is a PaymentIntents API feature (public preview, API version `2025-11-17.preview`) for passing structured travel and entertainment transaction data. It serves two purposes: compliance with card network requirements for specific MCCs, and improved authorization rates/risk assessment for Klarna.\n\n**Mutually exclusive with [[stripe-payment-line-items]]** \u2014 cannot send both on the same PaymentIntent.",
+      "new_text": "Industry metadata is a PaymentIntents API feature for structured travel and entertainment transaction data. The 2026-11-07 guide documents `2026-07-29.preview` or a later preview header; the 2026-05-11 capture documented `2025-11-17.preview`. Relevant data is required for card-network compliance at supported MCCs and **might** improve Klarna authorization rates or risk assessment. Cards remain private preview; Klarna is public preview.\n\n> [!warning] Contradiction\n> The two dated captures give different preview headers and tax item paths (`total.tax.taxes[]` in May, `total.tax.tax_items[]` in November). Neither capture tests whether the older version or field spelling is rejected or aliased.\n\n[[stripe-payment-line-items]] is a separate PaymentIntent feature. Its 2026-05-11 [[source-stripe-payment-line-items]] restriction table states that card line items cannot be sent alongside car-rental, lodging, or airline industry metadata, and gives PayPal the same restriction ([[raw/stripe-payment-line-items-2026|dated line-item raw]], line 26). Its Klarna column refers to Extra Merchant Data in private preview; do not generalize the card/PayPal rule to Klarna or infer current preview access.",
+      "reason": "Corrects dated preview header and possible rather than guaranteed Klarna benefit; replaces the unsupported universal mutual-exclusion claim with the separately documented 2026-05-11 card/PayPal restriction and qualified Klarna boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not infer account enablement or older-version runtime rejection from the new preview header.",
+        "The dated payment-line-items restriction must not be generalized to Klarna or treated as a tested current account outcome."
+      ],
+      "original_update_id": "industry-metadata-concept-preview-benefit",
+      "job_id": "industry-metadata",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-2/receipt.json",
+      "receipt_sha256": "72c132823d64cd4bb7420f060df477dfebb06ef914706122f2cc8ce5988cff14",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-2/candidate.md",
+      "source_candidate_sha256": "180de7ee038ba61bd1cf9d807bfa374f9744ec7f8d7cc88d040a4aabd64af084",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-2/review.json"
+    },
+    {
+      "update_id": "industry-metadata::industry-metadata-concept-tax-phone",
+      "target_path": "wiki/concepts/stripe-industry-metadata.md",
+      "old_text": "Can be passed at create, update, confirm, or capture. **Immutable after capture.** Each update is a full hash replacement.",
+      "new_text": "Can be passed at create, update, confirm, or capture. **Immutable after capture.** Each update is a full hash replacement. In the 2026-11-07 field tables and examples, each vertical's tax entries use `total.tax.tax_items[]` (the 2026-05-11 capture used `total.tax.taxes[]`). Live card car-rental and lodging customer-service phones, and the optional lodging property phone, follow the new guide's E.164 wording; non-US numbers include `+` and country code, while all-zero values are a sandbox allowance only.",
+      "reason": "Adds the corrected documented request path and scoped live-mode phone conditions without weakening capture finality.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "The two captures do not establish a migration deadline or whether the old tax field is accepted."
+      ],
+      "original_update_id": "industry-metadata-concept-tax-phone",
+      "job_id": "industry-metadata",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-2/receipt.json",
+      "receipt_sha256": "72c132823d64cd4bb7420f060df477dfebb06ef914706122f2cc8ce5988cff14",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-2/candidate.md",
+      "source_candidate_sha256": "180de7ee038ba61bd1cf9d807bfa374f9744ec7f8d7cc88d040a4aabd64af084",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "industry-metadata::industry-metadata-concept-preview-benefit",
+    "industry-metadata::industry-metadata-concept-tax-phone"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-industry-metadata/auto-candidate.md",
+  "auto_candidate_sha256": "fde2a022f3b89220cf47a024a1b0e6fc1174a9b1dade7f79ba5ba249de20eaff",
+  "conflict_clusters": [],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s02-updates/stripe-industry-metadata-concept.json",
+  "review_output": "/tmp/stripe-s02-updates/stripe-industry-metadata-concept-review.json",
+  "context_only_units": [
+    {
+      "job_id": "industry-metadata",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-2/receipt.json",
+      "receipt_sha256": "72c132823d64cd4bb7420f060df477dfebb06ef914706122f2cc8ce5988cff14",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/industry-metadata/attempt-2/review.json"
+    }
+  ]
+}

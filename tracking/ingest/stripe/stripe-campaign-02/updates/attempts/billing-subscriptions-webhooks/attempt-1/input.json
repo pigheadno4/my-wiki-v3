@@ -1,0 +1,83 @@
+{
+  "job_id": "billing-subscriptions-webhooks",
+  "queue_id": 65,
+  "canonical_url": "https://docs.stripe.com/billing/subscriptions/webhooks",
+  "raw_path": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md",
+  "raw_sha256": "692a7ff4c062205f25e03dc6141b23a443e337922e5a573365babd40fa82d82c",
+  "prior_raw_path": "raw/stripe-subscriptions-webhooks-2026.md",
+  "prior_raw_sha256": "a9979893be10e9dcbccf137bb558308cc6f48b0ee9722a3bf0290059dde7f5d0",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/702bf62a9ae65f471edf51cf/content.diff",
+  "diff_sha256": "4ccc87208a075ad6ad9f05634f3cfbcf1c7c03a330a492fee60dc416a55f1cab",
+  "source_target": "wiki/sources/source-stripe-subscriptions-webhooks.md",
+  "source_before_sha256": "29b885a2b98af7572593c6ebdf1572b07b0e3defb3ad83f256cc054343d55535",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/billing-subscriptions-webhooks/attempt-2/receipt.json",
+  "receipt_sha256": "75ced11095e182a473a940717f6ef5e5660374ce98f85a3ba3f8ac7757bb4901",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/billing-subscriptions-webhooks/attempt-2/review.json",
+  "review_sha256": "7f2d94aba81791cbb735280877bba561a950df63c5aa571b5bb3e1f69272da28",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The November capture adds a dedicated risk/customer-data event section with four rows at new lines 81-84. It directs payment-accepting production integrations to consider charge.refunded, charge.dispute.created and radar.early_fraud_warning.created, and locally stored Customer data to customer.updated; Accounts v2 customer configuration and identity changes use two distinct v2.core.account updated event names. The original main subscription-event table has 26 distinct named events in both captures (old lines 33-71; new lines 34-71), so the current source's 22-event claims at lines 13 and 15 already miscount that table and also omit the new risk/customer-data section.",
+    "A new version-dependent risk-event correlation procedure appears at lines 120-142. For 2025-03-31.basil or later, derive or retrieve a PaymentIntent, list paid InvoicePayments filtered by that ID, paginate potentially multiple invoices, verify each Invoice parent.type is subscription_details, then obtain parent.subscription_details.subscription. A null PaymentIntent, no matching paid InvoicePayments, or an unrelated Invoice prevents that route from resolving the subscription. Earlier API versions use Charge.invoice and Invoice.subscription, with null Charge.invoice likewise unresolved.",
+    "The access extension sequence changes materially: old line 119 advanced the expiration timestamp after invoice.paid; new line 158 requires retrieving the associated subscription and confirming active status first, because all-invoices status resolution can leave a subscription non-active after one invoice is paid. The existing source line 37 still says 'On invoice.paid \u2192 extend timestamp' without that gate and should be corrected.",
+    "The status table now conditions past_due and unpaid recovery on the Dashboard's most-recent-non-voided versus all-applicable-invoices status resolution, and says past_due does not guarantee another retry (new lines 175-184). A paid invoice and even an active status do not establish that every historical invoice is paid (new lines 175-177).",
+    "The invoice.created up-to-72-hour automatic-finalization delay, connected platform endpoint boundary, organization exclusion, synchronous-payment-update exception, finalization-failure warning, and EventBridge/Event Grid route remain supported (old lines 8-17, 144-189; new lines 9-18, 187-231). Many diff hunks are table formatting, link repair, and wording updates, not a replacement of those contracts."
+  ],
+  "approved_conflicts": [
+    "Current source line 37's unconditional access extension after invoice.paid conflicts with new line 158's active-status check and is unsafe as a retained summary. Its 22-event claims at lines 13 and 15 are also numerically wrong for the unchanged 26-event main table (old lines 33-71; new lines 34-71); correct the count and separately describe the four new risk/customer-data rows (new lines 81-84).",
+    "The captured page itself repeats invoice.payment_failed with inconsistent blanket PaymentIntent/subscription statuses: requires_action and first-invoice-only incomplete at new line 55, requires_payment_method and unqualified incomplete at lines 94-99, then requires_action and unqualified incomplete at lines 112-117. Do not generalize one table cell into a universal transition; preserve first-invoice and payment-state qualifications.",
+    "New line 219 still suggests checking an invoice subscription property, while the new post-Basil risk-event procedure uses Invoice.parent.subscription_details.subscription at line 135. Avoid treating either as version-independent without separate evidence."
+  ],
+  "historical_claims_to_preserve": [
+    "The original main subscription-event table has 26 distinct named events in both captures: 2 Customer/Account, 6 subscription lifecycle, 1 entitlement, 8 invoice, 2 PaymentIntent, and 7 subscription-schedule rows (old lines 33-71; new lines 34-71). It retains customer.subscription.* events irrespective of Accounts v2 versus Customer objects (old lines 27-29; new lines 28-30). Keep this count distinct from the four additional risk/customer-data rows at new lines 81-84.",
+    "Retain webhook verification, asynchronous subscription activity, EventBridge/Event Grid destinations, and status-change monitoring (old lines 8-29, 121-131; new lines 9-30, 160-170).",
+    "Retain invoice.created failure delaying automatic invoice finalization up to 72 hours, subject to custom scheduling and synchronous payment-attempt exceptions, plus connected-platform and organization endpoint distinctions (old lines 144-153; new lines 187-196).",
+    "Retain the warning that invoice.finalization_failed can leave a subscription active while payment cannot be collected (old lines 183-189; new lines 225-231)."
+  ],
+  "unresolved_questions": [
+    "The capture does not prove that every account can use Accounts v2 or that all suggested risk-event subscriptions are configured for this application; the page labels Accounts v2 GA for Connect and public preview otherwise (new lines 28-30).",
+    "The captured guide does not resolve its own repeated invoice.payment_failed status contradiction (new lines 55, 94, 112); a source update should report that limitation rather than choose a universal PaymentIntent or subscription state.",
+    "Where a risk event has no usable PaymentIntent or paid InvoicePayment, the documented new procedure cannot resolve a subscription; this capture supplies no universal fallback (new lines 128-135)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/billing-subscriptions-webhooks/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "75ced11095e182a473a940717f6ef5e5660374ce98f85a3ba3f8ac7757bb4901",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/billing-subscriptions-webhooks/attempt-2/review.json",
+  "approved_triage_review_sha256": "7f2d94aba81791cbb735280877bba561a950df63c5aa571b5bb3e1f69272da28",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw6",
+  "reviewer_agent": "/root/s2ur3",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-billing-subscriptions-webhooks-2026-11-07.md",
+      "sha256": "692a7ff4c062205f25e03dc6141b23a443e337922e5a573365babd40fa82d82c",
+      "lines": 243
+    },
+    {
+      "path": "raw/stripe-subscriptions-webhooks-2026.md",
+      "sha256": "a9979893be10e9dcbccf137bb558308cc6f48b0ee9722a3bf0290059dde7f5d0",
+      "lines": 201
+    },
+    {
+      "path": "wiki/sources/source-stripe-subscriptions-webhooks.md",
+      "sha256": "29b885a2b98af7572593c6ebdf1572b07b0e3defb3ad83f256cc054343d55535",
+      "lines": 55
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/702bf62a9ae65f471edf51cf/content.diff",
+      "sha256": "4ccc87208a075ad6ad9f05634f3cfbcf1c7c03a330a492fee60dc416a55f1cab",
+      "lines": 292
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/billing-subscriptions-webhooks-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/billing-subscriptions-webhooks-review.json"
+}

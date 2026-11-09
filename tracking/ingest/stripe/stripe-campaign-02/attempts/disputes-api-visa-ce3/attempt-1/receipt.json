@@ -1,0 +1,108 @@
+{
+  "job_id": "disputes-api-visa-ce3",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-api-visa-ce3-2026-11-07.md",
+  "raw_sha256": "87afed1e899ae721465726aba41732a576b27e9eb1f8f5f2e9754daf880cc484",
+  "prior_raw_path": "raw/stripe-disputes-visa-ce3-2026.md",
+  "prior_raw_sha256": "b1764a9515bb31d658de54b57ba6c7e4f78293944497d822223f1807177b67f3",
+  "source_target": "wiki/sources/source-stripe-disputes-visa-ce3.md",
+  "source_before_sha256": "5b0aa0c1c42928c30d33fbf28a6754d527702f44bbb0ffe0958d757a0cd09359",
+  "read_ranges": {
+    "raw/stripe-disputes-api-visa-ce3-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 153
+      }
+    ],
+    "raw/stripe-disputes-visa-ce3-2026.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 152
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-visa-ce3.md": [
+      {
+        "start": 1,
+        "end": 94
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a232a52acb935cb4a7c52433/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 113
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The disputed transaction must be a Visa transaction with [network reason code](https://docs.stripe.com/api/disputes/object.md#dispute_object-payment_method_details-card-network_reason_code) 10.4.",
+      "location": "new raw line 15"
+    },
+    {
+      "text": "The previous non-disputed transactions must be within 120-364 days of the disputed transaction.",
+      "location": "new raw line 17"
+    },
+    {
+      "text": "Customer Device Fingerprint *and* Customer Device ID isn\u2019t a valid evidence combination.",
+      "location": "new raw line 31"
+    },
+    {
+      "text": "After submitting evidence, the status changes to `not_qualified` if the evidence is ineligible for Visa CE 3.0. Evidence is still submitted, but not using Visa CE 3.0.",
+      "location": "new raw line 122"
+    },
+    {
+      "text": "In sandboxes, you can use any two test transactions as `prior_undisputed_transactions`. Stripe doesn\u2019t validate the prior transactions\u2019 payment method or transaction date while testing.",
+      "location": "new raw line 140"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The previous non-disputed transactions must be within 120-364 days of the disputed transaction.",
+      "location": "old raw line 16"
+    },
+    {
+      "text": "After submitting evidence, the status changes to `not_qualified` if the evidence is ineligible for Visa CE 3.0. Evidence is still submitted, but not using Visa CE 3.0.",
+      "location": "old raw line 121"
+    },
+    {
+      "text": "In test environments, you can use any two test transactions as `prior_undisputed_transactions`. Stripe doesn\u2019t validate the prior transactions\u2019 payment method or transaction date while testing.",
+      "location": "old raw line 139"
+    }
+  ],
+  "proposed_disposition": "no_substantive_update",
+  "findings": [
+    "The same canonical URL remains an API guide to Visa CE 3.0 dispute evidence. Both captures require Visa network reason 10.4, two paid undisputed non-validation transactions using the same payment method 120-364 days earlier, descriptions for all three, merchandise_or_services, and the specified cross-transaction evidence-element match; device fingerprint plus device ID is invalid (old lines 12-30; new lines 13-31).",
+    "Both captures describe evidence.enhanced_evidence.visa_compelling_evidence_3, enhanced_eligibility_types, and evidence_details.enhanced_eligibility.visa_compelling_evidence_3 with required_actions and status (old lines 32-103; new lines 33-104). Example JSON differences are punctuation/formatting, not object behavior.",
+    "The submission path is unchanged: requires_action identifies missing evidence, qualified means ready to submit, submit=false saves without submission, and ineligible CE 3.0 evidence still submits via the standard path with not_qualified status. Overall dispute status must be tracked separately; standard evidence is advised for fallback if CE 3.0 is disapproved (old lines 112-125; new lines 113-126).",
+    "The testing section changes 'test environment' to linked 'sandbox' wording (old lines 137-139; new lines 138-140). Both say any two test transactions can be used as prior_undisputed_transactions there without payment-method/date validation; primary and secondary evidence elements still receive Visa CE 3.0 validation, and CE status does not determine overall won/lost status (old lines 139-152; new lines 140-153). This wording change does not establish new production eligibility or account access.",
+    "The current source already covers the central criteria, evidence objects, status distinction, fallback, and sandbox-style testing exception (source lines 11-83). Diff changes are heading whitespace, emphasis, table padding, JSON comma, and test-environment terminology; there is no concrete retained claim requiring a semantic revision. The November raw may be kept as dated reference if the coordinator wants evidence freshness, without changing the source's factual summary."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Keep the same Visa 10.4, two prior transactions 120-364 days earlier, same payment method, paid/undisputed/non-validation, product descriptions, category, and evidence matching prerequisites (old lines 12-30; new lines 13-31).",
+    "Keep CE qualification distinct from dispute outcome: not_qualified can still mean evidence was submitted through standard dispute flow, while won/lost belongs to overall dispute.status (old lines 121-125, 150; new lines 122-126, 151).",
+    "Keep the testing-only exception limited to prior transaction identity/date validation; primary and secondary evidence-element checks remain (old lines 137-143; new lines 138-144)."
+  ],
+  "conflicts": [],
+  "unresolved_questions": [
+    "The captures describe eligibility and testing mechanics, but do not verify that a particular dispute qualifies, that an issuer accepts CE 3.0 evidence, or that the business wins.",
+    "The page's sandbox wording does not prove a merchant has sandbox access or establish any production relaxation of the 120-364-day and same-payment-method criteria."
+  ],
+  "affected_concepts": [],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/api/visa-ce3, [[source-stripe-disputes-visa-ce3]] still captures the same Visa CE 3.0 criteria and lifecycle. Old lines 14-22 and new lines 15-23 retain Visa 10.4, two prior paid undisputed transactions within 120-364 days, descriptions, category, and evidence matching. Old line 121 and new line 122 both say ineligible CE evidence still submits outside CE 3.0. The test wording changes from test environments at old line 139 to sandboxes at new line 140 without changing the exception's scope.",
+    "Q2": "Recommend no_substantive_update for [[source-stripe-disputes-visa-ce3]] at https://docs.stripe.com/disputes/api/visa-ce3. Its existing summary already preserves the core eligibility and the separation between CE status and dispute outcome, supported by old lines 112-125 and new lines 113-126. Keep the testing exception limited to sandbox prior-transaction payment-method/date validation, as old line 139 and new line 140 state; new line 142 still says evidence elements are validated. The November capture can remain a dated raw reference, but the evidence does not justify changing canonical behavior claims or implying a dispute win."
+  }
+}

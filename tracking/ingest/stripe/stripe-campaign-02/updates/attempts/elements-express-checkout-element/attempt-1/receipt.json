@@ -1,0 +1,205 @@
+{
+  "job_id": "elements-express-checkout-element",
+  "attempt": 1,
+  "raw_path": "raw/stripe-elements-express-checkout-element-2026-11-07.md",
+  "raw_sha256": "8c81e55df092d732508d596e612907650dcd4cdb2ffbe161b673c9ccb8e566ad",
+  "source_before_sha256": "37f6949e11995812e25eceac0571ee9bdbd0a737f5984cb1f4dfb030b9920616",
+  "source_page": "---\ntitle: \"Stripe Express Checkout Element\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/elements/express-checkout-element\"\nraw_files:\n  - \"stripe-elements-express-checkout-element-2026-11-07.md\"\n  - \"stripe-express-checkout-element-2025.md\"\ntags: [stripe, elements, express-checkout, apple-pay, google-pay, paypal, link, klarna, amazon-pay, one-click-payments, wallet]\n---\n\n## Overview\n\nThe Express Checkout Element presents one-click buttons for six built-in methods: Link, Apple Pay, Google Pay, PayPal, Klarna, and Amazon Pay. The November 7, 2026 product page adds a custom-payment-method button route, a more specific browser/webview matrix, and an `availablepaymentmethodschange` availability example. The April 21 capture remains dated historical evidence for its `ready`/`availablePaymentMethods` example. Neither overview names exact Stripe.js/React package versions for the event change, proves that `ready` was removed, or demonstrates a payment completion.\n\n## Availability and setup\n\nButtons appear only when a method is active, supported, and set up for the actual customer environment. Dashboard activation, browser and currency support, customer wallet setup, and domain registration in **both sandbox and live mode** still matter. Stripe sorts eligible buttons by relevance; merchant country comes from the publishable key, and changing it requires unmounting the Element, updating the key, then remounting. Shipping collection requires creation options. The demo's displayed buttons are only examples, not merchant or device eligibility proof.\n\nThe **November** availability pattern is `availablepaymentmethodschange` with a `paymentMethods` payload, or React `onAvailablePaymentMethodsChange={({ paymentMethods }) => ...}`. Use it to decide whether to show a fallback such as Payment Element when no wallet is available, or whether to hide the ECE container until a method is available. The **April** page instead used `ready`, `availablePaymentMethods`, and React `onReady` for that purpose. Preserve the dated API-shape difference; this page does not establish package-version transition, deprecation of `ready` for every purpose, or successful wallet execution. November raw lines 316\u2013377; April raw lines 301\u2013361.\n\n## Browser and webview matrix\n\nThe November browser table (raw lines 63\u201381) lists Firefox desktop Apple Pay as supported **subject to** `paymentMethods.applePay: 'always'` on non-Safari desktop browsers. April's Firefox row said unsupported and its desktop Chromium footnote additionally said macOS-only. The November footnote omits that operating-system condition; omission does not prove Windows/Linux or every desktop OS is eligible. Other browser distinctions remain: Firefox desktop lacks Link and Klarna; Safari Google Pay requires `always`; Chrome on Android lacks Apple Pay; iOS 16+ Firefox/Edge have narrower PayPal/Amazon/Klarna coverage than Chrome. In an iframe, the Apple Pay origin rule and Safari 17+ `allow=\"payment\"` exception remain at November line 77.\n\n| Method | November in-app webview support |\n| --- | --- |\n| Apple Pay | Eligible iOS webviews, subject to standard Apple Pay requirements |\n| Google Pay | Eligible environment **and** no popup required; Android host app must support Payment Request API |\n| Link, PayPal, Klarna, Amazon Pay | Marked unsupported |\n\nWebview support is additional to standard browser and method eligibility. The April blanket limited-webview warning is historical. The November page suggests native iOS/Android SDKs for mobile apps; it does not claim that a table check, an availability event, or a mounted button proves a payment will complete. November raw lines 83\u201396; April raw line 78.\n\n## Button controls and styling\n\nThe default layout is a space-dependent grid with overflow when needed; `layout` controls rows/columns/overflow. `buttonType` differs by wallet: Apple Pay has `plain`, `buy`, `check-out`, `subscribe`, `donate`, and others; Google Pay has `plain`, `buy`, `checkout`, `pay`, `subscribe`, and others; PayPal has `paypal`, `checkout`, `buynow`, `pay`; Klarna has `continue`, `pay`; Link and Amazon Pay each have one type. See November raw lines 98\u2013211 for exact lists and example.\n\nWallet logos and brand colors are controlled by each method. The supported styling controls are button height, border radius through Appearance, and per-method button themes. Apple Pay offers `black`, `white`, `white-outline`; Google Pay `black`, `white`; PayPal `gold`, `blue`, `silver`, `white`, `black`. Klarna themes and compatible theme selection are described at November raw lines 213\u2013299.\n\nFor built-in methods, Dashboard activation, `paymentMethodOrder`, layout, and Apple/Google Pay `paymentMethods.*` `never`/`always` can affect display. `always` does **not** override unsupported platform or currency conditions. The page notes Finland and Sweden debit-before-credit presentation rules. November raw lines 301\u2013314.\n\nThe November overview says `customPaymentMethods` on `stripe.elements()` can add custom method buttons to the row. A button does not appear if the ID is not a valid Dashboard-configured `cpmt_` ID or `handleRender` throws. The April overview's \u201ccan't specify which methods\u201d sentence predates that support. Separately, a versioned `@stripe/stripe-js@9.14.0` beta declaration in [[source-github-stripe-js]] identifies a typed embedded custom-method surface; neither the product page nor that type declaration proves a given account's cohort, production rollout, or successful rendering. November raw lines 55 and 301\u2013312; April raw line 289.\n\n## Related\n\n- [[stripe-express-checkout-element]] \u2014 concept, integration routes, and version-qualified notes.\n- [[source-stripe-express-checkout-element-accept-payment]] \u2014 Checkout Sessions and Payment Intents integration, confirmation and collection details.\n- [[source-stripe-express-checkout-element-migration]] \u2014 Payment Request Button migration.\n\n## Raw Sources\n\n- [[raw/stripe-elements-express-checkout-element-2026-11-07|November 7, 2026 Express Checkout Element overview]]\n- [[raw/stripe-express-checkout-element-2025|April 21, 2026 Express Checkout Element overview]]\n",
+  "quotes": [
+    {
+      "text": "| Firefox | \u2713 Supported3 | \u2713 Supported4 | \u274c Not supported | \u2713 Supported | \u2713 Supported | \u274c Not supported |",
+      "location": "raw/stripe-elements-express-checkout-element-2026-11-07.md:67"
+    },
+    {
+      "text": "Apple Pay on non-Safari desktop browsers is only supported when",
+      "location": "raw/stripe-elements-express-checkout-element-2026-11-07.md:79"
+    },
+    {
+      "text": "Google Pay can complete without opening a pop-up window. In Android webviews, the host app must also be configured to support the Payment Request API.",
+      "location": "raw/stripe-elements-express-checkout-element-2026-11-07.md:90"
+    },
+    {
+      "text": "to the Express Checkout Element button row using the `customPaymentMethods` option on `stripe.elements()`.",
+      "location": "raw/stripe-elements-express-checkout-element-2026-11-07.md:55"
+    },
+    {
+      "text": "Listen for the `availablepaymentmethodschange` event to check which wallets are available",
+      "location": "raw/stripe-elements-express-checkout-element-2026-11-07.md:318"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "| Firefox            | \u274c Not supported | \u2713 Supported4 | \u274c Not supported | \u2713 Supported      | \u2713 Supported      | \u274c Not supported |",
+      "location": "raw/stripe-express-checkout-element-2025.md:62"
+    },
+    {
+      "text": "Apple Pay on desktop Chromium browsers is only supported on MacOS",
+      "location": "raw/stripe-express-checkout-element-2025.md:74"
+    },
+    {
+      "text": "Listen for the ready event to check which wallets are available",
+      "location": "raw/stripe-express-checkout-element-2025.md:303"
+    },
+    {
+      "text": "You can\u2019t specify which payment methods to display.",
+      "location": "raw/stripe-express-checkout-element-2025.md:289"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-elements-express-checkout-element-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 377
+      }
+    ],
+    "raw/stripe-express-checkout-element-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 361
+      }
+    ],
+    "wiki/sources/source-stripe-express-checkout-element.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 98
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/54600cc95fdd3671a9f7936d/content.diff": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 255
+      },
+      {
+        "start": 256,
+        "end": 340
+      },
+      {
+        "start": 341,
+        "end": 416
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "ece-concept-how-availability",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "Stripe automatically sorts buttons by relevance to the customer's location. When the element has determined which wallets are available, it fires a `ready` event with `availablePaymentMethods`.",
+      "new_text": "Stripe sorts eligible buttons by relevance to the customer's location. The November 2026 overview uses `availablepaymentmethodschange` with `paymentMethods` to check availability in the customer's current environment; its React prop is `onAvailablePaymentMethodsChange`. The April 2026 overview used `ready` with `availablePaymentMethods` for this check. The captures do not establish removal of `ready` for every purpose or actual payment completion.",
+      "reason": "Replace the unqualified older availability callback with dated April/November event scopes.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "ece-concept-browser-webview",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "Firefox does not support Apple Pay, Link, or Klarna. All payment methods have limited or no support in in-app webviews \u2014 use the iOS or Android SDK for mobile apps instead.",
+      "new_text": "The November browser table lists Firefox desktop Apple Pay with the non-Safari desktop `paymentMethods.applePay: 'always'` condition, while Firefox still lacks Link and Klarna. The April table marked Firefox Apple Pay unsupported and its desktop Chromium footnote said macOS-only; November omits that OS restriction without proving support on every desktop OS. In eligible iOS webviews Apple Pay can work; Google Pay can work without a popup, and Android webviews additionally need host Payment Request API support. Link, PayPal, Klarna, and Amazon Pay are marked unsupported in webviews. All browser, currency, setup, and device gates still apply; consider native iOS/Android SDKs for mobile apps.",
+      "reason": "Correct Firefox Apple Pay and replace blanket webview warning with method-specific conditions.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "ece-concept-availability-pattern",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "## Ready Event Pattern\n\n```js\nexpressCheckoutElement.on(\"ready\", ({ availablePaymentMethods }) => {\n  if (!availablePaymentMethods) {\n    // No wallets available \u2014 show fallback payment UI\n    showPaymentElement();\n  }\n});\n```\n\nReact: use the `onReady` prop on `<ExpressCheckoutElement>`. Check `availablePaymentMethods` in the callback; if falsy, show a fallback (e.g., `<PaymentElement>`).",
+      "new_text": "## Availability Event Pattern\n\nThe November overview uses the event below to check the methods currently available for the Element to display and to choose a fallback UI when none are available:\n\n```js\nexpressCheckoutElement.on(\"availablepaymentmethodschange\", ({ paymentMethods }) => {\n  if (!paymentMethods) showPaymentElement();\n});\n```\n\nReact uses `onAvailablePaymentMethodsChange={({ paymentMethods }) => ...}` on `<ExpressCheckoutElement>`. The April overview used `ready`/`availablePaymentMethods` and React `onReady` for this availability example; that is dated historical guidance, not proof that `ready` itself was removed. An availability callback does not prove merchant eligibility or payment completion.",
+      "reason": "Update the executable availability example and React prop without declaring the older event removed.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "ece-concept-wallet-event-row",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "| `ready` | Available methods determined | Show/hide fallback UI |",
+      "new_text": "| `availablepaymentmethodschange` (November overview) | `paymentMethods` reports methods available to display | Show/hide fallback UI; April overview used `ready`/`availablePaymentMethods` for this check |",
+      "reason": "Bring the wallet-events table into line with the newer dated availability pattern.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "ece-concept-custom-warning",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "> Earlier product documentation describes Express Checkout Element as unsupported for Custom Payment Methods. The v9.14 declarations prove a beta typed integration surface, not general runtime rollout or account eligibility. Confirm beta access and live behavior before offering this path to a merchant.",
+      "new_text": "> The April 2026 product overview said methods could not be specified, while the November 2026 overview describes `customPaymentMethods` buttons on `stripe.elements()` with valid Dashboard `cpmt_` IDs and a working `handleRender`. The separately captured v9.14 declarations prove a beta typed surface. These snapshots do not prove general runtime rollout, account eligibility, or successful rendering; confirm access and live behavior before offering this path.",
+      "reason": "Reconcile newer product-page custom button support with the earlier limitation and separate versioned beta type evidence.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "ece-concept-source-route",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "old_text": "- [[source-stripe-express-checkout-element]] \u2014 overview reference: supported methods, browser matrix, customization options, ready event",
+      "new_text": "- [[source-stripe-express-checkout-element]] \u2014 April and November overview captures for built-in methods, qualified Firefox/webview matrix, custom buttons, styling, and dated availability events",
+      "reason": "Route the concept to the updated dual-capture overview and its new eligibility distinctions.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/elements/express-checkout-element, the November overview uses `availablepaymentmethodschange` with `paymentMethods` and React `onAvailablePaymentMethodsChange` at new raw lines 316\u2013374. The April overview used `ready` with `availablePaymentMethods` and React `onReady` at old raw lines 301\u2013361. The updated [[source-stripe-express-checkout-element]] dates both examples and does not infer that `ready` was removed for every use or that a displayed method completed payment.",
+    "Q2": "The updated [[source-stripe-express-checkout-element]] records Firefox desktop Apple Pay as conditionally listed in the November browser table at new raw lines 63\u201379, versus unsupported in April at old raw lines 58\u201376. November webview rows 83\u201396 also distinguish eligible iOS Apple Pay and popup-free Google Pay from four unsupported methods, while old raw line 78 gave only a broad warning. At https://docs.stripe.com/elements/express-checkout-element, these table entries remain subject to wallet setup, currency, domain, device, and merchant conditions; the newer page does not prove every desktop operating system or account is eligible."
+  },
+  "status": "candidate_ready"
+}

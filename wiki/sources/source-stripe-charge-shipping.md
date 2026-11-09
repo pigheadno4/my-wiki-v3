@@ -1,8 +1,9 @@
 ---
 title: "Charge for Shipping"
 type: source
-date_ingested: 2026-04-21
+date_ingested: 2026-11-09
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/advanced/charge-shipping"
 raw_files:
   - "stripe-charge-shipping-2025.md"
 tags: [stripe, shipping, shipping-rates, checkout-sessions, payment-intents, stripe-tax, elements]
@@ -10,26 +11,26 @@ tags: [stripe, shipping, shipping-rates, checkout-sessions, payment-intents, str
 
 ## Summary
 
-Shipping rate integration guide for both API paths. Checkout Sessions has full built-in support via the `ShippingRate` API. Payment Intents has **no native shipping rate support** — must be built manually or by switching to Checkout.
+The 2026-04-21 guide covers two distinct API paths. Its Checkout Sessions embedded-components variant uses the `ShippingRate` API and Session `shipping_options`; its Payment Intents elements variant has no built-in shipping-rate calculation or definition, so it describes calculating the shipping-inclusive total yourself or using Checkout. The 2026-11-07 capture at this URL is a variant index only.
 
 > See also [[source-stripe-checkout-shipping]] for deeper Checkout Sessions shipping coverage.
 
-## Payment Intents: No Native Shipping Support
+## Payment Intents: No Built-In Shipping-Rate Calculation
 
-The Payment Intents API does not support shipping rates. Options:
+The older Payment Intents variant says the API does not calculate or define shipping rates out of the box. Stripe presents two options:
 
 1. Build it yourself: add shipping cost to the product total, display in checkout UI, process as a single amount
-2. Switch to Checkout Sessions (recommended)
+2. Use Checkout Sessions for its built-in shipping-rate features
 
 ## Checkout Sessions: Key Facts
 
-- **Fixed amount only** — cannot vary by item count
-- **payment mode only** — not supported in subscription or setup modes
+- **Fixed-rate example** — the older guide's ShippingRate values are fixed for the entire order and do not scale with item count; its separate dynamic shipping-update route was explicitly a preview feature
+- **`shipping_options` in the dated guide** — supported on Checkout Sessions in payment mode, not subscription or setup modes
 - **Shipping rate IDs**: `shr_...`; created via API or Dashboard
 - **Cannot update amount** of a set currency — must archive + create new rate
 - Pass rates via `shipping_options[].shipping_rate` (pre-created ID) or `shipping_options[].shipping_rate_data` (inline)
 
-## Client-Side Shipping Option Selection (Elements Path)
+## Checkout Sessions Embedded-Components: Client-Side Shipping Option Selection
 
 ```js
 // Get shipping options from session
@@ -65,13 +66,21 @@ shipping_rate_data: {
 
 Use `txcd_00000000` (Nontaxable) to explicitly exclude shipping from tax.
 
+## 2026-11-07 Variant Index
+
+The later base-URL capture links Checkout Sessions (`payment-ui=embedded-components`) and Payment Intents (`payment-ui=elements`) variants. It does not include either body; their current detailed behavior and eligibility are unverified here. The difference from the older combined capture is a navigation change, not evidence that either path was removed.
+
+## Related raw API references
+
+- [[raw/stripe-payments-advanced-charge-shipping-2026-11-07|2026-11-07 variant index]] — navigation to the two API-specific pages only.
+
 ## Related Pages
 
 - [[source-stripe-checkout-shipping]] — deeper shipping coverage for Checkout Sessions
 - [[source-stripe-checkout-dynamic-shipping]] — dynamic server-side shipping (beta): address validation, region-based options, runServerUpdate pattern
 - [[stripe-checkout]] — Checkout concept page
-- [[stripe-payment-intents]] — Payment Intents (no shipping support)
+- [[stripe-payment-intents]] — Payment Intents (no built-in shipping-rate calculation or definition)
 
 ## Raw Sources
 
-- [[stripe-charge-shipping-2025]] — verbatim guide (both API paths)
+- [[raw/stripe-charge-shipping-2025|2026-04-21 combined guide]] — verbatim Checkout Sessions and Payment Intents variants

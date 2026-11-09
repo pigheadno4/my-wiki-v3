@@ -1,0 +1,1265 @@
+--- raw/stripe-disputes-categories-2026.md
++++ raw/stripe-disputes-categories-2026-11-07.md
+@@ -4,277 +4,290 @@
+ 
+ Each payment method (such as a card, digital wallet, Buy now, Pay Later), defines hundreds of codes that represent specific reasons for dispute claims. These reasons often overlap across all of the different payment networks, thus Stripe organizes each payment method’s codes into one of eight categories. Each category is based on the general type of claim and the evidence required to effectively challenge it. You can manage disputes using the [Dashboard](https://docs.stripe.com/disputes/responding.md) or the [API](https://docs.stripe.com/disputes/api.md).
+ 
+-## Reason code categories
++## Reason code categories 
+ 
+ The following tables show the Stripe categories for each payment method’s dispute reason codes. The reason code is available on the [dispute object](https://docs.stripe.com/api/disputes/object.md#dispute_object-payment_method_details-card-network_reason_code). For more information about Visa, Mastercard, and Amex, see [Dispute reason codes](https://docs.stripe.com/disputes/reason-codes-defense-requirements.md).
+ 
+-### Visa
+-
+-| Stripe category                      | Visa code                     |
+-| ------------------------------------ | ----------------------------- |
+-| Credit not processed                 | - 13.6 Credit not processed   |
+-| - 13.7 Canceled Merchandise/Services |
+-| Duplicate                            | - 12.6.1 Duplicate processing |
+-| - 12.6.2 Paid by other means         |
+-| Fraudulent                           | - 33 Fraud analysis request   |
+-
+-- 10.1 EMV Liability Shift Counterfeit Fraud
+-- 10.2 EMV Liability Shift Non-Counterfeit Fraud
+-- 10.3 Other Fraud - Card Present Environment
+-- 10.4 Other Fraud - Card Absent Environment
+-- 10.5 Visa Fraud Monitoring Program |
+-  | General | - 28 Request for copy bearing signature
+-- 30 Cardholder request due to dispute
+-- 34 Legal process request
+-- 11.1 Card Recovery Bulletin
+-- 11.2 Declined Authorization
+-- 11.3 No Authorization
+-- 12.1 Late Presentment
+-- 12.2 Incorrect Transaction Code
+-- 12.3 Incorrect Currency
+-- 12.4 Incorrect Account Number
+-- 12.5 Incorrect Amount
+-- 12.7 Invalid Data
+-- 13.8 Original Credit Transaction Not Accepted |
+-  | Product not received | - 13.1 Merchandise/Services Not Received
+-- 13.9 Non-Receipt of Cash or Load Transaction Value |
+-  | Product unacceptable | - 13.3 Not as Described or Defective Merchandise/Services
+-- 13.4 Counterfeit Merchandise
+-- 13.5 Misrepresentation |
+-  | Subscription canceled | - 13.2 Canceled Recurring |
+-  | Noncompliant | - C028 Refinancing of an Existing Debit
+-- C030 Delayed or Amended Charges
+-- C031 Sold Paper
+-- C034 Merchant Processed Credit without a Previous Debit
+-- C035 Merchant Must Process a Reversal If Sale Processed In Error
+-- C036 Electronic Commerce Transaction
+-- C038 T&E Advance Deposit Service
+-- C045 Dispute Reduction Service Returned
+-- C048 Split Transaction
+-- C050 Other, See Attached Documentation
+-- C071 Prohibitions
+-- C081 Limits of Fee Collection
+-- C0135 Improperly Assessed Surcharge |
+-  | Unrecognized | None |
+-
+-### Mastercard
+-
+-| Stripe Category      | Mastercard Codes            |
+-| -------------------- | --------------------------- |
+-| Credit not processed | - 4860 Credit Not Processed |
+-
+-- 4860 Timeshares
+-- 4860 Credit Posted as a Purchase |
+-  | Duplicate | - 4834 Transaction Amount Differs
+-- 4834 Cardholder Debited More than Once for the Same Goods or Services
+-- 4834 ATM Disputes
+-- 4834 Charges for Loss, Theft, or Damages
+-- 4834 Late Presentment
+-- 4834 POI Currency Conversion (Dynamic Currency Conversion)
+-- 4834 Merchant Credit Correcting Error Resulting in Cardholder Currency Exchange Loss
+-- 4834 Improper Merchant Surcharge (Intra-European and Inter-European transactions only)
+-- 4834 Unreasonable Amount—Intra-European Economic Area (EEA) Transactions Only |
+-  | Fraudulent | - 6341 Fraud investigation
+-- 4837 No Cardholder Authorization
+-- 4849 Questionable Merchant Activity
+-- 4870 Chip Liability Shift
+-- 4871 Chip Liability Shift—Lost/Stolen/Never Received Issue (NRI) Fraud |
+-  | General | - 6305 Cardholder does not agree with amount billed
+-- 6322 Request Transaction Certificate for a chip transaction
+-- 6323 Cardholder needs information for personal records
+-- 6342 Potential chargeback or compliance documentation is required
+-- 6343 IIAS Audit (for healthcare transactions only)
+-- 6390 Identifies a syntax error return
+-- 4808 General Chargeback AND General Arbitration Chargeback
+-- 4807 Deprecated
+-- 4812 Account number not on file
+-- 4859 Addendum, No-show, or ATM Dispute
+-- 4859 German Domestic Rule - Card Acceptor Unwilling or Unable to Render Services
+-- 4859 Addendum Dispute
+-- 4859 No-show Hotel Charge
+-- 4831 Transaction Amount Differs
+-- 4831 Cardholder Debited More than Once for the Same Goods or Services
+-- 4831 Merchant Credit Correcting Error Resulting in Cardholder Currency Exchange Loss
+-- 4842 DEPRECATED: Late Presentment
+-- 4846 DEPRECATED: POI Currency Conversion (Dynamic Currency Conversion)
+-- 4901 Required Documentation Not Received to Support Second Presentment
+-- 4902 Documentation Received was Illegible
+-- 4903 Scanning error—Unrelated Documents or Partial Scan
+-- 4905 Acquirer Reference Data (ARD) Does Not Match or is Invalid
+-- 4908 Invalid Acquirer Reference Data; Documentation Received
+-- 4968 bad code - needs investigation
+-- 4840 bad code - needs investigation |
+-  | Product not received | - 4855 Transaction Did Not Complete |
+-  | Product unacceptable | - 4853 General Defective/Not as Described
+-- 4853 Goods or Services Were Either Not as Described or Defective
+-- 4853 Goods or Services Not Provided
+-- 4853 Failed Travel Merchant—Intra-EEA and Domestic European Transactions Only
+-- 4853 Digital Goods Purchase of USD 25 or Less
+-- 4853 Credit Not Processed
+-- 4853 Counterfeit Goods
+-- 4853 Cardholder Dispute of a Recurring Transaction
+-- 4853 Issuer Dispute of a Recurring Transaction
+-- 4853 Addendum Dispute
+-- 4853 No-show Hotel Charge
+-- 4853 Transaction Did Not Complete
+-- 4853 Timeshares
+-- 4853 Credit Posted as a Purchase |
+-  | Subscription canceled | - 4841 Digital Goods Purchase of USD 25 or Less
+-- 4841 Canceled Recurring or Digital Goods Transactions
+-- 4841 Cardholder Dispute of a Recurring Transaction
+-- 4841 Issuer Dispute of a Recurring Transaction |
+-  | Unrecognized | - 6321 Cardholder does not recognize transaction
+-- 4863 Cardholder Does Not Recognize—Potential Fraud |
+-
+-### American Express
+-
+-| Stripe Category      | Amex Codes                                       |
+-| -------------------- | ------------------------------------------------ |
+-| Credit not processed | - A01 Charge Amount Exceeds Authorization Amount |
+-
+-- C02 Credit Not Processed
+-- C04 Goods/Services Returned or Refused
+-- C05 Goods/Services Canceled
+-- C18 “No Show” or CARDeposit Canceled
+-- P03 Credit Processed as Charge
+-- P05 Incorrect Charge Amount
+-- 061 Credit Processed as Charge
+-- 062 Charge Processed as Credit
+-- 154 Goods/Services Canceled/Refused
+-- 158 Goods Returned (Request Credit)
+-- 170 Canceled lodging reservation/CARDeposit not received
+-- 175 Credit Not Processed
+-- 680 Incorrect Charge Amount |
+-  | Duplicate | - C14 Paid by Other Means
+-- P08 Duplicate Charge
+-- 173 Duplicate Charge
+-- 684 Paid by Other Means |
+-  | Fraudulent | - F10 Missing Imprint
+-- F24 Multiple ROCs
+-- F29 Card Not Present
+-- F30 EMV Liability Shift - Counterfeit
+-- F31 EMV Liability Shift - Lost/Stolen/Non-Received
+-- FR2 Fraud Full Recourse Program
+-- FR4 Immediate Chargeback Program
+-- FR5 Immediate Chargeback Program
+-- FR6 Partial Immediate Chargeback Program
+-- 177 Unauthorized Charge
+-- 193 Fraudulent Charge |
+-  | General | - A02 No Valid Authorization
+-- A08 Authorization Approval Expired
+-- M10 Vehicle Rental - Capital Damages, Theft, or Loss of Use
+-- R03 Insufficient Reply
+-- R13 No Reply
+-- M01 Chargeback Authorization
+-- P01 Unassigned Card Number
+-- P04 Charge Processed as Credit
+-- P07 Late Submission
+-- P22 Non-Matching Card Number
+-- P23 Currency Discrepancy
+-- M04 Merchant Accepted
+-- M11 Reversal Due To Credit
+-- M36 See Notes
+-- M38 Reversal
+-- M39 Correct a Previous Transaction
+-- M42 Reversal Request Too Late
+-- S01 Reversal Request Denied
+-- S04 Reversal Request Under Review, Please Wait
+-- OP1 General
+-- 147 Charge paid by Insurance Company
+-- 169 Charge submitted in an invalid currency
+-- 693 Questioning Charge for Damage/Theft/Loss
+-- S02 Reviewed Support; Will not be Debiting Account
+-- S03 Support received |
+-  | Product not received | - C08 Goods/Services Not Received or Only Partially Received
+-- 004 Product Not Received
+-- 155 Goods not Received (Request Credit) |
+-  | Product unacceptable | - C31 Goods/Services Not As Described
+-- C32 Goods/Services Damaged or Defective
+-- 024 Goods Damaged/Defective
+-- 059 Goods Damaged/Defective (Request Repair)
+-- 063 Product Quality Unacceptable |
+-  | Subscription canceled | - C28 Canceled Recurring Billing
+-- 021 Goods/Services Canceled/Expired |
+-  | Unrecognized | - 127 Unrecognized Charge
+-- 176 Unrecognized Charge (Card Not Present)
+-- 691 Requesting Support |
+-
+-### Discover
+-
+-| Stripe Category            | Discover Codes                                              |
+-| -------------------------- | ----------------------------------------------------------- |
+-| Credit not processed       | - 8002 Credit Not Processed                                 |
+-| Duplicate                  | - 4534 Duplicate Processing                                 |
+-| - 4865 Paid By Other Means |
+-| Fraudulent                 | - 6041 Transaction Documentation Request for Fraud Analysis |
+-
+-- 4866 Fraud Chip Card Counterfeit Transaction
+-- 4867 Fraud Chip Card and PIN Transaction
+-- 7010 Fraud Card Present Transaction
+-- 7030 Fraud Card Not Present Transaction |
+-  | General | - 6021 Transaction Documentation Request
+-- 6005 Transaction Documentation Request Due to Cardholder Dispute
+-- 6040 Good Faith Investigation
+-- 4542 Late Presentation
+-- 4550 Credit/Debit Posted Incorrectly
+-- 4553 Cardholder Disputes Quality of Goods or Services
+-- 4586 Altered Amount
+-- 4752 Does Not Recognize
+-- 4753 Invalid Cardholder Number
+-- 4757 Violation of Operating Regulations
+-- 4762 Good Faith Investigation
+-- 4863 Authorization Non Compliance
+-- 6050 Disputes Compliance |
+-  | Product not received | - 4755 Non-Receipt of Goods or Services
+-- 4864 Non Receipt Of Cash From ATM |
+-  | Product unacceptable | None |
+-  | Subscription canceled | - 4541 Recurring Payment |
+-  | Unrecognized | None |
+-
+-### Klarna
+-
+-| Stripe Category      | Klarna Code             |
+-| -------------------- | ----------------------- |
+-| Credit not processed | - Return                |
+-| Duplicate            | - Already paid          |
+-| Fraudulent           | - Unauthorized purchase |
+-| General              | - Incorrect invoice     |
+-
++### Visa 
++
++| Stripe category | Visa code |
++| --- | --- |
++| Credit not processed | - 13.6 Credit not processed
++- 13.7 Canceled Merchandise/Services |
++| Duplicate | - 12.6.1  Duplicate processing
++- 12.6.2  Paid by other means |
++| Fraudulent | - 33    Fraud analysis request
++- 10.1  EMV Liability Shift Counterfeit Fraud
++- 10.2  EMV Liability Shift Non-Counterfeit Fraud
++- 10.3  Other Fraud - Card Present Environment
++- 10.4  Other Fraud - Card Absent Environment
++- 10.5  Visa Fraud Monitoring Program |
++| General | - 28    Request for copy bearing signature
++- 30    Cardholder request due to dispute
++- 34    Legal process request
++- 11.1  Card Recovery Bulletin
++- 11.2  Declined Authorization
++- 11.3  No Authorization
++- 12.1  Late Presentment
++- 12.2  Incorrect Transaction Code
++- 12.3  Incorrect Currency
++- 12.4  Incorrect Account Number
++- 12.5  Incorrect Amount
++- 12.7  Invalid Data
++- 13.8  Original Credit Transaction Not Accepted |
++| Product not received | - 13.1	Merchandise/Services Not Received
++- 13.9	Non-Receipt of Cash or Load Transaction Value |
++| Product unacceptable | - 13.3	Not as Described or Defective Merchandise/Services
++- 13.4	Counterfeit Merchandise
++- 13.5	Misrepresentation |
++| Subscription canceled | - 13.2	Canceled Recurring |
++| Noncompliant | - C028	Refinancing of an Existing Debit
++- C030	Delayed or Amended Charges
++- C031	Sold Paper
++- C034	Merchant Processed Credit without a Previous Debit
++- C035	Merchant Must Process a Reversal If Sale Processed In Error
++- C036	Electronic Commerce Transaction
++- C038	T&E Advance Deposit Service
++- C045	Dispute Reduction Service Returned
++- C048	Split Transaction
++- C050	Other, See Attached Documentation
++- C071	Prohibitions
++- C081	Limits of Fee Collection
++- C0135	Improperly Assessed Surcharge |
++| Unrecognized | None |
++
++### Mastercard 
++
++| Stripe Category | Mastercard Codes |
++| --- | --- |
++| Credit not processed | - 4860	Credit Not Processed
++- 4860	Timeshares
++- 4860	Credit Posted as a Purchase |
++| Duplicate | - 4834	Transaction Amount Differs
++- 4834	Cardholder Debited More than Once for the Same Goods or Services
++- 4834	ATM Disputes
++- 4834	Charges for Loss, Theft, or Damages
++- 4834	Late Presentment
++- 4834	POI Currency Conversion (Dynamic Currency Conversion)
++- 4834	Merchant Credit Correcting Error Resulting in Cardholder Currency Exchange Loss
++- 4834	Improper Merchant Surcharge (Intra-European and Inter-European transactions only)
++- 4834	Unreasonable Amount—Intra-European Economic Area (EEA) Transactions Only |
++| Fraudulent | - 6341	Fraud investigation
++- 4837	No Cardholder Authorization
++- 4849	Questionable Merchant Activity
++- 4870	Chip Liability Shift
++- 4871	Chip Liability Shift—Lost/Stolen/Never Received Issue (NRI) Fraud |
++| General | - 6305	Cardholder does not agree with amount billed
++- 6322	Request Transaction Certificate for a chip transaction
++- 6323	Cardholder needs information for personal records
++- 6342	Potential chargeback or compliance documentation is required
++- 6343	IIAS Audit (for healthcare transactions only)
++- 6390	Identifies a syntax error return
++- 4808	General Chargeback AND General Arbitration Chargeback
++- 4807	Deprecated
++- 4812	Account number not on file
++- 4859	Addendum, No-show, or ATM Dispute
++- 4859	German Domestic Rule - Card Acceptor Unwilling or Unable to Render Services
++- 4859	Addendum Dispute
++- 4859	No-show Hotel Charge
++- 4831	Transaction Amount Differs
++- 4831	Cardholder Debited More than Once for the Same Goods or Services
++- 4831	Merchant Credit Correcting Error Resulting in Cardholder Currency Exchange Loss
++- 4842	DEPRECATED: Late Presentment
++- 4846	DEPRECATED: POI Currency Conversion (Dynamic Currency Conversion)
++- 4901	Required Documentation Not Received to Support Second Presentment
++- 4902	Documentation Received was Illegible
++- 4903	Scanning error—Unrelated Documents or Partial Scan
++- 4905	Acquirer Reference Data (ARD) Does Not Match or is Invalid
++- 4908	Invalid Acquirer Reference Data; Documentation Received
++- 4999	Domestic Chargeback Dispute (Europe Region Only)
++- 4968	bad code - needs investigation
++- 4840	bad code - needs investigation |
++| Product not received | - 4855	Transaction Did Not Complete |
++| Product unacceptable | - 4853	General Defective/Not as Described
++- 4853	Goods or Services Were Either Not as Described or Defective
++- 4853	Goods or Services Not Provided
++- 4853	Failed Travel Merchant—Intra-EEA and Domestic European Transactions Only
++- 4853	Digital Goods Purchase of USD 25 or Less
++- 4853	Credit Not Processed
++- 4853	Counterfeit Goods
++- 4853	Cardholder Dispute of a Recurring Transaction
++- 4853	Issuer Dispute of a Recurring Transaction
++- 4853	Addendum Dispute
++- 4853	No-show Hotel Charge
++- 4853	Transaction Did Not Complete
++- 4853	Timeshares
++- 4853	Credit Posted as a Purchase |
++| Subscription canceled | - 4841	Digital Goods Purchase of USD 25 or Less
++- 4841	Canceled Recurring or Digital Goods Transactions
++- 4841	Cardholder Dispute of a Recurring Transaction
++- 4841	Issuer Dispute of a Recurring Transaction |
++| Noncompliant | None |
++| Unrecognized | - 6321	Cardholder does not recognize transaction
++- 4863	Cardholder Does Not Recognize—Potential Fraud |
++
++### American Express 
++
++| Stripe Category | Amex Codes |
++| --- | --- |
++| Credit not processed | - A01	Charge Amount Exceeds Authorization Amount
++- C02	Credit Not Processed
++- C04	Goods/Services Returned or Refused
++- C05	Goods/Services Canceled
++- C18	“No Show” or CARDeposit Canceled
++- P03	Credit Processed as Charge
++- P05	Incorrect Charge Amount
++- 061	Credit Processed as Charge
++- 062	Charge Processed as Credit
++- 154	Goods/Services Canceled/Refused
++- 158	Goods Returned (Request Credit)
++- 170	Canceled lodging reservation/CARDeposit not received
++- 175	Credit Not Processed
++- 680	Incorrect Charge Amount |
++| Duplicate | - C14	Paid by Other Means
++- P08	Duplicate Charge
++- 173	Duplicate Charge
++- 684	Paid by Other Means |
++| Fraudulent | - F10	Missing Imprint
++- F24	Multiple ROCs
++- F29	Card Not Present
++- F30	EMV Liability Shift - Counterfeit
++- F31	EMV Liability Shift - Lost/Stolen/Non-Received
++- FR2	Fraud Full Recourse Program
++- FR4	Immediate Chargeback Program
++- FR5	Immediate Chargeback Program
++- FR6	Partial Immediate Chargeback Program
++- 177	Unauthorized Charge
++- 193	Fraudulent Charge |
++| General | - A02	No Valid Authorization
++- A08	Authorization Approval Expired
++- M10	Vehicle Rental - Capital Damages, Theft, or Loss of Use
++- R03	Insufficient Reply
++- R13	No Reply
++- M01	Chargeback Authorization
++- P01	Unassigned Card Number
++- P04	Charge Processed as Credit
++- P07	Late Submission
++- P22	Non-Matching Card Number
++- P23	Currency Discrepancy
++- M04	Merchant Accepted
++- M11	Reversal Due To Credit
++- M36	See Notes
++- M38	Reversal
++- M39	Correct a Previous Transaction
++- M42	Reversal Request Too Late
++- S01	Reversal Request Denied
++- S04	Reversal Request Under Review, Please Wait
++- OP1	General
++- 147	Charge paid by Insurance Company
++- 169	Charge submitted in an invalid currency
++- 693	Questioning Charge for Damage/Theft/Loss
++- S02	Reviewed Support; Won’t be Debiting Account
++- S03	Support received |
++| Product not received | - C08	Goods/Services Not Received or Only Partially Received
++- 004	Product Not Received
++- 155	Goods not Received (Request Credit) |
++| Product unacceptable | - C31	Goods/Services Not As Described
++- C32	Goods/Services Damaged or Defective
++- 024	Goods Damaged/Defective
++- 059	Goods Damaged/Defective (Request Repair)
++- 063	Product Quality Unacceptable |
++| Subscription canceled | - C28	Canceled Recurring Billing
++- 021	Goods/Services Canceled/Expired |
++| Unrecognized | - 127	Unrecognized Charge
++- 176	Unrecognized Charge (Card Not Present)
++- 691	Requesting Support |
++
++### Discover 
++
++| Stripe Category | Discover Codes |
++| --- | --- |
++| Credit not processed | - 8002	Credit Not Processed |
++| Duplicate | - 4534	Duplicate Processing
++- 4865	Paid By Other Means |
++| Fraudulent | - 6041	Transaction Documentation Request for Fraud Analysis
++- 4866	Fraud Chip Card Counterfeit Transaction
++- 4867	Fraud Chip Card and PIN Transaction
++- 7010	Fraud Card Present Transaction
++- 7030	Fraud Card Not Present Transaction |
++| General | - 6021	Transaction Documentation Request
++- 6005	Transaction Documentation Request Due to Cardholder Dispute
++- 6040	Good Faith Investigation
++- 4542	Late Presentation
++- 4550	Credit/Debit Posted Incorrectly
++- 4553	Cardholder Disputes Quality of Goods or Services
++- 4586	Altered Amount
++- 4752	Does Not Recognize
++- 4753	Invalid Cardholder Number
++- 4757	Violation of Operating Regulations
++- 4762	Good Faith Investigation
++- 4863	Authorization Non Compliance
++- 6050	Disputes Compliance |
++| Product not received | - 4755	Non-Receipt of Goods or Services
++- 4864	Non Receipt Of Cash From ATM |
++| Product unacceptable | None |
++| Subscription canceled | - 4541	Recurring Payment |
++| Unrecognized | None |
++
++### Klarna 
++
++| Stripe Category | Klarna Code |
++| --- | --- |
++| Credit not processed | - Return |
++| Duplicate | - Already paid |
++| Fraudulent | - Unauthorized purchase |
++| General | - Incorrect invoice
+ - Pandemic impact
+ - High risk order |
+-  | Product not received | - Goods not received |
+-  | Product unacceptable | - Faulty goods |
+-
+-### Paypal
+-
+-| Stripe Category           | PayPal Code                               |
+-| ------------------------- | ----------------------------------------- |
+-| Credit not processed      | - Credit not processed                    |
+-| Duplicate                 | - Duplicate transaction                   |
+-| - Payment by other means  |
+-| Fraudulent                | - Unauthorized                            |
+-| General                   | - Other                                   |
+-| - Problem with remittance |
+-| Product not received      | - Merchandise or service not received     |
+-| Product unacceptable      | - Merchandise or service not as described |
+-| Subscription canceled     | - Canceled recurring billing              |
+-| Unrecognized              | - Incorrect amount                        |
+-
+-### Cash App Pay
+-
+-| Stripe Category                                                                                                                                                       | Cash App Pay Code                                                          |
+-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+-| Unrecognized                                                                                                                                                          | - FR10 Customer has no knowledge of the Payment.                           |
+-| - FR11 Customer has no knowledge of the Payment and liability has shifted to the Merchant due to collusion, fraud monitoring program thresholds, or any other reason. |
+-| Duplicate                                                                                                                                                             | - PE10 Payment was processed twice.                                        |
+-| - PE12 Customer paid by other means.                                                                                                                                  |
+-| General                                                                                                                                                               | - PE11 Payment amount differs from agreed amount.                          |
+-| Credit Not Processed                                                                                                                                                  | - CD10 Canceled services.                                                  |
+-| - CD13 The purchase was canceled or returned, but the Refund hasn’t been processed.                                                                                   |
+-| Product Unacceptable                                                                                                                                                  | - CD11 Goods or services differ from what was agreed upon for the Payment. |
+-| Product Not Received                                                                                                                                                  | - CD12 The goods or services were not received.                            |
+-
+-## Category defense guidelines
++| Product not received | - Goods not received |
++| Product unacceptable | - Faulty goods |
++
++### Paypal 
++
++| Stripe Category | PayPal Code |
++| --- | --- |
++| Credit not processed | - Credit not processed |
++| Duplicate | - Duplicate transaction
++- Payment by other means |
++| Fraudulent | - Unauthorized |
++| General | - Other
++- Problem with remittance |
++| Product not received | - Merchandise or service not received |
++| Product unacceptable | - Merchandise or service not as described |
++| Subscription canceled | - Canceled recurring billing |
++| Unrecognized | - Incorrect amount |
++
++### Cash App Pay 
++
++| Stripe Category | Cash App Pay Code |
++| --- | --- |
++| Unrecognized | - FR10 Customer has no knowledge of the Payment.
++- FR11 Customer has no knowledge of the Payment and liability has shifted to the Merchant due to collusion, fraud monitoring program thresholds, or any other reason. |
++| Duplicate | - PE10 Payment was processed twice.
++- PE12 Customer paid by other means. |
++| General | - PE11 Payment amount differs from agreed amount. |
++| Credit Not Processed | - CD10 Canceled services.
++- CD13 The purchase was canceled or returned, but the Refund hasn’t been processed. |
++| Product Unacceptable | - CD11 Goods or services differ from what was agreed upon for the Payment. |
++| Product Not Received | - CD12 The goods or services weren’t received. |
++
++### Instant Bank Payments 
++
++Disputes for Instant Bank Payments don’t map to the same eight categories as other payment methods. Every dispute for Instant Bank Payments uses the same dispute reason, `debit_not_authorized`, with the underlying ACH return code shown as the network reason code.
++
++| Return code | Reason | Description |
++| --- | --- | --- |
++| R10 | Unauthorized | The customer claims they didn’t authorize the debit. |
++| R07 | Authorization revoked | The customer revoked an authorization they previously granted. |
++| R08 | Payment stopped | The customer instructed their bank to stop this specific debit. |
++| R11 | Not per terms | The debit wasn’t in accordance with the terms of the authorization. |
++| R29 | Corporate not authorized | A corporate customer advises the debit wasn’t authorized. |
++| R05 | Unauthorized (corporate SEC code) | An unauthorized debit to a consumer account using a corporate SEC code. |
++| R31 | Permissible return | A permissible return entry, for corporate (CCD and CTX) accounts only. |
++
++For the evidence that helps you respond to each return code, see [Disputed Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments/disputed-payments.md).
++
++## Category defense guidelines 
+ 
+ Use the selector to choose the category that matches the reason given for your dispute to see guidelines for responding.
+ 
+@@ -304,23 +317,21 @@
+ #### evidence you can submit for - Physical product
+ 
+ | For this type of recommended evidence | Designate this Dashboard label or API parameter |
+-| ------------------------------------- | ----------------------------------------------- |
+-
++| --- | --- |
+ | The language of your refund policy, as provided to the customer. This might be:
+-
+ - The text copied from your policy page
+ - A screenshot of the policy on a receipt
+ - A PDF of the applicable part of your business’s terms and conditions | `refund_policy` |
+-  | An explanation of how and where the applicable policy was provided to your customer prior to purchase. | `refund_policy_disclosure` |
+-  | Your explanation for why the customer isn’t entitled to a refund, or no further refund, if you already issued a partial refund. | `refund_refusal_explanation` |
+-  | Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| An explanation of how and where the applicable policy was provided to your customer prior to purchase. | `refund_policy_disclosure` |
++| Your explanation for why the customer isn’t entitled to a refund, or no further refund, if you already issued a partial refund. | `refund_refusal_explanation` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Whether you already issued the refund the cardholder is entitled to
+ - Whether or not the customer returned the merchandise in whole or in part. If they partially used the merchandise or returned it, or whether the dispute amount exceeds the value of the unused portion
+@@ -329,23 +340,21 @@
+ #### evidence you can submit for - Digital product or service
+ 
+ | For this type of recommended evidence | Designate this Dashboard label or API parameter |
+-| ------------------------------------- | ----------------------------------------------- |
+-
++| --- | --- |
+ | The language of the applicable cancellation or refund policy, as provided to the customer. This might be:
+-
+ - The text copied from your policy page
+ - A screenshot of the policy on a receipt
+ - A PDF of the applicable part of your business’s terms and conditions | `cancellation_policy` `refund_policy` |
+-  | An explanation of how and where you provided the applicable policy to your customer prior to purchase. | `cancellation_policy_disclosure` `refund_policy_disclosure` |
+-  | Your explanation for why the customer isn’t entitled to a cancellation or refund. | `cancellation_rebuttal` `refund_refusal_explanation` |
+-  | Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| An explanation of how and where you provided the applicable policy to your customer prior to purchase. | `cancellation_policy_disclosure` `refund_policy_disclosure` |
++| Your explanation for why the customer isn’t entitled to a cancellation or refund. | `cancellation_rebuttal` `refund_refusal_explanation` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ - Whether you already issued the refund the cardholder is entitled to
+ - Whether or not the customer used the digital product or service in whole or in part. If they partially used it, or whether the dispute amount exceeds the value of the unused portion
+ - Whether the cardholder withdrew the dispute | `uncategorized_text` `uncategorized_file` |
+@@ -353,23 +362,21 @@
+ #### evidence you can submit for - Offline service
+ 
+ | For this type of recommended evidence | Designate this Dashboard label or API parameter |
+-| ------------------------------------- | ----------------------------------------------- |
+-
++| --- | --- |
+ | The language of your refund policy, as provided to the customer. This might be:
+-
+ - The text copied from your policy page
+ - A screenshot of the policy on a receipt
+ - A PDF of the applicable part of your business’s terms and conditions | `cancellation_policy` `refund_policy` |
+-  | An explanation of how and where you provided the applicable policy to your customer prior to purchase. | `cancellation_policy_disclosure` `refund_policy_disclosure` |
+-  | Your explanation for why the customer isn’t entitled to a refund. | `cancellation_rebuttal` `refund_refusal_explanation` |
+-  | Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| An explanation of how and where you provided the applicable policy to your customer prior to purchase. | `cancellation_policy_disclosure` `refund_policy_disclosure` |
++| Your explanation for why the customer isn’t entitled to a refund. | `cancellation_rebuttal` `refund_refusal_explanation` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Whether you already issued the refund the cardholder is entitled to
+ - If they partially used the service, or whether the dispute amount exceeds the value of the unused portion
+@@ -383,7 +390,7 @@
+ 
+ - If a customer’s card is accidentally charged more than once for a single payment, correct the duplicates immediately and get in touch with the customer to let them know you’ve handled the issue.
+ - Send detailed receipts that explain every payment and make it easy to distinguish the unique reason for each.
+-- If you built your own Stripe integration, ensure it can [handle errors](https://docs.stripe.com/api/errors/handling.md) without double-charging.
++- If you built your own Stripe integration, make sure it can [handle errors](https://docs.stripe.com/api/errors/handling.md) without double-charging.
+ - Honor your written policies promptly when a customer requests and is entitled to a refund for a duplicate payment.
+ 
+ ### How to overturn it
+@@ -402,21 +409,20 @@
+ 
+ #### evidence you can submit for - Physical product
+ 
+-| For this type of recommended evidence                                                                                                                                                                                                                                                                                                                                                               | Designate this Dashboard label or API parameter |
+-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| The charge ID for the previous payment that appears to be a duplicate of the disputed one. If no duplicate charge exists, you can’t provide a duplicate charge ID when prompted to supply evidence in the Dashboard. In such cases, you can select **All Fields** from the gear menu and provide alternate evidence that is applicable to the dispute in question.                                  | `duplicate_charge_id`                           |
+-| An explanation of the difference between the disputed payment and the one the customer believes it’s a duplicate of.                                                                                                                                                                                                                                                                                | `duplicate_charge_explanation`                  |
+-| Documentation for the prior payment that can uniquely identify it, such as a separate receipt. This document should be paired with a similar document from the disputed payment that proves the two are separate. This should also include a separate shipping label or receipt for the other payment. If multiple products were shipped together, provide a packing list that shows each purchase. | `duplicate_charge_documentation`                |
+-| A shipping label or receipt for the product the disputed payment is for.                                                                                                                                                                                                                                                                                                                            | `shipping_documentation`                        |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| The charge ID for the previous payment that appears to be a duplicate of the disputed one. If no duplicate charge exists, you can’t provide a duplicate charge ID when prompted to supply evidence in the Dashboard. In such cases, you can select **All Fields** from the gear menu and provide alternate evidence that is applicable to the dispute in question. | `duplicate_charge_id` |
++| An explanation of the difference between the disputed payment and the one the customer believes it’s a duplicate of. | `duplicate_charge_explanation` |
++| Documentation for the prior payment that can uniquely identify it, such as a separate receipt. This document should be paired with a similar document from the disputed payment that proves the two are separate. This should also include a separate shipping label or receipt for the other payment. If multiple products were shipped together, provide a packing list that shows each purchase. | `duplicate_charge_documentation` |
++| A shipping label or receipt for the product the disputed payment is for. | `shipping_documentation` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Any and all information documenting that each payment was made separately, such as copies of receipts. If the receipts don’t include the items purchased, be sure to include an itemized list. Each receipt should clearly indicate that the payments are for separate purchases of items or services.
+ - Whether you already issued the refund the cardholder is entitled to
+@@ -424,20 +430,19 @@
+ 
+ #### evidence you can submit for - Digital product or service
+ 
+-| For this type of recommended evidence                                                                                                                                                                                                                                                                                                                                  | Designate this Dashboard label or API parameter |
+-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| The charge ID for the previous payment that appears to be a duplicate of the disputed one. If no duplicate charge exists, you can’t provide a duplicate charge ID when prompted to supply evidence in the Dashboard. In such cases, you can select **All Fields** from the gear menu and provide alternate evidence that is applicable to the dispute in question.     | `duplicate_charge_id`                           |
+-| An explanation of the difference between the disputed payment and the one the customer believes it’s a duplicate of.                                                                                                                                                                                                                                                   | `duplicate_charge_explanation`                  |
+-| Documentation for the prior payment that can uniquely identify it, such as a separate receipt. Pair this document with a similar document from the disputed payment that proves the two are separate. Also include a separate shipping label or receipt for the other payment. If multiple products shipped together, provide a packing list that shows each purchase. | `duplicate_charge_documentation`                |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| The charge ID for the previous payment that appears to be a duplicate of the disputed one. If no duplicate charge exists, you can’t provide a duplicate charge ID when prompted to supply evidence in the Dashboard. In such cases, you can select **All Fields** from the gear menu and provide alternate evidence that is applicable to the dispute in question. | `duplicate_charge_id` |
++| An explanation of the difference between the disputed payment and the one the customer believes it’s a duplicate of. | `duplicate_charge_explanation` |
++| Documentation for the prior payment that can uniquely identify it, such as a separate receipt. Pair this document with a similar document from the disputed payment that proves the two are separate. Also include a separate shipping label or receipt for the other payment. If multiple products shipped together, provide a packing list that shows each purchase. | `duplicate_charge_documentation` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Any information documenting that each payment was made separately, such as copies of receipts. If the receipts don’t include the items purchased, be sure to include an itemized list. Make sure each receipt clearly indicates that the payments are for separate purchases of items or services. If you’ve been able to get in touch with the customer, be sure to address any concerns they had in your evidence.
+ - Whether you already issued the refund the cardholder is entitled to
+@@ -445,21 +450,20 @@
+ 
+ #### evidence you can submit for - Offline service
+ 
+-| For this type of recommended evidence                                                                                                                                                                                                                                                                                                                                      | Designate this Dashboard label or API parameter |
+-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| The charge ID for the previous payment that appears to be a duplicate of the one that is disputed. If no duplicate charge exists, you can’t provide a duplicate charge ID when prompted to supply evidence in the Dashboard. In such cases, you can select **All Fields** from the gear menu and provide alternate evidence that is applicable to the dispute in question. | `duplicate_charge_id`                           |
+-| An explanation of the difference between the disputed payment and the one the customer believes it’s a duplicate of.                                                                                                                                                                                                                                                       | `duplicate_charge_explanation`                  |
+-| Documentation for the prior payment that can uniquely identify it, such as a separate receipt. Pair this document with a similar document from the disputed payment that proves the two are separate. Also include a separate shipping label or receipt for the other payment. If multiple products shipped together, provide a packing list that shows each purchase.     | `duplicate_charge_documentation`                |
+-| A copy of a service agreement or documentation for the disputed payment.                                                                                                                                                                                                                                                                                                   | `service_documentation`                         |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| The charge ID for the previous payment that appears to be a duplicate of the one that is disputed. If no duplicate charge exists, you can’t provide a duplicate charge ID when prompted to supply evidence in the Dashboard. In such cases, you can select **All Fields** from the gear menu and provide alternate evidence that is applicable to the dispute in question. | `duplicate_charge_id` |
++| An explanation of the difference between the disputed payment and the one the customer believes it’s a duplicate of. | `duplicate_charge_explanation` |
++| Documentation for the prior payment that can uniquely identify it, such as a separate receipt. Pair this document with a similar document from the disputed payment that proves the two are separate. Also include a separate shipping label or receipt for the other payment. If multiple products shipped together, provide a packing list that shows each purchase. | `duplicate_charge_documentation` |
++| A copy of a service agreement or documentation for the disputed payment. | `service_documentation` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Any information documenting that each payment was made separately, such as copies of receipts. If the receipts don’t include the items purchased, be sure to include an itemized list. Make sure that each receipt clearly indicates that the payments are for separate purchases of items or services. If you’ve been able to get in touch with the customer, make sure to address any concerns they had in your evidence.
+ - Whether you already issued the refund the cardholder is entitled to
+@@ -482,7 +486,7 @@
+ Explain and demonstrate one or more of the following:
+ 
+ - That the legitimate cardholder—or an authorized representative (such as an employee or family member)—did in fact make the payment
+-- That the payment was successfully authenticated with _3D Secure_ (3D Secure (3DS) provides an additional layer of authentication for credit card transactions that protects businesses from liability for fraudulent card payments) and should therefore fall under liability shift (Stripe provides the _Electronic Commerce Indicator (ECI)_ (An Electronic Commerce Indicator (ECI) is a code returned alongside a 3D Secure authentication result. It indicates the authentication method and result and may be used subsequently to, for example, determine eligibility for liability shift) automatically for you)
++- That the payment was successfully authenticated with *3D Secure* (3D Secure (3DS) provides an additional layer of authentication for credit card transactions that protects businesses from liability for fraudulent card payments) and should therefore fall under liability shift (Stripe provides the *Electronic Commerce Indicator (ECI)* (An Electronic Commerce Indicator (ECI) is a code returned alongside a 3D Secure authentication result. It indicates the authentication method and result and may be used subsequently to, for example, determine eligibility for liability shift) automatically for you)
+ - You already issued a refund to the cardholder
+ - The customer [withdrew the dispute](https://docs.stripe.com/disputes/withdrawing.md) or otherwise acknowledged they recognize the charge and filed the fraud dispute in error
+ - For Visa specifically, provide [Compelling Evidence](https://docs.stripe.com/disputes/categories.md#visa)
+@@ -498,8 +502,7 @@
+ #### evidence you can submit for - Physical product
+ 
+ | For this type of recommended evidence | Designate this Dashboard label or API parameter |
+-| ------------------------------------- | ----------------------------------------------- |
+-
++| --- | --- |
+ | Evidence (for example, photographs or emails) to prove a link between the person receiving products and the cardholder, or proving that the cardholder disputing the transaction is in possession of the products.
+ (Compelling Evidence) | `customer_communication` `uncategorized_text` `uncategorized_file` |
+ | Evidence that the person who signed for the products was authorized to sign for—or is known by—the cardholder. If the products were collected from a physical location, you should provide:
+@@ -507,18 +510,18 @@
+ - Cardholder signature on the pickup form
+ - A copy of identification presented by the cardholder
+ - Details of identification presented by the cardholder
+-  (Compelling Evidence) | `customer_signature` `uncategorized_text` `uncategorized_file` |
+-  | The address you shipped a physical product to. The shipping address must match a billing address verified with [AVS](https://docs.stripe.com/disputes/prevention/verification.md#avs-check) or be the address of a business that’s connected to the legitimate cardholder in some way.
+-  (Compelling Evidence) | `shipping_address` |
+-  | Documentation showing the product was shipped to the cardholder at the same address the cardholder provided to you. This should ideally include a copy of the shipment receipt or label, and show the full shipping address of the cardholder.
+-  (Compelling Evidence) | `shipping_documentation` |
+-  | The date that a physical product began its route to the shipping address in a clear, human-readable format. This date is prior to the date of the dispute.
+-  (Compelling Evidence) | `shipping_date` |
+-  | The delivery service that shipped a physical product, such as Fedex, UPS, USPS, and so on. If multiple carriers were used for this purchase, separate them with commas.
+-  (Compelling Evidence) | `shipping_carrier` |
+-  | The tracking number for a physical product, obtained from the delivery service. If multiple tracking numbers were generated for this purchase, separate them with commas. When Stripe compiles your evidence into a single document, these tracking numbers are expanded to include detailed delivery information from the carrier.
+-  (Compelling Evidence) | `shipping_tracking_number` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++(Compelling Evidence) | `customer_signature` `uncategorized_text` `uncategorized_file` |
++| The address you shipped a physical product to. The shipping address must match a billing address verified with [AVS](https://docs.stripe.com/disputes/prevention/verification.md#avs-check) or be the address of a business that’s connected to the legitimate cardholder in some way.
++(Compelling Evidence) | `shipping_address` |
++| Documentation showing the product was shipped to the cardholder at the same address the cardholder provided to you. This should ideally include a copy of the shipment receipt or label, and show the full shipping address of the cardholder.
++(Compelling Evidence) | `shipping_documentation` |
++| The date that a physical product began its route to the shipping address in a clear, human-readable format. This date is prior to the date of the dispute.
++(Compelling Evidence) | `shipping_date` |
++| The delivery service that shipped a physical product, such as Fedex, UPS, USPS, and so on. If multiple carriers were used for this purchase, separate them with commas.
++(Compelling Evidence) | `shipping_carrier` |
++| The tracking number for a physical product, obtained from the delivery service. If multiple tracking numbers were generated for this purchase, separate them with commas. When Stripe compiles your evidence into a single document, these tracking numbers are expanded to include detailed delivery information from the carrier.
++(Compelling Evidence) | `shipping_tracking_number` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - A signed order form for products purchased by mail or phone order
+ - Evidence that the transaction was completed by a member of the cardholder’s family or household
+@@ -528,13 +531,12 @@
+ - For recurring payments, evidence of a legally binding contract held between your business and the cardholder, that the cardholder is using the products, and of any previous payments not disputed
+ - Whether you already issued the refund the cardholder is entitled to
+ - Whether the cardholder withdrew the dispute
+-  (Compelling Evidence) | `uncategorized_file` `uncategorized_text` |
++(Compelling Evidence) | `uncategorized_file` `uncategorized_text` |
+ 
+ #### evidence you can submit for - Digital product or service
+ 
+ | For this type of recommended evidence | Designate this Dashboard label or API parameter |
+-| ------------------------------------- | ----------------------------------------------- |
+-
++| --- | --- |
+ | Customer’s IP address at the time of purchase
+ (Compelling Evidence) | `customer_purchase_ip` |
+ | Name of customer
+@@ -553,13 +555,12 @@
+ - Evidence that the card’s CVC value was presented at purchase, but the issuer either authorized the charge despite the check failing (`cvc_check` value of `fail`), or didn’t verify it in the first place (`cvc_check` value of `unchecked`)
+ - Whether you already issued the refund the cardholder is entitled to
+ - Whether the cardholder withdrew the dispute
+-  (Compelling Evidence) | `uncategorized_file` `uncategorized_text` |
++(Compelling Evidence) | `uncategorized_file` `uncategorized_text` |
+ 
+ #### evidence you can submit for - Offline service
+ 
+ | For this type of recommended evidence | Designate this Dashboard label or API parameter |
+-| ------------------------------------- | ----------------------------------------------- |
+-
++| --- | --- |
+ | Evidence (for example, photographs or emails) to prove a link between the person receiving the service and the cardholder, or proving that the cardholder disputing the transaction has used or is still using the service.
+ (Compelling Evidence) | `customer_communication` `uncategorized_text` `uncategorized_file` |
+ | Evidence that the person who signed for the service was authorized to sign for—or is known by—the cardholder. Provide any of the following, if you have them:
+@@ -567,17 +568,17 @@
+ - Cardholder signature on the pickup form
+ - A copy of identification presented by the cardholder
+ - Details of identification presented by the cardholder
+-  (Compelling Evidence) | `customer_signature` `uncategorized_text` `uncategorized_file` |
+-  | Documentation showing that the service was provided to the cardholder, including the date that the cardholder received or began receiving the purchased service in a clear, human-readable format. This could include a copy of a signed contract, work order, or other form of written agreement.
++(Compelling Evidence) | `customer_signature` `uncategorized_text` `uncategorized_file` |
++| Documentation showing that the service was provided to the cardholder, including the date that the cardholder received or began receiving the purchased service in a clear, human-readable format. This could include a copy of a signed contract, work order, or other form of written agreement.
+ 
+ For passenger transportation or services or travel and expense transactions, evidence that the service was provided and any of the following:
+ 
+ - Proof that the ticket was received at the cardholder’s billing address
+ - Evidence of payments related to the disputed payment, such as seat upgrades, extra baggage, and purchases made on board the passenger transport
+ - Details of loyalty program rewards earned or redeemed, including address and phone number, that establish a link to the cardholder
+-- Evidence that other payments related to the original payment, like upgrades, were not disputed
+-  (Compelling Evidence) | `service_date` `service_documentation` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++- Evidence that other payments related to the original payment, such as upgrades, weren’t disputed
++(Compelling Evidence) | `service_date` `service_documentation` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - A signed order form for products purchased by mail or phone order
+ - Evidence that the transaction was completed by a member of the cardholder’s family or household
+@@ -587,7 +588,7 @@
+ - For recurring payments, evidence of a legally binding contract held between your business and the cardholder, that the cardholder is using the products, and of any previous payments not disputed
+ - Whether you already issued the refund the cardholder is entitled to
+ - Whether the cardholder withdrew the dispute
+-  (Compelling Evidence) | `uncategorized_file` `uncategorized_text` |
++(Compelling Evidence) | `uncategorized_file` `uncategorized_text` |
+ 
+ #### General
+ 
+@@ -622,28 +623,27 @@
+ 
+ #### evidence you can submit for - Physical product
+ 
+-| For this type of recommended evidence                                                            | Designate this Dashboard label or API parameter |
+-| ------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+-| Evidence proving that the cardholder disputing the transaction is in possession of the products. | `uncategorized_text` `uncategorized_file`       |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Evidence that someone signed for the products when they were picked up or delivered. If they collected the products from a physical location, make sure you provide:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| Evidence proving that the cardholder disputing the transaction is in possession of the products. | `uncategorized_text` `uncategorized_file` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Evidence that someone signed for the products when they were picked up or delivered. If they collected the products from a physical location, make sure you provide:
+ 
+ - Cardholder signature on the pickup form
+ - A copy of identification presented by the cardholder
+ - Details of identification presented by the cardholder | `customer_signature` `uncategorized_text` `uncategorized_file` |
+-  | The address you shipped a physical product to. The shipping address needs to match a billing address verified with [AVS](https://docs.stripe.com/disputes/prevention/verification.md#avs-check) or be the address of a business that’s connected to the cardholder in some way. | `shipping_address` |
+-  | Documentation showing you shipped the product to the cardholder at the same address the cardholder provided to you. Ideally include a copy of the shipment receipt or label, and show the full shipping address of the cardholder. | `shipping_documentation` |
+-  | The date that a physical product began its route to the shipping address in a clear, human-readable format. | `shipping_date` |
+-  | The delivery service that shipped a physical product, such as Fedex, UPS, USPS, and so on. If multiple carriers were used for this purchase, separate them with commas. | `shipping_carrier` |
+-  | The tracking number for a physical product, obtained from the delivery service. If multiple tracking numbers were generated for this purchase, separate them with commas. When Stripe compiles your evidence into a single document, these tracking numbers are expanded to include detailed delivery information from the carrier. | `shipping_tracking_number` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| The address you shipped a physical product to. The shipping address needs to match a billing address verified with [AVS](https://docs.stripe.com/disputes/prevention/verification.md#avs-check) or be the address of a business that’s connected to the cardholder in some way. | `shipping_address` |
++| Documentation showing you shipped the product to the cardholder at the same address the cardholder provided to you. Ideally include a copy of the shipment receipt or label, and show the full shipping address of the cardholder. | `shipping_documentation` |
++| The date that a physical product began its route to the shipping address in a clear, human-readable format. | `shipping_date` |
++| The delivery service that shipped a physical product, such as Fedex, UPS, USPS, and so on. If multiple carriers were used for this purchase, separate them with commas. | `shipping_carrier` |
++| The tracking number for a physical product, obtained from the delivery service. If multiple tracking numbers were generated for this purchase, separate them with commas. When Stripe compiles your evidence into a single document, these tracking numbers are expanded to include detailed delivery information from the carrier. | `shipping_tracking_number` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Evidence that the agreed-upon delivery date hasn’t arrived yet
+ - If the purchase was made up of multiple different shipments and some of them were delivered successfully, evidence that the dispute amount exceeds the value of the unreceived shipments
+@@ -653,21 +653,20 @@
+ 
+ #### evidence you can submit for - Digital product or service
+ 
+-| For this type of recommended evidence                                                                                                                                                                                                | Designate this Dashboard label or API parameter |
+-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+-| Customer’s IP address at the time of purchase                                                                                                                                                                                        | `customer_purchase_ip`                          |
+-| Name of customer                                                                                                                                                                                                                     | `customer_name`                                 |
+-| Email address of customer                                                                                                                                                                                                            | `customer_email_address`                        |
+-| Server or activity logs showing proof that the customer accessed or downloaded the purchased digital product after the payment was made. Ideally include IP addresses, corresponding timestamps, and any detailed recorded activity. | `access_activity_log`                           |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| Customer’s IP address at the time of purchase | `customer_purchase_ip` |
++| Name of customer | `customer_name` |
++| Email address of customer | `customer_email_address` |
++| Server or activity logs showing proof that the customer accessed or downloaded the purchased digital product after the payment was made. Ideally include IP addresses, corresponding timestamps, and any detailed recorded activity. | `access_activity_log` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Device geographical location at the date and time of transaction
+ - Device ID, number, and name (if applicable)
+@@ -678,24 +677,23 @@
+ 
+ #### evidence you can submit for - Offline service
+ 
+-| For this type of recommended evidence                                                | Designate this Dashboard label or API parameter |
+-| ------------------------------------------------------------------------------------ | ----------------------------------------------- |
+-| Evidence proving that the cardholder disputing the transaction received the service. | `uncategorized_text` `uncategorized_file`       |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Evidence that the service was signed for. If possible, you should provide:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| Evidence proving that the cardholder disputing the transaction received the service. | `uncategorized_text` `uncategorized_file` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Evidence that the service was signed for. If possible, you should provide:
+ 
+ - Cardholder signature
+ - A copy of identification presented by the cardholder
+ - Details of identification presented by the cardholder | `customer_signature` `uncategorized_text` `uncategorized_file` |
+-  | Documentation showing that the service was provided to the cardholder, including the date that the cardholder received or began receiving the purchased service in a clear, human-readable format. This could include a copy of a signed contract, work order, or other form of written agreement. | `service_date` `service_documentation` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| Documentation showing that the service was provided to the cardholder, including the date that the cardholder received or began receiving the purchased service in a clear, human-readable format. This could include a copy of a signed contract, work order, or other form of written agreement. | `service_date` `service_documentation` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Evidence that the agreed-upon service date hasn’t arrived yet
+ - If the purchase was made up of multiple different shipments and some of them were delivered successfully, evidence that the dispute amount exceeds the value of the unreceived shipments
+@@ -709,7 +707,7 @@
+ 
+ ### How to prevent it
+ 
+-- Ensure that the description of products or services shown in advertisements, online, and transaction receipts, or used in telephone order-taking scripts are accurate, complete, and not misleading.
++- Make sure that the description of products or services shown in advertisements, online, and transaction receipts, or used in telephone order-taking scripts are accurate, complete, and not misleading.
+ - Never refer cardholders to the manufacturer in lieu of attempting to resolve the issue directly—the business selling the product or service is liable and must be the point of contact for resolution.
+ 
+ ### How to overturn it
+@@ -729,18 +727,17 @@
+ 
+ #### evidence you can submit for - Physical product
+ 
+-| For this type of recommended evidence                                                                                                                    | Designate this Dashboard label or API parameter |
+-| -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| A description of the product as you represented it to the customer, or images that display how you showed the product to the customer prior to purchase. | `product_description` `uncategorized_file`      |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | The language of your refund policy and how you disclosed it to the customer prior to purchase. This might be:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| A description of the product as you represented it to the customer, or images that display how you showed the product to the customer prior to purchase. | `product_description` `uncategorized_file` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| The language of your refund policy and how you disclosed it to the customer prior to purchase. This might be:
+ 
+ - The text copied from your policy page
+ - A screenshot of the policy on a receipt
+@@ -757,19 +754,18 @@
+ 
+ #### evidence you can submit for - Digital product or service
+ 
+-| For this type of recommended evidence                                                                                                                                   | Designate this Dashboard label or API parameter |
+-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| A description of the digital product or service as it was represented to the customer, or images that display how the customer was shown the product prior to purchase. | `product_description` `uncategorized_file`      |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | Any server or activity logs showing proof that the cardholder accessed or downloaded the purchased digital product. This information should include IP addresses, corresponding timestamps, and any detailed recorded activity. | `access_activity_log` |
+-  | The language of your refund policy and how you disclosed it to the customer prior to purchase. This might be:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| A description of the digital product or service as it was represented to the customer, or images that display how the customer was shown the product prior to purchase. | `product_description` `uncategorized_file` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| Any server or activity logs showing proof that the cardholder accessed or downloaded the purchased digital product. This information should include IP addresses, corresponding timestamps, and any detailed recorded activity. | `access_activity_log` |
++| The language of your refund policy and how you disclosed it to the customer prior to purchase. This might be:
+ 
+ - The text copied from your policy page
+ - A screenshot of the policy on a receipt
+@@ -785,18 +781,17 @@
+ 
+ #### evidence you can submit for - Offline service
+ 
+-| For this type of recommended evidence                                                                                                                        | Designate this Dashboard label or API parameter |
+-| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+-| A description of the service as you represented it to the customer, or images that display how you advertised the service to the customer prior to purchase. | `product_description` `uncategorized_file`      |
+-
+-| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
+-
+-If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
+-
+-- A screenshot of a text conversation
+-- A PDF of an email exchange
+-- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
+-  | The language of your refund policy and how it was disclosed to the customer prior to purchase. This might be:
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| A description of the service as you represented it to the customer, or images that display how you advertised the service to the customer prior to purchase. | `product_description` `uncategorized_file` |
++| Whether or not the customer attempted to resolve the issue with you prior to filing a dispute. If they didn’t reach out to you before the dispute, state that clearly.
++
++If you did communicate with them prior to the dispute, or if later conversations shed light on the facts of the case, submit this with your evidence. This could look like:
++
++- A screenshot of a text conversation
++- A PDF of an email exchange
++- A PDF of your written account of a phone conversation, including dates of contact | `customer_communication` |
++| The language of your refund policy and how it was disclosed to the customer prior to purchase. This might be:
+ 
+ - The text copied from your policy page
+ - A screenshot of the policy on a receipt
+@@ -836,13 +831,12 @@
+ 
+ #### evidence you can submit for - Physical product
+ 
+-| For this type of recommended evidence                                                                                                                                                                                                                   | Designate this Dashboard label or API parameter |
+-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| Your subscription cancellation policy, as shown to the customer.                                                                                                                                                                                        | `cancellation_policy`                           |
+-| An explanation of how and when the customer was shown your cancellation policy prior to purchase.                                                                                                                                                       | `cancellation_policy_disclosure`                |
+-| A justification for why the customer’s subscription was not canceled, or if it was canceled, why this particular payment is still valid.                                                                                                                | `cancellation_rebuttal`                         |
+-| A notification sent to the customer of a renewal or continuation of the subscription, or an acknowledgement from the customer of their continued use of the product or service after the date they claim they canceled the subscription (if available). | `customer_communication`                        |
+-
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| Your subscription cancellation policy, as shown to the customer. | `cancellation_policy` |
++| An explanation of how and when the customer was shown your cancellation policy prior to purchase. | `cancellation_policy_disclosure` |
++| A justification for why the customer’s subscription was not canceled, or if it was canceled, why this particular payment is still valid. | `cancellation_rebuttal` |
++| A notification sent to the customer of a renewal or continuation of the subscription, or an acknowledgement from the customer of their continued use of the product or service after the date they claim they canceled the subscription (if available). | `customer_communication` |
+ | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - If the product was consumed prior to the billing (in cases where billing occurs regularly, but consumption of whatever is being billed for happens prior to the billing)
+@@ -855,13 +849,12 @@
+ 
+ #### evidence you can submit for - Digital product or service
+ 
+-| For this type of recommended evidence                                                                                                                                                                                                                   | Designate this Dashboard label or API parameter |
+-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| Your subscription cancellation policy, as shown to the customer.                                                                                                                                                                                        | `cancellation_policy`                           |
+-| An explanation of how and when the customer was shown your cancellation policy prior to purchase.                                                                                                                                                       | `cancellation_policy_disclosure`                |
+-| A justification for why the customer’s subscription wasn’t canceled, or if it was canceled, why this particular payment is still valid.                                                                                                                 | `cancellation_rebuttal`                         |
+-| A notification sent to the customer of a renewal or continuation of the subscription, or an acknowledgement from the customer of their continued use of the product or service after the date they claim they canceled the subscription (if available). | `customer_communication`                        |
+-
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| Your subscription cancellation policy, as shown to the customer. | `cancellation_policy` |
++| An explanation of how and when the customer was shown your cancellation policy prior to purchase. | `cancellation_policy_disclosure` |
++| A justification for why the customer’s subscription wasn’t canceled, or if it was canceled, why this particular payment is still valid. | `cancellation_rebuttal` |
++| A notification sent to the customer of a renewal or continuation of the subscription, or an acknowledgement from the customer of their continued use of the product or service after the date they claim they canceled the subscription (if available). | `customer_communication` |
+ | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - What controls you have in place for customers to regulate automated spending, monitor their own usage, and prevent inadvertent automated billing.
+@@ -875,15 +868,14 @@
+ 
+ #### evidence you can submit for - Offline service
+ 
+-| For this type of recommended evidence                                                                                                                                                                                                                   | Designate this Dashboard label or API parameter |
+-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| Your subscription cancellation policy, as shown to the customer.                                                                                                                                                                                        | `cancellation_policy`                           |
+-| An explanation of how and when the customer was shown your cancellation policy prior to purchase.                                                                                                                                                       | `cancellation_policy_disclosure`                |
+-| A justification for why the customer’s subscription wasn’t canceled, or if it was canceled, why this particular payment is still valid.                                                                                                                 | `cancellation_rebuttal`                         |
+-| The date on which the cardholder received or began receiving the purchased service in a clear, human-readable format.                                                                                                                                   | `service_date`                                  |
+-| Documentation showing proof that a service was provided to the cardholder. This could include a copy of a signed contract, work order, or other form of written agreement.                                                                              | `service_documentation`                         |
+-| A notification sent to the customer of a renewal or continuation of the subscription, or an acknowledgement from the customer of their continued use of the product or service after the date they claim they canceled the subscription (if available). | `customer_communication`                        |
+-
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| Your subscription cancellation policy, as shown to the customer. | `cancellation_policy` |
++| An explanation of how and when the customer was shown your cancellation policy prior to purchase. | `cancellation_policy_disclosure` |
++| A justification for why the customer’s subscription wasn’t canceled, or if it was canceled, why this particular payment is still valid. | `cancellation_rebuttal` |
++| The date on which the cardholder received or began receiving the purchased service in a clear, human-readable format. | `service_date` |
++| Documentation showing proof that a service was provided to the cardholder. This could include a copy of a signed contract, work order, or other form of written agreement. | `service_documentation` |
++| A notification sent to the customer of a renewal or continuation of the subscription, or an acknowledgement from the customer of their continued use of the product or service after the date they claim they canceled the subscription (if available). | `customer_communication` |
+ | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - If the service was consumed prior to the billing (in cases where billing occurs regularly, but consumption of whatever is being billed for happens prior to the billing)
+@@ -918,21 +910,20 @@
+ 
+ #### evidence you can submit for - Physical product
+ 
+-| For this type of recommended evidence                                                                                                                                                                              | Designate this Dashboard label or API parameter                    |
+-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
+ | Evidence (for example, photographs or emails) to prove a link between the person receiving products and the cardholder, or proving that the cardholder disputing the transaction is in possession of the products. | `customer_communication` `uncategorized_text` `uncategorized_file` |
+-
+ | Evidence that the person who signed for the products was authorized to sign for—or is known by—cardholder. If they collected the products from a physical location, make sure you provide:
+ 
+ - Cardholder signature on the pickup form
+ - A copy of identification presented by the cardholder
+ - Details of identification presented by the cardholder | `customer_signature` `uncategorized_text` `uncategorized_file` |
+-  | The address you shipped a physical product to. The shipping address must match a billing address verified with [AVS](https://docs.stripe.com/disputes/prevention/verification.md#avs-check) or be the address of a business that’s connected to the legitimate cardholder in some way. | `shipping_address` |
+-  | Documentation showing the product was shipped to the cardholder at the same address the cardholder provided to you. This should ideally include a copy of the shipment receipt or label, and show the full shipping address of the cardholder. | `shipping_documentation` |
+-  | The date that a physical product began its route to the shipping address in a clear, human-readable format. This date is prior to the date of the dispute. | `shipping_date` |
+-  | The delivery service that shipped a physical product, such as Fedex, UPS, USPS, and so on. If multiple carriers were used for this purchase, separate them with commas. | `shipping_carrier` |
+-  | The tracking number for a physical product, obtained from the delivery service. If multiple tracking numbers were generated for this purchase, separate them with commas. When Stripe compiles your evidence into a single document, these tracking numbers are expanded to include detailed delivery information from the carrier. | `shipping_tracking_number` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| The address you shipped a physical product to. The shipping address must match a billing address verified with [AVS](https://docs.stripe.com/disputes/prevention/verification.md#avs-check) or be the address of a business that’s connected to the legitimate cardholder in some way. | `shipping_address` |
++| Documentation showing the product was shipped to the cardholder at the same address the cardholder provided to you. This should ideally include a copy of the shipment receipt or label, and show the full shipping address of the cardholder. | `shipping_documentation` |
++| The date that a physical product began its route to the shipping address in a clear, human-readable format. This date is prior to the date of the dispute. | `shipping_date` |
++| The delivery service that shipped a physical product, such as Fedex, UPS, USPS, and so on. If multiple carriers were used for this purchase, separate them with commas. | `shipping_carrier` |
++| The tracking number for a physical product, obtained from the delivery service. If multiple tracking numbers were generated for this purchase, separate them with commas. When Stripe compiles your evidence into a single document, these tracking numbers are expanded to include detailed delivery information from the carrier. | `shipping_tracking_number` |
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - A signed order form for products purchased by mail or phone order
+ - Evidence that the transaction was completed by a member of the cardholder’s family or household
+@@ -945,13 +936,12 @@
+ 
+ #### evidence you can submit for - Digital product or service
+ 
+-| For this type of recommended evidence                                                                                                                                                                                              | Designate this Dashboard label or API parameter |
+-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+-| Customer’s IP address at the time of purchase                                                                                                                                                                                      | `customer_purchase_ip`                          |
+-| Name of customer                                                                                                                                                                                                                   | `customer_name`                                 |
+-| Email address of customer                                                                                                                                                                                                          | `customer_email_address`                        |
+-| Server or activity logs showing proof that the customer accessed or downloaded the purchased digital product after making the payment. Ideally include IP addresses, corresponding timestamps, and any detailed recorded activity. | `access_activity_log`                           |
+-
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
++| Customer’s IP address at the time of purchase | `customer_purchase_ip` |
++| Name of customer | `customer_name` |
++| Email address of customer | `customer_email_address` |
++| Server or activity logs showing proof that the customer accessed or downloaded the purchased digital product after making the payment. Ideally include IP addresses, corresponding timestamps, and any detailed recorded activity. | `access_activity_log` |
+ | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - Device geographical location at the date and time of transaction
+@@ -965,16 +955,15 @@
+ 
+ #### evidence you can submit for - Offline service
+ 
+-| For this type of recommended evidence                                                                                                                                                                                       | Designate this Dashboard label or API parameter                    |
+-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
++| For this type of recommended evidence | Designate this Dashboard label or API parameter |
++| --- | --- |
+ | Evidence (for example, photographs or emails) to prove a link between the person receiving the service and the cardholder, or proving that the cardholder disputing the transaction has used or is still using the service. | `customer_communication` `uncategorized_text` `uncategorized_file` |
+-
+ | Evidence that the person who signed for the service was authorized to sign for—or is known by—the cardholder. Provide any of the following, if you have them:
+ 
+ - Cardholder signature on the pickup form
+ - A copy of identification presented by the cardholder
+ - Details of identification presented by the cardholder | `customer_signature` `uncategorized_text` `uncategorized_file` |
+-  | Documentation showing that the service was provided to the cardholder, including the date that the cardholder received or began receiving the purchased service in a clear, human-readable format. This could include a copy of a signed contract, work order, or other form of written agreement.
++| Documentation showing that the service was provided to the cardholder, including the date that the cardholder received or began receiving the purchased service in a clear, human-readable format. This could include a copy of a signed contract, work order, or other form of written agreement.
+ 
+ For passenger transportation or services or travel and expense transactions, evidence that the service was provided and any of the following:
+ 
+@@ -982,7 +971,7 @@
+ - Evidence of payments related to the disputed payment, such as seat upgrades, extra baggage, and purchases made on board the passenger transport
+ - Details of loyalty program rewards earned or redeemed, including address and phone number, that establish a link to the cardholder
+ - Evidence that other payments related to the original payment, like upgrades, weren’t disputed | `service_date` `service_documentation` |
+-  | Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
++| Any argument invalidating the dispute reason, such as a PDF or screenshot showing:
+ 
+ - A signed order form for products purchased by mail or phone order
+ - Evidence that the transaction was completed by a member of the cardholder’s family or household
+@@ -1003,4 +992,7 @@
+ 
+ ## See also
+ 
+-- [Understand fraud](https://docs.stripe.com/disputes/prevention.md)+- [Understand fraud](https://docs.stripe.com/disputes/prevention.md)
++- [Respond to disputes](https://docs.stripe.com/disputes/responding.md)
++- [Dispute reason codes](https://docs.stripe.com/disputes/reason-codes-defense-requirements.md)
++- [Dispute withdrawals](https://docs.stripe.com/disputes/withdrawing.md)

@@ -7,7 +7,7 @@ tags: [stripe, 3d-secure, 3ds2, sca, authentication, liability-shift, radar, pay
 
 ## Definition
 
-3D Secure (3DS) is a card authentication protocol that verifies the cardholder's identity before payment authorization. Stripe supports 3DS2 (runs when bank supports it, falls back to 3DS1). 3DS1 is deprecated — use Payment Intents/Setup Intents API for 3DS2.
+3D Secure (3DS) is cardholder authentication before payment authorization. The May and November 2026 captures recommend Payment Intents or Setup Intents for 3DS2 and say major card brands no longer support 3DS1, yet both also describe fallback to 3DS1 when a bank lacks 3DS2. This tension does not establish that any current card or network can use that fallback. The November guide states protocol support through version 2.3.1. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:8-15; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:9-17).
 
 **Platforms**: Web, iOS, Android, React Native. Also available standalone for use with other PSPs.
 
@@ -41,14 +41,14 @@ Stripe triggers 3DS automatically for:
 - **Radar rules** — Dashboard-configured fraud rules
 - **Manual API** — `payment_method_options[card][request_three_d_secure]`
 
-3DS does NOT apply to: wallets, off-session payments.
+Not every transaction supports 3DS; this guide gives wallets and off-session payments as examples. Its test table also describes a card requiring 3DS2 for off-session payment unless set up for future use, so do not infer a blanket off-session exclusion. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:57,484; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:56,442).
 
 ## PaymentIntent State Flow
 
 1. Confirm PaymentIntent → Stripe assesses 3DS need
 2. If required: `requires_action` → display 3DS UI
-3. After authentication: `processing` → `succeeded` / `requires_capture`
-4. If failed: `requires_payment_method`
+3. Successful authentication leads Stripe to attempt a charge and the PaymentIntent to `processing`; the later payment outcome can be `succeeded`, `requires_capture`, or `requires_payment_method`.
+4. Failed authentication can lead to `requires_payment_method`. Authentication, authorization, capture, and settlement are distinct outcomes; a sandbox test card authenticates and then declines. After an iframe return, retrieve the PaymentIntent and inspect its status. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:74-81,284-294,485; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:73-80,248-258,443).
 
 Special result `attempt_acknowledged` → payment proceeds (check `three_d_secure.result` on Charge).
 
@@ -64,8 +64,8 @@ paymentIntents.create({
 
 - `'any'`: preference for frictionless flow
 - `'challenge'`: preference for challenge flow (customer must respond)
-- Overrides Radar rules on that PaymentIntent/SetupIntent/Checkout Session
-- Works at create or confirm time; issuer determines final flow
+- Overrides dynamic Radar 3DS rules on that PaymentIntent/SetupIntent/Checkout Session, but Stripe's mandatory authentication rules still run; the November guide says Stripe APIs cannot manually turn off 3DS.
+- For PaymentIntents/SetupIntents, request at create or confirm time; for Checkout Sessions, at creation. The issuer determines the final authentication flow, so `any` and `challenge` are preferences. The May capture calls the custom-rule tier Radar for Fraud Teams; November calls it Radar Plus. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:87-93,164-172; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:86-94,137-145).
 
 Check `three_d_secure.authentication_flow` on Charge/SetupAttempt for actual flow used.
 
@@ -104,11 +104,10 @@ Check `three_d_secure.authentication_flow` on Charge/SetupAttempt for actual flo
 
 ## Liability Shift
 
-- Successful 3DS → fraudulent disputes shift to card issuer
-- Dispute inquiries on 3DS payments **must be responded to** (risk "no-reply" chargeback invalidating shift)
-- Liability may also shift if 3DS required by network but unavailable (issuer outage)
-- Exceptions: excessive fraud monitoring programs; some industries (e.g., Visa excludes wire transfer/money orders)
-- ECI returned in `three_d_secure.electronic_commerce_indicator` on Charge
+- Successful 3DS authentication alone does **not** guarantee liability shift for any payment or dispute. Shift can be expected for successfully authenticated payments later receiving eligible fraud disputes, subject to network and payment/dispute conditions; the older guide already said it *typically* applies and listed exceptions.
+- A `charge.succeeded` event confirms payment success only; `three_d_secure.result=authenticated` confirms 3DS authentication only. ECI in `three_d_secure.electronic_commerce_indicator` on the Charge can help assess eligibility but guarantees no shift.
+- Respond to inquiries on 3DS-authenticated charges: failure can cause a no-reply financial chargeback that could invalidate shift. An inquiry is a request for information, distinct from a financial chargeback.
+- Shift can sometimes apply if the network requires 3DS but the card or issuer lacks it; monitoring programs, network/industry exclusions, or post-authorization downgrade can instead prevent shift after authentication. The wire-transfer/money-order examples are specifically Visa exclusions; other dispute reasons follow the standard process. See [[source-stripe-3d-secure-authentication-flow]] (https://docs.stripe.com/payments/3d-secure/authentication-flow; old raw/stripe-3d-secure-authentication-flow-2025.md:539-557; new raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md:497-529).
 
 ## Import 3DS Results (External Auth)
 
@@ -124,11 +123,9 @@ For travel aggregators (Expedia/Sabre) or third-party 3DS providers. Pass crypto
 
 ## Standalone 3DS
 
-Decouples 3DS authentication from payment authorization — run auth on Stripe, authorize with any PSP. Enterprise use: API-level control, issuer observability, per-transaction customized flows.
+Decouples 3DS authentication from payment authorization: run authentication on Stripe, then submit the cryptogram in a separate payment authorization request through Stripe's import route or another PSP. Authentication success alone does not establish authorization, capture, settlement, issuer payment approval, or liability shift. The 2026-11-07 guide details request modes, issuer output, 3RI and non-payment cases, and the authentication sequence; see [[source-stripe-standalone-3ds]].
 
-**Output**: 3DS cryptogram → import into Stripe OR send to any other PSP.
-
-**Availability**: IC+ pricing only; Visa/MC/Amex/Discover/Cartes Bancaires; all Stripe card-payment countries except Malaysia and Thailand.
+**Availability**: The 2026-05-08 capture said available to businesses on Interchange Plus pricing, without claiming exclusivity. The 2026-11-07 capture omits pricing eligibility, so current account/tier requirements remain unresolved. Both captures list Visa, Mastercard, American Express, Discover, and Cartes Bancaires and exclude Malaysia and Thailand from the stated Stripe card-payment-country footprint. This standalone scope is separate from the result-import availability matrix above.
 
 ## SCA Exemptions (EEA / Switzerland / UK)
 
@@ -136,11 +133,11 @@ Decouples 3DS authentication from payment authorization — run auth on Stripe, 
 
 | Exemption | Key thresholds |
 | --- | --- |
-| **Low Value** | < 30 EUR / 25 GBP; cumulative cap: 100 EUR or 5 txns since last SCA |
-| **TRA / Low Risk** | Stripe fraud rate: 0.13% → 100 EUR; 0.06% → 250 EUR; 0.01% → 500 EUR. Current Stripe limits: EEA ≤ 250 EUR, UK/Swiss ≤ 220 GBP |
-| **MIT (off-session)** | Outside SCA scope; no challenge, no liability shift; requires mandate + auth at save time |
+| **Low Value** | < 30 EUR / 25 GBP; issuer SCA can still be required after cardholder-initiated cumulative spend exceeds 100 EUR/85 GBP or five transactions since the last SCA. |
+| **TRA / Low Risk** | Provider fraud-rate ceilings: 0.13% → up to 100 EUR/85 GBP; 0.06% → up to 250 EUR/220 GBP; 0.01% → up to 500 EUR/440 GBP. The 2026-11-07 capture reports qualifying EEA transactions up to 250 EUR and UK/Swiss up to 220 GBP; availability depends on Stripe-wide fraud rates and offering access, not a guaranteed account entitlement. |
+| **MIT (off-session)** | Qualifying saved-card later charges are technically outside SCA; authenticate the card when saved and obtain agreement for later charges. The guide describes no challenge or liability shift for the MIT path, without proving every future charge qualifies or cannot need action. |
 
-**Data Only** (3DS2.2+): frictionless; no liability shift (issuer not contacted); Mastercard Identity Check Insights via Adaptive Acceptance / Authorization Boost only (EEA/UK). Stripe AI handles automatically.
+**Data Only**: A successful request can offer a frictionless experience for a payment not subject to SCA, without liability shift. Authentication goes to the card network; the issuer still receives an authorization message carrying network risk data, though no issuer authentication request is sent. The standard Data Only flow requires 3DS 2.2+; separately named Mastercard Identity Check Insights was described in the 2026-11-07 capture as offered to Adaptive Acceptance and Authorisation Boost users in EEA/UK. This does not establish every account's eligibility or transfer the standard-flow version rule to all Data Only products.
 
 ## Sigma Analytics
 
@@ -154,9 +151,9 @@ Deduplication impact example: raw auth rate 59% → deduped 80% (dedup groups sa
 
 ## Sources
 
-- [[source-stripe-3d-secure-authentication-flow]] — primary: full flow, manual triggering, web/iOS/Android/RN display, liability shift, test cards
-- [[source-stripe-sca-exemptions]] — SCA exemptions (EEA/CH/UK): Low Value, TRA limits, MIT, Data Only (no liability shift on exemption/Data Only)
-- [[source-stripe-standalone-3ds]] — Standalone 3DS: decouple auth from authorization, IC+ only, cryptogram output to any PSP, no Malaysia/Thailand
+- [[source-stripe-3d-secure-authentication-flow]] — May and November 2026 Web/mobile authentication-flow guide, manual triggering, sandbox tests, and conditional fraud-dispute liability guidance
+- [[source-stripe-sca-exemptions]] — captured EEA/Swiss/UK SCA request and issuer-approval scope, dated low-value/TRA limits, qualifying MIT, and Data Only network-versus-issuer routing without liability shift
+- [[source-stripe-standalone-3ds]] — Standalone 3DS: separate authentication and authorization, 2026-11-07 feature/workflow detail, dated 2026-05-08 Interchange Plus statement with current tier eligibility unresolved
 - [[source-stripe-3ds-import]] — Import 3DS results: travel/third-party 3DS, confirm+error_on_requires_action, exemption import, Cartes Bancaires cb_avalgo
 - [[source-stripe-3ds-sigma-query]] — Sigma authentication_report_attempts: is_final_attempt dedup, auth rate calc, SCA exemption columns, 3 example queries
 - [[source-stripe-sca-readiness]] — SCA readiness: impacted businesses, SCA-ready products, grandfathering rules (EU Dec 2020 / UK Sep 2021), off-session checklist, MIT mandate

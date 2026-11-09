@@ -7,9 +7,12 @@ tags: [stripe, industry-metadata, car-rental, lodging, flight, travel, klarna, p
 
 ## Overview
 
-Industry metadata is a PaymentIntents API feature (public preview, API version `2025-11-17.preview`) for passing structured travel and entertainment transaction data. It serves two purposes: compliance with card network requirements for specific MCCs, and improved authorization rates/risk assessment for Klarna.
+Industry metadata is a PaymentIntents API feature for structured travel and entertainment transaction data. The 2026-11-07 guide documents `2026-07-29.preview` or a later preview header; the 2026-05-11 capture documented `2025-11-17.preview`. Relevant data is required for card-network compliance at supported MCCs and **might** improve Klarna authorization rates or risk assessment. Cards remain private preview; Klarna is public preview.
 
-**Mutually exclusive with [[stripe-payment-line-items]]** — cannot send both on the same PaymentIntent.
+> [!warning] Contradiction
+> The two dated captures give different preview headers and tax item paths (`total.tax.taxes[]` in May, `total.tax.tax_items[]` in November). Neither capture tests whether the older version or field spelling is rejected or aliased.
+
+[[stripe-payment-line-items]] is a separate PaymentIntent feature. Its 2026-05-11 [[source-stripe-payment-line-items]] restriction table states that card line items cannot be sent alongside car-rental, lodging, or airline industry metadata, and gives PayPal the same restriction ([[raw/stripe-payment-line-items-2026|dated line-item raw]], line 26). Its Klarna column refers to Extra Merchant Data in private preview; do not generalize the card/PayPal rule to Klarna or infer current preview access.
 
 ## Status
 
@@ -36,7 +39,7 @@ Data is sent under `payment_details` (alongside `payment_method`, etc.) using ve
 - `payment_details.lodging_data[]`
 - `payment_details.flight_data[]`
 
-Can be passed at create, update, confirm, or capture. **Immutable after capture.** Each update is a full hash replacement.
+Can be passed at create, update, confirm, or capture. **Immutable after capture.** Each update is a full hash replacement. In the 2026-11-07 field tables and examples, each vertical's tax entries use `total.tax.tax_items[]` (the 2026-05-11 capture used `total.tax.taxes[]`). Live card car-rental and lodging customer-service phones, and the optional lodging property phone, follow the new guide's E.164 wording; non-US numbers include `+` and country code, while all-zero values are a sandbox allowance only.
 
 **Critical array behavior**:
 

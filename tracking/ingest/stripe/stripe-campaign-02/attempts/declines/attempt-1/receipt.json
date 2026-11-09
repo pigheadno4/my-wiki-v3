@@ -1,0 +1,122 @@
+{
+  "job_id": "declines",
+  "attempt": 1,
+  "raw_path": "raw/stripe-declines-2026-11-07.md",
+  "raw_sha256": "fba23d6e88b39c51d1c4b5e4d4c0348d25263b171e658ac7715df1aa308d8bab",
+  "prior_raw_path": "raw/stripe-declines-2026.md",
+  "prior_raw_sha256": "0b6c0ae794ec1d89d63b38f408aed1583019e72c07cf515c3f4b027bcc069452",
+  "source_target": "wiki/sources/source-stripe-declines-overview.md",
+  "source_before_sha256": "654bec9c092127bf0467f02cd256539bfb55860603ad0c04435472ef2008877e",
+  "read_ranges": {
+    "raw/stripe-declines-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      }
+    ],
+    "raw/stripe-declines-2026.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      }
+    ],
+    "wiki/sources/source-stripe-declines-overview.md": [
+      {
+        "start": 1,
+        "end": 91
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ffcc244a2ae8c2590d03c393/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 191
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "When Stripe blocks a payment, it doesn\u2019t obtain authorization from the card issuer.",
+      "location": "raw/stripe-declines-2026-11-07.md:37"
+    },
+    {
+      "text": "For some card types, customers might see the card issuer\u2019s authorization for the payment amount on their statement. However, Stripe hasn\u2019t charged this amount or withdrawn funds.",
+      "location": "raw/stripe-declines-2026-11-07.md:39"
+    },
+    {
+      "text": "This action doesn\u2019t retry the payment. Instead, it overrides all of your other rules from blocking future payment attempts that match the list attribute.",
+      "location": "raw/stripe-declines-2026-11-07.md:41"
+    },
+    {
+      "text": "The invalid API call generates an error response that might look like this:",
+      "location": "raw/stripe-declines-2026-11-07.md:92"
+    },
+    {
+      "text": "Invalid API calls typically don\u2019t result in a payment appearing in your Dashboard. However, you might see the payment appear in a few cases.",
+      "location": "raw/stripe-declines-2026-11-07.md:123"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "For some card types, customers might see the card issuer\u2019s authorization for the payment amount on their statement. However, Stripe hasn\u2019t charged this amount or withdrawn funds.",
+      "location": "raw/stripe-declines-2026.md:34"
+    },
+    {
+      "text": "This action doesn\u2019t retry the payment. Instead, it overrides all of your other rules from blocking future payment attempts that match the list attribute.",
+      "location": "raw/stripe-declines-2026.md:36"
+    },
+    {
+      "text": "The invalid API call generates an error response that might look like this:",
+      "location": "raw/stripe-declines-2026.md:91"
+    },
+    {
+      "text": "Invalid API calls typically don\u2019t result in a payment appearing in your Dashboard. However, you might see the payment appear in a few cases.",
+      "location": "raw/stripe-declines-2026.md:122"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November same-URL capture preserves the three documented failure categories, Charge.outcome diagnostic route, issuer/Stripe/network distinction, Radar and Adaptive Acceptance block examples, allow-list future-attempt effect, and invalid-call examples (old 8-140; new 9-140). The changed order of introductory paragraphs and heading whitespace do not change those behaviors (diff 3-52).",
+    "The API sample switches from Node to equivalent curl PaymentIntent creation with the same amount, currency, declined test PaymentMethod and confirm fields (old 78-89; new 83-90). Outcome examples become JSON-key quoted and the error doc_url changes to a docs.stripe.com anchor (diff 53-185). These presentation/link changes do not prove runtime or outcome-schema changes. The removed Smart Retries next-step link is navigation only (old 140; new 136-140).",
+    "The existing source lines 19-21 and 78-80, plus wiki/concepts/stripe-declines.md under Three Failure Types and Invalid API Calls, collapse separate examples into an unconditional claim that an incorrect-CVC or malformed request produces a Charge.outcome.type=invalid. Both captures show an incorrect_cvc card_error example (old 91-103; new 92-104) and separately show an invalid outcome example (old 122-133; new 123-134); they do not establish that the same request yielded both or that every invalid request is malformed. In later authorized editing, remove the asserted universal mapping and keep the examples separate.",
+    "The existing source line 52 says Radar blocks before network authorization, which matches the guide's general statement (old 32; new 37). But both captures immediately qualify that some card types may show an issuer authorization on the customer statement without a Stripe charge or funds withdrawn (old 34; new 39). Restore this qualification where the source says 'no authorization attempt is made'; the concept already mentions the temporary statement entry but should not imply an actual funds hold.",
+    "Source line 76 correctly says adding a legitimate blocked payment to the allow list affects matching future attempts and does not retry the current payment (old 36; new 41). The IC+ qualifier on Adaptive Acceptance blocking also persists (old 57; new 62). Keep these conditional scopes."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Preserve the distinct issuer_declined, blocked and invalid examples, but label them examples rather than a complete input-to-outcome mapping (old 42-55, 59-72, 107-133; new 47-60, 64-77, 108-134).",
+    "Preserve the statement-authorization caveat without implying Stripe charged, withdrew funds or received settlement (old 32-34; new 37-39).",
+    "Preserve allow-list future-attempt scope and no automatic retry, plus IC+ pricing qualification for Adaptive Acceptance (old 36, 57; new 41, 62).",
+    "Keep the May Node example as dated presentation evidence while identifying the November curl example; neither proves a changed PaymentIntent API contract (old 78-89; new 83-90)."
+  ],
+  "conflicts": [
+    "Source line 80 and concept wiki/concepts/stripe-declines.md under Invalid API Calls assert wrong CVC/malformed requests produce card_error with outcome.type=invalid. Old 91-103 and 122-133 and new 92-104 and 123-134 present distinct examples; no observed linkage supports the combined claim.",
+    "Source line 52's unqualified 'no authorization attempt is made' omits the old 34/new 39 card-type caveat that customers may see an issuer authorization on a statement; this is not a Stripe charge or funds withdrawal."
+  ],
+  "unresolved_questions": [
+    "The two captures do not show an executed incorrect-CVC request and corresponding Charge object, so the precise input-to-outcome mapping for that example is unverified.",
+    "The temporary issuer-authorization caveat is card-type dependent and the captures do not establish an individual transaction's bank ledger or payment result."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-declines.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/declines, the November capture keeps the same three failure categories and diagnostic outcome examples as the May capture (old lines 12-18 and 42-133; new lines 13-21 and 47-134). The main differences are paragraph order, JSON formatting, a Node-to-curl test example, and a removed next-step link. [[source-stripe-declines-overview]] needs dated raw provenance and correction of existing overclaims, not a claim that Stripe changed decline behavior.",
+    "Q2": "For https://docs.stripe.com/declines, [[source-stripe-declines-overview]] should keep the Radar no-charge distinction but include the card-type caveat that an issuer authorization may briefly appear on a statement (old lines 32-34; new lines 37-39). It should also separate the incorrect_cvc card_error example from the invalid Charge.outcome example because both captures present them separately (old lines 91-103 and 122-133; new lines 92-104 and 123-134), without proving they describe one request."
+  }
+}

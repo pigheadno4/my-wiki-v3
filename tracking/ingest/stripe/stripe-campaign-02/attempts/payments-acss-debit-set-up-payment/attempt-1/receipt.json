@@ -1,0 +1,164 @@
+{
+  "job_id": "payments-acss-debit-set-up-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md",
+  "raw_sha256": "a96774fc26da027fc9cf2e628ae108ba7ea5e8b71e4ebfc9052a34227d64af3e",
+  "prior_raw_path": "raw/stripe-acss-set-up-payment-2025.md",
+  "prior_raw_sha256": "8948e1da2391629f2cbae44d26dfc6001cb6e74474bf930ffeca7a0dac15db8f",
+  "source_target": "wiki/sources/source-stripe-acss-set-up-payment.md",
+  "source_before_sha256": "8fadaa290abea204382030c8694153d803e3a11deade208d89819a5e052bbde2",
+  "read_ranges": {
+    "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-acss-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 720
+      },
+      {
+        "start": 721,
+        "end": 830
+      }
+    ],
+    "wiki/sources/source-stripe-acss-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dc1b24e0b7e7b8056c7d795c/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 720
+      },
+      {
+        "start": 721,
+        "end": 833
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Save details for future payments with pre-authorized debit in Canada",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:5"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/acss-debit/set-up-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Elements](https://docs.stripe.com/payments/acss-debit/set-up-payment.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/acss-debit/set-up-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-acss-debit-set-up-payment-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Pre-authorized debit in Canada is a **delayed notification payment method**",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:18"
+    },
+    {
+      "text": "Most bank accounts in Canada hold Canadian dollars (CAD), with a small number of accounts in other currencies, including US dollars (USD).",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:20"
+    },
+    {
+      "text": "`payment_method_options[acss_debit][mandate_options][interval_description]`",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:74"
+    },
+    {
+      "text": "Future pre-authorized debit payments must be charged according to the terms of the existing mandate.",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:174"
+    },
+    {
+      "text": "Further action needed to complete bank account verification.",
+      "location": "raw/stripe-acss-set-up-payment-2025.md:549"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 base URL returns only a three-link variant index (new raw:9-15). The old 2026-05-02 capture bundled full Checkout and Direct API sections (old raw:8-10,327-331). The diff's apparent deletion of the detailed guide is a capture/navigation shape change, not proof that mandate, verification, or charging flows ended; the variant destinations themselves were not fetched.",
+    "The new index explicitly lists an Elements route (new raw:14), absent as a separate variant in the old bundle and omitted by source:13,59 and concept:112/index:254. Add a dated navigation note to the mapped source, without assigning Elements a Checkout Sessions or Payment Intents implementation from this index alone. Concept:79 says Elements PaymentIntent path only and excludes Checkout Sessions API; the index link alone neither proves nor disproves that more specific support claim.",
+    "Source:20 groups currency, payment_schedule, transaction_type, interval_description, and default_for as mandate params without preserving requiredness. In both old route tables, currency, payment_schedule, and transaction_type are required; interval_description is conditional on interval or combined schedule; default_for is optional (old raw:70-76,380-386). Correct that distinction and keep CAD/USD bank account currency matching (old raw:20-24,72,382).",
+    "Source:30 equates succeeded with instantly verified, whereas old raw:548 says succeeded also covers cases where verification was not necessary; requires_action calls for further bank verification (old raw:544-549). A successful SetupIntent saves a method and mandate; a later off-session PaymentIntent and delayed debit are separate (old raw:170-176,670-676,18).",
+    "Source:35-46 shows an existing-mandate off-session PaymentIntent but omits the requirement to debit within that mandate's terms and to send a debit notification email, handled by Stripe by default unless custom notifications are configured (old raw:172-176,213,672-676,713). Scope its example to existing authorized mandate; source:49-51 covers the distinct new-mandate branch and its three-day charge delay (old raw:715-722).",
+    "Source:29's Direct API confirm call should retain the old guide's required account-holder name and customer email and hosted modal mandate authorization (old raw:505,540). Source:31's [32,45] values are a sandbox example (old raw:585-591,662-668), not proof of a live bank verification."
+  ],
+  "substantive_changes": [
+    "The newly captured base page supplies a previously unlisted Elements variant URL (new raw:14); its detailed API mode, feature scope, and current behavior are not present in this capture.",
+    "No new requirement, bank currency, mandate, verification, payment-finality, or settlement term can be inferred from the navigation-only new page. Existing source corrections are separate from this raw delta."
+  ],
+  "historical_claims_to_preserve": [
+    "In the dated old capture, Canadian PAD supported CAD or USD but warned that currency mismatch with the bank account can fail after up to five business days (old raw:18-24,337-341).",
+    "The old guide required customer authorization under a PAD agreement, recorded in a Mandate (old raw:376), with required/conditional/optional mandate fields distinguished in its route tables (old raw:70-76,380-386).",
+    "The old Checkout and Direct API flows allowed instant verification or microdeposits, with three failed attempts and a ten-day microdeposit timeout in the Direct API guide (old raw:131,544-549,567-577).",
+    "An existing mandate's terms govern later debits; a later PaymentIntent needs the customer, PaymentMethod, and Mandate IDs and debit notification. Reusing the PaymentMethod under changed terms requires a new mandate and, in the dated guide, delayed charges (old raw:170-176,190-213,715-722)."
+  ],
+  "conflicts": [
+    "Source:20 collapses conditional interval_description and optional default_for into an unqualified list, contrary to old raw:70-76 and 380-386.",
+    "Source:30's 'succeeded (instantly verified)' is narrower than old raw:548's 'instantly verified or verification wasn't necessary'.",
+    "New raw:14 advertises an Elements setup variant while concept:79 limits ACSS Elements support to a PaymentIntent path and excludes Checkout Sessions API. This exact index has no variant detail, so the precise applicability of the concept restriction is unresolved rather than resolved by the link.",
+    "Old raw:577 calls timeout object PaymentIntent inside a SetupIntent verification section, and old raw:593 names setup_intent.payment_failed while the table uses last_setup_error. Treat these as internally inconsistent wording, not evidence that setup completion is payment completion."
+  ],
+  "unresolved_questions": [
+    "The indexed November 2026 Elements, Checkout, and Direct API destination pages were not captured in this exact job. Current implementation details, API compatibility, and changed eligibility require separately pinned variant evidence.",
+    "No live account, bank mandate acceptance, microdeposit arrival, debit notification, successful charge, or funds receipt was observed. Old examples and test tokens do not prove those outcomes."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-acss-debit.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/acss-debit/set-up-payment, the November 2026 base capture is a variant index with Checkout, Elements, and Direct API links (new raw:9-15). The May 2026 capture contains detailed Checkout and Direct API sections (old raw:8-10,327-331). [[source-stripe-acss-set-up-payment]] should retain that dated guide and add only a scoped Elements route note; the index does not reveal which Elements API mode it uses or prove old flows were removed.",
+    "Q2": "For https://docs.stripe.com/payments/acss-debit/set-up-payment, [[source-stripe-acss-set-up-payment]] should distinguish required currency, payment_schedule, and transaction_type from conditional interval_description and optional default_for (old raw:70-76,380-386; source:20). SetupIntent succeeded can mean verification was unnecessary as well as instant (old raw:544-549), and it does not settle a later debit. Existing-mandate charging must follow mandate terms with debit notification (old raw:170-176,213); new terms require new authorization and the dated guide describes a three-day charge delay (old raw:715-722). New raw:11-15 supplies no live payment result."
+  }
+}

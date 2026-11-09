@@ -1,0 +1,140 @@
+{
+  "job_id": "declines-codes",
+  "attempt": 1,
+  "raw_path": "raw/stripe-declines-codes-2026-11-07.md",
+  "raw_sha256": "b83bedfea90e7e218a284fc6fcf1704a7103922a6f02205268015b3d2b06013a",
+  "prior_raw_path": "raw/stripe-decline-codes-2026.md",
+  "prior_raw_sha256": "0eebc8f688916a859a944339280d027f6606dd00facb6a93977bc2b9342e49f6",
+  "source_target": "wiki/sources/source-stripe-decline-codes.md",
+  "source_before_sha256": "f75c32854e96450f3a2fd8a66f6c736c4d0b1cc814f9c1ac7170021857b28673",
+  "read_ranges": {
+    "raw/stripe-declines-codes-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 106
+      }
+    ],
+    "raw/stripe-decline-codes-2026.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 95
+      }
+    ],
+    "wiki/sources/source-stripe-decline-codes.md": [
+      {
+        "start": 1,
+        "end": 85
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c35931acf6268bb182130a49/content.diff": [
+      {
+        "start": 1,
+        "end": 30
+      },
+      {
+        "start": 31,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 181
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Ask the customer to attempt the payment again. If it still can\u2019t be processed, the customer needs to contact their card issuer.",
+      "location": "new raw line 57"
+    },
+    {
+      "text": "The user canceled their Klarna checkout session.",
+      "location": "new raw line 79"
+    },
+    {
+      "text": "The BLIK code is invalid or malformed.",
+      "location": "new raw line 83"
+    },
+    {
+      "text": "BLIK codes expire after 2 minutes, please request another code from the customer.",
+      "location": "new raw line 84"
+    },
+    {
+      "text": "The specific reason for the decline shouldn\u2019t be reported to the customer. Instead, present it as `partner_generic_decline`.",
+      "location": "new raw line 104"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The payment needs to be attempted again. If it still can\u2019t be processed, try again later.",
+      "location": "old raw line 56"
+    },
+    {
+      "text": "The following Stripe decline codes can be used for Local Payment Method (LPM) payments:",
+      "location": "old raw line 73"
+    },
+    {
+      "text": "The payment provider has declined the payment.",
+      "location": "old raw line 77"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Same canonical URL and same card/LPM decline-code reference, with Stripe decline codes distinct from issuer codes and optional advice_code guidance (old lines 4-16; new lines 5-17). The 50 card table rows remain 50. Most card changes are wording or formatting, but processing_error next-step guidance changes materially: old line 56 says retry then try again later, while new line 57 says retry then contact the issuer if still unprocessed.",
+    "The LPM table grows from 19 rows with 19 distinct decline codes (old lines 77-95) to 29 rows with 27 distinct decline codes (new lines 78-106). Three Klarna outcome rows share one decline code, klarna_payment_declined (new lines 78-80), so the source should not describe 29 distinct codes. Eight distinct decline-code names are added: klarna_payment_declined, customer_declined, code_invalid, code_expired, partner_action_not_supported, lost_or_stolen_card, card_already_activated, invalid_track_data. No old LPM code is removed.",
+    "Klarna additions distinguish a declined payment, user-canceled checkout, and expired checkout through charge outcome reason while sharing klarna_payment_declined (new lines 78-80). BLIK code_invalid and code_expired map to generic_decline outcome, and code_expired's API message says BLIK codes expire after two minutes and asks for another code (new lines 83-84). Do not collapse decline code, charge outcome reason, seller message, and API error message into one field.",
+    "Additional LPM rows carry consequential actions: partner_action_not_supported and card_already_activated say retries will not succeed (new lines 103, 105); lost_or_stolen_card says hide the specific reason from customers and present partner_generic_decline (new line 104); invalid_track_data directs checking with the issuer (new line 106). Keep these actions scoped to the particular table rows and payment methods.",
+    "Current source lines 13, 51-75 claim 19 LPM codes and list only the old rows; update that coverage and preserve the May count as dated. Concept wiki/concepts/stripe-declines.md line 150 also says 19 total and 'not on cards'; the latter is overbroad because expired_card, processing_error, insufficient_funds, currency_not_supported, invalid_amount, and duplicate_transaction occur in both card and LPM tables (old lines 30, 38, 40, 56, 26, 29, 81-85, 94; new lines 27, 31, 39, 41, 57, 88-92, 101).",
+    "Current source line 45 narrows testmode_decline to a test card used in live mode, while both raws only say a Stripe test card number was used and a genuine card must be used (old line 65; new line 66). Current source line 48 says deprecated do_not_try_again and try_again_later are now advice_code values; both raws mark them deprecated in the decline-code table, but do not establish the asserted migration of those exact values to advice_code (old lines 28, 67; new lines 29, 68). Avoid the unsupported expansions when updating."
+  ],
+  "substantive_changes": [
+    "LPM table expands from 19 to 29 rows and from 19 to 27 distinct decline-code names; eight new distinct names are listed in findings (old lines 77-95; new lines 78-106).",
+    "Three Klarna rows share klarna_payment_declined but differentiate declined, canceled, and expired checkout outcome reasons (new lines 78-80).",
+    "BLIK code_invalid/code_expired rows and their generic_decline outcome mapping, including the two-minute code-expiry message, are new (new lines 83-84).",
+    "New LPM lost_or_stolen_card instruction masks the specific reason with partner_generic_decline; partner_action_not_supported and card_already_activated say retries will not succeed (new lines 103-105).",
+    "Card processing_error second step changes from try again later to contact issuer if retry remains unsuccessful (old line 56; new line 57)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May capture's 19-row/19-distinct-name LPM table as dated history, and the November table's 29 rows/27 names as the newer captured reference (old lines 75-95; new lines 76-106).",
+    "Retain the 50 card rows, masking of fraudulent/lost_card/stolen_card/merchant_blacklist as generic_decline, and deprecated labels for do_not_try_again and try_again_later (old lines 18-69; new lines 19-70).",
+    "Retain card authentication_required's usually automatic Stripe-front-end soft-decline auth flow with off-session qualification, and authentication_not_handled's need for 3DS/SCA with on-session preparation (old lines 20-21; new lines 21-22).",
+    "Retain separate LPM columns for decline code, charge outcome reason, seller message, and API error message; shared code names across card/LPM rows do not imply identical next-step semantics (old lines 75-95; new lines 76-106)."
+  ],
+  "conflicts": [
+    "May old card processing_error next step says try again later after a failed retry; November new line 57 directs contacting the issuer if still unprocessed. Cite the capture date when giving next-step guidance.",
+    "Existing source and concept say 19 LPM codes, whereas November has 29 rows and 27 distinct decline-code names. The term 'codes' should not be equated with rows because Klarna has three outcome rows under one code.",
+    "Existing concept says LPM-specific codes are 'not on cards', although several code names appear in both card and LPM tables; new lines 27, 31, 39, 41, 57, 88-92, 101 show examples.",
+    "Existing source's live-mode interpretation of testmode_decline and claim that the two deprecated decline-code names are now advice_code values exceed both captures' wording."
+  ],
+  "unresolved_questions": [
+    "The reference table does not prove which of the listed LPM codes is emitted by a specific payment provider or account; table presence is not a guarantee of runtime occurrence.",
+    "The captures label do_not_try_again and try_again_later deprecated but do not specify from this page alone whether their exact names now appear as advice_code values.",
+    "The captures do not establish that testmode_decline necessarily means a test card was used in live mode."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-declines.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/declines/codes, [[source-stripe-decline-codes]] changes substantially in the local-payment-method table. Old lines 75-95 contain 19 rows and 19 distinct decline names; new lines 76-106 contain 29 rows and 27 distinct names, including Klarna, BLIK, and partner additions. Klarna uses one decline code across three outcome reasons (new lines 78-80), so rows must not be counted as unique codes. Card processing_error guidance also changes from try again later at old line 56 to contact the issuer after an unsuccessful retry at new line 57.",
+    "Q2": "Recommend source_required_update for [[source-stripe-decline-codes]] at https://docs.stripe.com/declines/codes. Update the source and stripe-declines concept's dated 19-LPM count to describe 29 November rows and 27 distinct names (old lines 77-95; new lines 78-106). Highlight Klarna's three outcome reasons, BLIK code expiry and generic outcome mapping (new lines 78-84), and lost_or_stolen_card customer masking as partner_generic_decline (new line 104). Correct card processing_error next steps using old line 56 and new line 57. Keep decline code separate from charge outcome reason and avoid assuming these table entries were observed in live payments."
+  }
+}

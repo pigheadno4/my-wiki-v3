@@ -1,0 +1,200 @@
+{
+  "job_id": "checkout-quickstart",
+  "attempt": 1,
+  "raw_path": "raw/stripe-checkout-quickstart-2026-11-07.md",
+  "raw_sha256": "99b74604320f9f624ae9a41b80219da46b294df6ebb9a85442714e920e896a48",
+  "source_before_sha256": "162a4083c2eef41848ef068a4276bc2cff96939752a478ae72082fb1fef57442",
+  "source_page": "---\ntitle: \"Stripe Checkout Quickstart \u2014 Hosted & Embedded\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/checkout/quickstart\"\nraw_files:\n  - \"stripe-checkout-quickstart-2026-11-07.md\"\n  - \"stripe-checkout-quickstart-2025.md\"\n  - \"stripe-checkout-embedded-quickstart-2025.md\"\ntags: [stripe, checkout, checkout-sessions, quickstart, payment, subscription, react, node]\n---\n\n## Overview\n\nThis entry routes two Stripe Checkout quickstarts: the **Stripe-hosted redirect** guide captured at this canonical URL on 2026-04-20 and 2026-11-07, and a separately captured **embedded page** guide from 2026-04-20. The hosted flow creates a Checkout Session on the server and redirects the customer to `session.url` for Stripe's prebuilt payment page. The November hosted capture adds explicit server-side inventory protection, an `integration_identifier` suggestion for comparing implementations, and the instruction to wait for payment success before fulfillment. It does not replace the separate embedded source.\n\n> [!warning] Return-page boundary\n> Hosted return-page URL parameters and success-page messaging are for customer display; a redirect or `?success=true` query string is not payment proof or authorization to ship. The November guide says to wait until payment succeeds before fulfilling. The older hosted Node/React URL-query example is a dated UI sample, not a verification flow; consult [[source-stripe-checkout-fulfillment]] for payment-status and delayed-method handling.\n\n## Hosted quickstart\n\n- **Session and server data:** Create the Checkout Session on the server. The Session controls line items, order amount and currency, and eligible payment methods. Keep sensitive inventory information such as price and availability on the server; use predefined Price IDs or server-defined `price_data`. The November guide suggests `integration_identifier` for comparing conversion between Checkout implementations or user segments, not as a required payment field (November lines 159\u2013173).\n- **Mode and redirect:** `mode='payment'` is for one-time payments, `subscription` for recurring payments, and `setup` for future payment setup. Supply a publicly accessible `success_url`; after creating the Session, redirect to its `url` (November lines 175\u2013189; April lines 19\u201327, 59\u201366).\n- **Order preview:** Let customers review or change the order before redirect. The guide says the order is then final and modifications require a new Session (November lines 191\u2013209; April line 76).\n- **Return and fulfillment:** The April React example checks `?success=true` and `?canceled=true` to choose display messages, with a local `package.json` proxy to `http://localhost:4242` (April lines 78\u2013133). The November guide explicitly separates that return message from fulfillment until payment succeeds (November lines 215\u2013217, 1121\u20131123). Its next-step event-destination guidance is not a claim that every `checkout.session.completed` event has paid funds.\n- **Testing and customers:** Both captures include test-card examples for success, 3DS, and decline (April lines 135\u2013141; November lines 239\u2013247). Checkout creates a Customer when required, such as subscriptions, and otherwise uses guest customers unless configured with `customer_creation='always'`. An existing Customers v1 identity uses `customer`; when the merchant represents customers as customer-configured Accounts v2, the November guide says an Account ID can be passed as `customer_account` to prefill its associated email (April lines 143\u2013148; November lines 288\u2013298). This is conditional on that identity model, not a universal replacement for Customer IDs.\n- **Options:** The hosted guide locates email prefill, submit text, address collection, automatic tax, appearance settings, payouts, refunds, customer management, and Adaptive Pricing in its customization and next-step sections (November lines 253\u2013286, 1125\u20131139). Checkout studio is an optional build, preview, Dashboard configuration and monitoring route without writing code first (November lines 9\u201311, 1141\u20131143); the capture does not establish account-specific access or deployment outcomes.\n\n## Embedded quickstart \u2014 separate 2026-04-20 capture\n\nThe embedded source is a distinct `?ui=embedded-form` page. Its dated sample uses `ui_mode='embedded_page'` and `return_url` with `{CHECKOUT_SESSION_ID}`, returns a Session `client_secret` from the server, then mounts `EmbeddedCheckoutProvider` and `EmbeddedCheckout` with `fetchClientSecret`. Its sample return page retrieves Session status and remounts an open Session. This embedded example is not evidence for the November hosted guide's implementation or current runtime behavior. See the embedded raw lines 11\u201319, 29\u201375, 80\u2013120, 170\u2013179.\n\n## Detail locators\n\n- The April hosted capture has a coherent Node/React sample and local proxy choice (lines 36\u201370, 78\u2013133). The November capture flattens alternative backend/frontend examples into one text stream, with repeated headings, ports, `YOUR_DOMAIN` and `success_url` assignments, package versions, and placeholder values (lines 159\u2013169, 219\u2013237, 300\u2013893). These fragments are variant-specific presentation, not one runnable program or a new universal Checkout API requirement.\n\n## Related\n\n- [[stripe-checkout]] \u2014 Checkout modes, payment status and fulfillment context.\n- [[stripe]] \u2014 Stripe provider.\n- [[source-stripe-checkout-sessions]] \u2014 Checkout Sessions API reference route.\n- [[source-stripe-accept-a-payment]] \u2014 broader integration guide.\n\n## Raw Sources\n\n- [[raw/stripe-checkout-quickstart-2026-11-07|Stripe-hosted Checkout quickstart, 2026-11-07]] \u2014 expanded hosted guide with explicit server and fulfillment cautions.\n- [[raw/stripe-checkout-quickstart-2025|Stripe-hosted Checkout quickstart, 2026-04-20]] \u2014 earlier Node/React example.\n- [[raw/stripe-checkout-embedded-quickstart-2025|Embedded Checkout quickstart, 2026-04-20]] \u2014 separately captured embedded example.\n",
+  "quotes": [
+    {
+      "text": "To track and compare the performance of this integration against other Checkout implementations, pass an `integration_identifier` when you create the session.",
+      "location": "raw/stripe-checkout-quickstart-2026-11-07.md:163"
+    },
+    {
+      "text": "Always keep sensitive information about your product inventory, such as price and availability, on your server to prevent customer manipulation from the client.",
+      "location": "raw/stripe-checkout-quickstart-2026-11-07.md:173"
+    },
+    {
+      "text": "Show a message to your customer when they\u2019re redirected back to your page. Wait to fulfill orders (for example, shipping or sending email receipts) until the payment succeeds.",
+      "location": "raw/stripe-checkout-quickstart-2026-11-07.md:217"
+    },
+    {
+      "text": "If you represent customers as customer-configured Account objects, you can also pass an Account ID to the [customer_account](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-customer_account) field to prefill the associated email address.",
+      "location": "raw/stripe-checkout-quickstart-2026-11-07.md:298"
+    },
+    {
+      "text": "Configure and monitor your Checkout integration from the Dashboard without writing code.",
+      "location": "raw/stripe-checkout-quickstart-2026-11-07.md:1143"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Build a Checkout integration where customers click a button and get redirected to a payment page hosted by Stripe.",
+      "location": "raw/stripe-checkout-quickstart-2025.md:6"
+    },
+    {
+      "text": "Add a page to show a preview of the customer's order before they're sent to Checkout. Once redirected to Checkout, the order is final and can't be modified without creating a new Checkout Session.",
+      "location": "raw/stripe-checkout-quickstart-2025.md:76"
+    },
+    {
+      "text": "- Accounts v2: pass `customer_account` field instead",
+      "location": "raw/stripe-checkout-quickstart-2025.md:148"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-checkout-quickstart-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 700
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1100
+      },
+      {
+        "start": 1101,
+        "end": 1143
+      }
+    ],
+    "raw/stripe-checkout-quickstart-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 156
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-quickstart.md": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/91578620f229c56b38ec8a8a/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 770
+      },
+      {
+        "start": 771,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 990
+      },
+      {
+        "start": 991,
+        "end": 1100
+      },
+      {
+        "start": 1101,
+        "end": 1232
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "checkout-hosted-return-boundary",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "1. **Stripe-hosted redirect** \u2014 customer redirected to `checkout.stripe.com`; simplest; server redirects to `session.url`; client checks `?success=true`/`?canceled=true`",
+      "new_text": "1. **Stripe-hosted redirect** \u2014 customer is sent to Stripe's hosted Checkout page via `session.url`; the April 2026 client sample checks `?success=true`/`?canceled=true` for return-page messaging. Wait for payment success before fulfillment; the URL query is not payment proof.",
+      "reason": "The November hosted guide explicitly separates return-page message from payment-success fulfillment. The concept's shorthand could otherwise be read as a payment-state check.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "checkout-completed-event-qualification",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "| `checkout.session.completed` | Payment succeeded | Fulfill order |",
+      "new_text": "| `checkout.session.completed` | Checkout completed; payment can still be pending for a delayed method | Check payment status before fulfilling; otherwise wait for async success |",
+      "reason": "Keeps the concept's existing delayed-method qualification (line 140) active in the webhook table and avoids treating completion alone as paid funds.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "checkout-quickstart-concept-route",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "old_text": "- [[source-stripe-checkout-quickstart]] \u2014 Hosted + embedded quickstart: 3 modes, key session params, React client, EmbeddedCheckoutProvider, return_url pattern",
+      "new_text": "- [[source-stripe-checkout-quickstart]] \u2014 April and November 2026 hosted redirect quickstart, with a separate April 2026 embedded sample; November adds server-owned price/availability and payment-success fulfillment cautions.",
+      "reason": "Provides a qualified reciprocal source route and distinguishes the separate embedded capture.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/checkout/quickstart, the November 2026 capture remains a Stripe-hosted redirect guide: create a Session on the server and send the customer to `session.url` (new lines 5\u20139, 159\u2013189), matching the April 2026 hosted guide (old lines 4\u20136, 19\u201327, 45\u201366). The updated [[source-stripe-checkout-quickstart]] preserves the separately captured embedded quickstart rather than reading embedded behavior into this hosted URL. The flattened November language variants (new lines 300\u2013893) do not form one tested runnable program or prove a changed API requirement.",
+    "Q2": "At https://docs.stripe.com/checkout/quickstart, [[source-stripe-checkout-quickstart]] now states that sensitive price and availability stay on the server (new line 173), `integration_identifier` is suggested for comparing implementations (new line 163), and fulfillment waits for payment success rather than a return-page message (new lines 215\u2013217, 1121\u20131123). The April React sample's `?success=true` and `?canceled=true` checks only selected UI messages (old lines 110\u2013125); its old `customer_account` shorthand (old line 148) is now limited to customer-configured Accounts v2 (new line 298). Neither capture proves execution, payment success, or account-specific availability."
+  },
+  "status": "candidate_ready"
+}

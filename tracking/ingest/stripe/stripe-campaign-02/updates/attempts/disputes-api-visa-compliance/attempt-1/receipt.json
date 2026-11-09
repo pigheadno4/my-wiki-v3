@@ -1,0 +1,111 @@
+{
+  "job_id": "disputes-api-visa-compliance",
+  "attempt": 1,
+  "raw_path": "raw/stripe-disputes-api-visa-compliance-2026-11-07.md",
+  "raw_sha256": "02070ce63f7ed9708bd689dbc0ac309ce7dca16c6d434452494d5dd1511f9037",
+  "source_before_sha256": "8361d4dceb4825d7fa5c3a2b8c478d89283d4b88084ac6bd7bab35aef3bdafef",
+  "source_page": "---\ntitle: \"Stripe \u2014 Visa Compliance Disputes\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/disputes/api/visa-compliance\"\nraw_files:\n  - \"stripe-disputes-api-visa-compliance-2026-11-07.md\"\n  - \"stripe-disputes-visa-compliance-2026.md\"\ntags: [stripe, disputes, visa, compliance, noncompliant, api]\n---\n\n## Summary\n\nStripe's API guide for identifying, closing, and responding to Visa compliance disputes, called pre-compliance disputes by Visa. These are Visa network-rule cases, distinct from the ordinary chargeback response path. The 2026-05-10 and 2026-11-07 captures at the same canonical URL describe the same fee, response, and test flow; the later diff changes presentation and illustrative JSON formatting, not a documented outcome or API rule.\n\n## Identifying Visa Compliance Disputes\n\nAny one of these indicators on the `Dispute` object can identify a Visa compliance dispute:\n\n| Field | Value |\n| --- | --- |\n| `payment_method_details.card.case_type` | `compliance` |\n| `enhanced_eligibility_types` | contains `visa_compliance` |\n| `reason` | `noncompliant` |\n\nSee the 2026-11-07 raw guide lines 19\u201340 and 2026-05-10 raw guide lines 18\u201339. The dispute JSON is illustrative.\n\n## Close or Respond\n\n| Action | API route | Visa compliance network fee and effect |\n| --- | --- | --- |\n| Close | [Close dispute](https://docs.stripe.com/api/disputes/close) | Acknowledges the dispute as lost; avoids this Visa 500 USD network fee. Closing is irreversible. |\n| Respond with evidence | [Update dispute](https://docs.stripe.com/api/disputes/update) | Contesting requires acknowledging the 500 USD or local-equivalent network fee, in addition to applicable Stripe dispute fees. Stripe refunds this network fee if you win. |\n\nClosing's avoidance of the Visa network fee does not establish treatment of any separate Stripe dispute fee. These are guide statements, not proof of a particular account's eligibility, fees, or dispute outcome. See the 2026-11-07 raw guide lines 9\u201311 and 42\u201356; the 2026-05-10 guide lines 8\u201310 and 41\u201355.\n\n## Responding: Required Fee Acknowledgment\n\nSet `evidence.enhanced_evidence.visa_compliance.fee_acknowledged` to `true` when submitting evidence. Without acknowledgment, Stripe says it returns an error and does not submit the evidence. The guide says Stripe withdraws the network fee from the balance asynchronously after evidence submission, typically within 1\u20132 days, and refunds it if the dispute is won. The `evidence_details.enhanced_eligibility.visa_compliance.status` value `fee_acknowledged` records acknowledgment; it does not establish a win. The JSON examples include ellipses and are illustrative, not executable payloads. See the 2026-11-07 raw guide lines 52\u2013100 and the 2026-05-10 guide lines 51\u201396.\n\n## Testing\n\nFor the guide's test-mode Visa compliance dispute, use card number `4000008400000779`, PaymentMethod `pm_card_createComplianceDispute`, or token `tok_createComplianceDispute`. In test mode, evidence without fee acknowledgment is rejected. The `uncategorized_text` strings `winning_evidence` and `losing_evidence` simulate overall dispute outcomes; they do not predict or prove a live case result. See the 2026-11-07 raw guide lines 102\u2013114 and the 2026-05-10 guide lines 98\u2013110.\n\n## Related Pages\n\n- [[disputes]] \u2014 concept page with the Visa compliance API route\n- [[source-stripe-disputes-responding]] \u2014 broader dispute response guidance\n- [[source-stripe-disputes-visa-ce3]] \u2014 distinct Visa CE 3.0 enhanced evidence path\n\n## Raw Sources\n\n- [[raw/stripe-disputes-api-visa-compliance-2026-11-07|Visa compliance API guide, fetched 2026-11-07]]\n- [[raw/stripe-disputes-visa-compliance-2026|Visa compliance API guide, fetched 2026-05-10]]\n",
+  "quotes": [
+    {
+      "text": "If you contest a Visa compliance dispute, in addition to the applicable Stripe dispute fees, Stripe collects a 500 USD (or local equivalent) amount to cover the network costs associated with resolving Visa compliance disputes. Stripe refunds the 500 USD if you win the dispute.",
+      "location": "raw/stripe-disputes-api-visa-compliance-2026-11-07.md:11"
+    },
+    {
+      "text": "You can identify a Visa compliance dispute from the [dispute object](https://docs.stripe.com/api/disputes/object.md).",
+      "location": "raw/stripe-disputes-api-visa-compliance-2026-11-07.md:19"
+    },
+    {
+      "text": "Closing a dispute is irreversible.",
+      "location": "raw/stripe-disputes-api-visa-compliance-2026-11-07.md:48"
+    },
+    {
+      "text": "Stripe withdraws the 500 USD network fee from your balance asynchronously after you submit evidence, typically within 1-2 days.",
+      "location": "raw/stripe-disputes-api-visa-compliance-2026-11-07.md:54"
+    },
+    {
+      "text": "If you attempt to submit evidence for a Visa compliance dispute without acknowledging the network fee, Stripe returns an error response and doesn\u2019t submit your provided evidence.",
+      "location": "raw/stripe-disputes-api-visa-compliance-2026-11-07.md:100"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you contest a Visa compliance dispute, in addition to the applicable Stripe dispute fees, Stripe collects a 500 USD (or local equivalent) amount to cover the network costs associated with resolving Visa compliance disputes. Stripe refunds the 500 USD if you win the dispute.",
+      "location": "raw/stripe-disputes-visa-compliance-2026.md:10"
+    },
+    {
+      "text": "Stripe withdraws the 500 USD network fee from your balance asynchronously after you submit evidence, typically within 1-2 days.",
+      "location": "raw/stripe-disputes-visa-compliance-2026.md:53"
+    },
+    {
+      "text": "Similar to live mode Visa compliance disputes, Stripe returns an error response if you submit evidence without acknowledging the network fee.",
+      "location": "raw/stripe-disputes-visa-compliance-2026.md:108"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-disputes-api-visa-compliance-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 114
+      }
+    ],
+    "raw/stripe-disputes-visa-compliance-2026.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 110
+      }
+    ],
+    "wiki/sources/source-stripe-disputes-visa-compliance.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0350c336d3cd015b8ed4b8e3/content.diff": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "disputes-visa-compliance-flow-fee-qualifiers",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "Two options: **close** (no 500 USD fee, irreversible) or **respond** (must set `evidence.enhanced_evidence.visa_compliance.fee_acknowledged: true` \u2014 submitting without it returns an error; fee withdrawn 1\u20132 days later, refunded if won).",
+      "new_text": "Two options: **close** (acknowledges loss, avoids this Visa compliance network fee, irreversible) or **respond** (must set `evidence.enhanced_evidence.visa_compliance.fee_acknowledged: true` \u2014 otherwise Stripe rejects evidence; contesting incurs a 500 USD or local-equivalent Visa network fee in addition to applicable Stripe dispute fees, withdrawn asynchronously after submission, typically within 1\u20132 days, and refunded if won). The `fee_acknowledged` status records acknowledgment, not a won dispute. See [[source-stripe-disputes-visa-compliance]] for the 2026-05-10 and 2026-11-07 guide captures.",
+      "reason": "Directly correct the active summary's unqualified 1\u20132-day fee withdrawal and incomplete fee/close description using the same facts in both captures; distinguish acknowledgment from a win.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "disputes-visa-compliance-special-case-fee",
+      "target_path": "wiki/concepts/disputes.md",
+      "old_text": "- **Visa compliance disputes**: extra 500 USD network fee on top of standard dispute fee; refunded if won",
+      "new_text": "- **Visa compliance disputes**: contesting carries a 500 USD or local-equivalent network fee in addition to applicable Stripe dispute fees; the network fee is refunded if won. See [[source-stripe-disputes-visa-compliance]].",
+      "reason": "Qualify the repeated Visa network fee as local-equivalent and additional only to applicable Stripe dispute fees; retain win-conditional network-fee refund.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/disputes/api/visa-compliance, the 2026-11-07 guide identifies Visa compliance by three alternative Dispute indicators (new lines 19\u201325; old 2026-05-10 lines 18\u201324). Closing acknowledges loss, is irreversible, and avoids the Visa network fee; responding through the update API requires `fee_acknowledged: true`, otherwise evidence is not submitted (new lines 42\u201356, 100; old lines 41\u201355, 96). Contesting carries a 500 USD or local-equivalent network fee in addition to applicable Stripe dispute fees, refunded if won (new line 11; old line 10). [[source-stripe-disputes-visa-compliance]] routes these guide claims, without establishing account eligibility or a real outcome.",
+    "Q2": "At https://docs.stripe.com/disputes/api/visa-compliance, the November capture preserves the May fee and API rules: diff lines 3\u201366 change heading spacing, illustrative JSON braces/indentation, and a test table delimiter, with no documented lifecycle, fee, or test outcome change (new lines 5\u2013114; old lines 4\u2013110). [[source-stripe-disputes-visa-compliance]] preserves both dated raw captures and corrects the older summary's omitted local-equivalent/additional-fee conditions and fixed-sounding withdrawal window (new lines 11, 54; old lines 10, 53). The guide says withdrawal is asynchronous and typically within 1\u20132 days; `fee_acknowledged` is acknowledgment, while `winning_evidence` and `losing_evidence` simulate test outcomes only (new lines 74, 102\u2013114; old lines 72, 98\u2013110). The captures do not show any account's actual withdrawal date, exact local amount, or live case outcome."
+  },
+  "status": "candidate_ready"
+}

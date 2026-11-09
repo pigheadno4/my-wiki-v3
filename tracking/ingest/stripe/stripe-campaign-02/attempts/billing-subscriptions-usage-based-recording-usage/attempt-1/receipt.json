@@ -1,0 +1,104 @@
+{
+  "job_id": "billing-subscriptions-usage-based-recording-usage",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-recording-usage-2026-11-07.md",
+  "raw_sha256": "89d9bb46e99f9d05bf37b8089df6c59ce6c31c1937f47feeff9bc139c5552817",
+  "prior_raw_path": "raw/stripe-usage-based-billing-recording-usage-2025.md",
+  "prior_raw_sha256": "0a1b84d8dfba74099db6bbb3f737a7d816d1c7cf947328950a52dfa582d24940",
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-recording-usage.md",
+  "source_before_sha256": "5729c940d446d473e2158f69b07d930e0109cead43ba64c510d2e7977a38ec85",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-recording-usage-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "raw/stripe-usage-based-billing-recording-usage-2025.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-recording-usage.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7b0e4f2d3fc9aed9ca10585a/content.diff": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "This page describes usage recording for basic usage-based billing, where you send meter events to the Stripe `/v1/billing/meter_events` endpoint and Stripe aggregates them at the end of the billing period. If you\u2019re evaluating a new integration, [Metronome](https://docs.stripe.com/billing/usage-based.md) handles event ingestion differently and is recommended for most new use cases.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-2026-11-07.md:11"
+    },
+    {
+      "text": "In Metronome, you send usage events to Metronome\u2019s ingest API rather than to Stripe directly. Metronome processes events in real time, applies your pricing configuration, and tracks running balances and usage totals continuously, so you and your customers can see current usage at any point during the billing period, not just at invoice time.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-2026-11-07.md:13"
+    },
+    {
+      "text": "The Billing Meters approach on this page is appropriate only if you\u2019re already using Billing Meters to bill customers today. For a new integration, including adding usage-based pricing to existing flat-rate subscriptions, use [Metronome](https://docs.stripe.com/billing/usage-based.md) instead of building custom event recording infrastructure.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-2026-11-07.md:15"
+    },
+    {
+      "text": "Stripe processes meter events asynchronously, so aggregated usage in meter event summaries and on upcoming invoices might not immediately reflect recently received meter events.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-2026-11-07.md:25"
+    },
+    {
+      "text": "[Use Amazon S3](https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-in-bulk.md): Use Amazon S3 to add customer usage data in bulk.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-recording-usage-2026-11-07.md:31"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Throughout each billing period, you must record usage in Stripe to bill your customers the correct amounts. You can decide how often you record usage in Stripe. You can record usage in Stripe using the Dashboard or API.",
+      "location": "raw/stripe-usage-based-billing-recording-usage-2025.md:10"
+    },
+    {
+      "text": "Stripe processes meter events asynchronously, so aggregated usage in meter event summaries and on upcoming invoices might not immediately reflect recently received meter events.",
+      "location": "raw/stripe-usage-based-billing-recording-usage-2025.md:14"
+    },
+    {
+      "text": "[Use the API](https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api.md): Use the Stripe API to record customer usage data.",
+      "location": "raw/stripe-usage-based-billing-recording-usage-2025.md:16"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 same-URL capture adds a substantive recommendation: basic Stripe Billing Meters event recording is framed for existing Billing Meters users; Stripe recommends Metronome for most new usage-based integrations, expressly including usage pricing added to existing flat-rate subscriptions (new lines 9-17). The current source summary (lines 11-21) presents only three ingestion routes and omits this selection boundary, so it would give a misleading entry point for a new integration.",
+    "The new comparison distinguishes Stripe /v1/billing/meter_events from Metronome's own ingest API, real-time pricing processing, and continuous balance/usage visibility (new lines 11-13). This is captured documentation guidance, not proof of account-specific availability, measured throughput, or migration obligation.",
+    "Existing meter prerequisites, separate legacy documentation, asynchronous summaries/invoices, and API, Dashboard CSV, and Amazon S3 navigation remain in the new capture (old lines 8-20; new lines 19-31). The new See also pricing-models link (new lines 33-35) is navigation only.",
+    "The content.diff line 24 has an apparent concatenated duplicate Amazon S3 line; the fully read new raw has one intact Amazon S3 entry at line 31. Treat the raw, rather than that diff artifact, as the page content."
+  ],
+  "substantive_changes": [
+    "New Metronome recommendation and existing-Billing-Meters scope, including the existing flat-rate subscription example (new lines 11, 15-17).",
+    "New comparison of event destination, real-time processing, pricing application, continuous balances/usage visibility, and high-volume positioning (new lines 11-13)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the May 2026 basic Billing Meters recording routes and configure-meter-first prerequisite; they are repeated at new lines 21-31, not removed.",
+    "Retain asynchronous meter-event processing and potential lag in summaries and upcoming invoices (old line 14; new line 25).",
+    "Retain the separate legacy usage-based billing route (old line 8; new line 19).",
+    "Preserve dated provenance for the earlier source; the new Metronome guidance does not demonstrate Billing Meters deprecation or mandatory migration."
+  ],
+  "conflicts": [
+    "The current source (line 13) and Stripe index (line 296) omit the newly explicit Metronome selection boundary, whereas the existing stripe-usage-based-billing concept already records the November recommendation and cautions against treating it as deprecation (concept lines 10-13).",
+    "New line 11 describes end-of-period Stripe aggregation for comparison with Metronome, while new line 25 still says meter event summaries and upcoming invoices can reflect received events asynchronously. Avoid converting the comparison into an assertion that no Stripe usage summary exists before invoice time."
+  ],
+  "unresolved_questions": [
+    "The capture does not establish account-specific Metronome availability, measured ingestion capacity, or a Billing Meters retirement date.",
+    "The linked Metronome and compare-options pages are navigation from this job; their detailed contracts were not independently reviewed here."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage, the November capture adds a substantive Metronome selection recommendation to [[source-stripe-usage-based-billing-recording-usage]]: use Billing Meters here for existing users and consider Metronome for new integrations, including flat-rate subscriptions gaining usage pricing (new lines 11-17). The May capture contained no such comparison and began its operational guidance at old lines 8-14. The source summary therefore needs a dated update.",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage, [[source-stripe-usage-based-billing-recording-usage]] should preserve the old configure-meter prerequisite, API/Dashboard/S3 navigation, legacy route, and asynchronous lag (old lines 8-20), because the new capture repeats them at lines 19-31. The new Metronome recommendation at lines 11-17 is guidance for integration selection, not evidence that existing Billing Meters users must migrate or that a particular account can use Metronome."
+  }
+}

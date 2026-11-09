@@ -1,0 +1,175 @@
+{
+  "job_id": "payment-links-customize",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payment-links-customize-2026-11-07.md",
+  "raw_sha256": "40d4a4cbd6233b0c26eb574363f6230e9a4882e0ab8d0ebfe9f020733c08ad85",
+  "source_before_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "source_page": "---\ntitle: \"Stripe Payment Links Overview\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payment-links/customize\"\nraw_files:\n  - \"stripe-payment-links-customize-2026-11-07.md\"\n  - \"stripe-payment-links-overview-2025.md\"\n  - \"stripe-payment-links-create-2025.md\"\n  - \"stripe-payment-links-share-2025.md\"\n  - \"stripe-payment-links-track-2025.md\"\n  - \"stripe-payment-links-buy-button-2025.md\"\n  - \"stripe-payment-links-customize-2025.md\"\n  - \"stripe-payment-links-shipping-2025.md\"\n  - \"stripe-payment-links-promotions-2025.md\"\ntags: [stripe, payment-links, no-code, invoicing, adaptive-pricing, buy-button]\n---\n\n## Summary\n\nStripe Payment Links overview and historical eight-page bundle, now supplemented by the 2026-11-07 customization capture. This candidate incorporates only the assigned customize raw pair; the other Payment Links raw identities and claims remain historical context for coordinator consolidation. The new capture documents a pay-what-you-want URL parameter, Managed Payments navigation, and a private-preview automatic surcharge path.\n\n## Key Takeaways\n\n- **No code** \u2014 Stripe-hosted page; share link or embed buy button; no integration required\n- **40+ payment methods** managed in Dashboard; dynamic presentment\n- **Adaptive Pricing** \u2014 generally displays local currency; the 2026-11-07 automatic surcharge private preview is explicitly incompatible with it\n- **Browser language** auto-detection (30+ languages)\n- **Reusable** \u2014 share multiple times; optionally limit purchase count\n- **Subscription support** \u2014 create subscription payment links (Smart Retries + reminders apply)\n\n## Invoicing vs Payment Links\n\n| | Payment Links | Invoicing |\n| --- | --- | --- |\n| Customer | Anyone with link | Specific customer |\n| Partial payments | \u2717 | \u2713 |\n| Edit quantities | \u2713 | \u2717 |\n| Choose price | \u2713 | \u2717 |\n| Upsells | \u2713 | \u2717 |\n| Quote\u2192Invoice | \u2717 | \u2713 |\n| Smart Retries | Subscription links only | \u2713 all |\n| Reconciliation | URL parameters | Auto |\n\n## API Creation Details\n\n- **`stripe.paymentLinks.create({ line_items: [{ price, quantity }] })`**\n- Up to **20 line items** for flat rate; **1 line item** for customer-defined prices\n- Use `price_data` to create product + price inline\n- Subscriptions: `subscription_data.trial_period_days` supported\n- Customer-defined price: `custom_unit_amount: { enabled: true }` on Price object\n- Override dynamic payment methods: `payment_method_types: ['card', 'klarna']`\n- Async methods (bank debits, vouchers): 2\u201314 days to confirm; use webhooks for fulfillment\n- **Adaptive Pricing**: the separately captured create guide broadly says always enabled for Payment Links and describes 150+ countries and ML-based currency selection. The 2026-11-07 customize capture explicitly excludes compatibility with its API-only automatic surcharge private preview.\n\n> [!warning] Contradiction\n> The general Payment Links create wording says Adaptive Pricing is always enabled, while the customize guide says automatic surcharge is incompatible with Adaptive Pricing. Preserve that preview-specific exception; neither statement establishes a universal runtime resolution for every account or link.\n- **Mobile**: Stripe iOS Dashboard app supports creating links (products/subscriptions only)\n- **Customer-chooses max**: 10,000 SGD default; contact Stripe support to increase\n\n## Customize checkout (2026-11-07 capture)\n\nA payment-link use limit counts **completed Checkout Sessions**: the link is considered paid when a Session completes, with the API description tying `restrictions[completed_sessions][limit]` to `checkout.session.completed`. The link deactivates after the configured count; merely creating or opening it is not a consumed use. The deactivation message can be customized through the Dashboard or `inactive_message`.\n\nCheckout customization also includes billing and shipping address collection, phone and business/individual name collection, tax ID collection, Stripe Tax, terms-of-service consent, custom fields, branding, custom domains, adjustable quantities, and free trials. Dashboard address collection makes selected address fields required; API billing-address collection can be `required` or `auto`. Shipping collection needs `allowed_countries`. Name fields can be optional. Custom field types remain text (255 characters), numbers (255 digits), and dropdown; dropdown choices are limited to 10 for Dashboard-created links and 200 after API creation. The free-trial-without-payment-method path is for subscription-product links and needs trial-end handling; it does not apply to one-time links. The new capture adds Checkout studio as another branding route.\n\n**URL parameters:** `prefilled_email` is editable; `locked_prefilled_email` is uneditable and takes precedence when both email parameters are supplied; `prefilled_promo_code` needs promotions enabled; `locale` chooses a supported language. The new `prefilled_amount` sets an **editable initial amount only on pay-what-you-want links**, with no effect on fixed-price links. It must be a positive integer in the custom price's default currency smallest unit and meet that price's configured minimum and maximum. Invalid values fall back to the link's stored preset amount or the default empty state. It restricts multi-currency behavior: Checkout cannot automatically use the customer's local currency for that amount, and creating the link with a non-default `currency` parameter raises an error. This URL-parameter section is grounded in this customize capture only; the separate URL-parameter source unit remains independently owned.\n\n**Tax product boundary:** Stripe Tax can calculate/collect tax after setup. The new Managed Payments paragraph links a separate digital-products merchant-of-record route, with Stripe handling tax registration/filing/remittance plus fraud, disputes and support in that product. It is not ordinary Stripe Tax, and this section does not independently establish a merchant's Managed Payments eligibility. See [[source-stripe-managed-payments-payment-links]] for the distinct source route.\n\n**Automatic surcharge, private preview:** The new guide describes a third-party-provider calculation based on card details. Access is by private preview; a surcharge provider Stripe App must be installed and onboarded, and a preview `Stripe-Version` header is required for API creation (the example uses `2026-10-28.preview`). The API uses `automatic_surcharge[enabled]=true` with `automatic_surcharge[calculation_basis]` set to `total_before_tax` or `total_after_tax`; it also describes Stripe Tax compatibility through `automatic_surcharge[tax_behavior]`. The path is **API-only**, supports one-off and customer-chooses-what-to-pay links, excludes subscription links and Adaptive Pricing, and during this preview is limited to the United States, cards and Apple Pay. Unsupported methods receive no applicable surcharge. The merchant remains responsible for verifying provider calculations against law and network rules; the guide is not proof of compliance, preview access or live payment outcome.\n\n### Customize detail locators\n\n- [[raw/stripe-payment-links-customize-2026-11-07|2026-11-07 customize guide]], completed-session limits and deactivation 13\u201362; address and phone 64\u2013112; names/tax IDs/Stripe Tax 114\u2013174; Managed Payments 176\u2013180; ToS/custom fields 182\u2013248.\n- Same raw, Adaptive Pricing 250\u2013254; Checkout studio/domain/policies 264\u2013283; URL parameters and `prefilled_amount` 285\u2013315; subscription trials and quantity 317\u2013362; private-preview surcharge conditions 364\u2013423.\n- [[raw/stripe-payment-links-customize-2025|2026-04-20 customize guide]], prior completed-session limit 12\u201330; addresses/names/tax/ToS/custom fields 83\u2013295; Adaptive Pricing and old URL parameters 297\u2013357; trials/quantities 363\u2013412.\n\n## Related Pages\n\n- [[stripe-payment-links]] \u2014 Stripe Payment Links concept page\n- [[paypal-payment-links]] \u2014 PayPal's equivalent product\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payment-links-customize-2026-11-07|Customize checkout, captured 2026-11-07]] \u2014 pay-what-you-want amount preset, Managed Payments link, private-preview automatic surcharge and retained customization fields\n- [[raw/stripe-payment-links-overview-2025|Payment Links overview, captured 2026-04-20]] \u2014 Payment Links features table, no-code capabilities, Invoicing vs Payment Links comparison\n- [[raw/stripe-payment-links-create-2025|create guide, captured 2026-04-20]] \u2014 Create a payment link: 2 pricing models, API (line_items, price_data, subscription_data), custom_unit_amount, payment_method_types, Adaptive Pricing, mobile iOS app, async methods\n- [[raw/stripe-payment-links-share-2025|share guide, captured 2026-04-20]] \u2014 Share a payment link: share channels, QR code (never expires), buy button embed, deactivate/reactivate (active: false); can't delete\n- [[raw/stripe-payment-links-track-2025|track guide, captured 2026-04-20]] \u2014 Track a payment link: 5 UTM params (150 char max), client_reference_id (200 char max, no secrets), after_completion redirect, checkout.session.completed webhook\n- [[raw/stripe-payment-links-buy-button-2025|buy-button guide, captured 2026-04-20]] \u2014 Buy button: stripe-buy-button web component, 2 layouts, 3 attributes (client-reference-id/customer-email/customer-session-client-secret), CustomerSession (30min expiry, never cache), CSP requirements\n- [[raw/stripe-payment-links-customize-2025|Customize checkout, captured 2026-04-20]] \u2014 payment limits, deactivation message, collection fields, Stripe Tax, ToS, URL parameters, subscription trials, quantities, domain\n- [[raw/stripe-payment-links-shipping-2025|shipping guide, captured 2026-04-20]] \u2014 Shipping rates: shippingRates.create (fixed_amount + delivery_estimate), shipping_options on payment link; one-time prices only (not subscriptions)\n- [[raw/stripe-payment-links-promotions-2025|promotions guide, captured 2026-04-20]] \u2014 Promotions, upsells, optional items: allow_promotion_codes, guest customer caveat, subscription upsells (Dashboard only), optional_items (up to 10), cross-sells (product-level, overridden by optional_items)\n",
+  "quotes": [
+    {
+      "text": "A payment link is considered \u201cpaid for\u201d when a Checkout Session is complete.",
+      "location": "raw/stripe-payment-links-customize-2026-11-07.md:17"
+    },
+    {
+      "text": "If you sell digital products, Managed Payments allows you to offload tax liability to Stripe",
+      "location": "raw/stripe-payment-links-customize-2026-11-07.md:178"
+    },
+    {
+      "text": "Use `prefilled_amount` to set the initial amount on a pay-what-you-want payment link.",
+      "location": "raw/stripe-payment-links-customize-2026-11-07.md:308"
+    },
+    {
+      "text": "Automatic surcharge for Payment Links is available through the API only.",
+      "location": "raw/stripe-payment-links-customize-2026-11-07.md:396"
+    },
+    {
+      "text": "During this private preview, automatic surcharge is only supported in the United States. Supported payment methods are cards and Apple Pay.",
+      "location": "raw/stripe-payment-links-customize-2026-11-07.md:423"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "A payment link is considered \u201cpaid for\u201d when a Checkout Session is complete.",
+      "location": "raw/stripe-payment-links-customize-2025.md:16"
+    },
+    {
+      "text": "Payment links created through the Dashboard support up to 10 options.",
+      "location": "raw/stripe-payment-links-customize-2025.md:249"
+    },
+    {
+      "text": "Each Payment Link you share automatically allows your customers to complete payment in their local currency",
+      "location": "raw/stripe-payment-links-customize-2025.md:299"
+    },
+    {
+      "text": "This can only be done for Payment Links with subscription products.",
+      "location": "raw/stripe-payment-links-customize-2025.md:380"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-payment-links-customize-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 423
+      }
+    ],
+    "raw/stripe-payment-links-customize-2025.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 412
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/43eb6b966c5f1f758a2a939e/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 558
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "payment-links-adaptive-surcharge-exception",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "| Currency | Adaptive Pricing (always enabled) \u2014 displays local currency automatically; see [[stripe-adaptive-pricing]] |",
+      "new_text": "| Currency | General Payment Links guidance describes Adaptive Pricing as enabled for local currency display; the 2026-11-07 automatic-surcharge private preview is explicitly incompatible with it. See [[stripe-adaptive-pricing]] and [[source-stripe-payment-links]]. |",
+      "reason": "General create wording says always enabled, while new customize raw line 396 explicitly excludes Adaptive Pricing from automatic surcharge. Addendum requires dated, scoped resolution, not a universal reversal.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Retain preview-only incompatibility and do not infer runtime eligibility for a given account."
+      ]
+    },
+    {
+      "update_id": "payment-links-adaptive-contradiction-note",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "| Reusability | Reuse unlimited times, or limit number of purchases |\n\n## What You Can Do",
+      "new_text": "| Reusability | Reuse unlimited times, or limit number of purchases |\n\n> [!warning] Contradiction\n> General Payment Links create guidance says Adaptive Pricing is always enabled, while the 2026-11-07 [[source-stripe-payment-links]] customization guide says its API-only automatic-surcharge private preview is incompatible with Adaptive Pricing. This is a scoped exception, not evidence of universal runtime behavior.\n\n## What You Can Do",
+      "reason": "The shared concept needs the same explicit within-corpus warning as the source while preserving the general Adaptive Pricing statement.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Do not apply this preview incompatibility to unrelated Payment Links or subscriptions."
+      ]
+    },
+    {
+      "update_id": "payment-links-prefilled-amount",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "**URL parameters**: `prefilled_email`, `locked_prefilled_email` (takes precedence over prefilled_email), `prefilled_promo_code`, `locale`",
+      "new_text": "**URL parameters**: `prefilled_email`, `locked_prefilled_email` (takes precedence over prefilled_email), `prefilled_promo_code`, `locale`; `prefilled_amount` sets an editable starting amount only for pay-what-you-want links, with a positive smallest-unit value within configured minimum/maximum. Invalid values fall back to the stored preset or empty state; fixed-price links ignore it and multi-currency behavior is restricted. See [[source-stripe-payment-links]] (2026-11-07 customize capture).",
+      "reason": "New raw lines 308\u2013312 add the constrained prefilled_amount parameter; existing concept omits it.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Do not generalize prefilled_amount to fixed-price links or claim automatic local-currency conversion."
+      ]
+    },
+    {
+      "update_id": "payment-links-surcharge-preview-route",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "old_text": "## Buy Button (Embedded)",
+      "new_text": "## Automatic surcharge preview (2026-11-07 customize guide)\n\nThe [[source-stripe-payment-links]] customize capture describes an API-only US private preview for one-off and customer-chooses-what-to-pay links, limited to cards and Apple Pay. It requires provider-app onboarding and a preview API version; it excludes subscription links and Adaptive Pricing. Stripe Tax can be used with its surcharge tax behavior setting. The merchant must verify legal and network-rule compliance; this capture does not establish access or a successful charge.\n\n## Buy Button (Embedded)",
+      "reason": "New raw lines 364\u2013423 introduce a material preview surface with access, method, product, tax, and compliance boundaries.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "No current account eligibility, jurisdictional compliance or transaction result is established."
+      ]
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payment-links/customize, [[source-stripe-payment-links]] records that a limited link is consumed only when a Checkout Session completes: `restrictions[completed_sessions][limit]` is tied to `checkout.session.completed`, after which the configured limit deactivates the link (new raw:13\u201331; old raw:12\u201330). The November capture adds editable `prefilled_amount` only for pay-what-you-want links, bounded by positive smallest-unit and configured min/max values, with invalid fallback and multi-currency limits (new raw:308\u2013312; old raw:344\u2013355 lists the earlier URL parameters). It also introduces a separate Managed Payments merchant-of-record route for digital products, where Stripe handles tax registration, filing and remittance plus fraud, disputes and support, distinct from ordinary Stripe Tax calculation and collection (new raw:147\u2013180; old raw:165\u2013184). Automatic surcharge appears only as a private preview with API, provider, version, method and product restrictions (new raw:364\u2013423); no account access, legal compliance or payment outcome is established.",
+    "Q2": "For https://docs.stripe.com/payment-links/customize, [[source-stripe-payment-links]] classifies `prefilled_amount` (new raw:308\u2013312 versus old raw:344\u2013355), the Managed Payments merchant-of-record paragraph (new raw:176\u2013180 versus the older Stripe Tax section at old raw:165\u2013184), and API-only automatic surcharge (new raw:364\u2013423; old capture ends at old raw:412) as substantive additions. The remaining diff is largely Node-to-curl examples, updated links/images, table and list formatting, wording and Checkout studio branding (diff:12\u201394,224\u2013356,374\u2013430; new raw:264\u2013271). Completed-session limits, address/name collection, Stripe Tax, terms, custom fields, subscription-only trials and adjustable quantities persist across both captures (old raw:12\u201330,83\u2013159,165\u2013295,363\u2013412; new raw:13\u201331,64\u2013141,147\u2013248,321\u2013362). The surcharge is a US private preview requiring provider-app onboarding and a preview API version; only cards and Apple Pay are supported, subscription links and Adaptive Pricing are excluded, and the merchant must verify legal and network-rule compliance (new raw:368\u2013423; old Adaptive Pricing wording at old raw:297\u2013301). These pages establish neither preview eligibility nor a live transaction result."
+  },
+  "status": "candidate_ready"
+}

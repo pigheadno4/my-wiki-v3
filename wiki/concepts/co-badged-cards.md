@@ -28,11 +28,11 @@ Adyen's POS application-selection guide captured 2026-09-15 says a cardholder us
 
 ## Stripe Integration
 
-Stripe-hosted UIs (Checkout, Payment Links, Elements, Terminal) auto-display network selector when applicable. Connect platforms using `on_behalf_of` must pass `onBehalfOf` to establish merchant of record.
+In Stripe's 2026-05-01 guide, hosted UIs (Checkout, Payment Links, Elements, Terminal) display a network selector when applicable and configured for the variant. For Connect platforms using `on_behalf_of` with separate charges and transfers or destination charges, the guide places `onBehalfOf` in the relevant UI configuration so Stripe can determine whether to display the selector; merchant-of-record applicability can attach to the platform or connected account. The 2026-11-07 default page is navigation only and does not revalidate those variant instructions.
 
 **Web Elements** (`preferredNetwork` / `defaultValues.card.network`): set default network if customer doesn't choose.
 
-**Mobile SDKs** (`preferredNetworks`): iOS 23.22.1+ / Android 20.37.4+ required. For connect: `onBehalfOf` in `IntentConfiguration`.
+**Mobile SDKs, May 2026 guide** (`preferredNetworks`): iOS 23.22.1+ / Android 20.37.4+ is the selection baseline shown for Payment Sheet, Embedded Payment Element, Customer Sheet and Card Element. For the specified Connect `on_behalf_of` flows, Payment Sheet and Embedded Payment Element put `onBehalfOf` in `IntentConfiguration`; Mobile Card Element puts it on the Card Element variant and requires iOS 23.27.1+ / Android 20.42.0+ for that path.
 
 **Terminal**: WisePad 3, S700/S710 auto-support; Tap to Pay on iPhone requires manual `requested_priority` integration.
 
@@ -66,6 +66,6 @@ Tokens: `tok_visa_cartesBancaires`, `tok_mastercard_cartesBancaires`
 
 - [[source-adyen-docs-online-payments-co-badged-cards-compliance]] — Adyen Docs snapshot of region-specific EEA and Australia choice, routing, disclosure, and version-qualified integration requirements
 
-- [[source-stripe-co-badged-cards-compliance]] — primary source: regulation scope, integration guides (all Elements, mobile, Terminal), test cards
+- [[source-stripe-co-badged-cards-compliance]] — May 2026 full Stripe guide for regional choice, variant setup and tests; November 2026 default page is a ten-variant navigation index, not updated behavioral evidence.
 - [[source-github-adyen-web]] — Adyen Web `6.41.0` dual-brand selector and split-funding-source implementation evidence, plus the `6.44.0` keyboard-handling delta
 - [[source-github-adyen-android]] — Adyen Android `5.20.0` dual-brand selection and submitted-brand evidence

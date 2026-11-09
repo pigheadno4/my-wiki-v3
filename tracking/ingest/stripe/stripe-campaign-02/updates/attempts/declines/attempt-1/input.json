@@ -1,0 +1,81 @@
+{
+  "job_id": "declines",
+  "queue_id": 79,
+  "canonical_url": "https://docs.stripe.com/declines",
+  "raw_path": "raw/stripe-declines-2026-11-07.md",
+  "raw_sha256": "fba23d6e88b39c51d1c4b5e4d4c0348d25263b171e658ac7715df1aa308d8bab",
+  "prior_raw_path": "raw/stripe-declines-2026.md",
+  "prior_raw_sha256": "0b6c0ae794ec1d89d63b38f408aed1583019e72c07cf515c3f4b027bcc069452",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ffcc244a2ae8c2590d03c393/content.diff",
+  "diff_sha256": "fe5627a6376d28c53eb56680b4b02defa4b9d1902745276057e2ac991e4c7305",
+  "source_target": "wiki/sources/source-stripe-declines-overview.md",
+  "source_before_sha256": "654bec9c092127bf0467f02cd256539bfb55860603ad0c04435472ef2008877e",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/declines/attempt-2/receipt.json",
+  "receipt_sha256": "7791c1c28f164fc7812a5f6ef608e4a71c5b1a6c8bf8d6ee14999ee3b3f8b1a7",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/declines/attempt-2/review.json",
+  "review_sha256": "9d4bfd04b340dd9caaffb10f9218e25d6949175b96ff6745d3bc3fb36b3eca14",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "The November same-URL capture preserves the three documented failure categories, Charge.outcome diagnostic route, issuer/Stripe/network distinction, Radar and Adaptive Acceptance block examples, allow-list future-attempt effect, and invalid-call examples (old 8-140; new 9-140). The changed order of introductory paragraphs and heading whitespace do not change those behaviors (diff 3-52).",
+    "The API sample switches from Node to equivalent curl PaymentIntent creation with the same amount, currency, declined test PaymentMethod and confirm fields (old 78-89; new 83-90). Outcome examples become JSON-key quoted and the error doc_url changes to a docs.stripe.com anchor (diff 53-185). These presentation/link changes do not prove runtime or outcome-schema changes. The removed Smart Retries next-step link is navigation only (old 140; new 136-140).",
+    "The existing source lines 19-21 and 78-80, plus wiki/concepts/stripe-declines.md under Three Failure Types and Invalid API Calls, collapse separate examples into an unconditional claim that an incorrect-CVC or malformed request produces a Charge.outcome.type=invalid. Both captures show an incorrect_cvc card_error example (old 91-103; new 92-104) and separately show an invalid outcome example (old 122-133; new 123-134); they do not establish that the same request yielded both or that every invalid request is malformed. In later authorized editing, remove the asserted universal mapping and keep the examples separate.",
+    "Source line 52's absolute 'no authorization attempt is made' omits the guide's card-type qualification: some customers may see an issuer authorization for the amount on their statement, although Stripe has not charged or withdrawn funds (old 32-34; new 37-39). Recommend narrowing source 52 to Stripe's stated no-charge/no-withdrawal result and retaining the possible statement authorization. The linked concept at wiki/concepts/stripe-declines.md 92 additionally says 'no funds are held'; neither capture establishes whether the issuer temporarily reserves available balance. Remove that categorical hold assertion or state that hold behavior is unknown here, even if a statement authorization appears. A blocked payment query about temporarily reduced available balance must not receive an unjustified no.",
+    "Source line 76 correctly says adding a legitimate blocked payment to the allow list affects matching future attempts and does not retry the current payment (old 36; new 41). The IC+ qualifier on Adaptive Acceptance blocking also persists (old 57; new 62). Keep these conditional scopes."
+  ],
+  "approved_conflicts": [
+    "Source line 80 and concept wiki/concepts/stripe-declines.md under Invalid API Calls assert wrong CVC/malformed requests produce card_error with outcome.type=invalid. Old 91-103 and 122-133 and new 92-104 and 123-134 present distinct examples; no observed linkage supports the combined claim.",
+    "Source line 52's unqualified 'no authorization attempt is made' omits the old 34/new 39 card-type caveat that customers may see an issuer authorization on a statement; this is not a Stripe charge or funds withdrawal. Concept wiki/concepts/stripe-declines.md 92 goes further and categorically says 'no funds are held'. Neither raw establishes issuer temporary reservation of available balance, so recommend removing or narrowing that concept claim and marking hold behavior unresolved."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the distinct issuer_declined, blocked and invalid examples, but label them examples rather than a complete input-to-outcome mapping (old 42-55, 59-72, 107-133; new 47-60, 64-77, 108-134).",
+    "Preserve the card-type issuer-statement authorization caveat and Stripe no-charge/no-withdrawal statement (old 32-34; new 37-39). Do not infer that the issuer placed or did not place a temporary balance hold; that bank-ledger question is unanswered by these captures.",
+    "Preserve allow-list future-attempt scope and no automatic retry, plus IC+ pricing qualification for Adaptive Acceptance (old 36, 57; new 41, 62).",
+    "Keep the May Node example as dated presentation evidence while identifying the November curl example; neither proves a changed PaymentIntent API contract (old 78-89; new 83-90)."
+  ],
+  "unresolved_questions": [
+    "The two captures do not show an executed incorrect-CVC request and corresponding Charge object, so the precise input-to-outcome mapping for that example is unverified.",
+    "The card-type-dependent issuer statement authorization may appear without a Stripe charge or funds withdrawal, but these captures do not establish whether an issuer temporarily holds available balance, nor any individual bank ledger, payment, or release result."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-declines.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/declines/attempt-2/receipt.json",
+  "approved_triage_receipt_sha256": "7791c1c28f164fc7812a5f6ef608e4a71c5b1a6c8bf8d6ee14999ee3b3f8b1a7",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/declines/attempt-2/review.json",
+  "approved_triage_review_sha256": "9d4bfd04b340dd9caaffb10f9218e25d6949175b96ff6745d3bc3fb36b3eca14",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw2",
+  "reviewer_agent": "/root/s2ur2",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-declines-2026-11-07.md",
+      "sha256": "fba23d6e88b39c51d1c4b5e4d4c0348d25263b171e658ac7715df1aa308d8bab",
+      "lines": 140
+    },
+    {
+      "path": "raw/stripe-declines-2026.md",
+      "sha256": "0b6c0ae794ec1d89d63b38f408aed1583019e72c07cf515c3f4b027bcc069452",
+      "lines": 140
+    },
+    {
+      "path": "wiki/sources/source-stripe-declines-overview.md",
+      "sha256": "654bec9c092127bf0467f02cd256539bfb55860603ad0c04435472ef2008877e",
+      "lines": 91
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/ffcc244a2ae8c2590d03c393/content.diff",
+      "sha256": "fe5627a6376d28c53eb56680b4b02defa4b9d1902745276057e2ac991e4c7305",
+      "lines": 191
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/declines-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/declines-review.json"
+}

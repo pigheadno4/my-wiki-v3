@@ -1,0 +1,90 @@
+{
+  "job_id": "apple-pay-best-practices",
+  "attempt": 1,
+  "raw_path": "raw/stripe-apple-pay-best-practices-2026-11-07.md",
+  "raw_sha256": "3502f832695722480b1988dcb2350db9efdbe2c77e94d6bd93d0ebf212fc1308",
+  "source_before_sha256": "547dccd449a74716789f6c85b3703ab9c5032d88c2bce835e3dbec66a84a0e2c",
+  "source_page": "---\ntitle: \"Stripe: Apple Pay Best Practices\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/apple-pay/best-practices\"\nraw_files:\n  - \"stripe-apple-pay-best-practices-2026-11-07.md\"\n  - \"stripe-apple-pay-best-practices-2025.md\"\ntags: [stripe, wallets, apple-pay, best-practices, certificate-renewal, conversion, express-checkout, merchant-tokens]\n---\n\n## Overview\n\nStripe's Apple Pay best-practices guide covers express checkout placement, moving registration until after purchase, default payment selection, Apple Pay setup prompts, certificate renewal, testing changes, and merchant tokens for recurring transactions. The 2026-05-07 and 2026-11-07 captures have the same substantive advice; their captured content diff adds only whitespace before **Activate** in the certificate paragraph. These captures describe recommendations and reported case studies, not a measured outcome or certificate state for another merchant.\n\n## Key takeaways\n\n- **Express checkout:** For Apple Pay-ready customers, Stripe suggests placing the button on product detail, list, or search pages. Collect required order selections first; if the user taps before selection is complete, highlight what is missing rather than leaving the button disabled. Stripe reports that Indiegogo saw a **250% increase in conversion rate** after implementing an express checkout. This is Indiegogo's reported result, not a forecast for other merchants (November lines 15\u201324).\n- **Registration and default selection:** The guide suggests removing mandatory pre-purchase sign-up for Apple Pay-ready users, asking only for transaction-relevant information, and requesting account details after payment. It suggests defaulting to Apple Pay on capable devices or preselecting it in the payment selector. In Wish's A/B test of **new users who were Apple Pay-ready**, defaulting to Apple Pay yielded a **\u201c2X higher conversion rate increase\u201d**. This is a claim about that test's conversion-rate *increase*; it does not establish that Wish's overall conversion rate doubled or that another merchant will see the same lift (November lines 26\u201343).\n- **Setup and communication:** For a capable device without a Wallet card, the guide suggests a **Set Up Apple Pay** prompt during checkout, in account payment settings, or in payment-update messages. It also suggests showing Apple Pay acceptance in checkout and other customer communications (November lines 45\u201365).\n- **Certificate renewal:** The captured guide says the certificate lasts **25 months** from activation, with notifications to the Apple Developer Account team agent at **30, 15, and 7 days** before expiration. Obtain a **new CSR from Stripe**, upload the new certificate to Stripe **before** activating it in the Apple Developer portal, and keep both old and new certificates in the Stripe Dashboard during transition. Apple starts using the new public key approximately five minutes after activation. The guide says no app update is needed after replacement and recommends a transaction with test API keys. This is a procedure, not evidence that a particular merchant's certificate was renewed or tested (November lines 67\u201375).\n- **Changes and recurring payments:** Before changing the integration or Apple Merchant ID, verify token creation and payment completion. For recurring, deferred, or automatic-reload merchant-initiated transactions, Stripe recommends configuring Apple Pay to return a merchant token (MPAN). The recommendation does not establish merchant-specific availability or successful authorization (November lines 77\u201383).\n\n## Related\n\n- [[stripe-wallets]] \u2014 Apple Pay and other wallet context.\n- [[stripe]] \u2014 Stripe provider.\n\n## Raw Sources\n\n- [[raw/stripe-apple-pay-best-practices-2026-11-07|Stripe Apple Pay best practices, 2026-11-07]] \u2014 same substantive advice in the later capture.\n- [[raw/stripe-apple-pay-best-practices-2025|Stripe Apple Pay best practices, 2026-05-07]] \u2014 earlier capture.\n",
+  "quotes": [
+    {
+      "text": "After implementing an express checkout, [Indiegogo](https://www.indiegogo.com/) saw their conversion rate increase by 250%.",
+      "location": "raw/stripe-apple-pay-best-practices-2026-11-07.md:17"
+    },
+    {
+      "text": "[Wish](https://www.wish.com/) conducted an A/B test to measure the impact on conversion rates for new users who are Apple Pay\u2013ready. Defaulting to Apple Pay yielded 2X higher conversion rate increase.",
+      "location": "raw/stripe-apple-pay-best-practices-2026-11-07.md:37"
+    },
+    {
+      "text": "The certificate is valid for 25 months from activation.",
+      "location": "raw/stripe-apple-pay-best-practices-2026-11-07.md:69"
+    },
+    {
+      "text": "Upload the new certificate to Stripe before activating it on the Apple Developer Account.",
+      "location": "raw/stripe-apple-pay-best-practices-2026-11-07.md:73"
+    },
+    {
+      "text": "If you accept Apple Pay payments, we recommend configuring the Apple Pay interface to return a merchant token to enable merchant initiated transactions (MIT) such as recurring and deferred payments and automatic reloads.",
+      "location": "raw/stripe-apple-pay-best-practices-2026-11-07.md:83"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "[Wish](https://www.wish.com/) conducted an A/B test to measure the impact on conversion rates for new users who are Apple Pay\u2013ready. Defaulting to Apple Pay yielded 2X higher conversion rate increase.",
+      "location": "raw/stripe-apple-pay-best-practices-2025.md:36"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-apple-pay-best-practices-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 88
+      }
+    ],
+    "raw/stripe-apple-pay-best-practices-2025.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 87
+      }
+    ],
+    "wiki/sources/source-stripe-apple-pay-best-practices.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/408f9e0c0ef4e936bb21396d/content.diff": [
+      {
+        "start": 1,
+        "end": 11
+      }
+    ]
+  },
+  "new_raw_use": "factual",
+  "concept_patches": [
+    {
+      "update_id": "apple-pay-wish-lift-concept",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "**Conversion best practices**: add button to product pages/search results (Indiegogo +250%); default to Apple Pay for capable devices (Wish 2\u00d7); skip mandatory sign-up; collect account info post-payment.",
+      "new_text": "**Conversion best practices**: add button to product pages/search results (Indiegogo reported a 250% conversion-rate increase after express checkout); default to Apple Pay for capable devices (Wish reported a \u201c2X higher conversion rate increase\u201d in its A/B test of new Apple Pay-ready users, not a doubled overall conversion rate); skip mandatory sign-up; collect account info post-payment.",
+      "reason": "The existing parenthetical Wish 2\u00d7 can be read as doubled overall conversion, while both captures specify a twofold higher increase for Wish's particular A/B-test cohort.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/apple-pay/best-practices, the 2026-11-07 capture says Wish's A/B test of new Apple Pay-ready users found a '2X higher conversion rate increase' when Apple Pay was the default (new line 37); the 2026-05-07 capture says the same (old line 36). [[source-stripe-apple-pay-best-practices]] and the routed [[stripe-wallets]] concept now use that scoped wording. The prior source's 'Wish 2\u00d7' did not support saying Wish's overall conversion rate doubled, nor a general lift for other merchants.",
+    "Q2": "At https://docs.stripe.com/apple-pay/best-practices, the captured renewal instructions retain a 25-month certificate validity, 30/15/7-day notices, a fresh Stripe CSR, upload to Stripe before Apple Developer activation, both certificates during the transition, and a recommended test transaction (old lines 66\u201374; new lines 67\u201375). The only same-URL content diff is an extra space before Activate (diff lines 3\u201310), so [[source-stripe-apple-pay-best-practices]] treats the advice as unchanged. Neither capture verifies any merchant's actual certificate state, Apple Pay readiness, token availability, or successful test transaction."
+  },
+  "status": "candidate_ready"
+}

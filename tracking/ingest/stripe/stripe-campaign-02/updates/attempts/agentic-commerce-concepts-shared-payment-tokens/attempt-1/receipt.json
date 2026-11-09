@@ -1,0 +1,135 @@
+{
+  "job_id": "agentic-commerce-concepts-shared-payment-tokens",
+  "attempt": 1,
+  "raw_path": "raw/stripe-agentic-commerce-concepts-shared-payment-tokens-2026-11-07.md",
+  "raw_sha256": "1c14e4103933f555c777c1fca801f21166f6a3204829eac62439b3cb69e9a29f",
+  "source_before_sha256": "120d694ee44b02558a28616005e39ec388c7bfc9daf3df4af3140fc0c9fc2f10",
+  "source_page": "---\ntitle: \"Stripe \u2014 Shared Payment Tokens\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens\"\nraw_files:\n  - \"stripe-shared-payment-tokens-2026.md\"\ntags: [stripe, spt, shared-payment-token, agentic-commerce, payment-method, agent, seller, machine-payments]\n---\n\n## Overview\n\nThe full 2026-05-12 Stripe guide describes Shared Payment Tokens (SPTs) from both roles: an agent issues a scoped grant of a customer's payment method to a seller, and the seller receives a granted token for payment processing. That capture says SPTs are available to agents, customers, and sellers in the US; it does not establish present-day geography or account eligibility. The 2026-11-07 capture at the same base URL is a short variant index for Sellers, Agents, and Connect platforms. Its omission of detailed flows does not show that SPT functionality was removed, and the Connect variant body was not captured in this job.\n\n## Seller perspective \u2014 May 2026 guide\n\n- **Receive:** The agent grants a `shared_payment.granted_token` to the seller's Stripe profile, with usage and expiration limits. The seller guide says to have a Stripe account and create a Stripe profile before use.\n- **Use:** The public-preview Node example calls `stripe.paymentIntents.create({ payment_method_data: { shared_payment_granted_token: 'spt_xxx' }, confirm: true })`. On confirmation, Stripe sets `payment_method` to a new PaymentMethod cloned from the customer's original method; the guide says later refunds and reporting behave as if that method were supplied directly. Token use or creation of this PaymentIntent is not proof of a succeeded or settled payment.\n- **Retrieve:** The public-preview example uses `stripe.sharedPayment.grantedTokens.retrieve('spt_xxx')`; the guide says the response can expose usage limits and limited method details such as card brand and last four digits.\n- **Test-mode simulation:** The guide's test-helper example, `stripe.testHelpers.sharedPayment.grantedTokens.create({ payment_method, usage_limits })`, simulates a granted SPT with a test payment method and limits.\n- **Separate live-mode test:** The guide labels a Link CLI flow as testing a live-mode integration. It requires logging in to a personal Link account, selecting or adding a payment method, and creating a one-time spend request with `--credential-type shared_payment_token`, a business-profile `--network-id`, and `--request-approval`. This is not interchangeable with the test-helper simulation.\n- **Webhook:** `shared_payment.granted_token.deactivated` means the granted token was revoked or expired and can no longer be used to create a payment.\n\n## Agent perspective \u2014 May 2026 guide\n\n- **Collect and issue:** Collect the seller's Stripe profile during onboarding. The Payment Element example uses `paymentMethodCreation: 'manual'` and `sellerDetails.networkBusinessProfile` to present buyer methods compatible with that seller, then `stripe.preparePaymentMethod({ elements })` and the server-side public-preview `stripe.sharedPayment.issuedTokens.create(...)` example. The issued token carries the seller profile and limits for currency, maximum amount, and expiration; the agent shares its ID with the seller for a transaction. The guide requires HTTPS before accepting live payments.\n- **Methods in the May capture:** Its table lists cards, Link, Apple Pay, Google Pay, Klarna, and limited Affirm. The card-network footnote says Stripe might use Mastercard Agent Pay or Visa Intelligent Commerce network tokens on the agent's behalf. For Affirm, the buyer must navigate and confirm the loan-application UI; the agent might not interact with it programmatically or render it on a device browser outside its navigation control. Affirm marketing by an agent carries separate compliance guidance. The November index does not update this support list.\n- **Next actions and revocation:** A seller payment can put the issued token into `requires_action` for 3DS or another customer redirect. The agent retrieves the token and presents the action; the guide's client example calls `stripe.handleNextAction(...)`. The `active` event follows completed customer action unless the token was deactivated, meaning the SPT can continue through the payment flow. The agent can revoke it, preventing seller use.\n- **Agent events:** `shared_payment.issued_token.requires_action`, `.active`, `.used`, and `.deactivated` distinguish customer action, renewed token usability, seller use, and revocation/expiry. The May table defines `.used` as seller use of the SPT; it does not establish that a PaymentIntent succeeded or settled. Check payment outcome separately.\n\n## Detail locators\n\n- Seller prerequisites, test helper, distinct live-mode Link CLI flow, PaymentIntent example, retrieval, and seller webhook: [[raw/stripe-shared-payment-tokens-2026|May full guide]], lines 8\u2013139.\n- Agent profile and payment collection, issued-token example, method table and Affirm footnotes, next actions, revocation, and agent webhooks: same May guide, lines 141\u2013431. The Node snippets identify the public-preview SDK; they are examples, not proof of current SDK or account access.\n\n## Related\n\n- [[stripe]]; [[stripe-shared-payment-tokens]]; [[stripe-agentic-commerce]]; [[stripe-machine-payments]]\n\n## Related raw API references\n\nThe [[raw/stripe-agentic-commerce-concepts-shared-payment-tokens-2026-11-07|November 7, 2026 base-URL index]] provides navigation only; these variant bodies were not read for this source update:\n\n- [Sellers](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller)\n- [Agents](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=agent)\n- [Connect platforms](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=connect)\n\n## Raw Sources\n\n- [[raw/stripe-shared-payment-tokens-2026|May 12, 2026 full seller and agent guide]]\n",
+  "quotes": [
+    {
+      "text": "Grant and receive scoped payment credentials for agent-initiated purchases.",
+      "location": "raw/stripe-agentic-commerce-concepts-shared-payment-tokens-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-agentic-commerce-concepts-shared-payment-tokens-2026-11-07.md:11"
+    },
+    {
+      "text": "[Sellers](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller)",
+      "location": "raw/stripe-agentic-commerce-concepts-shared-payment-tokens-2026-11-07.md:13"
+    },
+    {
+      "text": "[Agents](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=agent)",
+      "location": "raw/stripe-agentic-commerce-concepts-shared-payment-tokens-2026-11-07.md:14"
+    },
+    {
+      "text": "[Connect platforms](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=connect)",
+      "location": "raw/stripe-agentic-commerce-concepts-shared-payment-tokens-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Shared payment tokens (SPTs) are available to agents, customers, and sellers in the US.",
+      "location": "raw/stripe-shared-payment-tokens-2026.md:8"
+    },
+    {
+      "text": "Use test helpers to simulate receiving an SPT granted by the agent.",
+      "location": "raw/stripe-shared-payment-tokens-2026.md:25"
+    },
+    {
+      "text": "To test your integration in live mode, use the [link-cli](https://link.com/agents) to issue SPTs from your personal Link account.",
+      "location": "raw/stripe-shared-payment-tokens-2026.md:54"
+    },
+    {
+      "text": "You receive this event when the seller uses the SPT.",
+      "location": "raw/stripe-shared-payment-tokens-2026.md:430"
+    }
+  ],
+  "read_ranges": {
+    "raw/stripe-agentic-commerce-concepts-shared-payment-tokens-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-shared-payment-tokens-2026.md": [
+      {
+        "start": 1,
+        "end": 431
+      }
+    ],
+    "wiki/sources/source-stripe-shared-payment-tokens.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/206cf568dd6c1b186069fef2/content.diff": [
+      {
+        "start": 1,
+        "end": 436
+      }
+    ]
+  },
+  "new_raw_use": "navigation_only",
+  "concept_patches": [
+    {
+      "update_id": "s02-spt-concept-geography",
+      "target_path": "wiki/concepts/stripe-shared-payment-tokens.md",
+      "old_text": "The agent controls the scope (max amount, expiration, currency); the seller uses the SPT to create a PaymentIntent without ever seeing the raw payment method. US only.",
+      "new_text": "The agent controls the scope (max amount, expiration, currency); the seller uses the SPT to create a PaymentIntent without ever seeing the raw payment method. The full May 12, 2026 Stripe guide described availability to agents, customers, and sellers in the US; the November 7 variant index does not establish current geography or account eligibility.",
+      "reason": "The unqualified current-tense US restriction comes only from the May guide; the November base URL is a variant index without eligibility text.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-spt-concept-methods",
+      "target_path": "wiki/concepts/stripe-shared-payment-tokens.md",
+      "old_text": "Cards (Mastercard Agent Pay / Visa Intelligent Commerce), Link, Apple Pay, Google Pay, Klarna, Affirm (limited \u2014 no programmatic UI interaction).",
+      "new_text": "The May 12, 2026 seller-and-agent guide lists cards, Link, Apple Pay, Google Pay, Klarna, and limited Affirm. Stripe says it might use Mastercard Agent Pay or Visa Intelligent Commerce network tokens on an agent's behalf. For Affirm, the buyer must navigate and confirm the loan-application UI; the agent might not interact with it programmatically or render it on a browser outside its navigation control, and agent marketing must follow Affirm's payment-option-specific compliance guidance. The November 7 variant index does not establish current method eligibility.",
+      "reason": "Date the May-capture method list and retain the full Affirm buyer-control and marketing qualifications; the new index gives no replacement eligibility evidence.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-spt-concept-used-event",
+      "target_path": "wiki/concepts/stripe-shared-payment-tokens.md",
+      "old_text": "| `used` | Seller charged the SPT |",
+      "new_text": "| `used` | Seller used the SPT; check the PaymentIntent separately for the payment outcome |",
+      "reason": "The May table defines the event as seller use, not a succeeded or settled PaymentIntent. The November index has no lifecycle contract.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "s02-spt-concept-source-route",
+      "target_path": "wiki/concepts/stripe-shared-payment-tokens.md",
+      "old_text": "- [[source-stripe-shared-payment-tokens]] \u2014 full seller + agent integration guide with code",
+      "new_text": "- [[source-stripe-shared-payment-tokens]] \u2014 May 12, 2026 full seller and agent SPT guide with public-preview examples; November 7 base URL is a Sellers/Agents/Connect variant index only",
+      "reason": "Update the reciprocal source route to show which capture supports behavior and where the later index stops.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens, [[source-stripe-shared-payment-tokens]] now identifies the November 7, 2026 capture as a 15-line variant index with Sellers, Agents, and Connect platform links (new lines 7\u201315), while the May 12, 2026 capture is a 431-line full seller-and-agent guide (old lines 8\u2013431). The new index is navigation only, so the May raw remains the sole factual raw_files and Raw Sources entry; no removal of SPT functionality or Connect-specific behavior is inferred.",
+    "Q2": "At https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens, [[source-stripe-shared-payment-tokens]] separates May test-helper simulation (old lines 23\u201342) from the live-mode Link CLI spend request requiring a Link login, payment method, and --request-approval (old lines 52\u201377). The concept dates the May US statement (old line 8) and method table/Affirm limits (old lines 329\u2013340), and corrects the used event to seller token use (old line 430), not proof of payment success. The November index (new lines 5\u201315) establishes none of the current eligibility or payment outcome details."
+  },
+  "status": "candidate_ready"
+}

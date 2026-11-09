@@ -1,0 +1,110 @@
+{
+  "job_id": "billing-subscriptions-usage-based-meters-configure",
+  "attempt": 1,
+  "raw_path": "raw/stripe-billing-subscriptions-usage-based-meters-configure-2026-11-07.md",
+  "raw_sha256": "386c2e1fa74b7ccb16fb6c5f7405e6b013802d990694311c5e2301ee3b38656c",
+  "prior_raw_path": "raw/stripe-usage-based-billing-meters-configure-2025.md",
+  "prior_raw_sha256": "914175ef3d4c1ea152f3a83f273a5b49673b3d538feed1daa8afe110e4470185",
+  "source_target": "wiki/sources/source-stripe-usage-based-billing-meters-configure.md",
+  "source_before_sha256": "55b046ff6baa2a1bf543d12f09f411c9f3e8d7a3181bb89f8a07aef2476557f2",
+  "read_ranges": {
+    "raw/stripe-billing-subscriptions-usage-based-meters-configure-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 82
+      }
+    ],
+    "raw/stripe-usage-based-billing-meters-configure-2025.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 93
+      }
+    ],
+    "wiki/sources/source-stripe-usage-based-billing-meters-configure.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2d7c11ce2c9084fb27a61b3f/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "After you configure the meter, you can\u2019t make any changes aside from the display name.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-meters-configure-2026-11-07.md:9"
+    },
+    {
+      "text": "This is the default option if you don\u2019t specify anything.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-meters-configure-2026-11-07.md:52"
+    },
+    {
+      "text": "A newer event sent within the same hourly or daily window overwrites the previous one. The meter event timestamp in UTC dictates the hour and day boundaries.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-meters-configure-2026-11-07.md:53"
+    },
+    {
+      "text": "You can only cancel events sent to Stripe within the last 24 hours. If you cancel usage that\u2019s included on a finalized invoice, we won\u2019t update the invoice or issue a corrected invoice for the canceled usage.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-meters-configure-2026-11-07.md:68"
+    },
+    {
+      "text": "If the overall cycle usage is negative, Stripe reports the invoice line item usage quantity as 0.",
+      "location": "raw/stripe-billing-subscriptions-usage-based-meters-configure-2026-11-07.md:70"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "const meter = await stripe.billing.meters.create({",
+      "location": "raw/stripe-usage-based-billing-meters-configure-2025.md:38"
+    },
+    {
+      "text": "const meterEventAdjustment = await stripe.billing.meterEventAdjustments.create({",
+      "location": "raw/stripe-usage-based-billing-meters-configure-2025.md:86"
+    },
+    {
+      "text": "You can only cancel events sent to Stripe within the last 24 hours.",
+      "location": "raw/stripe-usage-based-billing-meters-configure-2025.md:77"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "The same captured canonical URL and guide identity are retained. New lines 9-17 and old lines 8-16 preserve meter prerequisite, configuration immutability, aggregation purpose, and Dashboard/API paths.",
+    "New lines 49-62 and old lines 58-71 preserve unique event-name routing, Raw default versus hourly/daily pre-aggregated overwrite with UTC timestamp boundaries, sum/count/last, and payload-key defaults.",
+    "New lines 64-70 and old lines 73-79 preserve current-billing-period adjustment context, identifier requirement, 24-hour cancellation window, finalized-invoice limitation, and negative-cycle floor of zero.",
+    "The current source at lines 13-40 already covers the central retained behavior; its Node SDK adjustment example is historical evidence from the old raw, while the new capture renders curl. Keep the example provenance clear if adding the new raw reference.",
+    "New line 80-82 adds a See also route to usage-based pricing models. New line 17 changes the Stripe CLI link target. Neither supplies a new meter behavior or proves a deprecated API."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "The May capture's Node examples for meter creation and meter event adjustment remain historical examples; the November curl examples do not establish that the Node SDK paths were removed.",
+    "After configuration, only the display name can change (new line 9; old line 8); Raw ingestion is the default and pre-aggregated replacement follows UTC timestamp windows (new lines 52-53; old lines 61-62).",
+    "Cancellation requires the event identifier, applies only to events sent within the last 24 hours, and cannot revise finalized invoices; negative cycle usage is reported as zero (new lines 66-70; old lines 75-79)."
+  ],
+  "conflicts": [],
+  "unresolved_questions": [
+    "The capture does not establish whether the changed CLI documentation URL redirects from or replaces the former /stripe-cli.md route.",
+    "The source says 'after meter creation' at line 31 while both raws say 'After you configure the meter' at new line 9 and old line 8; that wording should be narrowed to the captured condition during any source refresh."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-usage-based-billing.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/billing/subscriptions/usage-based/meters/configure, [[source-stripe-usage-based-billing-meters-configure]] still describes the same meter creation, aggregation and correction behavior. The old capture states the immutability rule at line 8 and the adjustment limits at lines 75-79; the new capture repeats them at lines 9 and 66-70. The visible differences are the Node-to-curl examples, CLI link target, list and table rendering, and a See also link (old lines 16, 20-29, 33-52, 81-93; new lines 17, 21-42, 72-82).",
+    "Q2": "For https://docs.stripe.com/billing/subscriptions/usage-based/meters/configure, [[source-stripe-usage-based-billing-meters-configure]] merits a raw_reference disposition: attach the November capture as dated evidence and make the existing Node snippet's May provenance clear. Old lines 58-79 and new lines 49-70 support the same ingestion modes, defaults, cancellation window and finalized-invoice limit, so the current source and linked usage-based-billing concept need no new behavioral assertion. Neither the curl rendering nor the new navigation link establishes SDK removal or meter deprecation."
+  }
+}

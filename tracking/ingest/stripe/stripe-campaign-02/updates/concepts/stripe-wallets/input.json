@@ -1,0 +1,190 @@
+{
+  "target_path": "wiki/concepts/stripe-wallets.md",
+  "base_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-wallets/base.md",
+  "base_sha256": "56acb55ec3fac169521aac17a5b8560ef24a528f126e91a2c7496ac977eb1e83",
+  "patches": [
+    {
+      "update_id": "apple-pay-apple-pay-recurring::s02-apple-pay-recurring-qualifications",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "**Apple Pay recurring \u2014 DPAN vs MPAN**: DPAN is device-tied (deactivates on device switch); MPAN (merchant token) persists across devices. Each generates a one-time expiring cryptogram \u2014 **must consume via CIT (SetupIntent 0 USD validation) immediately**; if CIT fails, all subsequent MITs also fail. Apple Pay terms **forbid** using saved payment method for on_session payments. Tokens API deprecated for recurring \u2014 use PaymentIntents/SetupIntents.",
+      "new_text": "**Apple Pay recurring \u2014 DPAN vs MPAN**: The May 7, 2026 guide says a device-tied DPAN can be unintentionally deactivated when a user switches devices and adds the same card; it describes MPAN (merchant token) as more reliable across device switches. Each comes with an expiring one-time cryptogram; conduct the first CIT promptly, before expiration, using a SetupIntent 0 USD validation or a charge. If that CIT fails, later MITs using the same Card will likely also fail. Apple Pay terms forbid reuse of a saved payment method for `usage=on_session` while the customer is in the flow; the customer must authorize that transaction and generate a new cryptogram. Stripe discourages legacy Tokens and Charges for recurring Apple Pay and recommends PaymentIntents and SetupIntents, without announcing formal deprecation. See [[source-stripe-apple-pay-recurring]].",
+      "reason": "Correct the concept's unsupported absolute device-deactivation and MIT-failure claims, scope the saved on-session restriction, and replace formal Tokens deprecation wording with the captured recommendation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The November capture is a presentation variant; neither capture establishes a fixed cryptogram lifetime or formal Tokens API deprecation date."
+      ],
+      "original_update_id": "s02-apple-pay-recurring-qualifications",
+      "job_id": "apple-pay-apple-pay-recurring",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-apple-pay-recurring/attempt-2/receipt.json",
+      "receipt_sha256": "8d5f8faf1364c1db34cdf8cc174f5d01cab8e4d124d4c9a40c581b5ad4e5bfa1",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-apple-pay-recurring/attempt-2/candidate.md",
+      "source_candidate_sha256": "1152a6c81aad8e70e3b9ad82c77023b4385c7a704b978a21e530020ac191694f",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-apple-pay-recurring/attempt-2/review.json"
+    },
+    {
+      "update_id": "apple-pay-apple-pay-recurring::s02-apple-pay-recurring-liability-shift-exception",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "**Liability shift**: globally supported for all major networks. **Visa exception**: iOS 16.2+ required globally; below 16.2 only gets liability shift if card issued in Europe. Disputes/refunds same process as card payments.",
+      "new_text": "**Liability shift**: The dated Apple Pay disputes guide describes global support for major networks, with a **Visa exception**: iOS 16.2+ is required globally; below 16.2, Visa liability shift applies only if the card was issued in Europe. **Saved off-session exception**: The May 7, 2026 recurring guide says saved DPAN/MPAN `usage=off_session` payments outside checkout do not get network liability shift and might have lower than average authorization rates. Disputes and refunds follow the card-payment process. See [[source-stripe-apple-pay-disputes-refunds]] and [[source-stripe-apple-pay-recurring]].",
+      "reason": "Qualify the adjacent broad liability-shift claim for saved off-session recurring Apple Pay payments, while retaining the Visa iOS/Europe condition and distinct dispute/refund process.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "The saved-payment exception applies to usage=off_session outside checkout; the captures do not adjudicate a particular charge."
+      ],
+      "original_update_id": "s02-apple-pay-recurring-liability-shift-exception",
+      "job_id": "apple-pay-apple-pay-recurring",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-apple-pay-recurring/attempt-2/receipt.json",
+      "receipt_sha256": "8d5f8faf1364c1db34cdf8cc174f5d01cab8e4d124d4c9a40c581b5ad4e5bfa1",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-apple-pay-recurring/attempt-2/candidate.md",
+      "source_candidate_sha256": "1152a6c81aad8e70e3b9ad82c77023b4385c7a704b978a21e530020ac191694f",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-apple-pay-recurring/attempt-2/review.json"
+    },
+    {
+      "update_id": "apple-pay-best-practices::apple-pay-wish-lift-concept",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "**Conversion best practices**: add button to product pages/search results (Indiegogo +250%); default to Apple Pay for capable devices (Wish 2\u00d7); skip mandatory sign-up; collect account info post-payment.",
+      "new_text": "**Conversion best practices**: add button to product pages/search results (Indiegogo reported a 250% conversion-rate increase after express checkout); default to Apple Pay for capable devices (Wish reported a \u201c2X higher conversion rate increase\u201d in its A/B test of new Apple Pay-ready users, not a doubled overall conversion rate); skip mandatory sign-up; collect account info post-payment.",
+      "reason": "The existing parenthetical Wish 2\u00d7 can be read as doubled overall conversion, while both captures specify a twofold higher increase for Wish's particular A/B-test cohort.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "original_update_id": "apple-pay-wish-lift-concept",
+      "job_id": "apple-pay-best-practices",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-best-practices/attempt-1/receipt.json",
+      "receipt_sha256": "7a6768a96b8f815093b33d23a976db90e1c55057d6e1ec33682ec37fd75208c5",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-best-practices/attempt-1/candidate.md",
+      "source_candidate_sha256": "918cd4a5aa94de34f08a373ca91a816957fe64d80888a47ec7dfd26f5c20c23e",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-best-practices/attempt-1/review.json"
+    },
+    {
+      "update_id": "apple-pay-merchant-tokens::apple-pay-mpan-concept-correction",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "**Apple Pay recurring \u2014 DPAN vs MPAN**: DPAN is device-tied (deactivates on device switch); MPAN (merchant token) persists across devices. Each generates a one-time expiring cryptogram \u2014 **must consume via CIT (SetupIntent 0 USD validation) immediately**; if CIT fails, all subsequent MITs also fail. Apple Pay terms **forbid** using saved payment method for on_session payments. Tokens API deprecated for recurring \u2014 use PaymentIntents/SetupIntents.\n\n**MPAN request types** (iOS 16+): `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations, iOS 16.4+). Pass as `applePay` param to Express Checkout Element or Payment Element. Checkout auto-handles. Fallback to DPAN if issuer doesn't support MPAN. Sigma `charges.card_token_type = 'mpan'` for auth rate monitoring.",
+      "new_text": "**Apple Pay recurring \u2014 DPAN vs MPAN**: DPAN is device-tied (might stop working if the customer replaces the device or removes the card); MPAN (merchant token) persists across devices. Each generates a one-time expiring cryptogram \u2014 **must consume via CIT (SetupIntent 0 USD validation) immediately**; if CIT fails, all subsequent MITs also fail. Apple Pay terms **forbid** using saved payment method for on_session payments. Tokens API deprecated for recurring \u2014 use PaymentIntents/SetupIntents.\n\n**MPAN request types**: `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations). The May 7, 2026 guide lists iOS >16.0 for recurring and reload, but >16.4 for deferred; its table is not repeated in November. For Elements with Payment Intents, pass the use-case `applePay` object to Express Checkout Element or web Payment Element. Stripe Checkout and Elements with Checkout Sessions request MPANs automatically when needed. If Apple Pay or the issuer lacks MPAN support, a DPAN is returned. Stripe stores the returned credential with the resulting `PaymentMethod` for standard saved off-session reuse. For an MPAN card update, `payment_method.automatically_updated` carries supported `data.object.card` fields (`exp_month`, `exp_year`, `last4`) for cached-value updates. Sigma `charges.card_token_type = 'mpan'` supports authorization-rate monitoring. See [[source-stripe-apple-pay-merchant-tokens]] for dated support and lifecycle details.",
+      "reason": "Correct the concept's collapsed iOS support and issuer-only fallback, scope Element configuration to Payment Intents, name Checkout Sessions automatic handling and surface the new stored PaymentMethod/lifecycle path. Narrow the adjacent device-bound DPAN statement from categorical deactivation to the November guide's modal risk while retaining the separate recurring-payment paragraph for its own reviewed update.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The neighboring recurring-CIT and Tokens statements derive from a separate same-URL guide and are left for that independently reviewed source unit; this patch changes only their DPAN modal wording.",
+        "The November merchant-token guide says a DPAN might stop working after device replacement or card removal, not that every device switch deactivates it."
+      ],
+      "original_update_id": "apple-pay-mpan-concept-correction",
+      "job_id": "apple-pay-merchant-tokens",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-2/receipt.json",
+      "receipt_sha256": "be5e2e43e000b5a88fde06a96909d7a96d0b227cce4cae501e9cb549ef9e2768",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-2/candidate.md",
+      "source_candidate_sha256": "5f78df6b6cf883166150f4d0bc78aaf0522305ab8e996d69d585d46be25d3439",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-2/review.json"
+    },
+    {
+      "update_id": "apple-pay-merchant-tokens::apple-pay-mpan-reciprocal-route",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "- [[source-stripe-apple-pay-merchant-tokens]] \u2014 Apple Pay MPAN types: recurring/auto-reload/deferred, Express Checkout Element config, Sigma card_token_type monitoring",
+      "new_text": "- [[source-stripe-apple-pay-merchant-tokens]] \u2014 May and November 2026 merchant-token guide: request types, dated platform support, Payment Intents versus Checkout Sessions configuration, MPAN/DPAN fallback, PaymentMethod reuse and update notifications",
+      "reason": "Keep the concept's source route aligned with the dated guide's new path and lifecycle coverage.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [],
+      "original_update_id": "apple-pay-mpan-reciprocal-route",
+      "job_id": "apple-pay-merchant-tokens",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-2/receipt.json",
+      "receipt_sha256": "be5e2e43e000b5a88fde06a96909d7a96d0b227cce4cae501e9cb549ef9e2768",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-2/candidate.md",
+      "source_candidate_sha256": "5f78df6b6cf883166150f4d0bc78aaf0522305ab8e996d69d585d46be25d3439",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-2/review.json"
+    },
+    {
+      "update_id": "google-pay::s02-google-pay-ecommerce-liability-dated",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "old_text": "**Liability shift \u2014 three token types**:\n\n1. **DPAN** (Android device card): liability shift by default\n2. **FPAN** (Chrome/Google property card): 3D Secure required for global Visa liability shift; customize via Radar rules\n3. **E-commerce tokens**: **no liability shift, no 3D Secure**",
+      "new_text": "**Liability shift \u2014 three token types (2026-05-07 Google Pay capture)**:\n\n1. **DPAN** (Android device card): described as supporting liability shift by default\n2. **FPAN** (Chrome/Google property card): described as supporting global liability shift, including Visa, when 3D Secure is used; Radar rules can request 3D Secure\n3. **E-commerce tokens**: described as having neither liability shift nor 3D Secure support **at that time**\n\nThe 2026-11-07 base-URL capture is a platform index only; current token-specific liability and 3D Secure support were not verified there. These dated descriptions do not guarantee a charge's liability outcome.",
+      "reason": "The concept's timeless e-commerce-token negative drops the older raw's 'at this time' qualifier. Date the entire token comparison and preserve the DPAN/FPAN conditions without treating the new navigation index as liability evidence.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [],
+      "original_update_id": "s02-google-pay-ecommerce-liability-dated",
+      "job_id": "google-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/google-pay/attempt-2/receipt.json",
+      "receipt_sha256": "238e0e4c5fb64892074964f2b8638553915c268ae020adb98d093a121175df37",
+      "source_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/google-pay/attempt-2/candidate.md",
+      "source_candidate_sha256": "1b7963bb8547f176f80d3473ff136ecf25547ab31959cf914cb8c1f557eefb19",
+      "independent_review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/google-pay/attempt-2/review.json"
+    }
+  ],
+  "all_update_ids": [
+    "apple-pay-apple-pay-recurring::s02-apple-pay-recurring-qualifications",
+    "apple-pay-apple-pay-recurring::s02-apple-pay-recurring-liability-shift-exception",
+    "apple-pay-best-practices::apple-pay-wish-lift-concept",
+    "apple-pay-merchant-tokens::apple-pay-mpan-concept-correction",
+    "apple-pay-merchant-tokens::apple-pay-mpan-reciprocal-route",
+    "google-pay::s02-google-pay-ecommerce-liability-dated"
+  ],
+  "auto_candidate_path": "tracking/ingest/stripe/stripe-campaign-02/updates/concepts/stripe-wallets/auto-candidate.md",
+  "auto_candidate_sha256": "3cce3e8eff51c654bca5189ccac10c90c2f9af81f39d38b95bfcddb93089cfc0",
+  "conflict_clusters": [
+    [
+      {
+        "start": 6903,
+        "end": 7353,
+        "old_text": "**Apple Pay recurring \u2014 DPAN vs MPAN**: DPAN is device-tied (deactivates on device switch); MPAN (merchant token) persists across devices. Each generates a one-time expiring cryptogram \u2014 **must consume via CIT (SetupIntent 0 USD validation) immediately**; if CIT fails, all subsequent MITs also fail. Apple Pay terms **forbid** using saved payment method for on_session payments. Tokens API deprecated for recurring \u2014 use PaymentIntents/SetupIntents.",
+        "new_text": "**Apple Pay recurring \u2014 DPAN vs MPAN**: The May 7, 2026 guide says a device-tied DPAN can be unintentionally deactivated when a user switches devices and adds the same card; it describes MPAN (merchant token) as more reliable across device switches. Each comes with an expiring one-time cryptogram; conduct the first CIT promptly, before expiration, using a SetupIntent 0 USD validation or a charge. If that CIT fails, later MITs using the same Card will likely also fail. Apple Pay terms forbid reuse of a saved payment method for `usage=on_session` while the customer is in the flow; the customer must authorize that transaction and generate a new cryptogram. Stripe discourages legacy Tokens and Charges for recurring Apple Pay and recommends PaymentIntents and SetupIntents, without announcing formal deprecation. See [[source-stripe-apple-pay-recurring]].",
+        "ids": [
+          "apple-pay-apple-pay-recurring::s02-apple-pay-recurring-qualifications"
+        ]
+      },
+      {
+        "start": 6903,
+        "end": 7756,
+        "old_text": "**Apple Pay recurring \u2014 DPAN vs MPAN**: DPAN is device-tied (deactivates on device switch); MPAN (merchant token) persists across devices. Each generates a one-time expiring cryptogram \u2014 **must consume via CIT (SetupIntent 0 USD validation) immediately**; if CIT fails, all subsequent MITs also fail. Apple Pay terms **forbid** using saved payment method for on_session payments. Tokens API deprecated for recurring \u2014 use PaymentIntents/SetupIntents.\n\n**MPAN request types** (iOS 16+): `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations, iOS 16.4+). Pass as `applePay` param to Express Checkout Element or Payment Element. Checkout auto-handles. Fallback to DPAN if issuer doesn't support MPAN. Sigma `charges.card_token_type = 'mpan'` for auth rate monitoring.",
+        "new_text": "**Apple Pay recurring \u2014 DPAN vs MPAN**: DPAN is device-tied (might stop working if the customer replaces the device or removes the card); MPAN (merchant token) persists across devices. Each generates a one-time expiring cryptogram \u2014 **must consume via CIT (SetupIntent 0 USD validation) immediately**; if CIT fails, all subsequent MITs also fail. Apple Pay terms **forbid** using saved payment method for on_session payments. Tokens API deprecated for recurring \u2014 use PaymentIntents/SetupIntents.\n\n**MPAN request types**: `recurringPaymentRequest` (subscriptions), `automaticReloadPaymentRequest` (store card top-ups), `deferredPaymentRequest` (hotels/reservations). The May 7, 2026 guide lists iOS >16.0 for recurring and reload, but >16.4 for deferred; its table is not repeated in November. For Elements with Payment Intents, pass the use-case `applePay` object to Express Checkout Element or web Payment Element. Stripe Checkout and Elements with Checkout Sessions request MPANs automatically when needed. If Apple Pay or the issuer lacks MPAN support, a DPAN is returned. Stripe stores the returned credential with the resulting `PaymentMethod` for standard saved off-session reuse. For an MPAN card update, `payment_method.automatically_updated` carries supported `data.object.card` fields (`exp_month`, `exp_year`, `last4`) for cached-value updates. Sigma `charges.card_token_type = 'mpan'` supports authorization-rate monitoring. See [[source-stripe-apple-pay-merchant-tokens]] for dated support and lifecycle details.",
+        "ids": [
+          "apple-pay-merchant-tokens::apple-pay-mpan-concept-correction"
+        ]
+      }
+    ]
+  ],
+  "scope": "Merge approved source-specific edits only; preserve unrelated content and source qualifications. No canonical writes.",
+  "proposed_output": "/tmp/stripe-s02-updates/stripe-wallets-concept.json",
+  "review_output": "/tmp/stripe-s02-updates/stripe-wallets-concept-review.json",
+  "context_only_units": [
+    {
+      "job_id": "apple-pay-apple-pay-recurring",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-apple-pay-recurring/attempt-2/receipt.json",
+      "receipt_sha256": "8d5f8faf1364c1db34cdf8cc174f5d01cab8e4d124d4c9a40c581b5ad4e5bfa1",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-apple-pay-recurring/attempt-2/review.json"
+    },
+    {
+      "job_id": "apple-pay-merchant-tokens",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-2/receipt.json",
+      "receipt_sha256": "be5e2e43e000b5a88fde06a96909d7a96d0b227cce4cae501e9cb549ef9e2768",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/apple-pay-merchant-tokens/attempt-2/review.json"
+    },
+    {
+      "job_id": "google-pay",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/google-pay/attempt-2/receipt.json",
+      "receipt_sha256": "238e0e4c5fb64892074964f2b8638553915c268ae020adb98d093a121175df37",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/google-pay/attempt-2/review.json"
+    }
+  ]
+}

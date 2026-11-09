@@ -1,0 +1,156 @@
+{
+  "job_id": "payments-advanced-charge-shipping",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-advanced-charge-shipping-2026-11-07.md",
+  "raw_sha256": "3bac6c2c7346a05bcdb71ef8ac552400167bbbbf175060588818a4d7017558fd",
+  "prior_raw_path": "raw/stripe-charge-shipping-2025.md",
+  "prior_raw_sha256": "afeaaa1bcb3003dec164c2a29265ace6f35e56903c01f024fadb578816f549d9",
+  "source_target": "wiki/sources/source-stripe-charge-shipping.md",
+  "source_before_sha256": "88bd1c15e8f2370662e0f4dc31195e49e85d411380c97c7580b80d63f287c57b",
+  "read_ranges": {
+    "raw/stripe-payments-advanced-charge-shipping-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-charge-shipping-2025.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 460
+      }
+    ],
+    "wiki/sources/source-stripe-charge-shipping.md": [
+      {
+        "start": 1,
+        "end": 77
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/73f37846b788796205b81678/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 462
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Charge for shipping",
+      "location": "new raw line 5"
+    },
+    {
+      "text": "Create different shipping rates for your customers.",
+      "location": "new raw line 7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "new raw line 11"
+    },
+    {
+      "text": "[Checkout Sessions API](https://docs.stripe.com/payments/advanced/charge-shipping.md?payment-ui=embedded-components)",
+      "location": "new raw line 13"
+    },
+    {
+      "text": "[Payment Intents API](https://docs.stripe.com/payments/advanced/charge-shipping.md?payment-ui=elements)",
+      "location": "new raw line 14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Only Checkout Sessions in [payment mode](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-mode) support shipping options.",
+      "location": "old raw line 83"
+    },
+    {
+      "text": "Shipping rates only support fixed amount values for the entire order. You can\u2019t adjust the shipping rate based on the number of items in the order.",
+      "location": "old raw line 14"
+    },
+    {
+      "text": "The Payment Intents API doesn\u2019t support calculating or defining shipping rates out of the box. If you need this functionality, Stripe recommends building it yourself or using [Checkout](https://docs.stripe.com/payments/checkout.md).",
+      "location": "old raw line 450"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 base URL capture is a 14-line variant index linking the Checkout Sessions API embedded-components and Payment Intents API elements pages (new lines 9-14). The 2026-04-21 capture contains 460 lines with both variants (old lines 8-460); the diff removes that body from the base URL (diff lines 3-462). This is a rendering/navigation shift, not evidence of feature removal or changed API behavior. Do not add the index-only capture to the mapped source's factual raw_files as if it documented the old technical detail.",
+    "The existing source line 22 calls switching to Checkout Sessions the recommended choice, while the old Payment Intents variant says Stripe recommends either building shipping calculation yourself or using Checkout (old line 450). Correct that one-sided recommendation. The source and Stripe index also say Payment Intents has 'no shipping support' (source line 73; index line 80), which should be narrowed to no built-in shipping-rate calculation/definition; source lines 13 and 19 and the Payment Intents concept line 25 already express the narrower fact.",
+    "Preserve variant identity: Checkout Sessions embedded-components guidance covers server-created rates and client updateShippingOption (old lines 8-10, 81-83, 160-200), while the Payment Intents elements guidance describes manual total calculation or Checkout (old lines 440-460). The new index links both, but gives no current detail for either variant.",
+    "The older Checkout shipping example's fixed-rate and payment-mode constraints remain dated evidence (old lines 14, 83). Its dynamic shipping update link is explicitly a preview feature (old lines 46-48), so do not turn fixed rates into a claim that all dynamic shipping updates are impossible."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "The older Checkout Sessions embedded-components variant describes fixed amount shipping rates for an entire order, not quantity-scaled rates, and shipping_options on payment-mode Sessions (old lines 8-18, 81-83).",
+    "The older Payment Intents elements variant has no built-in calculation or definition of shipping rates, and documents adding shipping into the manually calculated total or using Checkout (old lines 440-460).",
+    "The old Checkout variant provides client selection via shippingOptions/updateShippingOption, retrieval of shipping_cost after payment, optional delivery estimates, and optional tax configuration (old lines 160-243, 301-380)."
+  ],
+  "conflicts": [
+    "The source's 'Switch to Checkout Sessions (recommended)' at line 22 conflicts with the old variant's two-option recommendation at line 450.",
+    "The broad 'no shipping support' labels in source line 73 and Stripe index line 80 exceed the old variant's narrower no-native-shipping-rate statement at line 450."
+  ],
+  "unresolved_questions": [
+    "The new index-only capture does not establish the current detailed content, eligibility, or status of either linked variant."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md",
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/advanced/charge-shipping, the 2026-11-07 capture is an index linking Checkout Sessions embedded-components and Payment Intents elements variants (new lines 9-14); the 2026-04-21 capture contained both detailed variants (old lines 8-10, 440-460). [[source-stripe-charge-shipping]] should retain those older, dated technical claims. Removing the detailed body from this base-URL capture does not establish that shipping functionality or either variant was deprecated.",
+    "Q2": "For https://docs.stripe.com/payments/advanced/charge-shipping, [[source-stripe-charge-shipping]] needs a targeted correction: its line 22 treats switching to Checkout as uniquely recommended, but the older Payment Intents variant recommends either manual shipping-rate logic or Checkout (old line 450). The new index contains only variant links (new lines 11-14), so it cannot validate a new behavior. The broad 'no shipping support' navigation labels should say no built-in shipping-rate calculation or definition."
+  }
+}

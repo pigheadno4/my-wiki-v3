@@ -1,0 +1,399 @@
+{
+  "target_path": "wiki/sources/source-stripe-payment-links.md",
+  "base_sha256": "483241b16ba25de27006770b8a9ec28dc13797741d9add5555ce78fea2a37797",
+  "source_page": "---\ntitle: \"Stripe Payment Links Overview\"\ntype: source\ndate_ingested: 2026-11-09\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payment-links\"\nraw_files:\n  - \"stripe-payment-links-2026-11-07.md\"\n  - \"stripe-payment-links-create-2026-11-07.md\"\n  - \"stripe-payment-links-share-2026-11-07.md\"\n  - \"stripe-payment-links-buy-button-2026-11-07.md\"\n  - \"stripe-payment-links-customize-2026-11-07.md\"\n  - \"stripe-payment-links-promotions-2026-11-07.md\"\n  - \"stripe-payment-links-overview-2025.md\"\n  - \"stripe-payment-links-create-2025.md\"\n  - \"stripe-payment-links-share-2025.md\"\n  - \"stripe-payment-links-track-2025.md\"\n  - \"stripe-payment-links-buy-button-2025.md\"\n  - \"stripe-payment-links-customize-2025.md\"\n  - \"stripe-payment-links-shipping-2025.md\"\n  - \"stripe-payment-links-promotions-2025.md\"\ntags: [stripe, payment-links, no-code, invoicing, adaptive-pricing, buy-button]\n---\n\n## Summary\n\nPayment Links provide shareable URLs for Stripe-hosted checkout pages. The six 2026-11-07 captures cover the overview, creation, sharing, buy button, checkout customization, and promotions; eight 2026-04-20 raw files retain the earlier overview and separate create, share, track, buy-button, customize, shipping, and promotions guidance. Each dated capture describes its own URL. The newer URL-parameter comparison made no substantive update, so tracking guidance below remains attributed to the older track raw. These documents describe product behavior, not a verified merchant configuration or completed transaction. See [[stripe-payment-links]] and [[stripe]].\n\n## Product choice and availability\n\n- **Hosted link:** Create and share a Stripe-hosted page through the Dashboard without website code. A buy button instead requires website embed code; using an existing customer through that button also requires server authentication and a CustomerSession.\n- **Payment methods:** The overview describes a 40+ method catalog managed in Dashboard. Dynamic display filters for eligibility and method availability varies by product; the figure is not a per-buyer or per-link display guarantee.\n- **Language, currency, reuse:** The overview describes browser-language matching across 30+ languages, local-currency presentation through Adaptive Pricing, and repeated sharing with an optional purchase limit. It does not promise unlimited volume or every currency for every customer.\n- **Subscription links:** The overview comparison limits Smart Retries and reminder-email recovery to subscription Payment Links. The customer-chooses-what-to-pay model is not a recurring-payment or recurring-donation path.\n- **Checkout Studio:** The November overview links a Payment Links management route labeled **Private preview**. The create and customize guides also link Studio for management or branding. These links do not establish account access or an experiment result.\n\n| Capability | Payment Links | Invoicing |\n| --- | --- | --- |\n| Customer | Anyone with the link | A specific customer |\n| Partial payments or plans | No | Yes |\n| Editable quantity and chosen price | Yes, where configured | No in the overview comparison |\n| Upsells or optional items | Yes | No in the overview comparison |\n| Quote to invoice | No | Yes |\n| Smart Retries and reminders | Subscription links only | Available for automatic collection |\n| Reconciliation | URL parameters | Automatic bank-payment reconciliation |\n\nThis table reflects the dated overview comparison, not an account-specific feature test. See the new overview at [[raw/stripe-payment-links-2026-11-07]] (lines 73\u2013107) and older overview at [[raw/stripe-payment-links-overview-2025]] (lines 41\u201364).\n\n## Creation, pricing, and payment state\n\nThe create guide distinguishes fixed-price products or subscriptions from customer-chosen amounts for tips, donations, or pay-what-you-want sales. Its Dashboard flow supports an optional suggested amount and minimum/maximum for the latter. For fixed products, the API can use a Price ID in `line_items` or inline fixed `price_data`; a subscription can use a recurring Price and `subscription_data.trial_period_days`. The older fixed inline `price_data.unit_amount` sample is not the variable-price handoff. For customer-chosen pricing, first create a Price with `custom_unit_amount[enabled]=true`, then use that Price ID as the sole Payment Link line item with `quantity=1`. The guide allows up to 20 flat-rate line items, while the customer-chosen path has one item with quantity one. These example paths do not establish a new universal ban on fixed inline prices. [Create capture](../../raw/stripe-payment-links-create-2026-11-07.md#L39-L113).\n\nThe 2026-04-20 create guide states a default Dashboard maximum of **10,000.00 SGD** for customer-chosen amounts; the 2026-11-07 same-URL capture says **10,000.00 USD**. Both give a Stripe Support route for an increase. The captures do not explain the currency difference or verify the effective maximum for a particular merchant. The iOS Dashboard app example creates product or subscription links, not customer-chosen links. `payment_method_types` can specify a method set instead of the Dashboard-managed dynamic set. Bank debits and vouchers may take **2\u201314 days** to confirm; use payment-clearance webhooks before fulfillment. Link creation, a browser return, or `checkout.session.completed` for a delayed method is not itself settlement. [Old maximum](../../raw/stripe-payment-links-create-2025.md#L29-L33), [new maximum and mobile](../../raw/stripe-payment-links-create-2026-11-07.md#L29-L36), [methods and delayed confirmation](../../raw/stripe-payment-links-create-2026-11-07.md#L120-L139).\n\n> [!warning] Contradiction\n> The dated create guides broadly say Adaptive Pricing is always enabled for Payment Links. The 2026-11-07 customize guide explicitly says its API-only automatic-surcharge private preview is incompatible with Adaptive Pricing. Keep that specialized exception and its access conditions; neither statement establishes a universal runtime resolution for every link or account. [Create wording](../../raw/stripe-payment-links-create-2026-11-07.md#L143-L145), [customize exception](../../raw/stripe-payment-links-customize-2026-11-07.md#L364-L423).\n\n## Sharing, QR codes, and link state\n\nCopy a URL in Dashboard or read the Payment Link API's `url` field to share it by email, text, social media, website, or app. Dashboard can create or download a PNG QR code and provide buy-button embed code. The QR image itself does not expire; after the underlying link is deactivated, a scan redirects to an expiration page and no new purchase can be finalized through that link. A created Payment Link cannot be deleted. Dashboard deactivation or API `active=false` blocks future purchases; `active=true` reactivates it. None of these link-state actions reverses a completed payment. The November share diff's API-reference URL edits do not establish a runtime API change. [New share guide](../../raw/stripe-payment-links-share-2026-11-07.md#L15-L43), [old share guide](../../raw/stripe-payment-links-share-2025.md#L14-L42).\n\nA configured use limit counts **completed Checkout Sessions**, with `restrictions[completed_sessions][limit]` tied to `checkout.session.completed`. The link deactivates at the configured count; creating or opening a Session is not a consumed use. The deactivation message can be customized with the Dashboard or `inactive_message`. Counting Session completion is distinct from final success for asynchronous payment methods. [Customize capture](../../raw/stripe-payment-links-customize-2026-11-07.md#L13-L62).\n\n## Embedded buy button\n\nThe buy-button flow starts with an existing or new Payment Link and copies a `<script>` loading `https://js.stripe.com/v3/buy-button.js` plus the `<stripe-buy-button>` web component into a website. Simple-button and card-widget designs are described. React mounting remains in the November prose and the older React example; a newer HTML sample does not deprecate React. A revoked publishable key requires updated embed code. Rendering requires a website domain; local testing uses an HTTP server, and a deployed Content Security Policy must allow `https://js.stripe.com` in both `frame-src` and `script-src`. [Buy-button capture](../../raw/stripe-payment-links-buy-button-2026-11-07.md#L7-L47), [older React example](../../raw/stripe-payment-links-buy-button-2025.md#L24-L28).\n\n- `client-reference-id` is a reconciliation string of at most 200 alphanumeric, dash, or underscore characters. A valid value is attached to the Checkout Session and sent in `checkout.session.completed`; an invalid value is silently discarded although the payment page still works.\n- `customer-email` prefills an uneditable email; an invalid value is also silently discarded.\n- `customer-session-client-secret` comes from a **server-created CustomerSession** after authenticating the existing customer. Use `customer_account` for a customer-configured Account or `customer` for Customer v1, and enable the buy-button component. Accounts v2 is described as generally available for Connect users and public preview for other users, with a preview version for participants; that does not prove a given account's access. Supply the secret within 30 minutes, then the Session expires another 30 minutes after supply. Generate a fresh secret for each render rather than caching it. Expiry prevents the button from creating new Checkout Sessions; it is not a payment-completion timer.\n\nWithout an existing customer specified, the guide describes Customer creation for subscription or saved-method Sessions and a guest customer for a one-time payment. An embedded button or an open page proves neither retained attributes nor successful payment. [Attribute table and identities](../../raw/stripe-payment-links-buy-button-2026-11-07.md#L49-L93).\n\n## Checkout customization and tax products\n\nThe customize guide retains billing and shipping address, phone, name and tax-ID collection, terms consent, custom fields, branding, domains, adjustable quantities and subscription trials. Dashboard address choices can make fields required, while API billing-address collection can be `required` or `auto`; shipping collection needs `allowed_countries`. Name fields may be optional. Custom fields allow text (255 characters), numbers (255 digits), or a dropdown with up to 10 options on Dashboard-created links and up to 200 after API creation. A free trial without payment-method collection is a **subscription-product** path with trial-end handling, not a one-time-link option. [Customize details](../../raw/stripe-payment-links-customize-2026-11-07.md#L64-L141), [fields and trials](../../raw/stripe-payment-links-customize-2026-11-07.md#L182-L248), [trials](../../raw/stripe-payment-links-customize-2026-11-07.md#L321-L340).\n\nFor URL personalization, `prefilled_email` is editable, `locked_prefilled_email` is uneditable and takes precedence, `prefilled_promo_code` needs promotions enabled, and `locale` selects a supported language. New `prefilled_amount` supplies an **editable starting amount only for pay-what-you-want links**; fixed-price links ignore it. Use a positive integer in the custom price's default currency smallest unit and within its configured minimum and maximum. Invalid values fall back to the stored preset or empty state. The preset amount prevents automatic customer-local-currency use for that amount, and a non-default `currency` at link creation raises an error. This is the customize capture's parameter, separate from the unchanged tracking-URL comparison. [Customize parameter table](../../raw/stripe-payment-links-customize-2026-11-07.md#L285-L315).\n\nStripe Tax is a paid calculation-and-collection product after setup. The newer customize guide separately points digital-product sellers to **Managed Payments**, a merchant-of-record route in which Stripe handles tax registration, collection, filing and remittance along with fraud, disputes and support. That paragraph does not make ordinary Stripe Tax a merchant-of-record service or prove Managed Payments eligibility. See [[source-stripe-managed-payments-payment-links]]. [Customize tax sections](../../raw/stripe-payment-links-customize-2026-11-07.md#L147-L180).\n\n**Automatic surcharge is a 2026-11-07 private preview**, not general Payment Links availability. The guide requires a surcharge-provider Stripe App and onboarding, a preview `Stripe-Version` header for API creation (the example uses `2026-10-28.preview`), and `automatic_surcharge[enabled]=true` with a calculation basis of `total_before_tax` or `total_after_tax`. It describes Stripe Tax interaction through `automatic_surcharge[tax_behavior]`. The path is **API-only**, supports one-off or customer-chosen pricing, excludes subscription links and Adaptive Pricing, and in this preview is US-only for cards and Apple Pay. Unsupported methods receive no applicable surcharge. The merchant must verify provider calculation against applicable law and network rules. The captured page proves neither preview access, legal compliance nor a live payment outcome. [Surcharge conditions](../../raw/stripe-payment-links-customize-2026-11-07.md#L364-L423).\n\n## Promotions, upsells, and optional items\n\nEnable customer-entered promotion codes with `allow_promotion_codes=true`; `prefilled_promo_code` can prefill a shared URL. One-time Payment Links create guest customers by default, so first-time-order-only codes **may not work as expected**; the guide does not say every such code fails. The November guide documents subscription upsell setup on the Dashboard **Price detail** page: selecting an eligible upsell price immediately applies it to eligible links using that price. It does not establish Dashboard exclusivity. A link can offer up to **10 optional items** with initial or adjustable quantities. Product-associated cross-sells appear across eligible links containing that product, but do not appear when the link specifies additional optional items directly. The Node-to-curl promotion-code example and other presentation edits do not establish changed runtime behavior. [New promotion guide](../../raw/stripe-payment-links-promotions-2026-11-07.md#L15-L91), [old promotion guide](../../raw/stripe-payment-links-promotions-2025.md#L16-L99).\n\n## Retained tracking and shipping guidance\n\nThe 2026-04-20 track raw identifies `utm_source`, `utm_content`, `utm_medium`, `utm_term` and `utm_campaign`, with a 150-character UTM limit and `redirect` confirmation behavior for carrying them to the redirect URL. `client_reference_id` is a 200-character reconciliation string on a Checkout Session, not authenticated customer identity. Invalid values can be dropped while checkout still works; shareable URLs must not contain secrets. `checkout.session.completed` supports reconciliation, and delayed bank-debit or voucher methods need additional payment-outcome webhooks. The separately reviewed 2026-11-07 URL-parameter page made editorial and example changes, so this source retains the older track raw as its factual provenance rather than adding a new raw identity. [Historical track guide](../../raw/stripe-payment-links-track-2025.md#L10-L48).\n\nThe retained 2026-04-20 shipping guide describes billing and shipping address collection, shipping-country selection, Dashboard rates, and an API-created fixed-amount ShippingRate with a delivery estimate and `shipping_options` on a Payment Link. That guide says shipping rates on Payment Links work only with **one-time prices**, not subscription prices. This is dated guidance from the old shipping raw; no newer shipping capture was merged. [Historical shipping guide](../../raw/stripe-payment-links-shipping-2025.md#L14-L52).\n\n## Related Pages\n\n- [[stripe-payment-links]] \u2014 Payment Links concept and reciprocal source route\n- [[source-stripe-managed-payments-payment-links]] \u2014 separate Managed Payments merchant-of-record integration\n- [[stripe]] \u2014 Stripe company\n- [[paypal-payment-links]] \u2014 PayPal counterpart\n\n## Raw Sources\n\n- [[raw/stripe-payment-links-2026-11-07|Payment Links overview, 2026-11-07]] \u2014 product table, dynamic eligibility footnote, Checkout Studio private-preview route\n- [[raw/stripe-payment-links-create-2026-11-07|Create guide, 2026-11-07]] \u2014 Dashboard pricing models, variable Price handoff, dated USD maximum, delayed methods\n- [[raw/stripe-payment-links-share-2026-11-07|Share guide, 2026-11-07]] \u2014 distribution, persistent QR image and inactive-link redirect, deactivation/reactivation\n- [[raw/stripe-payment-links-buy-button-2026-11-07|Buy button guide, 2026-11-07]] \u2014 embed, attributes, CustomerSession identities and timing\n- [[raw/stripe-payment-links-customize-2026-11-07|Customize guide, 2026-11-07]] \u2014 completed-Session limits, checkout fields, amount preset, Managed Payments route, surcharge preview\n- [[raw/stripe-payment-links-promotions-2026-11-07|Promotions guide, 2026-11-07]] \u2014 codes, qualified guest-customer caveat, upsells, optional items and cross-sells\n- [[raw/stripe-payment-links-overview-2025|Payment Links overview, 2026-04-20]] \u2014 historical hosted-page features and Invoicing comparison\n- [[raw/stripe-payment-links-create-2025|Create guide, 2026-04-20]] \u2014 historical pricing, API samples, SGD maximum wording, mobile and delayed methods\n- [[raw/stripe-payment-links-share-2025|Share guide, 2026-04-20]] \u2014 historical channels, QR and link-state behavior\n- [[raw/stripe-payment-links-track-2025|Track guide, 2026-04-20]] \u2014 historical UTM limits, client reference, redirect and delayed-method webhooks\n- [[raw/stripe-payment-links-buy-button-2025|Buy button guide, 2026-04-20]] \u2014 historical React/Node examples, attributes, CustomerSession and CSP\n- [[raw/stripe-payment-links-customize-2025|Customize guide, 2026-04-20]] \u2014 historical limits, fields, tax, consent, URL parameters, trials and quantities\n- [[raw/stripe-payment-links-shipping-2025|Shipping guide, 2026-04-20]] \u2014 historical rates and one-time-price constraint\n- [[raw/stripe-payment-links-promotions-2025|Promotions guide, 2026-04-20]] \u2014 historical codes, upsells, optional items and cross-sells\n",
+  "covered_job_ids": [
+    "payment-links",
+    "payment-links-buy-button",
+    "payment-links-create",
+    "payment-links-customize",
+    "payment-links-promotions",
+    "payment-links-share",
+    "payment-links-url-parameters"
+  ],
+  "read_ranges": {
+    "rules/ingest-roles.md": [
+      {
+        "start": 1,
+        "end": 133
+      }
+    ],
+    "/tmp/stripe-s02-shared-notes.md": [
+      {
+        "start": 1,
+        "end": 11
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/shared-sources/payment-links/input.json": [
+      {
+        "start": 1,
+        "end": 263
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/shared-sources/payment-links/base.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/shared-sources/payment-links/identities.json": [
+      {
+        "start": 1,
+        "end": 7
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/shared-sources/payment-links/status.json": [
+      {
+        "start": 1,
+        "end": 4
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/context-resolution-addenda.json": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links/attempt-2/input.json": [
+      {
+        "start": 1,
+        "end": 83
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 134
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 71
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links/attempt-2/candidate.md": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-buy-button/attempt-1/input.json": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-buy-button/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 117
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-buy-button/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-buy-button/attempt-1/candidate.md": [
+      {
+        "start": 1,
+        "end": 91
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-create/attempt-2/input.json": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-create/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 138
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-create/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 76
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-create/attempt-2/candidate.md": [
+      {
+        "start": 1,
+        "end": 83
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-create/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-customize/attempt-2/input.json": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-customize/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 175
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-customize/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 115
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-customize/attempt-2/candidate.md": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-customize/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 106
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-promotions/attempt-1/input.json": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-promotions/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 113
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-promotions/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-promotions/attempt-1/candidate.md": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-share/attempt-2/input.json": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-share/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 73
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-share/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-share/attempt-2/candidate.md": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/updates/attempts/payment-links-share/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/attempts/payment-links-url-parameters/attempt-1/input.json": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/attempts/payment-links-url-parameters/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 106
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-02/attempts/payment-links-url-parameters/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "raw/stripe-payment-links-shipping-2025.md": [
+      {
+        "start": 1,
+        "end": 76
+      }
+    ],
+    "raw/stripe-payment-links-track-2025.md": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "raw/stripe-payment-links-url-parameters-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "raw/stripe-payment-links-create-2025.md": [
+      {
+        "start": 12,
+        "end": 40
+      },
+      {
+        "start": 120,
+        "end": 145
+      },
+      {
+        "start": 166,
+        "end": 184
+      }
+    ],
+    "raw/stripe-payment-links-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 47
+      },
+      {
+        "start": 70,
+        "end": 107
+      }
+    ],
+    "raw/stripe-payment-links-overview-2025.md": [
+      {
+        "start": 4,
+        "end": 64
+      }
+    ],
+    "raw/stripe-payment-links-create-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 90,
+        "end": 153
+      }
+    ],
+    "raw/stripe-payment-links-buy-button-2026-11-07.md": [
+      {
+        "start": 20,
+        "end": 105
+      }
+    ],
+    "raw/stripe-payment-links-promotions-2026-11-07.md": [
+      {
+        "start": 15,
+        "end": 102
+      }
+    ],
+    "raw/stripe-payment-links-share-2026-11-07.md": [
+      {
+        "start": 12,
+        "end": 43
+      }
+    ],
+    "raw/stripe-payment-links-customize-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 40
+      },
+      {
+        "start": 64,
+        "end": 141
+      },
+      {
+        "start": 140,
+        "end": 185
+      },
+      {
+        "start": 182,
+        "end": 248
+      },
+      {
+        "start": 264,
+        "end": 283
+      },
+      {
+        "start": 300,
+        "end": 320
+      },
+      {
+        "start": 321,
+        "end": 362
+      },
+      {
+        "start": 360,
+        "end": 423
+      }
+    ],
+    "raw/stripe-payment-links-customize-2025.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 160,
+        "end": 185
+      },
+      {
+        "start": 285,
+        "end": 305
+      },
+      {
+        "start": 338,
+        "end": 412
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/43eb6b966c5f1f758a2a939e/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 220,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 380
+      },
+      {
+        "start": 381,
+        "end": 440
+      }
+    ]
+  },
+  "explanations": [
+    "Merged six independently approved same-target source candidates into one root Payment Links source, with exactly their six factual November raw identities and all eight historical April raw identities retained.",
+    "The separately reviewed URL-parameter update found no substantive change; its older track raw remains factual provenance. The November URL-parameter raw is not promoted by this merge.",
+    "The new overview's catalog, eligibility and Checkout Studio statements are qualified; variable Price ID and quantity-one restrictions are scoped to customer-chosen pricing, while fixed inline price_data remains available.",
+    "The create guide's broad Adaptive Pricing wording and the customize guide's incompatible API-only US surcharge preview are recorded as a dated within-corpus contradiction with preview, provider, version, product, method and legal limits.",
+    "No-code hosted sharing is separated from website buy-button embed and server-authenticated CustomerSession reuse. Completed-Session use counting, asynchronous payment confirmation, and settlement remain separate.",
+    "The old SGD and new USD customer-chosen Dashboard maximum wordings are preserved as dated captures, without asserting a universal merchant limit. Historical tracking and shipping guidance stays dated."
+  ],
+  "unresolved": []
+}

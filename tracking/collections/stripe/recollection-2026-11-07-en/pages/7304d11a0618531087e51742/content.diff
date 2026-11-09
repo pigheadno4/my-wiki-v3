@@ -1,0 +1,218 @@
+--- raw/stripe-address-element-2025.md
++++ raw/stripe-elements-address-element-2026-11-07.md
+@@ -4,14 +4,14 @@
+ 
+ The Address Element is an embeddable UI component for accepting complete addresses. Use it to collect shipping addresses, or when you need a complete billing address, such as for tax purposes.
+ 
+-| Option                      | Description                                                                                                                                                                                                                                                                                                                                          |
+-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| **Theme**                   | Use the dropdown to choose a theme or customize the theme with the [Elements Appearance API](https://docs.stripe.com/elements/address-element.md#appearance).                                                                                                                                                                                        |
+-| **Desktop and mobile size** | Use the dropdown to set the max pixel width of the parent element that the Address Element is mounted to. You can set it to 750px (desktop) or 320px (mobile).                                                                                                                                                                                       |
+-| **Customer location**       | Use this [option](https://docs.stripe.com/js/elements_object/create#stripe_elements-options-locale) to choose a location for accepting complete addresses. Changing the location localizes the UI language.                                                                                                                                          |
+-| **Phone number**            | Enable this [option](https://docs.stripe.com/js/elements_object/create_address_element#address_element_create-options-fields-phone) to allow phone number collection when an address is entered or when using an existing contact.                                                                                                                   |
+-| **Autocomplete**            | Enable this [option](https://docs.stripe.com/js/elements_object/create_address_element#address_element_create-options-autocomplete) to decrease checkout time, reduce validation errors, and increase checkout conversion with built-in address autocomplete. Stripe supports 236 regional address formats, including right-to-left address formats. |
+-| **Contacts**                | Enable this [option](https://docs.stripe.com/js/elements_object/create_address_element#address_element_create-options-contacts) to add a new address or change an existing address or phone number.                                                                                                                                                  |
++| Option | Description |
++| --- | --- |
++| **Theme** | Use the dropdown to choose a theme or customize the theme with the [Elements Appearance API](https://docs.stripe.com/elements/address-element.md#appearance). |
++| **Desktop and mobile size** | Use the dropdown to set the max pixel width of the parent element that the Address Element is mounted to. You can set it to 750px (desktop) or 320px (mobile). |
++| **Customer location** | Use this [option](https://docs.stripe.com/js/elements_object/create#stripe_elements-options-locale) to choose a location for accepting complete addresses. Changing the location localizes the UI language. |
++| **Phone number** | Enable this [option](https://docs.stripe.com/js/elements_object/create_address_element#address_element_create-options-fields-phone) to allow phone number collection when an address is entered or when using an existing contact. |
++| **Autocomplete** | Enable this [option](https://docs.stripe.com/js/elements_object/create_address_element#address_element_create-options-autocomplete) to decrease checkout time, reduce validation errors, and increase checkout conversion with built-in address autocomplete. Stripe supports 236 regional address formats, including right-to-left address formats. |
++| **Contacts** | Enable this [option](https://docs.stripe.com/js/elements_object/create_address_element#address_element_create-options-contacts) to add a new address or change an existing address or phone number. |
+ 
+ ## Get started
+ 
+@@ -35,15 +35,13 @@
+ - Offer the customer the option to use it as a billing address too.
+ 
+ ```javascript
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>");
+-
+-const appearance = {
+-  /* appearance */
+-};
+-const options = { mode: "shipping" };
+-const elements = stripe.elements({ clientSecret, appearance }); // In a working integration, this is a value your backend passes with details such as the amount of a payment. See full sample for details.
+-const addressElement = elements.create("address", options);
+-addressElement.mount("#address-element");
++const stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');
++
++const appearance = { /* appearance */ };
++const options = { mode: 'shipping' };
++const elements = stripe.elements({ clientSecret, appearance }); // In a working integration, this is a value your back end passes with details such as the amount of a payment. See full sample for details.
++const addressElement = elements.create('address', options);
++addressElement.mount('#address-element');
+ ```
+ 
+ #### Billing mode
+@@ -51,15 +49,13 @@
+ In billing mode, the element only collects a billing address.
+ 
+ ```javascript
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>");
+-
+-const appearance = {
+-  /* appearance */
+-};
+-const options = { mode: "billing" };
+-const elements = stripe.elements({ clientSecret, appearance }); // In a working integration, this is a value your backend passes with details such as the amount of a payment. See full sample for details.
+-const addressElement = elements.create("address", options);
+-addressElement.mount("#address-element");
++const stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');
++
++const appearance = { /* appearance */ };
++const options = { mode: 'billing' };
++const elements = stripe.elements({ clientSecret, appearance }); // In a working integration, this is a value your back end passes with details such as the amount of a payment. See full sample for details.
++const addressElement = elements.create('address', options);
++addressElement.mount('#address-element');
+ ```
+ 
+ ### Use Address Element with other elements
+@@ -72,7 +68,7 @@
+ 
+ ## Use an address
+ 
+-The Address Element automatically works with the [Payment](https://docs.stripe.com/payments/payment-element.md) or Express Checkout Element. When a customer provides an address and a payment method, Stripe combines them into a single _PaymentIntent_ (The Payment Intents API tracks the lifecycle of a customer checkout flow and triggers additional authentication steps when required by regulatory mandates, custom Radar fraud rules, or redirect-based payment methods) with the address in the correct field.
++The Address Element automatically works with the [Payment](https://docs.stripe.com/payments/payment-element.md) or Express Checkout Element. When a customer provides an address and a payment method, Stripe combines them into a single *PaymentIntent* (The Payment Intents API tracks the lifecycle of a customer checkout flow and triggers additional authentication steps when required by regulatory mandates, custom Radar fraud rules, or redirect-based payment methods) with the address in the correct field.
+ 
+ ### Automatic behavior
+ 
+@@ -88,18 +84,16 @@
+ To enable combining information, create all elements from the same `Elements` object, as in this example:
+ 
+ ```javascript
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>");
+-
+-const appearance = {
+-  /* appearance */
+-};
+-const options = { mode: "shipping" };
+-const paymentElementOptions = { layout: "accordion" };
+-const elements = stripe.elements({ clientSecret }); // In a working integration, this is a value your backend passes with details such as the amount of a payment. See full sample for details.
+-const addressElement = elements.create("address", options);
+-const paymentElement = elements.create("payment", paymentElementOptions);
+-addressElement.mount("#address-element");
+-paymentElement.mount("#payment-element");
++const stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');
++
++const appearance = { /* appearance */ };
++const options = { mode: 'shipping' };
++const paymentElementOptions = { layout: 'accordion'};
++const elements = stripe.elements({ clientSecret }); // In a working integration, this is a value your back end passes with details such as the amount of a payment. See full sample for details.
++const addressElement = elements.create('address', options);
++const paymentElement = elements.create('payment', paymentElementOptions);
++addressElement.mount('#address-element');
++paymentElement.mount('#payment-element');
+ ```
+ 
+ #### Billing mode
+@@ -109,18 +103,16 @@
+ To enable combining information, create all elements from the same `Elements` object, as in this example:
+ 
+ ```javascript
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>");
+-
+-const appearance = {
+-  /* appearance */
+-};
+-const options = { mode: "billing" };
+-const paymentElementOptions = { layout: "accordion" };
+-const elements = stripe.elements({ clientSecret }); // In a working integration, this is a value your backend passes with details such as the amount of a payment. See full sample for details.
+-const addressElement = elements.create("address", options);
+-const paymentElement = elements.create("payment", paymentElementOptions);
+-addressElement.mount("#address-element");
+-paymentElement.mount("#payment-element");
++const stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');
++
++const appearance = { /* appearance */ };
++const options = { mode: 'billing' };
++const paymentElementOptions = { layout: 'accordion'};
++const elements = stripe.elements({ clientSecret }); // In a working integration, this is a value your back end passes with details such as the amount of a payment. See full sample for details.
++const addressElement = elements.create('address', options);
++const paymentElement = elements.create('payment', paymentElementOptions);
++addressElement.mount('#address-element');
++paymentElement.mount('#payment-element');
+ ```
+ 
+ ### Custom behavior
+@@ -167,49 +159,45 @@
+ ## Autofill with Link
+ 
+ [Link](https://docs.stripe.com/payments/link.md) saves and autofills payment and shipping information for the options you’ve enabled. For example, if the Link customer has a saved phone number, Stripe autofills the phone number only if phone number collection is enabled. When a returning Link customer authenticates, Stripe autofills their shipping information in the Address element.
+-![Create a payment form using multiple Elements](assets/stripe-address-element-link-with-elements.png)
++![Create a payment form using multiple Elements](https://b.stripecdn.com/docs-statics-srv/assets/link-with-elements.d52f05825c982aaf84a4ad1e9bb422f3.png)
+ 
+ Create a payment form using multiple Elements
+ 
+ To enable autofill, create all elements from the same `Elements` object, as in this example:
+ 
+ ```javascript
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>");
++const stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');
++
++const appearance = { /* appearance */ };
++const options = { mode: 'shipping' };
++const paymentElementOptions = { layout: 'accordion'};
++const elements = stripe.elements({ clientSecret }); // In a working integration, this is a value your back end passes with details such as the amount of a payment. See full sample for details.
++const linkAuthElement = elements.create('linkAuthentication');
++const addressElement = elements.create('address', options);
++const paymentElement = elements.create('payment', paymentElementOptions);
++linkAuthElement.mount('#link-auth-element');
++addressElement.mount('#address-element');
++paymentElement.mount('#payment-element');
++```
++
++## Appearance
++
++You can use the Appearance API to control the style of all elements. Choose a theme or update specific details.
++![Examples of light and dark modes for the address element.](https://b.stripecdn.com/docs-statics-srv/assets/address_appearance_example.c7884ea763b05e5881d65ed2b2afadbc.png)
++
++For instance, choose the “flat” theme and override the primary text color.
++
++```javascript
++const stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');
+ 
+ const appearance = {
+-  /* appearance */
++  theme: 'flat',
++  variables: { colorPrimaryText: '#262626' }
+ };
+-const options = { mode: "shipping" };
+-const paymentElementOptions = { layout: "accordion" };
+-const elements = stripe.elements({ clientSecret }); // In a working integration, this is a value your backend passes with details such as the amount of a payment. See full sample for details.
+-const linkAuthElement = elements.create("linkAuthentication");
+-const addressElement = elements.create("address", options);
+-const paymentElement = elements.create("payment", paymentElementOptions);
+-linkAuthElement.mount("#link-auth-element");
+-addressElement.mount("#address-element");
+-paymentElement.mount("#payment-element");
+-```
+-
+-## Appearance
+-
+-You can use the Appearance API to control the style of all elements. Choose a theme or update specific details.
+-![Examples of light and dark modes for the address element.](assets/stripe-address-element-appearance-example.png)
+-
+-For instance, choose the “flat” theme and override the primary text color.
+-
+-```javascript
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>");
+-
+-const appearance = {
+-  theme: "flat",
+-  variables: { colorPrimaryText: "#262626" },
+-};
+-const options = {
+-  /* options */
+-};
+-const elements = stripe.elements({ clientSecret, appearance }); // In a working integration, this is a value your backend passes with details such as the amount of a payment. See full sample for details.
+-const addressElement = elements.create("address", options);
+-addressElement.mount("#address-element");
++const options = { /* options */ };
++const elements = stripe.elements({ clientSecret, appearance }); // In a working integration, this is a value your back end passes with details such as the amount of a payment. See full sample for details.
++const addressElement = elements.create('address', options);
++addressElement.mount('#address-element');
+ ```
+ 
+ See the Appearance API documentation for the [Elements with Checkout Sessions API integration](https://docs.stripe.com/payments/checkout/customization/appearance.md?payment-ui=embedded-components) or the [Advanced integration](https://docs.stripe.com/elements/appearance-api.md) for a full list of themes and variables.

@@ -1,0 +1,118 @@
+{
+  "job_id": "payments-api-tour",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-api-tour-2026-11-07.md",
+  "raw_sha256": "a64f6186e21c53b6762163b0bee79a4ce86bd1b261a6f8f3b09883862dd5fa83",
+  "prior_raw_path": "raw/stripe-api-tour-2025.md",
+  "prior_raw_sha256": "245336b362ce4787a830be94412b63c9fb24aa61fcb9dfeac3398e6afed9b19c",
+  "source_target": "wiki/sources/source-stripe-api-tour.md",
+  "source_before_sha256": "2b5426d0c7ba83c1475b5d059c6615165a080d17431dd9c2f8d8790fe751cf8b",
+  "read_ranges": {
+    "raw/stripe-payments-api-tour-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 98
+      }
+    ],
+    "raw/stripe-api-tour-2025.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 46,
+        "end": 86
+      }
+    ],
+    "wiki/sources/source-stripe-api-tour.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/40536d00b166d79169ee948b/content.diff": [
+      {
+        "start": 1,
+        "end": 40
+      },
+      {
+        "start": 41,
+        "end": 65
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The `PaymentIntent`\u2019s path to success goes through [several statuses](https://docs.stripe.com/payments/paymentintents/lifecycle.md)\u2014here\u2019s a simplified version:",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:62"
+    },
+    {
+      "text": "[processing] --> [canceled]",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:71"
+    },
+    {
+      "text": "In most cases a [Charge](https://docs.stripe.com/api/charges.md) will be created when a PaymentIntent is confirmed to represent that specific attempt to move money.",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:86"
+    },
+    {
+      "text": "If it fails the payment can be retried by confirming the PaymentIntent again, usually with new payment details.",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:86"
+    },
+    {
+      "text": "As we work through the steps, we update the intent\u2019s state with the outcome: either `succeeded` or back to `requires_payment_method` if it fails.",
+      "location": "raw/stripe-payments-api-tour-2026-11-07.md:92"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If your integration uses [customer-configured Accounts](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer), replace `Customer` and event references in the code examples with the equivalent Accounts v2 API references.",
+      "location": "raw/stripe-api-tour-2025.md:8"
+    },
+    {
+      "text": "In most cases a [Charge](https://docs.stripe.com/api/charges.md) will be created when a PaymentIntent is confirmed to represent that specific attempt to move money.",
+      "location": "raw/stripe-api-tour-2025.md:78"
+    },
+    {
+      "text": "If it fails the payment can be retried by confirming the PaymentIntent again, usually with new payment details.",
+      "location": "raw/stripe-api-tour-2025.md:78"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November raw omits the April capture's customer-configured Accounts v2 caveat (old line 8) while retaining generic object descriptions. This is an omission in a conceptual tour, not evidence that Accounts v2 no longer applies. Preserve the account-model qualification as dated context when explaining `Customer` or event examples; do not conflate customer-configured Account objects with a merchant Stripe account or ordinary Customer objects.",
+    "The November capture adds a text rendering of a simplified PaymentIntent status diagram (new lines 62-72), where the illustrated processing branch reaches succeeded or canceled; the unchanged prose at new line 92 describes succeeded or a return to requires_payment_method on failure. Old lines 63-64 already called the diagram simplified. Treat these as illustrative paths rather than an exhaustive or exact lifecycle transition specification; use the linked lifecycle guide for precise state rules.",
+    "Both captures say a Charge is created on confirmation in most cases and a failed attempt can be retried on the same PaymentIntent, usually with new payment details (old line 78; new line 86). Current source lines 18-19 and wiki/companies/stripe.md lines 28 and 40 turn these into mandatory 'don't create a new one' and unconditional Charge-creation rules. Queue a narrow retained-source and company correction to retain 'can', 'usually', and 'in most cases'; do not claim every confirmation created a Charge, every failed attempt permits an immediate retry, or that a retry succeeded.",
+    "The tour lists five linked guides: Payment Links, Checkout, Subscriptions, Invoicing, and Payment Intents (old lines 51-55; new lines 50-54). Source line 21 and Stripe index line 18 call this five integration paths but insert Elements as a separate path while combining Subscriptions/Invoicing. Clarify that Elements is a drop-in UI component discussed at new line 84, not a sixth listed guide, and that the page is a conceptual tour rather than a complete integration-option taxonomy.",
+    "The old and new object/state prose otherwise matches apart from italics and whitespace. The See also lifecycle link is navigation. No provider operation, API call, or observed charge/event outcome occurred in this review."
+  ],
+  "substantive_changes": [
+    "The old Accounts v2 customer-configured Account caveat is absent from the new capture; this is a documentation omission with unresolved applicability, not a demonstrated deprecation.",
+    "A text version of the simplified status diagram appears in the new capture; it adds an illustrative canceled branch but does not override the retained prose or linked lifecycle guide."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the April 2026 customer-configured Accounts v2 caveat as dated, account-model-specific evidence despite its absence from the November tour.",
+    "Preserve the distinction among a PaymentIntent tracking payment intent, a PaymentMethod carrying credentials, a Charge representing a specific attempt in most cases, and an Event representing activity; these are conceptual roles rather than proof of actual execution.",
+    "Keep retry guidance conditional and the status diagram explicitly simplified, preserving the prose's possible failure return to requires_payment_method."
+  ],
+  "conflicts": [
+    "Current source lines 18-19 and wiki/companies/stripe.md lines 28,40 make the same-intent retry an imperative and Charge creation unconditional, contrary to the old and new raw's 'can', 'usually', and 'in most cases' qualifiers.",
+    "Current source line 42 describes Customer as the sole optional customer identity and omits the old raw line 8 customer-configured Accounts v2 substitution caveat; the newer raw omission is not a repeal.",
+    "Current source line 21 and Stripe index line 18 label a constructed set of five integration paths that differs from the page's five linked guides at old lines 51-55 and new lines 50-54, and treats Elements as a separate path rather than a UI component.",
+    "Current source lines 23-31 use a single PaymentIntent path without labeling it simplified, while new raw lines 62-72 and 90-92 give illustrative branches that are not an exact full transition graph."
+  ],
+  "unresolved_questions": [
+    "Whether and where the April Accounts v2 caveat is currently documented for particular API versions and account configurations requires its linked Accounts v2 source; this page omission cannot answer it.",
+    "Exact PaymentIntent state transitions, retry permissions, Charge creation exceptions, and webhook delivery outcomes are not established by a simplified conceptual diagram or this read-only comparison."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments-api/tour, old raw/stripe-api-tour-2025.md:8 contains a customer-configured Accounts v2 substitution caveat absent from new raw/stripe-payments-api-tour-2026-11-07.md:5-22. [[source-stripe-api-tour]] should preserve that dated, configuration-specific note rather than treat its omission as a repeal. The new simplified diagram at lines 62-72 is illustrative and does not establish every status transition or a completed payment.",
+    "Q2": "For https://docs.stripe.com/payments-api/tour, both old raw/stripe-api-tour-2025.md:78 and new raw/stripe-payments-api-tour-2026-11-07.md:86 say a Charge is created in most cases and a failed payment can be retried on the same PaymentIntent, usually with new details. [[source-stripe-api-tour]] lines 18-19 and the Stripe company page should restore those qualifiers and avoid a mandatory retry or unconditional Charge claim. The five linked guides at old lines 51-55 and new lines 50-54 also need a precise label."
+  }
+}

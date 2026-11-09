@@ -1,0 +1,189 @@
+<!-- Source URL: https://docs.stripe.com/apple-pay/merchant-tokens -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Apple Pay merchant tokens
+
+Request Apple Pay merchant tokens for recurring, deferred, or automatic reload payments.
+
+If your Apple Pay integration supports future merchant-initiated payments, such as recurring payments, automatic reloads, or deferred payments, configure Apple Pay to request an [Apple Pay Merchant Token (MPAN)](https://developer.apple.com/apple-pay/merchant-tokens/). Merchant tokens can help maintain payment continuity when a customer changes devices.
+
+When a customer adds a card to Apple Pay, Apple Pay creates a network token instead of storing the card’s primary account number (PAN). By default, Apple Pay creates a Device Primary Account Number (DPAN), which is tied to a specific device. If a customer replaces their device or removes the card from it, the DPAN might no longer work.
+
+This doesn’t affect one-time customer-initiated transactions (CIT), but it can cause failures for future merchant-initiated transactions (MIT).
+
+An [Apple Pay Merchant Token (MPAN)](https://developer.apple.com/apple-pay/merchant-tokens/) is associated with the customer, underlying card, and your business, instead of with a single device. Use an MPAN for payments you initiate later, including:
+
+- **Subscriptions**: Charge a monthly membership after the initial Apple Pay checkout.
+- **Automatic reloads**: Replenish a stored balance when it falls below a threshold.
+- **Deferred payments**: Authorize payment at booking, then charge after you provide the service, such as after a hotel stay.
+
+Apple Pay merchant tokens also include lifecycle management features that help you monitor token changes.
+
+## Configure your integration to request Apple Pay merchant tokens 
+
+Configure your integration to request [Apple Pay merchant tokens](https://developer.apple.com/apple-pay/merchant-tokens/) by providing additional information about the payment use case. If you use [Elements with the Payment Intents API](https://docs.stripe.com/payments/elements.md#compatible-apis), follow the instructions below to request Apple Pay merchant tokens.
+
+> If you use [Stripe Checkout](https://docs.stripe.com/payments/checkout.md) or [Elements with the Checkout Sessions API](https://docs.stripe.com/payments/checkout-sessions-and-payment-intents-comparison.md), you don’t need to configure Apple Pay merchant tokens. Checkout automatically requests them when needed.
+
+#### Express Checkout Element
+
+1. Integrate the [Express Checkout Element](https://docs.stripe.com/elements/express-checkout-element/accept-a-payment.md?payment-ui=elements).
+2. Pass the `applePay` object relevant to your MPAN use case (choose from the drop-down to see use case code samples).
+3. Include [relevant parameters](https://docs.stripe.com/js/elements_object/create_express_checkout_element#express_checkout_element_create-options-applePay) for your use case.
+
+#### MPAN use case - Recurring payments
+
+```javascript
+elements.create('expressCheckout', {
+  applePay: {
+    recurringPaymentRequest: {
+      paymentDescription: "Standard Subscription",
+      managementURL: "https://stripe.com",
+      regularBilling: {
+        amount: 1000,
+        label: "Standard Package",
+        recurringPaymentStartDate: new Date("2023-03-31"),
+        recurringPaymentEndDate: new Date("2024-03-31"),
+        recurringPaymentIntervalUnit: "year",
+        recurringPaymentIntervalCount: 1,
+      }
+    },
+  },
+});
+```
+
+#### MPAN use case - Automatic reload
+
+```javascript
+elements.create('expressCheckout', {
+  applePay: {
+    automaticReloadPaymentRequest: {
+      paymentDescription: 'My automatic reload payment',
+      managementURL: 'https://example.com/billing',
+      automaticReloadBilling: {
+        amount: 2500,
+        label: 'Automatic Reload',
+        automaticReloadPaymentThresholdAmount: 500
+      },
+    }
+  },
+  // Other options
+});
+```
+
+#### MPAN use case - Deferred payment
+
+```javascript
+const stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
+elements.create('expressCheckout', {
+  applePay: {
+    deferredPaymentRequest: {
+      paymentDescription: 'My deferred payment',
+      managementURL: 'https://example.com/billing',
+      deferredBilling: {
+        amount: 2500,
+        label: 'Deferred Fee',
+        deferredPaymentDate: new Date('2024-01-05')
+      }
+    }
+  }
+});
+```
+
+#### Web Payment Element
+
+1. Create an instance of the [Payment Element](https://docs.stripe.com/payments/payment-element.md).
+2. Pass the `applePay` object relevant to your MPAN use case (choose from the drop-down to see use case code samples).
+3. Include [relevant parameters](https://docs.stripe.com/js/elements_object/create_payment_element#payment_element_create-options-applePay) for your use case.
+
+#### MPAN use case - Recurring payments
+
+```javascript
+const paymentElement = elements.create('payment', {
+  applePay: {
+    recurringPaymentRequest: {
+      paymentDescription: 'My subscription',
+      managementURL: 'https://example.com/billing',
+      regularBilling: {
+        amount: 2500,
+        label: 'Monthly subscription fee',
+        recurringPaymentIntervalUnit: 'month',
+        recurringPaymentIntervalCount: 1,
+      },
+    },
+  },
+  // Other options
+});
+```
+
+#### MPAN use case - Automatic reload
+
+```javascript
+ const paymentElement = elements.create('payment', {
+  applePay: {
+    automaticReloadPaymentRequest: {
+      paymentDescription: 'My subscription',
+      managementURL: 'https://example.com/billing',
+      regularBilling: {
+        amount: 2500,
+        label: 'Automatic Reload',
+        automaticReloadPaymentThresholdAmount: 500
+      },
+    },
+  },
+  // Other options
+});
+```
+
+#### MPAN use case - Deferred payment
+
+```javascript
+const paymentElement = elements.create('payment', {
+  applePay: {
+    deferredPaymentRequest: {
+      paymentDescription: 'My deferred payment',
+      managementURL: 'https://example.com/billing',
+      deferredBilling: {
+        amount: 2500,
+        label: 'Deferred Fee',
+        deferredPaymentDate: new Date('2024-01-05')
+      },
+    }
+  },
+  // Other options
+});
+```
+
+After you configure Apple Pay to request merchant tokens, you don’t need to complete additional MPAN-specific integration steps. When a customer pays with Apple Pay, Stripe requests a merchant token. If Apple Pay and the card issuer support merchant tokens, Apple Pay returns an MPAN. Otherwise, it returns a DPAN.
+
+Stripe securely stores the returned Apple Pay credential and associates it with the resulting `PaymentMethod`. Continue to save and reuse the `PaymentMethod` in your standard off-session payment flow.
+
+## Merchant token lifecycle management
+
+When the underlying card of an MPAN gets updated, Stripe sends a [payment_method.automatically_updated](https://docs.stripe.com/api/events/types.md#event_types-payment_method.automatically_updated) webhook notification. Check the event’s `data.object.card` properties: `exp_month`, `exp_year` and `last4`, and update the cached values in your system. Stripe only supports the properties defined in the Apple Pay [CardMetadata](https://developer.apple.com/documentation/merchanttokennotificationservices/cardmetadata) for merchant token notifications.
+
+## Merchant token auth rate monitoring
+
+For Sigma users, the `charges` table contains a `card_token_type` enum field to indicate the charge is using an `mpan` or `dpan` card. The following Sigma query example calculates the MPAN auth rate:
+
+```sql
+-- deduplicated MPAN auth rate
+select
+  100.0 * count(
+    case
+      when charge_outcome in ('authorized', 'manual_review') then 1
+    end
+  ) / count(*) as deduplicated_auth_rate_pct,
+  count(*) as n_attempts
+from
+  authentication_report_attempts a
+  join charges c on c.id = a.charge_id
+where
+  c.created >= date('2021-01-01')
+  and c.card_tokenization_method = 'apple_pay'
+  -- The new field added to charges table.
+  and c.card_token_type = 'mpan'
+  -- deduplicate multiple manual retries to a single representative charge
+  and is_final_attempt
+```

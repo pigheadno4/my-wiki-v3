@@ -1,0 +1,85 @@
+{
+  "job_id": "declines-codes",
+  "queue_id": 81,
+  "canonical_url": "https://docs.stripe.com/declines/codes",
+  "raw_path": "raw/stripe-declines-codes-2026-11-07.md",
+  "raw_sha256": "b83bedfea90e7e218a284fc6fcf1704a7103922a6f02205268015b3d2b06013a",
+  "prior_raw_path": "raw/stripe-decline-codes-2026.md",
+  "prior_raw_sha256": "0eebc8f688916a859a944339280d027f6606dd00facb6a93977bc2b9342e49f6",
+  "diff_path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/c35931acf6268bb182130a49/content.diff",
+  "diff_sha256": "ec9ad0a10a7715665f6a29b7e1676385bb8ccbb4a150c1cb2572a28ca82f96e2",
+  "source_target": "wiki/sources/source-stripe-decline-codes.md",
+  "source_before_sha256": "f75c32854e96450f3a2fd8a66f6c736c4d0b1cc814f9c1ac7170021857b28673",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/declines-codes/attempt-1/receipt.json",
+  "receipt_sha256": "1c46bd0aed5136239b6c77177040bcb02a527d2eba2ce1ef9d65f2167eb934a0",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/declines-codes/attempt-1/review.json",
+  "review_sha256": "47b112a0611cb787ad9636f2ff9d02627cdb35ecefab8a0a0b06f0c5dddd40c8",
+  "review_disposition": "source_required_update",
+  "update_basis": "reviewer_approved_source_required_update",
+  "coordinator_selection_note": null,
+  "approved_findings": [
+    "Same canonical URL and same card/LPM decline-code reference, with Stripe decline codes distinct from issuer codes and optional advice_code guidance (old lines 4-16; new lines 5-17). The 50 card table rows remain 50. Most card changes are wording or formatting, but processing_error next-step guidance changes materially: old line 56 says retry then try again later, while new line 57 says retry then contact the issuer if still unprocessed.",
+    "The LPM table grows from 19 rows with 19 distinct decline codes (old lines 77-95) to 29 rows with 27 distinct decline codes (new lines 78-106). Three Klarna outcome rows share one decline code, klarna_payment_declined (new lines 78-80), so the source should not describe 29 distinct codes. Eight distinct decline-code names are added: klarna_payment_declined, customer_declined, code_invalid, code_expired, partner_action_not_supported, lost_or_stolen_card, card_already_activated, invalid_track_data. No old LPM code is removed.",
+    "Klarna additions distinguish a declined payment, user-canceled checkout, and expired checkout through charge outcome reason while sharing klarna_payment_declined (new lines 78-80). BLIK code_invalid and code_expired map to generic_decline outcome, and code_expired's API message says BLIK codes expire after two minutes and asks for another code (new lines 83-84). Do not collapse decline code, charge outcome reason, seller message, and API error message into one field.",
+    "Additional LPM rows carry consequential actions: partner_action_not_supported and card_already_activated say retries will not succeed (new lines 103, 105); lost_or_stolen_card says hide the specific reason from customers and present partner_generic_decline (new line 104); invalid_track_data directs checking with the issuer (new line 106). Keep these actions scoped to the particular table rows and payment methods.",
+    "Current source lines 13, 51-75 claim 19 LPM codes and list only the old rows; update that coverage and preserve the May count as dated. Concept wiki/concepts/stripe-declines.md line 150 also says 19 total and 'not on cards'; the latter is overbroad because expired_card, processing_error, insufficient_funds, currency_not_supported, invalid_amount, and duplicate_transaction occur in both card and LPM tables (old lines 30, 38, 40, 56, 26, 29, 81-85, 94; new lines 27, 31, 39, 41, 57, 88-92, 101).",
+    "Current source line 45 narrows testmode_decline to a test card used in live mode, while both raws only say a Stripe test card number was used and a genuine card must be used (old line 65; new line 66). Current source line 48 says deprecated do_not_try_again and try_again_later are now advice_code values; both raws mark them deprecated in the decline-code table, but do not establish the asserted migration of those exact values to advice_code (old lines 28, 67; new lines 29, 68). Avoid the unsupported expansions when updating."
+  ],
+  "approved_conflicts": [
+    "May old card processing_error next step says try again later after a failed retry; November new line 57 directs contacting the issuer if still unprocessed. Cite the capture date when giving next-step guidance.",
+    "Existing source and concept say 19 LPM codes, whereas November has 29 rows and 27 distinct decline-code names. The term 'codes' should not be equated with rows because Klarna has three outcome rows under one code.",
+    "Existing concept says LPM-specific codes are 'not on cards', although several code names appear in both card and LPM tables; new lines 27, 31, 39, 41, 57, 88-92, 101 show examples.",
+    "Existing source's live-mode interpretation of testmode_decline and claim that the two deprecated decline-code names are now advice_code values exceed both captures' wording."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May capture's 19-row/19-distinct-name LPM table as dated history, and the November table's 29 rows/27 names as the newer captured reference (old lines 75-95; new lines 76-106).",
+    "Retain the 50 card rows, masking of fraudulent/lost_card/stolen_card/merchant_blacklist as generic_decline, and deprecated labels for do_not_try_again and try_again_later (old lines 18-69; new lines 19-70).",
+    "Retain card authentication_required's usually automatic Stripe-front-end soft-decline auth flow with off-session qualification, and authentication_not_handled's need for 3DS/SCA with on-session preparation (old lines 20-21; new lines 21-22).",
+    "Retain separate LPM columns for decline code, charge outcome reason, seller message, and API error message; shared code names across card/LPM rows do not imply identical next-step semantics (old lines 75-95; new lines 76-106)."
+  ],
+  "unresolved_questions": [
+    "The reference table does not prove which of the listed LPM codes is emitted by a specific payment provider or account; table presence is not a guarantee of runtime occurrence.",
+    "The captures label do_not_try_again and try_again_later deprecated but do not specify from this page alone whether their exact names now appear as advice_code values.",
+    "The captures do not establish that testmode_decline necessarily means a test card was used in live mode."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-declines.md"
+  ],
+  "approved_triage_receipt_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/declines-codes/attempt-1/receipt.json",
+  "approved_triage_receipt_sha256": "1c46bd0aed5136239b6c77177040bcb02a527d2eba2ce1ef9d65f2167eb934a0",
+  "approved_triage_review_path": "tracking/ingest/stripe/stripe-campaign-02/attempts/declines-codes/attempt-1/review.json",
+  "approved_triage_review_sha256": "47b112a0611cb787ad9636f2ff9d02627cdb35ecefab8a0a0b06f0c5dddd40c8",
+  "attempt": 1,
+  "state": "worker_running",
+  "worker_agent": "/root/s2uw5",
+  "reviewer_agent": "/root/s2ur5",
+  "expected_review_scope": "full",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-declines-codes-2026-11-07.md",
+      "sha256": "b83bedfea90e7e218a284fc6fcf1704a7103922a6f02205268015b3d2b06013a",
+      "lines": 106
+    },
+    {
+      "path": "raw/stripe-decline-codes-2026.md",
+      "sha256": "0eebc8f688916a859a944339280d027f6606dd00facb6a93977bc2b9342e49f6",
+      "lines": 95
+    },
+    {
+      "path": "wiki/sources/source-stripe-decline-codes.md",
+      "sha256": "f75c32854e96450f3a2fd8a66f6c736c4d0b1cc814f9c1ac7170021857b28673",
+      "lines": 85
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/c35931acf6268bb182130a49/content.diff",
+      "sha256": "ec9ad0a10a7715665f6a29b7e1676385bb8ccbb4a150c1cb2572a28ca82f96e2",
+      "lines": 181
+    }
+  ],
+  "provider_notes": "/tmp/stripe-s02-updates-notes.md",
+  "approved_proposal_path": "tracking/ingest/stripe/stripe-campaign-02/canonical-update.proposed.json",
+  "role": "complete_source_candidate_with_concept_patches",
+  "scope": "approved91 contributions/86 existing updates; repository read-only",
+  "worker_output": "/tmp/stripe-s02-updates/declines-codes-worker.json",
+  "review_output": "/tmp/stripe-s02-updates/declines-codes-review.json"
+}
