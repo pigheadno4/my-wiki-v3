@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-11-03
+date_updated: 2026-11-09
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json"
@@ -27,6 +28,24 @@ tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-checkout-components`. Cumulative implementation knowledge belongs in [[source-github-paypal-checkout-components]] and the linked immutable snapshots.
+
+## Unreleased `default-branch@f2c422a` (2026-11-06)
+
+| Boundary | From SHA | To SHA | Ingest mode |
+| --- | --- | --- | --- |
+| Main checkpoint to main | `dcd6abfc340371666a0428d7292a2cab32c2bbca` | `f2c422afd638eb3f7e4c8a46b3a998ddbad0fc75` | Delta, approved focused reading |
+
+**Finding:** Hosted Buttons adds the existing `allowIframe` lazy protected export, matching the Buttons entry. Its comment identifies checkout's missing `paypal.allowIframe()` when only `components=hosted-buttons` is loaded. The unchanged helper and wrapper keep PayPal-domain-only exposure; the supported-context decision still depends on popup support or a same-domain parent component window.
+
+**Impact and limits:** internal interface repair, not a new merchant iframe API, origin bypass, React/v6 payment feature or merchant migration. Package metadata is unchanged; latest accepted stable identity remains `@paypal/checkout-components@5.0.438`. No hosted rollout, assembly inclusion, browser or payment behavior was independently verified. Two new tests are policy-excluded and were not executed.
+
+**Selection caveat:** packet lists `vite.config.js` removed from the retained capsule, but exact ending-tree metadata retains the identical blob `da7523b49c4835c2b3f79933a7e22ae6e05317f3`. This is not an upstream deletion. The prior Vitest fork-pool knowledge and all release/ref history remain intact.
+
+**Evidence and reading:** collected/ingested November 9, 2026 as `github-9a387d85474ea0fe16cd`. Changed source, affected prior code, helper/context, assigned prior Vite configuration, packets/comparison and cumulative wiki source/changelog fully read; manifests mechanically checked and shared wiki files read by relevant section under the explicit approval. All 427 file sizes/SHA-256/Git blob IDs and packet/comparison hashes pass. There are 212 unchanged common files, one changed implementation and one selection-only omission. All three upstream changes disposed: one retained and two excluded tests. No raw, registry or code changes during ingest.
+
+**Updated areas:** existing Checkout concept first, additive source/changelog, company/provider catalog and logs. No new source/concept/cross-company comparison; source_count remains 177.
+
+**Evidence:** [current snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/manifest.json), [prior snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json), [complete Hosted Buttons interface](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/files/src/interface/hosted-buttons.js), [unchanged helper](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/files/src/lib/security.js), [comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/dcd6abf--f2c422a/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/dcd6abf--f2c422a/diff.patch) and [ingest review](../../../../tracking/github/repos/paypal/paypal-checkout-components/ingest-review-9a387d85-2026-11-09.md).
 
 ## Unreleased `default-branch@dcd6abf` (2026-10-28)
 

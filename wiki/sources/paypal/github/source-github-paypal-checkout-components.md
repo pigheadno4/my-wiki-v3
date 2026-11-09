@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-11-03
+date_updated: 2026-11-09
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json"
@@ -30,7 +31,9 @@ tags: [paypal, checkout, javascript-sdk, github-repository, venmo, pay-later]
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
 
-Newest ingested unreleased ref: `default-branch@dcd6abf` at `dcd6abfc340371666a0428d7292a2cab32c2bbca`, committed October 28, collected November 2 and full additively ingested November 3, 2026 with focused reading. This adds pre-interaction masking metadata and cross-component interaction-state relay, plus Vitest fork-pool configuration. It is separate from the release history: the accepted package release remains `@paypal/checkout-components@5.0.438`, and the unchanged package version at this later SHA does not make the new code part of that published release.
+Newest ingested unreleased ref: `default-branch@f2c422a` at `f2c422afd638eb3f7e4c8a46b3a998ddbad0fc75`, committed November 6 and collected/delta-ingested November 9, 2026 with focused reading. Hosted Buttons gains the existing PayPal-domain-protected `allowIframe` export. This repairs the hosted-buttons-only entry, not a new merchant API or arbitrary-origin iframe permission. The accepted package release remains `@paypal/checkout-components@5.0.438`; this unreleased checkpoint does not update independent PayPal JS, React or assembly history.
+
+Previous ingested unreleased ref: `default-branch@dcd6abf` at `dcd6abfc340371666a0428d7292a2cab32c2bbca`, committed October 28, collected November 2 and full additively ingested November 3, 2026 with focused reading. This adds pre-interaction masking metadata and cross-component interaction-state relay, plus Vitest fork-pool configuration. It is separate from the release history: the accepted package release remains `@paypal/checkout-components@5.0.438`, and the unchanged package version at this later SHA does not make the new code part of that published release.
 
 Newest ingested release: `@paypal/checkout-components@5.0.438` at `294b50a11d61ccb458877776e5ba8d481781014b`, dated October 19 and collected/ingested October 24, 2026. The authored Buttons code adds experiment-gated `tools *` iframe permission; the package adds a Webpack development range. The new changelog omits the permission change and the retained bundle does not independently substantiate it. All earlier sections and raw evidence remain below.
 
@@ -50,6 +53,10 @@ Prior October 15 checkpoint: `@paypal/checkout-components@5.0.437` at `7e1f97d5f
 - The exact `5.0.431` release has the same release-only shape as `5.0.430` and likewise carries forward `5.0.429` behavior.
 
 ## Grounding excerpts
+
+- `export const allowIframe: LazyProtectedExport<typeof _allowIframe> = {` - `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/files/src/interface/hosted-buttons.js:34`.
+- `  __get__: () => protectedExport(_allowIframe),` - same interface, line 35.
+- `  isPayPalDomain() ? unprotectedExport : undefined;` - same snapshot, `files/src/lib/security.js:30`.
 
 - `getLogger().addMetaBuilder(() => (hasInteracted ? {} : { maskIP: true }));` - `raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/fpti-ip-masking.js:32`.
 - `if (hasInteracted || isFlushing) {` - same helper, line 43.
@@ -413,6 +420,26 @@ The complete retained [Vitest configuration](../../../../raw/github/paypal/paypa
 
 **Reading and integrity:** all 16 changed retained files (5,914 lines) read fully, with affected prior code, complete cumulative source/changelog and comparison; unchanged evidence, generated manifests/inventories and historical generated/changelog content checked mechanically under the explicit focused-reading approval. All 428 prior/current files pass size, SHA-256 and Git blob-ID checks; 198 common paths are byte-equal. Current snapshot: 214 files / 665,938 bytes; 14 modified and two newly retained paths (the helper and Vitest configuration). Prior `CHANGELOG.md` and `dist/button.js` are no longer selected, not upstream deletions; their immutable prior evidence and all historical wiki knowledge remain. All 26 upstream file changes have dispositions: 16 retained and 10 excluded tests. Packet rebuild and comparison hashes pass, with no evidence gaps/unclassified changes. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-7eb03c30-2026-11-03.md`.
 
+## Unreleased ref `default-branch@f2c422a`: Hosted Buttons iframe helper export
+
+**Exact boundary:** main SHA `dcd6abfc340371666a0428d7292a2cab32c2bbca` to `f2c422afd638eb3f7e4c8a46b3a998ddbad0fc75`; approved delta `github-9a387d85474ea0fe16cd`, ingested November 9, 2026. This is one unreleased commit, not a new semantic release. Package metadata is unchanged, and the latest accepted package release remains `@paypal/checkout-components@5.0.438`.
+
+The complete [Hosted Buttons interface](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/files/src/interface/hosted-buttons.js) now imports the existing helper and adds the same lazy protected export already used by the Buttons interface:
+
+```js
+export const allowIframe: LazyProtectedExport<typeof _allowIframe> = {
+  __get__: () => protectedExport(_allowIframe),
+};
+```
+
+Its comment identifies the failure case: checkout calls `paypal.allowIframe()` before iframe rendering, but the member was undefined when only `components=hosted-buttons` was loaded. This fixes interface availability inside the supported PayPal context; it does not add a new iframe-selection algorithm.
+
+The complete [security helper](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/files/src/lib/security.js) is byte-identical to the prior snapshot. `protectedExport` returns the helper only on a PayPal domain, otherwise `undefined`; the helper itself also throws outside that domain. In its supported context it returns true when popups are unsupported, or when a parent component window exists and is same-domain; otherwise false. External domain/popup/cross-domain utilities and hosted browser behavior were not independently tested. This is not a merchant recipe for calling `paypal.allowIframe()`, bypassing origin restrictions or forcing arbitrary iframe checkout. No new React API, v6 saved-payment flow, payment method or merchant migration is established.
+
+**Selection and historical evidence:** the packet's `vite.config.js` removal is only a retained-capsule omission. Exact ending-tree metadata has the same blob ID `da7523b49c4835c2b3f79933a7e22ae6e05317f3` and 2,118-byte size as the prior manifest. It was not deleted upstream; preserve the prior fork-pool configuration and its evidence. Two added test paths are recorded as policy-excluded, not runtime proof. No build, upstream test, browser or payment execution was performed, and source evidence does not establish hosted deployment or inclusion in an SDK assembly.
+
+**Reading and integrity:** approved focused reading covered complete current/prior affected source, helper/context, assigned prior Vite configuration, both packet files, comparison/patch and cumulative repository source/changelog. Manifests and relevant shared-page sections were reviewed under the explicit exception. All 427 prior/current file sizes, SHA-256 and Git blob IDs passed; 212 common files are unchanged, one common implementation file is modified and one prior-only Vite file is not selected. Packet/snapshot/comparison hashes passed. All three upstream paths have dispositions: one implementation change and two excluded test additions. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-9a387d85-2026-11-09.md`. All earlier release/ref sections, warnings and raw references remain.
+
 ## Public and security boundary
 
 The browser-facing `Buttons` component is public on merchant pages. Lower-level checkout controls remain PayPal-domain-only. The iframe helper is therefore not a merchant escape hatch for forcing an unsupported presentation mode.
@@ -430,6 +457,9 @@ The exact snapshot also shows that layout, platform, remembered funding, and ser
 - [[source-paypal-pay-with-venmo]] — current product documentation for mobile app switch and desktop QR
 
 ## Raw sources
+
+- [Unreleased f2c422a snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/manifest.json), complete [Hosted Buttons interface](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/files/src/interface/hosted-buttons.js) and unchanged [security helper](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/files/src/lib/security.js)
+- [Exact dcd6abf to f2c422a comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/dcd6abf--f2c422a/comparison.json), [authored patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/dcd6abf--f2c422a/diff.patch) and [delta packet](../../../../tracking/github/repos/paypal/paypal-checkout-components/ingest-packets/github-9a387d85474ea0fe16cd/packet.md); inventories verified mechanically under the approved exception
 
 - [Unreleased dcd6abf snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json), complete [masking helper](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/lib/fpti-ip-masking.js), [Card Fields propagation](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/src/zoid/card-fields/component.jsx) and [Vitest configuration](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/files/vite.config.js)
 - [Exact released-SHA to main comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/comparison.json), [authored patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/default-branch/294b50a--dcd6abf/diff.patch) and [full-mode review packet](../../../../tracking/github/repos/paypal/paypal-checkout-components/ingest-packets/github-7eb03c30a9c79e1870cd/packet.md); manifest inventories mechanically verified under focused-reading approval

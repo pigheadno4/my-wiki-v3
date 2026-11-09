@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-09] ingest | Checkout Components unreleased `f2c422a`
+
+- Approved focused-reading delta `github-9a387d85474ea0fe16cd`, exact boundary `dcd6abfc340371666a0428d7292a2cab32c2bbca` to `f2c422afd638eb3f7e4c8a46b3a998ddbad0fc75`. Complete changed source, affected prior code/helper, assigned prior Vite configuration, packets/comparison and cumulative source/changelog read; five located grounding excerpts extracted before concept-first edits. Manifests mechanically verified and shared pages read by relevant section under the explicit approval.
+- Hosted Buttons adds the existing `allowIframe` protected export; helper remains PayPal-domain-only. Internal missing-export repair, not a new merchant/React/v6 API or arbitrary-origin iframe permission. Accepted release stays `5.0.438`; independent loader/assembly history not advanced. No upstream tests, browser/payment execution or hosted-rollout proof.
+- All 427 prior/current file sizes/SHA-256/Git blob IDs and packet/comparison hashes pass; 212 common files unchanged, one implementation changed. Packet's prior-only `vite.config.js` is unchanged upstream with identical blob ID, not deleted. Prior fork-pool evidence and all earlier release/ref sections, warnings and raw references preserved. Two added tests disposed as policy-excluded.
+- Existing Checkout concept first, additive source/changelog, company/provider catalog and logs. No new source/concept/comparison; source_count remains 177. Review: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-9a387d85-2026-11-09.md`. Validate this single item before closing; commit/push requires separate approval.
+- Scoped close: all four typed pages, whitespace, evidence hashes, five quote locators, local links, historical body/raw preservation and catalog uniqueness pass. Item completed `ingested`; zero pending items. Global collection validation retains only the same 13 unrelated historical errors, none for Checkout Components. Next: share findings and await scoped commit/push approval.
+
 ## [2026-11-03] ingest | Direct v6 samples `default-branch@c4333b4`
 
 - Approved full additive item `github-4108c3990b081a22a6e2`, exact SHA `c4333b444368a67ad54fa4786fccb57021c5abdd`, with focused reading: all 59 changed current files, affected prior code and dependencies fully read; 580 prior/current snapshot files and generated/unchanged evidence mechanically verified. Five located grounding excerpts before concept-first edits; no whole-repository/full-591-path semantic-read claim.

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-09] ingest | Checkout Components unreleased `f2c422a`
+
+Approved focused-reading delta: Hosted Buttons gains the existing PayPal-domain-protected `allowIframe` export, not a new merchant iframe API. All earlier release/ref history and Vite evidence preserved; selection omission is not an upstream deletion. Accepted release remains `5.0.438`, source_count unchanged. Details [[paypal-log]], [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No upstream/browser/payment execution, commit or push.
+
 ## [2026-11-08] ingest | Adyen Web `6.48.1`
 
 Approved focused delta after completed 6.48.0, including constants supplement: hosted secured fields 6.4.1 / PayPal JS 11.2.1 pins; IRIS/UPI/beta-host announcements qualified. All older history/warnings preserved; source_count unchanged. Details [[adyen-log]], [[source-github-adyen-web]] and [[changelog-github-adyen-web]]. No SDK/browser/compliance/payment execution, commit or push.

@@ -4258,6 +4258,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.1.1/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.1.0--10.1.1/comparison.json)
 
+## `github-9a387d85474ea0fe16cd`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `f2c422afd638eb3f7e4c8a46b3a998ddbad0fc75`
+- Collection date: `2026-11-09`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-9a387d85474ea0fe16cd/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@f2c422a` (recommended `delta`)
+  Ref: `main`
+  From SHA: `dcd6abfc340371666a0428d7292a2cab32c2bbca`
+  To SHA: `f2c422afd638eb3f7e4c8a46b3a998ddbad0fc75`
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/default-branch/dcd6abf--f2c422a/comparison.json)
+
 ## `github-9a59802f1b9e9778125b`
 
 - Repository: `paypal/paypal-js`
