@@ -166,6 +166,8 @@ The capture helper generates one `PayPal-Request-Id` and reuses it for a single 
 
 ### Android reference sample at `d1137d5`
 
+The independently collected native SDK `paypal-android@3.2.0` adds a separate VenmoClient and embedded demo, full additively ingested November 15, 2026. Its flow creates a Venmo order through a server, launches a Chrome Custom Tab using the order ID, parses the return and separately captures server-side. Launch/parsed approval are not settlement; the finish method has no local origin/order-correlation validation and its NoResult handling is narrower than the notes. This updates the Android SDK boundary, not the older independent demo repository, iOS SDK, merchant availability or Braintree account requirements. See [[paypal-android-sdk]], [[source-github-paypal-android]] and [[changelog-github-paypal-android]].
+
 The independent `paypal-examples/paypal-android-sdk-demo-app` baseline uses PayPal Android SDK `2.3.0` with Jetpack Compose. Direct PayPal checkout creates an order through a merchant server, starts the SDK with the `PAYPAL` funding source, restores SDK state after process loss, finishes the return intent, and captures server-side. The separate card flow captures after approval but deliberately omits the required 3DS challenge path.
 
 The app also offers a pre-created hosted Payment Link through a Custom Tab. That return flow is not equivalent to SDK order completion: it updates the UI from the return URI without server-side settlement verification. See [[source-github-paypal-android-sdk-demo-app]].

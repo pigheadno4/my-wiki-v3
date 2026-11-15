@@ -1,0 +1,1157 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 9083420..889eb35 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,16 @@
+ # PayPal Android SDK Release Notes
+ 
++## 3.2.0 (2026-11-03)
++
++* Venmo
++  * Add `VenmoClient.start(activity: Activity, orderId: String)` suspend function to initiate Venmo checkout
++  * Add `VenmoClient.start(activity: Activity, orderId: String, callback: VenmoStartCallback)` callback-based method for Java compatibility
++  * Add `VenmoClient.finishStart(intent: Intent)` to return type-safe results:
++    * `VenmoFinishStartResult.Success` for successful payments
++    * `VenmoFinishStartResult.Canceled` when user cancels payment
++    * `VenmoFinishStartResult.NoResult` when intent is unrelated to Venmo flow
++    * `VenmoFinishStartResult.Failure` for errors
++
+ ## 3.1.0 (2026-10-05)
+ 
+ * CorePayments
+diff --git a/CorePayments/src/main/AndroidManifest.xml b/CorePayments/src/main/AndroidManifest.xml
+index 8adf066..80631f2 100644
+--- a/CorePayments/src/main/AndroidManifest.xml
++++ b/CorePayments/src/main/AndroidManifest.xml
+@@ -6,6 +6,7 @@
+ 
+     <queries>
+         <package android:name="com.paypal.android.p2pmobile" />
++        <package android:name="com.venmo" />
+ 
+         <!-- Needed on Android 11+ so GetReturnToAppStrategyUseCase can resolve the default
+              browser and check whether it supports App Links. -->
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventData.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventData.kt
+index 6b1fe71..91e34d0 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventData.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventData.kt
+@@ -67,8 +67,8 @@ internal data class TrackingEventParams(
+     val shopperSessionExpirationAt: String? = null,
+     @SerialName("matched_authentication_methods")
+     val matchedAuthenticationMethods: List<String>? = null,
+-    @SerialName("app_switch_url")
+-    val appSwitchUrl: String? = null,
++    @SerialName("url")
++    val url: String? = null,
+     @SerialName("checkout_fallback_url")
+     val fallbackUrl: String? = null,
+     @SerialName("error_desc")
+@@ -101,6 +101,8 @@ internal data class TrackingEventParams(
+     val userAction: String? = null,
+     @SerialName("paypal_installed")
+     val paypalInstalled: String? = null,
++    @SerialName("venmo_installed")
++    val venmoInstalled: String? = null,
+     @SerialName("return_app_url")
+     val returnAppUrl: String? = null,
+     @SerialName("cancel_app_url")
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventsAPI.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventsAPI.kt
+index 32d872f..7ae1669 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventsAPI.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventsAPI.kt
+@@ -48,7 +48,7 @@ internal class TrackingEventsAPI constructor(
+             shopperSessionId = event.shopperSessionId,
+             shopperSessionExpirationAt = event.shopperSessionExpiration,
+             matchedAuthenticationMethods = event.matchedAuthenticationMethods,
+-            appSwitchUrl = event.appSwitchUrl,
++            url = event.url,
+             fallbackUrl = event.checkoutFallbackUrl,
+             errorDescription = event.errorDescription,
+             isCachedSession = event.isCachedSession,
+@@ -65,6 +65,7 @@ internal class TrackingEventsAPI constructor(
+             eventClientId = event.clientId,
+             userAction = event.userAction,
+             paypalInstalled = event.paypalInstalled,
++            venmoInstalled = event.venmoInstalled,
+             returnAppUrl = event.returnAppUrl,
+             cancelAppUrl = event.cancelAppUrl,
+             fallbackSchemeUrl = event.fallbackSchemeUrl,
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/UpdateClientConfigAPI.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/UpdateClientConfigAPI.kt
+index 48300ea..77aa0df 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/UpdateClientConfigAPI.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/UpdateClientConfigAPI.kt
+@@ -115,7 +115,7 @@ data class UpdateClientConfigVariables(
+ @OptIn(InternalSerializationApi::class)
+ @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+ data class UpdateClientConfigResponse(
+-    val updateClientConfig: String
++    val updateClientConfig: String? = null
+ )
+ 
+ @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsEventData.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsEventData.kt
+index 7b1985e..f48e5ac 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsEventData.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsEventData.kt
+@@ -15,7 +15,7 @@ data class AnalyticsEventData(
+     val shopperSessionId: String? = null,
+     val shopperSessionExpiration: String? = null,
+     val matchedAuthenticationMethods: List<String>? = null,
+-    val appSwitchUrl: String? = null,
++    val url: String? = null,
+     val checkoutFallbackUrl: String? = null,
+     val errorDescription: String? = null,
+     val isCachedSession: Boolean? = null,
+@@ -32,6 +32,7 @@ data class AnalyticsEventData(
+     val clientId: String? = null,
+     val userAction: String? = null,
+     val paypalInstalled: String? = null,
++    val venmoInstalled: String? = null,
+     val returnAppUrl: String? = null,
+     val cancelAppUrl: String? = null,
+     val fallbackSchemeUrl: String? = null,
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/common/DeviceInspector.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/common/DeviceInspector.kt
+index 11312d8..3e9454a 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/common/DeviceInspector.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/common/DeviceInspector.kt
+@@ -14,6 +14,9 @@ class DeviceInspector(private val context: Context) {
+     val isPayPalInstalled: Boolean
+         get() = isAppInstalled(PAYPAL_APP_PACKAGE)
+ 
++    val isVenmoInstalled: Boolean
++        get() = isAppInstalled(VENMO_APP_PACKAGE)
++
+     /**
+      * The installed PayPal app's version code (build number), or `null` if the app isn't
+      * installed or its version can't be read. Uses [android.content.pm.PackageInfo.longVersionCode]
+@@ -70,6 +73,7 @@ class DeviceInspector(private val context: Context) {
+ 
+     companion object {
+         const val PAYPAL_APP_PACKAGE = "com.paypal.android.p2pmobile"
++        const val VENMO_APP_PACKAGE = "com.venmo"
+         private const val PAYPAL_APP_SWITCH_URL = "https://www.paypal.com/app-switch-checkout"
+         private const val MIN_APP_SWITCH_COMPATIBLE_PAYPAL_VERSION_CODE = 1_160_090_132L
+         private val DEFAULT_APP_SWITCH_URI: Uri
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/model/FundingSource.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/model/FundingSource.kt
+new file mode 100644
+index 0000000..0075ef6
+--- /dev/null
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/model/FundingSource.kt
+@@ -0,0 +1,8 @@
++package com.paypal.android.corepayments.model
++
++import androidx.annotation.RestrictTo
++
++@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
++enum class FundingSource {
++    VENMO,
++}
+diff --git a/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt b/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt
+index ae655a1..975e781 100644
+--- a/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt
++++ b/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt
+@@ -25,7 +25,8 @@ data class Amount(
+ @Serializable
+ data class OrderPaymentSource(
+     val card: Card? = null,
+-    val paypal: PayPalPaymentSource? = null
++    val paypal: PayPalPaymentSource? = null,
++    val venmo: VenmoPaymentSource? = null
+ )
+ 
+ @Serializable
+@@ -78,3 +79,20 @@ data class AppSwitchContext(
+ data class NativeApp(
+     val appUrl: String
+ )
++
++@Serializable
++data class VenmoPaymentSource(
++    val experienceContext: VenmoExperienceContext
++)
++
++@Serializable
++data class VenmoExperienceContext(
++    val returnUrl: String,
++    val cancelUrl: String,
++    val appSwitchContext: VenmoAppSwitchContext? = null
++)
++
++@Serializable
++data class VenmoAppSwitchContext(
++    val source: String
++)
+diff --git a/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt b/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt
+index 52ae78f..ac78789 100644
+--- a/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt
++++ b/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt
+@@ -23,6 +23,9 @@ data class DemoEnvironmentSettings(
+      */
+     val customMerchantBaseUrl: String = "",
+ 
++    /** Venmo checkout URL prefix (e.g., "qa", "staging"). Formatted as https://account.$prefix.venmo.com/go/web/paypal*/
++    val customVenmoCheckoutUrlPrefix: String = "",
++
+     /** Optional merchant ID override. When blank, falls back to the default integration merchant ID. */
+     val customMerchantId: String = "",
+ 
+diff --git a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsUiState.kt b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsUiState.kt
+index 3787c40..5fd7201 100644
+--- a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsUiState.kt
++++ b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsUiState.kt
+@@ -5,5 +5,6 @@ data class SettingsUiState(
+     val restUrlError: String? = null,
+     val graphQLUrlError: String? = null,
+     val merchantBaseUrlError: String? = null,
++    val venmoCheckoutUrlPrefixError: String? = null,
+     val showSaveSuccess: Boolean = false,
+ )
+diff --git a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt
+index 73ee321..bc1ddfc 100644
+--- a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt
++++ b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt
+@@ -42,6 +42,7 @@ private data class SettingsCallbacks(
+     val onCustomSdkGraphQLUrlChange: (String) -> Unit,
+     val onCustomClientIdChange: (String) -> Unit,
+     val onCustomMerchantBaseUrlChange: (String) -> Unit,
++    val onCustomVenmoCheckoutUrlPrefixChange: (String) -> Unit,
+     val onCustomMerchantIdChange: (String) -> Unit,
+     val onCustomBnCodeChange: (String) -> Unit,
+     val onSaveClick: () -> Unit,
+@@ -61,6 +62,7 @@ fun SettingsView(
+             onCustomSdkGraphQLUrlChange = viewModel::updateCustomSdkGraphQLUrl,
+             onCustomClientIdChange = viewModel::updateCustomClientId,
+             onCustomMerchantBaseUrlChange = viewModel::updateCustomMerchantBaseUrl,
++            onCustomVenmoCheckoutUrlPrefixChange = viewModel::updateCustomVenmoCheckoutUrlPrefix,
+             onCustomMerchantIdChange = viewModel::updateCustomMerchantId,
+             onCustomBnCodeChange = viewModel::updateCustomBnCode,
+             onSaveClick = viewModel::saveConfig,
+@@ -69,6 +71,7 @@ fun SettingsView(
+     )
+ }
+ 
++@Suppress("LongParameterList")
+ @Composable
+ private fun SettingsContent(
+     uiState: SettingsUiState,
+@@ -82,9 +85,12 @@ private fun SettingsContent(
+             .padding(horizontal = 16.dp, vertical = 24.dp),
+         verticalArrangement = Arrangement.spacedBy(8.dp)
+     ) {
+-        BnCodeField(
++        SettingsTextField(
++            label = "BN Code",
++            placeholder = "Enter BN Code (optional)",
+             value = uiState.settings.customBnCode,
+             onValueChange = callbacks.onCustomBnCodeChange,
++            imeAction = ImeAction.Done,
+         )
+         Spacer(modifier = Modifier.height(8.dp))
+         SettingsHeader()
+@@ -99,6 +105,7 @@ private fun SettingsContent(
+                 onCustomSdkGraphQLUrlChange = callbacks.onCustomSdkGraphQLUrlChange,
+                 onCustomMerchantBaseUrlChange = callbacks.onCustomMerchantBaseUrlChange,
+                 onCustomClientIdChange = callbacks.onCustomClientIdChange,
++                onCustomVenmoCheckoutUrlPrefixChange = callbacks.onCustomVenmoCheckoutUrlPrefixChange,
+                 onCustomMerchantIdChange = callbacks.onCustomMerchantIdChange,
+             )
+         }
+@@ -118,6 +125,7 @@ private fun SettingsContent(
+     }
+ }
+ 
++@Suppress("LongParameterList")
+ @Composable
+ private fun CustomEnvironmentFields(
+     uiState: SettingsUiState,
+@@ -125,6 +133,7 @@ private fun CustomEnvironmentFields(
+     onCustomSdkGraphQLUrlChange: (String) -> Unit,
+     onCustomMerchantBaseUrlChange: (String) -> Unit,
+     onCustomClientIdChange: (String) -> Unit,
++    onCustomVenmoCheckoutUrlPrefixChange: (String) -> Unit,
+     onCustomMerchantIdChange: (String) -> Unit,
+ ) {
+     UrlField(
+@@ -148,13 +157,20 @@ private fun CustomEnvironmentFields(
+         onValueChange = onCustomMerchantBaseUrlChange,
+         error = uiState.merchantBaseUrlError
+     )
+-    UrlField(
++    SettingsTextField(
+         label = "Client ID",
+         placeholder = "Enter PayPal client ID (optional)",
+         value = uiState.settings.customClientId,
+         onValueChange = onCustomClientIdChange,
+     )
+-    UrlField(
++    SettingsTextField(
++        label = "Venmo Checkout URL Prefix (Optional)",
++        placeholder = "e.g., qa, staging, ext.live (formats as https://account.\$prefix.venmo.com/go/web/paypal)",
++        value = uiState.settings.customVenmoCheckoutUrlPrefix,
++        onValueChange = onCustomVenmoCheckoutUrlPrefixChange,
++        error = uiState.venmoCheckoutUrlPrefixError
++    )
++    SettingsTextField(
+         label = "Merchant ID",
+         placeholder = "Enter PayPal merchant ID (optional)",
+         value = uiState.settings.customMerchantId,
+@@ -163,25 +179,6 @@ private fun CustomEnvironmentFields(
+     )
+ }
+ 
+-@Composable
+-private fun BnCodeField(
+-    value: String,
+-    onValueChange: (String) -> Unit,
+-) {
+-    OutlinedTextField(
+-        value = value,
+-        onValueChange = onValueChange,
+-        label = { Text("BN Code") },
+-        placeholder = { Text("Enter BN Code (optional)", style = MaterialTheme.typography.bodySmall) },
+-        modifier = Modifier.fillMaxWidth(),
+-        singleLine = true,
+-        keyboardOptions = KeyboardOptions(
+-            keyboardType = KeyboardType.Ascii,
+-            imeAction = ImeAction.Done
+-        )
+-    )
+-}
+-
+ @Composable
+ private fun SettingsHeader() {
+     Text(
+@@ -278,6 +275,31 @@ private fun UrlField(
+     )
+ }
+ 
++@Composable
++private fun SettingsTextField(
++    label: String,
++    placeholder: String,
++    value: String,
++    onValueChange: (String) -> Unit,
++    imeAction: ImeAction = ImeAction.Next,
++    error: String? = null,
++) {
++    OutlinedTextField(
++        value = value,
++        onValueChange = onValueChange,
++        label = { Text(label) },
++        placeholder = { Text(placeholder, style = MaterialTheme.typography.bodySmall) },
++        modifier = Modifier.fillMaxWidth(),
++        singleLine = true,
++        isError = error != null,
++        supportingText = error?.let { msg -> { Text(msg) } },
++        keyboardOptions = KeyboardOptions(
++            keyboardType = KeyboardType.Ascii,
++            imeAction = imeAction
++        )
++    )
++}
++
+ @Suppress("UnusedPrivateMember")
+ @Preview(showBackground = true)
+ @Composable
+@@ -305,6 +327,7 @@ private fun SettingsViewPreview() {
+                     onCustomSdkGraphQLUrlChange = {},
+                     onCustomClientIdChange = {},
+                     onCustomMerchantBaseUrlChange = {},
++                    onCustomVenmoCheckoutUrlPrefixChange = {},
+                     onCustomMerchantIdChange = {},
+                     onCustomBnCodeChange = {},
+                     onSaveClick = {},
+diff --git a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt
+index adc02cd..3b5a003 100644
+--- a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt
++++ b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt
+@@ -70,6 +70,16 @@ class SettingsViewModel @Inject constructor(
+         }
+     }
+ 
++    fun updateCustomVenmoCheckoutUrlPrefix(value: String) {
++        _uiState.update {
++            it.copy(
++                settings = it.settings.copy(customVenmoCheckoutUrlPrefix = value),
++                venmoCheckoutUrlPrefixError = null,
++                showSaveSuccess = false
++            )
++        }
++    }
++
+     fun updateCustomMerchantId(value: String) {
+         _uiState.update {
+             it.copy(
+@@ -99,18 +109,31 @@ class SettingsViewModel @Inject constructor(
+             customSdkRestUrl = settings.customSdkRestUrl.trim(),
+             customSdkGraphQLUrl = settings.customSdkGraphQLUrl.trim(),
+             customMerchantBaseUrl = settings.customMerchantBaseUrl.trim(),
++            customVenmoCheckoutUrlPrefix = settings.customVenmoCheckoutUrlPrefix.trim(),
+         )
+         _uiState.update { it.copy(settings = trimmedSettings) }
+ 
+         val restError = validateUrl(trimmedSettings.customSdkRestUrl)
+         val graphQLError = validateUrl(trimmedSettings.customSdkGraphQLUrl)
+         val merchantError = validateUrl(trimmedSettings.customMerchantBaseUrl)
+-        if (restError != null || graphQLError != null || merchantError != null) {
++        val venmoCheckoutPrefixError = if (trimmedSettings.customVenmoCheckoutUrlPrefix.isNotBlank()) {
++            validateVenmoCheckoutPrefix(trimmedSettings.customVenmoCheckoutUrlPrefix)
++        } else {
++            null
++        }
++        val hasValidationError = listOfNotNull(
++            restError,
++            graphQLError,
++            merchantError,
++            venmoCheckoutPrefixError
++        ).isNotEmpty()
++        if (hasValidationError) {
+             _uiState.update {
+                 it.copy(
+                     restUrlError = restError,
+                     graphQLUrlError = graphQLError,
+-                    merchantBaseUrlError = merchantError
++                    merchantBaseUrlError = merchantError,
++                    venmoCheckoutUrlPrefixError = venmoCheckoutPrefixError
+                 )
+             }
+             // Persist whichever fields are valid so they survive an environment switch.
+@@ -120,6 +143,11 @@ class SettingsViewModel @Inject constructor(
+                     customSdkRestUrl = if (restError == null) trimmedSettings.customSdkRestUrl else "",
+                     customSdkGraphQLUrl = if (graphQLError == null) trimmedSettings.customSdkGraphQLUrl else "",
+                     customMerchantBaseUrl = if (merchantError == null) trimmedSettings.customMerchantBaseUrl else "",
++                    customVenmoCheckoutUrlPrefix = if (venmoCheckoutPrefixError == null) {
++                        trimmedSettings.customVenmoCheckoutUrlPrefix
++                    } else {
++                        ""
++                    },
+                 )
+             )
+             return
+@@ -150,7 +178,6 @@ class SettingsViewModel @Inject constructor(
+      */
+     private fun validateUrl(url: String, optional: Boolean = false): String? = when {
+         url.isBlank() -> if (optional) null else "URL is required"
+-        url != url.trim() || url.contains(' ') -> "URL must not contain spaces"
+         else -> try {
+             val uri = URI(url)
+             when {
+@@ -162,4 +189,11 @@ class SettingsViewModel @Inject constructor(
+             "Enter a valid URL (e.g. https://api.example.com)"
+         }
+     }
++
++    private fun validateVenmoCheckoutPrefix(value: String): String? =
++        if (value.matches(Regex("[a-zA-Z0-9.-]+"))) {
++            null
++        } else {
++            "Prefix must contain only alphanumeric characters, periods, and hyphens"
++        }
+ }
+diff --git a/Demo/src/main/java/com/paypal/android/ui/DemoApp.kt b/Demo/src/main/java/com/paypal/android/ui/DemoApp.kt
+index 4945502..bb7235b 100644
+--- a/Demo/src/main/java/com/paypal/android/ui/DemoApp.kt
++++ b/Demo/src/main/java/com/paypal/android/ui/DemoApp.kt
+@@ -34,6 +34,7 @@ import com.paypal.android.ui.paypalvault.PayPalVaultView
+ import com.paypal.android.ui.selectcard.SelectCardView
+ import com.paypal.android.ui.vaultcard.VaultCardView
+ import com.paypal.android.ui.vaultcard.VaultCardViewModel
++import com.paypal.android.ui.venmo.PayWithVenmoView
+ import com.paypal.android.uishared.components.DemoAppTopBar
+ import com.paypal.android.uishared.effects.NavDestinationChangeDisposableEffect
+ import com.paypal.android.utils.UIConstants
+@@ -133,6 +134,9 @@ fun DemoApp() {
+                         navController.popBackStack()
+                     })
+                 }
++                composable(DemoAppDestinations.PAY_WITH_VENMO) {
++                    PayWithVenmoView()
++                }
+                 if (BuildConfig.DEBUG) {
+                     composable(DemoAppDestinations.SETTINGS) {
+                         SettingsView()
+diff --git a/Demo/src/main/java/com/paypal/android/ui/DemoAppDestinations.kt b/Demo/src/main/java/com/paypal/android/ui/DemoAppDestinations.kt
+index 3bbe1f9..0f3f4c6 100644
+--- a/Demo/src/main/java/com/paypal/android/ui/DemoAppDestinations.kt
++++ b/Demo/src/main/java/com/paypal/android/ui/DemoAppDestinations.kt
+@@ -10,6 +10,7 @@ object DemoAppDestinations {
+     const val PAYPAL_STATIC_BUTTONS = "paypal_static_buttons"
+     const val SELECT_TEST_CARD = "select_test_card"
+     const val SETTINGS = "settings"
++    const val PAY_WITH_VENMO = "venmo"
+ 
+     fun titleForDestination(destination: String?): String = when (destination) {
+         CARD_APPROVE_ORDER -> "Card Approve Order"
+@@ -21,6 +22,7 @@ object DemoAppDestinations {
+         SELECT_TEST_CARD -> "Select a Test Card"
+         PAYPAL_VAULT -> "Paypal Vault"
+         SETTINGS -> "Environment Settings"
++        PAY_WITH_VENMO -> "Venmo"
+         else -> "Demo"
+     }
+ }
+diff --git a/Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderViewModel.kt b/Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderViewModel.kt
+index b98172a..67ad966 100644
+--- a/Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderViewModel.kt
++++ b/Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderViewModel.kt
+@@ -80,7 +80,8 @@ class ApproveOrderViewModel @Inject constructor(
+     private fun approveOrderWithId(activity: ComponentActivity, orderId: String) {
+         approveOrderState = ActionState.Loading
+ 
+-        val cardClient = CardClient(applicationContext, buildCoreConfig()).also { this.cardClient = it }
++        val cardClient =
++            CardClient(applicationContext, buildCoreConfig()).also { this.cardClient = it }
+ 
+         val cardRequest = uiState.value.run {
+             // expiration date in UI State needs to be formatted because it uses a visual transformation
+diff --git a/Demo/src/main/java/com/paypal/android/ui/features/Feature.kt b/Demo/src/main/java/com/paypal/android/ui/features/Feature.kt
+index c712919..772567c 100644
+--- a/Demo/src/main/java/com/paypal/android/ui/features/Feature.kt
++++ b/Demo/src/main/java/com/paypal/android/ui/features/Feature.kt
+@@ -14,4 +14,5 @@ enum class Feature(@StringRes val stringRes: Int, val routeName: String) {
+         R.string.feature_paypal_static_buttons,
+         DemoAppDestinations.PAYPAL_STATIC_BUTTONS
+     ),
++    PAY_WITH_VENMO(R.string.feature_pay_with_venmo, DemoAppDestinations.PAY_WITH_VENMO)
+ }
+diff --git a/Demo/src/main/java/com/paypal/android/ui/features/FeaturesView.kt b/Demo/src/main/java/com/paypal/android/ui/features/FeaturesView.kt
+index 594863a..c855817 100644
+--- a/Demo/src/main/java/com/paypal/android/ui/features/FeaturesView.kt
++++ b/Demo/src/main/java/com/paypal/android/ui/features/FeaturesView.kt
+@@ -41,6 +41,8 @@ private val payPalFeatures = listOf(
+     Feature.PAYPAL_VAULT
+ )
+ 
++private val venmoFeatures = listOf(Feature.PAY_WITH_VENMO)
++
+ @ExperimentalFoundationApi
+ @Composable
+ fun FeaturesView(
+@@ -64,6 +66,12 @@ fun FeaturesView(
+         item {
+             FeatureOptions(payPalFeatures, onSelectedFeatureChange = onSelectedFeatureChange)
+         }
++        stickyHeader {
++            FeatureGroupHeader("Venmo")
++        }
++        item {
++            FeatureOptions(venmoFeatures, onSelectedFeatureChange = onSelectedFeatureChange)
++        }
+     }
+ }
+ 
+diff --git a/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoUiState.kt b/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoUiState.kt
+new file mode 100644
+index 0000000..3bd0025
+--- /dev/null
++++ b/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoUiState.kt
+@@ -0,0 +1,17 @@
++package com.paypal.android.ui.venmo
++
++import com.paypal.android.api.model.Order
++import com.paypal.android.uishared.state.ActionState
++import com.paypal.android.venmo.VenmoFinishStartResult
++
++data class PayWithVenmoUiState(
++    val createOrderState: ActionState<Order, Exception> = ActionState.Idle,
++    val payWithVenmoState: ActionState<VenmoFinishStartResult, Exception> = ActionState.Idle,
++    val completeOrderState: ActionState<Order, Exception> = ActionState.Idle
++) {
++    val isCreateOrderSuccessful: Boolean
++        get() = createOrderState is ActionState.Success
++
++    val isVenmoSuccessful: Boolean
++        get() = payWithVenmoState is ActionState.Success
++}
+diff --git a/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoView.kt b/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoView.kt
+new file mode 100644
+index 0000000..9b07ed4
+--- /dev/null
++++ b/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoView.kt
+@@ -0,0 +1,183 @@
++package com.paypal.android.ui.venmo
++
++import androidx.activity.ComponentActivity
++import androidx.compose.foundation.layout.Column
++import androidx.compose.foundation.layout.Spacer
++import androidx.compose.foundation.layout.fillMaxSize
++import androidx.compose.foundation.layout.fillMaxWidth
++import androidx.compose.foundation.layout.padding
++import androidx.compose.foundation.layout.size
++import androidx.compose.foundation.rememberScrollState
++import androidx.compose.foundation.verticalScroll
++import androidx.compose.runtime.Composable
++import androidx.compose.runtime.LaunchedEffect
++import androidx.compose.runtime.getValue
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.platform.LocalContext
++import androidx.compose.ui.res.stringResource
++import androidx.hilt.navigation.compose.hiltViewModel
++import androidx.lifecycle.compose.collectAsStateWithLifecycle
++import com.paypal.android.R
++import com.paypal.android.uishared.components.ActionButtonColumn
++import com.paypal.android.uishared.components.ErrorView
++import com.paypal.android.uishared.components.OrderView
++import com.paypal.android.uishared.components.PropertyView
++import com.paypal.android.uishared.components.StepHeader
++import com.paypal.android.uishared.state.CompletedActionState
++import com.paypal.android.utils.OnLifecycleOwnerResumeEffect
++import com.paypal.android.utils.OnNewIntentEffect
++import com.paypal.android.utils.UIConstants
++import com.paypal.android.utils.getActivityOrNull
++import com.paypal.android.venmo.VenmoFinishStartResult
++
++@Composable
++fun PayWithVenmoView(
++    viewModel: PayWithVenmoViewModel = hiltViewModel()
++) {
++    val context = LocalContext.current
++    OnLifecycleOwnerResumeEffect {
++        val intent = context.getActivityOrNull()?.intent
++        intent?.let { viewModel.finishVenmo(it) }
++    }
++
++    OnNewIntentEffect { newIntent ->
++        viewModel.finishVenmo(newIntent)
++    }
++
++    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
++    val scrollState = rememberScrollState()
++    LaunchedEffect(scrollState.maxValue) {
++        // continuously scroll to bottom of the list when event state is updated
++        scrollState.animateScrollTo(scrollState.maxValue)
++    }
++
++    val contentPadding = UIConstants.paddingMedium
++    Column(
++        verticalArrangement = UIConstants.spacingLarge,
++        modifier = Modifier
++            .fillMaxSize()
++            .padding(horizontal = contentPadding)
++            .verticalScroll(scrollState)
++    ) {
++        Step1_CreateOrder(uiState, viewModel)
++        if (uiState.isCreateOrderSuccessful) {
++            Step2_StartPayWithVenmo(uiState, viewModel)
++            if (uiState.isVenmoSuccessful) {
++                Step3_CompleteOrder(uiState, viewModel)
++            }
++        }
++        Spacer(modifier = Modifier.size(contentPadding))
++    }
++}
++
++@Composable
++private fun Step1_CreateOrder(uiState: PayWithVenmoUiState, viewModel: PayWithVenmoViewModel) {
++    Column(
++        verticalArrangement = UIConstants.spacingMedium,
++    ) {
++        StepHeader(stepNumber = 1, title = "Create an Order")
++        ActionButtonColumn(
++            defaultTitle = "CREATE ORDER",
++            successTitle = "ORDER CREATED",
++            state = uiState.createOrderState,
++            onClick = { viewModel.createOrder() },
++            modifier = Modifier
++                .fillMaxWidth()
++        ) { state ->
++            when (state) {
++                is CompletedActionState.Failure -> ErrorView(error = state.value)
++                is CompletedActionState.Success -> OrderView(order = state.value)
++            }
++        }
++    }
++}
++
++@Composable
++private fun Step2_StartPayWithVenmo(
++    uiState: PayWithVenmoUiState,
++    viewModel: PayWithVenmoViewModel
++) {
++    val context = LocalContext.current
++    Column(
++        verticalArrangement = UIConstants.spacingMedium,
++    ) {
++        StepHeader(stepNumber = 2, title = stringResource(R.string.launch_venmo))
++        ActionButtonColumn(
++            defaultTitle = "START CHECKOUT",
++            successTitle = "CHECKOUT COMPLETE",
++            state = uiState.payWithVenmoState,
++            onClick = {
++                context.getActivityOrNull()?.let { viewModel.startVenmo(it as ComponentActivity) }
++            },
++            modifier = Modifier
++                .fillMaxWidth()
++        ) { state ->
++            when (state) {
++                is CompletedActionState.Failure -> ErrorView(error = state.value)
++                is CompletedActionState.Success -> VenmoResultView(result = state.value)
++            }
++        }
++    }
++}
++
++@Composable
++private fun Step3_CompleteOrder(uiState: PayWithVenmoUiState, viewModel: PayWithVenmoViewModel) {
++    val context = LocalContext.current
++    Column(
++        verticalArrangement = UIConstants.spacingMedium,
++    ) {
++        StepHeader(stepNumber = 3, title = "Complete Order")
++        ActionButtonColumn(
++            defaultTitle = "COMPLETE ORDER",
++            successTitle = "ORDER COMPLETED",
++            state = uiState.completeOrderState,
++            onClick = { viewModel.completeOrder(context) },
++            modifier = Modifier
++                .fillMaxWidth()
++        ) { state ->
++            when (state) {
++                is CompletedActionState.Failure -> ErrorView(error = state.value)
++                is CompletedActionState.Success -> OrderView(order = state.value)
++            }
++        }
++    }
++}
++
++@Composable
++fun VenmoFinishStartSuccessView(result: VenmoFinishStartResult.Success) {
++    Column(
++        verticalArrangement = UIConstants.spacingMedium,
++        modifier = Modifier.padding(UIConstants.paddingMedium)
++    ) {
++        PropertyView(name = "Token", value = result.token)
++        PropertyView(name = "Payer ID", value = result.payerId)
++        PropertyView(name = "Approved", value = result.approved.toString())
++    }
++}
++
++@Composable
++fun VenmoResultView(result: VenmoFinishStartResult) {
++    Column(
++        verticalArrangement = UIConstants.spacingMedium,
++        modifier = Modifier.padding(UIConstants.paddingMedium)
++    ) {
++        when (result) {
++            is VenmoFinishStartResult.Success -> {
++                PropertyView(name = "Token", value = result.token)
++                PropertyView(name = "Payer ID", value = result.payerId)
++                PropertyView(name = "Approved", value = result.approved.toString())
++            }
++            is VenmoFinishStartResult.Canceled -> {
++                PropertyView(name = "Status", value = "Canceled by user")
++                result.orderId?.let { PropertyView(name = "Order ID", value = it) }
++            }
++            is VenmoFinishStartResult.NoResult -> {
++                PropertyView(name = "Status", value = "No Venmo result received")
++            }
++            is VenmoFinishStartResult.Failure -> {
++                PropertyView(name = "Status", value = "Error")
++                PropertyView(name = "Error", value = result.error.errorDescription)
++            }
++        }
++    }
++}
+diff --git a/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoViewModel.kt b/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoViewModel.kt
+new file mode 100644
+index 0000000..9a26bd7
+--- /dev/null
++++ b/Demo/src/main/java/com/paypal/android/ui/venmo/PayWithVenmoViewModel.kt
+@@ -0,0 +1,142 @@
++package com.paypal.android.ui.venmo
++
++import android.content.Context
++import android.content.Intent
++import androidx.activity.ComponentActivity
++import androidx.lifecycle.ViewModel
++import androidx.lifecycle.viewModelScope
++import com.paypal.android.api.model.Order
++import com.paypal.android.api.model.OrderIntent
++import com.paypal.android.api.services.SDKSampleServerAPI
++import com.paypal.android.corepayments.CoreConfig
++import com.paypal.android.customenvironment.CustomEnvironmentRepository
++import com.paypal.android.fraudprotection.PayPalDataCollector
++import com.paypal.android.fraudprotection.PayPalDataCollectorRequest
++import com.paypal.android.models.OrderRequest
++import com.paypal.android.uishared.state.ActionState
++import com.paypal.android.usecase.CompleteOrderUseCase
++import com.paypal.android.usecase.CreateVenmoOrderUseCase
++import com.paypal.android.venmo.VenmoClient
++import com.paypal.android.venmo.VenmoFinishStartResult
++import com.paypal.android.venmo.VenmoStartResult
++import dagger.hilt.android.lifecycle.HiltViewModel
++import dagger.hilt.android.qualifiers.ApplicationContext
++import kotlinx.coroutines.flow.MutableStateFlow
++import kotlinx.coroutines.flow.asStateFlow
++import kotlinx.coroutines.flow.update
++import kotlinx.coroutines.launch
++import javax.inject.Inject
++
++@HiltViewModel
++class PayWithVenmoViewModel @Inject constructor(
++    @ApplicationContext val applicationContext: Context,
++    val createOrderUseCase: CreateVenmoOrderUseCase,
++    val completeOrderUseCase: CompleteOrderUseCase,
++    private val customEnvironmentRepository: CustomEnvironmentRepository,
++) : ViewModel() {
++
++    private val _uiState = MutableStateFlow(PayWithVenmoUiState())
++    val uiState = _uiState.asStateFlow()
++
++    private fun buildCoreConfig(): CoreConfig =
++        customEnvironmentRepository.getCoreConfig(
++            CoreConfig(
++                SDKSampleServerAPI.clientId,
++                merchantId = SDKSampleServerAPI.merchantId
++            )
++        )
++
++    private val coreConfig by lazy { buildCoreConfig() }
++    private val payPalDataCollector by lazy { PayPalDataCollector(coreConfig) }
++    private val venmoClient by lazy { VenmoClient(applicationContext, coreConfig) }
++
++    private var createOrderState
++        get() = _uiState.value.createOrderState
++        set(value) {
++            _uiState.update { it.copy(createOrderState = value) }
++        }
++
++    private var payWithVenmoState
++        get() = _uiState.value.payWithVenmoState
++        set(value) {
++            _uiState.update { it.copy(payWithVenmoState = value) }
++        }
++
++    private var completeOrderState
++        get() = _uiState.value.completeOrderState
++        set(value) {
++            _uiState.update { it.copy(completeOrderState = value) }
++        }
++
++    private val createdOrder: Order?
++        get() = (createOrderState as? ActionState.Success)?.value
++
++    fun createOrder() {
++        viewModelScope.launch {
++            createOrderState = ActionState.Loading
++            val orderRequest = _uiState.value.run {
++                OrderRequest(
++                    intent = OrderIntent.CAPTURE,
++                    shouldVaultOnSuccess = false
++                )
++            }
++            createOrderState = createOrderUseCase(orderRequest).mapToActionState()
++        }
++    }
++
++    fun startVenmo(activity: ComponentActivity) {
++        val orderId = createdOrder?.id
++        if (orderId == null) {
++            payWithVenmoState = ActionState.Failure(Exception("Create an order to continue."))
++            return
++        }
++        payWithVenmoState = ActionState.Loading
++        venmoClient.start(
++            activity = activity,
++            orderId = orderId,
++            callback = { result ->
++                when (result) {
++                    is VenmoStartResult.Success -> {
++                        // App switch initiated successfully, waiting for callback
++                    }
++                    is VenmoStartResult.Failure -> {
++                        payWithVenmoState = ActionState.Failure(result.error)
++                    }
++                }
++            }
++        )
++    }
++
++    fun finishVenmo(intent: Intent) {
++        when (val result = venmoClient.finishStart(intent)) {
++            is VenmoFinishStartResult.Success -> {
++                payWithVenmoState = ActionState.Success(result)
++            }
++            is VenmoFinishStartResult.Failure -> {
++                payWithVenmoState = ActionState.Failure(result.error)
++            }
++            is VenmoFinishStartResult.Canceled -> {
++                payWithVenmoState = ActionState.Failure(Exception("User canceled Venmo payment."))
++            }
++            is VenmoFinishStartResult.NoResult -> {
++                // Do nothing - canceled or unrelated intent
++            }
++        }
++    }
++
++    fun completeOrder(context: Context) {
++        val orderId = createdOrder?.id
++        if (orderId == null) {
++            completeOrderState = ActionState.Failure(Exception("Create an order to continue."))
++        } else {
++            viewModelScope.launch {
++                completeOrderState = ActionState.Loading
++                val dataCollectorRequest =
++                    PayPalDataCollectorRequest(hasUserLocationConsent = false)
++                val cmid = payPalDataCollector.collectDeviceData(context, dataCollectorRequest)
++                completeOrderState =
++                    completeOrderUseCase(orderId, OrderIntent.CAPTURE, cmid).mapToActionState()
++            }
++        }
++    }
++}
+diff --git a/Demo/src/main/java/com/paypal/android/usecase/CreateVenmoOrderUseCase.kt b/Demo/src/main/java/com/paypal/android/usecase/CreateVenmoOrderUseCase.kt
+new file mode 100644
+index 0000000..3ff2e2f
+--- /dev/null
++++ b/Demo/src/main/java/com/paypal/android/usecase/CreateVenmoOrderUseCase.kt
+@@ -0,0 +1,52 @@
++package com.paypal.android.usecase
++
++import com.paypal.android.DemoConstants.returnToAppUrlConfig
++import com.paypal.android.api.model.Order
++import com.paypal.android.api.model.serialization.Amount
++import com.paypal.android.api.model.serialization.OrderPaymentSource
++import com.paypal.android.api.model.serialization.OrderRequestBody
++import com.paypal.android.api.model.serialization.PurchaseUnit
++import com.paypal.android.api.model.serialization.VenmoAppSwitchContext
++import com.paypal.android.api.model.serialization.VenmoExperienceContext
++import com.paypal.android.api.model.serialization.VenmoPaymentSource
++import com.paypal.android.api.services.SDKSampleServerAPI
++import com.paypal.android.api.services.SDKSampleServerResult
++import com.paypal.android.models.OrderRequest
++import kotlinx.coroutines.Dispatchers
++import kotlinx.coroutines.withContext
++import javax.inject.Inject
++
++class CreateVenmoOrderUseCase @Inject constructor(
++    private val sdkSampleServerAPI: SDKSampleServerAPI
++) {
++
++    suspend operator fun invoke(request: OrderRequest): SDKSampleServerResult<Order, Exception> {
++        val paymentSource = OrderPaymentSource(
++            venmo = VenmoPaymentSource(
++                experienceContext = VenmoExperienceContext(
++                    returnUrl = returnToAppUrlConfig.returnAppUrl,
++                    cancelUrl = returnToAppUrlConfig.cancelAppUrl,
++                    appSwitchContext = VenmoAppSwitchContext(source = "NATIVE_APP")
++                )
++            )
++        )
++        return withContext(Dispatchers.IO) {
++            val amount = Amount(
++                currencyCode = "USD",
++                value = "10.99"
++            )
++
++            val purchaseUnit = PurchaseUnit(
++                amount = amount
++            )
++
++            val orderRequestBody = OrderRequestBody(
++                intent = request.intent,
++                purchaseUnits = listOf(purchaseUnit),
++                paymentSource = paymentSource
++            )
++
++            sdkSampleServerAPI.createOrder(orderRequestBody)
++        }
++    }
++}
+diff --git a/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt b/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt
+index 8636db4..060653a 100644
+--- a/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt
++++ b/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt
+@@ -286,6 +286,7 @@ class PayPalClient internal constructor(
+      */
+     fun finishStart(intent: Intent): PayPalFinishStartResult? =
+         sessionStore.authState?.let { authState ->
++            analyticsEventParams = analyticsEventParams.copy(url = intent.data?.toString())
+             analytics.notify(PayPalEvent.HANDLE_RETURN_STARTED, params = analyticsEventParams)
+             val result = payPalLauncher.completeCheckoutAuthRequest(intent, authState)
+             logCheckoutResult(result)
+@@ -305,6 +306,7 @@ class PayPalClient internal constructor(
+      */
+     fun finishVault(intent: Intent): PayPalFinishVaultResult? =
+         sessionStore.authState?.let { authState ->
++            analyticsEventParams = analyticsEventParams.copy(url = intent.data?.toString())
+             analytics.notify(PayPalEvent.HANDLE_RETURN_STARTED, params = analyticsEventParams)
+             val result = payPalLauncher.completeVaultAuthRequest(intent, authState)
+             logVaultResult(result)
+@@ -366,8 +368,8 @@ class PayPalClient internal constructor(
+             linkType = returnToAppStrategy.linkType,
+         )
+         val launchUri = shopperSession.getLaunchUri(token)
++        analyticsEventParams = analyticsEventParams.copy(url = launchUri.toString())
+         if (appSwitchEnabled) {
+-            analyticsEventParams = analyticsEventParams.copy(appSwitchUrl = launchUri.toString())
+             analytics.notify(PayPalEvent.APP_SWITCH_STARTED, params = analyticsEventParams)
+         } else {
+             analytics.notify(PayPalEvent.AUTH_CHALLENGE_PRESENTATION_STARTED, params = analyticsEventParams)
+diff --git a/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/AnalyticsEventParams.kt b/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/AnalyticsEventParams.kt
+index 6eb7381..08f7e2a 100644
+--- a/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/AnalyticsEventParams.kt
++++ b/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/AnalyticsEventParams.kt
+@@ -40,9 +40,11 @@ internal data class AnalyticsEventParams(
+     val appSwitchEnabled: Boolean = false,
+ 
+     /**
+-     * The URL used to attempt the app switch launch. Only set when [appSwitchEnabled] is true.
++     * The URL used in an intent — the app-switch URL when [appSwitchEnabled] is true,
++     * or the browser/Custom Tabs URL otherwise. Refreshed with the return intent's URL when
++     * [PayPalClient.finishStart]/[PayPalClient.finishVault] are called.
+      */
+-    val appSwitchUrl: String? = null,
++    val url: String? = null,
+ 
+     /**
+      * Whether this is a vault (setup token) flow rather than a checkout (order) flow.
+diff --git a/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalAnalytics.kt b/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalAnalytics.kt
+index 89454c4..73cb12c 100644
+--- a/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalAnalytics.kt
++++ b/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalAnalytics.kt
+@@ -76,7 +76,7 @@ private fun AnalyticsEventParams.toAnalyticsEventData(
+     shopperSessionId = shopperSession?.shopperSessionConfig?.id,
+     shopperSessionExpiration = shopperSession?.shopperSessionConfig?.expiresAt,
+     matchedAuthenticationMethods = shopperSession?.matchedAuthenticationMethods,
+-    appSwitchUrl = appSwitchUrl,
++    url = url,
+     checkoutFallbackUrl = shopperSession?.checkoutFallbackUrl,
+     errorDescription = errorDescription,
+     isCachedSession = isCachedSession,
+diff --git a/Venmo/api/Venmo.api b/Venmo/api/Venmo.api
+index 4131466..ccfa8e2 100644
+--- a/Venmo/api/Venmo.api
++++ b/Venmo/api/Venmo.api
+@@ -5,3 +5,88 @@ public final class com/paypal/android/venmo/BuildConfig {
+ 	public fun <init> ()V
+ }
+ 
++public final class com/paypal/android/venmo/VenmoClient {
++	public static final field Companion Lcom/paypal/android/venmo/VenmoClient$Companion;
++	public fun <init> (Landroid/content/Context;Lcom/paypal/android/corepayments/CoreConfig;)V
++	public final fun finishStart (Landroid/content/Intent;)Lcom/paypal/android/venmo/VenmoFinishStartResult;
++	public final fun start (Landroid/app/Activity;Ljava/lang/String;Lcom/paypal/android/venmo/VenmoStartCallback;)V
++	public final fun start (Landroid/app/Activity;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
++}
++
++public final class com/paypal/android/venmo/VenmoClient$Companion {
++}
++
++public abstract class com/paypal/android/venmo/VenmoFinishStartResult {
++}
++
++public final class com/paypal/android/venmo/VenmoFinishStartResult$Canceled : com/paypal/android/venmo/VenmoFinishStartResult {
++	public fun <init> ()V
++	public fun <init> (Ljava/lang/String;)V
++	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
++	public final fun component1 ()Ljava/lang/String;
++	public final fun copy (Ljava/lang/String;)Lcom/paypal/android/venmo/VenmoFinishStartResult$Canceled;
++	public static synthetic fun copy$default (Lcom/paypal/android/venmo/VenmoFinishStartResult$Canceled;Ljava/lang/String;ILjava/lang/Object;)Lcom/paypal/android/venmo/VenmoFinishStartResult$Canceled;
++	public fun equals (Ljava/lang/Object;)Z
++	public final fun getOrderId ()Ljava/lang/String;
++	public fun hashCode ()I
++	public fun toString ()Ljava/lang/String;
++}
++
++public final class com/paypal/android/venmo/VenmoFinishStartResult$Failure : com/paypal/android/venmo/VenmoFinishStartResult {
++	public fun <init> (Lcom/paypal/android/corepayments/PayPalSDKError;)V
++	public final fun component1 ()Lcom/paypal/android/corepayments/PayPalSDKError;
++	public final fun copy (Lcom/paypal/android/corepayments/PayPalSDKError;)Lcom/paypal/android/venmo/VenmoFinishStartResult$Failure;
++	public static synthetic fun copy$default (Lcom/paypal/android/venmo/VenmoFinishStartResult$Failure;Lcom/paypal/android/corepayments/PayPalSDKError;ILjava/lang/Object;)Lcom/paypal/android/venmo/VenmoFinishStartResult$Failure;
++	public fun equals (Ljava/lang/Object;)Z
++	public final fun getError ()Lcom/paypal/android/corepayments/PayPalSDKError;
++	public fun hashCode ()I
++	public fun toString ()Ljava/lang/String;
++}
++
++public final class com/paypal/android/venmo/VenmoFinishStartResult$NoResult : com/paypal/android/venmo/VenmoFinishStartResult {
++	public static final field INSTANCE Lcom/paypal/android/venmo/VenmoFinishStartResult$NoResult;
++	public fun equals (Ljava/lang/Object;)Z
++	public fun hashCode ()I
++	public fun toString ()Ljava/lang/String;
++}
++
++public final class com/paypal/android/venmo/VenmoFinishStartResult$Success : com/paypal/android/venmo/VenmoFinishStartResult {
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;Z)V
++	public final fun component1 ()Ljava/lang/String;
++	public final fun component2 ()Ljava/lang/String;
++	public final fun component3 ()Z
++	public final fun copy (Ljava/lang/String;Ljava/lang/String;Z)Lcom/paypal/android/venmo/VenmoFinishStartResult$Success;
++	public static synthetic fun copy$default (Lcom/paypal/android/venmo/VenmoFinishStartResult$Success;Ljava/lang/String;Ljava/lang/String;ZILjava/lang/Object;)Lcom/paypal/android/venmo/VenmoFinishStartResult$Success;
++	public fun equals (Ljava/lang/Object;)Z
++	public final fun getApproved ()Z
++	public final fun getPayerId ()Ljava/lang/String;
++	public final fun getToken ()Ljava/lang/String;
++	public fun hashCode ()I
++	public fun toString ()Ljava/lang/String;
++}
++
++public abstract interface class com/paypal/android/venmo/VenmoStartCallback {
++	public abstract fun onVenmoStartResult (Lcom/paypal/android/venmo/VenmoStartResult;)V
++}
++
++public abstract class com/paypal/android/venmo/VenmoStartResult {
++}
++
++public final class com/paypal/android/venmo/VenmoStartResult$Failure : com/paypal/android/venmo/VenmoStartResult {
++	public fun <init> (Lcom/paypal/android/corepayments/PayPalSDKError;)V
++	public final fun component1 ()Lcom/paypal/android/corepayments/PayPalSDKError;
++	public final fun copy (Lcom/paypal/android/corepayments/PayPalSDKError;)Lcom/paypal/android/venmo/VenmoStartResult$Failure;
++	public static synthetic fun copy$default (Lcom/paypal/android/venmo/VenmoStartResult$Failure;Lcom/paypal/android/corepayments/PayPalSDKError;ILjava/lang/Object;)Lcom/paypal/android/venmo/VenmoStartResult$Failure;
++	public fun equals (Ljava/lang/Object;)Z
++	public final fun getError ()Lcom/paypal/android/corepayments/PayPalSDKError;
++	public fun hashCode ()I
++	public fun toString ()Ljava/lang/String;
++}
++
++public final class com/paypal/android/venmo/VenmoStartResult$Success : com/paypal/android/venmo/VenmoStartResult {
++	public static final field INSTANCE Lcom/paypal/android/venmo/VenmoStartResult$Success;
++	public fun equals (Ljava/lang/Object;)Z
++	public fun hashCode ()I
++	public fun toString ()Ljava/lang/String;
++}
++
+diff --git a/Venmo/build.gradle b/Venmo/build.gradle
+index 7be8201..7ba70ba 100644
+--- a/Venmo/build.gradle
++++ b/Venmo/build.gradle
+@@ -44,12 +44,26 @@ android {
+ }
+ 
+ dependencies {
++    api project(':CorePayments')
++
+     implementation libs.androidx.coreKtx
+     implementation libs.androidx.appcompat
+     implementation libs.android.material
++    implementation libs.kotlinx.coroutinesAndroid
+ 
+     testImplementation libs.junit
++    testImplementation libs.mockk
++    testImplementation libs.kotlinx.coroutinesTest
++    testImplementation libs.robolectric
++    testImplementation libs.androidx.test.core
+ 
+     androidTestImplementation libs.androidx.test.junit
+     androidTestImplementation libs.androidx.test.espresso
+ }
++
++project.ext.name = "venmo-payments"
++project.ext.version = rootProject.version
++project.ext.pom_name = "PayPal SDK - VenmoPayments"
++project.ext.pom_desc = "Library for Venmo payments"
++
++apply from: rootProject.file("gradle/gradle-publish.gradle")
+diff --git a/version.properties b/version.properties
+index a182471..0dca71d 100644
+--- a/version.properties
++++ b/version.properties
+@@ -1,5 +1,5 @@
+ #Updated by changeReleaseVersion task
+-#Mon Oct 05 19:33:53 UTC 2026
++#Tue Nov 03 16:42:11 UTC 2026
+ patch=0
+ major=3
+-minor=1
++minor=2

@@ -2872,6 +2872,32 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.14.0/2026-10-20/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.13.0--26.14.0/comparison.json)
 
+## `github-71f2e4bd6e83f068dc81`
+
+- Repository: `paypal/paypal-android`
+- SHA: `c5a36f034b0429b5c833b9e98ff24ef0ce52bd55`
+- Collection date: `2026-11-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-android/snapshots/2026-11-15-c5a36f0/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-android/ingest-packets/github-71f2e4bd6e83f068dc81/packet.md)
+- Evidence attachment: [manifest](repos/paypal/paypal-android/evidence-attachments/github-71f2e4bd6e83f068dc81/attachment.json)
+- Review priority: `high`
+- Required reading: `49` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-android@3.2.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-android/releases/paypal-android/3.2.0/2026-11-15/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-android/comparisons/paypal-android/3.1.0--3.2.0/comparison.json)
+
 ## `github-71f4eb08ef220f23aba9`
 
 - Repository: `paypal-examples/paypal-android-sdk-demo-app`

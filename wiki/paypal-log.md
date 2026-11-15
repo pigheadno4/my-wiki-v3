@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-15] ingest | PayPal Android `3.2.0`
+
+- Approved full additive item `github-71f2e4bd6e83f068dc81`, SHA `c5a36f034b0429b5c833b9e98ff24ef0ce52bd55`, after `3.1.0`, including ten-file immutable supplement. User approved focused reading: all 28 changed/new retained files, ten supplements, affected prior code, complete release notes/changelog, comparison and cumulative wiki source/changelog read; 254 unchanged files/inventories checked mechanically and shared pages read by relevant section. Full mode is not changed to delta; effective list has 303 paths, not a whole-repository semantic read.
+- Adds separate Venmo client, Custom Tab launch, typed return parsing, exact environment mappings and embedded three-step demo. Launch/parsed success is not capture; no local finish-origin/order correlation, NoResult wording mismatch and configuration-exception boundaries preserved. New PayPal launch/return URL telemetry and nullable client-config response also recorded. No merchant enablement, iOS/React parity or live payment claim.
+- Existing Android SDK and Checkout concepts updated first, then additive source/changelog, company/catalog and logs. All v1/v2/3.0/3.1 history, raw entries and prior warnings preserved; no new source/concept or cross-company comparison, source_count remains 177. Future registry scope unchanged. Review: `tracking/github/repos/paypal/paypal-android/ingest-review-71f2e4bd-2026-11-15.md`.
+- Validate this single item before completion. No upstream build/test, device/browser/payment execution, commit or push; publication requires separate approval.
+- Scoped close: five typed pages, whitespace, all 569 file hashes/sizes/blob IDs, packet/release/comparison/attachment integrity, five located quotes, local links, historical body/raw preservation and catalog uniqueness pass. Item completed `ingested` in full mode; accepted release 3.2.0, next action wait, zero pending items. Global validation retains the same 13 unrelated historical errors, none for PayPal Android. Next: report findings and await scoped commit/push approval.
+
 ## [2026-11-09] ingest | Checkout Components unreleased `f2c422a`
 
 - Approved focused-reading delta `github-9a387d85474ea0fe16cd`, exact boundary `dcd6abfc340371666a0428d7292a2cab32c2bbca` to `f2c422afd638eb3f7e4c8a46b3a998ddbad0fc75`. Complete changed source, affected prior code/helper, assigned prior Vite configuration, packets/comparison and cumulative source/changelog read; five located grounding excerpts extracted before concept-first edits. Manifests mechanically verified and shared pages read by relevant section under the explicit approval.

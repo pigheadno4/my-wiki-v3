@@ -98,8 +98,8 @@ Operations history: [[paypal-log]]
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8: ScriptProvider/reducer, Buttons lifecycle, CardFields provider+hooks (github-repo, 2026-04-13)
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons dual-render, 3DS SCA_ALWAYS, billing address, authorize/captureAuthorize routes (webpage, 2026-04-13)
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient 8-step flow, WebPayments, deprecated NativePayments, FraudProtection (webpage, 2026-04-13)
-- [[source-github-paypal-android]] — through `3.1.0`: session-first PayPalClient, app-switch routing, enum/demo fixes, BN-code forwarding and Magnes evidence boundary; v1/v2 history preserved (github-repo, updated 2026-10-16)
-- [[changelog-github-paypal-android]] — package-qualified Android history, full `3.0.0` then delta `3.1.0` (github-repo, 2026-10-16)
+- [[source-github-paypal-android]] — through full additive `3.2.0`: separate VenmoClient, browser-mediated launch, return/capture and telemetry cautions; all earlier history preserved (github-repo, updated 2026-11-15)
+- [[changelog-github-paypal-android]] — full additive `3.2.0` with supplement; earlier full `3.0.0`, delta `3.1.0` and v1/v2 history retained (github-repo, updated 2026-11-15)
 - [[source-paypal-ios-card-payments]] — iOS SDK: CardClient/CardDelegate, WebPayments, SwiftUI buttons, iOS vs Android differences (webpage, 2026-04-13)
 - [[source-github-paypal-ios]] — cumulative iOS through `3.1.1`: BN session forwarding, iOS 16+, action/routing migration and preserved history (github-repo, updated 2026-10-16)
 - [[changelog-github-paypal-ios]] — full `3.0.0`, full `3.1.0`, delta `3.1.1`, later support notice and retained v1/v2 (github-repo, 2026-10-16)
@@ -213,7 +213,7 @@ Operations history: [[paypal-log]]
 - [[paypal-checkout]] — PayPal Checkout: JS SDK + Orders API integration, package-qualified v6 environment and eligibility behavior
 - [[paypal-braintree-integration]] — Braintree PayPal v6: client-token provider, payment sessions, Pay Later and Messages, nonce-based server processing
 - [[paypal-expanded-checkout]] — PayPal Expanded Checkout (ACDC): hosted card fields, 3DS, liabilityShift, sandbox capability requirement
-- [[paypal-android-sdk]] — PayPal Android SDK: card-payments, web-payments, payment-buttons, fraud-protection modules
+- [[paypal-android-sdk]] — Android SDK: separate 3.2.0 Venmo client and return/capture limits, session-first PayPal flow and preserved earlier modules
 - [[paypal-fastlane]] — PayPal Fastlane: guest checkout acceleration, email + one-time code, separate from PayPal account, cross-merchant
 - [[paypal-fxaas]] — PayPal FXaaS: contract-based currency conversion, rate locking, 100+ display currencies, 25 holding currencies
 - [[paypal-pay-later]] — PayPal Pay Later: country products, eligibility, web messaging, and React Braintree Messages behavior

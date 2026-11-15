@@ -2,9 +2,11 @@
 title: "GitHub changelog: paypal/paypal-android"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-16
+date_updated: 2026-11-15
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-android/snapshots/2026-11-15-c5a36f0/manifest.json"
+  - "github/paypal/paypal-android/supplements/2026-11-15-c5a36f0-23671a69/manifest.json"
   - "github/paypal/paypal-android/snapshots/2026-10-16-d100313/manifest.json"
   - "github/paypal/paypal-android/snapshots/2026-10-16-3540adf/manifest.json"
   - "github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/manifest.json"
@@ -15,6 +17,29 @@ tags: [paypal, android, kotlin, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-android`. Durable architecture and integration guidance belongs in [[source-github-paypal-android]].
+
+## `paypal-android@3.2.0` - Full Additive Ingest (2026-11-15)
+
+| Package | From | To | Published | Exact SHA | Mode |
+| --- | --- | --- | --- | --- | --- |
+| `paypal-android` | `3.1.0` | `3.2.0` | 2026-11-03 UTC | `c5a36f034b0429b5c833b9e98ff24ef0ce52bd55` | Full additive, approved focused reading |
+
+**New payment surface:** separate VenmoClient with suspend/callback start and typed finish results; build declares `venmo-payments`. Uses CoreConfig(clientId, merchantId, environment), awaits client configuration with funding source venmo, then launches an environment-specific HTTPS URL with channel/order token through a Chrome Custom Tab. No PayPalClient-style prewarm or Venmo vault/restore API is established. Startup success means launch only; parsed approval is not settlement.
+
+**Return and error limits:** finishStart directly parses token, PayerID and status flags. Cancellation has precedence; approval needs nonempty IDs. There is no local origin/path allowlist, started-order correlation or server verification. Returned client-configuration failures are ignored, but the awaited call is outside the launch exception catch. Callback execution and browser/payment outcomes were not tested. Treat these as exact source boundaries, not a reproduced exploit or a complete security audit.
+
+> [!warning] Contradiction - NoResult wording
+> Release notes say unrelated intents return NoResult; implementation does so only for null URI data. An unrelated URI with data can return Failure or be parsed by its flags. Preserve this in [[source-github-paypal-android]] and [[paypal-android-sdk]]; success/cancel/result names are not server payment verification.
+
+**Environment and demo:** LIVE maps to account.venmo.com and SANDBOX to account.ext.live.venmo.com, both using `/go/web/paypal`; CUSTOM is debug-only. The embedded Compose demo sends a Venmo sample-server order with return/cancel URLs and NATIVE_APP context, fixed USD 10.99, handles launch/return, then separately captures with device data. Its sample DTOs are not the direct REST schema, and its returned token is not correlated to the stored created order. Labels, lifecycle handlers and telemetry do not establish settlement, replay safety, process recovery or account eligibility.
+
+**Additional retained changes:** PayPal launch/return telemetry uses generic url rather than app_switch_url and now covers browser launch plus finishStart/finishVault returns. No local query redaction appears in that mapping; downstream handling is unverified. Core adds installed-Venmo telemetry and nullable/defaulted UpdateClientConfig response data. Card demo change is formatting only; no new PayPal vault/card contract or independent iOS/React/SDK demo repository upgrade follows.
+
+**Reading and integrity:** all 28 changed/new retained files, ten supplemental files, affected prior code, complete release notes/changelog, comparison and cumulative wiki source/changelog read fully. The user approved mechanical checks for 254 unchanged files and generated inventories and relevant-section reads of shared wiki pages; full mode remains unchanged. All 569 prior/current/supplement file hashes, sizes and blob IDs pass. All 44 upstream changed paths have dispositions; ten formerly excluded paths are attached as approved immutable evidence. Original snapshot/packet and registry unchanged. No device, build, upstream test, browser or payment execution.
+
+**Updated areas and preservation:** Android SDK and Checkout concepts first; additive cumulative source/changelog, company/provider catalog and logs. All earlier v1/v2/3.0/3.1 sections, raw references and contradictions retained. No new source/concept or cross-company comparison; source_count remains 177. Full mode overrides the script's minor-release delta suggestion because a new payment flow warrants broader ingest. Last ingest becomes 2026-11-15, not the release date.
+
+**Evidence:** [snapshot](../../../../raw/github/paypal/paypal-android/snapshots/2026-11-15-c5a36f0/manifest.json), [release](../../../../raw/github/paypal/paypal-android/releases/paypal-android/3.2.0/2026-11-15/manifest.json), [notes](../../../../raw/github/paypal/paypal-android/releases/paypal-android/3.2.0/2026-11-15/release-notes.md), [supplement](../../../../raw/github/paypal/paypal-android/supplements/2026-11-15-c5a36f0-23671a69/manifest.json), [comparison](../../../../tracking/github/repos/paypal/paypal-android/comparisons/paypal-android/3.1.0--3.2.0/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-android/comparisons/paypal-android/3.1.0--3.2.0/diff.patch), [attachment](../../../../tracking/github/repos/paypal/paypal-android/evidence-attachments/github-71f2e4bd6e83f068dc81/attachment.json) and [ingest review](../../../../tracking/github/repos/paypal/paypal-android/ingest-review-71f2e4bd-2026-11-15.md).
 
 ## `paypal-android@3.1.0` - Serial Delta (2026-10-16)
 

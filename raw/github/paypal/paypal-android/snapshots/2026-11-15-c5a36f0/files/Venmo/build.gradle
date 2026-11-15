@@ -1,0 +1,69 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlinAndroid
+    alias libs.plugins.binaryCompatibilityValidator
+}
+
+apiValidation {
+    nonPublicMarkers.add("androidx.annotation.RestrictTo")
+}
+
+android {
+    namespace 'com.paypal.android.venmo'
+    java {
+        toolchain {
+            languageVersion = modules.kotlinToolchainLanguageVersion
+        }
+    }
+
+    defaultConfig {
+        compileSdk modules.androidCompileSdk
+        minSdkVersion modules.androidMinSdkVersion
+        targetSdkVersion modules.androidTargetVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            version = rootProject.version
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility modules.sourceCompatibility
+        targetCompatibility modules.targetCompatibility
+    }
+
+    kotlinOptions {
+        jvmTarget = modules.kotlinJvmTarget
+    }
+    namespace 'com.paypal.android.venmo'
+}
+
+dependencies {
+    api project(':CorePayments')
+
+    implementation libs.androidx.coreKtx
+    implementation libs.androidx.appcompat
+    implementation libs.android.material
+    implementation libs.kotlinx.coroutinesAndroid
+
+    testImplementation libs.junit
+    testImplementation libs.mockk
+    testImplementation libs.kotlinx.coroutinesTest
+    testImplementation libs.robolectric
+    testImplementation libs.androidx.test.core
+
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}
+
+project.ext.name = "venmo-payments"
+project.ext.version = rootProject.version
+project.ext.pom_name = "PayPal SDK - VenmoPayments"
+project.ext.pom_desc = "Library for Venmo payments"
+
+apply from: rootProject.file("gradle/gradle-publish.gradle")

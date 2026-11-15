@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-15] ingest | PayPal Android `3.2.0`
+
+Approved full additive ingest with focused reading and ten-file supplement: new separate Venmo client, browser-mediated launch, return/capture safeguards and documentation mismatch, plus PayPal URL telemetry. All older version history/warnings retained; source_count unchanged. Details [[paypal-log]], [[source-github-paypal-android]] and [[changelog-github-paypal-android]]. No SDK/device/browser/payment execution, commit or push.
+
 ## [2026-11-09] ingest | Checkout Components unreleased `f2c422a`
 
 Approved focused-reading delta: Hosted Buttons gains the existing PayPal-domain-protected `allowIframe` export, not a new merchant iframe API. All earlier release/ref history and Vite evidence preserved; selection omission is not an upstream deletion. Accepted release remains `5.0.438`, source_count unchanged. Details [[paypal-log]], [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No upstream/browser/payment execution, commit or push.
