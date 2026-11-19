@@ -237,6 +237,14 @@ The exact `default-branch@f2c422a` checkpoint (November 6, 2026; delta ingested 
 
 The helper and its protection are unchanged: it is exposed only on a PayPal domain, and the helper itself rejects calls outside that domain. Within its supported context it allows iframe rendering when popups are unsupported or the parent component window is same-domain; otherwise it returns false. This repairs an internal interface omission, not a new merchant-facing iframe API, arbitrary-origin embedding permission, payment method or React/v6 integration. Browser behavior, external dependency implementations and hosted rollout were not tested. The accepted package release remains `5.0.438`; keep this unreleased SHA separate from published release and independent PayPal JS/SDK assembly histories. Earlier knowledge is preserved in [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
 
+### Tagged Checkout Components `5.0.439`
+
+The `5.0.439` tag carries the protected Hosted Buttons `allowIframe` fix and the pre-interaction logger metadata/relay already documented in separate earlier main checkpoints. The tag now grounds both findings at a package version; neither expands arbitrary iframe access, verifies IP anonymization, nor creates a merchant checkout or consent API. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
+
+### Tagged Checkout Components `5.0.440`
+
+The `5.0.440` tag reverts the `5.0.439` masking metadata and interaction relay. It retains the protected Hosted Buttons export and does not change its domain restrictions. Keep the earlier tagged and unreleased checkpoints as historical evidence, not as descriptions of `5.0.440`. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
+
 ### SDK release assembly baseline: `@paypal/sdk-release@5.0.569`
 
 The independent `paypal/paypal-sdk-release` repository records the component bill of materials used to assemble and release the combined PayPal and Braintree browser SDK. Baseline `5.0.569` pins Checkout Components `5.0.428`, Messaging Components `1.94.0`, Apple Pay Components `1.8.2`, Google Pay Components `1.3.5`, SDK Client `4.0.204`, and seven other direct PayPal component packages.

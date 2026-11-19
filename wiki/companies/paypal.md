@@ -11,6 +11,10 @@ PayPal is one of the world's largest online payment platforms, offering consumer
 
 ## Key Products
 
+Checkout Components `5.0.440` (ingested November 19, 2026): Reverts the 5.0.439 masking signal and interaction relay while retaining the protected Hosted Buttons export. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]; earlier entries below are historical.
+
+Checkout Components `5.0.439` (ingested November 19, 2026): Tagged release carries the protected Hosted Buttons helper and pre-interaction masking metadata across checkout components. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]; earlier entries below are historical.
+
 ### PayPal Checkout
 
 Standard e-commerce integration that renders PayPal, Venmo, and Debit/Credit Card buttons on merchant websites via the JavaScript SDK. Supports both pop-up-based checkout and inline card fields.

@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-19] ingest | Checkout Components `5.0.440`
+
+Reverts the 5.0.439 masking signal and interaction relay while retaining the protected Hosted Buttons export. Delta ingest with focused reading; prior history retained. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No build, runtime test or publication.
+
+## [2026-11-19] ingest | Checkout Components `5.0.439`
+
+Tagged release carries the protected Hosted Buttons helper and pre-interaction masking metadata across checkout components. Full additive ingest with focused reading; prior history retained. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No build, runtime test or publication.
+
 ## [2026-11-15] ingest | PayPal iOS `3.2.0`
 
 - User-approved full additive item `github-a24ad729631b9a2aa48d`, SHA `7eb8f7b7f9162e8f8114abae7f5dba9b525eae64`, including ten-file exact-SHA supplement. Explicit focused-reading approval covers changed retained implementation, new changelog entries, all ten supplements, affected prior code, release notes/comparison and cumulative source/changelog; 144 unchanged files and generated inventories/history checked mechanically, shared pages by relevant section. Full mode retained.

@@ -1,5 +1,14 @@
 # Wiki Log
 
+## [2026-11-19] ingest | Checkout Components `5.0.440`
+
+Reverts the 5.0.439 masking signal and interaction relay while retaining the protected Hosted Buttons export. Delta ingest with focused reading; prior history retained. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No build, runtime test or publication.
+
+
+## [2026-11-19] ingest | Checkout Components `5.0.439`
+
+Tagged release carries the protected Hosted Buttons helper and pre-interaction masking metadata across checkout components. Full additive ingest with focused reading; prior history retained. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No build, runtime test or publication.
+
 ## [2026-11-15] ingest | Stripe S03 approved documentation updates
 
 Updated 98 existing source summaries from 97 approved raw contributions, with 45 existing concept audits and bounded reciprocal corrections. The 54 full November captures and 43 navigation-only variant indexes retain distinct authority; historical raw references and unresolved dated conflicts remain. All source candidates received independent review, all 194 fixed query answers passed separate audits, and the three predetermined coordinator full audits passed. Stripe catalogs were reconciled, including 20 missing selected company routes; no source pages were created and the recorded source count remains 666. Details are in `tracking/ingest/stripe/stripe-campaign-03/updates/`. No new collection, SDK/payment execution, commit or push.

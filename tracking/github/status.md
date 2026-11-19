@@ -1087,6 +1087,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_php/releases/braintree_php/6.39.0/2026-10-29/manifest.json)
   Comparison: [manifest](repos/braintree/braintree_php/comparisons/braintree_php/6.38.0--6.39.0/comparison.json)
 
+## `github-2a95221e99509a248169`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `19a756da76bf476cbb4e54d55021e75fa4b9c1d1`
+- Collection date: `2026-11-19`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-19-19a756d/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-2a95221e99509a248169/packet.md)
+- Review priority: `normal`
+- Required reading: `28` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.440` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.440/2026-11-19/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.439--5.0.440/comparison.json)
+
 ## `github-2b0edf0d1bdbb692d15d`
 
 - Repository: `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration`
@@ -3687,6 +3712,31 @@
 - `stripeterminal@5.8.1` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-terminal-android/releases/stripeterminal/5.8.1/2026-10-26/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-terminal-android/comparisons/stripeterminal/5.8.0--5.8.1/comparison.json)
+
+## `github-86e93b13ed16f6c06650`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `e4773108247739bb4fb69b89bc4c76e5a374c729`
+- Collection date: `2026-11-19`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-19-e477310/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-86e93b13ed16f6c06650/packet.md)
+- Review priority: `normal`
+- Required reading: `29` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.439` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.439/2026-11-19/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.438--5.0.439/comparison.json)
 
 ## `github-87a18c639834d62a679f`
 

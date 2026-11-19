@@ -2,9 +2,11 @@
 title: "GitHub: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-11-09
+date_updated: 2026-11-19
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-11-19-19a756d/manifest.json"
+  - "github/paypal/paypal-checkout-components/snapshots/2026-11-19-e477310/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-11-09-f2c422a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-11-02-dcd6abf/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json"
@@ -30,6 +32,32 @@ tags: [paypal, checkout, javascript-sdk, github-repository, venmo, pay-later]
 `paypal/paypal-checkout-components` contains the browser runtime that renders PayPal funding buttons and launches PayPal checkout experiences. This cumulative page preserves the package-qualified `@paypal/checkout-components@4.1.47` baseline and extends ingested history through `@paypal/checkout-components@5.0.436` at exact SHA `5b2afe08b007bd026083492b8242d65047b7d3b8`. The latest patch changes a conditional Canadian French Pay Later label. The `5.0.435` iframe-title regression coverage, `5.0.434` checkout-child window-name monitoring, iframe aria-label addition in `5.0.432`, and revert in `5.0.433` remain documented.
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
+
+Current ingested stable release: `@paypal/checkout-components@5.0.440` (2026-11-19 ingest). The earlier status paragraphs describe their own historical checkpoints, not the current release.
+
+## `@paypal/checkout-components@5.0.440` (2026-11-12)
+
+Full SHA: `19a756da76bf476cbb4e54d55021e75fa4b9c1d1`. Boundary: `5.0.439` to `5.0.440`; Delta ingest on 2026-11-19 using focused reading.
+
+This tag reverts the buyer-IP masking metadata and interaction relay from `5.0.439`. The masking module is removed; the shared library barrel and 13 component files match the tagged `5.0.438` source byte for byte. The protected Hosted Buttons `allowIframe` export is byte-identical to `5.0.439` and `f2c422a`. Its security helper is unchanged, so this is not a new merchant iframe permission.
+
+The retained net change from `5.0.438` consists of the Hosted Buttons interface, package version, changelog and generated button bundle. Upstream also retains the Vitest fork-pool change: `vite.config.js` is omitted from the ending capsule, not deleted upstream. The rollback is recorded in the repository changelog; no separate GitHub release notes were available. Retained comparison against `5.0.439`: 17 modified, two absent and 197 unchanged; only one of the absent paths is the deleted masking helper. Focused review compared the authored rollback and affected prior code, and checked generated and unchanged evidence mechanically. No hosted rollout, external logger behavior, payment API or merchant migration was verified.
+
+[Snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-19-19a756d/manifest.json) | [Release record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.440/2026-11-19/manifest.json) | [Comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.439--5.0.440/comparison.md)
+
+
+## `@paypal/checkout-components@5.0.439` (2026-11-09)
+
+Full SHA: `e4773108247739bb4fb69b89bc4c76e5a374c729`. Boundary: `5.0.438` to `5.0.439`; Full additive ingest on 2026-11-19 using focused reading.
+
+The tagged release retains the PayPal-domain-protected Hosted Buttons `allowIframe` export first observed at `f2c422a`. The interface implementation is unchanged from that checkpoint. This fixes the missing helper with Hosted Buttons-only loading, not a merchant-facing iframe permission. The Vitest fork pool (1-4) is retained as test configuration, not runtime behavior.
+
+The authored `src/lib/fpti-ip-masking.js` registers `{ maskIP: true }` before buyer interaction. The first notification flushes before flipping module-local state and relays `hasInteracted: true` to live instances across 13 Zoid factories. Buttons, Card Fields and Saved Payment Methods provide notification callbacks; Card Fields children inherit the parent flag. There is no local rejection/reset handler on the initial flush. This is metadata and internal component wiring, not verified IP anonymization, a consent API or new merchant payment capability.
+
+The repository changelog entry mentions the Hosted Buttons fix but omits the telemetry change. No separate GitHub release notes were available. Package metadata changes only version. The collector recommended full mode because the capsule policy changed; the focused review used authored changes and affected context, with generated artifacts and unchanged retained evidence checked mechanically. Retained comparison: 18 modified, two added and 196 unchanged. The two prior main checkpoints and all earlier published history remain separate.
+
+[Snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-11-19-e477310/manifest.json) | [Release record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.439/2026-11-19/manifest.json) | [Comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.438--5.0.439/comparison.md)
+
 
 Newest ingested unreleased ref: `default-branch@f2c422a` at `f2c422afd638eb3f7e4c8a46b3a998ddbad0fc75`, committed November 6 and collected/delta-ingested November 9, 2026 with focused reading. Hosted Buttons gains the existing PayPal-domain-protected `allowIframe` export. This repairs the hosted-buttons-only entry, not a new merchant API or arbitrary-origin iframe permission. The accepted package release remains `@paypal/checkout-components@5.0.438`; this unreleased checkpoint does not update independent PayPal JS, React or assembly history.
 
